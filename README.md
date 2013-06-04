@@ -15,3 +15,7 @@ as published by the Free Software Foundation; either version 2
 of the License, or (at your option) any later version.
 
 For more information, please visit [GNU Public License](http://opensource.org/licenses/GPL-2.0)
+
+##Documentation
+
+Please visit [jsprit-wiki] to learn more ...
