@@ -1,0 +1,47 @@
+There are currently 24 data files.
+
+The first set of data files are the 10 test problems from
+Chapter 9 of S.Eilon, C.D.T.Watson-Gandy and N.Christofides
+"Distribution management: mathematical modelling and
+practical analysis" Griffin, London 1971.
+
+Test problems 1, 2, ..., 10 from Chapter 9 are available
+in files vrp1, vrp2, ..., vrp10 respectively.
+
+The format of these data files is apparent from the tables
+of data given in the above reference.
+
+The second set of data files are the 14 test problems from
+Chapter 11 of N.Christofides, A.Mingozzi, P.Toth and C.Sandi
+(eds) "Combinatorial optimization", John Wiley, Chichester 1979.
+
+Test problems 1, 2, ..., 14 from Chapter 11 are available
+in files vrpnc1, vrpnc2, ..., vrpnc14 respectively.
+
+The format of these data files is:
+number of customers, vehicle capacity, maximum route time, drop time
+depot x-coordinate, depot y-coordinate
+for each customer in turn: x-coordinate, y-coordinate, quantity
+
+Both sets of files are of size 15Kb (approximately).
+
+
+
+OTHER SOURCES
+
+Test data for vehicle routing problems is also available
+using the Web from http://www-apache.imag.fr/~paugerat/VRP/INSTANCES
+
+A variety of vehicle routing problems are also available from the
+elib library: 
+telnet elib.zib.de and login as elib 
+WWW access available at:
+ftp://ftp.zib.de/pub/Packages/mp-testdata/index.html
+
+
+
+A full listing of the problem areas covered by OR-library can
+be found in the file info
+
+ftp access available at mscmga.ms.ic.ac.uk
+WWW access available at http://mscmga.ms.ic.ac.uk/

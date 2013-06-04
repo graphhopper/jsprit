@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013  Stefan Schroeder
+  
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  
+  Contributors:
+      Stefan Schroeder - initial API and implementation
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3schools.com" 
+	xmlns="http://www.w3schools.com" elementFormDefault="qualified">
+
+<xs:element name="algorithm">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="iterations" type="xs:integer" minOccurs="0" maxOccurs="1" default="100"/>
+			
+			<xs:element name="construction" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="insertion" type="insertionType" minOccurs="1" maxOccurs="1"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="strategy">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="memory" type="xs:integer" minOccurs="0" maxOccurs="1" default="1"/>
+						<xs:element name="searchStrategies" minOccurs="1" maxOccurs="1">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="searchStrategy" type="searchStrategyType" minOccurs="1" maxOccurs="unbounded"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+
+<xs:complexType name="searchStrategyType">
+	<xs:sequence>
+		<xs:element name="selector" type="selectorType"/>
+		<xs:element name="acceptor" type="acceptorType"/>
+		<xs:element name="modules" minOccurs="1" maxOccurs="1">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="module" type="moduleType" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		<xs:element name="probability">
+			<xs:simpleType>
+				<xs:restriction base="xs:double">
+					<xs:minInclusive value="0.0"/>
+					<xs:maxInclusive value="1.0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+	</xs:sequence>
+	<xs:attribute name="name" type="xs:string"/>
+</xs:complexType>
+
+<xs:complexType name="selectorType">
+	<xs:attribute name="name">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="selectBest"/>
+				<xs:enumeration value="selectRandomly"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="acceptorType">
+	<xs:sequence>
+		<xs:element name="alpha" type="xs:double" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="warmup" type="xs:double" minOccurs="0" maxOccurs="1"/>
+	</xs:sequence>
+	<xs:attribute name="name">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="acceptNewRemoveWorst"/>
+				<xs:enumeration value="schrimpfAcceptance"/>
+				<xs:enumeration value="acceptNewRemoveFirst"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+	
+</xs:complexType>
+
+<xs:complexType name="moduleType">
+	<xs:choice>
+		<xs:group ref="ruin_and_recreate_group"/>
+		<xs:group ref="gendreau_group"/>
+	</xs:choice>
+	<xs:attribute name="name">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="ruin_and_recreate"/>
+				<xs:enumeration value="gendreau"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+</xs:complexType>
+
+<xs:group name="ruin_and_recreate_group">
+	<xs:sequence>
+		<xs:element name="ruin" type="ruinType"/>
+		<xs:element name="insertion" type="insertionType"/>
+	</xs:sequence>	
+</xs:group>
+
+<xs:group name="gendreau_group">
+	<xs:sequence>
+		<xs:element name="itertions" type="xs:integer"/>
+		<xs:element name="share" type="xs:double"/>
+	</xs:sequence>
+</xs:group>
+
+<xs:complexType name="ruinType">
+	<xs:sequence>
+		<xs:element name="share">
+			<xs:simpleType>
+				<xs:restriction base="xs:double">
+					<xs:minInclusive value="0.0"/>
+					<xs:maxInclusive value="1.0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+	</xs:sequence>
+	<xs:attribute name="name" use="required">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="randomRuin"/>
+				<xs:enumeration value="radialRuin"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+	<xs:attribute name="id" type="xs:string"/>
+		
+</xs:complexType>
+
+
+
+<xs:complexType name="insertionType">
+	<xs:sequence>
+		<xs:element name="level" minOccurs="0" maxOccurs="1">
+			<xs:complexType>
+				<xs:simpleContent>
+					<xs:extension base="xs:string">
+						<xs:attribute name="forwardLooking" type="xs:string"/>
+						<xs:attribute name="memory" type="xs:string"/>
+					</xs:extension>
+				</xs:simpleContent>	
+			</xs:complexType>	
+		</xs:element>
+		<xs:element name="considerFixedCosts" minOccurs="0" maxOccurs="1">
+			<xs:complexType>
+				<xs:simpleContent>
+					<xs:extension base="xs:string">
+						<xs:attribute name="weight" type="xs:double"/>			
+					</xs:extension>
+				</xs:simpleContent>	
+			</xs:complexType>
+		</xs:element>
+		<xs:element name="experimental" minOccurs="0" maxOccurs="1">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:any minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="timeSlice" type="xs:string"/>
+				<xs:attribute name="neighboringSlices" type="xs:string"/>
+			</xs:complexType>
+			
+		</xs:element>
+			
+	</xs:sequence>
+	<xs:attribute name="name" use="required">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="bestInsertion" />
+				<xs:enumeration value="regretInsertion" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+	<xs:attribute name="id" type="xs:string"/>
+				 
+</xs:complexType>
+
+</xs:schema>

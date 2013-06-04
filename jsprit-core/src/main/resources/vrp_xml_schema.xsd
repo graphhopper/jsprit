@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013  Stefan Schroeder
+  
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  
+  Contributors:
+      Stefan Schroeder - initial API and implementation
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3schools.com" 
+	xmlns="http://www.w3schools.com" elementFormDefault="qualified">
+
+<xs:element name="problem">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="problemType" minOccurs="1" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="fleetSize">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="INFINITE" />
+									<xs:enumeration value="FINITE" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="fleetComposition">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="HOMOGENEOUS" />
+									<xs:enumeration value="HETEROGENEOUS" />
+								</xs:restriction>
+							</xs:simpleType>
+						
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="vehicles" minOccurs="1" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="vehicle" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									<xs:element name="location">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+												<xs:element name="coord" minOccurs="0" maxOccurs="1">
+												 	<xs:complexType>
+												 		<xs:attribute name="x" type="xs:decimal" use="required"/>
+												 		<xs:attribute name="y" type="xs:decimal" use="required"/>
+												 	</xs:complexType>
+												</xs:element>
+											</xs:all>
+										
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="typeId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									<xs:element name="timeSchedule" type="timeWindowType"/>
+
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+			
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="vehicleTypes" minOccurs="1" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="type" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									<xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" default="0"/>
+									<xs:element name="costs">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="fixed" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
+												<xs:element name="distance" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
+												<xs:element name="time" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
+											</xs:all>
+										</xs:complexType>
+									</xs:element>
+								</xs:all>
+								
+							</xs:complexType>
+						
+						</xs:element>
+					
+					</xs:sequence>
+				
+				</xs:complexType>
+			
+			
+			</xs:element>
+			
+			<xs:element name="services" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="service" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="locationId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
+									<xs:element name="capacity-demand" type="xs:integer" minOccurs="0" maxOccurs="1" default="0"/>
+									<xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
+									<xs:element name="timeWindows" minOccurs="0" maxOccurs="1">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="timeWindow" type="timeWindowType" minOccurs="1" maxOccurs="unbounded"/>
+											</xs:sequence>
+										</xs:complexType>
+
+									</xs:element>
+								</xs:all>
+								<xs:attribute name="id" type="xs:string" use="required" />
+								<xs:attribute name="type" type="xs:string"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="solutions" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="solution" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="cost" type="xs:decimal"/>
+									<xs:element name="routes" minOccurs="0" maxOccurs="1">
+									 	<xs:complexType>
+									 		<xs:sequence>
+									 			<xs:element name="route" minOccurs="0" maxOccurs="unbounded">
+									 				<xs:complexType>
+									 					<xs:sequence>
+									 						<xs:element name="cost" type="xs:double" minOccurs="1" maxOccurs="1"/>
+									 						<xs:element name="driverId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									 						<xs:element name="vehicleId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									 						<xs:element name="start" type="xs:double" minOccurs="1" maxOccurs="1"/>
+									 						<xs:element name="act" minOccurs="0" maxOccurs="unbounded">
+									 							<xs:complexType>
+									 								<xs:all>
+									 									<xs:element name="serviceId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									 									<xs:element name="arrTime" type="xs:double" minOccurs="1" maxOccurs="1"/>
+									 									<xs:element name="endTime" type="xs:double" minOccurs="1" maxOccurs="1"/>
+									 								</xs:all>
+									 								<xs:attribute name="type" type="xs:string" use="required"/>
+									 							</xs:complexType>
+									 						</xs:element>
+									 						<xs:element name="end" type="xs:double" minOccurs="1" maxOccurs="1"/>
+									 					</xs:sequence>
+									 				</xs:complexType>
+									 			</xs:element>
+									 		</xs:sequence>
+									 	</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							
+							</xs:complexType>
+						
+						</xs:element>
+					
+					</xs:sequence>
+				
+				</xs:complexType>
+			
+			
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+
+<xs:complexType name="timeWindowType">
+	<xs:sequence>
+		<xs:element name="start" type="xs:double"/>
+		<xs:element name="end" type="xs:double"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="coordType">
+	<xs:attribute name="x" type="xs:double" use="required" />
+	<xs:attribute name="y" type="xs:double" use="required" />
+</xs:complexType>
+
+</xs:schema>

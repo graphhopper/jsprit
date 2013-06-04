@@ -1,0 +1,204 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Stefan Schroeder.
+ * eMail: stefan.schroeder@kit.edu
+ * 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v2.0
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * 
+ * Contributors:
+ *     Stefan Schroeder - initial API and implementation
+ ******************************************************************************/
+package basics.route;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import basics.Job;
+import basics.route.TourActivity.JobActivity;
+
+
+/**
+ * 
+ * @author stefan schroeder
+ * 
+ */
+
+public class TourActivities {
+
+	public static TourActivities copyOf(TourActivities tourActivities){
+		return new TourActivities(tourActivities);
+	}
+	
+	public static class ReverseActivityIterator implements Iterator<TourActivity> {
+
+		private List<TourActivity> acts;		
+		private int currentIndex;
+		
+		public ReverseActivityIterator(List<TourActivity> acts) {
+			super();
+			this.acts = acts;
+			currentIndex = acts.size()-1;
+		}
+
+		@Override
+		public boolean hasNext() {
+			if(currentIndex >= 0) return true;
+			return false;
+		}
+
+		@Override
+		public TourActivity next() {
+			TourActivity act = acts.get(currentIndex);
+			currentIndex--;
+			return act;
+		}
+		
+		public void reset(){
+			currentIndex = acts.size()-1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();			
+		}
+	}
+	
+
+	public static TourActivities emptyTour(){
+		return new TourActivities();
+	}
+	
+	private final ArrayList<TourActivity> tourActivities = new ArrayList<TourActivity>();
+//	private final LinkedList<TourActivity> tourActivities = new LinkedList<TourActivity>();
+//	private final TreeList tourActivities = new TreeList();
+
+	private final Set<Job> jobs = new HashSet<Job>();
+	
+	private int load = 0;
+	
+	private double cost = 0.0;
+	
+	private ReverseActivityIterator backward;
+	
+	private TourActivities(TourActivities tour2copy) {
+		for (TourActivity tourAct : tour2copy.getActivities()) {
+			TourActivity newAct = tourAct.duplicate();
+			this.tourActivities.add(newAct);
+			addJob(newAct);
+		}
+	}
+	
+	public TourActivities(){
+		
+	}
+	
+	public List<TourActivity> getActivities() {
+		return Collections.unmodifiableList(tourActivities);
+	}
+	
+	public Iterator<TourActivity> iterator(){
+		return tourActivities.iterator();
+	}
+
+	public boolean isEmpty() {
+		return (tourActivities.size() == 0);
+	}
+	
+	public Collection<Job> getJobs(){
+		return Collections.unmodifiableSet(jobs);
+	}
+	
+	public boolean servesJob(Job job) {
+		return jobs.contains(job);
+	}
+
+	@Override
+	public String toString() {
+		return "[nuOfActivities="+tourActivities.size()+"]";
+	}
+
+	/**
+	 * Removes job AND belonging activity from tour.
+	 * 
+	 * @param job
+	 * @return
+	 */
+	public boolean removeJob(Job job){
+		boolean jobRemoved = false;
+		if(!jobs.contains(job)){
+			return false;
+		}
+		else{
+			jobRemoved = jobs.remove(job);
+		}
+		boolean activityRemoved = false;
+		List<TourActivity> acts = new ArrayList<TourActivity>(tourActivities);
+		for(TourActivity c : acts){
+			if(c instanceof JobActivity){
+				if(job.equals(((JobActivity) c).getJob())){
+					tourActivities.remove(c);
+					activityRemoved = true;
+				}
+			}
+			else if(c instanceof ServiceActivity){
+				if(job.equals(((ServiceActivity) c).getJob())){
+					tourActivities.remove(c);
+					activityRemoved = true;
+				}
+			}
+		}
+		if(jobRemoved != activityRemoved) throw new IllegalStateException("job removed, but belonging activity not.");
+		return activityRemoved;
+	}
+
+	public void addActivity(int insertionIndex, TourActivity act) {
+		assert insertionIndex >= 0 : "insertionIndex == 0, this cannot be";
+		/*
+		 * if 1 --> between start and act(0) --> act(0)
+		 * if 2 && 2 <= acts.size --> between act(0) and act(1) --> act(1)
+		 * if 2 && 2 > acts.size --> at actEnd
+		 * ...
+		 * 
+		 */
+		if(insertionIndex < tourActivities.size()) tourActivities.add(insertionIndex, act); 
+		else if(insertionIndex >= tourActivities.size()) tourActivities.add(act);
+		addJob(act);
+	}
+	
+	public void addActivity(TourActivity act){
+		if(tourActivities.contains(act)) throw new IllegalStateException("act " + act + " already in tour. cannot add act twice.");
+		tourActivities.add(act);
+		addJob(act);
+	}
+
+	private void addJob(TourActivity act) {
+		
+		if(act instanceof JobActivity){
+			Job job = ((JobActivity) act).getJob();
+			jobs.add(job);
+		}
+		else if(act instanceof ServiceActivity){
+			jobs.add(((ServiceActivity) act).getJob());
+		}
+	}
+
+	public int jobSize() {
+		return jobs.size();
+	}
+
+	public Iterator<TourActivity> reverseActivityIterator(){
+		if(backward == null) backward = new ReverseActivityIterator(tourActivities);
+		else backward.reset();
+		return backward;
+	}
+
+
+
+}

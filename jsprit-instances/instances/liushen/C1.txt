@@ -1,0 +1,4 @@
+Vehicle;Capacity;Cost_a;Cost_b;Cost_c
+A;100;300;60;30
+B;200;800;160;80
+C;300;1350;270;135

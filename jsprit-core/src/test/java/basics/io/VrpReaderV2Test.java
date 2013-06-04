@@ -1,0 +1,133 @@
+/*******************************************************************************
+ * Copyright (C) 2013  Stefan Schroeder
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ * Contributors:
+ *     Stefan Schroeder - initial API and implementation
+ ******************************************************************************/
+package basics.io;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import basics.Service;
+import basics.VehicleRoutingProblem;
+import basics.VehicleRoutingProblem.Builder;
+import basics.VehicleRoutingProblem.FleetComposition;
+import basics.VehicleRoutingProblem.FleetSize;
+import basics.io.VrpXMLReader;
+import basics.route.Vehicle;
+
+public class VrpReaderV2Test {
+	
+	private String inFileName;
+	
+	@Before
+	public void doBefore(){
+		inFileName = "src/test/resources/finiteVrpForReaderV2Test.xml";
+	}
+	
+	@Test
+	public void whenReadingVrp_problemTypeIsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(FleetSize.FINITE,vrp.getFleetSize());
+		assertEquals(FleetComposition.HETEROGENEOUS,vrp.getFleetComposition());
+	}
+	
+	@Test 
+	public void whenReadingVrp_vehiclesAreReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(2,vrp.getVehicles().size());
+		assertTrue(idsInCollection(Arrays.asList("v1","v2"),vrp.getVehicles()));
+	}
+	
+	@Test
+	public void whenReadingVrp_vehiclesAreReadCorrectly2(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v1 = getVehicle("v1",vrp.getVehicles());
+		assertEquals(20,v1.getCapacity());
+		assertEquals(100.0,v1.getCoord().getX(),0.01);
+		assertEquals(0.0,v1.getEarliestDeparture(),0.01);
+		assertEquals("depotLoc2",v1.getLocationId());
+		assertNotNull(v1.getType());
+		assertEquals("vehType", v1.getType().getTypeId());
+		assertEquals(1000.0,v1.getLatestArrival(),0.01);
+	}
+	
+	private Vehicle getVehicle(String string, Collection<Vehicle> vehicles) {
+		for(Vehicle v : vehicles) if(string.equals(v.getId())) return v;
+		return null;
+	}
+
+	private boolean idsInCollection(List<String> asList, Collection<Vehicle> vehicles) {
+		List<String> ids = new ArrayList<String>(asList);
+		for(Vehicle v : vehicles){
+			if(ids.contains(v.getId())) ids.remove(v.getId());
+		}
+		return ids.isEmpty();
+	}
+
+	@Test 
+	public void whenReadingVrp_vehicleTypesAreReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(2,vrp.getTypes().size());
+	}
+	
+	@Test 
+	public void whenReadingVrpWithInfiniteSize_itReadsCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(FleetSize.FINITE,vrp.getFleetSize());
+	}
+	
+	@Test
+	public void whenReadingServices_itReadsThemCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(2, vrp.getJobs().size());
+	}
+	
+	@Test
+	public void whenReadingServices_servicesAreBuiltCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Service s1 = (Service) vrp.getJobs().get("1");
+		assertEquals("delivery",s1.getType());
+		assertEquals(1,s1.getCapacityDemand());
+		assertEquals(0.0,s1.getServiceDuration(),0.01);
+		assertEquals(2, vrp.getJobs().size());
+	}
+}

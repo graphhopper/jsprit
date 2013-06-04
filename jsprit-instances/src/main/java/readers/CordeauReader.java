@@ -1,0 +1,172 @@
+/*******************************************************************************
+ * Copyright (C) 2013  Stefan Schroeder
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ * Contributors:
+ *     Stefan Schroeder - initial API and implementation
+ ******************************************************************************/
+package readers;
+
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import readers.CordeauReader;
+import util.Coordinate;
+
+import basics.VehicleRoutingProblem.FleetSize;
+import basics.route.VehicleImpl;
+import basics.route.VehicleImpl.VehicleBuilder;
+import basics.route.VehicleImpl.VehicleType;
+import basics.Service;
+import basics.VehicleRoutingProblem;
+
+/**
+ * Reader that reads instances developed by:
+ * 
+ * <p>Cordeau, J.-F., Gendreau, M. and Laporte, G. (1997), A tabu search heuristic for periodic and multi-depot vehicle routing problems. 
+ * Networks, 30: 105–119. doi: 10.1002/(SICI)1097-0037(199709)30:2<105::AID-NET5>3.0.CO;2-G
+ * 
+ * <p>Files and file-description can be found <a href="http://neo.lcc.uma.es/vrp/vrp-instances/multiple-depot-vrp-instances/">here</a>. 
+ * 
+ * @author stefan schroeder
+ *
+ */
+public class CordeauReader {
+
+	private static Logger logger = Logger.getLogger(CordeauReader.class);
+	
+	private final VehicleRoutingProblem.Builder vrpBuilder;
+
+	private double coordProjectionFactor = 1;
+
+	public CordeauReader(VehicleRoutingProblem.Builder vrpBuilder) {
+		super();
+		this.vrpBuilder = vrpBuilder;
+	}
+	
+	public void read(String fileName){
+		vrpBuilder.setFleetSize(FleetSize.FINITE);
+		BufferedReader reader = getReader(fileName);
+		int vrpType;
+		int nOfDepots = 0;
+		int nOfCustomers = 0;
+		int nOfVehiclesAtEachDepot = 0;
+	
+		int counter = 0;
+		String line = null; 
+		List<List<VehicleBuilder>> vehiclesAtDepot = new ArrayList<List<VehicleBuilder>>();
+		int depotCounter = 0;
+		while((line = readLine(reader)) != null){
+			line = line.replace("\r", "");
+			line = line.trim();
+			String[] tokens = line.split("\\s+");
+			if(counter == 0){
+				vrpType = Integer.parseInt(tokens[0].trim());
+				if(vrpType != 2) throw new IllegalStateException("expect vrpType to be equal to 2 and thus to be MDVRP");
+				nOfVehiclesAtEachDepot = Integer.parseInt(tokens[1].trim());
+				nOfCustomers = Integer.parseInt(tokens[2].trim());
+				nOfDepots = Integer.parseInt(tokens[3].trim());
+			}
+			else if(counter <= nOfDepots){
+				String depot = Integer.valueOf(counter).toString();
+				int duration = Integer.parseInt(tokens[0].trim());
+				if(duration == 0) duration = 999999;
+				int capacity = Integer.parseInt(tokens[1].trim());
+				VehicleType vehicleType = VehicleImpl.VehicleType.Builder.newInstance(counter + "_cordeauType", capacity).setCostPerDistance(1.0).setFixedCost(100).build();
+				List<VehicleBuilder> builders = new ArrayList<VehicleImpl.VehicleBuilder>();
+				for(int vehicleCounter=0;vehicleCounter<nOfVehiclesAtEachDepot;vehicleCounter++){
+					VehicleBuilder vBuilder = VehicleImpl.VehicleBuilder.newInstance(depot+"_"+(vehicleCounter+1) + "_cordeauVehicle");
+					vBuilder.setLatestArrival(duration).setType(vehicleType);
+					builders.add(vBuilder);
+				}
+				vehiclesAtDepot.add(builders);
+			}
+			else if(counter <= (nOfCustomers+nOfDepots)){
+				String id = tokens[0].trim();
+				Coordinate customerCoord = makeCoord(tokens[1].trim(),tokens[2].trim());
+				double serviceTime = Double.parseDouble(tokens[3].trim());
+				int demand = Integer.parseInt(tokens[4].trim());
+				Service service = Service.Builder.newInstance(id, demand).setServiceTime(serviceTime).setLocationId(id).setCoord(customerCoord).build();
+				vrpBuilder.addService(service);				
+			}
+			else if(counter <= (nOfCustomers+nOfDepots+nOfDepots)){
+				Coordinate depotCoord = makeCoord(tokens[1].trim(),tokens[2].trim());
+				List<VehicleBuilder> vBuilders = vehiclesAtDepot.get(depotCounter);
+				for(VehicleBuilder vBuilder : vBuilders){
+					vBuilder.setLocationCoord(depotCoord);
+					VehicleImpl vehicle = vBuilder.build();
+					vrpBuilder.addVehicle(vehicle);
+				}
+				depotCounter++;
+			}
+			else{
+				throw new IllegalStateException("there are more lines than expected in file.");
+			}
+			counter++;
+		}
+		close(reader);
+	}
+
+	public void setCoordProjectionFactor(double coordProjectionFactor) {
+		this.coordProjectionFactor = coordProjectionFactor;
+	}
+
+	private void close(BufferedReader reader)  {
+		try {
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error(e);
+			System.exit(1);
+		}
+	}
+
+	private String readLine(BufferedReader reader) {
+		try {
+			return reader.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error(e);
+			System.exit(1);
+			return null;
+		}
+	}
+	
+	private Coordinate makeCoord(String xString, String yString) {
+		double x = Double.parseDouble(xString);
+		double y = Double.parseDouble(yString);
+		return new Coordinate(x*coordProjectionFactor,y*coordProjectionFactor);
+	}
+
+	private BufferedReader getReader(String solomonFile) {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(solomonFile));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+			logger.error(e1);
+			System.exit(1);
+		}
+		return reader;
+	}
+}
