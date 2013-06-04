@@ -85,7 +85,6 @@ public class SolutionPlotter {
 			
 		};
 		plotRoutesAsPNG(solution.getRoutes(), locations, pngFile, plotTitle);
-		
 	}
 	
 	
