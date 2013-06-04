@@ -22,29 +22,29 @@
   <parent>
   	<groupId>jsprit</groupId>
   	<artifactId>jsprit-project</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
+  	<version>0.0.1</version>
   	<relativePath>../jsprit-project/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jsprit-analysis</artifactId>
- <packaging>jar</packaging>
+  
+  <artifactId>jsprit-examples</artifactId>
   
   <dependencies>
   	<dependency>
-  		<groupId>org.jfree</groupId>
-  		<artifactId>jfreechart</artifactId>
-  		<version>1.0.14</version>
-  		<scope>compile</scope>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>jsprit-instances</artifactId>
+  		 <version>${project.version}</version>
   	</dependency>
   	
   	<dependency>
-  		 <groupId>${project.groupId}</groupId>
-  		 <artifactId>jsprit-core</artifactId>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>jsprit-core</artifactId>
   		 <version>${project.version}</version>
-  		<type>jar</type>
-		<scope>provided</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>jsprit-analysis</artifactId>
+  		 <version>${project.version}</version>
   	</dependency>
   </dependencies>
-  
-  
 </project>

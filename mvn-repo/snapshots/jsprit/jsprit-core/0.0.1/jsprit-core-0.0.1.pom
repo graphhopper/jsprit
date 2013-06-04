@@ -22,29 +22,39 @@
   <parent>
   	<groupId>jsprit</groupId>
   	<artifactId>jsprit-project</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
+  	<version>0.0.1</version>
   	<relativePath>../jsprit-project/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jsprit-analysis</artifactId>
- <packaging>jar</packaging>
-  
+  <artifactId>jsprit-core</artifactId>
+  <name>jsprit-core</name>
+
   <dependencies>
-  	<dependency>
-  		<groupId>org.jfree</groupId>
-  		<artifactId>jfreechart</artifactId>
-  		<version>1.0.14</version>
-  		<scope>compile</scope>
-  	</dependency>
-  	
-  	<dependency>
-  		 <groupId>${project.groupId}</groupId>
-  		 <artifactId>jsprit-core</artifactId>
-  		 <version>${project.version}</version>
-  		<type>jar</type>
-		<scope>provided</scope>
-  	</dependency>
+		
+    <dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math</artifactId>
+			<version>2.2</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		
+    <dependency>
+    	<groupId>commons-configuration</groupId>
+    	<artifactId>commons-configuration</artifactId>
+    	<version>1.9</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
+    </dependency>
+
+    <dependency>
+    	<groupId>xerces</groupId>
+    	<artifactId>xerces</artifactId>
+    	<version>2.4.0</version>
+    </dependency>
+    
   </dependencies>
   
+ 
   
 </project>
