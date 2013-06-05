@@ -19,3 +19,4 @@ For more information, please visit [GNU Public License](http://opensource.org/li
 ##Documentation
 
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
+
