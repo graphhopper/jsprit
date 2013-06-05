@@ -22,7 +22,7 @@
   <parent>
   	<groupId>jsprit</groupId>
   	<artifactId>jsprit-project</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
+  	<version>0.0.1</version>
   	<relativePath>../jsprit-project/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -39,4 +39,8 @@
   		 <version>${project.version}</version>
   	</dependency>
   </dependencies>
+
+  <scm>
+    <tag>v0.0.1</tag>
+  </scm>
 </project>
