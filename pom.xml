@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>jsprit</groupId>
-  <artifactId>jsprit-project</artifactId>
+  <artifactId>jsprit</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   
   <packaging>pom</packaging>
@@ -77,10 +77,10 @@
   
   
   <modules> 
-   	<module>../jsprit-core</module> 
-   	<module>../jsprit-analysis</module>
-   	<module>../jsprit-examples</module> 
-   	<module>../jsprit-instances</module>  
+   	<module>jsprit-core</module> 
+   	<module>jsprit-analysis</module>
+   	<module>jsprit-examples</module> 
+   	<module>jsprit-instances</module>  
    </modules>
   
   <properties>
