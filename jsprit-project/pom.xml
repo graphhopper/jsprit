@@ -53,7 +53,7 @@
   <scm>
   
   	<connection>scm:git:git@github.com:jsprit/jsprit.git</connection>
-  	<developerConnection>scm:git:git@github.com:jsprit/jsprit.git</developerConnection>
+  	<developerConnection>scm:git:https://github.com/jsprit/jsprit.git</developerConnection>
   	<url>http://github.com/jsprit/jsprit/tree/master</url>
   	<tag>HEAD</tag>
   </scm>
