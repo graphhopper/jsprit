@@ -8,6 +8,10 @@ It is lightweight and easy-to-use, and based on heuristics currently solving the
 - VRP with heterogeneous fleet
 - Time-dependent VRP
 
+Modifying the algorithms and visualising the discovered solutions is as easy and handy as 
+reading classical VRP instances to benchmark your algorithm.
+
+
 ##License
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
