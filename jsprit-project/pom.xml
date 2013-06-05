@@ -23,7 +23,7 @@
   
   <groupId>jsprit</groupId>
   <artifactId>jsprit-project</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   
   <packaging>pom</packaging>
   
@@ -55,7 +55,7 @@
   	<connection>scm:git:git@github.com:jsprit/jsprit.git</connection>
   	<developerConnection>scm:git:git@github.com:jsprit/jsprit.git</developerConnection>
   	<url>http://github.com/jsprit/jsprit/tree/master</url>
-  	<tag>HEAD</tag>
+  	<tag>v0.0.1</tag>
   </scm>
   
   <issueManagement>
