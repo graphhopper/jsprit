@@ -30,4 +30,4 @@ Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 Stefan Schröder 
 
 ###Contributors
--
+still empty (hope this will change soon)
