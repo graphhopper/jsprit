@@ -21,6 +21,7 @@
 package algorithms;
 
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -365,6 +366,13 @@ public class VehicleRoutingAlgorithms {
 	@Deprecated
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final XMLConfiguration config){
 		return createAlgo(vrp,config);
+	}
+	
+	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final URL configURL){
+		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
+		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
+		xmlReader.read(configURL);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration());
 	}
 	
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final String configFileName){

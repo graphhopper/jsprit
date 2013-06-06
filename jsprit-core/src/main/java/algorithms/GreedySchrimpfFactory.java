@@ -64,7 +64,7 @@ public class GreedySchrimpfFactory {
 	public VehicleRoutingAlgorithm createAlgorithm(VehicleRoutingProblem vrp){
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		URL resource = Resource.getAsURL("greedySchrimpf.xml");
-		new AlgorithmConfigXmlReader(algorithmConfig).read(resource.getPath());
+		new AlgorithmConfigXmlReader(algorithmConfig).read(resource);
 		return VehicleRoutingAlgorithms.createAlgorithm(vrp, algorithmConfig);
 	}
 	
