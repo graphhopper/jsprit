@@ -305,11 +305,7 @@ public class VehicleRoutingProblem {
 	public static enum FleetComposition {
 		HETEROGENEOUS, HOMOGENEOUS;
 	}
-	
-	public static Builder newBuilderInstance(){
-		return new Builder();
-	}
-	
+
 	public static Logger log = Logger.getLogger(VehicleRoutingProblem.class);
 	
 	private static Logger logger = Logger.getLogger(VehicleRoutingProblem.class);
