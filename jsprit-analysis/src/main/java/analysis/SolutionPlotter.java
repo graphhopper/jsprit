@@ -144,15 +144,15 @@ public class SolutionPlotter {
 		renderer.setBaseShapesVisible(true);
 		
 		NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
-		xAxis.setTickUnit(new NumberTickUnit(10));
-//		Range rangeX = new Range(minX - 0.05*minX, maxX+0.05*maxX);
-		Range rangeX = new Range(minX, maxX);
+//		xAxis.setTickUnit(new NumberTickUnit(10));
+		Range rangeX = new Range(minX - 0.001*minX, maxX+0.001*maxX);
+//		Range rangeX = new Range(minX, maxX);
 		xAxis.setRange(rangeX);
 		
 		NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
 //		yAxis.setTickUnit(new NumberTickUnit(10));
-//		Range rangeY = new Range(minY-0.05*minY,maxY + 0.05*maxY);
-		Range rangeY = new Range(minY,maxY);
+		Range rangeY = new Range(minY-0.001*minY,maxY + 0.001*maxY);
+//		Range rangeY = new Range(minY,maxY);
 		yAxis.setRange(rangeY);
 		try {
 			ChartUtilities.saveChartAsPNG(new File(pngFile), chart, 1000, 600);
