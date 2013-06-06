@@ -21,6 +21,7 @@
 package basics.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -57,14 +58,14 @@ public class AlgorithmConfigXmlReader {
 		algorithmConfig.getXMLConfiguration().setDelimiterParsingDisabled(true);
 		
 		if(schemaValidation){
-			final URL resource = Resource.getAsURL("algorithm_schema.xsd");
+			final InputStream resource = Resource.getAsInputStream("algorithm_schema.xsd");
 			if(resource != null) {
 				EntityResolver resolver = new EntityResolver() {
 
 					@Override
 					public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 						{
-							InputSource is = new InputSource(resource.getFile());
+							InputSource is = new InputSource(resource);
 							return is;
 						}
 					}

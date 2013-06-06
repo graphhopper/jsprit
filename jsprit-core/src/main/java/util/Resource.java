@@ -1,6 +1,9 @@
 package util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -44,4 +47,24 @@ public class Resource {
 		return url;
 	}
 
+	/**
+	 * @param filename relative path from within the resource directory to a file to be loaded
+	 * @return a Stream to the requested resource file, or <code>null</code> if no such file exists.
+	 */
+	public final static InputStream getAsInputStream(final String filename) {
+		// look for the file locally
+		try {
+			return new FileInputStream("/" + filename);
+		} catch (FileNotFoundException e) {
+			log.info("Resource '" + filename + "' not found locally. May not be fatal.");
+			// just continue, maybe we have more luck in the classpath
+		}
+		// maybe we find the file in the classpath, possibly inside a jar-file
+		InputStream stream = Resource.class.getResourceAsStream("/" + filename);
+		if (stream == null) {
+			log.warn("Resource '" + filename + "' not found!");
+		}
+		return stream;
+	}
+	
 }
