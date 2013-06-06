@@ -107,7 +107,7 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 		reset();
 		logger.info("---------------------------------------------------------------------");
 		logger.info("prepare schrimpfAcceptanceFunction, i.e. determine initial threshold");
-		logger.info("start random-walk (see algorith-config at scr/main/resources/randomWalk.xml)");
+		logger.info("start random-walk (see randomWalk.xml)");
 		double now = System.currentTimeMillis();
 		this.nOfTotalIterations = algorithm.getNuOfIterations();
 		
@@ -118,7 +118,7 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 		
 		URL resource = Resource.getAsURL("randomWalk.xml");
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-		new AlgorithmConfigXmlReader(algorithmConfig).read(resource.getPath());
+		new AlgorithmConfigXmlReader(algorithmConfig).read(resource);
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.createAlgorithm(problem, algorithmConfig);
 		vra.setNuOfIterations(nOfRandomWalks);
 		vra.getAlgorithmListeners().addListener(new IterationEndsListener() {
