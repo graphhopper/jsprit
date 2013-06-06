@@ -34,7 +34,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void testCordeauReader(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		vrpBuilder.build();
 		
@@ -42,7 +42,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void whenReadingInstance_fleetSizeIsFinite(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		assertEquals(FleetSize.FINITE, vrp.getFleetSize());
@@ -50,7 +50,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void testNuOfVehicles(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		assertEquals(16,vrp.getVehicles().size());
@@ -58,7 +58,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void whenReadingCordeauInstance_vehiclesHaveTheCorrectCapacity(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		for(Vehicle v : vrp.getVehicles()){
@@ -68,7 +68,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void whenReadingCordeauInstance_vehiclesHaveTheCorrectDuration(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p08").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		for(Vehicle v : vrp.getVehicles()){
@@ -79,7 +79,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void whenReadingCustomersCordeauInstance_customerOneShouldHaveCorrectCoordinates(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Service service = (Service) vrp.getJobs().get("1");
@@ -89,7 +89,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void whenReadingCustomersCordeauInstance_customerTwoShouldHaveCorrectServiceDuration(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Service service = (Service) vrp.getJobs().get("2");
@@ -98,7 +98,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void whenReadingCustomersCordeauInstance_customerThreeShouldHaveCorrectDemand(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Service service = (Service) vrp.getJobs().get("3");
@@ -107,7 +107,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void whenReadingCustomersCordeauInstance_customerFortySevenShouldHaveCorrectDemand(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Service service = (Service) vrp.getJobs().get("47");
@@ -116,7 +116,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void testLocationsAndCapOfVehicles(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		boolean capacityOk = true;
@@ -140,7 +140,7 @@ public class CordeauReaderTest {
 	
 	@Test
 	public void testNuOfCustomers(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.newBuilderInstance();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		assertEquals(50,vrp.getJobs().values().size());
