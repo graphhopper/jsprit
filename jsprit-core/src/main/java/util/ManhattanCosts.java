@@ -36,14 +36,12 @@ public class ManhattanCosts implements VehicleRoutingTransportCosts {
 	}
 
 	@Override
-	public double getTransportCost(String fromId, String toId, double time,
-			Driver driver, Vehicle vehicle) {
+	public double getTransportCost(String fromId, String toId, double time,Driver driver, Vehicle vehicle) {
 		return calculateDistance(fromId, toId);
 	}
 
 	@Override
-	public double getTransportTime(String fromId, String toId, double time,
-			Driver driver, Vehicle vehicle) {
+	public double getTransportTime(String fromId, String toId, double time,Driver driver, Vehicle vehicle) {
 		double transportTime = calculateDistance(fromId, toId) / speed;
 		return transportTime;
 	}

@@ -71,11 +71,12 @@ public class VehicleImpl implements Vehicle {
 			
 			private String id;
 			private int capacity;
-			private double fixedCost;
-			private double perDistance;
-			private double perTime;
-			
-//			private TimeSchedule timeSchedule = new TimeSchedule(0.0,Integer.MAX_VALUE);
+			/**
+			 * default cost values for default vehicle type
+			 */
+			private double fixedCost = 0.0;
+			private double perDistance = 1.0;
+			private double perTime = 0.0;
 
 			public Builder(String id, int capacity) {
 				super();
@@ -89,11 +90,8 @@ public class VehicleImpl implements Vehicle {
 
 			public Builder setCostPerTime(double perTime){ this.perTime = perTime; return this; }
 			
-//			public Builder setTimeSchedule(TimeSchedule timeSchedule){ this.timeSchedule = timeSchedule; return this; }
-
 			public VehicleType build(){
 				return new VehicleType(this);
-//				return Type.newInstance(id, capacity, VehicleCostParams.newInstance(fixedCost, perTime, perDistance));
 			}
 
 		}
@@ -127,9 +125,6 @@ public class VehicleImpl implements Vehicle {
 		public final String typeId;
 		public final int capacity;
 		public final VehicleCostParams vehicleCostParams;
-//		private double speed = 22.0;
-		
-		private TimeSchedule timeSchedule;
 
 		public static VehicleType newInstance(String typeId, int capacity, VehicleCostParams para){
 			return new VehicleType(typeId, capacity, para);
@@ -139,7 +134,6 @@ public class VehicleImpl implements Vehicle {
 			typeId = builder.id;
 			capacity = builder.capacity;
 			vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance);
-//			timeSchedule = builder.timeSchedule;
 		}
 
 		public VehicleType(String typeId, int capacity,VehicleCostParams vehicleCostParams) {
@@ -156,23 +150,10 @@ public class VehicleImpl implements Vehicle {
 		public int getCapacity() {
 			return capacity;
 		}
-		
-		@Deprecated
-		public TimeSchedule getTimeSchedule() {
-			return timeSchedule;
-		}
 
 		public VehicleCostParams getVehicleCostParams() {
 			return vehicleCostParams;
 		}
-
-//		public double getSpeed() {
-//			return speed;
-//		}
-//
-//		public void setSpeed(double speed) {
-//			this.speed = speed;
-//		}
 
 		@Override
 		public String toString() {
@@ -206,11 +187,13 @@ public class VehicleImpl implements Vehicle {
 	public static class VehicleBuilder {
 		static Logger log = Logger.getLogger(VehicleBuilder.class); 
 		private String id;
-		private VehicleType type;
+		
 		private String locationId;
 		private Coordinate locationCoord;
 		private double earliestStart = 0.0;
 		private double latestArrival = Double.MAX_VALUE;
+		
+		private VehicleType type = VehicleType.Builder.newInstance("default", 0).build();
 		
 		private VehicleBuilder(String id) {
 			super();
@@ -243,7 +226,6 @@ public class VehicleImpl implements Vehicle {
 		}
 		
 		public VehicleImpl build(){
-			if(type == null) throw new IllegalStateException("type must not be null");
 			if(locationId == null && locationCoord != null) locationId = locationCoord.toString();
 			if(locationId == null && locationCoord == null) throw new IllegalStateException("locationId and locationCoord is missing.");
 			if(locationCoord == null) log.warn("locationCoord for vehicle " + id + " is missing.");
@@ -291,14 +273,6 @@ public class VehicleImpl implements Vehicle {
 		return coord;
 	}
 
-//	public void setCoord(Coordinate coord) {
-//		this.coord = coord;
-//	}
-
-//	public void setLocationId(String locationId) {
-//		this.locationId = locationId;
-//	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -312,35 +286,12 @@ public class VehicleImpl implements Vehicle {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.matsim.contrib.freight.vrp.basics.Vehicle#setEarliestDeparture(double
-	 * )
-	 */
-
-//	public void setEarliestDeparture(double earliestDeparture) {
-//		this.earliestDeparture = earliestDeparture;
-//	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.matsim.contrib.freight.vrp.basics.Vehicle#getLatestArrival()
 	 */
 	@Override
 	public double getLatestArrival() {
 		return latestArrival;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.matsim.contrib.freight.vrp.basics.Vehicle#setLatestArrival(double)
-	 */
-
-//	public void setLatestArrival(double latestArrival) {
-//		this.latestArrival = latestArrival;
-//	}
 
 	/*
 	 * (non-Javadoc)
