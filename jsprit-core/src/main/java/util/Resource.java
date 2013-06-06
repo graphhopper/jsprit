@@ -43,7 +43,7 @@ public class Resource {
 	 */
 	public final static URL getAsURL(final String filename) {
 		// look for the file locally
-		File file = new File("/" + filename);
+		File file = new File(filename);
 		if (file.exists()) {
 			try {
 				return file.toURI().toURL();

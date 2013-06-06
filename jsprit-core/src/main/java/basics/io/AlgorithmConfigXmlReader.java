@@ -90,38 +90,8 @@ public class AlgorithmConfigXmlReader {
 	
 	public void read(String filename){
 		log.info("read algorithm-config from file " + filename);
-		algorithmConfig.getXMLConfiguration().setFileName(filename);
-		algorithmConfig.getXMLConfiguration().setAttributeSplittingDisabled(true);
-		algorithmConfig.getXMLConfiguration().setDelimiterParsingDisabled(true);
-		
-		if(schemaValidation){
-			final URL resource = Resource.getAsURL("algorithm_schema.xsd");
-			if(resource != null) {
-				EntityResolver resolver = new EntityResolver() {
-
-					@Override
-					public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-						{
-							InputSource is = new InputSource(resource.getFile());
-							return is;
-						}
-					}
-				};
-				algorithmConfig.getXMLConfiguration().setEntityResolver(resolver);
-				algorithmConfig.getXMLConfiguration().setSchemaValidation(true);
-				log.info("validating " + filename + " with xsd-schema");
-			}
-			else{
-				log.warn("cannot find schema-xsd file (algorithm_xml_schema.xsd). try to read xml without xml-file-validation.");
-			}		
-		}
-		try {
-			algorithmConfig.getXMLConfiguration().load();
-		} catch (ConfigurationException e) {
-			log.error(e);
-			e.printStackTrace();
-			System.exit(1);
-		}
+		URL url = Resource.getAsURL(filename);
+		read(url);
 	}
 
 }
