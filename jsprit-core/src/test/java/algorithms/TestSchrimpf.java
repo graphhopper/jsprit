@@ -10,7 +10,7 @@ public class TestSchrimpf {
 	@Test
 	public void whenUsingSchrimpfFactory_itFindsTheConfig(){
 		
-		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(VehicleRoutingProblem.newBuilderInstance().build());
+		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(VehicleRoutingProblem.Builder.newInstance().build());
 		
 	}
 

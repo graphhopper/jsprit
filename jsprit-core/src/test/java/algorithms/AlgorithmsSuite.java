@@ -39,7 +39,8 @@ import algorithms.selectors.SelectRandomlyTest;
 	TestCalculatesActivityInsertion.class,
 	TestCalculatesServiceInsertion.class,
 	TestCalculatesServiceInsertionOnRouteLevel.class,
-
+	TestSchrimpf.class,
+	
     TestJobDistanceAvgCosts.class,
     TestTourStateUpdaterWithService.class,
     
