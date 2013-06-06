@@ -21,7 +21,7 @@
 package basics.io;
 
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -98,14 +98,14 @@ public class VrpXMLReader{
 		xmlConfig.setDelimiterParsingDisabled(true);
 		
 		if(schemaValidation){
-			final URL resource = Resource.getAsURL("vrp_xml_schema.xsd");
+			final InputStream resource = Resource.getAsInputStream("vrp_xml_schema.xsd");
 			if(resource != null) {
 				EntityResolver resolver = new EntityResolver() {
 
 					@Override
 					public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 						{
-							InputSource is = new InputSource(resource.getFile());
+							InputSource is = new InputSource(resource);
 							return is;
 						}
 					}
