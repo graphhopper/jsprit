@@ -37,6 +37,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import util.Coordinate;
+import util.Resource;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.FleetComposition;
@@ -97,7 +98,7 @@ public class VrpXMLReader{
 		xmlConfig.setDelimiterParsingDisabled(true);
 		
 		if(schemaValidation){
-			final URL resource = this.getClass().getClassLoader().getResource("vrp_xml_schema.xsd");
+			final URL resource = Resource.getAsURL("vrp_xml_schema.xsd");
 			if(resource != null) {
 				EntityResolver resolver = new EntityResolver() {
 

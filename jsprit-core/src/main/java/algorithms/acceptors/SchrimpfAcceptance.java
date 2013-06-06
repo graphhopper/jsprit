@@ -26,6 +26,7 @@ import java.util.Collection;
 import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
 import org.apache.log4j.Logger;
 
+import util.Resource;
 import util.Solutions;
 import algorithms.VehicleRoutingAlgorithms;
 import basics.VehicleRoutingAlgorithm;
@@ -115,7 +116,7 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 		 */
 		final double[] results = new double[nOfRandomWalks];
 		
-		URL resource = this.getClass().getClassLoader().getResource("randomWalk.xml");
+		URL resource = Resource.getAsURL("randomWalk.xml");
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		new AlgorithmConfigXmlReader(algorithmConfig).read(resource.getPath());
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.createAlgorithm(problem, algorithmConfig);

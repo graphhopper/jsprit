@@ -29,6 +29,8 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import util.Resource;
+
 public class AlgorithmConfigXmlReader {
 	
 	private static Logger log = Logger.getLogger(AlgorithmConfigXmlReader.class);
@@ -55,7 +57,7 @@ public class AlgorithmConfigXmlReader {
 		algorithmConfig.getXMLConfiguration().setDelimiterParsingDisabled(true);
 		
 		if(schemaValidation){
-			final URL resource = this.getClass().getClassLoader().getResource("algorithm_schema.xsd");
+			final URL resource = Resource.getAsURL("algorithm_schema.xsd");
 			if(resource != null) {
 				EntityResolver resolver = new EntityResolver() {
 

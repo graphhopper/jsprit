@@ -20,7 +20,13 @@
  ******************************************************************************/
 package algorithms;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import util.Resource;
+
+
 
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
@@ -57,9 +63,11 @@ public class SchrimpfFactory {
 	 */
 	public VehicleRoutingAlgorithm createAlgorithm(VehicleRoutingProblem vrp){
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-		URL resource = this.getClass().getClassLoader().getResource("schrimpf.xml");
+		URL resource = Resource.getAsURL("schrimpf.xml");
 		new AlgorithmConfigXmlReader(algorithmConfig).read(resource.getPath());
 		return VehicleRoutingAlgorithms.createAlgorithm(vrp, algorithmConfig);
 	}
+	
+	
 
 }
