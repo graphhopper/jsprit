@@ -36,7 +36,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -153,20 +152,18 @@ public class SolutionPlotter {
 		plot.setDomainGridlinePaint(Color.WHITE);
 		
 		XYItemRenderer problemRenderer = new XYLineAndShapeRenderer(false, true);   // Shapes only
+		
 		NumberAxis xAxis = new NumberAxis();		
-		Range xRange = problem.getRangeBounds(false);
-		Range rangeX = Range.scale(xRange, 1.01);
-		xAxis.setRange(rangeX);
+		xAxis.setRangeWithMargins(problem.getDomainBounds(true));
 		
 		NumberAxis yAxis = new NumberAxis();
-		Range yRange = problem.getRangeBounds(true);
-		Range rangeY = Range.scale(yRange, 1.01);
-		yAxis.setRange(rangeY);
+		yAxis.setRangeWithMargins(problem.getRangeBounds(false));
 		
 		plot.setDataset(0, problem);
 		plot.setRenderer(0, problemRenderer);
 		plot.setDomainAxis(0, xAxis);
 		plot.setRangeAxis(0, yAxis);
+		
 		return plot;
 	}
 
@@ -177,15 +174,12 @@ public class SolutionPlotter {
 		plot.setDomainGridlinePaint(Color.WHITE);
 		
 		XYItemRenderer problemRenderer = new XYLineAndShapeRenderer(false, true);   // Shapes only
+		
 		NumberAxis xAxis = new NumberAxis();		
-		Range xRange = problem.getRangeBounds(false);
-		Range rangeX = Range.scale(xRange, 1.01);
-		xAxis.setRange(rangeX);
+		xAxis.setRangeWithMargins(problem.getDomainBounds(true));
 		
 		NumberAxis yAxis = new NumberAxis();
-		Range yRange = problem.getRangeBounds(true);
-		Range rangeY = Range.scale(yRange, 1.01);
-		yAxis.setRange(rangeY);
+		yAxis.setRangeWithMargins(problem.getRangeBounds(true));
 		
 		plot.setDataset(0, problem);
 		plot.setRenderer(0, problemRenderer);
@@ -197,6 +191,7 @@ public class SolutionPlotter {
 		plot.setRenderer(1, solutionRenderer);
 		plot.setDomainAxis(1, xAxis);
 		plot.setRangeAxis(1, yAxis);
+		
 		return plot;
 	}
 
