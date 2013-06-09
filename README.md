@@ -24,4 +24,4 @@ For more information, please visit [GNU Public License](http://opensource.org/li
 
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 
-##[About]((https://github.com/jsprit/jsprit/wiki/about)
+##[About](https://github.com/jsprit/jsprit/wiki/About)
