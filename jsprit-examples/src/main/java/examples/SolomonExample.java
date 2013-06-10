@@ -23,7 +23,8 @@ package examples;
 import java.util.Collection;
 
 import readers.SolomonReader;
-import algorithms.VehicleRoutingAlgorithms;
+import algorithms.GreedySchrimpfFactory;
+import algorithms.SchrimpfFactory;
 import algorithms.selectors.SelectBest;
 import analysis.AlgorithmSearchProgressChartListener;
 import analysis.SolutionPlotter;
@@ -34,12 +35,11 @@ import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
-import basics.io.AlgorithmConfig;
-import basics.io.AlgorithmConfigXmlReader;
 
 public class SolomonExample {
 	
 	public static void main(String[] args) {
+		
 		
 		/*
 		 * Build the problem.
@@ -58,29 +58,15 @@ public class SolomonExample {
 		 */
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
+		SolutionPlotter.plotVrpAsPNG(vrp, "output/solomon_C101.png", "C101");
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-		new AlgorithmConfigXmlReader(algorithmConfig).read("input/algorithmConfig_solomon.xml");
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.createAlgorithm(vrp, algorithmConfig);
-		vra.setPrematureBreak(500);
+		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
 		
-		/*
-		 * Listen to the search-progress.
-		 */
-		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/searchProgress.png"));
-		
-		/*
-		 * StopWatch to measure computation time.
-		 */
-		StopWatch stopWatch = new StopWatch();
-		vra.getAlgorithmListeners().addListener(stopWatch,Priority.HIGH);
-		
-//		vra.setPrematureBreak(200);
 		/*
 		 * Solve the problem.
 		 * 
@@ -93,21 +79,13 @@ public class SolomonExample {
 		 */
 		VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 		
-		/*
-		 * Print computation time.
-		 */
-		System.out.println(stopWatch);
-		
-		/*
-		 * Print solution.
-		 */
-		
-		SolutionPrinter.print(solution, Print.VERBOSE);
 		
 		/*
 		 * Plot solution. 
 		 */
-		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomonSolution.png","C101");
+		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_solution.png","C101");
+		
+	
 		
 	}
 
