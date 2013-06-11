@@ -80,6 +80,17 @@ public class VehicleRoutingProblem {
 		
 		private Collection<VehicleType> vehicleTypes;
 
+		/**
+		 * by default all locations are neighbors
+		 */
+		private Neighborhood neighborhood = new Neighborhood() {
+			
+			@Override
+			public boolean areNeighbors(String location1, String location2) {
+				return true;
+			}
+		};
+
 		public Builder() {
 			jobs = new HashMap<String, Job>();
 			vehicles = new ArrayList<Vehicle>();
@@ -228,6 +239,10 @@ public class VehicleRoutingProblem {
 			return this;
 		}
 
+		public Builder setNeighborhood(Neighborhood neighborhood){
+			this.neighborhood = neighborhood;
+			return this;
+		}
 		
 		/**
 		 * Sets the activityCostFunction that considers also activities on a vehicle-route.
@@ -302,20 +317,6 @@ public class VehicleRoutingProblem {
 	
 	private Neighborhood neighborhood;
 	
-	/**
-	 * @return the neighborhood
-	 */
-	public Neighborhood getNeighborhood() {
-		return neighborhood;
-	}
-
-	/**
-	 * @param neighborhood the neighborhood to set
-	 */
-	public void setNeighborhood(Neighborhood neighborhood) {
-		this.neighborhood = neighborhood;
-	}
-
 	private final Map<String, Job> jobs;
 
 	/**
@@ -355,6 +356,13 @@ public class VehicleRoutingProblem {
 	public String toString() {
 		return "[fleetSize="+fleetSize+"][fleetComposition="+fleetComposition+"][#jobs="+jobs.size()+"][#vehicles="+vehicles.size()+"][#vehicleTypes="+vehicleTypes.size()+"]["+
 						"transportCost="+transportCosts+"][activityCosts="+activityCosts+"]";
+	}
+
+	/**
+	 * @return the neighborhood
+	 */
+	public Neighborhood getNeighborhood() {
+		return neighborhood;
 	}
 
 	/**
@@ -425,42 +433,5 @@ public class VehicleRoutingProblem {
 		return activityCosts;
 	}
 	
-	/**
-	 * Is deprecated and is not going to be supported any longer. Use the builder instead.
-	 */
-	@Deprecated
-	public void setFleetComposition(FleetComposition fleetComposition){
-		this.fleetComposition = fleetComposition;
-	}
-
-	/**
-	 * Is deprecated and is not going to be supported any longer. Use the builder instead.
-	 */
-	@Deprecated
-	public void setFleetSize(FleetSize fleetSize){
-		this.fleetSize = fleetSize;
-	}
-
-	/**
-	 * Sets routing costs.
-	 * Is deprecated and is not going to be supported any longer. Use the builder instead.
-	 * 
-	 * @param costs
-	 * @see VehicleRoutingTransportCosts
-	 */
-	@Deprecated
-	public void setTransportCosts(VehicleRoutingTransportCosts costs) {
-		this.transportCosts = costs;
-		logger.info("transport costs set to " + costs.getClass());
-	}
-
-	/**
-	 * Is deprecated and is not going to be supported any longer. Use the builder instead.
-	 */
-	@Deprecated
-	public void setActivityCosts(VehicleRoutingActivityCosts activityCosts){
-		this.activityCosts = activityCosts;
-		logger.info("activtiy costs set to " + activityCosts.getClass());
-	}
 	
 }

@@ -86,10 +86,10 @@ public class NeighborhoodThresholdInitialiser implements AlgorithmStartsListener
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		builder.addAllJobs(problem.getJobs().values());
 		builder.addAllVehicles(problem.getVehicles());
-		VehicleRoutingProblem pblm = builder.build();
 		CrowFlyCosts crowFly = new CrowFlyCosts(builder.getLocations());
 		crowFly.speed = crowFlySpeed;
-		pblm.setTransportCosts(crowFly);
+		builder.setRoutingCost(crowFly);
+		VehicleRoutingProblem pblm = builder.build();
 		
 		VehicleRoutingAlgorithm algo = routingAlgorithmFactory.createAlgorithm(pblm);
 		Collection<VehicleRoutingProblemSolution> mySolutions = algo.searchSolutions(); 

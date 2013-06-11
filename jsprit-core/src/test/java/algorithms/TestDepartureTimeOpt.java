@@ -32,6 +32,7 @@ import util.Solutions;
 import basics.Service;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
+import basics.VehicleRoutingProblem.Builder;
 import basics.VehicleRoutingProblemSolution;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.route.Driver;
@@ -51,8 +52,8 @@ public class TestDepartureTimeOpt {
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
 				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
 		
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addService(service).addVehicle(vehicle).build();
-		vrp.setActivityCosts(new VehicleRoutingActivityCosts(){
+		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
 
 			@Override
 			public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
@@ -62,6 +63,7 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
+		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addVehicle(vehicle).build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
@@ -78,8 +80,8 @@ public class TestDepartureTimeOpt {
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
 				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
 		
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addService(service).addVehicle(vehicle).build();
-		vrp.setActivityCosts(new VehicleRoutingActivityCosts(){
+		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
 
 			@Override
 			public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
@@ -89,6 +91,7 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
+		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addVehicle(vehicle).build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
@@ -104,8 +107,8 @@ public class TestDepartureTimeOpt {
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
 				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
 		
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addService(service).addVehicle(vehicle).build();
-		vrp.setActivityCosts(new VehicleRoutingActivityCosts(){
+		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
 
 			@Override
 			public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
@@ -115,6 +118,8 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
+		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addVehicle(vehicle).build();
+		
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigWithDepartureTimeChoice.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
@@ -130,8 +135,8 @@ public class TestDepartureTimeOpt {
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
 				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
 		
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addService(service).addVehicle(vehicle).build();
-		vrp.setActivityCosts(new VehicleRoutingActivityCosts(){
+		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
 
 			@Override
 			public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
@@ -141,6 +146,8 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
+		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addVehicle(vehicle).build();
+		
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigWithDepartureTimeChoice.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
@@ -160,8 +167,8 @@ public class TestDepartureTimeOpt {
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
 				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
 		
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addService(service).addService(service2).addVehicle(vehicle).build();
-		vrp.setActivityCosts(new VehicleRoutingActivityCosts(){
+		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
 
 			@Override
 			public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
@@ -171,6 +178,8 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
+		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addService(service2).addVehicle(vehicle).build();
+		
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigWithDepartureTimeChoice.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
@@ -190,8 +199,8 @@ public class TestDepartureTimeOpt {
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
 				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
 		
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addService(service).addService(service2).addVehicle(vehicle).build();
-		vrp.setActivityCosts(new VehicleRoutingActivityCosts(){
+		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
 
 			@Override
 			public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
@@ -201,6 +210,8 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
+		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addService(service2).addVehicle(vehicle).build();
+		
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigWithDepartureTimeChoice.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

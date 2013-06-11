@@ -25,8 +25,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 
 import util.Coordinate;
+import util.CrowFlyCosts;
 import util.Solutions;
-import algorithms.selectors.SelectBest;
 import basics.Service;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
@@ -50,8 +50,8 @@ public class CalcWithTimeSchedulingTest {
 		vrpBuilder.addVehicle(vehicle);
 		vrpBuilder.addService(Service.Builder.newInstance("myService", 2).setLocationId("0,20").setCoord(Coordinate.newInstance(0, 20)).build());
 		vrpBuilder.setFleetSize(FleetSize.INFINITE);
+		vrpBuilder.setRoutingCost(getTpCosts(new CrowFlyCosts(vrpBuilder.getLocations())));
 		VehicleRoutingProblem vrp = vrpBuilder.build();
-		vrp.setTransportCosts(getTpCosts(vrp.getTransportCosts()));
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/testConfig.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
