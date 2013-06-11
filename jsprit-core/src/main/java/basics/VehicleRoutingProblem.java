@@ -142,6 +142,7 @@ public class VehicleRoutingProblem {
 			this.transportCosts = costs;
 			return this;
 		}
+		
 
 		/**
 		 * Sets the type of fleetSize.
@@ -153,9 +154,6 @@ public class VehicleRoutingProblem {
 		 */
 		public Builder setFleetSize(FleetSize fleetSize){
 			this.fleetSize = fleetSize;
-//			if(fleetSize.equals(FleetSize.INFINITE)){
-//				fleetSizeIsInfinite=true;
-//			}
 			return this;
 		}
 
@@ -198,20 +196,10 @@ public class VehicleRoutingProblem {
 			if(job instanceof Service) { 
 				addService((Service) job);
 			}
-//			else if(job instanceof Shipment){
-//				addShipment((Shipment)job);
-//			}
 			else throw new IllegalStateException("job can only be a shipment or a service, but is instance of " + job.getClass());
 			return this;
 		}
 
-//		private void addShipment(Shipment job) {
-//			coordinates.put(job.getFromId(),job.getFromCoord());
-//			coordinates.put(job.getToId(), job.getToCoord());
-//			if(jobs.containsKey(job.getId())){ logger.warn("service " + job + " already in job list. overrides existing job."); }
-//			jobs.put(job.getId(),job);
-//
-//		}
 
 		/**
 		 * Adds a vehicle.
@@ -221,7 +209,6 @@ public class VehicleRoutingProblem {
 		 * @return
 		 */
 		public Builder addVehicle(Vehicle vehicle) {
-//			fleetSizeIsFinite = true;
 			vehicles.add(vehicle);
 			if(!vehicleTypes.contains(vehicle.getType())){
 				vehicleTypes.add(vehicle.getType());
@@ -262,7 +249,6 @@ public class VehicleRoutingProblem {
 				logger.warn("set routing costs crowFlyDistance.");
 				transportCosts = new CrowFlyCosts(getLocations());
 			}
-			
 			return new VehicleRoutingProblem(this);
 		}
 
@@ -380,10 +366,6 @@ public class VehicleRoutingProblem {
 		return fleetComposition;
 	}
 
-	public void setFleetComposition(FleetComposition fleetComposition){
-		this.fleetComposition = fleetComposition;
-	}
-	
 	/**
 	 * Returns type of fleetSize, either INFINITE or FINITE.
 	 * 
@@ -395,10 +377,6 @@ public class VehicleRoutingProblem {
 		return fleetSize;
 	}
 	
-	public void setFleetSize(FleetSize fleetSize){
-		this.fleetSize = fleetSize;
-	}
-
 	/**
 	 * Returns the unmodifiable job map.
 	 * 
@@ -441,17 +419,6 @@ public class VehicleRoutingProblem {
 	}
 
 	/**
-	 * Sets routing costs.
-	 * 
-	 * @param costs
-	 * @see VehicleRoutingTransportCosts
-	 */
-	public void setTransportCosts(VehicleRoutingTransportCosts costs) {
-		this.transportCosts = costs;
-		logger.info("transport costs set to " + costs.getClass());
-	}
-	
-	/**
 	 * Returns activityCosts.
 	 */
 	public VehicleRoutingActivityCosts getActivityCosts(){
@@ -459,8 +426,38 @@ public class VehicleRoutingProblem {
 	}
 	
 	/**
-	 * Sets activityCosts.
+	 * Is deprecated and is not going to be supported any longer. Use the builder instead.
 	 */
+	@Deprecated
+	public void setFleetComposition(FleetComposition fleetComposition){
+		this.fleetComposition = fleetComposition;
+	}
+
+	/**
+	 * Is deprecated and is not going to be supported any longer. Use the builder instead.
+	 */
+	@Deprecated
+	public void setFleetSize(FleetSize fleetSize){
+		this.fleetSize = fleetSize;
+	}
+
+	/**
+	 * Sets routing costs.
+	 * Is deprecated and is not going to be supported any longer. Use the builder instead.
+	 * 
+	 * @param costs
+	 * @see VehicleRoutingTransportCosts
+	 */
+	@Deprecated
+	public void setTransportCosts(VehicleRoutingTransportCosts costs) {
+		this.transportCosts = costs;
+		logger.info("transport costs set to " + costs.getClass());
+	}
+
+	/**
+	 * Is deprecated and is not going to be supported any longer. Use the builder instead.
+	 */
+	@Deprecated
 	public void setActivityCosts(VehicleRoutingActivityCosts activityCosts){
 		this.activityCosts = activityCosts;
 		logger.info("activtiy costs set to " + activityCosts.getClass());

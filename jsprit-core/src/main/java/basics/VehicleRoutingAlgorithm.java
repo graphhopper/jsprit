@@ -123,6 +123,7 @@ public class VehicleRoutingAlgorithm {
 		logger.info("algorithm starts");
 		double now = System.currentTimeMillis();
 		verify();
+		int nuOfIterationsThisAlgoIsRunning = nOfIterations;
 		counter.reset();
 		Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
 		algorithmStarts(problem,solutions);
@@ -138,11 +139,12 @@ public class VehicleRoutingAlgorithm {
 			else iterWithoutImprovement++;
 			if(iterWithoutImprovement > prematureBreak){
 				logger.info("premature break at iteration "+ (i+1));
+				nuOfIterationsThisAlgoIsRunning = (i+1);
 				break;
 			}
 			iterationEnds(i+1,problem,solutions);
 		}
-		logger.info("iterations end at " + nOfIterations + " iterations");
+		logger.info("iterations end at " + nuOfIterationsThisAlgoIsRunning + " iterations");
 		algorithmEnds(problem,solutions);
 		logger.info("total time: " + ((System.currentTimeMillis()-now)/1000.0) + "s");
 		logger.info("done");

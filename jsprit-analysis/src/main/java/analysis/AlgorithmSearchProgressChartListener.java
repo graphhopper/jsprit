@@ -30,9 +30,11 @@ import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.AlgorithmEndsListener;
+import basics.algo.AlgorithmStartsListener;
 import basics.algo.IterationEndsListener;
 
 
@@ -45,7 +47,7 @@ import basics.algo.IterationEndsListener;
  * 
  */
 
-public class AlgorithmSearchProgressChartListener implements IterationEndsListener, AlgorithmEndsListener {
+public class AlgorithmSearchProgressChartListener implements IterationEndsListener, AlgorithmEndsListener, AlgorithmStartsListener {
 
 	private static Logger log = Logger.getLogger(AlgorithmSearchProgressChartListener.class);
 
@@ -144,6 +146,17 @@ public class AlgorithmSearchProgressChartListener implements IterationEndsListen
 		bestResultList.add(best);
 		worstResultList.add(worst);
 		avgResultList.add(sum/(double)solutions.size());
+	}
+
+
+	@Override
+	public void informAlgorithmStarts(VehicleRoutingProblem problem,VehicleRoutingAlgorithm algorithm,Collection<VehicleRoutingProblemSolution> solutions) {
+		bestResults = null;
+		worstResults = null;
+		avgResults = null;
+		bestResultList.clear();
+		worstResultList.clear();
+		avgResultList.clear();
 	}
 
 }
