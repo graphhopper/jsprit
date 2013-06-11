@@ -24,7 +24,6 @@ import util.Coordinate;
 import util.CrowFlyCosts;
 import util.Locations;
 import util.Neighborhood;
-import util.NeighborhoodImpl;
 import basics.costs.DefaultVehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -69,6 +68,8 @@ public class VehicleRoutingProblem {
 		private VehicleRoutingActivityCosts activityCosts = new DefaultVehicleRoutingActivityCosts();
 
 		private Map<String,Job> jobs;
+		
+		private Collection<Service> services;
 
 		private Collection<Vehicle> vehicles;
 
@@ -96,6 +97,7 @@ public class VehicleRoutingProblem {
 			vehicles = new ArrayList<Vehicle>();
 			coordinates = new HashMap<String, Coordinate>();
 			vehicleTypes = new ArrayList<VehicleImpl.VehicleType>();
+			services = new ArrayList<Service>();
 		}
 
 		/**
@@ -193,6 +195,7 @@ public class VehicleRoutingProblem {
 			coordinates.put(service.getLocationId(), service.getCoord());
 			if(jobs.containsKey(service.getId())){ logger.warn("service " + service + " already in job list. overrides existing job."); }
 			jobs.put(service.getId(),service);
+			services.add(service);
 			return this;
 		}
 
@@ -285,6 +288,15 @@ public class VehicleRoutingProblem {
 			}
 			return this;
 		}
+		
+		
+		public Collection<Vehicle> getAddedVehicles(){
+			return Collections.unmodifiableCollection(vehicles);
+		}
+		
+		public Collection<Service> getAddedServices(){
+			return Collections.unmodifiableCollection(services);
+		}
 }
 	
 	/**
@@ -348,7 +360,7 @@ public class VehicleRoutingProblem {
 		this.vehicleTypes = builder.vehicleTypes;
 		this.transportCosts = builder.transportCosts;
 		this.activityCosts = builder.activityCosts;
-		this.neighborhood = new NeighborhoodImpl(this);
+		this.neighborhood = builder.neighborhood;
 		log.info("initialise " + this);
 	}
 	

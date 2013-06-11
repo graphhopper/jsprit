@@ -25,11 +25,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.log4j.Logger;
 
-import basics.Job;
 import basics.Service;
-import basics.VehicleRoutingProblem;
 import basics.route.Vehicle;
 
 
@@ -44,34 +43,35 @@ public class NeighborhoodImpl implements Neighborhood{
 	
 	private boolean initialised = false;
 	
-	private VehicleRoutingProblem vrp;
-	
 	public void setThreshold(double threshold) {
 		this.threshold = threshold;
 		log.info("set threshold to " + threshold);
 	}
 
 	private Map<String,Set<String>> neighbors;
+
+	private Collection<Vehicle> vehicles;
+
+	private Collection<Service> services;
 	
-	public NeighborhoodImpl(VehicleRoutingProblem vrp) {
+	public NeighborhoodImpl(Collection<Vehicle> vehicles, Collection<Service> services) {
 		neighborsToAll = new HashSet<String>();
-		this.vrp = vrp;
+		this.vehicles = vehicles;
+		this.services = services;
 		neighbors = new HashMap<String, Set<String>>();
-//		makeNeighbors();
 	}
 
 	private void makeNeighbors() {
-		for(Job i : vrp.getJobs().values()){
+		for(Service i : services){
 			Set<String> neigh = new HashSet<String>();
-			for(Vehicle v : vrp.getVehicles()){
-				double dist2depot = EuclideanDistanceCalculator.calculateDistance(v.getCoord(), ((Service)i).getCoord());
+			for(Vehicle v : vehicles){
+				double dist2depot = EuclideanDistanceCalculator.calculateDistance(v.getCoord(), i.getCoord());
 				if(dist2depot <= threshold){
 					neighborsToAll.add(((Service)i).getLocationId());
 				}
 			}
-			for(Job j : vrp.getJobs().values()){
-				double crowFlyDistance = EuclideanDistanceCalculator.calculateDistance(((Service)i).getCoord(), ((Service)j).getCoord());
-				
+			for(Service j : services){
+				double crowFlyDistance = EuclideanDistanceCalculator.calculateDistance(i.getCoord(), j.getCoord());
 				if(crowFlyDistance <= threshold) {
 					neigh.add(((Service)j).getLocationId());
 				}
@@ -85,14 +85,11 @@ public class NeighborhoodImpl implements Neighborhood{
 		for(Vehicle v : vehicles){
 			neighborsToAll.add(v.getLocationId());
 		}
-//		for(Job j : vrp.getJobs().values()){
-//			
-//		}
 	}
 
 	public void initialise(){
 		log.info("initialise neighboorhood [threshold="+ this.threshold + "]");
-		makeNeighborsToAll(vrp.getVehicles());
+		makeNeighborsToAll(vehicles);
 		makeNeighbors();
 		initialised = true;
 	}
