@@ -25,7 +25,7 @@
 <xs:element name="problem">
 	<xs:complexType>
 		<xs:sequence>
-			<xs:element name="problemType" minOccurs="1" maxOccurs="1">
+			<xs:element name="problemType" minOccurs="0" maxOccurs="1">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="fleetSize">
@@ -49,7 +49,7 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="vehicles" minOccurs="1" maxOccurs="1">
+			<xs:element name="vehicles" minOccurs="0" maxOccurs="1">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="vehicle" minOccurs="1" maxOccurs="unbounded">
@@ -81,7 +81,7 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="vehicleTypes" minOccurs="1" maxOccurs="1">
+			<xs:element name="vehicleTypes" minOccurs="0" maxOccurs="1">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="type" minOccurs="1" maxOccurs="unbounded">
