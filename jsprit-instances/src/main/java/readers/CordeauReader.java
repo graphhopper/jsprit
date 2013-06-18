@@ -58,10 +58,18 @@ public class CordeauReader {
 	private final VehicleRoutingProblem.Builder vrpBuilder;
 
 	private double coordProjectionFactor = 1;
+	
+	private boolean addPenaltyVehicles = false;
 
 	public CordeauReader(VehicleRoutingProblem.Builder vrpBuilder) {
 		super();
 		this.vrpBuilder = vrpBuilder;
+	}
+	
+	public CordeauReader(VehicleRoutingProblem.Builder vrpBuilder, boolean penaltyVehicles) {
+		super();
+		this.vrpBuilder = vrpBuilder;
+		this.addPenaltyVehicles = penaltyVehicles;
 	}
 	
 	public void read(String fileName){
@@ -124,12 +132,14 @@ public class CordeauReader {
 					coord = vehicle.getCoord();
 					vrpBuilder.addVehicle(vehicle);
 				}
-				for(int i=0;i<5;i++){
-					VehicleType penaltyType = VehicleImpl.VehicleType.Builder.newInstance(counter + "_penaltyType", cap).
-							setCostPerDistance(3.0).setFixedCost(50).build();
-					VehicleImpl penaltyVehicle = VehicleImpl.VehicleBuilder.newInstance(counter + "_" + (i+1) + "_penaltyVehicle").setLatestArrival(latestArrTime)
-							.setType(penaltyType).setLocationCoord(coord).build();
-					vrpBuilder.addVehicle(penaltyVehicle);
+				if(addPenaltyVehicles){
+					for(int i=0;i<5;i++){
+						VehicleType penaltyType = VehicleImpl.VehicleType.Builder.newInstance(counter + "_penaltyType", cap).
+								setCostPerDistance(3.0).setFixedCost(50).build();
+						VehicleImpl penaltyVehicle = VehicleImpl.VehicleBuilder.newInstance(counter + "_" + (i+1) + "_penaltyVehicle").setLatestArrival(latestArrTime)
+								.setType(penaltyType).setLocationCoord(coord).build();
+						vrpBuilder.addVehicle(penaltyVehicle);
+					}
 				}
 				depotCounter++;
 			}
