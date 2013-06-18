@@ -51,10 +51,7 @@ final class BestInsertion extends AbstractInsertionStrategy{
 	
 	private RouteAlgorithm routeAlgorithm;
 	
-	private Map<String,VehicleRoute> experimentalPreferredRoute = new HashMap<String, VehicleRoute>();
-	
 	public void setExperimentalPreferredRoute(Map<String, VehicleRoute> experimentalPreferredRoute) {
-		this.experimentalPreferredRoute = experimentalPreferredRoute;
 	}
 
 	private boolean allowUnassignedJobs = false;

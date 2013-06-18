@@ -23,7 +23,6 @@ package algorithms;
 import java.util.Collection;
 
 import basics.route.Vehicle;
-import basics.route.VehicleImpl;
 import basics.route.VehicleImpl.VehicleType;
 
 interface VehicleFleetManager {

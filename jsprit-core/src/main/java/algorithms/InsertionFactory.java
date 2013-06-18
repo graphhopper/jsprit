@@ -112,7 +112,7 @@ class InsertionFactory {
 //				
 //			}
 		
-			insertionStrategy.addListener(new RemoveEmptyVehicles());
+			insertionStrategy.addListener(new RemoveEmptyVehicles(vehicleFleetManager));
 			insertionStrategy.addListener(new ResetAndIniFleetManager(vehicleFleetManager));
 			insertionStrategy.addAllListener(insertionListeners);
 //			insertionStrategy.addListener(new FindCheaperVehicle(

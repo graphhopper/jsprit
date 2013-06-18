@@ -125,9 +125,6 @@ final class RouteAlgorithmImpl implements RouteAlgorithm {
 		}		
 		if(job instanceof Service) {
 			vehicleRoute.getTourActivities().addActivity(insertionData.getDeliveryInsertionIndex(), ServiceActivity.newInstance((Service)job));
-//			if(vehicleRoute.getStart().getEndTime() != insertionData.getVehicleDepartureTime()){
-//				logger.info("depTime switched from " + vehicleRoute.getStart().getEndTime() + " to " + insertionData.getVehicleDepartureTime());
-//			}
 			vehicleRoute.setDepartureTime(insertionData.getVehicleDepartureTime());
 		}
 		else throw new IllegalStateException("neither service nor shipment. this is not supported.");
@@ -162,13 +159,6 @@ final class RouteAlgorithmImpl implements RouteAlgorithm {
 	public String toString() {
 		return algoDescription;
 	}
-
-	private void insertJob(Service service, int serviceInsertionIndex, VehicleRoute vehicleRoute) {
-//		TourActivity del = actStates.getActivity(service,true);
-		vehicleRoute.getTourActivities().addActivity(serviceInsertionIndex, ServiceActivity.newInstance(service));
-	}
-	
-
 
 	public Collection<RouteAlgorithmListener> getListeners() {
 		return listeners;

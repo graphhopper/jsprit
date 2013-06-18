@@ -34,6 +34,13 @@ class RemoveEmptyVehicles implements InsertionStartsListener, InsertionEndsListe
 
 	private static Logger log = Logger.getLogger(RemoveEmptyVehicles.class); 
 	
+	private VehicleFleetManager fleetManager;
+	
+	RemoveEmptyVehicles(VehicleFleetManager fleetManager) {
+		super();
+		this.fleetManager = fleetManager;
+	}
+
 	@Override
 	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2Recreate) {
 //		List<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
@@ -51,7 +58,10 @@ class RemoveEmptyVehicles implements InsertionStartsListener, InsertionEndsListe
 	public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
 		List<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
 		for(VehicleRoute route : routes){
-			if(route.isEmpty()) { vehicleRoutes.remove(route); }
+			if(route.isEmpty()) { 
+				fleetManager.unlock(route.getVehicle());
+				vehicleRoutes.remove(route); 
+			}
 		}
 	}
 }

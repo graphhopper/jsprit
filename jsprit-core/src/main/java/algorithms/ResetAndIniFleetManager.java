@@ -42,11 +42,10 @@ class ResetAndIniFleetManager implements InsertionStartsListener{
 	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2Recreate) {
 		vehicleFleetManager.unlockAll();
 		for(VehicleRoute route : vehicleRoutes){
-			if(!route.isEmpty()){
+//			if(!route.isEmpty()){
 				vehicleFleetManager.lock(route.getVehicle());
-			}
+//			}
 		}
-//		log.info("#lockedVehicles=" + ((VehicleFleetManagerImpl)vehicleFleetManager).sizeOfLockedVehicles() + " #routes="+vehicleRoutes.size());
 	}
 
 	@Override
