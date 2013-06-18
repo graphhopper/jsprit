@@ -49,18 +49,30 @@ public class CrowFlyCosts implements VehicleRoutingTransportCosts {
 
 	@Override
 	public double getTransportCost(String fromId, String toId, double time, Driver driver, Vehicle vehicle) {
-		double cost;
+		double distance;
 		try {
-			cost = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId)) * detourFactor;
+			distance = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId)) * detourFactor;
 		} catch (NullPointerException e) {
 			throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
 		}
-		return cost;
+		double costs = distance;
+		if(vehicle != null){
+			if(vehicle.getType() != null){
+				costs = distance * vehicle.getType().getVehicleCostParams().perDistanceUnit;
+			}
+		}
+		return costs;
 	}
 
 	@Override
 	public double getTransportTime(String fromId, String toId, double time, Driver driver, Vehicle vehicle) {
-		double transportTime = getTransportCost(fromId, toId, 0.0, null, null) / speed;
+		double distance;
+		try {
+			distance = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId)) * detourFactor;
+		} catch (NullPointerException e) {
+			throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
+		}
+		double transportTime = distance / speed;
 		return transportTime;
 	}
 
