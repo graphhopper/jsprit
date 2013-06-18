@@ -7,8 +7,9 @@ It is lightweight and easy-to-use, and based on heuristics currently solving
 - [VRP with time windows](http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-time-windows/)
 - VRP with heterogeneous fleet
 - Time-dependent VRP
+- Various combination of these types
 
-and various combination of these problem types. Modifying the algorithms and visualising the discovered solutions is as easy and handy as 
+Modifying the algorithms and visualising the discovered solutions is as easy and handy as 
 reading classical VRP instances to benchmark your algorithm.
 
 
