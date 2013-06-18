@@ -137,7 +137,12 @@ final class BestInsertion extends AbstractInsertionStrategy{
 								System.out.println("reason="+s);
 							}
 							throw new IllegalStateException("given the vehicles, could not insert job\n" +
-								"\t" + unassignedJob + "\n\t");
+								"\t" + unassignedJob + 
+								"\n\tthis might have the following reasons:\n" + 
+								"\t- no vehicle has the capacity to transport the job [check whether there is at least one vehicle that is capable to transport the job]\n" +
+								"\t- the time-window cannot be met, even in a commuter tour the time-window is missed [check whether it is possible to reach the time-window on the shortest path or make hard time-windows soft]\n" +
+								"\t- if you deal with finite vehicles, and the available vehicles are already fully employed, no vehicle can be found anymore to transport the job [add penalty-vehicles]"
+								);
 						}
 					}
 					else{
