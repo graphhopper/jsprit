@@ -53,7 +53,10 @@ public class CordeauReaderTest {
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
-		assertEquals(16,vrp.getVehicles().size());
+		/*
+		 * 16 plus 4*5 penalty vehicles
+		 */
+		assertEquals(36,vrp.getVehicles().size());
 	}
 	
 	@Test
