@@ -92,7 +92,8 @@ public class CordeauReader {
 				int duration = Integer.parseInt(tokens[0].trim());
 				if(duration == 0) duration = 999999;
 				int capacity = Integer.parseInt(tokens[1].trim());
-				VehicleType vehicleType = VehicleImpl.VehicleType.Builder.newInstance(counter + "_cordeauType", capacity).setCostPerDistance(1.0).setFixedCost(100).build();
+				VehicleType vehicleType = VehicleImpl.VehicleType.Builder.newInstance(counter + "_cordeauType", capacity).
+						setCostPerDistance(1.0).setFixedCost(0).build();
 				List<VehicleBuilder> builders = new ArrayList<VehicleImpl.VehicleBuilder>();
 				for(int vehicleCounter=0;vehicleCounter<nOfVehiclesAtEachDepot;vehicleCounter++){
 					VehicleBuilder vBuilder = VehicleImpl.VehicleBuilder.newInstance(depot+"_"+(vehicleCounter+1) + "_cordeauVehicle");
@@ -112,10 +113,23 @@ public class CordeauReader {
 			else if(counter <= (nOfCustomers+nOfDepots+nOfDepots)){
 				Coordinate depotCoord = makeCoord(tokens[1].trim(),tokens[2].trim());
 				List<VehicleBuilder> vBuilders = vehiclesAtDepot.get(depotCounter);
+				int cap = 0;
+				double latestArrTime = 0.0;
+				Coordinate coord = null;
 				for(VehicleBuilder vBuilder : vBuilders){
 					vBuilder.setLocationCoord(depotCoord);
 					VehicleImpl vehicle = vBuilder.build();
+					cap = vehicle.getCapacity();
+					latestArrTime = vehicle.getLatestArrival();
+					coord = vehicle.getCoord();
 					vrpBuilder.addVehicle(vehicle);
+				}
+				for(int i=0;i<5;i++){
+					VehicleType penaltyType = VehicleImpl.VehicleType.Builder.newInstance(counter + "_penaltyType", cap).
+							setCostPerDistance(3.0).setFixedCost(50).build();
+					VehicleImpl penaltyVehicle = VehicleImpl.VehicleBuilder.newInstance(counter + "_" + (i+1) + "_penaltyVehicle").setLatestArrival(latestArrTime)
+							.setType(penaltyType).setLocationCoord(coord).build();
+					vrpBuilder.addVehicle(penaltyVehicle);
 				}
 				depotCounter++;
 			}
