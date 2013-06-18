@@ -135,11 +135,18 @@
 
 <xs:complexType name="ruinType">
 	<xs:sequence>
-		<xs:element name="share">
+		<xs:element name="share" minOccurs="1" maxOccurs="1">
 			<xs:simpleType>
 				<xs:restriction base="xs:double">
 					<xs:minInclusive value="0.0"/>
 					<xs:maxInclusive value="1.0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		<xs:element name="distance" minOccurs="0" maxOccurs="1">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="euclidean"/>
 				</xs:restriction>
 			</xs:simpleType>
 		</xs:element>

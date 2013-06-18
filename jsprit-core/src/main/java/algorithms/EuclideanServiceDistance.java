@@ -12,20 +12,14 @@
  ******************************************************************************/
 package algorithms;
 
-import util.CrowFlyCosts;
-import util.Locations;
+import util.EuclideanDistanceCalculator;
 import basics.Job;
 import basics.Service;
 
+class EuclideanServiceDistance implements JobDistance {
 
-
-class JobDistanceBeeline implements JobDistance {
-
-	private Locations locations;
-
-	public JobDistanceBeeline(Locations locations) {
+	public EuclideanServiceDistance() {
 		super();
-		this.locations = locations;
 	}
 
 	@Override
@@ -37,17 +31,14 @@ class JobDistanceBeeline implements JobDistance {
 			} else {
 				Service s_i = (Service) i;
 				Service s_j = (Service) j;
-				avgCost = calcDist(s_i.getLocationId(), s_j.getLocationId());
+				if(s_i.getCoord() == null || s_j.getCoord() == null) throw new IllegalStateException("cannot calculate euclidean distance. since service coords are missing");
+				avgCost = EuclideanDistanceCalculator.calculateDistance(s_i.getCoord(), s_j.getCoord());
 			}
 		} else {
 			throw new UnsupportedOperationException(
 					"currently, this class just works with shipments and services.");
 		}
 		return avgCost;
-	}
-
-	private double calcDist(String from, String to) {
-		return new CrowFlyCosts(locations).getTransportCost(from, to, 0.0,null, null);
 	}
 
 }

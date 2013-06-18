@@ -34,11 +34,12 @@
 				<selector name="selectBest"/>
 	  			<acceptor name="acceptNewRemoveWorst"/>  
 				<modules>
-					<module name="randomRuin">
-						<share>0.5</share>
+					<module name="ruin_and_recreate">
+						<ruin name="randomRuin">
+							<share>0.5</share>
+						</ruin>
+						<insertion name="bestInsertion"/>						
 					</module>
-					<module name="bestInsertion">
-					</module>	
 				</modules>
 				<probability>0.4</probability>
 			</searchStrategy>
@@ -47,10 +48,12 @@
 				<selector name="selectBest"/>
 	  			<acceptor name="acceptNewRemoveWorst"/>  
 				<modules>
-					<module name="randomRuin">
-						<share>0.1</share>
+					<module name="ruin_and_recreate">
+						<ruin name="randomRuin">
+							<share>0.1</share>
+						</ruin>
+						<insertion name="bestInsertion"/>						
 					</module>
-					<module name="bestInsertion"></module>
 				</modules>
 				<probability>0.4</probability>
 			</searchStrategy>
@@ -59,11 +62,12 @@
 				<selector name="selectBest"/>
 				<acceptor name="acceptNewRemoveWorst"/>  
 				<modules>
-					<module name="radialRuin">
-						<share>0.3</share>
-						<distanceMeasure>euclid</distanceMeasure>
+					<module name="ruin_and_recreate">
+						<ruin name="radialRuin">
+							<share>0.3</share>
+						</ruin>
+						<insertion name="bestInsertion" id="1"/>						
 					</module>
-					<module name="bestInsertion" id="1"></module>
 				</modules>
 				<probability>0.2</probability>
 			</searchStrategy>

@@ -359,6 +359,13 @@ public class VehicleRoutingAlgorithms {
 	
 	private VehicleRoutingAlgorithms(){}
 	
+	/**
+	 * Creates a {@link VehicleRoutingAlgorithm} from a AlgorithConfig based on the input vrp.
+	 * 
+	 * @param vrp
+	 * @param algorithmConfig
+	 * @return {@link VehicleRoutingAlgorithm}
+	 */
 	public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp, final AlgorithmConfig algorithmConfig){
 		return createAlgo(vrp,algorithmConfig.getXMLConfiguration());
 	}
@@ -368,6 +375,13 @@ public class VehicleRoutingAlgorithms {
 		return createAlgo(vrp,config);
 	}
 	
+	/**
+	 * Read and creates a {@link VehicleRoutingAlgorithm} from an url.
+	 * 
+	 * @param vrp
+	 * @param configURL
+	 * @return {@link VehicleRoutingProblem}
+	 */
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final URL configURL){
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
@@ -375,6 +389,13 @@ public class VehicleRoutingAlgorithms {
 		return createAlgo(vrp,algorithmConfig.getXMLConfiguration());
 	}
 	
+	/**
+	 * Read and creates {@link VehicleRoutingAlgorithm} from config-file.
+	 * 
+	 * @param vrp
+	 * @param configFileName
+	 * @return
+	 */
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final String configFileName){
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
@@ -572,6 +593,7 @@ public class VehicleRoutingAlgorithms {
 		StrategyModuleKey strategyModuleKey = new StrategyModuleKey(modKey);
 		SearchStrategyModule definedModule = definedClasses.get(strategyModuleKey);
 		if(definedModule != null) return definedModule; 
+		
 		if(moduleName.equals("ruin_and_recreate")){
 			String ruin_name = moduleConfig.getString("ruin[@name]");
 			if(ruin_name == null) throw new IllegalStateException("module.ruin[@name] is missing.");
@@ -586,7 +608,17 @@ public class VehicleRoutingAlgorithms {
 				ruin = getRandomRuin(vrp, activityStates, definedClasses, ruinKey, shareToRuin);
 			}
 			else if(ruin_name.equals("radialRuin")){
-				ruin = getRadialRuin(vrp, activityStates, definedClasses, ruinKey, shareToRuin);
+				String ruin_distance = moduleConfig.getString("ruin.distance");
+				JobDistance jobDistance;
+				if(ruin_distance == null) jobDistance = new JobDistanceAvgCosts(vrp.getTransportCosts());
+				else {
+					if(ruin_distance.equals("euclidean")){
+						jobDistance = new EuclideanServiceDistance();
+					}
+					else throw new IllegalStateException("does not know ruin.distance " + ruin_distance + ". either ommit ruin.distance then the "
+							+ "default is used or use 'euclidean'");
+				}
+				ruin = getRadialRuin(vrp, activityStates, definedClasses, ruinKey, shareToRuin, jobDistance);
 			}
 			else throw new IllegalStateException("ruin[@name] " + ruin_name + " is not known. Use either randomRuin or radialRuin.");
 			
@@ -643,15 +675,16 @@ public class VehicleRoutingAlgorithms {
 			};
 			return module;
 		}
-		if(moduleName.equals("bestInsertion") || moduleName.equals("regretInsertion")){
-			List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-			AbstractInsertionStrategy insertion = getInsertionStrategy(moduleConfig, vrp, vehicleFleetManager, activityStates,
-					definedClasses, modKey, prioListeners);
-			SearchStrategyModule module = getModule(moduleName, insertion, vrp);
-			definedClasses.put(strategyModuleKey, module);
-			algorithmListeners.addAll(prioListeners);
-			return module;
-		}
+	
+//		if(moduleName.equals("bestInsertion") || moduleName.equals("regretInsertion")){
+//			List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
+//			AbstractInsertionStrategy insertion = getInsertionStrategy(moduleConfig, vrp, vehicleFleetManager, activityStates,
+//					definedClasses, modKey, prioListeners);
+//			SearchStrategyModule module = getModule(moduleName, insertion, vrp);
+//			definedClasses.put(strategyModuleKey, module);
+//			algorithmListeners.addAll(prioListeners);
+//			return module;
+//		}
 //		if(moduleName.equals("regretInsertion")){
 //			List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
 //			AbstractInsertionKey insertionKey = new AbstractInsertionKey(modKey);
@@ -664,20 +697,30 @@ public class VehicleRoutingAlgorithms {
 //			algorithmListeners.addAll(prioListeners);
 //			return module;
 //		}
-		if(moduleName.equals("randomRuin")){
-			double shareToRuin = moduleConfig.getDouble("share");
-			RuinStrategy ruin = getRandomRuin(vrp, activityStates,definedClasses, modKey, shareToRuin);
-			SearchStrategyModule module = getModule(moduleName, ruin);
-			definedClasses.put(strategyModuleKey, module);
-			return module;
-		}
-		if(moduleName.equals("radialRuin")){
-			double shareToRuin = moduleConfig.getDouble("share");
-			RuinStrategy ruin = getRadialRuin(vrp, activityStates,definedClasses, modKey, shareToRuin);
-			SearchStrategyModule module = getModule(moduleName, ruin);
-			definedClasses.put(strategyModuleKey, module);
-			return module;
-		}
+//		if(moduleName.equals("randomRuin")){
+//			double shareToRuin = moduleConfig.getDouble("share");
+//			RuinStrategy ruin = getRandomRuin(vrp, activityStates,definedClasses, modKey, shareToRuin);
+//			SearchStrategyModule module = getModule(moduleName, ruin);
+//			definedClasses.put(strategyModuleKey, module);
+//			return module;
+//		}
+//		if(moduleName.equals("radialRuin")){
+//			double shareToRuin = moduleConfig.getDouble("share");
+//			String ruin_distance = moduleConfig.getString("distance");
+//			JobDistance jobDistance;
+//			if(ruin_distance == null) jobDistance = new JobDistanceAvgCosts(vrp.getTransportCosts());
+//			else {
+//				if(ruin_distance.equals("euclidean")){
+//					jobDistance = new EuclideanServiceDistance();
+//				}
+//				else throw new IllegalStateException("does not know ruin.distance " + ruin_distance + ". either ommit ruin.distance then the "
+//						+ "default is used or use 'euclidean'");
+//			}
+//			RuinStrategy ruin = getRadialRuin(vrp, activityStates,definedClasses, modKey, shareToRuin, jobDistance);
+//			SearchStrategyModule module = getModule(moduleName, ruin);
+//			definedClasses.put(strategyModuleKey, module);
+//			return module;
+//		}
 		if(moduleName.equals("gendreauPostOpt")){
 			int iterations = moduleConfig.getInt("iterations");
 			double share = moduleConfig.getDouble("share");
@@ -734,13 +777,11 @@ public class VehicleRoutingAlgorithms {
 		return bestInsertion;
 	}
 
-	private static RuinStrategy getRadialRuin(VehicleRoutingProblem vrp,
-			RouteStates activityStates, TypedMap definedClasses,
-			ModKey modKey, double shareToRuin) {
+	private static RuinStrategy getRadialRuin(VehicleRoutingProblem vrp, RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
-			ruin = RuinRadial.newInstance(vrp, shareToRuin, new JobDistanceAvgCosts(vrp.getTransportCosts()), new JobRemoverImpl(), new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
+			ruin = RuinRadial.newInstance(vrp, shareToRuin, jobDistance, new JobRemoverImpl(), new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
 			definedClasses.put(stratKey, ruin);
 		}
 		return ruin;
@@ -778,12 +819,6 @@ public class VehicleRoutingAlgorithms {
 					double penalty = 0.0;
 					if(jobsInSolution != vrp.getJobs().values().size()){ 
 						throw new IllegalStateException("solution not valid\n" + "#jobsInSolution=" + jobsInSolution + " #jobsInVrp=" + vrp.getJobs().values().size());
-//						logger.warn("solution not valid\n" + "#jobsInSolution=" + jobsInSolution + " #jobsInVrp=" + vrp.getJobs().values().size());
-////						throw new IllegalStateException("solution not valid\n" +
-////								"#jobsInSolution=" + jobsInSolution + " #jobsInVrp=" + vrp.getJobs().values().size());
-//						logger.warn("a penalty of 1000 is added for each unassigned customer");
-//						penalty = (vrp.getJobs().values().size() - jobsInSolution)*1000.0;
-//						logger.warn("penalty = " + penalty);
 					}
 					double totalCost = RouteUtils.getTotalCost(vrpSolution.getRoutes());
 					vrpSolution.setCost(totalCost + penalty);
@@ -841,37 +876,37 @@ public class VehicleRoutingAlgorithms {
 			
 		}
 
-	private static SearchStrategyModule getModule(final String moduleName, final RuinStrategy ruin) {
-		
-		
-		return new SearchStrategyModule() {
-			
-			private Logger logger = Logger.getLogger(SearchStrategyModule.class);
-			
-			@Override
-			public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-				ruin.ruin(vrpSolution.getRoutes());
-				return vrpSolution;
-			}
-			
-			@Override
-			public String toString() {
-				return "[name="+ruin+"]";
-			}
-
-			@Override
-			public String getName() {
-				return moduleName;
-			}
-
-			@Override
-			public void addModuleListener(SearchStrategyModuleListener moduleListener) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		};
-	}
+//	private static SearchStrategyModule getModule(final String moduleName, final RuinStrategy ruin) {
+//		
+//		
+//		return new SearchStrategyModule() {
+//			
+//			private Logger logger = Logger.getLogger(SearchStrategyModule.class);
+//			
+//			@Override
+//			public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
+//				ruin.ruin(vrpSolution.getRoutes());
+//				return vrpSolution;
+//			}
+//			
+//			@Override
+//			public String toString() {
+//				return "[name="+ruin+"]";
+//			}
+//
+//			@Override
+//			public String getName() {
+//				return moduleName;
+//			}
+//
+//			@Override
+//			public void addModuleListener(SearchStrategyModuleListener moduleListener) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//		};
+//	}
 	
 	
 

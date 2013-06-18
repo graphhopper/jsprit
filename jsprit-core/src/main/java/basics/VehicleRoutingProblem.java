@@ -242,6 +242,12 @@ public class VehicleRoutingProblem {
 			return this;
 		}
 
+		/**
+		 * Sets the neighborhood.
+		 * 
+		 * @param neighborhood
+		 * @return
+		 */
 		public Builder setNeighborhood(Neighborhood neighborhood){
 			this.neighborhood = neighborhood;
 			return this;
@@ -261,6 +267,13 @@ public class VehicleRoutingProblem {
 			return this;
 		}
 
+		/**
+		 * Builds the {@link VehicleRoutingProblem}.
+		 * 
+		 * <p>If {@link VehicleRoutingTransportCosts} are not set, {@link CrowFlyCosts} is used.
+		 * 
+		 * @return {@link VehicleRoutingProblem}
+		 */
 		public VehicleRoutingProblem build() {
 			log.info("build problem ...");
 			if(transportCosts == null){
@@ -275,6 +288,12 @@ public class VehicleRoutingProblem {
 			return this;
 		}
 
+		/**
+		 * Adds a collection of jobs.
+		 * 
+		 * @param jobs
+		 * @return
+		 */
 		public Builder addAllJobs(Collection<Job> jobs) {
 			for(Job j : jobs){
 				addJob(j);
@@ -282,6 +301,12 @@ public class VehicleRoutingProblem {
 			return this;
 		}
 
+		/**
+		 * Adds a collection of vehicles.
+		 * 
+		 * @param vehicles
+		 * @return
+		 */
 		public Builder addAllVehicles(Collection<Vehicle> vehicles) {
 			for(Vehicle v : vehicles){
 				addVehicle(v);
@@ -289,11 +314,20 @@ public class VehicleRoutingProblem {
 			return this;
 		}
 		
-		
+		/**
+		 * Gets an unmodifiable collection of already added vehicles.
+		 * 
+		 * @return collection of vehicles
+		 */
 		public Collection<Vehicle> getAddedVehicles(){
 			return Collections.unmodifiableCollection(vehicles);
 		}
 		
+		/**
+		 * Gets an unmodifiable collection of already added services.
+		 * 
+		 * @return collection of services
+		 */
 		public Collection<Service> getAddedServices(){
 			return Collections.unmodifiableCollection(services);
 		}

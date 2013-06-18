@@ -12,14 +12,25 @@
  ******************************************************************************/
 package algorithms;
 
+import org.apache.log4j.Logger;
+
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
 
 
-
+/**
+ * Calculator that calculates average distance between two jobs based on the input-transport costs.
+ * 
+ * <p>If the distance between two jobs cannot be calculated with input-transport costs, it tries the euclidean distance between these jobs.
+ * 
+ * @author stefan schroeder
+ *
+ */
 class JobDistanceAvgCosts implements JobDistance {
 
+	private static Logger log = Logger.getLogger(JobDistanceAvgCosts.class);
+	
 	private VehicleRoutingTransportCosts costs;
 
 	public JobDistanceAvgCosts(VehicleRoutingTransportCosts costs) {
@@ -28,29 +39,21 @@ class JobDistanceAvgCosts implements JobDistance {
 
 	}
 
+	/**
+	 * Calculates and returns the average distance between two jobs based on the input-transport costs.
+	 * 
+	 * <p>If the distance between two jobs cannot be calculated with input-transport costs, it tries the euclidean distance between these jobs.
+	 */ 
 	@Override
 	public double calculateDistance(Job i, Job j) {
 		double avgCost = 0.0;
-//		if (i instanceof Shipment && j instanceof Shipment) {
-//			if (i.equals(j)) {
-//				avgCost = 0.0;
-//			} else {
-//				Shipment s_i = (Shipment) i;
-//				Shipment s_j = (Shipment) j;
-//				double cost_i1_j1 = calcDist(s_i.getFromId(), s_j.getFromId());
-//				double cost_i1_j2 = calcDist(s_i.getFromId(), s_j.getToId());
-//				double cost_i2_j1 = calcDist(s_i.getToId(), s_j.getFromId());
-//				double cost_i2_j2 = calcDist(s_i.getToId(), s_j.getToId());
-//				avgCost = (cost_i1_j1 + cost_i1_j2 + cost_i2_j1 + cost_i2_j2) / 4;
-//			}
-//		} else 
 		if (i instanceof Service && j instanceof Service) {
 			if (i.equals(j)) {
 				avgCost = 0.0;
 			} else {
 				Service s_i = (Service) i;
 				Service s_j = (Service) j;
-				avgCost = calcDist(s_i.getLocationId(), s_j.getLocationId());
+				avgCost = calcDist(s_i, s_j);
 			}
 		} else {
 			throw new UnsupportedOperationException(
@@ -59,8 +62,18 @@ class JobDistanceAvgCosts implements JobDistance {
 		return avgCost;
 	}
 
-	private double calcDist(String from, String to) {
-		return costs.getTransportCost(from, to, 0.0, null, null);
+	private double calcDist(Service s_i, Service s_j) {
+		double distance;
+		try{
+			distance = costs.getTransportCost(s_i.getLocationId(), s_j.getLocationId(), 0.0, null, null);
+			return distance;
+		}
+		catch(IllegalStateException e){
+			// now try the euclidean distance between these two services
+		}
+		EuclideanServiceDistance euclidean = new EuclideanServiceDistance();
+		distance = euclidean.calculateDistance(s_i, s_j);
+		return distance;
 	}
 
 }

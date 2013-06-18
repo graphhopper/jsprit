@@ -230,43 +230,7 @@ public class TestAlgorithmReader {
 		for(SearchStrategy strat : algo.getSearchStrategyManager().getStrategies()){
 			nOfModules += strat.getSearchStrategyModules().size();
 		}
-		assertEquals(6, nOfModules);
-	}
-	
-	@Test
-	public void whenCreatingAlgorithm_nOfUniqueInstancesOfInsertionModulesIsCorrect(){
-		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
-		int nOfBestInsertions = 0;
-		Set<SearchStrategyModule> uniqueStrategies = new HashSet<SearchStrategyModule>();
-		for(SearchStrategy strat : algo.getSearchStrategyManager().getStrategies()){
-			for(SearchStrategyModule module : strat.getSearchStrategyModules()){
-				if(module.getName().equals("bestInsertion")){
-					nOfBestInsertions++;
-					uniqueStrategies.add(module);
-				}
-			}
-			
-		}
-		assertEquals(3, nOfBestInsertions);
-		assertEquals(2, uniqueStrategies.size());
-	}
-	
-	@Test
-	public void whenCreatingAlgorithm_nOfUniqueInstancesOfRuinModulesIsCorrect(){
-		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
-		int nOfRuinModules = 0;
-		Set<SearchStrategyModule> uniqueStrategies = new HashSet<SearchStrategyModule>();
-		for(SearchStrategy strat : algo.getSearchStrategyManager().getStrategies()){
-			for(SearchStrategyModule module : strat.getSearchStrategyModules()){
-				if(module.getName().endsWith("Ruin")){
-					nOfRuinModules++;
-					uniqueStrategies.add(module);
-				}
-			}
-			
-		}
-		assertEquals(3, nOfRuinModules);
-		assertEquals(2, uniqueStrategies.size());
+		assertEquals(3, nOfModules);
 	}
 
 	@Test
