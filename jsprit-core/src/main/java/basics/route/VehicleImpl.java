@@ -42,27 +42,6 @@ public class VehicleImpl implements Vehicle {
 	
 	public static class VehicleType {
 		
-		public static class TimeSchedule{
-			private double earliestStart;
-			private double latestEnd;
-			
-			public TimeSchedule(double earliestStart, double latestEnd) {
-				super();
-				this.earliestStart = earliestStart;
-				this.latestEnd = latestEnd;
-			}
-
-			public double getEarliestStart() {
-				return earliestStart;
-			}
-
-			public double getLatestEnd() {
-				return latestEnd;
-			}
-			
-			
-		}
-		
 		public static class Builder{
 			
 			public static Builder newInstance(String id, int capacity){
