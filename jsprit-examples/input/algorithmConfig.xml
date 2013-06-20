@@ -34,7 +34,7 @@
 			<searchStrategy name="randomRuinAndRecreate">
 				<selector name="selectBest"/>
 	  			<acceptor name="schrimpfAcceptance">  
- 					<alpha>0.05</alpha>  
+ 					<alpha>0.15</alpha>  
   					<warmup>100</warmup> 
   				</acceptor>
 				<modules>

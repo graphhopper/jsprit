@@ -35,10 +35,6 @@ import basics.route.VehicleRoute;
 
 
 /**
- * Simplest recreation strategy. All removed customers are inserted where
- * insertion costs are minimal. I.e. each tour-agent is asked for minimal
- * marginal insertion costs. The tour-agent offering the lowest marginal
- * insertion costs gets the customer/shipment.
  * 
  * @author stefan schroeder
  * 
@@ -46,6 +42,9 @@ import basics.route.VehicleRoute;
 
 final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 	
+	public static BestInsertionConcurrent newInstance(RouteAlgorithm routeAlgorithm, ExecutorService executor, int nuOfThreads){
+		return new BestInsertionConcurrent(routeAlgorithm, executor, nuOfThreads);
+	}
 	
 	static class Batch {
 		List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
@@ -68,7 +67,7 @@ final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 		this.random = random;
 	}
 	
-	public BestInsertionConcurrent(RouteAlgorithm routeAlgorithm, ExecutorService executor, int nuOfThreads) {
+	private BestInsertionConcurrent(RouteAlgorithm routeAlgorithm, ExecutorService executor, int nuOfThreads) {
 		super();
 		this.routeAlgorithm = routeAlgorithm;
 //		this.executor = executor;
@@ -87,7 +86,6 @@ final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 		List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
 		Collections.shuffle(unassignedJobList, random);
 		informInsertionStarts(vehicleRoutes,unassignedJobs.size());
-		
 		int inserted = 0;
 		for(final Job unassignedJob : unassignedJobList){
 			VehicleRoute insertIn = null;
@@ -135,20 +133,20 @@ final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 				routeAlgorithm.insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
 			} 
 			else {
-				VehicleRoute newRoute = VehicleRoute.emptyRoute();
-				InsertionData bestI = routeAlgorithm.calculateBestInsertion(newRoute, unassignedJob, Double.MAX_VALUE);
-				if(bestI instanceof InsertionData.NoInsertionFound) 
-					throw new IllegalStateException("given the vehicles, could not create a valid solution.\n\tthe reason might be" +
+//				VehicleRoute newRoute = VehicleRoute.emptyRoute();
+//				InsertionData bestI = routeAlgorithm.calculateBestInsertion(newRoute, unassignedJob, Double.MAX_VALUE);
+//				if(bestI instanceof InsertionData.NoInsertionFound) 
+				throw new IllegalStateException("given the vehicles, could not create a valid solution.\n\tthe reason might be" +
 							" inappropriate vehicle capacity.\n\tthe job that does not fit in any vehicle anymore is \n\t" + unassignedJob);
-				insertIn = newRoute;
-				informBeforeJobInsertion(unassignedJob,bestI,newRoute);
-				routeAlgorithm.insertJob(unassignedJob,bestI,newRoute);
-				vehicleRoutes.add(newRoute);
+//				insertIn = newRoute;
+//				informBeforeJobInsertion(unassignedJob,bestI,newRoute);
+//				routeAlgorithm.insertJob(unassignedJob,bestI,newRoute);
+//				vehicleRoutes.add(newRoute);
 			}
 			inserted++;
 			informJobInserted((unassignedJobList.size()-inserted), unassignedJob, insertIn);
 		}
-		
+		informInsertionEndsListeners(vehicleRoutes);
 	}
 	
 	private Insertion getBestInsertion(Batch batch, Job unassignedJob) {
@@ -168,12 +166,22 @@ final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 	private List<Batch> distributeRoutes(Collection<VehicleRoute> vehicleRoutes, int nuOfBatches) {
 		List<Batch> batches = new ArrayList<Batch>();
 		for(int i=0;i<nuOfBatches;i++) batches.add(new Batch()); 
-		if(vehicleRoutes.size()<nuOfBatches){
-			int nOfNewRoutes = nuOfBatches-vehicleRoutes.size();
-			for(int i=0;i<nOfNewRoutes;i++){
-				vehicleRoutes.add(VehicleRoute.emptyRoute());
-			}
-		}
+		/*
+		 * if route.size < nuOfBatches add as much routes as empty batches are available
+		 * else add one empty route anyway
+		 */
+//		if(vehicleRoutes.size()<nuOfBatches){
+//			int nOfNewRoutes = nuOfBatches-vehicleRoutes.size();
+//			for(int i=0;i<nOfNewRoutes;i++){
+//				vehicleRoutes.add(VehicleRoute.emptyRoute());
+//			}
+//		}
+//		else{
+			vehicleRoutes.add(VehicleRoute.emptyRoute());
+//		}
+		/*
+		 * distribute routes to batches equally
+		 */
 		int count = 0;
 		for(VehicleRoute route : vehicleRoutes){
 			if(count == nuOfBatches) count=0;

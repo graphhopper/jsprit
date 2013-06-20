@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -63,7 +64,6 @@ import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.AlgorithmConfig;
 import basics.io.AlgorithmConfigXmlReader;
-import basics.route.VehicleRoute;
 
 
 
@@ -367,12 +367,12 @@ public class VehicleRoutingAlgorithms {
 	 * @return {@link VehicleRoutingAlgorithm}
 	 */
 	public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp, final AlgorithmConfig algorithmConfig){
-		return createAlgo(vrp,algorithmConfig.getXMLConfiguration());
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),null,0);
 	}
 	
 	@Deprecated
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final XMLConfiguration config){
-		return createAlgo(vrp,config);
+		return createAlgo(vrp,config,null,0);
 	}
 	
 	/**
@@ -386,7 +386,7 @@ public class VehicleRoutingAlgorithms {
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
 		xmlReader.read(configURL);
-		return createAlgo(vrp,algorithmConfig.getXMLConfiguration());
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),null,0);
 	}
 	
 	/**
@@ -400,11 +400,27 @@ public class VehicleRoutingAlgorithms {
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
 		xmlReader.read(configFileName);
-		return createAlgo(vrp,algorithmConfig.getXMLConfiguration());
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),null, 0);
+	}
+	
+	/**
+	 * Read and creates {@link VehicleRoutingAlgorithm} from config-file.
+	 * 
+	 * @param vrp
+	 * @param configFileName
+	 * @param nuOfThreads TODO
+	 * @param {@link ExecutorService}
+	 * @return {@link VehicleRoutingAlgorithm}
+	 */
+	public static VehicleRoutingAlgorithm readAndCreateConcurrentAlgorithm(final VehicleRoutingProblem vrp, final String configFileName, final ExecutorService executorService, int nuOfThreads){
+		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
+		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
+		xmlReader.read(configFileName);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(), executorService, nuOfThreads);
 	}
 
-	private static VehicleRoutingAlgorithm createAlgo(final VehicleRoutingProblem vrp, XMLConfiguration config){
-		
+	private static VehicleRoutingAlgorithm createAlgo(final VehicleRoutingProblem vrp, XMLConfiguration config, ExecutorService executorService, int nuOfThreads){
+			
 		//fleetmanager
 		final VehicleFleetManager vehicleFleetManager;
 		if(vrp.getFleetSize().equals(FleetSize.INFINITE)){
@@ -433,7 +449,7 @@ public class VehicleRoutingAlgorithms {
 		/*
 		 * initial solution - construction
 		 */
-		AlgorithmStartsListener createInitialSolution = createInitialSolution(config,vrp,vehicleFleetManager,routeStates,algorithmListeners,definedClasses);
+		AlgorithmStartsListener createInitialSolution = createInitialSolution(config,vrp,vehicleFleetManager,routeStates,algorithmListeners,definedClasses,executorService,nuOfThreads);
 		if(createInitialSolution != null) algorithmListeners.add(new PrioritizedVRAListener(Priority.MEDIUM, createInitialSolution));
 
 		int solutionMemory = config.getInt("strategy.memory");
@@ -447,7 +463,7 @@ public class VehicleRoutingAlgorithms {
 			strategy.setName(name);
 			List<HierarchicalConfiguration> modulesConfig = strategyConfig.configurationsAt("modules.module");
 			for(HierarchicalConfiguration moduleConfig : modulesConfig){
-				SearchStrategyModule module = buildModule(moduleConfig,vrp,vehicleFleetManager,routeStates,algorithmListeners,definedClasses);
+				SearchStrategyModule module = buildModule(moduleConfig,vrp,vehicleFleetManager,routeStates,algorithmListeners,definedClasses,executorService,nuOfThreads);
 				strategy.addModule(module);
 			}
 			searchStratManager.addStrategy(strategy, strategyConfig.getDouble("probability"));
@@ -487,7 +503,7 @@ public class VehicleRoutingAlgorithms {
 		metaAlgorithm.getAlgorithmListeners().addAll(algorithmListeners);
 	}
 	
-	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, RouteStates activityStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses) {
+	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, RouteStates activityStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
 		List<HierarchicalConfiguration> modConfigs = config.configurationsAt("construction.insertion");
 		if(modConfigs == null) return null;
 		if(modConfigs.isEmpty()) return null;
@@ -502,7 +518,7 @@ public class VehicleRoutingAlgorithms {
 		AbstractInsertionStrategy insertionStrategy = definedClasses.get(insertionStrategyKey);
 		if(insertionStrategy == null){
 			List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-			insertionStrategy = createInsertionStrategy(modConfig, vrp, vehicleFleetManager, activityStates, prioListeners);
+			insertionStrategy = createInsertionStrategy(modConfig, vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
 			algorithmListeners.addAll(prioListeners);
 			definedClasses.put(insertionStrategyKey,insertionStrategy);
 		}
@@ -584,7 +600,7 @@ public class VehicleRoutingAlgorithms {
 	}
 	
 	private static SearchStrategyModule buildModule(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, 
-			RouteStates activityStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses) {
+			RouteStates activityStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
 		String moduleName = moduleConfig.getString("[@name]");
 		if(moduleName == null) throw new IllegalStateException("module(-name) is missing.");
 		String moduleId = moduleConfig.getString("[@id]");
@@ -633,7 +649,7 @@ public class VehicleRoutingAlgorithms {
 				List<HierarchicalConfiguration> insertionConfigs = moduleConfig.configurationsAt("insertion");
 				if(insertionConfigs.size() != 1) throw new IllegalStateException("this should be 1");
 				List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, activityStates, prioListeners);
+				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
 				algorithmListeners.addAll(prioListeners);
 			}
 			final AbstractInsertionStrategy final_insertion = insertion;
@@ -676,51 +692,6 @@ public class VehicleRoutingAlgorithms {
 			return module;
 		}
 	
-//		if(moduleName.equals("bestInsertion") || moduleName.equals("regretInsertion")){
-//			List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-//			AbstractInsertionStrategy insertion = getInsertionStrategy(moduleConfig, vrp, vehicleFleetManager, activityStates,
-//					definedClasses, modKey, prioListeners);
-//			SearchStrategyModule module = getModule(moduleName, insertion, vrp);
-//			definedClasses.put(strategyModuleKey, module);
-//			algorithmListeners.addAll(prioListeners);
-//			return module;
-//		}
-//		if(moduleName.equals("regretInsertion")){
-//			List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-//			AbstractInsertionKey insertionKey = new AbstractInsertionKey(modKey);
-//			AbstractInsertionStrategy regretInsertion = definedClasses.get(insertionKey);
-//			if(regretInsertion == null){
-//				regretInsertion = createInsertionStrategy(moduleConfig,vrp,vehicleFleetManager,activityStates,prioListeners);
-//			}
-//			SearchStrategyModule module = getModule(moduleName, regretInsertion, vrp);
-//			definedClasses.put(strategyModuleKey, module);
-//			algorithmListeners.addAll(prioListeners);
-//			return module;
-//		}
-//		if(moduleName.equals("randomRuin")){
-//			double shareToRuin = moduleConfig.getDouble("share");
-//			RuinStrategy ruin = getRandomRuin(vrp, activityStates,definedClasses, modKey, shareToRuin);
-//			SearchStrategyModule module = getModule(moduleName, ruin);
-//			definedClasses.put(strategyModuleKey, module);
-//			return module;
-//		}
-//		if(moduleName.equals("radialRuin")){
-//			double shareToRuin = moduleConfig.getDouble("share");
-//			String ruin_distance = moduleConfig.getString("distance");
-//			JobDistance jobDistance;
-//			if(ruin_distance == null) jobDistance = new JobDistanceAvgCosts(vrp.getTransportCosts());
-//			else {
-//				if(ruin_distance.equals("euclidean")){
-//					jobDistance = new EuclideanServiceDistance();
-//				}
-//				else throw new IllegalStateException("does not know ruin.distance " + ruin_distance + ". either ommit ruin.distance then the "
-//						+ "default is used or use 'euclidean'");
-//			}
-//			RuinStrategy ruin = getRadialRuin(vrp, activityStates,definedClasses, modKey, shareToRuin, jobDistance);
-//			SearchStrategyModule module = getModule(moduleName, ruin);
-//			definedClasses.put(strategyModuleKey, module);
-//			return module;
-//		}
 		if(moduleName.equals("gendreauPostOpt")){
 			int iterations = moduleConfig.getInt("iterations");
 			double share = moduleConfig.getDouble("share");
@@ -747,7 +718,7 @@ public class VehicleRoutingAlgorithms {
 				List<HierarchicalConfiguration> insertionConfigs = moduleConfig.configurationsAt("insertion");
 				if(insertionConfigs.size() != 1) throw new IllegalStateException("this should be 1");
 				List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, activityStates, prioListeners);
+				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
 				algorithmListeners.addAll(prioListeners);
 			}
 			GendreauPostOpt postOpt = new GendreauPostOpt(vrp, ruin, insertion);
@@ -764,17 +735,6 @@ public class VehicleRoutingAlgorithms {
 				"\n\trandomRuin" +
 				"\n\tradialRuin" + 
 				"\n\tgendreauPostOpt");
-	}
-
-	private static AbstractInsertionStrategy getInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager,
-			RouteStates activityStates, TypedMap definedClasses,
-			ModKey modKey, List<PrioritizedVRAListener> prioListeners) {
-		AbstractInsertionKey insertionKey = new AbstractInsertionKey(modKey);
-		AbstractInsertionStrategy bestInsertion = definedClasses.get(insertionKey); 
-		if(bestInsertion == null){	
-			bestInsertion = createInsertionStrategy(moduleConfig,vrp,vehicleFleetManager,activityStates,prioListeners);
-		}
-		return bestInsertion;
 	}
 
 	private static RuinStrategy getRadialRuin(VehicleRoutingProblem vrp, RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
@@ -799,115 +759,10 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 	
-	private static AbstractInsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, RouteStates activityStates, List<PrioritizedVRAListener> algorithmListeners) {
-		AbstractInsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, activityStates, algorithmListeners);
+	private static AbstractInsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, RouteStates activityStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads) {
+		AbstractInsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, activityStates, algorithmListeners, executorService, nuOfThreads);
 		return insertion;
 	}
-
-	private static SearchStrategyModule getModule(final String moduleName, final AbstractInsertionStrategy insertion, final VehicleRoutingProblem vrp){
-			
-			return new SearchStrategyModule() {
-				
-				private Logger logger = Logger.getLogger(SearchStrategyModule.class);
-				
-				@Override
-				public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-					List<Job> unassignedJobs = getUnassignedJobs(vrpSolution,vrp);
-	//				logger.info("unassigned: " + unassignedJobs.size());
-					insertion.run(vrpSolution.getRoutes(), unassignedJobs, Double.MAX_VALUE);
-					int jobsInSolution = countJobs(vrpSolution);
-					double penalty = 0.0;
-					if(jobsInSolution != vrp.getJobs().values().size()){ 
-						throw new IllegalStateException("solution not valid\n" + "#jobsInSolution=" + jobsInSolution + " #jobsInVrp=" + vrp.getJobs().values().size());
-					}
-					double totalCost = RouteUtils.getTotalCost(vrpSolution.getRoutes());
-					vrpSolution.setCost(totalCost + penalty);
-					return vrpSolution;
-				}
-				
-				@Override
-				public String toString() {
-					return "[name="+insertion+"]";
-				}
-	
-				private int countJobs(VehicleRoutingProblemSolution vrpSolution) {
-					int counter = 0;
-					for(VehicleRoute route : vrpSolution.getRoutes()){
-						counter += route.getTourActivities().jobSize();
-					}
-					return counter;
-				}
-	
-				private List<Job> getUnassignedJobs(VehicleRoutingProblemSolution vrpSolution,VehicleRoutingProblem vrp) {
-					List<Job> unassignedJobs = new ArrayList<Job>();
-					for(Job j : vrp.getJobs().values()){
-						boolean notAssigned = true;
-						for(VehicleRoute r : vrpSolution.getRoutes()){
-							if(r.getTourActivities().servesJob(j)){
-								notAssigned = false;
-								break;
-							}
-						}
-						if(notAssigned){
-							unassignedJobs.add(j);
-						}
-					}
-					return unassignedJobs;
-				}
-
-				@Override
-				public String getName() {
-					return moduleName;
-				}
-
-				@Override
-				public void addModuleListener(SearchStrategyModuleListener moduleListener) {
-					if(moduleListener instanceof InsertionListener){
-						InsertionListener iListener = (InsertionListener) moduleListener; 
-						if(!insertion.getListener().contains(iListener)){
-							logger.info("register moduleListener " + moduleListener);
-							insertion.addListener(iListener);
-						}
-						
-					}
-					
-				}
-			};
-			
-		}
-
-//	private static SearchStrategyModule getModule(final String moduleName, final RuinStrategy ruin) {
-//		
-//		
-//		return new SearchStrategyModule() {
-//			
-//			private Logger logger = Logger.getLogger(SearchStrategyModule.class);
-//			
-//			@Override
-//			public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-//				ruin.ruin(vrpSolution.getRoutes());
-//				return vrpSolution;
-//			}
-//			
-//			@Override
-//			public String toString() {
-//				return "[name="+ruin+"]";
-//			}
-//
-//			@Override
-//			public String getName() {
-//				return moduleName;
-//			}
-//
-//			@Override
-//			public void addModuleListener(SearchStrategyModuleListener moduleListener) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//		};
-//	}
-	
 	
 
 }

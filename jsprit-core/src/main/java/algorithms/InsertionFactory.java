@@ -22,6 +22,7 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -37,8 +38,9 @@ class InsertionFactory {
 	private static Logger log = Logger.getLogger(InsertionFactory.class);
 	
 	public static AbstractInsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
-			VehicleFleetManager vehicleFleetManager, RouteStates activityStates, List<PrioritizedVRAListener> algorithmListeners){
-		
+			VehicleFleetManager vehicleFleetManager, RouteStates activityStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads){
+		boolean concurrentInsertion = false;
+		if(executorService != null) concurrentInsertion = true;
 		if(config.containsKey("[@name]")){
 			String insertionName = config.getString("[@name]");
 			if(!insertionName.equals("bestInsertion") && !insertionName.equals("regretInsertion")){
@@ -98,7 +100,12 @@ class InsertionFactory {
 			((RouteAlgorithmImpl) routeAlgorithm).setActivityStates(activityStates);
 	
 			if(insertionName.equals("bestInsertion")){		
-				insertionStrategy = BestInsertion.newInstance(routeAlgorithm);
+				if(concurrentInsertion){
+					insertionStrategy = BestInsertionConcurrent.newInstance(routeAlgorithm,executorService,nuOfThreads);
+				}
+				else{
+					insertionStrategy = BestInsertion.newInstance(routeAlgorithm);
+				}
 			}
 			else if(insertionName.equals("regretInsertion")){
 				insertionStrategy = RegretInsertion.newInstance(routeAlgorithm);

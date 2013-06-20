@@ -30,10 +30,6 @@ import basics.route.VehicleRoute;
 
 
 /**
- * Simplest recreation strategy. All removed customers are inserted where
- * insertion costs are minimal. I.e. each tour-agent is asked for minimal
- * marginal insertion costs. The tour-agent offering the lowest marginal
- * insertion costs gets the customer/shipment.
  * 
  * @author stefan schroeder
  * 

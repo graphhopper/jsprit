@@ -2,6 +2,8 @@ package examples;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import util.Coordinate;
 import util.Solutions;
@@ -20,7 +22,7 @@ import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleImpl.VehicleType;
 
-public class MultipleDepotExample {
+public class ConcurrentMultipleDepotExample {
 
 	/**
 	 * @param args
@@ -73,16 +75,29 @@ public class MultipleDepotExample {
 		/*
 		 * plot to see how the problem looks like
 		 */
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/problem01.png", "p01");
+//		SolutionPlotter.plotVrpAsPNG(vrp, "output/problem01.png", "p01");
 
+		/*
+		 * Def. executorService and nuOfThreads
+		 */
+		int nuOfThreads = Runtime.getRuntime().availableProcessors() + 2;
+		ExecutorService executor = Executors.newFixedThreadPool(nuOfThreads);
+		
 		/*
 		 * solve the problem
 		 */
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
-		vra.setNuOfIterations(5000);
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateConcurrentAlgorithm(vrp, "input/algorithmConfig.xml", executor, nuOfThreads);
+		vra.setNuOfIterations(20000);
 		vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+		
+		executor.shutdown();
+		// Wait until all threads are finish
+		while (!executor.isTerminated()) {
+
+		}
+		System.out.println("Finished all threads");
 		
 		SolutionPrinter.print(Solutions.getBest(solutions));
 		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.getBest(solutions), "output/p01_solution.png", "p01");
