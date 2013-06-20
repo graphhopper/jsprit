@@ -43,7 +43,8 @@ import basics.route.Start;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class VrpWriterV3Test {
 	
@@ -59,8 +60,8 @@ public class VrpWriterV3Test {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		builder.setFleetComposition(FleetComposition.HETEROGENEOUS);
 		builder.setFleetSize(FleetSize.FINITE);
-		VehicleType type1 = VehicleType.Builder.newInstance("vehType", 20).build();
-		VehicleType type2 = VehicleType.Builder.newInstance("vehType2", 200).build();
+		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
 		Vehicle v1 = VehicleImpl.VehicleBuilder.newInstance("v1").setLocationId("loc").setType(type1).build();
 		Vehicle v2 = VehicleImpl.VehicleBuilder.newInstance("v2").setLocationId("loc").setType(type2).build();
 		builder.addVehicleType(type1);

@@ -36,8 +36,8 @@ import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
 import basics.route.VehicleRoute;
+import basics.route.VehicleTypeImpl;
 
 public class CalcWithTimeSchedulingTest {
 	
@@ -46,7 +46,7 @@ public class CalcWithTimeSchedulingTest {
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("myVehicle").setEarliestStart(0.0).setLatestArrival(100.0).
 				setLocationCoord(Coordinate.newInstance(0, 0)).setLocationId("0,0")
-				.setType(VehicleType.Builder.newInstance("myType", 20).setCostPerDistance(1.0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("myType", 20).setCostPerDistance(1.0).build()).build();
 		vrpBuilder.addVehicle(vehicle);
 		vrpBuilder.addService(Service.Builder.newInstance("myService", 2).setLocationId("0,20").setCoord(Coordinate.newInstance(0, 20)).build());
 		vrpBuilder.setFleetSize(FleetSize.INFINITE);

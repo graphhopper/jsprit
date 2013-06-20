@@ -23,11 +23,10 @@ package algorithms;
 import java.util.Collection;
 
 import basics.route.Vehicle;
-import basics.route.VehicleImpl.VehicleType;
 
 interface VehicleFleetManager {
 	
-	public static class TypeKey {
+	static class TypeKey {
 		
 		public final String type;
 		public final String locationId;
@@ -74,21 +73,15 @@ interface VehicleFleetManager {
 		
 	}
 
-	public abstract Vehicle getEmptyVehicle(TypeKey typeId);
+	abstract void lock(Vehicle vehicle);
 
-	public abstract Collection<TypeKey> getAvailableVehicleTypes();
+	abstract void unlock(Vehicle vehicle);
 
-	public abstract void lock(Vehicle vehicle);
+	abstract boolean isLocked(Vehicle vehicle);
 
-	public abstract void unlock(Vehicle vehicle);
+	abstract void unlockAll();
 
-	public abstract Collection<TypeKey> getAvailableVehicleTypes(TypeKey withoutThisType);
-
-	public abstract boolean isLocked(Vehicle vehicle);
-
-	public abstract void unlockAll();
-
-	public abstract Collection<? extends Vehicle> getAvailableVehicles();
+	abstract Collection<? extends Vehicle> getAvailableVehicles();
 
 	Collection<? extends Vehicle> getAvailableVehicle(String withoutThisType, String locationId);
 

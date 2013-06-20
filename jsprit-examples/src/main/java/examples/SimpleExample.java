@@ -36,7 +36,8 @@ import basics.io.VrpXMLWriter;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleImpl.VehicleBuilder;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class SimpleExample {
 	
@@ -45,8 +46,8 @@ public class SimpleExample {
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
-		VehicleType.Builder vehicleTypeBuilder = VehicleImpl.VehicleType.Builder.newInstance("vehicleType", 2);
-		VehicleType vehicleType = vehicleTypeBuilder.build();
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 2);
+		VehicleTypeImpl vehicleType = vehicleTypeBuilder.build();
 		
 		/*
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"

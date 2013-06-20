@@ -18,7 +18,8 @@ import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.VrpXMLReader;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class MultipleDepotExample {
 
@@ -53,7 +54,7 @@ public class MultipleDepotExample {
 		int depotCounter = 1;
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second,third,fourth)){
 			for(int i=0;i<nuOfVehicles;i++){
-				VehicleType vehicleType = VehicleType.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
+				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
 				Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance(depotCounter + "_" + (i+1) + "_vehicle").setLocationCoord(depotCoord).setType(vehicleType).build();
 				vrpBuilder.addVehicle(vehicle);
 			}
@@ -73,15 +74,16 @@ public class MultipleDepotExample {
 		/*
 		 * plot to see how the problem looks like
 		 */
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/problem01.png", "p01");
+//		SolutionPlotter.plotVrpAsPNG(vrp, "output/problem01.png", "p01");
 
 		/*
 		 * solve the problem
 		 */
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
 		vra.setNuOfIterations(10000);
+		vra.setPrematureBreak(100);
 		vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
-//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.getBest(solutions));

@@ -88,13 +88,13 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 		double currentFix = 0.0;
 		if(route.getVehicle() != null){
 			if(!(route.getVehicle() instanceof NoVehicle)){
-				currentFix += route.getVehicle().getType().vehicleCostParams.fix;
+				currentFix += route.getVehicle().getType().getVehicleCostParams().fix;
 			}
 		}
 		if(newVehicle.getCapacity() < load){
 			return Double.MAX_VALUE;
 		}
-		return newVehicle.getType().vehicleCostParams.fix - currentFix;
+		return newVehicle.getType().getVehicleCostParams().fix - currentFix;
 	}
 
 	private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
@@ -103,13 +103,13 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 		double currentRelFix = 0.0;
 		if(route.getVehicle() != null){
 			if(!(route.getVehicle() instanceof NoVehicle)){
-				currentRelFix += route.getVehicle().getType().vehicleCostParams.fix*currentLoad/route.getVehicle().getCapacity();
+				currentRelFix += route.getVehicle().getType().getVehicleCostParams().fix*currentLoad/route.getVehicle().getCapacity();
 			}
 		}
 		if(newVehicle.getCapacity() < load){
 			return Double.MAX_VALUE;
 		}
-		double relativeFixCost = newVehicle.getType().vehicleCostParams.fix*(load/newVehicle.getCapacity()) - currentRelFix;
+		double relativeFixCost = newVehicle.getType().getVehicleCostParams().fix*(load/newVehicle.getCapacity()) - currentRelFix;
 		return relativeFixCost;
 	}
 

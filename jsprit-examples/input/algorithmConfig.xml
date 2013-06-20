@@ -34,19 +34,19 @@
 			<searchStrategy name="randomRuinAndRecreate">
 				<selector name="selectBest"/>
 	  			<acceptor name="schrimpfAcceptance">  
- 					<alpha>0.15</alpha>  
+ 					<alpha>0.0</alpha>  
   					<warmup>100</warmup> 
   				</acceptor>
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="randomRuin">
-							<share>0.3</share>
+							<share>0.15</share>
 						</ruin>
 						<insertion name="bestInsertion"/>						
 					</module>
 					
 				</modules>
-				<probability>0.3</probability>
+				<probability>0.0</probability>
 			</searchStrategy>
 			
 			<searchStrategy name="radialRuinAndRecreate">
@@ -55,13 +55,13 @@
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="radialRuin">
-							<share>0.2</share>
+							<share>0.1</share>
 						</ruin>
 						<insertion name="bestInsertion"/>					
 					</module>
 					
 				</modules>
-				<probability>0.3</probability>
+				<probability>0.2</probability>
 			</searchStrategy>
 			
 			<searchStrategy name="radialRuinAndRecreate">
@@ -70,13 +70,13 @@
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="radialRuin" id="1">
-							<share>0.1</share>
+							<share>0.025</share>
 						</ruin>
 						<insertion name="bestInsertion"/>					
 					</module>
 					
 				</modules>
-				<probability>0.4</probability>
+				<probability>0.8</probability>
 			</searchStrategy>
 			
 		</searchStrategies>		

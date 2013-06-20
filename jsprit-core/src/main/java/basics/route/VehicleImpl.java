@@ -31,136 +31,13 @@ public class VehicleImpl implements Vehicle {
 	public static class NoVehicle extends VehicleImpl {
 
 		public NoVehicle() {
-			super(VehicleBuilder.newInstance("noVehicle").setType(VehicleType.newInstance(null, 0, null)));
+			super(VehicleBuilder.newInstance("noVehicle").setType(VehicleTypeImpl.newInstance(null, 0, null)));
 		}
 		
 		public int getCapacity(){
 			return 0;
 		}
 		
-	}
-	
-	public static class VehicleType {
-		
-		public static class Builder{
-			
-			public static Builder newInstance(String id, int capacity){
-				return new Builder(id,capacity);
-			}
-			
-			private String id;
-			private int capacity;
-			/**
-			 * default cost values for default vehicle type
-			 */
-			private double fixedCost = 0.0;
-			private double perDistance = 1.0;
-			private double perTime = 0.0;
-
-			public Builder(String id, int capacity) {
-				super();
-				this.id = id;
-				this.capacity = capacity;
-			}
-
-			public Builder setFixedCost(double fixedCost) { this.fixedCost = fixedCost; return this; }
-
-			public Builder setCostPerDistance(double perDistance){ this.perDistance = perDistance; return this; }
-
-			public Builder setCostPerTime(double perTime){ this.perTime = perTime; return this; }
-			
-			public VehicleType build(){
-				return new VehicleType(this);
-			}
-
-		}
-		
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ ((typeId == null) ? 0 : typeId.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			VehicleType other = (VehicleType) obj;
-			if (typeId == null) {
-				if (other.typeId != null)
-					return false;
-			} else if (!typeId.equals(other.typeId))
-				return false;
-			return true;
-		}
-
-		public final String typeId;
-		public final int capacity;
-		public final VehicleCostParams vehicleCostParams;
-
-		public static VehicleType newInstance(String typeId, int capacity, VehicleCostParams para){
-			return new VehicleType(typeId, capacity, para);
-		}
-		
-		private VehicleType(Builder builder){
-			typeId = builder.id;
-			capacity = builder.capacity;
-			vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance);
-		}
-
-		public VehicleType(String typeId, int capacity,VehicleCostParams vehicleCostParams) {
-			super();
-			this.typeId = typeId;
-			this.capacity = capacity;
-			this.vehicleCostParams = vehicleCostParams;
-		}
-
-		public String getTypeId() {
-			return typeId;
-		}
-
-		public int getCapacity() {
-			return capacity;
-		}
-
-		public VehicleCostParams getVehicleCostParams() {
-			return vehicleCostParams;
-		}
-
-		@Override
-		public String toString() {
-			return "[typeId="+typeId+"][capacity="+capacity+"]" + vehicleCostParams;
-		}
-	}
-
-	public static class VehicleCostParams {
-		
-		public static VehicleCostParams newInstance(double fix, double perTimeUnit,double perDistanceUnit){
-			return new VehicleCostParams(fix, perTimeUnit, perDistanceUnit);
-		}
-		
-		public final double fix;
-		public final double perTimeUnit;
-		public final double perDistanceUnit;
-
-		private VehicleCostParams(double fix, double perTimeUnit,double perDistanceUnit) {
-			super();
-			this.fix = fix;
-			this.perTimeUnit = perTimeUnit;
-			this.perDistanceUnit = perDistanceUnit;
-		}
-		
-		@Override
-		public String toString() {
-			return "[fixed="+fix+"][perTime="+perTimeUnit+"][perDistance="+perDistanceUnit+"]";
-		}
 	}
 	
 	public static class VehicleBuilder {
@@ -172,7 +49,7 @@ public class VehicleImpl implements Vehicle {
 		private double earliestStart = 0.0;
 		private double latestArrival = Double.MAX_VALUE;
 		
-		private VehicleType type = VehicleType.Builder.newInstance("default", 0).build();
+		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default", 0).build();
 		
 		private VehicleBuilder(String id) {
 			super();
@@ -309,7 +186,7 @@ public class VehicleImpl implements Vehicle {
 	 */
 	@Override
 	public int getCapacity() {
-		return type.capacity;
+		return type.getCapacity();
 	}
 	
 }

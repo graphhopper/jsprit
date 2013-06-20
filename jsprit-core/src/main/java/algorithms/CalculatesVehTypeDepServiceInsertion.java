@@ -31,7 +31,6 @@ import basics.Job;
 import basics.route.Driver;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl.NoVehicle;
-import basics.route.VehicleImpl.VehicleType;
 import basics.route.VehicleRoute;
 
 

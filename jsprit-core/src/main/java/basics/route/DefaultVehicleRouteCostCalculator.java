@@ -20,7 +20,6 @@
  ******************************************************************************/
 package basics.route;
 
-import basics.route.VehicleImpl.VehicleType;
 
 
 public class DefaultVehicleRouteCostCalculator implements VehicleRouteCostCalculator {

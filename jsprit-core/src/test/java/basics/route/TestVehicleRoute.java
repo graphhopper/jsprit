@@ -29,15 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import basics.Service;
-import basics.Service.Builder;
-import basics.route.DriverImpl;
-import basics.route.ServiceActivity;
-import basics.route.Start;
-import basics.route.TourActivities;
-import basics.route.TourActivity;
-import basics.route.Vehicle;
-import basics.route.VehicleImpl;
-import basics.route.VehicleRoute;
 import basics.route.DriverImpl.NoDriver;
 
 public class TestVehicleRoute {
@@ -47,7 +38,7 @@ public class TestVehicleRoute {
 
 	@Before
 	public void doBefore(){
-		vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("loc").setType(VehicleImpl.VehicleType.Builder.newInstance("yo", 0).build()).build();
+		vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
 		driver = DriverImpl.noDriver();
 	}
 	
@@ -97,7 +88,7 @@ public class TestVehicleRoute {
 	@Test
 	public void whenBuildingEmptyTour_tourIterIteratesOverAnEmptyList(){
 		TourActivities tour = new TourActivities();
-		Vehicle v = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("loc").setType(VehicleImpl.VehicleType.Builder.newInstance("yo", 0).build()).build();
+		Vehicle v = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
 		VehicleRoute route = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),v);
 		Iterator<TourActivity> iter = route.getTourActivities().iterator();
 		int count = 0;

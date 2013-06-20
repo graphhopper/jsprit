@@ -24,17 +24,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import junit.framework.TestCase;
+import algorithms.VehicleFleetManager.TypeKey;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleBuilder;
-import basics.route.VehicleImpl.VehicleType;
-import basics.route.VehicleImpl.VehicleType.Builder;
-
-import algorithms.VehicleFleetManager;
-import algorithms.VehicleFleetManagerImpl;
-import algorithms.VehicleFleetManager.TypeKey;
-
-import junit.framework.TestCase;
+import basics.route.VehicleTypeImpl;
 
 public class TestVehicleFleetManager extends TestCase{
 	
@@ -47,8 +41,8 @@ public class TestVehicleFleetManager extends TestCase{
 	public void setUp(){
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		
-		v1 = VehicleImpl.VehicleBuilder.newInstance("standard").setLocationId("loc").setType(VehicleImpl.VehicleType.Builder.newInstance("standard", 0).build()).build();
-		v2 = VehicleImpl.VehicleBuilder.newInstance("foo").setLocationId("fooLoc").setType(VehicleImpl.VehicleType.Builder.newInstance("foo", 0).build()).build();
+		v1 = VehicleImpl.VehicleBuilder.newInstance("standard").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
+		v2 = VehicleImpl.VehicleBuilder.newInstance("foo").setLocationId("fooLoc").setType(VehicleTypeImpl.Builder.newInstance("foo", 0).build()).build();
 
 		vehicles.add(v1);
 		vehicles.add(v2);

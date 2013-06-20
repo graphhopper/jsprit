@@ -38,7 +38,8 @@ import basics.VehicleRoutingProblem.FleetSize;
 import basics.route.TimeWindow;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class LuiShenReader {
 
@@ -122,10 +123,10 @@ public class LuiShenReader {
 			int capacity = Integer.parseInt(tokens[capacityColumn]);
 			int fixCost = Integer.parseInt(tokens[costScenarioColumn]);
 			
-			VehicleType.Builder typeBuilder = VehicleImpl.VehicleType.Builder.newInstance(vehicleId, capacity);
+			VehicleTypeImpl.Builder typeBuilder = VehicleType.Builder.newInstance(vehicleId, capacity);
 			typeBuilder.setFixedCost(fixCost).setCostPerDistance(1.0);
 			
-			VehicleType type = typeBuilder.build();
+			VehicleTypeImpl type = typeBuilder.build();
 			
 			Vehicle reprVehicle = VehicleImpl.VehicleBuilder.newInstance(vehicleId).setEarliestStart(start).setLatestArrival(end).
 					setLocationId(locationId).setLocationCoord(coord).setType(type).build();

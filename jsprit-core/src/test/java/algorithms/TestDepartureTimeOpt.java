@@ -20,7 +20,7 @@
  ******************************************************************************/
 package algorithms;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
@@ -40,7 +40,8 @@ import basics.route.TimeWindow;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class TestDepartureTimeOpt {
 	
@@ -48,9 +49,9 @@ public class TestDepartureTimeOpt {
 	public void whenSettingOneCustWithTWAnd_NO_DepTimeChoice_totalCostsShouldBe50(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
 		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
-		VehicleType type = mock(VehicleType.class);
+		VehicleType type = mock(VehicleTypeImpl.class);
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
-				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -76,9 +77,9 @@ public class TestDepartureTimeOpt {
 	public void whenSettingOneCustWithTWAnd_NO_DepTimeChoice_depTimeShouldBe0(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
 		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
-		VehicleType type = mock(VehicleType.class);
+		VehicleType type = mock(VehicleTypeImpl.class);
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
-				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -105,7 +106,7 @@ public class TestDepartureTimeOpt {
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
 		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
-				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -133,7 +134,7 @@ public class TestDepartureTimeOpt {
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
 		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
-				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -165,7 +166,7 @@ public class TestDepartureTimeOpt {
 				setTimeWindow(TimeWindow.newInstance(30, 40)).build();
 		
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
-				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -197,7 +198,7 @@ public class TestDepartureTimeOpt {
 				setTimeWindow(TimeWindow.newInstance(30, 40)).build();
 		
 		Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
-				.setType(VehicleType.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){

@@ -33,7 +33,8 @@ import util.Coordinate;
 
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.FleetSize;
@@ -92,7 +93,7 @@ public class ChristophidesReader {
 			else if(counter == 1){
 				String id = Integer.valueOf(counter).toString();
 				Coordinate depotCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
-				VehicleType vehicleType = VehicleImpl.VehicleType.Builder.newInstance("christophidesType", vehicleCapacity).
+				VehicleTypeImpl vehicleType = VehicleType.Builder.newInstance("christophidesType", vehicleCapacity).
 						setCostPerDistance(1.0).setFixedCost(100).build();
 				Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("christophidesVehicle").setLatestArrival(endTime).setLocationId(id).setLocationCoord(depotCoord).
 						setType(vehicleType).build();

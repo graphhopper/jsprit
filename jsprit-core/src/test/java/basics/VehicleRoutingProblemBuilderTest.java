@@ -27,7 +27,7 @@ import org.junit.Test;
 import basics.VehicleRoutingProblem.FleetSize;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class VehicleRoutingProblemBuilderTest {
 	
@@ -48,8 +48,8 @@ public class VehicleRoutingProblemBuilderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		builder.setFleetSize(FleetSize.FINITE);
 		
-		VehicleType type1 = VehicleType.Builder.newInstance("t1", 20).build();
-		VehicleType type2 = VehicleType.Builder.newInstance("t2", 200).build();
+		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("t1", 20).build();
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("t2", 200).build();
 		
 		Vehicle v1 = VehicleImpl.VehicleBuilder.newInstance("v1").setLocationId("yo").setType(type1).build();
 		Vehicle v2 = VehicleImpl.VehicleBuilder.newInstance("v2").setLocationId("yo").setType(type1).build();

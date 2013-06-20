@@ -9,6 +9,7 @@ import algorithms.VehicleRoutingAlgorithms;
 import analysis.AlgorithmSearchProgressChartListener;
 import analysis.SolutionPlotter;
 import analysis.SolutionPrinter;
+import analysis.SolutionPrinter.Print;
 import analysis.StopWatch;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
@@ -16,9 +17,10 @@ import basics.VehicleRoutingProblem.FleetSize;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.VrpXMLReader;
+import basics.route.PenaltyVehicleType;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class MultipleDepotExampleWithPenaltyVehicles {
 
@@ -50,7 +52,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		int depotCounter = 1;
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second)){
 			for(int i=0;i<nuOfVehicles;i++){
-				VehicleType vehicleType = VehicleType.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
+				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance(vehicleId);
 				vehicleBuilder.setLocationCoord(depotCoord);
@@ -59,11 +61,12 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				Vehicle vehicle = vehicleBuilder.build();
 				vrpBuilder.addVehicle(vehicle);
 			}
-			VehicleType penaltyType = VehicleType.Builder.newInstance(depotCounter + "_type#penalty", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
+			VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
+			PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
 			String vehicleId = depotCounter + "_vehicle#penalty";
 			VehicleImpl.VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance(vehicleId);
 			vehicleBuilder.setLocationCoord(depotCoord);
-			vehicleBuilder.setType(penaltyType);
+			vehicleBuilder.setType(penaltyVehicleType);
 			vehicleBuilder.setLatestArrival(maxDuration);
 			Vehicle penaltyVehicle = vehicleBuilder.build();
 			vrpBuilder.addVehicle(penaltyVehicle);
@@ -92,12 +95,13 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		 * solve the problem
 		 */
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
-		vra.setNuOfIterations(5000);
+		vra.setNuOfIterations(80000);
+		vra.setPrematureBreak(1000);
 		vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		SolutionPrinter.print(Solutions.getBest(solutions));
+		SolutionPrinter.print(Solutions.getBest(solutions),Print.VERBOSE);
 		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.getBest(solutions), "output/p08_solution.png", "p08");
 
 	}

@@ -29,7 +29,8 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 /**
  * Contains and describes the vehicle routing problem.
@@ -96,7 +97,7 @@ public class VehicleRoutingProblem {
 			jobs = new HashMap<String, Job>();
 			vehicles = new ArrayList<Vehicle>();
 			coordinates = new HashMap<String, Coordinate>();
-			vehicleTypes = new ArrayList<VehicleImpl.VehicleType>();
+			vehicleTypes = new ArrayList<VehicleType>();
 			services = new ArrayList<Service>();
 		}
 
@@ -237,7 +238,7 @@ public class VehicleRoutingProblem {
 		 * @param type
 		 * @return builder
 		 */
-		public Builder addVehicleType(VehicleType type){
+		public Builder addVehicleType(VehicleTypeImpl type){
 			vehicleTypes.add(type);
 			return this;
 		}
@@ -445,7 +446,7 @@ public class VehicleRoutingProblem {
 	 * Returns the entire, unmodifiable collection of types.
 	 * 
 	 * @return unmodifiable collection of types
-	 * @see VehicleType
+	 * @see VehicleTypeImpl
 	 */
 	public Collection<VehicleType> getTypes(){
 		return Collections.unmodifiableCollection(vehicleTypes);

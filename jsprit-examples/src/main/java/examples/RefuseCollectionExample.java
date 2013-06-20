@@ -43,7 +43,7 @@ import basics.io.VrpXMLWriter;
 import basics.route.Driver;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 
 /**
@@ -157,9 +157,9 @@ public class RefuseCollectionExample {
 		/*
 		 * create vehicle-type and vehicle
 		 */
-		VehicleType.Builder typeBuilder = VehicleType.Builder.newInstance("vehicle-type", 23);
+		VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type", 23);
 		typeBuilder.setCostPerDistance(1.0);
-		VehicleType bigType = typeBuilder.build();
+		VehicleTypeImpl bigType = typeBuilder.build();
 		
 		VehicleImpl.VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance("vehicle");
 		vehicleBuilder.setLocationId("1");

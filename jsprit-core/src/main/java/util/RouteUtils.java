@@ -84,7 +84,7 @@ public class RouteUtils {
 			if(r.getTourActivities().isEmpty()){
 				continue;
 			}
-			total += r.getVehicle().getType().vehicleCostParams.fix;
+			total += r.getVehicle().getType().getVehicleCostParams().fix;
 		}
 		return total;
 	}

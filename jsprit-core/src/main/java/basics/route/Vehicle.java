@@ -21,7 +21,6 @@
 package basics.route;
 
 import util.Coordinate;
-import basics.route.VehicleImpl.VehicleType;
 
 
 

@@ -52,8 +52,9 @@ import basics.route.TimeWindow;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleImpl.VehicleBuilder;
-import basics.route.VehicleImpl.VehicleType;
 import basics.route.VehicleRoute;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class VrpXMLReader{
 
@@ -255,7 +256,7 @@ public class VrpXMLReader{
 	private void readVehiclesAndTheirTypes(XMLConfiguration vrpProblem) {
 
 		//read vehicle-types
-		Map<String, VehicleType> types = new HashMap<String, VehicleType>();
+		Map<String, VehicleTypeImpl> types = new HashMap<String, VehicleTypeImpl>();
 		List<HierarchicalConfiguration> typeConfigs = vrpProblem.configurationsAt("vehicleTypes.type");
 		for(HierarchicalConfiguration typeConfig : typeConfigs){
 			String typeId = typeConfig.getString("id");
@@ -267,12 +268,12 @@ public class VrpXMLReader{
 //			Double end = typeConfig.getDouble("timeSchedule.end");
 			if(typeId == null) throw new IllegalStateException("typeId is missing.");
 			if(capacity == null) throw new IllegalStateException("capacity is missing.");
-			VehicleType.Builder typeBuilder = VehicleType.Builder.newInstance(typeId, capacity);
+			VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId, capacity);
 			if(fix != null) typeBuilder.setFixedCost(fix);
 			if(timeC != null) typeBuilder.setCostPerTime(timeC);
 			if(distC != null) typeBuilder.setCostPerDistance(distC);
 //			if(start != null && end != null) typeBuilder.setTimeSchedule(new TimeSchedule(start, end));
-			VehicleType type = typeBuilder.build();
+			VehicleTypeImpl type = typeBuilder.build();
 			types.put(type.typeId, type);
 			vrpBuilder.addVehicleType(type);
 		}
@@ -286,7 +287,7 @@ public class VrpXMLReader{
 			VehicleBuilder builder = VehicleImpl.VehicleBuilder.newInstance(vehicleId);
 			String typeId = vehicleConfig.getString("typeId");
 			if(typeId == null) throw new IllegalStateException("typeId is missing.");
-			VehicleType type = types.get(typeId);
+			VehicleTypeImpl type = types.get(typeId);
 			if(type == null) throw new IllegalStateException("vehicleType with typeId " + typeId + " is missing.");
 			builder.setType(type);
 			String locationId = vehicleConfig.getString("location.id");

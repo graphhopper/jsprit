@@ -36,8 +36,9 @@ import basics.route.TimeWindow;
 import basics.route.TourActivities;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
 import basics.route.VehicleRoute;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 
 public class TestTourStateUpdaterWithService {
@@ -102,7 +103,7 @@ public class TestTourStateUpdaterWithService {
 		states = new RouteStates();
 		states.initialiseStateOfJobs(services);
 		
-		VehicleType type = VehicleImpl.VehicleType.Builder.newInstance("test", 0).build();
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("test", 0).build();
 		vehicle = VehicleImpl.VehicleBuilder.newInstance("testvehicle").setType(type).setLocationId("0,0")
 				.setEarliestStart(0.0).setLatestArrival(50.0).build();
 		

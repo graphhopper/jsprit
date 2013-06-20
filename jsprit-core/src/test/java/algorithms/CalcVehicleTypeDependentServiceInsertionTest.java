@@ -25,17 +25,15 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import algorithms.VehicleFleetManager.TypeKey;
 import basics.Service;
 import basics.route.TimeWindow;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
+import basics.route.VehicleTypeImpl;
 
 
 
@@ -53,18 +51,13 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 	public void doBefore(){
 		veh1 = mock(Vehicle.class);
 		veh2 = mock(Vehicle.class);
-		when(veh1.getType()).thenReturn(VehicleImpl.VehicleType.Builder.newInstance("type1", 0).build());
-		when(veh2.getType()).thenReturn(VehicleImpl.VehicleType.Builder.newInstance("type2", 0).build());
+		when(veh1.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type1", 0).build());
+		when(veh2.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type2", 0).build());
 		when(veh1.getLocationId()).thenReturn("loc1");
 		when(veh2.getLocationId()).thenReturn("loc2");
 		fleetManager = mock(VehicleFleetManager.class);
 		service = mock(Service.class);
 		vehicleRoute = mock(VehicleRoute.class);
-		TypeKey typeKey1 = new TypeKey(veh1.getType().getTypeId(),veh1.getLocationId());
-		TypeKey typeKey2 = new TypeKey(veh2.getType().getTypeId(),veh2.getLocationId());
-		when(fleetManager.getAvailableVehicleTypes()).thenReturn(Arrays.asList(typeKey1,typeKey2));
-		when(fleetManager.getEmptyVehicle(typeKey1)).thenReturn(veh1);
-		when(fleetManager.getEmptyVehicle(typeKey2)).thenReturn(veh2);
 		
 		when(veh1.getCapacity()).thenReturn(10);
 		when(veh2.getCapacity()).thenReturn(10);

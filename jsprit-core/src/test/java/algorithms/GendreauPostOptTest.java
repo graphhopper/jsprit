@@ -44,8 +44,9 @@ import basics.route.TimeWindow;
 import basics.route.TourActivities;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
 import basics.route.VehicleRoute;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 
 public class GendreauPostOptTest {
 	
@@ -109,7 +110,7 @@ public class GendreauPostOptTest {
 				
 				double costPerDistanceUnit;
 				if(vehicle != null){
-					costPerDistanceUnit = vehicle.getType().vehicleCostParams.perDistanceUnit;
+					costPerDistanceUnit = vehicle.getType().getVehicleCostParams().perDistanceUnit;
 				}
 				else{
 					costPerDistanceUnit = 1;
@@ -124,8 +125,8 @@ public class GendreauPostOptTest {
 			}
 		};
 		
-		VehicleType lightType = VehicleImpl.VehicleType.Builder.newInstance("light", 10).setFixedCost(10).setCostPerDistance(1.0).build();
-		VehicleType heavyType = VehicleImpl.VehicleType.Builder.newInstance("heavy", 10).setFixedCost(30).setCostPerDistance(2.0).build();
+		VehicleTypeImpl lightType = VehicleTypeImpl.Builder.newInstance("light", 10).setFixedCost(10).setCostPerDistance(1.0).build();
+		VehicleTypeImpl heavyType = VehicleTypeImpl.Builder.newInstance("heavy", 10).setFixedCost(30).setCostPerDistance(2.0).build();
 		
 		lightVehicle1 = VehicleImpl.VehicleBuilder.newInstance("light").setLocationId("0,0").setType(lightType).build(); 
 		lightVehicle2 = VehicleImpl.VehicleBuilder.newInstance("light2").setLocationId("0,0").setType(lightType).build(); 

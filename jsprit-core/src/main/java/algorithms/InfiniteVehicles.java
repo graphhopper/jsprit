@@ -23,10 +23,8 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -73,16 +71,6 @@ class InfiniteVehicles implements VehicleFleetManager{
 
 	
 	@Override
-	public Vehicle getEmptyVehicle(TypeKey typeId) {
-		return types.get(typeId);
-	}
-
-	@Override
-	public Collection<TypeKey> getAvailableVehicleTypes() {
-		return sortedTypes;
-	}
-
-	@Override
 	public void lock(Vehicle vehicle) {
 		
 	}
@@ -92,12 +80,6 @@ class InfiniteVehicles implements VehicleFleetManager{
 		
 	}
 
-	@Override
-	public Collection<TypeKey> getAvailableVehicleTypes(TypeKey withoutThisType) {
-		Set<TypeKey> typeSet = new HashSet<TypeKey>(types.keySet());
-		typeSet.remove(withoutThisType);
-		return typeSet;
-	}
 
 	@Override
 	public boolean isLocked(Vehicle vehicle) {

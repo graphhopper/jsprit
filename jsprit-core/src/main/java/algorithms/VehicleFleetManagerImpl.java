@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import basics.route.PenaltyVehicleType;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl.NoVehicle;
 
@@ -136,10 +137,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		if(v.getType() == null){
 			throw new IllegalStateException("vehicle needs type");
 		}
-		String typeId = v.getType().typeId;
-		if(typeId.contains("penalty")){
-			String[] typeIdTokens = typeId.split("#");
-			TypeKey typeKey = new TypeKey(typeIdTokens[0],v.getLocationId());
+		String typeId = v.getType().getTypeId();
+		if(v.getType() instanceof PenaltyVehicleType){
+			TypeKey typeKey = new TypeKey(typeId,v.getLocationId());
 			penaltyVehicles.put(typeKey, v);
 		}
 		else{
@@ -153,7 +153,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	
 	private void removeVehicle(Vehicle v){
 		//it might be better to introduce a class PenaltyVehicle
-		if(!v.getType().getTypeId().contains("penalty")){
+		if(!(v.getType() instanceof PenaltyVehicleType)){
 			TypeKey key = new TypeKey(v.getType().getTypeId(),v.getLocationId());
 			if(typeMapOfAvailableVehicles.containsKey(key)){
 				typeMapOfAvailableVehicles.get(key).remove(v);
@@ -161,34 +161,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#getEmptyVehicle(java.lang.String)
-	 */
-	@Override
-	public Vehicle getEmptyVehicle(TypeKey typeId){
-		Vehicle v = null;
-		if(typeMapOfAvailableVehicles.containsKey(typeId)){
-			v = typeMapOfAvailableVehicles.get(typeId).getVehicle();
-		}
-		return v;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#getAvailableVehicleTypes()
-	 */
-	@Override
-	public Collection<TypeKey> getAvailableVehicleTypes(){
-		List<TypeKey> types = new ArrayList<TypeKey>();
-		for(TypeKey key : typeMapOfAvailableVehicles.keySet()){
-			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
-				types.add(key);
-			}
-			else{
-				
-			}
-		}
-		return types;
-	}
 	
 	/**
 	 * Returns a collection of available vehicles.
@@ -250,7 +222,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		if(vehicles.isEmpty() || vehicle instanceof NoVehicle){
 			return;
 		}
-		if(vehicle.getType().getTypeId().contains("penalty")) return;
+		if(vehicle.getType() instanceof PenaltyVehicleType) return;
 		boolean locked = lockedVehicles.add(vehicle);
 		removeVehicle(vehicle);
 		if(!locked){
@@ -267,30 +239,11 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 			return;
 		}
 		if(vehicle == null) return;
-		if(vehicle.getType().getTypeId().contains("penalty")) return;
+		if(vehicle.getType() instanceof PenaltyVehicleType) return;
 		lockedVehicles.remove(vehicle);
 		addVehicle(vehicle);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#getAvailableVehicleTypes(java.lang.String)
-	 */
-	@Override
-	public Collection<TypeKey> getAvailableVehicleTypes(TypeKey withoutThisType) {
-		List<TypeKey> types = new ArrayList<TypeKey>();
-		for(TypeKey typeKey : typeMapOfAvailableVehicles.keySet()){
-			if(typeKey.equals(withoutThisType)){
-				continue;
-			}
-			if(!typeMapOfAvailableVehicles.get(typeKey).isEmpty()){
-				types.add(typeKey);
-			}
-		}
-		return types;
-	}
-
-	
-	
 	/* (non-Javadoc)
 	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#isLocked(org.matsim.contrib.freight.vrp.basics.Vehicle)
 	 */

@@ -40,8 +40,8 @@ import basics.VehicleRoutingProblemSolution;
 import basics.route.ServiceActivity;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
-import basics.route.VehicleImpl.VehicleType;
 import basics.route.VehicleRoute;
+import basics.route.VehicleType;
 
 public class VrpXMLWriter {
 	
@@ -226,7 +226,7 @@ public class VrpXMLWriter {
 		int counter = 0;
 		for(Vehicle vehicle : vrp.getVehicles()){
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").id", vehicle.getId());
-			xmlConfig.setProperty(vehiclePathString + "("+counter+").typeId", vehicle.getType().typeId);
+			xmlConfig.setProperty(vehiclePathString + "("+counter+").typeId", vehicle.getType().getTypeId());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").location.id", vehicle.getLocationId());
 			if(vehicle.getCoord() != null){
 				xmlConfig.setProperty(vehiclePathString + "("+counter+").location.coord[@x]", vehicle.getCoord().getX());
@@ -248,13 +248,13 @@ public class VrpXMLWriter {
 		String typePathString = Schema.builder().append(Schema.TYPES).dot(Schema.TYPE).build();
 		int typeCounter = 0;
 		for(VehicleType type : vrp.getTypes()){
-			xmlConfig.setProperty(typePathString + "("+typeCounter+").id", type.typeId);
-			xmlConfig.setProperty(typePathString + "("+typeCounter+").capacity", type.capacity);
+			xmlConfig.setProperty(typePathString + "("+typeCounter+").id", type.getTypeId());
+			xmlConfig.setProperty(typePathString + "("+typeCounter+").capacity", type.getCapacity());
 //			xmlConfig.setProperty(typePathString + "("+typeCounter+").timeSchedule.start", type.getTimeSchedule().getEarliestStart());
 //			xmlConfig.setProperty(typePathString + "("+typeCounter+").timeSchedule.end", type.getTimeSchedule().getLatestEnd());
-			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.fixed", type.vehicleCostParams.fix);
-			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.distance", type.vehicleCostParams.perDistanceUnit);
-			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.time", type.vehicleCostParams.perTimeUnit);
+			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.fixed", type.getVehicleCostParams().fix);
+			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.distance", type.getVehicleCostParams().perDistanceUnit);
+			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.time", type.getVehicleCostParams().perTimeUnit);
 			typeCounter++;
 		}
 

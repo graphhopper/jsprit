@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.Vehicle;
-import basics.route.VehicleImpl.VehicleType;
 
 
 /**

@@ -66,7 +66,7 @@ public class SolomonExample {
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener(pngFileName));
+		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
 		 * 

@@ -34,7 +34,8 @@ import util.Coordinate;
 import basics.route.TimeWindow;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleType;
+import basics.route.VehicleType;
+import basics.route.VehicleTypeImpl;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.FleetSize;
@@ -96,10 +97,10 @@ public class SolomonReader {
 				double end = Double.parseDouble(tokens[5])*timeProjectionFactor;
 				double serviceTime = Double.parseDouble(tokens[6])*timeProjectionFactor;
 				if(counter == 10){
-					VehicleType.Builder typeBuilder = VehicleImpl.VehicleType.Builder.newInstance("solomonType", vehicleCapacity);
+					VehicleTypeImpl.Builder typeBuilder = VehicleType.Builder.newInstance("solomonType", vehicleCapacity);
 					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(100);
 					
-					VehicleType vehicleType = typeBuilder.build();
+					VehicleTypeImpl vehicleType = typeBuilder.build();
 		
 					Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("solomonVehicle").setEarliestStart(start).setLatestArrival(end)
 							.setLocationId(customerId).setLocationCoord(coord).setType(vehicleType).build();
