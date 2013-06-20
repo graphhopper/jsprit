@@ -79,7 +79,7 @@ public class MultipleDepotExample {
 		 * solve the problem
 		 */
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
-		vra.setNuOfIterations(5000);
+		vra.setNuOfIterations(10000);
 		vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
