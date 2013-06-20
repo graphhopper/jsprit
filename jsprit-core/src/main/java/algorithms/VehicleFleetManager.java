@@ -29,12 +29,12 @@ interface VehicleFleetManager {
 	
 	public static class TypeKey {
 		
-		public final VehicleType type;
+		public final String type;
 		public final String locationId;
 		
-		public TypeKey(VehicleType type, String locationId) {
+		public TypeKey(String typeId, String locationId) {
 			super();
-			this.type = type;
+			this.type = typeId;
 			this.locationId = locationId;
 		}
 
@@ -69,7 +69,8 @@ interface VehicleFleetManager {
 				return false;
 			return true;
 		}
-		
+
+				
 		
 	}
 
@@ -86,5 +87,9 @@ interface VehicleFleetManager {
 	public abstract boolean isLocked(Vehicle vehicle);
 
 	public abstract void unlockAll();
+
+	public abstract Collection<? extends Vehicle> getAvailableVehicles();
+
+	Collection<? extends Vehicle> getAvailableVehicle(String withoutThisType, String locationId);
 
 }

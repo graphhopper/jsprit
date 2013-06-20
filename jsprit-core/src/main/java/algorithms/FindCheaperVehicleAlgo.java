@@ -72,7 +72,7 @@ final class FindCheaperVehicleAlgo {
 		if(vehicleRoute.getTourActivities() == null || vehicleRoute.getVehicle() == null){
 			return vehicleRoute;
 		}
-		Collection<TypeKey> availableVehicleTypes = fleetManager.getAvailableVehicleTypes(new TypeKey(vehicleRoute.getVehicle().getType(),vehicleRoute.getVehicle().getLocationId()));
+//		Collection<TypeKey> availableVehicleTypes = fleetManager.getAvailableVehicleTypes(new TypeKey(vehicleRoute.getVehicle().getType(),vehicleRoute.getVehicle().getLocationId()));
 		double bestSaving = 0.0;
 		Vehicle bestVehicle = null;
 		List<TourActivity> path = new ArrayList<TourActivity>();
@@ -80,8 +80,8 @@ final class FindCheaperVehicleAlgo {
 		path.addAll(vehicleRoute.getTourActivities().getActivities());
 		path.add(vehicleRoute.getEnd());
 		
-		for(TypeKey vehicleType : availableVehicleTypes){
-			Vehicle vehicle = fleetManager.getEmptyVehicle(vehicleType);
+		for(Vehicle vehicle : fleetManager.getAvailableVehicle(vehicleRoute.getVehicle().getType().getTypeId(), vehicleRoute.getVehicle().getLocationId())){
+//			Vehicle vehicle = fleetManager.getEmptyVehicle(vehicleType);
 			if(vehicle.getType().typeId.equals(vehicleRoute.getVehicle().getType().typeId)){
 				continue;
 			}

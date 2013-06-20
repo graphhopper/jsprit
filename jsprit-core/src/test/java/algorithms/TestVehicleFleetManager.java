@@ -61,7 +61,7 @@ public class TestVehicleFleetManager extends TestCase{
 	}
 	
 	public void testGetVehicle(){
-		TypeKey typeKey = new TypeKey(v1.getType(),v1.getLocationId());
+		TypeKey typeKey = new TypeKey(v1.getType().getTypeId(),v1.getLocationId());
 		Vehicle v = fleetManager.getEmptyVehicle(typeKey);
 		assertEquals(v.getId(), v1.getId());
 	}
@@ -87,10 +87,10 @@ public class TestVehicleFleetManager extends TestCase{
 	}
 	
 	public void testGetTypesWithout(){
-		TypeKey typeKey = new TypeKey(v1.getType(),v1.getLocationId());
+		TypeKey typeKey = new TypeKey(v1.getType().getTypeId(),v1.getLocationId());
 		Collection<TypeKey> types = fleetManager.getAvailableVehicleTypes(typeKey);
 		
-		assertEquals(new TypeKey(v2.getType(),v2.getLocationId()), types.iterator().next());
+		assertEquals(new TypeKey(v2.getType().getTypeId(),v2.getLocationId()), types.iterator().next());
 		assertEquals(1, types.size());
 	}
 	

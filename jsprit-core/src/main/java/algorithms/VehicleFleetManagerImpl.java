@@ -97,6 +97,10 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
 	private Map<TypeKey,TypeContainer> typeMapOfAvailableVehicles;
 	
+	private Map<TypeKey,Vehicle> penaltyVehicles = new HashMap<VehicleFleetManager.TypeKey, Vehicle>();
+	
+//	private Map<TypeKey,TypeContainer> typeMapOfAvailablePenaltyVehicles;
+	
 	public VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
 		super();
 		this.vehicles = vehicles;
@@ -122,6 +126,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
 	private void makeMap() {
 		typeMapOfAvailableVehicles = new HashMap<TypeKey, TypeContainer>();
+		penaltyVehicles = new HashMap<VehicleFleetManager.TypeKey, Vehicle>();
 		for(Vehicle v : vehicles){
 			addVehicle(v);
 		}
@@ -131,18 +136,28 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		if(v.getType() == null){
 			throw new IllegalStateException("vehicle needs type");
 		}
-//		String typeId = v.getType().typeId;
-		TypeKey typeKey = new TypeKey(v.getType(),v.getLocationId());
-		if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
-			typeMapOfAvailableVehicles.put(typeKey, new TypeContainer(typeKey));
+		String typeId = v.getType().typeId;
+		if(typeId.contains("penalty")){
+			String[] typeIdTokens = typeId.split("#");
+			TypeKey typeKey = new TypeKey(typeIdTokens[0],v.getLocationId());
+			penaltyVehicles.put(typeKey, v);
 		}
-		typeMapOfAvailableVehicles.get(typeKey).add(v);
+		else{
+			TypeKey typeKey = new TypeKey(v.getType().getTypeId(),v.getLocationId());
+			if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
+				typeMapOfAvailableVehicles.put(typeKey, new TypeContainer(typeKey));
+			}
+			typeMapOfAvailableVehicles.get(typeKey).add(v);
+		}
 	}
 	
 	private void removeVehicle(Vehicle v){
-		TypeKey key = new TypeKey(v.getType(),v.getLocationId());
-		if(typeMapOfAvailableVehicles.containsKey(key)){
-			typeMapOfAvailableVehicles.get(key).remove(v);
+		//it might be better to introduce a class PenaltyVehicle
+		if(!v.getType().getTypeId().contains("penalty")){
+			TypeKey key = new TypeKey(v.getType().getTypeId(),v.getLocationId());
+			if(typeMapOfAvailableVehicles.containsKey(key)){
+				typeMapOfAvailableVehicles.get(key).remove(v);
+			}
 		}
 	}
 
@@ -168,9 +183,64 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
 				types.add(key);
 			}
+			else{
+				
+			}
 		}
 		return types;
 	}
+	
+	/**
+	 * Returns a collection of available vehicles.
+	 * 
+	 *<p>If there is no vehicle with a certain type and location anymore, it looks up whether a penalty vehicle has been specified with 
+	 * this type and location. If so, it returns this penalty vehicle. If not, no vehicle with this type and location is returned.
+	 */
+	@Override
+	public Collection<? extends Vehicle> getAvailableVehicles() {
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		for(TypeKey key : typeMapOfAvailableVehicles.keySet()){
+			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
+				vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
+			}
+			else{
+				if(penaltyVehicles.containsKey(key)){
+					vehicles.add(penaltyVehicles.get(key));
+				}
+			}
+		}
+		return vehicles;
+	}
+	
+	/**
+	 * Returns a collection of available vehicles without vehicles with typeId 'withoutThisType' and locationId 'withThisLocation'.
+	 * 
+	 * <p>If there is no vehicle with a certain type and location anymore, it looks up whether a penalty vehicle has been specified with 
+	 * this type and location. If so, it returns this penalty vehicle. If not, no vehicle with this type and location is returned.
+	 * 
+	 * @param typeId to specify the typeId that should not be the returned collection
+	 * @param locationId to specify the locationId that should not be in the returned collection
+	 * @return collection of available vehicles without the vehicles that have the typeId 'withoutThisType' AND the locationId 'withThisLocation'.
+	 */
+	@Override
+	public Collection<? extends Vehicle> getAvailableVehicle(String withoutThisType, String withThisLocationId) {
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		TypeKey thisKey = new TypeKey(withoutThisType,withThisLocationId);
+		for(TypeKey key : typeMapOfAvailableVehicles.keySet()){
+			if(key.equals(thisKey)) continue;
+			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
+				vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
+			}
+			else{
+				if(penaltyVehicles.containsKey(key)){
+					vehicles.add(penaltyVehicles.get(key));
+				}
+			}
+		}
+		return vehicles;
+	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#lock(org.matsim.contrib.freight.vrp.basics.Vehicle)
@@ -217,6 +287,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		return types;
 	}
 
+	
+	
 	/* (non-Javadoc)
 	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#isLocked(org.matsim.contrib.freight.vrp.basics.Vehicle)
 	 */
@@ -242,6 +314,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	public int sizeOfLockedVehicles(){
 		return lockedVehicles.size();
 	}
+
+	
 
 	
 }

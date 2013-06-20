@@ -22,8 +22,6 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,20 +31,19 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import basics.route.Vehicle;
-import basics.route.VehicleImpl.VehicleType;
 
 class InfiniteVehicles implements VehicleFleetManager{
 
-	static class TypeKeyComparator implements Comparator<TypeKey>{
-
-		@Override
-		public int compare(TypeKey k1, TypeKey k2) {
-			double k1_fix = k1.type.getVehicleCostParams().fix;
-			double k2_fix = k2.type.getVehicleCostParams().fix;
-			return (int)(k1_fix - k2_fix);
-		}
-		
-	}
+//	static class TypeKeyComparator implements Comparator<TypeKey>{
+//
+//		@Override
+//		public int compare(TypeKey k1, TypeKey k2) {
+//			double k1_fix = k1.type.getVehicleCostParams().fix;
+//			double k2_fix = k2.type.getVehicleCostParams().fix;
+//			return (int)(k1_fix - k2_fix);
+//		}
+//		
+//	}
 	
 	private static Logger logger = Logger.getLogger(InfiniteVehicles.class);
 	
@@ -66,12 +63,12 @@ class InfiniteVehicles implements VehicleFleetManager{
 
 	private void extractTypes(Collection<Vehicle> vehicles) {
 		for(Vehicle v : vehicles){
-			TypeKey typeKey = new TypeKey(v.getType(),v.getLocationId());
+			TypeKey typeKey = new TypeKey(v.getType().getTypeId(),v.getLocationId());
 			types.put(typeKey,v);
 			sortedTypes.add(typeKey);
 
 		}
-		Collections.sort(sortedTypes, new TypeKeyComparator());
+//		Collections.sort(sortedTypes, new TypeKeyComparator());
 	}
 
 	
@@ -110,6 +107,19 @@ class InfiniteVehicles implements VehicleFleetManager{
 	@Override
 	public void unlockAll() {
 		
+	}
+
+	@Override
+	public Collection<? extends Vehicle> getAvailableVehicles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<? extends Vehicle> getAvailableVehicle(
+			String withoutThisType, String locationId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

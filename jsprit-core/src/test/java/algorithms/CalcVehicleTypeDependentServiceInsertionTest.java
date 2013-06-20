@@ -60,8 +60,8 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 		fleetManager = mock(VehicleFleetManager.class);
 		service = mock(Service.class);
 		vehicleRoute = mock(VehicleRoute.class);
-		TypeKey typeKey1 = new TypeKey(veh1.getType(),veh1.getLocationId());
-		TypeKey typeKey2 = new TypeKey(veh2.getType(),veh2.getLocationId());
+		TypeKey typeKey1 = new TypeKey(veh1.getType().getTypeId(),veh1.getLocationId());
+		TypeKey typeKey2 = new TypeKey(veh2.getType().getTypeId(),veh2.getLocationId());
 		when(fleetManager.getAvailableVehicleTypes()).thenReturn(Arrays.asList(typeKey1,typeKey2));
 		when(fleetManager.getEmptyVehicle(typeKey1)).thenReturn(veh1);
 		when(fleetManager.getEmptyVehicle(typeKey2)).thenReturn(veh2);
