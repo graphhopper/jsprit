@@ -47,10 +47,6 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		Coordinate firstDepotCoord = Coordinate.newInstance(-33, 33);
 		Coordinate second = Coordinate.newInstance(33, -33);
 		
-		/*
-		 * number of penalty vehicles
-		 */
-		int nuOfPenaltyVehicles = 4;
 		int depotCounter = 1;
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second)){
 			for(int i=0;i<nuOfVehicles;i++){
@@ -63,16 +59,15 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				Vehicle vehicle = vehicleBuilder.build();
 				vrpBuilder.addVehicle(vehicle);
 			}
-//			for(int i=0;i<nuOfPenaltyVehicles;i++){
-				VehicleType penaltyType = VehicleType.Builder.newInstance(depotCounter + "_type#penalty", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
-				String vehicleId = depotCounter + "_vehicle#penalty";
-				VehicleImpl.VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance(vehicleId);
-				vehicleBuilder.setLocationCoord(depotCoord);
-				vehicleBuilder.setType(penaltyType);
-				vehicleBuilder.setLatestArrival(maxDuration);
-				Vehicle penaltyVehicle = vehicleBuilder.build();
-				vrpBuilder.addVehicle(penaltyVehicle);
-//			}
+			VehicleType penaltyType = VehicleType.Builder.newInstance(depotCounter + "_type#penalty", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
+			String vehicleId = depotCounter + "_vehicle#penalty";
+			VehicleImpl.VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance(vehicleId);
+			vehicleBuilder.setLocationCoord(depotCoord);
+			vehicleBuilder.setType(penaltyType);
+			vehicleBuilder.setLatestArrival(maxDuration);
+			Vehicle penaltyVehicle = vehicleBuilder.build();
+			vrpBuilder.addVehicle(penaltyVehicle);
+
 			depotCounter++;
 		}
 		
