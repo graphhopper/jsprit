@@ -53,7 +53,7 @@ public class MultipleDepotExample {
 		int depotCounter = 1;
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second,third,fourth)){
 			for(int i=0;i<nuOfVehicles;i++){
-				VehicleType vehicleType = VehicleType.Builder.newInstance(depotCounter + "_" + (i+1) + "_type", capacity).setCostPerDistance(1.0).build();
+				VehicleType vehicleType = VehicleType.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
 				Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance(depotCounter + "_" + (i+1) + "_vehicle").setLocationCoord(depotCoord).setType(vehicleType).build();
 				vrpBuilder.addVehicle(vehicle);
 			}
@@ -81,7 +81,7 @@ public class MultipleDepotExample {
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
 		vra.setNuOfIterations(10000);
 		vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
-		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.getBest(solutions));

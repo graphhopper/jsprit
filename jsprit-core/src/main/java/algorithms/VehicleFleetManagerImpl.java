@@ -250,6 +250,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		if(vehicles.isEmpty() || vehicle instanceof NoVehicle){
 			return;
 		}
+		if(vehicle.getType().getTypeId().contains("penalty")) return;
 		boolean locked = lockedVehicles.add(vehicle);
 		removeVehicle(vehicle);
 		if(!locked){
@@ -266,6 +267,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 			return;
 		}
 		if(vehicle == null) return;
+		if(vehicle.getType().getTypeId().contains("penalty")) return;
 		lockedVehicles.remove(vehicle);
 		addVehicle(vehicle);
 	}

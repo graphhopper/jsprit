@@ -46,7 +46,7 @@
 					</module>
 					
 				</modules>
-				<probability>0.5</probability>
+				<probability>0.3</probability>
 			</searchStrategy>
 			
 			<searchStrategy name="radialRuinAndRecreate">
@@ -61,7 +61,22 @@
 					</module>
 					
 				</modules>
-				<probability>0.5</probability>
+				<probability>0.3</probability>
+			</searchStrategy>
+			
+			<searchStrategy name="radialRuinAndRecreate">
+				<selector name="selectBest"/>
+				<acceptor name="schrimpfAcceptance"/>  
+				<modules>
+					<module name="ruin_and_recreate">
+						<ruin name="radialRuin" id="1">
+							<share>0.1</share>
+						</ruin>
+						<insertion name="bestInsertion"/>					
+					</module>
+					
+				</modules>
+				<probability>0.4</probability>
 			</searchStrategy>
 			
 		</searchStrategies>		

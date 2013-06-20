@@ -54,7 +54,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		int depotCounter = 1;
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second)){
 			for(int i=0;i<nuOfVehicles;i++){
-				VehicleType vehicleType = VehicleType.Builder.newInstance(depotCounter + "_" + (i+1) + "_type", capacity).setCostPerDistance(1.0).build();
+				VehicleType vehicleType = VehicleType.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance(vehicleId);
 				vehicleBuilder.setLocationCoord(depotCoord);
@@ -63,16 +63,16 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				Vehicle vehicle = vehicleBuilder.build();
 				vrpBuilder.addVehicle(vehicle);
 			}
-			for(int i=0;i<nuOfPenaltyVehicles;i++){
-				VehicleType penaltyType = VehicleType.Builder.newInstance(depotCounter + "_" + (i+1) + "_type#penalty", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
-				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle#penalty";
+//			for(int i=0;i<nuOfPenaltyVehicles;i++){
+				VehicleType penaltyType = VehicleType.Builder.newInstance(depotCounter + "_type#penalty", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
+				String vehicleId = depotCounter + "_vehicle#penalty";
 				VehicleImpl.VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance(vehicleId);
 				vehicleBuilder.setLocationCoord(depotCoord);
 				vehicleBuilder.setType(penaltyType);
 				vehicleBuilder.setLatestArrival(maxDuration);
 				Vehicle penaltyVehicle = vehicleBuilder.build();
 				vrpBuilder.addVehicle(penaltyVehicle);
-			}
+//			}
 			depotCounter++;
 		}
 		
@@ -91,7 +91,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		/*
 		 * plot to see how the problem looks like
 		 */
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/problem08.png", "p08");
+//		SolutionPlotter.plotVrpAsPNG(vrp, "output/problem08.png", "p08");
 
 		/*
 		 * solve the problem
