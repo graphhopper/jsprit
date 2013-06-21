@@ -123,7 +123,7 @@ public class LuiShenReader {
 			int capacity = Integer.parseInt(tokens[capacityColumn]);
 			int fixCost = Integer.parseInt(tokens[costScenarioColumn]);
 			
-			VehicleTypeImpl.Builder typeBuilder = VehicleType.Builder.newInstance(vehicleId, capacity);
+			VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance(vehicleId, capacity);
 			typeBuilder.setFixedCost(fixCost).setCostPerDistance(1.0);
 			
 			VehicleTypeImpl type = typeBuilder.build();

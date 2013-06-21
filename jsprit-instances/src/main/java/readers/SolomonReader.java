@@ -97,7 +97,7 @@ public class SolomonReader {
 				double end = Double.parseDouble(tokens[5])*timeProjectionFactor;
 				double serviceTime = Double.parseDouble(tokens[6])*timeProjectionFactor;
 				if(counter == 10){
-					VehicleTypeImpl.Builder typeBuilder = VehicleType.Builder.newInstance("solomonType", vehicleCapacity);
+					VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("solomonType", vehicleCapacity);
 					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(100);
 					
 					VehicleTypeImpl vehicleType = typeBuilder.build();

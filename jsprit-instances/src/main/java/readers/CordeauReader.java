@@ -34,6 +34,7 @@ import readers.CordeauReader;
 import util.Coordinate;
 
 import basics.VehicleRoutingProblem.FleetSize;
+import basics.route.PenaltyVehicleType;
 import basics.route.VehicleImpl;
 import basics.route.VehicleImpl.Builder;
 import basics.route.VehicleType;
@@ -101,7 +102,7 @@ public class CordeauReader {
 				int duration = Integer.parseInt(tokens[0].trim());
 				if(duration == 0) duration = 999999;
 				int capacity = Integer.parseInt(tokens[1].trim());
-				VehicleTypeImpl vehicleType = VehicleType.Builder.newInstance(counter + "_cordeauType", capacity).
+				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance(counter + "_cordeauType", capacity).
 						setCostPerDistance(1.0).setFixedCost(0).build();
 				List<Builder> builders = new ArrayList<VehicleImpl.Builder>();
 				for(int vehicleCounter=0;vehicleCounter<nOfVehiclesAtEachDepot;vehicleCounter++){
@@ -125,22 +126,21 @@ public class CordeauReader {
 				int cap = 0;
 				double latestArrTime = 0.0;
 				Coordinate coord = null;
+				String typeId = null;
 				for(Builder vBuilder : vBuilders){
 					vBuilder.setLocationCoord(depotCoord);
 					VehicleImpl vehicle = vBuilder.build();
 					cap = vehicle.getCapacity();
+					typeId = vehicle.getType().getTypeId();
 					latestArrTime = vehicle.getLatestArrival();
 					coord = vehicle.getCoord();
 					vrpBuilder.addVehicle(vehicle);
 				}
 				if(addPenaltyVehicles){
-					for(int i=0;i<5;i++){
-						VehicleTypeImpl penaltyType = VehicleType.Builder.newInstance(counter + "_penaltyType", cap).
-								setCostPerDistance(3.0).setFixedCost(50).build();
-						VehicleImpl penaltyVehicle = VehicleImpl.Builder.newInstance(counter + "_" + (i+1) + "_penaltyVehicle").setLatestArrival(latestArrTime)
-								.setType(penaltyType).setLocationCoord(coord).build();
-						vrpBuilder.addVehicle(penaltyVehicle);
-					}
+					VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance(typeId, cap).setCostPerDistance(3.0).setFixedCost(50).build();
+					VehicleImpl penaltyVehicle = VehicleImpl.Builder.newInstance(counter + "_penaltyVehicle").setLatestArrival(latestArrTime)
+							.setType(new PenaltyVehicleType(penaltyType)).setLocationCoord(coord).build();
+					vrpBuilder.addVehicle(penaltyVehicle);
 				}
 				depotCounter++;
 			}

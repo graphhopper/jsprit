@@ -93,7 +93,7 @@ public class ChristophidesReader {
 			else if(counter == 1){
 				String id = Integer.valueOf(counter).toString();
 				Coordinate depotCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
-				VehicleTypeImpl vehicleType = VehicleType.Builder.newInstance("christophidesType", vehicleCapacity).
+				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance("christophidesType", vehicleCapacity).
 						setCostPerDistance(1.0).setFixedCost(100).build();
 				Vehicle vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setLocationId(id).setLocationCoord(depotCoord).
 						setType(vehicleType).build();
