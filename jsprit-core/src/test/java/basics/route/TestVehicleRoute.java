@@ -38,7 +38,7 @@ public class TestVehicleRoute {
 
 	@Before
 	public void doBefore(){
-		vehicle = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
 		driver = DriverImpl.noDriver();
 	}
 	
@@ -88,7 +88,7 @@ public class TestVehicleRoute {
 	@Test
 	public void whenBuildingEmptyTour_tourIterIteratesOverAnEmptyList(){
 		TourActivities tour = new TourActivities();
-		Vehicle v = VehicleImpl.VehicleBuilder.newInstance("v").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
 		VehicleRoute route = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),v);
 		Iterator<TourActivity> iter = route.getTourActivities().iterator();
 		int count = 0;

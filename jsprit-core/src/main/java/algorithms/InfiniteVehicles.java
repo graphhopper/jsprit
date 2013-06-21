@@ -92,13 +92,13 @@ class InfiniteVehicles implements VehicleFleetManager{
 	}
 
 	@Override
-	public Collection<? extends Vehicle> getAvailableVehicles() {
+	public Collection<Vehicle> getAvailableVehicles() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Collection<? extends Vehicle> getAvailableVehicle(
+	public Collection<Vehicle> getAvailableVehicles(
 			String withoutThisType, String locationId) {
 		// TODO Auto-generated method stub
 		return null;

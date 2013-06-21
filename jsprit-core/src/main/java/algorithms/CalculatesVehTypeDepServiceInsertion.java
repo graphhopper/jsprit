@@ -62,7 +62,7 @@ final class CalculatesVehTypeDepServiceInsertion implements JobInsertionCalculat
 		Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
 		if(!(selectedVehicle instanceof NoVehicle)) {
 			relevantVehicles.add(selectedVehicle);
-			relevantVehicles.addAll(fleetManager.getAvailableVehicle(selectedVehicle.getType().getTypeId(),selectedVehicle.getLocationId()));
+			relevantVehicles.addAll(fleetManager.getAvailableVehicles(selectedVehicle.getType().getTypeId(),selectedVehicle.getLocationId()));
 		}
 		else{
 			relevantVehicles.addAll(fleetManager.getAvailableVehicles());		

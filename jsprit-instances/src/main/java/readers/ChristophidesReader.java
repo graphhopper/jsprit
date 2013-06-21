@@ -95,7 +95,7 @@ public class ChristophidesReader {
 				Coordinate depotCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
 				VehicleTypeImpl vehicleType = VehicleType.Builder.newInstance("christophidesType", vehicleCapacity).
 						setCostPerDistance(1.0).setFixedCost(100).build();
-				Vehicle vehicle = VehicleImpl.VehicleBuilder.newInstance("christophidesVehicle").setLatestArrival(endTime).setLocationId(id).setLocationCoord(depotCoord).
+				Vehicle vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setLocationId(id).setLocationCoord(depotCoord).
 						setType(vehicleType).build();
 				vrpBuilder.addVehicle(vehicle);
 			}

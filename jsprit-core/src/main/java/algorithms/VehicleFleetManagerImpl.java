@@ -169,7 +169,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	 * this type and location. If so, it returns this penalty vehicle. If not, no vehicle with this type and location is returned.
 	 */
 	@Override
-	public Collection<? extends Vehicle> getAvailableVehicles() {
+	public Collection<Vehicle> getAvailableVehicles() {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		for(TypeKey key : typeMapOfAvailableVehicles.keySet()){
 			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
@@ -195,7 +195,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	 * @return collection of available vehicles without the vehicles that have the typeId 'withoutThisType' AND the locationId 'withThisLocation'.
 	 */
 	@Override
-	public Collection<? extends Vehicle> getAvailableVehicle(String withoutThisType, String withThisLocationId) {
+	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String withThisLocationId) {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		TypeKey thisKey = new TypeKey(withoutThisType,withThisLocationId);
 		for(TypeKey key : typeMapOfAvailableVehicles.keySet()){

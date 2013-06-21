@@ -104,7 +104,7 @@ public class TestTourStateUpdaterWithService {
 		states.initialiseStateOfJobs(services);
 		
 		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("test", 0).build();
-		vehicle = VehicleImpl.VehicleBuilder.newInstance("testvehicle").setType(type).setLocationId("0,0")
+		vehicle = VehicleImpl.Builder.newInstance("testvehicle").setType(type).setLocationId("0,0")
 				.setEarliestStart(0.0).setLatestArrival(50.0).build();
 		
 		tour = new TourActivities();

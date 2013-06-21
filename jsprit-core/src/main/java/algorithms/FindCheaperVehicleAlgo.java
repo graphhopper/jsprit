@@ -80,7 +80,7 @@ final class FindCheaperVehicleAlgo {
 		path.addAll(vehicleRoute.getTourActivities().getActivities());
 		path.add(vehicleRoute.getEnd());
 		
-		for(Vehicle vehicle : fleetManager.getAvailableVehicle(vehicleRoute.getVehicle().getType().getTypeId(), vehicleRoute.getVehicle().getLocationId())){
+		for(Vehicle vehicle : fleetManager.getAvailableVehicles(vehicleRoute.getVehicle().getType().getTypeId(), vehicleRoute.getVehicle().getLocationId())){
 //			Vehicle vehicle = fleetManager.getEmptyVehicle(vehicleType);
 			if(vehicle.getType().getTypeId().equals(vehicleRoute.getVehicle().getType().getTypeId())){
 				continue;

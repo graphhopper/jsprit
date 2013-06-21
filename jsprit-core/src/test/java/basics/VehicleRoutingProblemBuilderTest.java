@@ -51,10 +51,10 @@ public class VehicleRoutingProblemBuilderTest {
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("t1", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("t2", 200).build();
 		
-		Vehicle v1 = VehicleImpl.VehicleBuilder.newInstance("v1").setLocationId("yo").setType(type1).build();
-		Vehicle v2 = VehicleImpl.VehicleBuilder.newInstance("v2").setLocationId("yo").setType(type1).build();
-		Vehicle v3 = VehicleImpl.VehicleBuilder.newInstance("v3").setLocationId("yo").setType(type2).build();
-		Vehicle v4 = VehicleImpl.VehicleBuilder.newInstance("v4").setLocationId("yo").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("yo").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("yo").setType(type1).build();
+		Vehicle v3 = VehicleImpl.Builder.newInstance("v3").setLocationId("yo").setType(type2).build();
+		Vehicle v4 = VehicleImpl.Builder.newInstance("v4").setLocationId("yo").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);

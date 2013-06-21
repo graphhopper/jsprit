@@ -81,8 +81,8 @@ interface VehicleFleetManager {
 
 	abstract void unlockAll();
 
-	abstract Collection<? extends Vehicle> getAvailableVehicles();
+	abstract Collection<Vehicle> getAvailableVehicles();
 
-	Collection<? extends Vehicle> getAvailableVehicle(String withoutThisType, String locationId);
+	Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId);
 
 }

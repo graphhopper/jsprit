@@ -128,7 +128,7 @@ public class LuiShenReader {
 			
 			VehicleTypeImpl type = typeBuilder.build();
 			
-			Vehicle reprVehicle = VehicleImpl.VehicleBuilder.newInstance(vehicleId).setEarliestStart(start).setLatestArrival(end).
+			Vehicle reprVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(start).setLatestArrival(end).
 					setLocationId(locationId).setLocationCoord(coord).setType(type).build();
 			
 			vrpBuilder.addVehicle(reprVehicle);

@@ -31,7 +31,7 @@ public class VehicleImpl implements Vehicle {
 	public static class NoVehicle extends VehicleImpl {
 
 		public NoVehicle() {
-			super(VehicleBuilder.newInstance("noVehicle").setType(VehicleTypeImpl.newInstance(null, 0, null)));
+			super(Builder.newInstance("noVehicle").setType(VehicleTypeImpl.newInstance(null, 0, null)));
 		}
 		
 		public int getCapacity(){
@@ -40,8 +40,8 @@ public class VehicleImpl implements Vehicle {
 		
 	}
 	
-	public static class VehicleBuilder {
-		static Logger log = Logger.getLogger(VehicleBuilder.class); 
+	public static class Builder {
+		static Logger log = Logger.getLogger(Builder.class); 
 		private String id;
 		
 		private String locationId;
@@ -51,32 +51,32 @@ public class VehicleImpl implements Vehicle {
 		
 		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default", 0).build();
 		
-		private VehicleBuilder(String id) {
+		private Builder(String id) {
 			super();
 			this.id = id;
 		}
 		
-		public VehicleBuilder setType(VehicleType type){
+		public Builder setType(VehicleType type){
 			this.type = type;
 			return this;
 		}
 		
-		public VehicleBuilder setLocationId(String id){
+		public Builder setLocationId(String id){
 			this.locationId = id;
 			return this;
 		}
 		
-		public VehicleBuilder setLocationCoord(Coordinate coord){
+		public Builder setLocationCoord(Coordinate coord){
 			this.locationCoord = coord;
 			return this;
 		}
 		
-		public VehicleBuilder setEarliestStart(double start){
+		public Builder setEarliestStart(double start){
 			this.earliestStart = start;
 			return this;
 		}
 		
-		public VehicleBuilder setLatestArrival(double arr){
+		public Builder setLatestArrival(double arr){
 			this.latestArrival = arr;
 			return this;
 		}
@@ -88,7 +88,7 @@ public class VehicleImpl implements Vehicle {
 			return new VehicleImpl(this);
 		}
 		
-		public static VehicleBuilder newInstance(String vehicleId){ return new VehicleBuilder(vehicleId); }
+		public static Builder newInstance(String vehicleId){ return new Builder(vehicleId); }
 		
 	}
 
@@ -109,7 +109,7 @@ public class VehicleImpl implements Vehicle {
 
 	private final double latestArrival;
 
-	private VehicleImpl(VehicleBuilder builder){
+	private VehicleImpl(Builder builder){
 		id = builder.id;
 		type = builder.type;
 		coord = builder.locationCoord;

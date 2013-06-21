@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import junit.framework.TestCase;
-import algorithms.VehicleFleetManager.TypeKey;
+import basics.route.PenaltyVehicleType;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleTypeImpl;
@@ -41,38 +41,32 @@ public class TestVehicleFleetManager extends TestCase{
 	public void setUp(){
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		
-		v1 = VehicleImpl.VehicleBuilder.newInstance("standard").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
-		v2 = VehicleImpl.VehicleBuilder.newInstance("foo").setLocationId("fooLoc").setType(VehicleTypeImpl.Builder.newInstance("foo", 0).build()).build();
+		v1 = VehicleImpl.Builder.newInstance("standard").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
+		v2 = VehicleImpl.Builder.newInstance("foo").setLocationId("fooLoc").setType(VehicleTypeImpl.Builder.newInstance("foo", 0).build()).build();
 
 		vehicles.add(v1);
 		vehicles.add(v2);
 		fleetManager = new VehicleFleetManagerImpl(vehicles);	
 	}
 	
-	public void testGetTypes(){
-		Collection<TypeKey> types = fleetManager.getAvailableVehicleTypes();
-		assertEquals(2, types.size());
-	}
-	
-	public void testGetVehicle(){
-		TypeKey typeKey = new TypeKey(v1.getType().getTypeId(),v1.getLocationId());
-		Vehicle v = fleetManager.getEmptyVehicle(typeKey);
-		assertEquals(v.getId(), v1.getId());
+	public void testGetVehicles(){
+		Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
+		assertEquals(2, vehicles.size());
 	}
 	
 	public void testLock(){
 		fleetManager.lock(v1);
-		Collection<TypeKey> types = fleetManager.getAvailableVehicleTypes();
-		assertEquals(1, types.size());
+		Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
+		assertEquals(1, vehicles.size());
 	}
 	
 	public void testLockTwice(){
 		fleetManager.lock(v1);
-		Collection<TypeKey> types = fleetManager.getAvailableVehicleTypes();
-		assertEquals(1, types.size());
+		Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
+		assertEquals(1, vehicles.size());
 		try{
 			fleetManager.lock(v1);
-			Collection<TypeKey> types_ = fleetManager.getAvailableVehicleTypes();
+			Collection<Vehicle> vehicles_ = fleetManager.getAvailableVehicles();
 			assertFalse(true);
 		}
 		catch(IllegalStateException e){
@@ -80,21 +74,73 @@ public class TestVehicleFleetManager extends TestCase{
 		}
 	}
 	
-	public void testGetTypesWithout(){
-		TypeKey typeKey = new TypeKey(v1.getType().getTypeId(),v1.getLocationId());
-		Collection<TypeKey> types = fleetManager.getAvailableVehicleTypes(typeKey);
+	public void testGetVehiclesWithout(){
+		Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles(v1.getType().getTypeId(),v1.getLocationId());
 		
-		assertEquals(new TypeKey(v2.getType().getTypeId(),v2.getLocationId()), types.iterator().next());
-		assertEquals(1, types.size());
+		assertEquals(v2, vehicles.iterator().next());
+		assertEquals(1, vehicles.size());
 	}
 	
 	public void testUnlock(){
 		fleetManager.lock(v1);
-		Collection<TypeKey> types = fleetManager.getAvailableVehicleTypes();
-		assertEquals(1, types.size());
+		Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
+		assertEquals(1, vehicles.size());
 		fleetManager.unlock(v1);
-		Collection<TypeKey> types_ = fleetManager.getAvailableVehicleTypes();
-		assertEquals(2, types_.size());
+		Collection<Vehicle> vehicles_ = fleetManager.getAvailableVehicles();
+		assertEquals(2, vehicles_.size());
+	}
+	
+	public void testWithPenalty_whenHavingOneRegularVehicleAvailable_noPenaltyVehicleIsReturn(){
+		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setLocationId("loc").
+					setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
+		
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		vehicles.add(v1);
+		vehicles.add(v2);
+		vehicles.add(penalty4standard);
+		VehicleFleetManager fleetManager = new VehicleFleetManagerImpl(vehicles);
+		
+		Collection<Vehicle> availableVehicles = fleetManager.getAvailableVehicles();
+		assertEquals(2, availableVehicles.size());
 	}
 
+	public void testWithPenalty_whenHavingTwoRegularVehicleAvailablePlusOnePenaltyVehicle_andOneIsLocked_returnTheOtherRegularVehicle(){
+		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard", 0).build();
+		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
+		
+		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setLocationId("loc").
+					setType(penaltyVehicleType).build();
+		
+		Vehicle v3 = VehicleImpl.Builder.newInstance("standard_v3").setLocationId("loc").
+				setType(penaltyType).build();
+		
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		vehicles.add(v1);
+		vehicles.add(v2);
+		vehicles.add(penalty4standard);
+		vehicles.add(v3);
+		VehicleFleetManager fleetManager = new VehicleFleetManagerImpl(vehicles);
+		fleetManager.lock(v1);
+		fleetManager.lock(v2);
+		Collection<Vehicle> availableVehicles = fleetManager.getAvailableVehicles();
+		assertEquals(1, availableVehicles.size());
+		assertEquals(v3, availableVehicles.iterator().next());
+	}
+	
+	public void testWithPenalty_whenHavingNoRegularVehicleAvailable_penaltyVehicleIsReturned(){
+		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard", 0).build();
+		
+		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setLocationId("loc").
+					setType(penaltyType).build();
+		
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		vehicles.add(v1);
+		vehicles.add(v2);
+		vehicles.add(penalty4standard);
+		VehicleFleetManager fleetManager = new VehicleFleetManagerImpl(vehicles);
+		fleetManager.lock(v1);
+		fleetManager.lock(v2);
+		Collection<Vehicle> availableVehicles = fleetManager.getAvailableVehicles();
+		assertEquals(penalty4standard, availableVehicles.iterator().next());
+	}
 }

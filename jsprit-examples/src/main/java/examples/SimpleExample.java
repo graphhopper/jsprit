@@ -35,7 +35,7 @@ import basics.VehicleRoutingProblemSolution;
 import basics.io.VrpXMLWriter;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleBuilder;
+import basics.route.VehicleImpl.Builder;
 import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
@@ -52,7 +52,7 @@ public class SimpleExample {
 		/*
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
-		VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance("vehicle");
+		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
 		vehicleBuilder.setLocationCoord(Coordinate.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
 		Vehicle vehicle = vehicleBuilder.build();

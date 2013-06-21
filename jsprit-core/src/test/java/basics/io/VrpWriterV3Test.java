@@ -62,8 +62,8 @@ public class VrpWriterV3Test {
 		builder.setFleetSize(FleetSize.FINITE);
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.VehicleBuilder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.VehicleBuilder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
 		builder.addVehicleType(type1);
 		builder.addVehicleType(type2);
 		builder.addVehicle(v1);

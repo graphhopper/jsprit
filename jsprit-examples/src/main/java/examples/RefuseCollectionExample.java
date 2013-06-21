@@ -161,7 +161,7 @@ public class RefuseCollectionExample {
 		typeBuilder.setCostPerDistance(1.0);
 		VehicleTypeImpl bigType = typeBuilder.build();
 		
-		VehicleImpl.VehicleBuilder vehicleBuilder = VehicleImpl.VehicleBuilder.newInstance("vehicle");
+		VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
 		vehicleBuilder.setLocationId("1");
 		vehicleBuilder.setType(bigType);
 		Vehicle bigVehicle = vehicleBuilder.build();

@@ -51,7 +51,7 @@ import basics.route.Start;
 import basics.route.TimeWindow;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleImpl.VehicleBuilder;
+import basics.route.VehicleImpl.Builder;
 import basics.route.VehicleRoute;
 import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
@@ -284,7 +284,7 @@ public class VrpXMLReader{
 		for(HierarchicalConfiguration vehicleConfig : vehicleConfigs){
 			String vehicleId = vehicleConfig.getString("id");
 			if(vehicleId == null) throw new IllegalStateException("vehicleId is missing.");
-			VehicleBuilder builder = VehicleImpl.VehicleBuilder.newInstance(vehicleId);
+			Builder builder = VehicleImpl.Builder.newInstance(vehicleId);
 			String typeId = vehicleConfig.getString("typeId");
 			if(typeId == null) throw new IllegalStateException("typeId is missing.");
 			VehicleTypeImpl type = types.get(typeId);

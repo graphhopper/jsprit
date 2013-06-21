@@ -128,9 +128,9 @@ public class GendreauPostOptTest {
 		VehicleTypeImpl lightType = VehicleTypeImpl.Builder.newInstance("light", 10).setFixedCost(10).setCostPerDistance(1.0).build();
 		VehicleTypeImpl heavyType = VehicleTypeImpl.Builder.newInstance("heavy", 10).setFixedCost(30).setCostPerDistance(2.0).build();
 		
-		lightVehicle1 = VehicleImpl.VehicleBuilder.newInstance("light").setLocationId("0,0").setType(lightType).build(); 
-		lightVehicle2 = VehicleImpl.VehicleBuilder.newInstance("light2").setLocationId("0,0").setType(lightType).build(); 
-		heavyVehicle = VehicleImpl.VehicleBuilder.newInstance("heavy").setLocationId("0,0").setType(heavyType).build(); 
+		lightVehicle1 = VehicleImpl.Builder.newInstance("light").setLocationId("0,0").setType(lightType).build(); 
+		lightVehicle2 = VehicleImpl.Builder.newInstance("light2").setLocationId("0,0").setType(lightType).build(); 
+		heavyVehicle = VehicleImpl.Builder.newInstance("heavy").setLocationId("0,0").setType(heavyType).build(); 
 			
 		
 		job1 = getService("10,0");
