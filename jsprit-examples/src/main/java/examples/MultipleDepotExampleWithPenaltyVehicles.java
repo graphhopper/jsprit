@@ -61,11 +61,21 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				Vehicle vehicle = vehicleBuilder.build();
 				vrpBuilder.addVehicle(vehicle);
 			}
+			/*
+			 * define penalty-type with the same id, but other higher fixed and variable costs
+			 */
 			VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
+			/*
+			 * to mark the penalty-type as penalty-type, wrap it with PenaltyVehicleType(Wrapper)
+			 * this is to tell the fleetManager that this is not a regular but a penalty vehicle
+			 */
 			PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
 			String vehicleId = depotCounter + "_vehicle#penalty";
 			VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
 			vehicleBuilder.setLocationCoord(depotCoord);
+			/*
+			 * set PenaltyVehicleType
+			 */
 			vehicleBuilder.setType(penaltyVehicleType);
 			vehicleBuilder.setLatestArrival(maxDuration);
 			Vehicle penaltyVehicle = vehicleBuilder.build();
@@ -95,7 +105,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		 * solve the problem
 		 */
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
-		vra.setNuOfIterations(80000);
+		vra.setNuOfIterations(10000);
 		vra.setPrematureBreak(1000);
 		vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
