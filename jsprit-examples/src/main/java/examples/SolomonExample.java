@@ -79,6 +79,10 @@ public class SolomonExample {
 		 */
 		VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 		
+		/*
+		 * print solution
+		 */
+		SolutionPrinter.print(solution, Print.VERBOSE);
 		
 		/*
 		 * Plot solution. 
