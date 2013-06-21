@@ -412,7 +412,7 @@ public class VehicleRoutingAlgorithms {
 	 * @param {@link ExecutorService}
 	 * @return {@link VehicleRoutingAlgorithm}
 	 */
-	public static VehicleRoutingAlgorithm readAndCreateConcurrentAlgorithm(final VehicleRoutingProblem vrp, final String configFileName, final ExecutorService executorService, int nuOfThreads){
+	private static VehicleRoutingAlgorithm readAndCreateConcurrentAlgorithm(final VehicleRoutingProblem vrp, final String configFileName, final ExecutorService executorService, int nuOfThreads){
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
 		xmlReader.read(configFileName);
