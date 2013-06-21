@@ -20,6 +20,7 @@ import basics.io.VrpXMLReader;
 import basics.route.PenaltyVehicleType;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
+import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
 public class MultipleDepotExampleWithPenaltyVehicles {
@@ -52,7 +53,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		int depotCounter = 1;
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second)){
 			for(int i=0;i<nuOfVehicles;i++){
-				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
+				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
 				vehicleBuilder.setLocationCoord(depotCoord);
@@ -64,7 +65,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 			/*
 			 * define penalty-type with the same id, but other higher fixed and variable costs
 			 */
-			VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
+			VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
 			/*
 			 * to mark the penalty-type as penalty-type, wrap it with PenaltyVehicleType(Wrapper)
 			 * this is to tell the fleetManager that this is not a regular but a penalty vehicle

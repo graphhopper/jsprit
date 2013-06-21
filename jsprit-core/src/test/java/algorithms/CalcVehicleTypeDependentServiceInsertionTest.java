@@ -25,6 +25,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,6 +60,8 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 		fleetManager = mock(VehicleFleetManager.class);
 		service = mock(Service.class);
 		vehicleRoute = mock(VehicleRoute.class);
+		
+		when(fleetManager.getAvailableVehicles()).thenReturn(Arrays.asList(veh1,veh2));
 		
 		when(veh1.getCapacity()).thenReturn(10);
 		when(veh2.getCapacity()).thenReturn(10);
