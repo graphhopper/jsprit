@@ -93,15 +93,19 @@ class InfiniteVehicles implements VehicleFleetManager{
 
 	@Override
 	public Collection<Vehicle> getAvailableVehicles() {
-		// TODO Auto-generated method stub
-		return null;
+		return types.values();
 	}
 
 	@Override
-	public Collection<Vehicle> getAvailableVehicles(
-			String withoutThisType, String locationId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId) {
+		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
+		TypeKey thisKey = new TypeKey(withoutThisType,locationId);
+		for(TypeKey key : types.keySet()){
+			if(!key.equals(thisKey)){
+				vehicles.add(types.get(key));
+			}
+		}
+		return vehicles;
 	}
 
 }
