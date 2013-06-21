@@ -47,7 +47,7 @@ public class SimpleExample {
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
 		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 2);
-		VehicleTypeImpl vehicleType = vehicleTypeBuilder.build();
+		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
 		/*
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
