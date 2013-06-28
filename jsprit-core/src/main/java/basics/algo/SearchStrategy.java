@@ -26,17 +26,42 @@ import java.util.Collections;
 
 import org.apache.log4j.Logger;
 
-import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblemSolution;
-
 import algorithms.acceptors.SolutionAcceptor;
 import algorithms.selectors.SolutionSelector;
+import basics.VehicleRoutingProblem;
+import basics.VehicleRoutingProblemSolution;
 
 
 
 
 
 public class SearchStrategy {
+	
+	public static class DiscoveredSolution {
+		private VehicleRoutingProblemSolution solution;
+		private boolean accepted;
+		private String strategyName;
+		
+		public DiscoveredSolution(VehicleRoutingProblemSolution solution,boolean accepted, String strategyName) {
+			super();
+			this.solution = solution;
+			this.accepted = accepted;
+			this.strategyName = strategyName;
+		}
+
+		public VehicleRoutingProblemSolution getSolution() {
+			return solution;
+		}
+
+		public boolean isAccepted() {
+			return accepted;
+		}
+
+		public String getStrategyName() {
+			return strategyName;
+		}
+		
+	}
 	
 	private static Logger logger = Logger.getLogger(SearchStrategy.class);
 	
@@ -86,14 +111,14 @@ public class SearchStrategy {
 	 * <p>This involves three basic steps: 1) Selecting a solution from solutions (input parameter) according to {@link SolutionSelector}, 2) running the modules 
 	 * ({@link SearchStrategyModule}) on the selectedSolution and 3) accepting the new solution according to {@link SolutionAcceptor}. 
 	 * <p> Note that after 1) the selected solution is copied, thus the original solution is not modified.
-	 * <p> Note also that 3) modifies the input parameter solutions by adding, removing, replacing existing solutions.
+	 * <p> Note also that 3) modifies the input parameter solutions by adding, removing, replacing the existing solutions or whatever is defined in the solutionAcceptor.
 	 *  
 	 * @param vrp
 	 * @param solutions which will be modified 
 	 * @return boolean true if solution has been accepted, false otherwise
 	 * @see SolutionSelector, SearchStrategyModule, SolutionAcceptor 
 	 */
-	public boolean run(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions){
+	public DiscoveredSolution run(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions){
 		VehicleRoutingProblemSolution solution = solutionSelector.selectSolution(solutions);
 		if(solution == null) throw new IllegalStateException("solution is null. check solutionSelector to return an appropiate solution.");
 		VehicleRoutingProblemSolution lastSolution = VehicleRoutingProblemSolution.copyOf(solution);
@@ -102,7 +127,8 @@ public class SearchStrategy {
 			lastSolution = newSolution;
 		}
 		boolean solutionAccepted = solutionAcceptor.acceptSolution(solutions, lastSolution);
-		return solutionAccepted;
+		DiscoveredSolution discoveredSolution = new DiscoveredSolution(lastSolution, solutionAccepted, getName());
+		return discoveredSolution;
 	}
 
 	
