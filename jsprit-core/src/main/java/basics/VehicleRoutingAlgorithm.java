@@ -31,7 +31,10 @@ import basics.algo.AlgorithmEndsListener;
 import basics.algo.AlgorithmStartsListener;
 import basics.algo.IterationEndsListener;
 import basics.algo.IterationStartsListener;
+import basics.algo.IterationWithoutImprovementBreaker;
+import basics.algo.PrematureAlgorithmBreaker;
 import basics.algo.SearchStrategy;
+import basics.algo.SearchStrategy.DiscoveredSolution;
 import basics.algo.SearchStrategyManager;
 import basics.algo.VehicleRoutingAlgorithmListener;
 import basics.algo.VehicleRoutingAlgorithmListeners;
@@ -44,6 +47,8 @@ import basics.algo.VehicleRoutingAlgorithmListeners;
  */
 public class VehicleRoutingAlgorithm {
 	
+	
+	
 	public static final int NOBREAK = Integer.MAX_VALUE;
 
 	private static Logger logger = Logger.getLogger(VehicleRoutingAlgorithm.class);
@@ -52,8 +57,6 @@ public class VehicleRoutingAlgorithm {
 	
 	private int nOfIterations = 100;
 	
-	private int prematureBreak = NOBREAK;
-	
 	private Counter counter = new Counter("iterations ");
 	
 	private SearchStrategyManager searchStrategyManager;
@@ -61,6 +64,15 @@ public class VehicleRoutingAlgorithm {
 	private VehicleRoutingAlgorithmListeners algoListeners = new VehicleRoutingAlgorithmListeners();
 	
 	private Collection<VehicleRoutingProblemSolution> initialSolutions;
+	
+	private PrematureAlgorithmBreaker prematureAlgorithmBreaker = new PrematureAlgorithmBreaker() {
+		
+		@Override
+		public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
+			return false;
+		}
+		
+	};
 	
 	public VehicleRoutingAlgorithm(VehicleRoutingProblem problem, SearchStrategyManager searchStrategyManager) {
 		super();
@@ -93,10 +105,14 @@ public class VehicleRoutingAlgorithm {
 	 * the assigned number of iterations without solution-acceptance.
 	 * 
 	 * 
-	 * @param iterationsWithoutImprovement
+	 * @param nuIterationsWithoutImprovement
 	 */
-	public void setPrematureBreak(int iterationsWithoutImprovement){
-		prematureBreak = iterationsWithoutImprovement;
+	public void setPrematureBreak(int nuIterationsWithoutImprovement){
+		prematureAlgorithmBreaker = new IterationWithoutImprovementBreaker(nuIterationsWithoutImprovement);
+	}
+	
+	public void setPrematureAlgorithmBreaker(PrematureAlgorithmBreaker prematureAlgorithmBreaker){
+		this.prematureAlgorithmBreaker = prematureAlgorithmBreaker;
 	}
 
 	/**
@@ -127,17 +143,14 @@ public class VehicleRoutingAlgorithm {
 		counter.reset();
 		Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
 		algorithmStarts(problem,solutions);
-		int iterWithoutImprovement = 0;
 		logger.info("iterations start");
 		for(int i=0;i<nOfIterations;i++){
 			iterationStarts(i+1,problem,solutions);
 			counter.incCounter();
-			SearchStrategy strat = searchStrategyManager.getRandomStrategy();
-			boolean newSolutionFoundAndAccepted = strat.run(problem, solutions);
-			selectedStrategy(strat.getName(),problem, solutions);
-			if(newSolutionFoundAndAccepted) iterWithoutImprovement = 0;
-			else iterWithoutImprovement++;
-			if(iterWithoutImprovement > prematureBreak){
+			SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
+			DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
+			selectedStrategy(strategy.getName(),problem, solutions);
+			if(prematureAlgorithmBreaker.isPrematureBreak(discoveredSolution)){
 				logger.info("premature break at iteration "+ (i+1));
 				nuOfIterationsThisAlgoIsRunning = (i+1);
 				break;
