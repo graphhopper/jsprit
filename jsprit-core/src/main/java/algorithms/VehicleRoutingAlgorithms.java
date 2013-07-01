@@ -56,10 +56,15 @@ import basics.VehicleRoutingProblem.FleetSize;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.AlgorithmStartsListener;
 import basics.algo.InsertionListener;
+import basics.algo.IterationWithoutImprovementBreaker;
+import basics.algo.PrematureAlgorithmBreaker;
 import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyManager;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
+import basics.algo.TimeBreaker;
+import basics.algo.VariationCoefficientBreaker;
+import basics.algo.SearchStrategy.DiscoveredSolution;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.AlgorithmConfig;
@@ -470,11 +475,60 @@ public class VehicleRoutingAlgorithms {
 		}
 		VehicleRoutingAlgorithm metaAlgorithm = new VehicleRoutingAlgorithm(vrp, searchStratManager);
 		if(config.containsKey("iterations")){
-			metaAlgorithm.setNuOfIterations(config.getInt("iterations"));
+			int iter = config.getInt("iterations");
+			metaAlgorithm.setNuOfIterations(iter);
+			log.info("set nuOfIterations to " + iter);
 		}
+		//prematureBreak
+		PrematureAlgorithmBreaker prematureAlgoBreaker = getPrematureBreaker(config,algorithmListeners);
+		metaAlgorithm.setPrematureAlgorithmBreaker(prematureAlgoBreaker);
+		
 		registerListeners(metaAlgorithm,algorithmListeners);
 		registerInsertionListeners(definedClasses,insertionListeners);
 		return metaAlgorithm;	
+	}
+
+	private static PrematureAlgorithmBreaker getPrematureBreaker(XMLConfiguration config, Set<PrioritizedVRAListener> algorithmListeners) {
+		String basedOn = config.getString("prematureBreak[@basedOn]");
+		if(basedOn == null){
+			log.info("set default prematureBreak, i.e. no premature break at all.");
+			return new PrematureAlgorithmBreaker() {
+
+				@Override
+				public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
+					return false;
+				}
+			};
+		}
+		if(basedOn.equals("iterations")){
+			log.info("set prematureBreak based on iterations");
+			String iter = config.getString("prematureBreak.iterations");
+			if(iter == null) throw new IllegalStateException("prematureBreak.iterations is missing");
+			int iterations = Integer.valueOf(iter);
+			return new IterationWithoutImprovementBreaker(iterations);
+		}
+		if(basedOn.equals("time")){
+			log.info("set prematureBreak based on time");
+			String timeString = config.getString("prematureBreak.time");
+			if(timeString == null) throw new IllegalStateException("prematureBreak.time is missing");
+			double time = Double.valueOf(timeString);
+			TimeBreaker timeBreaker = new TimeBreaker(time);
+			algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, timeBreaker));
+			return timeBreaker;
+		}
+		if(basedOn.equals("variationCoefficient")){
+			log.info("set prematureBreak based on variation coefficient");
+			String thresholdString = config.getString("prematureBreak.threshold");
+			String iterationsString = config.getString("prematureBreak.iterations");
+			if(thresholdString == null) throw new IllegalStateException("prematureBreak.threshold is missing");
+			if(iterationsString == null) throw new IllegalStateException("prematureBreak.iterations is missing");
+			double threshold = Double.valueOf(thresholdString);
+			int iterations = Integer.valueOf(iterationsString);
+			VariationCoefficientBreaker variationCoefficientBreaker = new VariationCoefficientBreaker(iterations, threshold);
+			algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, variationCoefficientBreaker));
+			return variationCoefficientBreaker;
+		}
+		throw new IllegalStateException("prematureBreak basedOn " + basedOn + " is not defined");
 	}
 
 	private static void registerInsertionListeners(TypedMap definedClasses, List<InsertionListener> insertionListeners) {

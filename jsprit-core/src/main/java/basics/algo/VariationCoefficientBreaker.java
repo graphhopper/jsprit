@@ -31,6 +31,12 @@ public class VariationCoefficientBreaker implements PrematureAlgorithmBreaker, A
 		this.nuOfIterations = nuOfIterations;
 		this.variationCoefficientThreshold = variationCoefficientThreshold;
 		solutionValues = new double[nuOfIterations];
+		logger.info("initialise " + this);
+	}
+	
+	@Override
+	public String toString() {
+		return "[name=VariationCoefficientBreaker][variationCoefficientThreshold="+variationCoefficientThreshold+"][iterations="+nuOfIterations+"]";
 	}
 
 	@Override

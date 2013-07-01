@@ -27,6 +27,8 @@
 		<xs:sequence>
 			<xs:element name="iterations" type="xs:integer" minOccurs="0" maxOccurs="1" default="100"/>
 			
+			<xs:element name="prematureBreak" type="prematureBreakType" minOccurs="0" maxOccurs="1"/>
+			
 			<xs:element name="construction" minOccurs="0" maxOccurs="1">
 				<xs:complexType>
 					<xs:sequence>
@@ -103,6 +105,42 @@
 	</xs:attribute>
 	
 </xs:complexType>
+
+<xs:complexType name="prematureBreakType">
+	<xs:choice>
+		<xs:group ref="pBreak_iteration_group"/>
+		<xs:group ref="pBreak_time_group"/>
+		<xs:group ref="pBreak_variationCoefficient_group"/>
+	</xs:choice>
+	<xs:attribute name="basedOn">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="time"/>
+				<xs:enumeration value="iterations"/>
+				<xs:enumeration value="variationCoefficient"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+</xs:complexType>
+
+<xs:group name="pBreak_iteration_group">
+	<xs:sequence>
+		<xs:element name="iterations" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>	
+</xs:group>
+
+<xs:group name="pBreak_time_group">
+	<xs:sequence>
+		<xs:element name="time" type="xs:double" minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>	
+</xs:group>
+
+<xs:group name="pBreak_variationCoefficient_group">
+	<xs:sequence>
+		<xs:element name="threshold" type="xs:double" minOccurs="1" maxOccurs="1"/>
+		<xs:element name="iterations" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>	
+</xs:group>
 
 <xs:complexType name="moduleType">
 	<xs:choice>
