@@ -106,7 +106,7 @@ public class SearchStrategy {
 	}
  
 	/**
-	 * Runs the search-strategy and its according modules, and returns true if a new solution has been accepted.
+	 * Runs the search-strategy and its according modules, and returns DiscoveredSolution.
 	 * 
 	 * <p>This involves three basic steps: 1) Selecting a solution from solutions (input parameter) according to {@link SolutionSelector}, 2) running the modules 
 	 * ({@link SearchStrategyModule}) on the selectedSolution and 3) accepting the new solution according to {@link SolutionAcceptor}. 
@@ -115,7 +115,7 @@ public class SearchStrategy {
 	 *  
 	 * @param vrp
 	 * @param solutions which will be modified 
-	 * @return boolean true if solution has been accepted, false otherwise
+	 * @return discoveredSolutin 
 	 * @see SolutionSelector, SearchStrategyModule, SolutionAcceptor 
 	 */
 	public DiscoveredSolution run(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions){
