@@ -2,9 +2,9 @@ jsprit
 ======
 jsprit is a java based, open source toolkit for solving a set of well-known <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP). 
 It is lightweight and easy-to-use, and based on heuristics currently solving 
-- [Capacitated VRP](http://neo.lcc.uma.es/vrp/vrp-flavors/capacitated-vrp/)
-- [Multiple Depot VRP](http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/)
-- [VRP with time windows](http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-time-windows/)
+- <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/capacitated-vrp/" target="_blank">Capacitated VRP</a>
+- <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/" target="_blank">Multiple Depot VRP</a>
+- <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-time-windows/>VRP with time windows</a>
 - VRP with heterogeneous fleet
 - Time-dependent VRP
 - Various combination of these types
