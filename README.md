@@ -1,6 +1,6 @@
 jsprit
 ======
-jsprit is a java based, open source toolkit for solving a set of well-known [vehicle routing problems](http://neo.lcc.uma.es/vrp/vehicle-routing-problem/) (VRP). 
+jsprit is a java based, open source toolkit for solving a set of well-known <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP). 
 It is lightweight and easy-to-use, and based on heuristics currently solving 
 - [Capacitated VRP](http://neo.lcc.uma.es/vrp/vrp-flavors/capacitated-vrp/)
 - [Multiple Depot VRP](http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/)
