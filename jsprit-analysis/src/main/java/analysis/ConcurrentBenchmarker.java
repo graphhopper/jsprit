@@ -58,13 +58,15 @@ public class ConcurrentBenchmarker {
 	public static class BenchmarkResult {
 		public final double result;
 		public final double time;
+		public final int nuOfVehicles;
 		public final BenchmarkInstance instance;
 		public Double delta = null;
-		public BenchmarkResult(BenchmarkInstance p, double result, double time) {
+		public BenchmarkResult(BenchmarkInstance p, double result, double time, int nuOfVehicles) {
 			super();
 			this.result = result;
 			this.time = time;
 			this.instance = p;
+			this.nuOfVehicles = nuOfVehicles;
 		}
 		void setBestKnownDelta(double delta){
 			this.delta = delta;
@@ -148,7 +150,7 @@ public class ConcurrentBenchmarker {
 		vra.getAlgorithmListeners().addListener(stopwatch,Priority.HIGH);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		VehicleRoutingProblemSolution best = Solutions.getBest(solutions);
-		BenchmarkResult result = new BenchmarkResult(p,best.getCost(),stopwatch.getCompTimeInSeconds());
+		BenchmarkResult result = new BenchmarkResult(p,best.getCost(),stopwatch.getCompTimeInSeconds(), best.getRoutes().size());
 		if(p.bestKnown != null) result.setBestKnownDelta((best.getCost()/p.bestKnown-1));
 		return result;
 	}
@@ -168,13 +170,13 @@ public class ConcurrentBenchmarker {
 	}
 
 	private void print(BenchmarkResult r, int count) {
-		System.out.println("("+count+"/"+problems.size() +")"+ "\t[instance="+r.instance.name+"][time="+round(r.time,2)+"][result="+round(r.result,2)+"][delta="+round(r.delta,3)+"]");
-//		for(BenchmarkWriter writer : writers){
-//			writer.write(r);
-//		}
+		System.out.println("("+count+"/"+problems.size() +")"+ "\t[instance="+r.instance.name+"][time="+round(r.time,2)+"][result="+round(r.result,2)+
+				"][delta="+round(r.delta,3)+"][nuOfVehicles="+r.nuOfVehicles+"]");
+		
 	}
 
-	private double round(Double value, int i) {
+	private Double round(Double value, int i) {
+		if(value==null) return null;
 		long roundedVal = Math.round(value*Math.pow(10, i));
 		return (double)roundedVal/(double)(Math.pow(10, i));
 	}

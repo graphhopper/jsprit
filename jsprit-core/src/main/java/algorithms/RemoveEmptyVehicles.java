@@ -47,6 +47,13 @@ class RemoveEmptyVehicles implements InsertionStartsListener, InsertionEndsListe
 //		for(VehicleRoute route : routes){
 //			if(route.isEmpty()) { vehicleRoutes.remove(route); }
 //		}
+//		List<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
+//		for(VehicleRoute route : routes){
+//			if(route.isEmpty()) { 
+//				fleetManager.unlock(route.getVehicle());
+//				vehicleRoutes.remove(route); 
+//			}
+//		}
 	}
 
 	@Override

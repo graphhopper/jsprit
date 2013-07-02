@@ -54,8 +54,6 @@ public class ChristophidesReader {
 	private final VehicleRoutingProblem.Builder vrpBuilder;
 
 	private double coordProjectionFactor = 1;
-	
-	private int customerCounter = 1;
 
 	/**
 	 * Constructs the reader.
@@ -91,21 +89,19 @@ public class ChristophidesReader {
 				serviceTime = Double.parseDouble(tokens[3].trim());
 			}
 			else if(counter == 1){
-				String id = Integer.valueOf(counter).toString();
 				Coordinate depotCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
 				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance("christophidesType", vehicleCapacity).
-						setCostPerDistance(1.0).setFixedCost(100).build();
-				Vehicle vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setLocationId(id).setLocationCoord(depotCoord).
+						setCostPerDistance(1.0).build();
+				Vehicle vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setLocationCoord(depotCoord).
 						setType(vehicleType).build();
 				vrpBuilder.addVehicle(vehicle);
 			}
 			else{
 				Coordinate customerCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
 				int demand = Integer.parseInt(tokens[2].trim());
-				String customer = Integer.valueOf(customerCounter).toString();
-				Service service = Service.Builder.newInstance(customer, demand).setServiceTime(serviceTime).setLocationId(customer).setCoord(customerCoord).build();
-				vrpBuilder.addService(service);	
-				customerCounter++;
+				String customer = Integer.valueOf(counter-1).toString();
+				Service service = Service.Builder.newInstance(customer, demand).setServiceTime(serviceTime).setCoord(customerCoord).build();
+				vrpBuilder.addService(service);
 			}
 			counter++;
 		}
