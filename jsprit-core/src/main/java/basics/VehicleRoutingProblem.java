@@ -238,7 +238,7 @@ public class VehicleRoutingProblem {
 		 * @param type
 		 * @return builder
 		 */
-		public Builder addVehicleType(VehicleTypeImpl type){
+		public Builder addVehicleType(VehicleType type){
 			vehicleTypes.add(type);
 			return this;
 		}
