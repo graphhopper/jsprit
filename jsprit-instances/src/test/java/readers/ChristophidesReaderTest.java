@@ -34,7 +34,7 @@ public class ChristophidesReaderTest {
 	@Test
 	public void whenReadingInstance_nuOfCustomersIsCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		new ChristophidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
+		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		assertEquals(50,vrp.getJobs().values().size());
 	}
@@ -42,7 +42,7 @@ public class ChristophidesReaderTest {
 	@Test
 	public void whenReadingInstance_fleetSizeIsInfinite(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		new ChristophidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
+		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		assertEquals(FleetSize.INFINITE,vrp.getFleetSize());
 	}
@@ -50,7 +50,7 @@ public class ChristophidesReaderTest {
 	@Test
 	public void whenReadingInstance_vehicleCapacitiesAreCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		new ChristophidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
+		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		for(Vehicle v : vrp.getVehicles()){
 			assertEquals(160,v.getCapacity());
@@ -60,7 +60,7 @@ public class ChristophidesReaderTest {
 	@Test
 	public void whenReadingInstance_vehicleLocationsAreCorrect_and_correspondToDepotLocation(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		new ChristophidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
+		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		for(Vehicle v : vrp.getVehicles()){
 			assertEquals(30.0,v.getCoord().getX(),0.01);
@@ -71,7 +71,7 @@ public class ChristophidesReaderTest {
 	@Test
 	public void whenReadingInstance_vehicleDurationsAreCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		new ChristophidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc13.txt").getPath());
+		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc13.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		for(Vehicle v : vrp.getVehicles()){
 			assertEquals(0.0,v.getEarliestDeparture(),0.01);
@@ -82,7 +82,7 @@ public class ChristophidesReaderTest {
 	@Test
 	public void whenReadingInstance_demandOfCustomerOneIsCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		new ChristophidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
+		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		assertEquals(7,vrp.getJobs().get("1").getCapacityDemand());
 	}
@@ -90,7 +90,7 @@ public class ChristophidesReaderTest {
 	@Test
 	public void whenReadingInstance_serviceDurationOfCustomerTwoIsCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		new ChristophidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc13.txt").getPath());
+		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc13.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		assertEquals(50.0,((Service)vrp.getJobs().get("2")).getServiceDuration(),0.1);
 	}

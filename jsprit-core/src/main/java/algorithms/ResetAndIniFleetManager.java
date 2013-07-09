@@ -20,6 +20,7 @@
  ******************************************************************************/
 package algorithms;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
@@ -41,10 +42,14 @@ class ResetAndIniFleetManager implements InsertionStartsListener{
 	@Override
 	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2Recreate) {
 		vehicleFleetManager.unlockAll();
-		for(VehicleRoute route : vehicleRoutes){
-//			if(!route.isEmpty()){
+		Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
+		for(VehicleRoute route : routes){
+			if(route.isEmpty()){
+				vehicleRoutes.remove(route);
+			}
+			else{
 				vehicleFleetManager.lock(route.getVehicle());
-//			}
+			}
 		}
 	}
 
