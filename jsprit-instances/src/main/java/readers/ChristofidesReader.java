@@ -28,7 +28,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import readers.ChristophidesReader;
+import readers.ChristofidesReader;
 import util.Coordinate;
 
 import basics.route.Vehicle;
@@ -47,9 +47,9 @@ import basics.VehicleRoutingProblem.FleetSize;
  * @author stefan schroeder
  *
  */
-public class ChristophidesReader {
+public class ChristofidesReader {
 
-	private static Logger logger = Logger.getLogger(ChristophidesReader.class);
+	private static Logger logger = Logger.getLogger(ChristofidesReader.class);
 	
 	private final VehicleRoutingProblem.Builder vrpBuilder;
 
@@ -60,7 +60,7 @@ public class ChristophidesReader {
 	 * 
 	 * @param vrpBuilder
 	 */
-	public ChristophidesReader(VehicleRoutingProblem.Builder vrpBuilder) {
+	public ChristofidesReader(VehicleRoutingProblem.Builder vrpBuilder) {
 		super();
 		this.vrpBuilder = vrpBuilder;
 	}
