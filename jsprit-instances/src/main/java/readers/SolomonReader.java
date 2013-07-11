@@ -68,9 +68,17 @@ public class SolomonReader {
 	
 	private double variableCostProjectionFactor = 1;
 	
+	private double fixedCostPerVehicle = 0.0;
+	
 	public SolomonReader(VehicleRoutingProblem.Builder vrpBuilder) {
 		super();
 		this.vrpBuilder = vrpBuilder;
+	}
+	
+	public SolomonReader(VehicleRoutingProblem.Builder vrpBuilder, double fixedCostPerVehicle) {
+		super();
+		this.vrpBuilder = vrpBuilder;
+		this.fixedCostPerVehicle=fixedCostPerVehicle;
 	}
 	
 	public void read(String solomonFile){
@@ -98,7 +106,7 @@ public class SolomonReader {
 				double serviceTime = Double.parseDouble(tokens[6])*timeProjectionFactor;
 				if(counter == 10){
 					VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("solomonType", vehicleCapacity);
-					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(100);
+					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(fixedCostPerVehicle);
 					
 					VehicleTypeImpl vehicleType = typeBuilder.build();
 		

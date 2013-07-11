@@ -104,6 +104,7 @@ public class Instances {
 	/**
 	 * Returns a collection of {@link BenchmarkInstance} which are Solomon instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 9 C1-instances are located with their original name, i.e. C101.txt,C102.txt,...,C109.txt.
+	 * <p>Note that unlike the original problems, a fixed-cost value of 1000 is set for each employed vehicle.
 	 * @param inputFolder where solomon C1 instances are located. It must end without '/' such as instances/solomon.
 	 * 
 	 * @return a collection of {@link BenchmarkInstance}
@@ -115,7 +116,7 @@ public class Instances {
 		for(int i=0;i<9;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/C1"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder).read(file);
+			new SolomonReader(builder,1000).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("C1" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -125,6 +126,7 @@ public class Instances {
 	/**
 	 * Returns a collection of {@link BenchmarkInstance} which are Solomon instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 8 C2-instances are located with their original name, i.e. C201.txt,C202.txt,...,C208.txt.
+	 * <p>Note that unlike the original problems, a fixed-cost value of 1000 is set for each employed vehicle.
 	 * @param inputFolder where solomon C2 instances are located. It must end without '/' such as instances/solomon.
 	 * @return a collection of {@link BenchmarkInstance}
 	 */
@@ -135,7 +137,7 @@ public class Instances {
 		for(int i=0;i<8;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/C2"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder).read(file);
+			new SolomonReader(builder,1000).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("C2" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -145,6 +147,7 @@ public class Instances {
 	/**
 	 * Returns a collection of {@link BenchmarkInstance} which are Solomon instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 12 R1-instances are located with their original name, i.e. R101.txt,R102.txt,...,R112.txt.
+	 * <p>Note that unlike the original problems, a fixed-cost value of 1000 is set for each employed vehicle.
 	 * @param inputFolder where solomon R1 instances are located. It must end without '/' such as instances/solomon.
 	 * @return a collection of {@link BenchmarkInstance}
 	 */
@@ -155,7 +158,7 @@ public class Instances {
 		for(int i=0;i<12;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/R1"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder).read(file);
+			new SolomonReader(builder,1000).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("R1" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -165,6 +168,7 @@ public class Instances {
 	/**
 	 * Returns a collection of {@link BenchmarkInstance} which are Solomon instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 11 R1-instances are located with their original name, i.e. R201.txt,R202.txt,...,R111.txt.
+	 * <p>Note that unlike the original problems, a fixed-cost value of 1000 is set for each employed vehicle.
 	 * @param inputFolder TODO
 	 * @param inputFolder where solomon R2 instances are located. It must end without '/' such as instances/solomon.
 	 * @return a collection of {@link BenchmarkInstance}
@@ -176,7 +180,7 @@ public class Instances {
 		for(int i=0;i<11;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/R2"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder).read(file);
+			new SolomonReader(builder,1000).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("R2" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -186,6 +190,7 @@ public class Instances {
 	/**
 	 * Returns a collection of {@link BenchmarkInstance} which are Solomon instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 8 RC1-instances are located with their original name, i.e. RC101.txt,RC102.txt,...,RC108.txt.
+	 * <p>Note that unlike the original problems, a fixed-cost value of 1000 is set for each employed vehicle.
 	 * @param inputFolder where solomon RC1 instances are located. It must end without '/' such as instances/solomon.
 	 * @return a collection of {@link BenchmarkInstance}
 	 */
@@ -196,7 +201,7 @@ public class Instances {
 		for(int i=0;i<8;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/RC1"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder).read(file);
+			new SolomonReader(builder,1000).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("RC1" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -206,6 +211,7 @@ public class Instances {
 	/**
 	 * Returns a collection of {@link BenchmarkInstance} which are Solomon instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 8 RC2-instances are located with their original name, i.e. RC201.txt,RC202.txt,...,RC208.txt.
+	 * <p>Note that unlike the original problems, a fixed-cost value of 1000 is set for each employed vehicle.
 	 * @param inputFolder TODO
 	 * @param inputFolder where solomon RC2 instances are located. It must end without '/' such as instances/solomon.
 	 * @return a collection of {@link BenchmarkInstance}
@@ -217,7 +223,7 @@ public class Instances {
 		for(int i=0;i<8;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/RC2"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder).read(file);
+			new SolomonReader(builder,1000).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("RC2" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
