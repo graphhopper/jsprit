@@ -25,6 +25,10 @@ For more information, please visit [GNU Public License](http://opensource.org/li
 
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 
+##Getting started in 2 seconds
+
+[Add the latest snapshot to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
+
 ##[About](https://github.com/jsprit/jsprit/wiki/About)
 
 [![githalytics.com alpha](https://cruel-carlota.pagodabox.com/ba53806a8cc8ff439c1a51d152245dee "githalytics.com")](http://githalytics.com/jsprit/jsprit)
