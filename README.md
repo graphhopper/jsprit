@@ -27,7 +27,7 @@ Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 
 ##Getting started in 2 seconds
 
-[Add the latest snapshot to your pom]().
+[Add the latest snapshot to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
 
 ##[About](https://github.com/jsprit/jsprit/wiki/About)
 
