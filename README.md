@@ -25,7 +25,7 @@ For more information, please visit [GNU Public License](http://opensource.org/li
 
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 
-##Getting Started in two second
+##Getting started in 2 seconds
 
 [Add the latest snapshot to your pom]().
 
