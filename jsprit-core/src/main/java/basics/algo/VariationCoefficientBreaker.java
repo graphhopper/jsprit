@@ -28,12 +28,14 @@ import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
 import org.apache.log4j.Logger;
 
+import util.Solutions;
+
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.SearchStrategy.DiscoveredSolution;
 
-public class VariationCoefficientBreaker implements PrematureAlgorithmBreaker, AlgorithmStartsListener, IterationEndsListener{
+public class VariationCoefficientBreaker implements PrematureAlgorithmBreaker, IterationStartsListener, AlgorithmStartsListener, IterationEndsListener{
 
 	private static Logger logger = Logger.getLogger(VariationCoefficientBreaker.class);
 	
@@ -69,8 +71,8 @@ public class VariationCoefficientBreaker implements PrematureAlgorithmBreaker, A
 		else{
 			if(lastAccepted != null){
 				solutionValues[currentIteration]=lastAccepted.getCost();
-			}
-			else solutionValues[currentIteration]=Double.MAX_VALUE; 
+			} 
+			else solutionValues[currentIteration]=Integer.MAX_VALUE; 
 		}
 		if(lastAccepted !=null) {
 //			logger.info(lastAccepted.getCost());
@@ -105,6 +107,11 @@ public class VariationCoefficientBreaker implements PrematureAlgorithmBreaker, A
 		else{
 			currentIteration++;
 		}
+	}
+
+	@Override
+	public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+		if(lastAccepted == null) lastAccepted = Solutions.getBest(solutions);
 	}
 
 	
