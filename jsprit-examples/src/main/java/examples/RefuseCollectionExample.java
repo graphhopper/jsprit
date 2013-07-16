@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import util.Solutions;
+import util.VehicleRoutingTransportCostsMatrix;
+import util.VehicleRoutingTransportCostsMatrix.Builder;
 import algorithms.GreedySchrimpfFactory;
 import analysis.SolutionPrinter;
 import analysis.SolutionPrinter.Print;
@@ -179,13 +181,12 @@ public class RefuseCollectionExample {
 		readDemandQuantities(vrpBuilder);
 		
 		/*
-		 * read distances
+		 * create cost-matrix
 		 */
-		Map<RelationKey,Integer> distances = new HashMap<RelationKey, Integer>();
-		readDistances(distances);
-		
-		VehicleRoutingTransportCosts routingCosts = new RoutingCosts(distances);
-		vrpBuilder.setRoutingCost(routingCosts);
+		VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
+		readDistances(matrixBuilder);
+
+		vrpBuilder.setRoutingCost(matrixBuilder.build());
 		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
@@ -198,6 +199,7 @@ public class RefuseCollectionExample {
 		new VrpXMLWriter(vrp, solutions).write("output/refuseCollectionExampleSolution.xml");
 		
 	}
+
 
 	private static void readDemandQuantities(VehicleRoutingProblem.Builder vrpBuilder) throws FileNotFoundException, IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(new File("input/RefuseCollectionExample_Quantities")));
@@ -221,7 +223,8 @@ public class RefuseCollectionExample {
 		reader.close();
 	}
 	
-	private static void readDistances(Map<RelationKey, Integer> distances) throws IOException {
+
+	private static void readDistances(Builder matrixBuilder) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(new File("input/RefuseCollectionExample_Distances")));
 		String line = null;
 		boolean firstLine = true;
@@ -231,8 +234,7 @@ public class RefuseCollectionExample {
 				continue;
 			}
 			String[] lineTokens = line.split(",");
-			RelationKey key = RelationKey.newKey(lineTokens[0],lineTokens[1]);
-			distances.put(key, Integer.parseInt(lineTokens[2]));
+			matrixBuilder.addTransportDistance(lineTokens[0],lineTokens[1], Integer.parseInt(lineTokens[2]));
 		}
 		reader.close();
 		
