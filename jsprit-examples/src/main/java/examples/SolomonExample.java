@@ -23,18 +23,15 @@ package examples;
 import java.util.Collection;
 
 import readers.SolomonReader;
-import algorithms.GreedySchrimpfFactory;
 import algorithms.SchrimpfFactory;
 import algorithms.selectors.SelectBest;
 import analysis.AlgorithmSearchProgressChartListener;
 import analysis.SolutionPlotter;
 import analysis.SolutionPrinter;
 import analysis.SolutionPrinter.Print;
-import analysis.StopWatch;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
-import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 
 public class SolomonExample {
 	

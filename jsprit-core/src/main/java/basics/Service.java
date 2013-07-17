@@ -26,8 +26,6 @@ import util.Coordinate;
 
 public class Service implements Job {
 
-	
-	
 	public static class Builder {
 		
 		public static Builder newInstance(String id, int size){
@@ -99,7 +97,7 @@ public class Service implements Job {
 
 	private final int demand;
 
-	private Service(Builder builder){
+	Service(Builder builder){
 		id = builder.id;
 		locationId = builder.locationId;
 		coord = builder.coord;
