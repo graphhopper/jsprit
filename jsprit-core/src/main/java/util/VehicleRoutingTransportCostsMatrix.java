@@ -10,7 +10,16 @@ import basics.route.Driver;
 import basics.route.Vehicle;
 import basics.route.VehicleTypeImpl.VehicleCostParams;
 
-
+/**
+ * CostMatrix that allows pre-compiled time and distance-matrices to be considered as {@link VehicleRoutingRoutingCosts}
+ * in the {@link VehicleRoutingProblem}.
+ * <p>Note that you can also use it with distance matrix only (or time matrix). But ones
+ * you set a particular distance, this expects distance-entries for all relations. This counts also 
+ * for a particular time. If the method getTransportCosts(...) is then invoked for a relation, where no distance can be found, an 
+ * IllegalStateException will be thrown. Thus if you want to only use distances only, do not use addTransportTime(...).
+ * @author schroeder
+ *
+ */
 public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTransportCosts {
 
 	static class RelationKey {
@@ -74,7 +83,12 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 	}
 
 	
-	
+	/**
+	 * Builder that builds the matrix.
+	 * 
+	 * @author schroeder
+	 *
+	 */
 	public static class Builder {
 		private static Logger log = Logger.getLogger(Builder.class);
 		
@@ -84,6 +98,16 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 		
 		private Map<RelationKey,Double> times = new HashMap<RelationKey, Double>();
 		
+		private boolean distancesSet = false;
+		
+		private boolean timesSet = false;
+		
+		/**
+		 * Creates a new builder returning the matrix-builder.
+		 * <p>If you want to consider symmetric matrices, set isSymmetric to true.
+		 * @param isSymmetric
+		 * @return
+		 */
 		public static Builder newInstance(boolean isSymmetric){
 			return new Builder(isSymmetric);
 		}
@@ -92,8 +116,16 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 			this.isSymmetric = isSymmetric;
 		}
 		
+		/**
+		 * Adds a transport-distance for a particular relation.
+		 * @param from
+		 * @param to
+		 * @param distance
+		 * @return
+		 */
 		public Builder addTransportDistance(String from, String to, double distance){
 			RelationKey key = RelationKey.newKey(from, to);
+			if(!distancesSet) distancesSet = true;
 			if(distances.containsKey(key)){
 				log.warn("distance from " + from + " to " + to + " already exists. This overrides distance.");
 			}
@@ -101,8 +133,16 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 			return this;
 		}
 		
+		/**
+		 * Adds transport-time for a particular relation.
+		 * @param from
+		 * @param to
+		 * @param time
+		 * @return
+		 */
 		public Builder addTransportTime(String from, String to, double time){
 			RelationKey key = RelationKey.newKey(from, to);
+			if(!timesSet) timesSet = true;
 			if(times.containsKey(key)){
 				log.warn("transport-time from " + from + " to " + to + " already exists. This overrides distance.");
 			}
@@ -110,6 +150,10 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 			return this;
 		}
 		
+		/**
+		 * Builds the matrix.
+		 * @return
+		 */
 		public VehicleRoutingTransportCostsMatrix build(){
 			return new VehicleRoutingTransportCostsMatrix(this);
 		}
@@ -121,10 +165,16 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 	
 	private boolean isSymmetric;
 	
+	private boolean timesSet;
+	
+	private boolean distancesSet;
+	
 	private VehicleRoutingTransportCostsMatrix(Builder builder){
 		this.isSymmetric = builder.isSymmetric;
 		distances.putAll(builder.distances);
 		times.putAll(builder.times);
+		timesSet = builder.timesSet;
+		distancesSet = builder.distancesSet;
 	}
 
 
@@ -136,6 +186,7 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 
 	private double getTime(String fromId, String toId) {
 		if(fromId.equals(toId)) return 0.0;
+		if(!timesSet) return 0.0;
 		RelationKey key = RelationKey.newKey(fromId, toId);
 		if(!isSymmetric){
 			if(times.containsKey(key)) return times.get(key);
@@ -153,6 +204,7 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 
 	private double getDistance(String fromId, String toId) {
 		if(fromId.equals(toId)) return 0.0;
+		if(!distancesSet) return 0.0;
 		RelationKey key = RelationKey.newKey(fromId, toId);
 		if(!isSymmetric){
 			if(distances.containsKey(key)) return distances.get(key);
