@@ -1,5 +1,6 @@
 package examples;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -18,7 +19,6 @@ import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.VrpXMLReader;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
-import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
 public class MultipleDepotExample {
@@ -27,7 +27,16 @@ public class MultipleDepotExample {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+		/*
+		 * some preparation - create output folder
+		 */
+		File dir = new File("output");
+		// if the directory does not exist, create it
+		if (!dir.exists()){
+			System.out.println("creating directory ./output");
+			boolean result = dir.mkdir();  
+			if(result) System.out.println("./output created");  
+		}
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		/*
 		 * Read cordeau-instance p01, BUT only its services without any vehicles 
