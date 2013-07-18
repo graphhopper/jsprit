@@ -31,4 +31,4 @@ Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 
 ##[About](https://github.com/jsprit/jsprit/wiki/About)
 
-[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/ba53806a8cc8ff439c1a51d152245dee "githalytics.com")](http://githalytics.com/jsprit/jsprit)
+[![](https://cruel-carlota.pagodabox.com/ba53806a8cc8ff439c1a51d152245dee "githalytics.com")](http://githalytics.com/jsprit/jsprit)
