@@ -40,7 +40,7 @@ public class Service implements Job {
 		private TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 		private int demand;
 		
-		private Builder(String id, int size) {
+		Builder(String id, int size) {
 			super();
 			this.id = id;
 			this.demand = size;
