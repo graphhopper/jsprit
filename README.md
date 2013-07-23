@@ -12,6 +12,10 @@ It is lightweight and easy-to-use, and based on heuristics currently solving
 Modifying the algorithms and visualising the discovered solutions is as easy and handy as 
 reading classical VRP instances to benchmark your algorithm.
 
+##In Development
+- VRP with Backhauls
+- Pickup and Delivery
+- Interface to [MATSim](http://matsim.org) which allows network-based problems (e.g. OSM generated) and dynamic visualization
 
 ##License
 This program is free software; you can redistribute it and/or
