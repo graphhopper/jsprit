@@ -15,7 +15,7 @@ reading classical VRP instances to benchmark your algorithm.
 ##In Development
 - VRP with Backhauls
 - Pickup and Delivery
-- Interface to <a href="http://matsim.org" target="_blank">MATSim</a> which allows network-based problems (e.g. OSM generated), least cost path routing with fast A* and Dijkstra algortihms and dynamic, interactive visualization
+- Interface to <a href="http://matsim.org" target="_blank">MATSim</a> which allows network-based problems (e.g. OSM generated), least cost path routing with fast A* and Dijkstra algorithms and dynamic, interactive visualization
 
 ##License
 This program is free software; you can redistribute it and/or
