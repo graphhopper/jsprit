@@ -26,6 +26,11 @@ public class PenaltyVehicleType implements VehicleType{
 		return type.getVehicleCostParams();
 	}
 
+	@Override
+	public double getMaxVelocity() {
+		return type.getMaxVelocity();
+	}
+
 	
 
 }
