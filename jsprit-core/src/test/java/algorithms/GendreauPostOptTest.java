@@ -204,7 +204,7 @@ public class GendreauPostOptTest {
 		
 		RuinRadial radialRuin = RuinRadial.newInstance(vrp, 0.2, new JobDistanceAvgCosts(vrp.getTransportCosts()), new JobRemoverImpl(), updater);
 		AbstractInsertionStrategy insertionStrategy = new BestInsertion(routeAlgorithm);
-		GendreauPostOpt postOpt = new GendreauPostOpt(vrp, radialRuin, insertionStrategy);
+		Gendreau postOpt = new Gendreau(vrp, radialRuin, insertionStrategy);
 		postOpt.setFleetManager(fleetManager);
 		VehicleRoutingProblemSolution newSolution = postOpt.runAndGetSolution(sol);
 		
@@ -245,7 +245,7 @@ public class GendreauPostOptTest {
 		
 		RuinRadial radialRuin = RuinRadial.newInstance(vrp, 0.2, new JobDistanceAvgCosts(vrp.getTransportCosts()), new JobRemoverImpl(), updater);
 		AbstractInsertionStrategy insertionStrategy = new BestInsertion(routeAlgorithm);
-		GendreauPostOpt postOpt = new GendreauPostOpt(vrp, radialRuin, insertionStrategy);
+		Gendreau postOpt = new Gendreau(vrp, radialRuin, insertionStrategy);
 		postOpt.setShareOfJobsToRuin(1.0);
 		postOpt.setNuOfIterations(1);
 		postOpt.setFleetManager(fleetManager);

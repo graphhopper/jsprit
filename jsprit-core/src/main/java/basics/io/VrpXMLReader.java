@@ -274,7 +274,7 @@ public class VrpXMLReader{
 			if(distC != null) typeBuilder.setCostPerDistance(distC);
 //			if(start != null && end != null) typeBuilder.setTimeSchedule(new TimeSchedule(start, end));
 			VehicleTypeImpl type = typeBuilder.build();
-			types.put(type.typeId, type);
+			types.put(type.getTypeId(), type);
 			vrpBuilder.addVehicleType(type);
 		}
 		

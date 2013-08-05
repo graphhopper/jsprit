@@ -746,11 +746,11 @@ public class VehicleRoutingAlgorithms {
 			return module;
 		}
 	
-		if(moduleName.equals("gendreauPostOpt")){
+		if(moduleName.equals("gendreau")){
 			int iterations = moduleConfig.getInt("iterations");
 			double share = moduleConfig.getDouble("share");
 			String ruinName = moduleConfig.getString("ruin[@name]");
-			if(ruinName == null) throw new IllegalStateException("gendreauPostOpt.ruin[@name] is missing. set it to \"radialRuin\" or \"randomRuin\"");
+			if(ruinName == null) throw new IllegalStateException("gendreau.ruin[@name] is missing. set it to \"radialRuin\" or \"randomRuin\"");
 			String ruinId = moduleConfig.getString("ruin[@id]");
 			if(ruinId == null) ruinId = "noId";
 			ModKey ruinKey = makeKey(ruinName,ruinId);
@@ -762,7 +762,7 @@ public class VehicleRoutingAlgorithms {
 			}
 			
 			String insertionName = moduleConfig.getString("insertion[@name]");
-			if(insertionName == null) throw new IllegalStateException("gendreauPostOpt.insertion[@name] is missing. set it to \"regretInsertion\" or \"bestInsertion\"");
+			if(insertionName == null) throw new IllegalStateException("gendreau.insertion[@name] is missing. set it to \"regretInsertion\" or \"bestInsertion\"");
 			String insertionId = moduleConfig.getString("insertion[@id]");
 			if(insertionId == null) insertionId = "noId";
 			ModKey insertionKey = makeKey(insertionName,insertionId);
@@ -775,12 +775,12 @@ public class VehicleRoutingAlgorithms {
 				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
 				algorithmListeners.addAll(prioListeners);
 			}
-			GendreauPostOpt postOpt = new GendreauPostOpt(vrp, ruin, insertion);
-			postOpt.setShareOfJobsToRuin(share);
-			postOpt.setNuOfIterations(iterations);
-			postOpt.setFleetManager(vehicleFleetManager);
-			definedClasses.put(strategyModuleKey, postOpt);
-			return postOpt;
+			Gendreau gendreau = new Gendreau(vrp, ruin, insertion);
+			gendreau.setShareOfJobsToRuin(share);
+			gendreau.setNuOfIterations(iterations);
+			gendreau.setFleetManager(vehicleFleetManager);
+			definedClasses.put(strategyModuleKey, gendreau);
+			return gendreau;
 		}
 		throw new NullPointerException("no module found with moduleName=" + moduleName + 
 				"\n\tcheck config whether the correct names are used" +

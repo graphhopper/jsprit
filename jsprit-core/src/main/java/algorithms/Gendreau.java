@@ -41,9 +41,9 @@ import basics.route.TourActivity.JobActivity;
 
 import util.RandomNumberGeneration;
 
-final class GendreauPostOpt implements SearchStrategyModule{
+final class Gendreau implements SearchStrategyModule{
 
-	private final static Logger log = Logger.getLogger(GendreauPostOpt.class);
+	private final static Logger log = Logger.getLogger(Gendreau.class);
 	
 	private final static String NAME = "gendreauPostOpt"; 
 	
@@ -67,7 +67,7 @@ final class GendreauPostOpt implements SearchStrategyModule{
 		this.shareOfJobsToRuin = shareOfJobsToRuin;
 	}
 
-	public GendreauPostOpt(VehicleRoutingProblem vrp, RuinStrategy ruin, AbstractInsertionStrategy insertionStrategy) {
+	public Gendreau(VehicleRoutingProblem vrp, RuinStrategy ruin, AbstractInsertionStrategy insertionStrategy) {
 		super();
 		this.routeAlgorithm = insertionStrategy.getRouteAlgorithm();
 		this.ruin = ruin;
@@ -77,7 +77,7 @@ final class GendreauPostOpt implements SearchStrategyModule{
 
 	@Override
 	public String toString() {
-		return "[name=gendreauPostOpt][iterations="+nOfIterations+"][share2ruin="+shareOfJobsToRuin+"]";
+		return "[name=gendreau][iterations="+nOfIterations+"][share2ruin="+shareOfJobsToRuin+"]";
 	}
 	
 	public void setRandom(Random random) {
