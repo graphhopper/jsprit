@@ -12,10 +12,14 @@ It is lightweight and easy-to-use, and based on heuristics currently solving
 Modifying the algorithms and visualising the discovered solutions is as easy and handy as 
 reading classical VRP instances to benchmark your algorithm.
 
+Additionally, jsprit can be used along with <a href="http://www.matsim.org" target="blank_">MATSim</a> 
+to solve the above problem-types in real networks (wich might be OSM generated). A variety of least cost path algorithms such as Dijkstra and A*
+can be used, and a dynamic and interactive visualiser enhances the analysis part significantly.
+
 ##In Development
 - VRP with Backhauls
 - Pickup and Delivery
-- Interface to <a href="http://matsim.org" target="_blank">MATSim</a> which allows network-based problems (e.g. OSM generated), least cost path routing with fast A* and Dijkstra algorithms and dynamic, interactive visualization
+
 
 ##License
 This program is free software; you can redistribute it and/or
