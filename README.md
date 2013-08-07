@@ -14,7 +14,7 @@ reading classical VRP instances to benchmark your algorithm.
 
 Additionally, jsprit can be used along with <a href="http://www.matsim.org" target="blank_">MATSim</a> 
 to solve the above problem-types in real networks (OSM networks are supported as well). A variety of least cost path algorithms such as Dijkstra and A*
-can be used, and a dynamic and interactive visualiser enhances the analysis part significantly.
+can be used, and a dynamic and interactive visualiser greatly enhances the analysis.
 
 ##In Development
 - VRP with Backhauls
