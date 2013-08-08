@@ -13,7 +13,7 @@ Modifying the algorithms and visualising the discovered solutions is as easy and
 reading classical VRP instances to benchmark your algorithm.
 
 Additionally, jsprit can be used along with <a href="http://www.matsim.org" target="blank_">MATSim</a> 
-to solve the above problem-types in real networks (without preprocessing transport times and costs). A variety of least cost path algorithms such as Dijkstra and A*
+to solve the above problem-types in real networks (i.e. without preprocessing transport times and costs). A variety of least cost path algorithms such as Dijkstra and A*
 can be used, and a dynamic and interactive visualiser greatly enhances the analysis.
 
 ##In Development
