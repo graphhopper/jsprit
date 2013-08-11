@@ -29,8 +29,6 @@ import util.RandomNumberGeneration;
 import util.StopWatch;
 import basics.Job;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblemSolution;
-import basics.algo.SearchStrategyModule;
 import basics.route.VehicleRoute;
 
 
@@ -49,7 +47,7 @@ final class RuinRadial implements RuinStrategy {
 	 * @return
 	 */
 	static RuinRadial newInstance(VehicleRoutingProblem vrp, double fraction, JobDistance jobDistance, JobRemover jobRemover, VehicleRouteUpdater routeUpdater){
-		return new RuinRadial(vrp, fraction, jobDistance, jobRemover, routeUpdater);
+		return new RuinRadial(vrp, fraction, jobDistance);
 	}
 	
 	
@@ -92,12 +90,10 @@ final class RuinRadial implements RuinStrategy {
 		this.random = random;
 	}
 
-	public RuinRadial(VehicleRoutingProblem vrp, double fraction, JobDistance jobDistance, JobRemover jobRemover, VehicleRouteUpdater routeUpdater) {
+	public RuinRadial(VehicleRoutingProblem vrp, double fraction, JobDistance jobDistance) {
 		super();
 		this.vrp = vrp;
 		this.jobDistance = jobDistance;
-		this.jobRemover = jobRemover;
-		this.routeUpdater = routeUpdater;
 		this.fractionOfAllNodes2beRuined = fraction;
 		calculateDistancesFromJob2Job();
 		logger.info("intialise " + this);

@@ -37,7 +37,7 @@ import basics.route.VehicleRoute;
 final class RuinRandom implements RuinStrategy {
 
 	public static RuinRandom newInstance(VehicleRoutingProblem vrp, double fraction, JobRemover jobRemover, VehicleRouteUpdater routeUpdater){
-		return new RuinRandom(vrp, fraction, jobRemover, routeUpdater);
+		return new RuinRandom(vrp, fraction);
 	}
 	
 	private Logger logger = Logger.getLogger(RuinRandom.class);
@@ -48,10 +48,6 @@ final class RuinRandom implements RuinStrategy {
 
 	private Random random = RandomNumberGeneration.getRandom();
 
-	private JobRemover jobRemover;
-
-	private VehicleRouteUpdater vehicleRouteUpdater;
-
 	public void setRandom(Random random) {
 		this.random = random;
 	}
@@ -61,14 +57,10 @@ final class RuinRandom implements RuinStrategy {
 	 * 
 	 * @param vrp
 	 * @param fraction which is the fraction of total c
-	 * @param jobRemover
-	 * @param vehicleRouteUpdater
 	 */
-	public RuinRandom(VehicleRoutingProblem vrp, double fraction, JobRemover jobRemover, VehicleRouteUpdater vehicleRouteUpdater) {
+	public RuinRandom(VehicleRoutingProblem vrp, double fraction) {
 		super();
 		this.vrp = vrp;
-		this.jobRemover = jobRemover;
-		this.vehicleRouteUpdater = vehicleRouteUpdater;
 		this.fractionOfAllNodes2beRuined = fraction;
 		logger.info("initialise " + this);
 		logger.info("done");
@@ -81,9 +73,11 @@ final class RuinRandom implements RuinStrategy {
 	 */
 	@Override
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
+		
 		List<Job> unassignedJobs = new ArrayList<Job>();
 		int nOfJobs2BeRemoved = selectNuOfJobs2BeRemoved();
 		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
+		
 		return unassignedJobs;
 	}
 
@@ -92,19 +86,22 @@ final class RuinRandom implements RuinStrategy {
 	 */
 	@Override
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
+		ruinStarts(vehicleRoutes);
 		List<Job> unassignedJobs = new ArrayList<Job>();
 		if(targetJob != null){
 			boolean removed = false;
 			for (VehicleRoute route : vehicleRoutes) {
-				removed = jobRemover.removeJobWithoutTourUpdate(targetJob, route);
+				removed = route.getTourActivities().removeJob(targetJob);
 				if (removed) {
 					nOfJobs2BeRemoved--;
 					unassignedJobs.add(targetJob);
+					jobRemoved(targetJob,route);
 					break;
 				}
 			}
 		}
 		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
+		ruinEnds(vehicleRoutes);
 		return unassignedJobs;
 	}
 
@@ -120,19 +117,29 @@ final class RuinRandom implements RuinStrategy {
 			unassignedJobs.add(job);
 			availableJobs.remove(job);
 			for (VehicleRoute route : vehicleRoutes) {
-				boolean removed = jobRemover.removeJobWithoutTourUpdate(job, route);
-				if (removed) break;
+				boolean removed = route.getTourActivities().removeJob(job);
+				if (removed) {
+					jobRemoved(job,route);
+					break;
+				}
 			}
 		}
-		updateRoutes(vehicleRoutes);
 	}
 
-	private void updateRoutes(Collection<VehicleRoute> vehicleRoutes) {
-		for(VehicleRoute route : vehicleRoutes){
-			vehicleRouteUpdater.updateRoute(route);
-		}
+	private void ruinEnds(Collection<VehicleRoute> vehicleRoutes) {
+		// TODO Auto-generated method stub
+		
 	}
 
+	private void ruinStarts(Collection<VehicleRoute> vehicleRoutes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void jobRemoved(Job job, VehicleRoute route) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	@Override
 	public String toString() {

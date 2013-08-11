@@ -76,14 +76,8 @@ public class TourActivities {
 	}
 	
 	private final ArrayList<TourActivity> tourActivities = new ArrayList<TourActivity>();
-//	private final LinkedList<TourActivity> tourActivities = new LinkedList<TourActivity>();
-//	private final TreeList tourActivities = new TreeList();
 
 	private final Set<Job> jobs = new HashSet<Job>();
-	
-	private int load = 0;
-	
-	private double cost = 0.0;
 	
 	private ReverseActivityIterator backward;
 	
@@ -125,7 +119,7 @@ public class TourActivities {
 	}
 
 	/**
-	 * Removes job AND belonging activity from tour.
+	 * Removes job AND belonging activity from tour and returns true if job has been removed, otherwise false.
 	 * 
 	 * @param job
 	 * @return
