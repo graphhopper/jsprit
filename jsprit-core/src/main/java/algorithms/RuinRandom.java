@@ -73,11 +73,9 @@ final class RuinRandom implements RuinStrategy {
 	 */
 	@Override
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
-		
 		List<Job> unassignedJobs = new ArrayList<Job>();
 		int nOfJobs2BeRemoved = selectNuOfJobs2BeRemoved();
 		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
-		
 		return unassignedJobs;
 	}
 

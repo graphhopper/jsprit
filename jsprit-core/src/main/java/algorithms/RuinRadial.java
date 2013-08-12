@@ -82,10 +82,6 @@ final class RuinRadial implements RuinStrategy {
 
 	private JobDistance jobDistance;
 	
-	private JobRemover jobRemover;
-	
-	private VehicleRouteUpdater routeUpdater;
-
 	public void setRandom(Random random) {
 		this.random = random;
 	}
@@ -154,6 +150,7 @@ final class RuinRadial implements RuinStrategy {
 	}
 	
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved){
+		ruinStarts(vehicleRoutes);
 		List<Job> unassignedJobs = new ArrayList<Job>();
 		TreeSet<ReferencedJob> tree = distanceNodeTree.get(targetJob.getId());
 		Iterator<ReferencedJob> descendingIterator = tree.descendingIterator();
@@ -165,18 +162,32 @@ final class RuinRadial implements RuinStrategy {
 			counter++;
 			boolean removed = false;
 			for (VehicleRoute route : vehicleRoutes) {
-				removed = jobRemover.removeJobWithoutTourUpdate(job, route); 
+				removed = route.getTourActivities().removeJob(job);; 
 				if (removed) {
+					jobRemoved(job,route);
 					break;
 				}
 			}
 		}
-		for(VehicleRoute route : vehicleRoutes){
-			routeUpdater.updateRoute(route);
-		}
+		ruinEnds(vehicleRoutes);
 		return unassignedJobs;
 	}
 	
+	private void ruinEnds(Collection<VehicleRoute> vehicleRoutes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void jobRemoved(Job job, VehicleRoute route) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void ruinStarts(Collection<VehicleRoute> vehicleRoutes) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private Job pickRandomJob() {
 		int totNuOfJobs = vrp.getJobs().values().size();
 		int randomIndex = random.nextInt(totNuOfJobs);
