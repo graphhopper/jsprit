@@ -13,7 +13,6 @@
 package algorithms;
 
 import java.util.Collection;
-import java.util.List;
 
 import basics.Job;
 import basics.route.VehicleRoute;
