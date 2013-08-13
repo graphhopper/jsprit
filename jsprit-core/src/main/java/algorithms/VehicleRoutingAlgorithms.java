@@ -655,8 +655,8 @@ public class VehicleRoutingAlgorithms {
 		}
 	}
 	
-	private static SearchStrategyModule buildModule(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, 
-			RouteStates activityStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
+	private static SearchStrategyModule buildModule(HierarchicalConfiguration moduleConfig, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, 
+			final RouteStates activityStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
 		String moduleName = moduleConfig.getString("[@name]");
 		if(moduleName == null) throw new IllegalStateException("module(-name) is missing.");
 		String moduleId = moduleConfig.getString("[@id]");
@@ -760,6 +760,23 @@ public class VehicleRoutingAlgorithms {
 			RuinStrategy ruin = definedClasses.get(stratKey);
 			if(ruin == null){
 				ruin = new RuinRadial(vrp, 0.3, new JobDistanceAvgCosts(vrp.getTransportCosts()));
+				ruin.addListener(new RuinListener() {
+				
+				TourStateUpdater updater = new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts());
+				
+				@Override
+				public void ruinStarts(Collection<VehicleRoute> routes) {}
+				
+				@Override
+				public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+					for(VehicleRoute route : routes){
+						updater.updateRoute(route);
+					}	
+				}
+				
+				@Override
+				public void removed(Job job, VehicleRoute fromRoute) {}
+			});
 				definedClasses.put(stratKey, ruin);
 			}
 			
@@ -793,29 +810,50 @@ public class VehicleRoutingAlgorithms {
 				"\n\tgendreauPostOpt");
 	}
 
-	private static RuinStrategy getRadialRuin(VehicleRoutingProblem vrp, RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
+	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
 			ruin = new RuinRadial(vrp, shareToRuin, jobDistance);
-			definedClasses.put(stratKey, ruin);
-		}
-		return ruin;
-	}
-
-	private static RuinStrategy getRandomRuin(VehicleRoutingProblem vrp, RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
-		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
-		RuinStrategy ruin = definedClasses.get(stratKey);
-		if(ruin == null){
-			ruin = new RuinRandom(vrp, shareToRuin);
 			ruin.addListener(new RuinListener() {
+				
+				TourStateUpdater updater = new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts());
 				
 				@Override
 				public void ruinStarts(Collection<VehicleRoute> routes) {}
 				
 				@Override
 				public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-//					new 
+					for(VehicleRoute route : routes){
+						updater.updateRoute(route);
+					}	
+				}
+				
+				@Override
+				public void removed(Job job, VehicleRoute fromRoute) {}
+			});
+			definedClasses.put(stratKey, ruin);
+		}
+		return ruin;
+	}
+
+	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
+		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
+		RuinStrategy ruin = definedClasses.get(stratKey);
+		if(ruin == null){
+			ruin = new RuinRandom(vrp, shareToRuin);
+			ruin.addListener(new RuinListener() {
+				
+				TourStateUpdater updater = new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts());
+				
+				@Override
+				public void ruinStarts(Collection<VehicleRoute> routes) {}
+				
+				@Override
+				public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+					for(VehicleRoute route : routes){
+						updater.updateRoute(route);
+					}	
 				}
 				
 				@Override

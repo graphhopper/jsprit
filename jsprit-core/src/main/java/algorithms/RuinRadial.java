@@ -174,19 +174,8 @@ final class RuinRadial implements RuinStrategy {
 
 	@Override
 	public void addListener(RuinListener ruinListener) {
-		// TODO Auto-generated method stub
-		
+		ruinListeners.addListener(ruinListener);
 	}
 
-//	@Override
-//	public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-//		ruin(vrpSolution.getRoutes());
-//		return vrpSolution;
-//	}
-//
-//	@Override
-//	public String getName() {
-//		return NAME;
-//	}
 
 }

@@ -72,9 +72,11 @@ final class RuinRandom implements RuinStrategy {
 	 */
 	@Override
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
+		ruinListeners.ruinStarts(vehicleRoutes);
 		List<Job> unassignedJobs = new ArrayList<Job>();
 		int nOfJobs2BeRemoved = selectNuOfJobs2BeRemoved();
 		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
+		ruinListeners.ruinEnds(vehicleRoutes, unassignedJobs);
 		return unassignedJobs;
 	}
 
@@ -107,7 +109,7 @@ final class RuinRandom implements RuinStrategy {
 		logger.info("fraction set " + this);
 	}
 
-	private void ruin(Collection<VehicleRoute> vehicleRoutes,int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
+	private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
 		LinkedList<Job> availableJobs = new LinkedList<Job>(vrp.getJobs().values());
 		for (int i = 0; i < nOfJobs2BeRemoved; i++) {
 			Job job = pickRandomJob(availableJobs);
