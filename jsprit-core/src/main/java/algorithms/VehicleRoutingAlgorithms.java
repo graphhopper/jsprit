@@ -36,6 +36,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
 import util.RouteUtils;
+import algorithms.RuinStrategy.RuinListener;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractInsertionKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
@@ -59,16 +60,17 @@ import basics.algo.InsertionListener;
 import basics.algo.IterationWithoutImprovementBreaker;
 import basics.algo.PrematureAlgorithmBreaker;
 import basics.algo.SearchStrategy;
+import basics.algo.SearchStrategy.DiscoveredSolution;
 import basics.algo.SearchStrategyManager;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
 import basics.algo.TimeBreaker;
 import basics.algo.VariationCoefficientBreaker;
-import basics.algo.SearchStrategy.DiscoveredSolution;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.AlgorithmConfig;
 import basics.io.AlgorithmConfigXmlReader;
+import basics.route.VehicleRoute;
 
 
 
@@ -801,13 +803,24 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 
-	private static RuinStrategy getRandomRuin(VehicleRoutingProblem vrp,
-			RouteStates activityStates, TypedMap definedClasses,
-			ModKey modKey, double shareToRuin) {
+	private static RuinStrategy getRandomRuin(VehicleRoutingProblem vrp, RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
 			ruin = new RuinRandom(vrp, shareToRuin);
+			ruin.addListener(new RuinListener() {
+				
+				@Override
+				public void ruinStarts(Collection<VehicleRoute> routes) {}
+				
+				@Override
+				public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+//					new 
+				}
+				
+				@Override
+				public void removed(Job job, VehicleRoute fromRoute) {}
+			});
 			definedClasses.put(stratKey, ruin);
 		}
 		return ruin;
