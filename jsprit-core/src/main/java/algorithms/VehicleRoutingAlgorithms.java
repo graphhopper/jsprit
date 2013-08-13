@@ -757,7 +757,7 @@ public class VehicleRoutingAlgorithms {
 			RuinStrategyKey stratKey = new RuinStrategyKey(ruinKey);
 			RuinStrategy ruin = definedClasses.get(stratKey);
 			if(ruin == null){
-				ruin = RuinRadial.newInstance(vrp, 0.3, new JobDistanceAvgCosts(vrp.getTransportCosts()), new JobRemoverImpl(), new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
+				ruin = new RuinRadial(vrp, 0.3, new JobDistanceAvgCosts(vrp.getTransportCosts()));
 				definedClasses.put(stratKey, ruin);
 			}
 			
@@ -795,7 +795,7 @@ public class VehicleRoutingAlgorithms {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
-			ruin = RuinRadial.newInstance(vrp, shareToRuin, jobDistance, new JobRemoverImpl(), new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
+			ruin = new RuinRadial(vrp, shareToRuin, jobDistance);
 			definedClasses.put(stratKey, ruin);
 		}
 		return ruin;
@@ -807,7 +807,7 @@ public class VehicleRoutingAlgorithms {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
-			ruin = RuinRandom.newInstance(vrp, shareToRuin, new JobRemoverImpl(), new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
+			ruin = new RuinRandom(vrp, shareToRuin);
 			definedClasses.put(stratKey, ruin);
 		}
 		return ruin;

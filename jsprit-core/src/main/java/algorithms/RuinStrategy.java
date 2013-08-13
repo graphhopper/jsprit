@@ -31,6 +31,12 @@ interface RuinStrategy {
 	
 	public static interface RuinListener {
 		
+		public void ruinStarts(Collection<VehicleRoute> routes);
+		
+		public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs);
+		
+		public void removed(Job job, VehicleRoute fromRoute);
+		
 	}
 
 	/**
@@ -43,5 +49,7 @@ interface RuinStrategy {
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes);
 
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved);
+	
+	public void addListener(RuinListener ruinListener);
 
 }

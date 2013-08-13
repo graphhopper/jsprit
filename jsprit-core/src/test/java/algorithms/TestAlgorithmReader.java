@@ -169,6 +169,12 @@ public class TestAlgorithmReader {
 				// TODO Auto-generated method stub
 				return null;
 			}
+
+			@Override
+			public void addListener(RuinListener ruinListener) {
+				// TODO Auto-generated method stub
+				
+			}
 			
 		};
 		
