@@ -15,6 +15,7 @@ package algorithms;
 import java.util.Collection;
 
 import basics.Job;
+import basics.algo.InsertionListener;
 import basics.route.VehicleRoute;
 
 
@@ -62,5 +63,7 @@ interface InsertionStrategy {
 	 * @param result2beat
 	 */
 	public void run(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs, double result2beat);
+	
+	public void addListener(InsertionListener insertionListener);
 
 }

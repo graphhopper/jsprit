@@ -51,7 +51,7 @@ final class CreateInitialSolution implements InitialSolutionFactory {
 
 	private static final Logger logger = Logger.getLogger(CreateInitialSolution.class);
 
-	private final AbstractInsertionStrategy insertion;
+	private final InsertionStrategy insertion;
 	
 	private boolean generateAsMuchAsRoutesAsVehiclesExist = false;
 	
@@ -59,9 +59,9 @@ final class CreateInitialSolution implements InitialSolutionFactory {
 		this.generateAsMuchAsRoutesAsVehiclesExist = generateAsMuchAsRoutesAsVehiclesExist;
 	}
 
-	public CreateInitialSolution(AbstractInsertionStrategy insertion) {
+	public CreateInitialSolution(InsertionStrategy insertionStrategy) {
 		super();
-		this.insertion = insertion;
+		this.insertion = insertionStrategy;
 	}
 
 	@Override

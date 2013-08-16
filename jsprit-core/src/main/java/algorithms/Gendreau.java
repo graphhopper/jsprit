@@ -51,7 +51,7 @@ final class Gendreau implements SearchStrategyModule{
 	
 	private final VehicleRoutingProblem vrp;
 	
-	private final AbstractInsertionStrategy insertionStrategy;
+	private final InsertionStrategy insertionStrategy;
 	
 	private final RouteAlgorithm routeAlgorithm;
 	
@@ -67,7 +67,7 @@ final class Gendreau implements SearchStrategyModule{
 		this.shareOfJobsToRuin = shareOfJobsToRuin;
 	}
 
-	public Gendreau(VehicleRoutingProblem vrp, RuinStrategy ruin, AbstractInsertionStrategy insertionStrategy) {
+	public Gendreau(VehicleRoutingProblem vrp, RuinStrategy ruin, InsertionStrategy insertionStrategy) {
 		super();
 		this.routeAlgorithm = insertionStrategy.getRouteAlgorithm();
 		this.ruin = ruin;

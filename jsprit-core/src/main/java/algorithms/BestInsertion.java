@@ -45,6 +45,8 @@ final class BestInsertion extends AbstractInsertionStrategy{
 
 	private Random random = RandomNumberGeneration.getRandom();
 	
+	private InsertionListeners insertionsListeners;
+	
 	private RouteAlgorithm routeAlgorithm;
 	
 	public void setExperimentalPreferredRoute(Map<String, VehicleRoute> experimentalPreferredRoute) {
@@ -67,6 +69,7 @@ final class BestInsertion extends AbstractInsertionStrategy{
 	public BestInsertion(RouteAlgorithm routeAlgorithm) {
 		super();
 		this.routeAlgorithm = routeAlgorithm;
+		this.insertionsListeners = new InsertionListeners();
 		logger.info("initialise " + this);
 	}
 	
@@ -86,8 +89,7 @@ final class BestInsertion extends AbstractInsertionStrategy{
 		informInsertionStarts(vehicleRoutes,unassignedJobs.size());
 		int inserted = 0;
 		List<String> reasons = new ArrayList<String>();
-		for(Job unassignedJob : unassignedJobList){
-			
+		for(Job unassignedJob : unassignedJobList){			
 			VehicleRoute insertIn = null;
 			Insertion bestInsertion = null;
 			double bestInsertionCost = Double.MAX_VALUE;
