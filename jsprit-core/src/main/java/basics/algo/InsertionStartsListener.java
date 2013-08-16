@@ -22,10 +22,11 @@ package basics.algo;
 
 import java.util.Collection;
 
+import basics.Job;
 import basics.route.VehicleRoute;
 
 
 public interface InsertionStartsListener extends InsertionListener {
 
-	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2Recreate);
+	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);
 }
