@@ -73,7 +73,7 @@ final class CreateInitialSolution implements InitialSolutionFactory {
 				vehicleRoutes.add(VehicleRoute.newInstance(TourActivities.emptyTour(), DriverImpl.noDriver(), vehicle));
 			}
 		}
-		insertion.run(vehicleRoutes, getUnassignedJobs(vrp), Double.MAX_VALUE);
+		insertion.insertJobs(vehicleRoutes, getUnassignedJobs(vrp));
 		double totalCost = getTotalCost(vehicleRoutes);
 		logger.info("creation done");
 		return new VehicleRoutingProblemSolution(vehicleRoutes, totalCost);

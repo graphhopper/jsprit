@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import util.RandomNumberGeneration;
 import algorithms.InsertionData.NoInsertionFound;
 import basics.Job;
+import basics.algo.InsertionListener;
 import basics.route.VehicleRoute;
 
 
@@ -40,7 +41,7 @@ import basics.route.VehicleRoute;
  * 
  */
 
-final class BestInsertionConcurrent extends AbstractInsertionStrategy{
+final class BestInsertionConcurrent implements InsertionStrategy{
 	
 	public static BestInsertionConcurrent newInstance(RouteAlgorithm routeAlgorithm, ExecutorService executor, int nuOfThreads){
 		return new BestInsertionConcurrent(routeAlgorithm, executor, nuOfThreads);
@@ -82,10 +83,10 @@ final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 	}
 
 	@Override
-	public void run(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs, double result2beat) {
+	public void insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
 		List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
 		Collections.shuffle(unassignedJobList, random);
-		informInsertionStarts(vehicleRoutes,unassignedJobs.size());
+//		informInsertionStarts(vehicleRoutes,unassignedJobs.size());
 		int inserted = 0;
 		for(final Job unassignedJob : unassignedJobList){
 			VehicleRoute insertIn = null;
@@ -127,7 +128,7 @@ final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 			}	
 			
 			if(bestInsertion != null){
-				informBeforeJobInsertion(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
+//				informBeforeJobInsertion(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
 				insertIn = bestInsertion.getRoute();
 //				logger.debug("insert job="+unassignedJob+" at index=" + bestInsertion.getInsertionData().getInsertionIndex() + " delta cost=" + bestInsertion.getInsertionData().getInsertionCost());
 				routeAlgorithm.insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
@@ -144,9 +145,9 @@ final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 //				vehicleRoutes.add(newRoute);
 			}
 			inserted++;
-			informJobInserted((unassignedJobList.size()-inserted), unassignedJob, insertIn);
+//			informJobInserted((unassignedJobList.size()-inserted), unassignedJob, insertIn);
 		}
-		informInsertionEndsListeners(vehicleRoutes);
+//		informInsertionEndsListeners(vehicleRoutes);
 	}
 	
 	private Insertion getBestInsertion(Batch batch, Job unassignedJob) {
@@ -191,9 +192,23 @@ final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 		return batches;
 	}
 
+
 	@Override
-	public RouteAlgorithm getRouteAlgorithm() {
-		return routeAlgorithm;
+	public void removeListener(InsertionListener insertionListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Collection<InsertionListener> getListeners() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addListener(InsertionListener insertionListener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

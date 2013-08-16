@@ -21,6 +21,7 @@
 package algorithms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,16 +31,15 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import util.RandomNumberGeneration;
 import basics.Job;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
 import basics.route.TourActivity;
-import basics.route.VehicleRoute;
 import basics.route.TourActivity.JobActivity;
-
-import util.RandomNumberGeneration;
+import basics.route.VehicleRoute;
 
 final class Gendreau implements SearchStrategyModule{
 
@@ -53,7 +53,7 @@ final class Gendreau implements SearchStrategyModule{
 	
 	private final InsertionStrategy insertionStrategy;
 	
-	private final RouteAlgorithm routeAlgorithm;
+	private final Inserter inserter;
 	
 	private VehicleFleetManager fleetManager;
 
@@ -69,7 +69,9 @@ final class Gendreau implements SearchStrategyModule{
 
 	public Gendreau(VehicleRoutingProblem vrp, RuinStrategy ruin, InsertionStrategy insertionStrategy) {
 		super();
-		this.routeAlgorithm = insertionStrategy.getRouteAlgorithm();
+		InsertionListeners insertionListeners = new InsertionListeners();
+		insertionListeners.addAllListeners(insertionStrategy.getListeners());
+		inserter = new Inserter(insertionListeners);
 		this.ruin = ruin;
 		this.vrp = vrp;
 		this.insertionStrategy = insertionStrategy;
@@ -119,16 +121,18 @@ final class Gendreau implements SearchStrategyModule{
 			
 			VehicleRoute emptyRoute1 = VehicleRoute.emptyRoute();
 			copiedRoutes.add(emptyRoute1);
-			routeAlgorithm.insertJob(targetJob, routeAlgorithm.calculateBestInsertion(emptyRoute1, targetJob, Double.MAX_VALUE), emptyRoute1);
+			insertionStrategy.insertJobs(Arrays.asList(emptyRoute1), Arrays.asList(targetJob));
+//			routeAlgorithm.insertJob(targetJob, routeAlgorithm.calculateBestInsertion(emptyRoute1, targetJob, Double.MAX_VALUE), emptyRoute1);
 			unassignedJobs.remove(targetJob);
 			
 			VehicleRoute emptyRoute2 = VehicleRoute.emptyRoute();
 			copiedRoutes.add(emptyRoute2);
 			Job job2 = jobsInRoute.get(1);
-			routeAlgorithm.insertJob(job2, routeAlgorithm.calculateBestInsertion(emptyRoute2, job2, Double.MAX_VALUE), emptyRoute2);
+			insertionStrategy.insertJobs(Arrays.asList(emptyRoute2), Arrays.asList(job2));
+//			routeAlgorithm.insertJob(job2, routeAlgorithm.calculateBestInsertion(emptyRoute2, job2, Double.MAX_VALUE), emptyRoute2);
 			unassignedJobs.remove(job2);
 			
-			insertionStrategy.run(copiedRoutes, unassignedJobs, Double.MAX_VALUE);
+			insertionStrategy.insertJobs(copiedRoutes, unassignedJobs);
 			double cost = getCost(copiedRoutes);
 			
 			if(cost < bestSolution.getCost()){

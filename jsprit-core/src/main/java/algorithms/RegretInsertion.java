@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import algorithms.InsertionData.NoInsertionFound;
 import basics.Job;
 import basics.Service;
+import basics.algo.InsertionListener;
 import basics.route.VehicleRoute;
 
 
@@ -35,7 +36,7 @@ import basics.route.VehicleRoute;
  * @author stefan schroeder
  *
  */
-final class RegretInsertion extends AbstractInsertionStrategy{
+final class RegretInsertion implements InsertionStrategy{
 		
 	/**
 	 * Scorer to include other impacts on score such as time-window length or distance to depot.
@@ -127,9 +128,9 @@ final class RegretInsertion extends AbstractInsertionStrategy{
 	 * 
 	 */
 	@Override
-	public void run(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, double resultToBeat) {
+	public void insertJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
 		List<Job> jobs = new ArrayList<Job>(unassignedJobs);
-		informInsertionStarts(routes,unassignedJobs.size());
+//		informInsertionStarts(routes,unassignedJobs);
 		int inserted = 0;
 		while(!jobs.isEmpty()){
 			List<Job> unassignedJobList = new ArrayList<Job>(jobs);
@@ -191,7 +192,7 @@ final class RegretInsertion extends AbstractInsertionStrategy{
 				jobs.remove(bestScoredJob.getJob());
 			}
 			inserted++;
-			informJobInserted((unassignedJobList.size()-inserted), assignedJob, insertIn);
+//			informJobInserted(assignedJob, insertIn);
 			
 		}
 	}
@@ -205,6 +206,24 @@ final class RegretInsertion extends AbstractInsertionStrategy{
 		}
 		return (secondBest.getInsertionCost()-best.getInsertionCost()) + scoringFunction.score(unassignedJob);
 
+	}
+
+	@Override
+	public void removeListener(InsertionListener insertionListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Collection<InsertionListener> getListeners() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addListener(InsertionListener insertionListener) {
+		// TODO Auto-generated method stub
+		
 	}
 		
 }

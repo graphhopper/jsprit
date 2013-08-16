@@ -37,6 +37,7 @@ import basics.Job;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
+import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.DriverImpl;
@@ -60,6 +61,8 @@ public class GendreauPostOptTest {
 	
 	VehicleRoutingTransportCosts cost;
 	
+	VehicleRoutingActivityCosts activityCosts;
+	
 	VehicleRoutingProblem vrp;
 	
 	Service job1;
@@ -77,6 +80,8 @@ public class GendreauPostOptTest {
 	private VehicleFleetManagerImpl fleetManager;
 
 	private RouteAlgorithmImpl routeAlgorithm;
+	
+	private JobInsertionCalculator insertionCalc;
 
 	@Before
 	public void setUp(){
@@ -148,29 +153,31 @@ public class GendreauPostOptTest {
 		fleetManager = new VehicleFleetManagerImpl(vehicles);
 		states = new RouteStates();
 		
-		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
+		activityCosts = new ExampleActivityCostFunction();
 		
 		CalculatesServiceInsertion standardServiceInsertion = new CalculatesServiceInsertion(cost, activityCosts);
 		standardServiceInsertion.setActivityStates(states);
 		CalculatesServiceInsertionConsideringFixCost withFixCost = new CalculatesServiceInsertionConsideringFixCost(standardServiceInsertion, states);
 		withFixCost.setWeightOfFixCost(1.2);
 		
-		final JobInsertionCalculator vehicleTypeDepInsertionCost = new CalculatesVehTypeDepServiceInsertion(fleetManager, withFixCost);
+		insertionCalc = new CalculatesVehTypeDepServiceInsertion(fleetManager, withFixCost);
+		
 		updater = new TourStateUpdater(states, cost, activityCosts);
 		
-		
-		routeAlgorithm = RouteAlgorithmImpl.newInstance(vehicleTypeDepInsertionCost, updater);
-		routeAlgorithm.setActivityStates(states);
-		if(fleetManager != null){
-			routeAlgorithm.getListeners().add(new RouteAlgorithm.VehicleSwitchedListener() {
-
-				@Override
-				public void vehicleSwitched(Vehicle oldVehicle, Vehicle newVehicle) {
-					fleetManager.unlock(oldVehicle);
-					fleetManager.lock(newVehicle);
-				}
-			});
-		}
+//		
+//		
+//		routeAlgorithm = RouteAlgorithmImpl.newInstance(insertionCalc, updater);
+//		routeAlgorithm.setActivityStates(states);
+//		if(fleetManager != null){
+//			routeAlgorithm.getListeners().add(new RouteAlgorithm.VehicleSwitchedListener() {
+//
+//				@Override
+//				public void vehicleSwitched(Vehicle oldVehicle, Vehicle newVehicle) {
+//					fleetManager.unlock(oldVehicle);
+//					fleetManager.lock(newVehicle);
+//				}
+//			});
+//		}
 
 		
 	}
@@ -202,10 +209,17 @@ public class GendreauPostOptTest {
 		
 		assertEquals(110.0, sol.getCost(), 0.5);
 		
+		UpdateRoute stateUpdater = new UpdateRoute(states, vrp.getTransportCosts(), vrp.getActivityCosts());
+		
 		RuinRadial radialRuin = new RuinRadial(vrp, 0.2, new JobDistanceAvgCosts(vrp.getTransportCosts()));
-		AbstractInsertionStrategy insertionStrategy = new BestInsertion(routeAlgorithm);
+		radialRuin.addListener(stateUpdater);
+		
+		InsertionStrategy insertionStrategy = new BestInsertion(insertionCalc);
+		insertionStrategy.addListener(stateUpdater);
+		insertionStrategy.addListener(new VehicleSwitched(fleetManager));
 		Gendreau postOpt = new Gendreau(vrp, radialRuin, insertionStrategy);
 		postOpt.setFleetManager(fleetManager);
+		
 		VehicleRoutingProblemSolution newSolution = postOpt.runAndGetSolution(sol);
 		
 		assertEquals(2,RouteUtils.getNuOfActiveRoutes(newSolution.getRoutes()));
@@ -236,15 +250,17 @@ public class GendreauPostOptTest {
 		
 		Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 		routes.add(route);
-//		routes.add(new VehicleRoute(getEmptyTour(),getDriver(),getNoVehicle()));
-//		routes.add(new VehicleRoute(getEmptyTour(),getDriver(),getNoVehicle()));
 
 		VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(routes, route.getCost());
 		
 		assertEquals(110.0, sol.getCost(), 0.5);
 		
+		UpdateRoute stateUpdater = new UpdateRoute(states, vrp.getTransportCosts(), vrp.getActivityCosts());
+		
 		RuinRadial radialRuin = new RuinRadial(vrp, 0.2, new JobDistanceAvgCosts(vrp.getTransportCosts()));
-		AbstractInsertionStrategy insertionStrategy = new BestInsertion(routeAlgorithm);
+		InsertionStrategy insertionStrategy = new BestInsertion(insertionCalc);
+		insertionStrategy.addListener(stateUpdater);
+		insertionStrategy.addListener(new VehicleSwitched(fleetManager));
 		Gendreau postOpt = new Gendreau(vrp, radialRuin, insertionStrategy);
 		postOpt.setShareOfJobsToRuin(1.0);
 		postOpt.setNuOfIterations(1);

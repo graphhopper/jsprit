@@ -21,7 +21,8 @@
 package algorithms;
 
 import basics.route.Vehicle;
-import algorithms.RouteAlgorithm.VehicleSwitchedListener;
+import basics.route.VehicleRoute;
+
 
 class VehicleSwitched implements VehicleSwitchedListener{
 
@@ -32,7 +33,7 @@ class VehicleSwitched implements VehicleSwitchedListener{
 	}
 	
 	@Override
-	public void vehicleSwitched(Vehicle oldVehicle, Vehicle newVehicle) {
+	public void vehicleSwitched(VehicleRoute vehicleRoute, Vehicle oldVehicle, Vehicle newVehicle) {
 		fleetManager.unlock(oldVehicle);
 		fleetManager.lock(newVehicle);
 	}

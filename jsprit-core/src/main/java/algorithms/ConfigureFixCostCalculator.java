@@ -42,6 +42,8 @@ final class ConfigureFixCostCalculator implements InsertionStartsListener, JobIn
 	VehicleRoutingProblem vrp;
 	
 	CalculatesServiceInsertionConsideringFixCost calcConsideringFix;
+	
+	private int nuOfJobsToRecreate;
 
 	public ConfigureFixCostCalculator(VehicleRoutingProblem vrp, CalculatesServiceInsertionConsideringFixCost calcConsideringFix) {
 		super();
@@ -55,15 +57,17 @@ final class ConfigureFixCostCalculator implements InsertionStartsListener, JobIn
 	}
 
 	@Override
-	public void informInsertionStarts(Collection<VehicleRoute> routes, int nOfJobs2Recreate) {
-		double completenessRatio = (1-((double)nOfJobs2Recreate/(double)vrp.getJobs().values().size()));
+	public void informInsertionStarts(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+		this.nuOfJobsToRecreate = unassignedJobs.size();
+		double completenessRatio = (1-((double)nuOfJobsToRecreate/(double)vrp.getJobs().values().size()));
 		calcConsideringFix.setSolutionCompletenessRatio(completenessRatio);
 //		log.debug("initialise completenessRatio to " + completenessRatio);
 	}
 
 	@Override
-	public void informJobInserted(int nOfJobsStill2Recreate, Job job2insert, VehicleRoute insertedIn) {
-		double completenessRatio = (1-((double)nOfJobsStill2Recreate/(double)vrp.getJobs().values().size()));
+	public void informJobInserted(Job job2insert, VehicleRoute inRoute) {
+		nuOfJobsToRecreate--;
+		double completenessRatio = (1-((double)nuOfJobsToRecreate/(double)vrp.getJobs().values().size()));
 		calcConsideringFix.setSolutionCompletenessRatio(completenessRatio);
 //		log.debug("set completenessRatio to " + completenessRatio);
 	}

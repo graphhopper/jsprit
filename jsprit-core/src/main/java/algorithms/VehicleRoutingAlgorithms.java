@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 
 import util.RouteUtils;
 import algorithms.RuinStrategy.RuinListener;
-import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractInsertionKey;
+import algorithms.VehicleRoutingAlgorithms.TypedMap.InsertionStrategyKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.RuinStrategyKey;
@@ -260,11 +260,11 @@ public class VehicleRoutingAlgorithms {
 			
 		}
 
-		static class AbstractInsertionKey implements AbstractKey<AbstractInsertionStrategy>{
+		static class InsertionStrategyKey implements AbstractKey<InsertionStrategy>{
 
 			private ModKey modKey;
 			
-			public AbstractInsertionKey(ModKey modKey) {
+			public InsertionStrategyKey(ModKey modKey) {
 				super();
 				this.modKey = modKey;
 			}
@@ -286,7 +286,7 @@ public class VehicleRoutingAlgorithms {
 					return false;
 				if (getClass() != obj.getClass())
 					return false;
-				AbstractInsertionKey other = (AbstractInsertionKey) obj;
+				InsertionStrategyKey other = (InsertionStrategyKey) obj;
 				if (modKey == null) {
 					if (other.modKey != null)
 						return false;
@@ -298,8 +298,8 @@ public class VehicleRoutingAlgorithms {
 
 
 			@Override
-			public Class<AbstractInsertionStrategy> getType() {
-				return AbstractInsertionStrategy.class;
+			public Class<InsertionStrategy> getType() {
+				return InsertionStrategy.class;
 			}
 			
 		}
@@ -535,16 +535,14 @@ public class VehicleRoutingAlgorithms {
 
 	private static void registerInsertionListeners(TypedMap definedClasses, List<InsertionListener> insertionListeners) {
 		for(AbstractKey<?> key : definedClasses.keySet()){
-			if(key instanceof AbstractInsertionKey){
-				AbstractInsertionKey insertionKey = (AbstractInsertionKey) key;
-				AbstractInsertionStrategy insertionStrategy = definedClasses.get(insertionKey);
+			if(key instanceof InsertionStrategyKey){
+				InsertionStrategyKey insertionKey = (InsertionStrategyKey) key;
+				InsertionStrategy insertionStrategy = definedClasses.get(insertionKey);
 				for(InsertionListener l : insertionListeners){
-					//							log.info("add insertionListener " + l + " to " + insertionStrategy);
 					insertionStrategy.addListener(l);
 				}
 			}
 		}
-		//				log.warn("cannot register insertion listeners yet");
 	}
 
 	private static String getName(HierarchicalConfiguration strategyConfig) {
@@ -570,15 +568,15 @@ public class VehicleRoutingAlgorithms {
 		String insertionId = modConfig.getString("[@id]");
 		if(insertionId == null) insertionId = "noId";
 		ModKey modKey = makeKey(insertionName,insertionId);
-		AbstractInsertionKey insertionStrategyKey = new AbstractInsertionKey(modKey);
-		AbstractInsertionStrategy insertionStrategy = definedClasses.get(insertionStrategyKey);
+		InsertionStrategyKey insertionStrategyKey = new InsertionStrategyKey(modKey);
+		InsertionStrategy insertionStrategy = definedClasses.get(insertionStrategyKey);
 		if(insertionStrategy == null){
 			List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
 			insertionStrategy = createInsertionStrategy(modConfig, vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
 			algorithmListeners.addAll(prioListeners);
 			definedClasses.put(insertionStrategyKey,insertionStrategy);
 		}
-		final AbstractInsertionStrategy finalInsertionStrategy = insertionStrategy;
+		final InsertionStrategy finalInsertionStrategy = insertionStrategy;
 
 		return new AlgorithmStartsListener() {
 
@@ -699,8 +697,8 @@ public class VehicleRoutingAlgorithms {
 			String insertionId = moduleConfig.getString("insertion[@id]");
 			if(insertionId == null) insertionId = "noId";
 			ModKey insertionKey = makeKey(insertionName,insertionId);
-			AbstractInsertionKey insertionStrategyKey = new AbstractInsertionKey(insertionKey);
-			AbstractInsertionStrategy insertion = definedClasses.get(insertionStrategyKey);
+			InsertionStrategyKey insertionStrategyKey = new InsertionStrategyKey(insertionKey);
+			InsertionStrategy insertion = definedClasses.get(insertionStrategyKey);
 			if(insertion == null){
 				List<HierarchicalConfiguration> insertionConfigs = moduleConfig.configurationsAt("insertion");
 				if(insertionConfigs.size() != 1) throw new IllegalStateException("this should be 1");
@@ -708,7 +706,7 @@ public class VehicleRoutingAlgorithms {
 				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
 				algorithmListeners.addAll(prioListeners);
 			}
-			final AbstractInsertionStrategy final_insertion = insertion;
+			final InsertionStrategy final_insertion = insertion;
 			SearchStrategyModule module = new SearchStrategyModule() {
 				
 				private Logger logger = Logger.getLogger(SearchStrategyModule.class);
@@ -716,7 +714,7 @@ public class VehicleRoutingAlgorithms {
 				@Override
 				public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
 					Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
-					final_insertion.run(vrpSolution.getRoutes(), ruinedJobs, Double.MAX_VALUE);
+					final_insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobs);
 					double totalCost = RouteUtils.getTotalCost(vrpSolution.getRoutes());
 					vrpSolution.setCost(totalCost);
 					return vrpSolution;
@@ -736,7 +734,7 @@ public class VehicleRoutingAlgorithms {
 				public void addModuleListener(SearchStrategyModuleListener moduleListener) {
 					if(moduleListener instanceof InsertionListener){
 						InsertionListener iListener = (InsertionListener) moduleListener; 
-						if(!final_insertion.getListener().contains(iListener)){
+						if(!final_insertion.getListeners().contains(iListener)){
 							logger.info("register moduleListener " + moduleListener);
 							final_insertion.addListener(iListener);
 						}
@@ -785,8 +783,8 @@ public class VehicleRoutingAlgorithms {
 			String insertionId = moduleConfig.getString("insertion[@id]");
 			if(insertionId == null) insertionId = "noId";
 			ModKey insertionKey = makeKey(insertionName,insertionId);
-			AbstractInsertionKey insertionStrategyKey = new AbstractInsertionKey(insertionKey);
-			AbstractInsertionStrategy insertion = definedClasses.get(insertionStrategyKey);
+			InsertionStrategyKey insertionStrategyKey = new InsertionStrategyKey(insertionKey);
+			InsertionStrategy insertion = definedClasses.get(insertionStrategyKey);
 			if(insertion == null){
 				List<HierarchicalConfiguration> insertionConfigs = moduleConfig.configurationsAt("insertion");
 				if(insertionConfigs.size() != 1) throw new IllegalStateException("this should be 1");
@@ -864,8 +862,8 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 	
-	private static AbstractInsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, RouteStates activityStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads) {
-		AbstractInsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, activityStates, algorithmListeners, executorService, nuOfThreads);
+	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, RouteStates activityStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads) {
+		InsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, activityStates, algorithmListeners, executorService, nuOfThreads);
 		return insertion;
 	}
 	

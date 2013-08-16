@@ -76,14 +76,14 @@ class JobObserver implements JobInsertedListener, BeforeJobInsertionListener, Al
 	Collection<Info> infos = new ArrayList<Info>();
 	
 	@Override
-	public void informJobInserted(int nOfJobsStill2Recreate, Job job2insert, VehicleRoute insertedIn) {
+	public void informJobInserted(Job job2insert, VehicleRoute inRoute) {
 		if(job2insert instanceof Service){
 			if(((Service) job2insert).getLocationId().equals(locationId)){
-				double actualMC = insertedIn.getCost()-routeCostBefore;
-				TourActivity act = getAct(job2insert,insertedIn);
+				double actualMC = inRoute.getCost()-routeCostBefore;
+				TourActivity act = getAct(job2insert,inRoute);
 				double error = (estimatedMC-actualMC);
-				int tourSize = insertedIn.getTourActivities().getActivities().size();
-				int insertionIndex = getIndexOf(job2insert, insertedIn);
+				int tourSize = inRoute.getTourActivities().getActivities().size();
+				int insertionIndex = getIndexOf(job2insert, inRoute);
 //				infos.add(new Info())
 				double depTime = state(act).getEarliestOperationStart()+act.getOperationTime();
 				infos.add(new Info(depTime,tourSize,insertionIndex,error));

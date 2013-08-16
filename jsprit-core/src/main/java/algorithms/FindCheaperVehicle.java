@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import basics.Job;
 import basics.algo.InsertionStartsListener;
 import basics.route.VehicleRoute;
 
@@ -37,7 +38,7 @@ class FindCheaperVehicle implements InsertionStartsListener{
 	}
 
 	@Override
-	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2Recreate) {
+	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
 		List<VehicleRoute> newRoutes = new ArrayList<VehicleRoute>();
 		for(VehicleRoute route : vehicleRoutes){
 			if(route.isEmpty()) continue;

@@ -60,10 +60,13 @@ interface InsertionStrategy {
 	 * 
 	 * @param vehicleRoutes
 	 * @param unassignedJobs
-	 * @param result2beat
 	 */
-	public void run(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs, double result2beat);
+	public void insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);
 	
 	public void addListener(InsertionListener insertionListener);
+	
+	public void removeListener(InsertionListener insertionListener);
+	
+	public Collection<InsertionListener> getListeners();
 
 }

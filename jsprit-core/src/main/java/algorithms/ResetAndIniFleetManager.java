@@ -25,6 +25,7 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
+import basics.Job;
 import basics.algo.InsertionStartsListener;
 import basics.route.VehicleRoute;
 
@@ -40,16 +41,16 @@ class ResetAndIniFleetManager implements InsertionStartsListener{
 	}
 
 	@Override
-	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2Recreate) {
+	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
 		vehicleFleetManager.unlockAll();
 		Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
 		for(VehicleRoute route : routes){
-			if(route.isEmpty()){
-				vehicleRoutes.remove(route);
-			}
-			else{
+//			if(route.isEmpty()){
+//				vehicleRoutes.remove(route);
+//			}
+//			else{
 				vehicleFleetManager.lock(route.getVehicle());
-			}
+//			}
 		}
 	}
 

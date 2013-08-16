@@ -8,16 +8,29 @@ import basics.algo.InsertionEndsListener;
 import basics.algo.InsertionListener;
 import basics.algo.InsertionStartsListener;
 import basics.algo.JobInsertedListener;
+import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
 class InsertionListeners {
 	
 	private Collection<InsertionListener> listeners = new ArrayList<InsertionListener>();
 	
-	public void informJobInserted(int nOfJobs2Recreate, Job insertedJob, VehicleRoute insertedIn){
+	public Collection<InsertionListener> getListeners(){
+		return listeners;
+	}
+	
+	public void informJobInserted(Job insertedJob, VehicleRoute inRoute){
 		for(InsertionListener l : listeners){
 			if(l instanceof JobInsertedListener){
-				((JobInsertedListener)l).informJobInserted(nOfJobs2Recreate, insertedJob, insertedIn);
+				((JobInsertedListener)l).informJobInserted(insertedJob, inRoute);
+			}
+		}
+	}
+	
+	public void informVehicleSwitched(VehicleRoute route, Vehicle oldVehicle, Vehicle newVehicle){
+		for(InsertionListener l : listeners){
+			if(l instanceof VehicleSwitchedListener){
+				((VehicleSwitchedListener) l).vehicleSwitched(route, oldVehicle, newVehicle);
 			}
 		}
 	}
@@ -30,10 +43,10 @@ class InsertionListeners {
 		}
 	}
 	
-	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2Recreate){
+	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs){
 		for(InsertionListener l : listeners){
 			if(l instanceof InsertionStartsListener){
-				((InsertionStartsListener)l).informInsertionStarts(vehicleRoutes,nOfJobs2Recreate);
+				((InsertionStartsListener)l).informInsertionStarts(vehicleRoutes, unassignedJobs);
 			}
 		}
 	}
@@ -52,6 +65,10 @@ class InsertionListeners {
 	
 	public void removeListener(InsertionListener insertionListener){
 		listeners.remove(insertionListener);
+	}
+
+	public void addAllListeners(Collection<InsertionListener> listeners) {
+		for(InsertionListener l : listeners) addListener(l);
 	}
 
 }
