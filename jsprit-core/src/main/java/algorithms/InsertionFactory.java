@@ -97,7 +97,7 @@ class InsertionFactory {
 			TourStateUpdater tourStateCalculator = new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts());
 			RouteAlgorithm routeAlgorithm = RouteAlgorithmImpl.newInstance(jic, tourStateCalculator);
 //			routeAlgorithm.getListeners().add(new VehicleSwitched(vehicleFleetManager));
-			((RouteAlgorithmImpl) routeAlgorithm).setActivityStates(activityStates);
+			((RouteAlgorithmImpl) routeAlgorithm).setStates(activityStates);
 	
 			if(insertionName.equals("bestInsertion")){		
 				if(concurrentInsertion){

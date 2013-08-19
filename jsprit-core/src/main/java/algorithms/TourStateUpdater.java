@@ -61,8 +61,8 @@ class TourStateUpdater implements VehicleRouteUpdater{
 		forwardUpdate = new UpdateTourStatesForwardInTime(costs, costs, costFunction);
 		backwardUpdate = new UpdateTourStatesBackwardInTime(costs);
 		actStates=activityStates;
-		forwardUpdate.setActivityStates(actStates);
-		backwardUpdate.setActivityStates(actStates);
+		forwardUpdate.setStates(actStates);
+		backwardUpdate.setStates(actStates);
 	}
 
 	/*

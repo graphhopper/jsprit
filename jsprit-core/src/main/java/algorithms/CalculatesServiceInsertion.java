@@ -112,7 +112,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		for(TourActivity nextAct : tour.getActivities()){
 			double nextCostInOriginalTour = state(nextAct).getCurrentCost();
 			if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-				double mc = calculate(tour, prevAct, nextAct, deliveryAct2Insert, newDriver, newVehicle, bestCost, nextCostInOriginalTour - prevCostInOriginalTour);
+				double mc = calculate(prevAct, nextAct, deliveryAct2Insert, newDriver, newVehicle, bestCost, nextCostInOriginalTour - prevCostInOriginalTour);
 				if(mc < bestCost){
 					bestCost = mc;
 					insertionIndex = actIndex;
@@ -124,7 +124,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		}
 		End nextAct = end;
 		if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-			double mc = calculate(tour, prevAct, nextAct, deliveryAct2Insert, newDriver, newVehicle, bestCost, routeStates.getRouteState(currentRoute).getCosts() - prevCostInOriginalTour);
+			double mc = calculate(prevAct, nextAct, deliveryAct2Insert, newDriver, newVehicle, bestCost, routeStates.getRouteState(currentRoute).getCosts() - prevCostInOriginalTour);
 			if(mc < bestCost){
 				bestCost = mc;
 				insertionIndex = actIndex;
@@ -162,7 +162,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		}
 	}
 
-	public double calculate(TourActivities tour, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, Driver driver, Vehicle vehicle, double bestKnownCosts, double costWithoutNewJob) {	
+	public double calculate(TourActivity prevAct, TourActivity nextAct, TourActivity newAct, Driver driver, Vehicle vehicle, double bestKnownCosts, double costWithoutNewJob) {	
 		
 		double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocationId(), newAct.getLocationId(), prevAct.getEndTime(), driver, vehicle);
 		double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevAct.getEndTime(), driver, vehicle);

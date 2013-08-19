@@ -50,7 +50,7 @@ class UpdateTourStatesForwardInTime implements VehicleRouteUpdater{
 	
 	private boolean activityStatesSet = false;
 	
-	public void setActivityStates(RouteStates actStates){
+	public void setStates(RouteStates actStates){
 		this.routeStates = actStates;
 		activityStatesSet = true;
 	}

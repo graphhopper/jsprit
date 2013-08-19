@@ -46,7 +46,7 @@ class UpdateTourStatesBackwardInTime implements VehicleRouteUpdater{
 	
 	private RouteStates actStates;
 	
-	public void setActivityStates(RouteStates actStates){
+	public void setStates(RouteStates actStates){
 		this.actStates = actStates;
 	}
 
