@@ -165,12 +165,7 @@ final class CalculatesServiceInsertionWithTriangleInequality implements JobInser
 	}
 
 	private int getCurrentLoad(VehicleRoute currentRoute) {
-		States thisRoutesStates = routeStates.getRouteStates().get(currentRoute);
-		if(routeStates.getRouteStates().containsKey(currentRoute)){
-			int load = (int) thisRoutesStates.getState(StateTypes.LOAD).toDouble();
-			return load;
-		}
-		else return 0;
+		return (int) routeStates.getRouteState(currentRoute, StateTypes.LOAD).toDouble();
 	}
 
 	private void initialiseStartAndEnd(final Vehicle newVehicle, double newVehicleDepartureTime) {

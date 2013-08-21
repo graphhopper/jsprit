@@ -39,11 +39,11 @@ interface StatesContainer {
 	
 	
 	
-	Map<VehicleRoute, States> getRouteStates();
+//	Map<VehicleRoute, States> getRouteStates();
 	
 //	void put(VehicleRoute route, States states);
 	
-	Map<TourActivity, States> getActivityStates();
+//	Map<TourActivity, States> getActivityStates();
 	
 //	void put(TourActivity act, States states);
 	

@@ -28,7 +28,6 @@ class StatesContainerImpl implements StatesContainer{
 	
 	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, StatesContainer.States>();
 	
-	@Override
 	public Map<VehicleRoute, States> getRouteStates() {
 		return Collections.unmodifiableMap(vehicleRouteStates);
 	}
@@ -41,7 +40,6 @@ class StatesContainerImpl implements StatesContainer{
 		vehicleRouteStates.put(route, states);
 	}
 
-	@Override
 	public Map<TourActivity, States> getActivityStates() {
 		return Collections.unmodifiableMap(activityStates);
 	}

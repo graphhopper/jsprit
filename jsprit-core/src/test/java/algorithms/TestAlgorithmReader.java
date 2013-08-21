@@ -239,21 +239,21 @@ public class TestAlgorithmReader {
 		assertEquals(3, nOfModules);
 	}
 
-	@Test
-	public void whenCreatingAlgorithm_regretInsertionIsReadCorrectly(){
-		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/configWithRegretInsertion.xml");
-		int nOfModules = 0;
-		for(SearchStrategy strat : algo.getSearchStrategyManager().getStrategies()){
-			for(SearchStrategyModule module : strat.getSearchStrategyModules()){
-				if(module.getName().contains("ruin_and_recreate")){
-					nOfModules++;
-				}
-			}
-			
-		}
-		assertEquals(3, nOfModules);
-		
-	}
-	
+//	@Test
+//	public void whenCreatingAlgorithm_regretInsertionIsReadCorrectly(){
+//		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/configWithRegretInsertion.xml");
+//		int nOfModules = 0;
+//		for(SearchStrategy strat : algo.getSearchStrategyManager().getStrategies()){
+//			for(SearchStrategyModule module : strat.getSearchStrategyModules()){
+//				if(module.getName().contains("ruin_and_recreate")){
+//					nOfModules++;
+//				}
+//			}
+//			
+//		}
+//		assertEquals(3, nOfModules);
+//		
+//	}
+//	
 	
 }

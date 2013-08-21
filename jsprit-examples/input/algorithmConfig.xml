@@ -26,7 +26,7 @@
 
 	<construction>
 		<insertion name="bestInsertion">
-			<level forwardLooking="0" memory="1">route</level>
+			<level forwardLooking="2" memory="1">route</level>
 		</insertion>	
 	</construction>
 	
@@ -35,10 +35,8 @@
 		<searchStrategies>
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="schrimpfAcceptance">
-					<alpha>0.1</alpha>  
-  					<warmup>100</warmup>  
-  				</acceptor>
+				<acceptor name="acceptNewRemoveWorst"/>
+					
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="randomRuin">
@@ -53,7 +51,7 @@
 			
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="schrimpfAcceptance"/>
+				<acceptor name="acceptNewRemoveWorst"/>
 					
 				<modules>
 					<module name="ruin_and_recreate">
@@ -69,7 +67,7 @@
 			
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="schrimpfAcceptance"/>  
+				<acceptor name="acceptNewRemoveWorst"/>  
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin id="2" name="radialRuin">
