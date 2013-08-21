@@ -30,7 +30,7 @@ class Inserter {
 		}
 		else throw new IllegalStateException("neither service nor shipment. this is not supported.");
 		
-		insertionListeners.informJobInserted(job, vehicleRoute);
+		insertionListeners.informJobInserted(job, vehicleRoute, insertionData.getInsertionCost(), insertionData.getAdditionalTime());
 //		updateTour(vehicleRoute);
 	}
 }

@@ -76,7 +76,7 @@ class JobObserver implements JobInsertedListener, BeforeJobInsertionListener, Al
 	Collection<Info> infos = new ArrayList<Info>();
 	
 	@Override
-	public void informJobInserted(Job job2insert, VehicleRoute inRoute) {
+	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 		if(job2insert instanceof Service){
 			if(((Service) job2insert).getLocationId().equals(locationId)){
 				double actualMC = inRoute.getCost()-routeCostBefore;

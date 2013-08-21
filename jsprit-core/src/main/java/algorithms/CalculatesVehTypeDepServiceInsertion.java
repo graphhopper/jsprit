@@ -67,16 +67,7 @@ final class CalculatesVehTypeDepServiceInsertion implements JobInsertionCalculat
 		else{
 			relevantVehicles.addAll(fleetManager.getAvailableVehicles());		
 		}
-//		
-//		for(TypeKey typeKey : fleetManager.getAvailableVehicleTypes()){
-//			if(!(currentRoute.getVehicle() instanceof NoVehicle)){
-//				TypeKey key = makeTypeKey(currentRoute.getVehicle().getType(),currentRoute.getVehicle().getLocationId());
-//				if(typeKey.equals(key)){
-//					continue;
-//				}
-//			}
-//			relevantVehicles.add(fleetManager.getEmptyVehicle(typeKey));
-//		}
+
 		for(Vehicle v : relevantVehicles){
 			double depTime = v.getEarliestDeparture();
 			InsertionData iData = insertionCalculator.calculate(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);
@@ -91,9 +82,5 @@ final class CalculatesVehTypeDepServiceInsertion implements JobInsertionCalculat
 		}
 		return bestIData;
 	}
-
-//	private TypeKey makeTypeKey(VehicleType type, String locationId) {
-//		return new TypeKey(type,locationId);
-//	}
 
 }

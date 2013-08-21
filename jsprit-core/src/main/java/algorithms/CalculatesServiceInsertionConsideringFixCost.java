@@ -23,6 +23,8 @@ package algorithms;
 import org.apache.log4j.Logger;
 
 import algorithms.InsertionData.NoInsertionFound;
+import algorithms.StatesContainer.State;
+import algorithms.StatesContainer.States;
 import basics.Job;
 import basics.route.Driver;
 import basics.route.Vehicle;
@@ -41,12 +43,12 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	
 	private double solution_completeness_ratio = 0.5;
 	
-	private RouteStates routeStates;
+	private StatesContainer states;
 
-	public CalculatesServiceInsertionConsideringFixCost(final JobInsertionCalculator standardInsertionCalculator, RouteStates routeStates) {
+	public CalculatesServiceInsertionConsideringFixCost(final JobInsertionCalculator standardInsertionCalculator, StatesContainer activityStates2) {
 		super();
 		this.standardServiceInsertion = standardInsertionCalculator;
-		this.routeStates = routeStates;
+		this.states = activityStates2;
 		logger.info("inialise " + this);
 	}
 
@@ -84,7 +86,7 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	}
 
 	private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
-		double load = routeStates.getRouteState(route).getLoad() + job.getCapacityDemand();
+		double load = getCurrentLoad(route) + job.getCapacityDemand();
 		double currentFix = 0.0;
 		if(route.getVehicle() != null){
 			if(!(route.getVehicle() instanceof NoVehicle)){
@@ -98,7 +100,7 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	}
 
 	private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
-		int currentLoad = routeStates.getRouteState(route).getLoad();
+		int currentLoad = getCurrentLoad(route);
 		double load = currentLoad + job.getCapacityDemand();
 		double currentRelFix = 0.0;
 		if(route.getVehicle() != null){
@@ -111,6 +113,10 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 		}
 		double relativeFixCost = newVehicle.getType().getVehicleCostParams().fix*(load/newVehicle.getCapacity()) - currentRelFix;
 		return relativeFixCost;
+	}
+
+	private int getCurrentLoad(VehicleRoute route) {
+		return (int) states.getRouteState(route, StateTypes.LOAD).toDouble();
 	}
 
 }

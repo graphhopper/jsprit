@@ -65,7 +65,7 @@ final class ConfigureFixCostCalculator implements InsertionStartsListener, JobIn
 	}
 
 	@Override
-	public void informJobInserted(Job job2insert, VehicleRoute inRoute) {
+	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 		nuOfJobsToRecreate--;
 		double completenessRatio = (1-((double)nuOfJobsToRecreate/(double)vrp.getJobs().values().size()));
 		calcConsideringFix.setSolutionCompletenessRatio(completenessRatio);

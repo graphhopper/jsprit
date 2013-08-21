@@ -119,14 +119,14 @@ public class TestTourStateUpdaterWithService {
 	
 	@Test
 	public void testCalculatedCost() {
-		tdTourStatusProcessor.updateRoute(vehicleRoute);
+		tdTourStatusProcessor.iterate(vehicleRoute);
 		assertEquals(40.0, states.getRouteState(vehicleRoute).getCosts(), 0.05);
 		assertEquals(10, states.getRouteState(vehicleRoute).getLoad());
 	}
 	
 	@Test
 	public void testStatesOfAct0(){
-		tdTourStatusProcessor.updateRoute(vehicleRoute);
+		tdTourStatusProcessor.iterate(vehicleRoute);
 		assertEquals(0.0, vehicleRoute.getStart().getEndTime(),0.05);
 		assertEquals(vehicleRoute.getVehicle().getLocationId(), vehicleRoute.getStart().getLocationId());
 		assertEquals(vehicleRoute.getVehicle().getEarliestDeparture(), vehicleRoute.getStart().getTheoreticalEarliestOperationStartTime(),0.05);
@@ -136,7 +136,7 @@ public class TestTourStateUpdaterWithService {
 	
 	@Test
 	public void testStatesOfAct1(){
-		tdTourStatusProcessor.updateRoute(vehicleRoute);
+		tdTourStatusProcessor.iterate(vehicleRoute);
 		assertEquals(10.0, states.getState(tour.getActivities().get(0)).getCurrentCost(),0.05);
 		assertEquals(5.0, states.getState(tour.getActivities().get(0)).getCurrentLoad(),0.05);
 		assertEquals(10.0, states.getState(tour.getActivities().get(0)).getEarliestOperationStart(),0.05);
@@ -145,7 +145,7 @@ public class TestTourStateUpdaterWithService {
 	
 	@Test
 	public void testStatesOfAct2(){
-		tdTourStatusProcessor.updateRoute(vehicleRoute);
+		tdTourStatusProcessor.iterate(vehicleRoute);
 		assertEquals(30.0, states.getState(tour.getActivities().get(1)).getCurrentCost(),0.05);
 		assertEquals(10.0, states.getState(tour.getActivities().get(1)).getCurrentLoad(),0.05);
 		assertEquals(30.0, states.getState(tour.getActivities().get(1)).getEarliestOperationStart(),0.05);
@@ -154,7 +154,7 @@ public class TestTourStateUpdaterWithService {
 	
 	@Test
 	public void testStatesOfAct3(){
-		tdTourStatusProcessor.updateRoute(vehicleRoute);
+		tdTourStatusProcessor.iterate(vehicleRoute);
 		assertEquals(40.0, states.getRouteState(vehicleRoute).getCosts(), 0.05);
 		assertEquals(40.0, vehicleRoute.getEnd().getEndTime(),0.05);
 		assertEquals(50.0, vehicleRoute.getEnd().getTheoreticalLatestOperationStartTime(),0.05);

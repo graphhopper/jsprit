@@ -25,7 +25,9 @@
 	<iterations>10000</iterations>
 
 	<construction>
-		<insertion name="bestInsertion"/>
+		<insertion name="bestInsertion">
+			<level forwardLooking="0" memory="1">route</level>
+		</insertion>	
 	</construction>
 	
 	<strategy>

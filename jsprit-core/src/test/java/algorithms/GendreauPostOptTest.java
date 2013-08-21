@@ -41,12 +41,12 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.DriverImpl;
+import basics.route.ServiceActivity;
 import basics.route.TimeWindow;
 import basics.route.TourActivities;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
-import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
 public class GendreauPostOptTest {
@@ -71,15 +71,11 @@ public class GendreauPostOptTest {
 	
 	Service job3;
 
-	private RouteStates states;
+	private StatesContainerImpl states;
 
 	private List<Vehicle> vehicles;
 
-	private TourStateUpdater updater;
-
 	private VehicleFleetManagerImpl fleetManager;
-
-	private RouteAlgorithmImpl routeAlgorithm;
 	
 	private JobInsertionCalculator insertionCalc;
 
@@ -151,7 +147,7 @@ public class GendreauPostOptTest {
 		
 //		Collection<Vehicle> vehicles = Arrays.asList(lightVehicle1,lightVehicle2, heavyVehicle);
 		fleetManager = new VehicleFleetManagerImpl(vehicles);
-		states = new RouteStates();
+		states = new StatesContainerImpl();
 		
 		activityCosts = new ExampleActivityCostFunction();
 		
@@ -162,23 +158,7 @@ public class GendreauPostOptTest {
 		
 		insertionCalc = new CalculatesVehTypeDepServiceInsertion(fleetManager, withFixCost);
 		
-		updater = new TourStateUpdater(states, cost, activityCosts);
-		
-//		
-//		
-//		routeAlgorithm = RouteAlgorithmImpl.newInstance(insertionCalc, updater);
-//		routeAlgorithm.setActivityStates(states);
-//		if(fleetManager != null){
-//			routeAlgorithm.getListeners().add(new RouteAlgorithm.VehicleSwitchedListener() {
-//
-//				@Override
-//				public void vehicleSwitched(Vehicle oldVehicle, Vehicle newVehicle) {
-//					fleetManager.unlock(oldVehicle);
-//					fleetManager.lock(newVehicle);
-//				}
-//			});
-//		}
-
+//		updater = new TourStateUpdater(states, cost, activityCosts);
 		
 	}
 	
@@ -188,17 +168,18 @@ public class GendreauPostOptTest {
 		jobs.add(job1);
 		jobs.add(job2);
 		
-		states.initialiseStateOfJobs(jobs);
 		vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addAllVehicles(vehicles).setRoutingCost(cost).build();
 				
 		TourActivities tour = new TourActivities();
-		tour.addActivity(states.getActivity(job1, true));
-		tour.addActivity(states.getActivity(job2, true));
+		tour.addActivity(ServiceActivity.newInstance(job1));
+		tour.addActivity(ServiceActivity.newInstance(job2));
 		
 		VehicleRoute route = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),heavyVehicle);
-		updater.updateRoute(route);
 		
 		fleetManager.lock(heavyVehicle);
+		
+		UpdateStates stateUpdater = new UpdateStates(states, vrp.getTransportCosts(), vrp.getActivityCosts());
+		stateUpdater.update(route);
 		
 		Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 		routes.add(route);
@@ -209,7 +190,6 @@ public class GendreauPostOptTest {
 		
 		assertEquals(110.0, sol.getCost(), 0.5);
 		
-		UpdateRoute stateUpdater = new UpdateRoute(states, vrp.getTransportCosts(), vrp.getActivityCosts());
 		
 		RuinRadial radialRuin = new RuinRadial(vrp, 0.2, new JobDistanceAvgCosts(vrp.getTransportCosts()));
 		radialRuin.addListener(stateUpdater);
@@ -234,17 +214,17 @@ public class GendreauPostOptTest {
 		jobs.add(job2);
 		jobs.add(job3);
 		
-		states.initialiseStateOfJobs(jobs);
 		vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addAllVehicles(vehicles).setRoutingCost(cost).build();
 		
 		TourActivities tour = new TourActivities();
-		tour.addActivity(states.getActivity(job1, true));
-		tour.addActivity(states.getActivity(job2, true));
-		tour.addActivity(states.getActivity(job3, true));
-		
+		tour.addActivity(ServiceActivity.newInstance(job1));
+		tour.addActivity(ServiceActivity.newInstance(job2));
+		tour.addActivity(ServiceActivity.newInstance(job3));
 		
 		VehicleRoute route = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),heavyVehicle);
-		updater.updateRoute(route);
+		
+		UpdateStates stateUpdater = new UpdateStates(states, vrp.getTransportCosts(), vrp.getActivityCosts());
+		stateUpdater.update(route);
 		
 		fleetManager.lock(heavyVehicle);
 		
@@ -254,8 +234,6 @@ public class GendreauPostOptTest {
 		VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(routes, route.getCost());
 		
 		assertEquals(110.0, sol.getCost(), 0.5);
-		
-		UpdateRoute stateUpdater = new UpdateRoute(states, vrp.getTransportCosts(), vrp.getActivityCosts());
 		
 		RuinRadial radialRuin = new RuinRadial(vrp, 0.2, new JobDistanceAvgCosts(vrp.getTransportCosts()));
 		InsertionStrategy insertionStrategy = new BestInsertion(insertionCalc);
@@ -271,18 +249,6 @@ public class GendreauPostOptTest {
 		assertEquals(2,RouteUtils.getNuOfActiveRoutes(newSolution.getRoutes()));
 		assertEquals(2,newSolution.getRoutes().size());
 		assertEquals(80.0,newSolution.getCost(),0.5);
-	}
-	
-	private Vehicle getNoVehicle() {
-		return new VehicleImpl.NoVehicle();
-	}
-
-	private Driver getDriver() {
-		return DriverImpl.noDriver();
-	}
-
-	private TourActivities getEmptyTour() {
-		return new TourActivities();
 	}
 
 	private Service getService(String to, double serviceTime) {

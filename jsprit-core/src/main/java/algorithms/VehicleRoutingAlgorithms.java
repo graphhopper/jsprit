@@ -57,6 +57,7 @@ import basics.VehicleRoutingProblem.FleetSize;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.AlgorithmStartsListener;
 import basics.algo.InsertionListener;
+import basics.algo.IterationStartsListener;
 import basics.algo.IterationWithoutImprovementBreaker;
 import basics.algo.PrematureAlgorithmBreaker;
 import basics.algo.SearchStrategy;
@@ -447,9 +448,21 @@ public class VehicleRoutingAlgorithms {
 
 		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new SolutionVerifier()));
 
-		RouteStates routeStates = new RouteStates();
-		routeStates.initialiseStateOfJobs(vrp.getJobs().values());
-		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, routeStates));
+		final StatesContainerImpl routeStates = new StatesContainerImpl();
+		IterationStartsListener resetStates = new IterationStartsListener() {
+			
+			@Override
+			public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+				routeStates.clear();
+			}
+		};
+		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, resetStates));
+		
+//		insertionListeners.add(new UdateCostsAtRouteLevel(routeStates,vrp.getTransportCosts(),vrp.getActivityCosts()));
+		
+//		RouteStates routeStates = new RouteStates();
+//		routeStates.initialiseStateOfJobs(vrp.getJobs().values());
+//		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, routeStates));
 		
 		TypedMap definedClasses = new TypedMap();
 
@@ -557,7 +570,7 @@ public class VehicleRoutingAlgorithms {
 		metaAlgorithm.getAlgorithmListeners().addAll(algorithmListeners);
 	}
 	
-	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, RouteStates activityStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
+	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StatesContainerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
 		List<HierarchicalConfiguration> modConfigs = config.configurationsAt("construction.insertion");
 		if(modConfigs == null) return null;
 		if(modConfigs.isEmpty()) return null;
@@ -572,7 +585,7 @@ public class VehicleRoutingAlgorithms {
 		InsertionStrategy insertionStrategy = definedClasses.get(insertionStrategyKey);
 		if(insertionStrategy == null){
 			List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-			insertionStrategy = createInsertionStrategy(modConfig, vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
+			insertionStrategy = createInsertionStrategy(modConfig, vrp, vehicleFleetManager, routeStates, prioListeners, executorService, nuOfThreads);
 			algorithmListeners.addAll(prioListeners);
 			definedClasses.put(insertionStrategyKey,insertionStrategy);
 		}
@@ -654,7 +667,7 @@ public class VehicleRoutingAlgorithms {
 	}
 	
 	private static SearchStrategyModule buildModule(HierarchicalConfiguration moduleConfig, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, 
-			final RouteStates activityStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
+			final StatesContainerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
 		String moduleName = moduleConfig.getString("[@name]");
 		if(moduleName == null) throw new IllegalStateException("module(-name) is missing.");
 		String moduleId = moduleConfig.getString("[@id]");
@@ -675,7 +688,7 @@ public class VehicleRoutingAlgorithms {
 			final RuinStrategy ruin;
 			ModKey ruinKey = makeKey(ruin_name,ruin_id);
 			if(ruin_name.equals("randomRuin")){
-				ruin = getRandomRuin(vrp, activityStates, definedClasses, ruinKey, shareToRuin);
+				ruin = getRandomRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin);
 			}
 			else if(ruin_name.equals("radialRuin")){
 				String ruin_distance = moduleConfig.getString("ruin.distance");
@@ -688,7 +701,7 @@ public class VehicleRoutingAlgorithms {
 					else throw new IllegalStateException("does not know ruin.distance " + ruin_distance + ". either ommit ruin.distance then the "
 							+ "default is used or use 'euclidean'");
 				}
-				ruin = getRadialRuin(vrp, activityStates, definedClasses, ruinKey, shareToRuin, jobDistance);
+				ruin = getRadialRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin, jobDistance);
 			}
 			else throw new IllegalStateException("ruin[@name] " + ruin_name + " is not known. Use either randomRuin or radialRuin.");
 			
@@ -703,7 +716,7 @@ public class VehicleRoutingAlgorithms {
 				List<HierarchicalConfiguration> insertionConfigs = moduleConfig.configurationsAt("insertion");
 				if(insertionConfigs.size() != 1) throw new IllegalStateException("this should be 1");
 				List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
+				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, routeStates, prioListeners, executorService, nuOfThreads);
 				algorithmListeners.addAll(prioListeners);
 			}
 			final InsertionStrategy final_insertion = insertion;
@@ -758,23 +771,7 @@ public class VehicleRoutingAlgorithms {
 			RuinStrategy ruin = definedClasses.get(stratKey);
 			if(ruin == null){
 				ruin = new RuinRadial(vrp, 0.3, new JobDistanceAvgCosts(vrp.getTransportCosts()));
-				ruin.addListener(new RuinListener() {
-				
-				TourStateUpdater updater = new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts());
-				
-				@Override
-				public void ruinStarts(Collection<VehicleRoute> routes) {}
-				
-				@Override
-				public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-					for(VehicleRoute route : routes){
-						updater.updateRoute(route);
-					}	
-				}
-				
-				@Override
-				public void removed(Job job, VehicleRoute fromRoute) {}
-			});
+				ruin.addListener(new UpdateStates(routeStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
 				definedClasses.put(stratKey, ruin);
 			}
 			
@@ -789,7 +786,7 @@ public class VehicleRoutingAlgorithms {
 				List<HierarchicalConfiguration> insertionConfigs = moduleConfig.configurationsAt("insertion");
 				if(insertionConfigs.size() != 1) throw new IllegalStateException("this should be 1");
 				List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, activityStates, prioListeners, executorService, nuOfThreads);
+				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, routeStates, prioListeners, executorService, nuOfThreads);
 				algorithmListeners.addAll(prioListeners);
 			}
 			Gendreau gendreau = new Gendreau(vrp, ruin, insertion);
@@ -808,62 +805,30 @@ public class VehicleRoutingAlgorithms {
 				"\n\tgendreauPostOpt");
 	}
 
-	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
+	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StatesContainerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
 			ruin = new RuinRadial(vrp, shareToRuin, jobDistance);
-			ruin.addListener(new RuinListener() {
-				
-				TourStateUpdater updater = new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts());
-				
-				@Override
-				public void ruinStarts(Collection<VehicleRoute> routes) {}
-				
-				@Override
-				public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-					for(VehicleRoute route : routes){
-						updater.updateRoute(route);
-					}	
-				}
-				
-				@Override
-				public void removed(Job job, VehicleRoute fromRoute) {}
-			});
+			ruin.addListener(new UpdateStates(routeStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
 			definedClasses.put(stratKey, ruin);
 		}
 		return ruin;
 	}
 
-	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final RouteStates activityStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
+	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final StatesContainerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
 			ruin = new RuinRandom(vrp, shareToRuin);
-			ruin.addListener(new RuinListener() {
-				
-				TourStateUpdater updater = new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts());
-				
-				@Override
-				public void ruinStarts(Collection<VehicleRoute> routes) {}
-				
-				@Override
-				public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-					for(VehicleRoute route : routes){
-						updater.updateRoute(route);
-					}	
-				}
-				
-				@Override
-				public void removed(Job job, VehicleRoute fromRoute) {}
-			});
+			ruin.addListener(new UpdateStates(routeStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
 			definedClasses.put(stratKey, ruin);
 		}
 		return ruin;
 	}
 	
-	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, RouteStates activityStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads) {
-		InsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, activityStates, algorithmListeners, executorService, nuOfThreads);
+	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, StatesContainerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads) {
+		InsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, routeStates, algorithmListeners, executorService, nuOfThreads);
 		return insertion;
 	}
 	

@@ -64,9 +64,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 
 	private Service third;
 
-	private RouteStates states;
-
-	private TourStateUpdater tourStateUpdater;
+	private StatesContainerImpl states;
 
 	private NoDriver driver;
 	
@@ -167,7 +165,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		TourActivities tour = new TourActivities();
 		
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
-		tourStateUpdater.updateRoute(route);
+		tourStateUpdater.iterate(route);
 		
 		InsertionData iData = serviceInsertion.calculate(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
@@ -208,7 +206,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
 		
-		tourStateUpdater.updateRoute(route);
+		tourStateUpdater.iterate(route);
 		
 		InsertionData iData = serviceInsertion.calculate(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(0.0, iData.getInsertionCost(), 0.2);
@@ -223,7 +221,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
 		
-		tourStateUpdater.updateRoute(route);
+		tourStateUpdater.iterate(route);
 		
 		InsertionData iData = serviceInsertion.calculate(route, third, newVehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(40.0, iData.getInsertionCost(), 0.2);
@@ -237,7 +235,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		tour.addActivity(states.getActivity(third,true));
 		
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
-		tourStateUpdater.updateRoute(route);
+		tourStateUpdater.iterate(route);
 		
 		InsertionData iData = serviceInsertion.calculate(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(0.0, iData.getInsertionCost(), 0.2);
@@ -251,7 +249,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		tour.addActivity(states.getActivity(third,true));
 		
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
-		tourStateUpdater.updateRoute(route);
+		tourStateUpdater.iterate(route);
 		
 		InsertionData iData = serviceInsertion.calculate(route, second, newVehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(40.0, iData.getInsertionCost(), 0.2);

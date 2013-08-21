@@ -8,7 +8,7 @@ import basics.route.VehicleRoute;
 interface StatesContainer {
 	
 	interface State {
-		double getState();
+		double toDouble();
 	}
 	
 	class StateImpl implements State{
@@ -20,7 +20,7 @@ interface StatesContainer {
 		}
 
 		@Override
-		public double getState() {
+		public double toDouble() {
 			return state;
 		}
 		
@@ -46,5 +46,9 @@ interface StatesContainer {
 	Map<TourActivity, States> getActivityStates();
 	
 //	void put(TourActivity act, States states);
+	
+	State getActivityState(TourActivity act, String stateType);
+	
+	State getRouteState(VehicleRoute route, String stateType);
 
 }
