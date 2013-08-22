@@ -167,7 +167,7 @@ public class RefuseCollectionTest {
 		vrpBuilder.setRoutingCost(matrixBuilder.build());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
-		vra.setPrematureBreak(10);
+		vra.setPrematureBreak(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		assertEquals(397.0,Solutions.getBest(solutions).getCost(),0.01);
