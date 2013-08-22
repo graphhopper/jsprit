@@ -7,7 +7,7 @@ import java.util.Map;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-class StatesContainerImpl implements StatesContainer{
+class StateManagerImpl implements StateManager{
 
 	static class StatesImpl implements States{
 
@@ -24,9 +24,9 @@ class StatesContainerImpl implements StatesContainer{
 
 	}
 	
-	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, StatesContainer.States>();
+	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, StateManager.States>();
 	
-	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, StatesContainer.States>();
+	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, StateManager.States>();
 	
 	public Map<VehicleRoute, States> getRouteStates() {
 		return Collections.unmodifiableMap(vehicleRouteStates);

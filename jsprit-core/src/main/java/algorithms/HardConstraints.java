@@ -6,9 +6,9 @@ class HardConstraints {
 	
 	static class HardLoadConstraint implements HardConstraint{
 
-		private StatesContainer states;
+		private StateManager states;
 		
-		public HardLoadConstraint(StatesContainer states) {
+		public HardLoadConstraint(StateManager states) {
 			super();
 			this.states = states;
 		}

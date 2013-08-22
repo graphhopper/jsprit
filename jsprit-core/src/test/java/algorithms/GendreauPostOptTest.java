@@ -71,7 +71,7 @@ public class GendreauPostOptTest {
 	
 	Service job3;
 
-	private StatesContainerImpl states;
+	private StateManagerImpl states;
 
 	private List<Vehicle> vehicles;
 
@@ -147,7 +147,7 @@ public class GendreauPostOptTest {
 		
 //		Collection<Vehicle> vehicles = Arrays.asList(lightVehicle1,lightVehicle2, heavyVehicle);
 		fleetManager = new VehicleFleetManagerImpl(vehicles);
-		states = new StatesContainerImpl();
+		states = new StateManagerImpl();
 		
 		activityCosts = new ExampleActivityCostFunction();
 		

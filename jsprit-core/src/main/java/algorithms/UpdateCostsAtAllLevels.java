@@ -1,7 +1,7 @@
 package algorithms;
 
 import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
-import algorithms.StatesContainer.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.costs.ForwardTransportCost;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.route.End;
@@ -15,7 +15,7 @@ class UpdateCostsAtAllLevels implements ForwardInTimeListener{
 
 	private ForwardTransportCost transportCost;
 	
-	private StatesContainerImpl states;
+	private StateManagerImpl states;
 	
 	private double totalOperationCost = 0.0;
 	
@@ -25,7 +25,7 @@ class UpdateCostsAtAllLevels implements ForwardInTimeListener{
 	
 	private double startTimeAtPrevAct = 0.0;
 	
-	public UpdateCostsAtAllLevels(VehicleRoutingActivityCosts activityCost, ForwardTransportCost transportCost, StatesContainerImpl states) {
+	public UpdateCostsAtAllLevels(VehicleRoutingActivityCosts activityCost, ForwardTransportCost transportCost, StateManagerImpl states) {
 		super();
 		this.activityCost = activityCost;
 		this.transportCost = transportCost;

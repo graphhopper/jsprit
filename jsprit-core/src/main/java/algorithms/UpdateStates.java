@@ -15,7 +15,7 @@ class UpdateStates implements JobInsertedListener, RuinListener{
 	
 	private IterateRouteBackwardInTime iterateBackward;
 	
-	public UpdateStates(StatesContainerImpl states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
+	public UpdateStates(StateManagerImpl states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
 		
 		iterateForward = new IterateRouteForwardInTime(routingCosts);
 		iterateForward.addListener(new UpdateActivityTimes());

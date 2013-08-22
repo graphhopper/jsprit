@@ -38,7 +38,7 @@ class InsertionFactory {
 	private static Logger log = Logger.getLogger(InsertionFactory.class);
 	
 	public static InsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
-			VehicleFleetManager vehicleFleetManager, StatesContainerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads){
+			VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads){
 		boolean concurrentInsertion = false;
 		if(executorService != null) concurrentInsertion = true;
 		if(config.containsKey("[@name]")){

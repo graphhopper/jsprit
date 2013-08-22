@@ -1,11 +1,9 @@
 package algorithms;
 
-import java.util.Map;
-
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-interface StatesContainer {
+interface StateManager {
 	
 	interface State {
 		double toDouble();

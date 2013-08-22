@@ -2,7 +2,7 @@ package algorithms;
 
 import java.util.Collection;
 
-import algorithms.StatesContainer.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.Job;
 import basics.Service;
 import basics.algo.InsertionStartsListener;
@@ -11,9 +11,9 @@ import basics.route.VehicleRoute;
 
 class UpdateLoadAtRouteLevel implements JobInsertedListener, InsertionStartsListener{
 
-	private StatesContainerImpl states;
+	private StateManagerImpl states;
 	
-	public UpdateLoadAtRouteLevel(StatesContainerImpl states) {
+	public UpdateLoadAtRouteLevel(StateManagerImpl states) {
 		super();
 		this.states = states;
 	}

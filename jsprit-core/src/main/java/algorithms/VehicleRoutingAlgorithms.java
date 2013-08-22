@@ -448,7 +448,7 @@ public class VehicleRoutingAlgorithms {
 
 		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new SolutionVerifier()));
 
-		final StatesContainerImpl routeStates = new StatesContainerImpl();
+		final StateManagerImpl routeStates = new StateManagerImpl();
 		IterationStartsListener resetStates = new IterationStartsListener() {
 			
 			@Override
@@ -570,7 +570,7 @@ public class VehicleRoutingAlgorithms {
 		metaAlgorithm.getAlgorithmListeners().addAll(algorithmListeners);
 	}
 	
-	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StatesContainerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
+	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
 		List<HierarchicalConfiguration> modConfigs = config.configurationsAt("construction.insertion");
 		if(modConfigs == null) return null;
 		if(modConfigs.isEmpty()) return null;
@@ -667,7 +667,7 @@ public class VehicleRoutingAlgorithms {
 	}
 	
 	private static SearchStrategyModule buildModule(HierarchicalConfiguration moduleConfig, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, 
-			final StatesContainerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
+			final StateManagerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads) {
 		String moduleName = moduleConfig.getString("[@name]");
 		if(moduleName == null) throw new IllegalStateException("module(-name) is missing.");
 		String moduleId = moduleConfig.getString("[@id]");
@@ -805,7 +805,7 @@ public class VehicleRoutingAlgorithms {
 				"\n\tgendreauPostOpt");
 	}
 
-	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StatesContainerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
+	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StateManagerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
@@ -816,7 +816,7 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 
-	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final StatesContainerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
+	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final StateManagerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
@@ -827,7 +827,7 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 	
-	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, StatesContainerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads) {
+	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads) {
 		InsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, routeStates, algorithmListeners, executorService, nuOfThreads);
 		return insertion;
 	}

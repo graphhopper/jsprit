@@ -62,7 +62,7 @@ public class TestCalculatesServiceInsertion {
 
 	private Service third;
 
-	private StatesContainerImpl states;
+	private StateManagerImpl states;
 
 	private NoDriver driver;
 	
@@ -152,7 +152,7 @@ public class TestCalculatesServiceInsertion {
 		jobs.add(second);
 		jobs.add(third);
 		
-		states = new StatesContainerImpl();
+		states = new StateManagerImpl();
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 

@@ -17,8 +17,8 @@ import org.apache.log4j.Logger;
 import util.Neighborhood;
 
 import algorithms.RouteStates.ActivityState;
-import algorithms.StatesContainer.State;
-import algorithms.StatesContainer.States;
+import algorithms.StateManager.State;
+import algorithms.StateManager.States;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingActivityCosts;
@@ -62,7 +62,7 @@ final class CalculatesServiceInsertionWithTriangleInequality implements JobInser
 	
 	private static final Logger logger = Logger.getLogger(CalculatesServiceInsertionWithTriangleInequality.class);
 	
-	private StatesContainer routeStates;
+	private StateManager routeStates;
 	
 	private VehicleRoutingTransportCosts routingCosts;
 	
@@ -97,7 +97,7 @@ final class CalculatesServiceInsertionWithTriangleInequality implements JobInser
 		logger.info("initialise neighborhood " + neighborhood);
 	}
 
-	public void setActivityStates(StatesContainer activityStates2){
+	public void setActivityStates(StateManager activityStates2){
 		this.routeStates = activityStates2;
 	}
 	

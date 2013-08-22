@@ -15,7 +15,7 @@ package algorithms;
 import org.apache.log4j.Logger;
 
 import util.Neighborhood;
-import algorithms.StatesContainer.State;
+import algorithms.StateManager.State;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingActivityCosts;
@@ -36,7 +36,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 	
 	private static final Logger logger = Logger.getLogger(CalculatesServiceInsertion.class);
 	
-	private StatesContainer states;
+	private StateManager states;
 	
 	private VehicleRoutingTransportCosts routingCosts;
 	
@@ -71,7 +71,8 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		logger.info("initialise neighborhood " + neighborhood);
 	}
 
-	public void setStates(StatesContainer activityStates2){
+
+	public void setStates(StateManager activityStates2){
 		this.states = activityStates2;
 	}
 	
