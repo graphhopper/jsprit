@@ -189,7 +189,7 @@ public class TestIterateRouteForwardInTime {
 		forwardInTime.iterate(vehicleRoute);
 		
 		assertEquals(40.0, states.getRouteStates(vehicleRoute).getState(StateTypes.COSTS).toDouble(), 0.05);
-		assertEquals(40.0, vehicleRoute.getEnd().getEndTime(),0.05);
+		assertEquals(40.0, vehicleRoute.getEnd().getArrTime(),0.05);
 		assertEquals(50.0, vehicleRoute.getEnd().getTheoreticalLatestOperationStartTime(),0.05);
 	}
 	

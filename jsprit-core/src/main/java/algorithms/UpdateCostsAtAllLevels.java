@@ -33,38 +33,41 @@ class UpdateCostsAtAllLevels implements ForwardInTimeListener{
 	}
 
 	@Override
-	public void start(VehicleRoute route) {
+	public void start(VehicleRoute route, Start start, double departureTime) {
 		vehicleRoute = route;
 		vehicleRoute.getVehicleRouteCostCalculator().reset();
+		prevAct = start;
+		startTimeAtPrevAct = departureTime;
 	}
 
 	@Override
 	public void nextActivity(TourActivity act, double arrTime, double endTime) {
-		if(prevAct == null){
-			prevAct = act;
-			startTimeAtPrevAct = endTime;
-		}
-		else{
-			double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), act.getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
-			double actCost = activityCost.getActivityCost(act, arrTime, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
-			
-			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
-			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
-			
-			totalOperationCost += transportCost;
-			totalOperationCost += actCost;
-			
-			if(!(act instanceof End)){
-				states.putActivityState(act, StateTypes.COSTS, new StateImpl(totalOperationCost));
-			}
-			
-			prevAct = act;
-			startTimeAtPrevAct = endTime;
-		}	
+		double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), act.getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+		double actCost = activityCost.getActivityCost(act, arrTime, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+
+		vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
+		vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
+
+		totalOperationCost += transportCost;
+		totalOperationCost += actCost;
+
+		states.putActivityState(act, StateTypes.COSTS, new StateImpl(totalOperationCost));
+
+		prevAct = act;
+		startTimeAtPrevAct = endTime;	
 	}
 
 	@Override
-	public void finnish() {
+	public void end(End end, double arrivalTime) {
+		double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), end.getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+		double actCost = activityCost.getActivityCost(end, arrivalTime, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+		
+		vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
+		vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
+		
+		totalOperationCost += transportCost;
+		totalOperationCost += actCost;
+		
 		states.putRouteState(vehicleRoute, StateTypes.COSTS, new StateImpl(totalOperationCost));
 		
 		//this is rather strange and likely to change

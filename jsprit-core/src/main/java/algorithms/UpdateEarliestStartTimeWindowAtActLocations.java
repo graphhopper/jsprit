@@ -17,15 +17,14 @@ class UpdateEarliestStartTimeWindowAtActLocations implements ForwardInTimeListen
 	}
 
 	@Override
-	public void start(VehicleRoute route) {}
+	public void start(VehicleRoute route, Start start, double departureTime) {}
 
 	@Override
 	public void nextActivity(TourActivity act, double arrTime, double endTime) {
-		if(act instanceof Start || act instanceof End) return;
 		states.putActivityState(act, StateTypes.EARLIEST_OPERATION_START_TIME, new StateImpl(Math.max(arrTime, act.getTheoreticalEarliestOperationStartTime())));
 	}
 
 	@Override
-	public void finnish() {}
+	public void end(End end, double arrivalTime) {}
 
 }

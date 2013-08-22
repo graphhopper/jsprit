@@ -46,22 +46,29 @@ class IterateRouteBackwardInTime implements VehicleRouteUpdater{
 	 * 
 	 */
 	public void iterate(VehicleRoute vehicleRoute) {
-		listeners.start(vehicleRoute);
+		listeners.start(vehicleRoute, vehicleRoute.getEnd(), vehicleRoute.getEnd().getTheoreticalLatestOperationStartTime());
+		
 		Iterator<TourActivity> reverseActIter = vehicleRoute.getTourActivities().reverseActivityIterator();
 		TourActivity prevAct;
 		prevAct = vehicleRoute.getEnd();
-		double startAtPrevAct = prevAct.getTheoreticalLatestOperationStartTime();
-		listeners.prevActivity(prevAct, startAtPrevAct, startAtPrevAct);
+		double latestArrivalTimeAtPrevAct = prevAct.getTheoreticalLatestOperationStartTime();
+		
 		while(reverseActIter.hasNext()){
 			TourActivity currAct = reverseActIter.next();	
-			double latestDepTimeAtCurrAct = startAtPrevAct - transportTime.getBackwardTransportTime(currAct.getLocationId(), prevAct.getLocationId(), startAtPrevAct, vehicleRoute.getDriver(),vehicleRoute.getVehicle());
-			double potentialLatestOperationStartTimeAtCurrAct = latestDepTimeAtCurrAct - currAct.getOperationTime();
-			double latestOperationStartTime = Math.min(currAct.getTheoreticalLatestOperationStartTime(), potentialLatestOperationStartTimeAtCurrAct);
-			listeners.prevActivity(currAct, latestDepTimeAtCurrAct, latestOperationStartTime);
+			double latestDepTimeAtCurrAct = latestArrivalTimeAtPrevAct - transportTime.getBackwardTransportTime(currAct.getLocationId(), prevAct.getLocationId(), latestArrivalTimeAtPrevAct, vehicleRoute.getDriver(),vehicleRoute.getVehicle());
+			double potentialLatestArrivalTimeAtCurrAct = latestDepTimeAtCurrAct - currAct.getOperationTime();
+			double latestArrivalTime = Math.min(currAct.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
+			
+			listeners.prevActivity(currAct, latestDepTimeAtCurrAct, latestArrivalTime);
+			
 			prevAct = currAct;
-			startAtPrevAct = latestOperationStartTime;
+			latestArrivalTimeAtPrevAct = latestArrivalTime;
 		}
-		listeners.finnish();
+		
+		TourActivity currAct = vehicleRoute.getStart();
+		double latestDepTimeAtCurrAct = latestArrivalTimeAtPrevAct - transportTime.getBackwardTransportTime(currAct.getLocationId(), prevAct.getLocationId(), latestArrivalTimeAtPrevAct, vehicleRoute.getDriver(),vehicleRoute.getVehicle());
+		
+		listeners.end(vehicleRoute.getStart(), latestDepTimeAtCurrAct);
 	}
 	
 	public void addListener(BackwardInTimeListener l){ listeners.addListener(l); }

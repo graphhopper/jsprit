@@ -3,6 +3,8 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import basics.route.End;
+import basics.route.Start;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
@@ -10,11 +12,11 @@ class BackwardInTimeListeners {
 	
 	interface BackwardInTimeListener{
 		
-		public void start(VehicleRoute route);
+		public void start(VehicleRoute route, End end, double latestArrivalTime);
 
 		public void prevActivity(TourActivity act, double latestDepartureTime, double latestOperationStartTime);
 
-		public void finnish();
+		public void end(Start start, double latestDepartureTime);
 		
 	}
 	
@@ -24,8 +26,8 @@ class BackwardInTimeListeners {
 		listeners.add(l);
 	}
 	
-	public void start(VehicleRoute route){
-		for(BackwardInTimeListener l : listeners){ l.start(route); }
+	public void start(VehicleRoute route, End end, double latestArrivalTime){
+		for(BackwardInTimeListener l : listeners){ l.start(route, end, latestArrivalTime); }
 	}
 	
 	/**
@@ -37,14 +39,14 @@ class BackwardInTimeListeners {
 	 * 
 	 * @param act
 	 * @param latestDepartureTime
-	 * @param latestOperationStartTime
+	 * @param latestArrivalTime
 	 */
-	public void prevActivity(TourActivity act, double latestDepartureTime, double latestOperationStartTime){
-		for(BackwardInTimeListener l : listeners){ l.prevActivity(act,latestDepartureTime,latestOperationStartTime); }
+	public void prevActivity(TourActivity act, double latestDepartureTime, double latestArrivalTime){
+		for(BackwardInTimeListener l : listeners){ l.prevActivity(act,latestDepartureTime,latestArrivalTime); }
 	}
 	
-	public void finnish(){
-		for(BackwardInTimeListener l : listeners){ l.finnish(); }
+	public void end(Start start, double latestDepartureTime){
+		for(BackwardInTimeListener l : listeners){ l.end(start, latestDepartureTime); }
 	}
 
 }

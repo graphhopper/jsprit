@@ -48,14 +48,12 @@ class IterateRouteForwardInTime implements VehicleRouteUpdater{
 	 * 
 	 */
 	public void iterate(VehicleRoute vehicleRoute) {
-		listeners.start(vehicleRoute);
+		listeners.start(vehicleRoute, vehicleRoute.getStart(), vehicleRoute.getStart().getEndTime());
 		
 		Vehicle vehicle = vehicleRoute.getVehicle();
 		Driver driver = vehicleRoute.getDriver();
 		TourActivity prevAct = vehicleRoute.getStart(); 
 		double startAtPrevAct = prevAct.getEndTime();		
-		
-		listeners.nextActivity(prevAct,startAtPrevAct,startAtPrevAct);
 		
 		for(TourActivity currentAct : vehicleRoute.getTourActivities().getActivities()){ 
 			double transportTime = this.transportTime.getTransportTime(prevAct.getLocationId(), currentAct.getLocationId(), startAtPrevAct, driver, vehicle);
@@ -73,9 +71,7 @@ class IterateRouteForwardInTime implements VehicleRouteUpdater{
 		double transportTime = this.transportTime.getTransportTime(prevAct.getLocationId(), currentAct.getLocationId(), startAtPrevAct, driver, vehicle);
 		double arrivalTimeAtCurrAct = startAtPrevAct + transportTime; 
 		
-		listeners.nextActivity(currentAct,arrivalTimeAtCurrAct,arrivalTimeAtCurrAct);
-		listeners.finnish();
-
+		listeners.end(vehicleRoute.getEnd(), arrivalTimeAtCurrAct);
 	}
 	
 	public void addListener(ForwardInTimeListener l){

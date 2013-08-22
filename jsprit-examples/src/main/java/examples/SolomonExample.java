@@ -26,6 +26,7 @@ import java.util.Collection;
 import readers.SolomonReader;
 import algorithms.GreedySchrimpfFactory;
 import algorithms.SchrimpfFactory;
+import algorithms.VehicleRoutingAlgorithms;
 import algorithms.selectors.SelectBest;
 import analysis.AlgorithmSearchProgressChartListener;
 import analysis.SolutionPlotter;
@@ -75,7 +76,8 @@ public class SolomonExample {
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+//		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.

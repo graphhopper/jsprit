@@ -3,6 +3,8 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import basics.route.End;
+import basics.route.Start;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
@@ -10,11 +12,11 @@ class ForwardInTimeListeners {
 	
 	interface ForwardInTimeListener{
 		
-		public void start(VehicleRoute route);
+		public void start(VehicleRoute route, Start start, double departureTime);
 
 		public void nextActivity(TourActivity act, double arrTime,double endTime);
 
-		public void finnish();
+		public void end(End end, double arrivalTime);
 		
 	}
 	
@@ -24,16 +26,16 @@ class ForwardInTimeListeners {
 		listeners.add(l);
 	}
 	
-	public void start(VehicleRoute route){
-		for(ForwardInTimeListener l : listeners){ l.start(route); }
+	public void start(VehicleRoute route, Start start, double departureTime){
+		for(ForwardInTimeListener l : listeners){ l.start(route, start, departureTime); }
 	}
 	
 	public void nextActivity(TourActivity act, double arrTime, double endTime){
 		for(ForwardInTimeListener l : listeners){ l.nextActivity(act,arrTime,endTime); }
 	}
 	
-	public void finnish(){
-		for(ForwardInTimeListener l : listeners){ l.finnish(); }
+	public void end(End end, double arrivalTime){
+		for(ForwardInTimeListener l : listeners){ l.end(end, arrivalTime); }
 	}
 
 }

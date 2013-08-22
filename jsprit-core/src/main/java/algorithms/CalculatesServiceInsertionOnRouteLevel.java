@@ -241,6 +241,14 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		 *  
 		 */
 		
+		if(memorySize==0){
+			InsertionData insertion = bestInsertionsQueue.poll();
+			if(insertion != null){
+				best_insertion_index = insertion.getDeliveryInsertionIndex();
+				best_insertion_costs = insertion.getInsertionCost();
+			}
+		}
+		
 		for(int i=0;i<memorySize;i++){
 			InsertionData data = bestInsertionsQueue.poll();
 			if(data == null){

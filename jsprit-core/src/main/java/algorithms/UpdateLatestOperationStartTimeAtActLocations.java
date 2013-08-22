@@ -17,16 +17,16 @@ class UpdateLatestOperationStartTimeAtActLocations implements BackwardInTimeList
 	}
 
 	@Override
-	public void start(VehicleRoute route) {}
+	public void start(VehicleRoute route, End end, double latestArrivalTime) {}
 
 	@Override
 	public void prevActivity(TourActivity act,double latestDepartureTime, double latestOperationStartTime) {
-//		if(latestOperationStartTime < act.getArrTime()) throw new IllegalStateException(act.toString() + "; latestStart="+latestOperationStartTime+";actArrTime="+act.getArrTime());
-		if(act instanceof Start || act instanceof End) return;
 		states.putActivityState(act, StateTypes.LATEST_OPERATION_START_TIME, new StateImpl(latestOperationStartTime));
 	}
 
 	@Override
-	public void finnish() {}
+	public void end(Start start, double latestDepartureTime) {}
+
+	
 
 }

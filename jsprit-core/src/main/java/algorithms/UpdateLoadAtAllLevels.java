@@ -27,17 +27,16 @@ class UpdateLoadAtAllLevels implements ForwardInTimeListener{
 	}
 
 	@Override
-	public void start(VehicleRoute route) { vehicleRoute = route; }
+	public void start(VehicleRoute route, Start start, double departureTime) { vehicleRoute = route; }
 
 	@Override
 	public void nextActivity(TourActivity act, double arrTime, double endTime) {
-		if(act instanceof Start || act instanceof End){ return; }
 		load += (double)act.getCapacityDemand();
 		states.putActivityState(act, StateTypes.LOAD, new StateImpl(load));
 	}
 
 	@Override
-	public void finnish() {
+	public void end(End end, double arrivalTime) {
 		states.putRouteState(vehicleRoute, StateTypes.LOAD, new StateImpl(load));
 		load=0;
 		vehicleRoute = null;
