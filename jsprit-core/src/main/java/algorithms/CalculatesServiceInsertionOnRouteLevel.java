@@ -51,7 +51,7 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 
 	private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
 	
-	private StatesContainer states;
+	private StateManager states;
 	
 	private int nuOfActsForwardLooking = 0;
 	
@@ -90,7 +90,7 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 			logger.info("initialise " + this);
 		}
 
-	public void setActivityStates(StatesContainer activityStates2){
+	public void setActivityStates(StateManager activityStates2){
 		this.states = activityStates2;
 	}
 	

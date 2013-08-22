@@ -129,7 +129,7 @@ public class TestIterateRouteForwardInTime {
 	@Test
 	public void whenIteratingWithLoadUpdateAtActLocations_itShouldUpdateLoad() {
 		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		StatesContainerImpl states = new StatesContainerImpl();
+		StateManagerImpl states = new StateManagerImpl();
 		forwardInTime.addListener(new UpdateLoadAtAllLevels(states));
 		forwardInTime.iterate(vehicleRoute);
 		
@@ -153,7 +153,7 @@ public class TestIterateRouteForwardInTime {
 	@Test
 	public void testStatesOfAct1(){
 		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		StatesContainerImpl states = new StatesContainerImpl();
+		StateManagerImpl states = new StateManagerImpl();
 		forwardInTime.addListener(new UpdateLoadAtAllLevels(states));
 		forwardInTime.addListener(new UpdateEarliestStartTimeWindowAtActLocations(states));
 		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, states));
@@ -168,7 +168,7 @@ public class TestIterateRouteForwardInTime {
 	@Test
 	public void testStatesOfAct2(){
 		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		StatesContainerImpl states = new StatesContainerImpl();
+		StateManagerImpl states = new StateManagerImpl();
 		forwardInTime.addListener(new UpdateLoadAtAllLevels(states));
 		forwardInTime.addListener(new UpdateEarliestStartTimeWindowAtActLocations(states));
 		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, states));
@@ -183,7 +183,7 @@ public class TestIterateRouteForwardInTime {
 	@Test
 	public void testStatesOfAct3(){
 		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		StatesContainerImpl states = new StatesContainerImpl();
+		StateManagerImpl states = new StateManagerImpl();
 		forwardInTime.addListener(new UpdateActivityTimes());
 		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, states));
 		forwardInTime.iterate(vehicleRoute);

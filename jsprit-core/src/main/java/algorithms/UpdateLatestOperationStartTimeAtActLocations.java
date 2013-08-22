@@ -1,7 +1,7 @@
 package algorithms;
 
 import algorithms.BackwardInTimeListeners.BackwardInTimeListener;
-import algorithms.StatesContainer.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.route.End;
 import basics.route.Start;
 import basics.route.TourActivity;
@@ -9,9 +9,9 @@ import basics.route.VehicleRoute;
 
 class UpdateLatestOperationStartTimeAtActLocations implements BackwardInTimeListener{
 
-	private StatesContainerImpl states;
+	private StateManagerImpl states;
 	
-	public UpdateLatestOperationStartTimeAtActLocations(StatesContainerImpl states) {
+	public UpdateLatestOperationStartTimeAtActLocations(StateManagerImpl states) {
 		super();
 		this.states = states;
 	}

@@ -54,7 +54,7 @@ public class TestTourStateUpdaterWithService {
 
 	UpdateStates updateStates;
 	
-	StatesContainerImpl states;
+	StateManagerImpl states;
 
 	private VehicleRoute vehicleRoute;
 
@@ -101,7 +101,7 @@ public class TestTourStateUpdaterWithService {
 		services.add(firstService);
 		services.add(secondService);
 		
-		states = new StatesContainerImpl();
+		states = new StateManagerImpl();
 		
 		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("test", 0).build();
 		vehicle = VehicleImpl.Builder.newInstance("testvehicle").setType(type).setLocationId("0,0")

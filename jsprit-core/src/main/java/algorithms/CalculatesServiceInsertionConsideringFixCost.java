@@ -23,8 +23,8 @@ package algorithms;
 import org.apache.log4j.Logger;
 
 import algorithms.InsertionData.NoInsertionFound;
-import algorithms.StatesContainer.State;
-import algorithms.StatesContainer.States;
+import algorithms.StateManager.State;
+import algorithms.StateManager.States;
 import basics.Job;
 import basics.route.Driver;
 import basics.route.Vehicle;
@@ -43,9 +43,9 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	
 	private double solution_completeness_ratio = 0.5;
 	
-	private StatesContainer states;
+	private StateManager states;
 
-	public CalculatesServiceInsertionConsideringFixCost(final JobInsertionCalculator standardInsertionCalculator, StatesContainer activityStates2) {
+	public CalculatesServiceInsertionConsideringFixCost(final JobInsertionCalculator standardInsertionCalculator, StateManager activityStates2) {
 		super();
 		this.standardServiceInsertion = standardInsertionCalculator;
 		this.states = activityStates2;

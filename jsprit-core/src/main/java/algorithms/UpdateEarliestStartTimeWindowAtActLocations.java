@@ -1,7 +1,7 @@
 package algorithms;
 
 import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
-import algorithms.StatesContainer.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.route.End;
 import basics.route.Start;
 import basics.route.TourActivity;
@@ -9,9 +9,9 @@ import basics.route.VehicleRoute;
 
 class UpdateEarliestStartTimeWindowAtActLocations implements ForwardInTimeListener{
 
-	private StatesContainerImpl states;
+	private StateManagerImpl states;
 	
-	public UpdateEarliestStartTimeWindowAtActLocations(StatesContainerImpl states) {
+	public UpdateEarliestStartTimeWindowAtActLocations(StateManagerImpl states) {
 		super();
 		this.states = states;
 	}

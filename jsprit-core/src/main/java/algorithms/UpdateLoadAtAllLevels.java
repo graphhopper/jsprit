@@ -1,7 +1,7 @@
 package algorithms;
 
 import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
-import algorithms.StatesContainer.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.route.End;
 import basics.route.Start;
 import basics.route.TourActivity;
@@ -17,11 +17,11 @@ class UpdateLoadAtAllLevels implements ForwardInTimeListener{
 
 	private double load = 0.0;
 	
-	private StatesContainerImpl states;
+	private StateManagerImpl states;
 	
 	private VehicleRoute vehicleRoute;
 	
-	public UpdateLoadAtAllLevels(StatesContainerImpl states) {
+	public UpdateLoadAtAllLevels(StateManagerImpl states) {
 		super();
 		this.states = states;
 	}

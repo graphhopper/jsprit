@@ -12,13 +12,13 @@ import basics.route.VehicleRoute;
 
 class UdateCostsAtRouteLevel implements JobInsertedListener, InsertionStartsListener, InsertionEndsListener{
 	
-	private StatesContainerImpl states;
+	private StateManagerImpl states;
 	
 	private VehicleRoutingTransportCosts tpCosts;
 	
 	private VehicleRoutingActivityCosts actCosts;
 	
-	public UdateCostsAtRouteLevel(StatesContainerImpl states, VehicleRoutingTransportCosts tpCosts, VehicleRoutingActivityCosts actCosts) {
+	public UdateCostsAtRouteLevel(StateManagerImpl states, VehicleRoutingTransportCosts tpCosts, VehicleRoutingActivityCosts actCosts) {
 		super();
 		this.states = states;
 		this.tpCosts = tpCosts;
