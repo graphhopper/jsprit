@@ -73,7 +73,9 @@ final class CalculatesServiceInsertionWithTriangleInequality implements JobInser
 	private HardConstraint hardConstraint = new HardConstraint() {
 		
 		@Override
-		public boolean fulfilled() { return true; }
+		public boolean fulfilled(InsertionScenario iScenario) {
+			return true;
+		}
 	};
 	
 	public void setHardConstraint(HardConstraint hardConstraint){

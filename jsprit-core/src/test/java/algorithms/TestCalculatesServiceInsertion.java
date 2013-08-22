@@ -157,7 +157,7 @@ public class TestCalculatesServiceInsertion {
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 
 		serviceInsertion = new CalculatesServiceInsertion(costs, activityCosts);
-		serviceInsertion.setActivityStates(states);
+		serviceInsertion.setStates(states);
 		
 		stateUpdater = new UpdateStates(states, costs, activityCosts);
 		

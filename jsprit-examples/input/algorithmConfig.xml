@@ -26,7 +26,7 @@
 
 	<construction>
 		<insertion name="bestInsertion">
-			<level forwardLooking="2" memory="1">route</level>
+		<!--  	<level forwardLooking="2" memory="1">route</level> -->
 		</insertion>	
 	</construction>
 	

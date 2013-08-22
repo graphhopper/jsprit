@@ -148,7 +148,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 		serviceInsertion = new CalculatesServiceInsertionOnRouteLevel(costs,activityCosts);
 		serviceInsertion.setNuOfActsForwardLooking(4);
-		serviceInsertion.setActivityStates(states);
+		serviceInsertion.setStates(states);
 		
 		updateStates = new UpdateStates(states, costs, activityCosts);
 		

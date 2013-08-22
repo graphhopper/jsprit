@@ -223,12 +223,10 @@ class CalculatorBuilder {
 
 	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StatesContainer activityStates2){
 		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), vrp.getActivityCosts());
-//		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertionWithTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts());
-//		((CalculatesServiceInsertionWithTriangleInequality) standardServiceInsertion).setActivityStates(activityStates2);
-//		((CalculatesServiceInsertionWithTriangleInequality) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
-//		
-		((CalculatesServiceInsertion) standardServiceInsertion).setActivityStates(activityStates2);
+		
+		((CalculatesServiceInsertion) standardServiceInsertion).setStates(activityStates2);
 		((CalculatesServiceInsertion) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
+		((CalculatesServiceInsertion) standardServiceInsertion).setHardConstraint(new HardConstraints.HardLoadConstraint(activityStates2));
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(standardServiceInsertion);
 		
 		return calcPlusListeners;
@@ -248,7 +246,7 @@ class CalculatorBuilder {
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNuOfActsForwardLooking(after);
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setMemorySize(solutionMemory);
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNeighborhood(vrp.getNeighborhood());
-		((CalculatesServiceInsertionOnRouteLevel) jobInsertionCalculator).setActivityStates(activityStates2);
+		((CalculatesServiceInsertionOnRouteLevel) jobInsertionCalculator).setStates(activityStates2);
 		CalculatorPlusListeners calcPlusListener = new CalculatorPlusListeners(jobInsertionCalculator);
 		return calcPlusListener;
 	}

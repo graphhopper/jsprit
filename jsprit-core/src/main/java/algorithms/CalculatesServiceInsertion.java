@@ -46,6 +46,14 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 	
 	private End end;
 	
+	private HardConstraint hardConstraint = new HardConstraint() {
+		
+		@Override
+		public boolean fulfilled(InsertionScenario iScenario) {
+			return true;
+		}
+	};
+	
 	private Neighborhood neighborhood = new Neighborhood() {
 		
 		@Override
@@ -54,14 +62,16 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		}
 	};
 	
-	
+	void setHardConstraint(HardConstraint hardConstraint){
+		this.hardConstraint = hardConstraint;
+	}
 	
 	public void setNeighborhood(Neighborhood neighborhood) {
 		this.neighborhood = neighborhood;
 		logger.info("initialise neighborhood " + neighborhood);
 	}
 
-	public void setActivityStates(StatesContainer activityStates2){
+	public void setStates(StatesContainer activityStates2){
 		this.states = activityStates2;
 	}
 	
@@ -87,14 +97,15 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		if(jobToInsert == null) throw new IllegalStateException("jobToInsert is missing.");
 		if(newVehicle == null || newVehicle instanceof NoVehicle) throw new IllegalStateException("newVehicle is missing.");
 		
+		InsertionFacts iFacts = new InsertionFacts(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
+		if(!hardConstraint.fulfilled(new InsertionScenario(iFacts, null))){
+			return InsertionData.noInsertionFound();
+		}
+		
 		TourActivities tour = currentRoute.getTourActivities();
 		double bestCost = bestKnownCosts;
 		Service service = (Service)jobToInsert;
-		
-		int currentLoad = (int) states.getRouteState(currentRoute, StateTypes.LOAD).toDouble();
-		if(currentLoad + service.getCapacityDemand() > newVehicle.getCapacity()){
-			return InsertionData.noInsertionFound();
-		}
+
 		int insertionIndex = InsertionData.NO_INDEX;
 		
 		TourActivity deliveryAct2Insert = ServiceActivity.newInstance(service);
