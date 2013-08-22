@@ -6,7 +6,8 @@
 	<iterations>2000</iterations>
 	
 	<construction>
-		<insertion name="bestInsertion"/>
+		<insertion name="bestInsertion">
+		</insertion>
 	</construction>
 	
 	<strategy>

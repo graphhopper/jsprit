@@ -9,7 +9,7 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.VehicleRoute;
 
-public class UpdateStates implements JobInsertedListener, RuinListener{
+class UpdateStates implements JobInsertedListener, RuinListener{
 
 	private IterateRouteForwardInTime iterateForward;
 	
