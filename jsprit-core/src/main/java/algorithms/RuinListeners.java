@@ -2,6 +2,7 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import algorithms.RuinStrategy.RuinListener;
 import basics.Job;
@@ -29,5 +30,9 @@ class RuinListeners {
 	
 	void removeListener(RuinListener ruinListener){
 		ruinListeners.remove(ruinListener);
+	}
+	
+	Collection<RuinListener> getListeners(){
+		return Collections.unmodifiableCollection(ruinListeners);
 	}
 }

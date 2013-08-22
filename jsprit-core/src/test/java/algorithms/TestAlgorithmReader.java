@@ -175,6 +175,18 @@ public class TestAlgorithmReader {
 				// TODO Auto-generated method stub
 				
 			}
+
+			@Override
+			public void removeListener(RuinListener ruinListener) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public Collection<RuinListener> getListeners() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 			
 		};
 		

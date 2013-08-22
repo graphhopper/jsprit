@@ -5,14 +5,14 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
 
-class MarginalsCalculusDefault implements MarginalsCalculus{
+class MarginalsCalculusTriangleInequality implements MarginalsCalculus{
 
 	private HardActivityLevelConstraint hardConstraint;
 
 	private VehicleRoutingTransportCosts routingCosts;
 	private VehicleRoutingActivityCosts activityCosts;
 	
-	public MarginalsCalculusDefault(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, HardActivityLevelConstraint hardActivityLevelConstraint) {
+	public MarginalsCalculusTriangleInequality(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, HardActivityLevelConstraint hardActivityLevelConstraint) {
 		super();
 		this.routingCosts = routingCosts;
 		this.activityCosts = actCosts;

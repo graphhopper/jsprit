@@ -81,5 +81,9 @@ interface RuinStrategy {
 	 * @param {@link RuinListener}
 	 */
 	public void addListener(RuinListener ruinListener);
+	
+	public void removeListener(RuinListener ruinListener);
+	
+	public Collection<RuinListener> getListeners();
 
 }

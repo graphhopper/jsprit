@@ -27,7 +27,7 @@ class UdateCostsAtRouteLevel implements JobInsertedListener, InsertionStartsList
 
 	@Override
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
-		inRoute.getVehicleRouteCostCalculator().addTransportCost(additionalCosts);
+//		inRoute.getVehicleRouteCostCalculator().addTransportCost(additionalCosts);
 	}
 
 	@Override

@@ -145,4 +145,14 @@ final class RuinRandom implements RuinStrategy {
 		ruinListeners.addListener(ruinListener);
 	}
 
+	@Override
+	public void removeListener(RuinListener ruinListener) {
+		ruinListeners.removeListener(ruinListener);
+	}
+
+	@Override
+	public Collection<RuinListener> getListeners() {
+		return ruinListeners.getListeners();
+	}
+
 }
