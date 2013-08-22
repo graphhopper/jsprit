@@ -24,19 +24,15 @@ import java.io.File;
 import java.util.Collection;
 
 import readers.SolomonReader;
-import algorithms.GreedySchrimpfFactory;
-import algorithms.SchrimpfFactory;
 import algorithms.VehicleRoutingAlgorithms;
 import algorithms.selectors.SelectBest;
 import analysis.AlgorithmSearchProgressChartListener;
 import analysis.SolutionPlotter;
 import analysis.SolutionPrinter;
 import analysis.SolutionPrinter.Print;
-import analysis.StopWatch;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
-import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 
 public class SolomonExample {
 	
@@ -76,9 +72,10 @@ public class SolomonExample {
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-//		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
-		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+//		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
+		vra.setPrematureBreak(100);
+//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
 		 * 

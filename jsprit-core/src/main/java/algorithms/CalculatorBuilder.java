@@ -22,18 +22,10 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.configuration.XMLConfiguration;
-
-import util.NeighborhoodImpl;
 
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblem.FleetComposition;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
-import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
-import basics.costs.VehicleRoutingActivityCosts;
 
 
 
@@ -222,11 +214,10 @@ class CalculatorBuilder {
 	}
 
 	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateManager activityStates2){
-		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), vrp.getActivityCosts());
+		MarginalsCalculus defaultCalc = new MarginalsCalculusDefault(vrp.getTransportCosts(), vrp.getActivityCosts(), new HardConstraints.HardTimeWindowConstraint(activityStates2) );
+		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(defaultCalc, new HardConstraints.HardLoadConstraint(activityStates2));
 		
-		((CalculatesServiceInsertion) standardServiceInsertion).setStates(activityStates2);
 		((CalculatesServiceInsertion) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
-		((CalculatesServiceInsertion) standardServiceInsertion).setHardConstraint(new HardConstraints.HardLoadConstraint(activityStates2));
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(standardServiceInsertion);
 		
 		return calcPlusListeners;

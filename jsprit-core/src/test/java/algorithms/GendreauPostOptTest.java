@@ -151,8 +151,8 @@ public class GendreauPostOptTest {
 		
 		activityCosts = new ExampleActivityCostFunction();
 		
-		CalculatesServiceInsertion standardServiceInsertion = new CalculatesServiceInsertion(cost, activityCosts);
-		standardServiceInsertion.setStates(states);
+		CalculatesServiceInsertion standardServiceInsertion = new CalculatesServiceInsertion(new MarginalsCalculusDefault(cost, activityCosts, new HardConstraints.HardTimeWindowConstraint(states)), new HardConstraints.HardLoadConstraint(states));
+		
 		CalculatesServiceInsertionConsideringFixCost withFixCost = new CalculatesServiceInsertionConsideringFixCost(standardServiceInsertion, states);
 		withFixCost.setWeightOfFixCost(1.2);
 		
