@@ -20,7 +20,7 @@ import basics.algo.SearchStrategyManager;
 import basics.io.VrpXMLReader;
 import basics.route.TourActivity;
 
-public class BuildFastCVRPAlgoTest {
+public class BuildCVRPAlgoFromScratchTest {
 	
 	VehicleRoutingProblem vrp;
 	
