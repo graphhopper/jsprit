@@ -5,7 +5,7 @@ import basics.route.Driver;
 import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
-class InsertionFacts {
+class InsertionContext {
 	
 	private VehicleRoute route;
 	private Job job;
@@ -48,7 +48,7 @@ class InsertionFacts {
 		return newDepTime;
 	}
 
-	public InsertionFacts(VehicleRoute route, Job job, Vehicle newVehicle,
+	public InsertionContext(VehicleRoute route, Job job, Vehicle newVehicle,
 			Driver newDriver, double newDepTime) {
 		super();
 		this.route = route;

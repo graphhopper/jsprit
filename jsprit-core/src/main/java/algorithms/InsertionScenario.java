@@ -2,9 +2,9 @@ package algorithms;
 
 class InsertionScenario {
 	
-	InsertionFacts iFacts;
+	InsertionContext iFacts;
 	InsertionData iData;
-	public InsertionScenario(InsertionFacts iFacts, InsertionData iData) {
+	public InsertionScenario(InsertionContext iFacts, InsertionData iData) {
 		super();
 		this.iFacts = iFacts;
 		this.iData = iData;
@@ -12,7 +12,7 @@ class InsertionScenario {
 	/**
 	 * @return the iFacts
 	 */
-	public InsertionFacts getiFacts() {
+	public InsertionContext getiFacts() {
 		return iFacts;
 	}
 	/**

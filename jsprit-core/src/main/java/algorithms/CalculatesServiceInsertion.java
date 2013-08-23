@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import util.Neighborhood;
 import algorithms.HardConstraints.HardRouteLevelConstraint;
+import algorithms.MarginalsCalculus.Marginals;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -76,8 +77,8 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		if(jobToInsert == null) throw new IllegalStateException("jobToInsert is missing.");
 		if(newVehicle == null || newVehicle instanceof NoVehicle) throw new IllegalStateException("newVehicle is missing.");
 		
-		InsertionFacts iFacts = new InsertionFacts(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
-		if(!hardRouteLevelConstraint.fulfilled(new InsertionScenario(iFacts, null))){
+		InsertionContext insertionContext = new InsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
+		if(!hardRouteLevelConstraint.fulfilled(insertionContext)){
 			return InsertionData.noInsertionFound();
 		}
 		
@@ -101,7 +102,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 				break;
 			}
 			if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-				Marginals mc = calculate(iFacts, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+				Marginals mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
 				if(mc != null){ 
 					if(mc.getAdditionalCosts() < bestCost){
 						bestCost = mc.getAdditionalCosts();
@@ -116,7 +117,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		}
 		End nextAct = end;
 		if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-			Marginals mc = calculate(iFacts, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+			Marginals mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
 			if(mc != null) {
 				if(mc.getAdditionalCosts() < bestCost){
 					bestCost = mc.getAdditionalCosts();
@@ -135,7 +136,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		return insertionData;
 	}
 
-	public Marginals calculate(InsertionFacts iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double departureTimeAtPrevAct) {	
+	public Marginals calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double departureTimeAtPrevAct) {	
 		return marginalCalculus.calculate(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);
 		
 	}

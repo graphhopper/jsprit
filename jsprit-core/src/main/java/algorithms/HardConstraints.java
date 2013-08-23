@@ -7,13 +7,13 @@ class HardConstraints {
 	
 	interface HardRouteLevelConstraint {
 
-		public boolean fulfilled(InsertionScenario iScenario);
+		public boolean fulfilled(InsertionContext insertionContext);
 		
 	}
 	
 	interface HardActivityLevelConstraint {
 		
-		public boolean fulfilled(InsertionFacts iFacts, TourActivity act, double arrTime);
+		public boolean fulfilled(InsertionContext iFacts, TourActivity act, double arrTime);
 
 	}
 	
@@ -27,10 +27,10 @@ class HardConstraints {
 		}
 
 		@Override
-		public boolean fulfilled(InsertionScenario iScenario) {
-			int currentLoad = (int) states.getRouteState(iScenario.getiFacts().getRoute(), StateTypes.LOAD).toDouble();
-			Service service = (Service) iScenario.getiFacts().getJob();
-			if(currentLoad + service.getCapacityDemand() > iScenario.getiFacts().getNewVehicle().getCapacity()){
+		public boolean fulfilled(InsertionContext insertionContext) {
+			int currentLoad = (int) states.getRouteState(insertionContext.getRoute(), StateTypes.LOAD).toDouble();
+			Service service = (Service) insertionContext.getJob();
+			if(currentLoad + service.getCapacityDemand() > insertionContext.getNewVehicle().getCapacity()){
 				return false;
 			}
 			return true;
@@ -47,7 +47,7 @@ class HardConstraints {
 		}
 
 		@Override
-		public boolean fulfilled(InsertionFacts iFacts, TourActivity act, double arrTime) {
+		public boolean fulfilled(InsertionContext iFacts, TourActivity act, double arrTime) {
 			if(arrTime > states.getActivityState(act, StateTypes.LATEST_OPERATION_START_TIME).toDouble()){
 				return false;
 			}
