@@ -156,7 +156,7 @@ public class TestCalculatesServiceInsertion {
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 
-		serviceInsertion = new CalculatesServiceInsertion(new MarginalsCalculusTriangleInequality(costs, activityCosts, new HardConstraints.HardTimeWindowConstraint(states)), new HardConstraints.HardLoadConstraint(states));
+		serviceInsertion = new CalculatesServiceInsertion(costs, new MarginalsCalculusTriangleInequality(costs, activityCosts, new HardConstraints.HardTimeWindowConstraint(states)), new HardConstraints.HardLoadConstraint(states));
 		
 		stateUpdater = new UpdateStates(states, costs, activityCosts);
 		

@@ -215,7 +215,7 @@ class CalculatorBuilder {
 
 	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateManager activityStates2){
 		MarginalsCalculus defaultCalc = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), new HardConstraints.HardTimeWindowConstraint(activityStates2) );
-		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(defaultCalc, new HardConstraints.HardLoadConstraint(activityStates2));
+		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), defaultCalc, new HardConstraints.HardLoadConstraint(activityStates2));
 		
 		((CalculatesServiceInsertion) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(standardServiceInsertion);

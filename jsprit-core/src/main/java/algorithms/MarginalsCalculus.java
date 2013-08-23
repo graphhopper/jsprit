@@ -4,6 +4,6 @@ import basics.route.TourActivity;
 
 interface MarginalsCalculus {
 	
-	Marginals calculate(InsertionFacts iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct);
+	Marginals calculate(InsertionFacts iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct);
 
 }

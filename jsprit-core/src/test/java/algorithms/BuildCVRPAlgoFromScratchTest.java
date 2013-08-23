@@ -41,7 +41,7 @@ public class BuildCVRPAlgoFromScratchTest {
 			}
 		};
 		MarginalsCalculus marginalCalculus = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), hardActLevelConstraint);
-		CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
+		CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
 		
 		VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
 		JobInsertionCalculator finalServiceInsertion = new CalculatesVehTypeDepServiceInsertion(fleetManager, serviceInsertion);
@@ -83,7 +83,7 @@ public class BuildCVRPAlgoFromScratchTest {
 //		System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 		vra.addInitialSolution(iniSolution);
 		
-		vra.setNuOfIterations(10000);
+		vra.setNuOfIterations(2000);
 //		vra.setPrematureBreak(200);
 		
 	}
@@ -91,7 +91,7 @@ public class BuildCVRPAlgoFromScratchTest {
 	@Test
 	public void testVRA(){
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-//		System.out.println("costs="+Solutions.getBest(solutions).getCost()+";#routes="+Solutions.getBest(solutions).getRoutes().size());
+		System.out.println("costs="+Solutions.getBest(solutions).getCost()+";#routes="+Solutions.getBest(solutions).getRoutes().size());
 		assertEquals(530.0, Solutions.getBest(solutions).getCost(),15.0);
 		assertEquals(5, Solutions.getBest(solutions).getRoutes().size());
 	}
