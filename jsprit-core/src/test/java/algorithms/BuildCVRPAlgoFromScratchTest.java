@@ -83,8 +83,8 @@ public class BuildCVRPAlgoFromScratchTest {
 //		System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 		vra.addInitialSolution(iniSolution);
 		
-		vra.setNuOfIterations(1000);
-		vra.setPrematureBreak(200);
+		vra.setNuOfIterations(10000);
+//		vra.setPrematureBreak(200);
 		
 	}
 	

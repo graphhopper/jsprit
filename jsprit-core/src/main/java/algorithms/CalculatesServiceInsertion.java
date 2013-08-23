@@ -22,7 +22,6 @@ import basics.route.Driver;
 import basics.route.End;
 import basics.route.ServiceActivity;
 import basics.route.Start;
-import basics.route.TourActivities;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl.NoVehicle;
@@ -31,36 +30,9 @@ import basics.route.VehicleRoute;
 
 
 final class CalculatesServiceInsertion implements JobInsertionCalculator{
-	
-	static class Break {
-		private Marginals marginals;
-		private boolean breakLoop;
-		public Break(Marginals marginals, boolean breakLoop) {
-			super();
-			this.marginals = marginals;
-			this.breakLoop = breakLoop;
-		}
-		/**
-		 * @return the marginals
-		 */
-		public Marginals getMarginals() {
-			return marginals;
-		}
-		/**
-		 * @return the breakLoop
-		 */
-		public boolean isBreakLoop() {
-			return breakLoop;
-		}
-		
-	}
-	
+
 	private static final Logger logger = Logger.getLogger(CalculatesServiceInsertion.class);
-	
-	private Start start;
-	
-	private End end;
-	
+
 	private HardRouteLevelConstraint hardRouteLevelConstraint;
 	
 	private Neighborhood neighborhood = new Neighborhood() {
@@ -105,19 +77,21 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 			return InsertionData.noInsertionFound();
 		}
 		
-		TourActivities tour = currentRoute.getTourActivities();
 		double bestCost = bestKnownCosts;
 		Marginals bestMarginals = null;
 		Service service = (Service)jobToInsert;
 		int insertionIndex = InsertionData.NO_INDEX;
 		TourActivity deliveryAct2Insert = ServiceActivity.newInstance(service);
 		
-		initialiseStartAndEnd(newVehicle, newVehicleDepartureTime);
+		Start start = Start.newInstance(newVehicle.getLocationId(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
+		start.setEndTime(newVehicleDepartureTime);
+		
+		End end = End.newInstance(newVehicle.getLocationId(), 0.0, newVehicle.getLatestArrival());
 		
 		TourActivity prevAct = start;
 		int actIndex = 0;
 
-		for(TourActivity nextAct : tour.getActivities()){
+		for(TourActivity nextAct : currentRoute.getTourActivities().getActivities()){
 			if(deliveryAct2Insert.getTheoreticalLatestOperationStartTime() < prevAct.getTheoreticalEarliestOperationStartTime()){
 				break;
 			}
@@ -153,29 +127,6 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
 		insertionData.setAdditionalTime(bestMarginals.getAdditionalTime());
 		return insertionData;
-	}
-
-	private void initialiseStartAndEnd(final Vehicle newVehicle, double newVehicleDepartureTime) {
-		if(start == null){
-			start = Start.newInstance(newVehicle.getLocationId(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
-			start.setEndTime(newVehicleDepartureTime);
-		}
-		else{
-			start.setLocationId(newVehicle.getLocationId());
-			start.setTheoreticalEarliestOperationStartTime(newVehicle.getEarliestDeparture());
-			start.setTheoreticalLatestOperationStartTime(newVehicle.getLatestArrival());
-			start.setEndTime(newVehicleDepartureTime);
-		}
-		
-		if(end == null){
-			end = End.newInstance(newVehicle.getLocationId(), 0.0, newVehicle.getLatestArrival());
-		}
-		else{
-			end.setLocationId(newVehicle.getLocationId());
-			end.setTheoreticalEarliestOperationStartTime(newVehicleDepartureTime);
-			end.setTheoreticalLatestOperationStartTime(newVehicle.getLatestArrival());
-			end.setEndTime(newVehicle.getLatestArrival());
-		}
 	}
 
 	public Marginals calculate(InsertionFacts iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct) {	
