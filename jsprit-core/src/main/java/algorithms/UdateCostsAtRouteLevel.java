@@ -2,6 +2,7 @@ package algorithms;
 
 import java.util.Collection;
 
+import algorithms.StateManager.StateImpl;
 import basics.Job;
 import basics.algo.InsertionEndsListener;
 import basics.algo.InsertionStartsListener;
@@ -28,6 +29,9 @@ class UdateCostsAtRouteLevel implements JobInsertedListener, InsertionStartsList
 	@Override
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 //		inRoute.getVehicleRouteCostCalculator().addTransportCost(additionalCosts);
+		double oldCosts = states.getRouteState(inRoute, StateTypes.COSTS).toDouble();
+		oldCosts += additionalCosts;
+		states.putRouteState(inRoute, StateTypes.COSTS, new StateImpl(oldCosts));
 	}
 
 	@Override
@@ -42,10 +46,15 @@ class UdateCostsAtRouteLevel implements JobInsertedListener, InsertionStartsList
 
 	@Override
 	public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
-		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(tpCosts);
-		forwardInTime.addListener(new UpdateCostsAtAllLevels(actCosts, tpCosts, states));
+		
+//		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(tpCosts);
+//		forwardInTime.addListener(new UpdateCostsAtAllLevels(actCosts, tpCosts, states));
 		for(VehicleRoute route : vehicleRoutes){
-			forwardInTime.iterate(route);
+			if(route.isEmpty()) continue;
+			route.getVehicleRouteCostCalculator().reset();
+			route.getVehicleRouteCostCalculator().addOtherCost(states.getRouteState(route, StateTypes.COSTS).toDouble());
+			route.getVehicleRouteCostCalculator().price(route.getVehicle());
+//			forwardInTime.iterate(route);
 		}
 		
 	}
