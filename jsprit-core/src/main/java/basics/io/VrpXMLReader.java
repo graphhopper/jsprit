@@ -216,7 +216,7 @@ public class VrpXMLReader{
 			int cap = 0;
 			if(capacityDemand != null) cap = Integer.parseInt(capacityDemand);
 			Service.Builder builder = Service.Builder.newInstance(id, cap);
-			builder.setName(name);
+//			builder.setType(name);
 			String serviceLocationId = serviceConfig.getString("locationId");
 			builder.setLocationId(serviceLocationId);
 			Coordinate serviceCoord = null;

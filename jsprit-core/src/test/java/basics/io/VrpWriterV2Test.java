@@ -130,8 +130,8 @@ public class VrpWriterV2Test {
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
 		
-		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("loc").setName("delivery").setServiceTime(2.0).build();
-		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setName("delivery").setServiceTime(4.0).build();
+		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("loc").setServiceTime(2.0).build();
+		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setServiceTime(4.0).build();
 		
 		VehicleRoutingProblem vrp = builder.addService(s1).addService(s2).build();
 		new VrpXMLWriter(vrp, null).write(infileName);
@@ -144,7 +144,7 @@ public class VrpWriterV2Test {
 		Service s1_read = (Service) vrp.getJobs().get("1");
 		assertEquals("1", s1_read.getId());
 		assertEquals("loc", s1_read.getLocationId());
-		assertEquals("delivery", s1_read.getType());
+		assertEquals("service", s1_read.getType());
 		assertEquals(2.0,s1_read.getServiceDuration(),0.01);
 	}
 	
@@ -162,8 +162,8 @@ public class VrpWriterV2Test {
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
 		
-		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("loc").setName("delivery").setServiceTime(2.0).build();
-		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setName("delivery").setServiceTime(4.0).build();
+		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("loc").setServiceTime(2.0).build();
+		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setServiceTime(4.0).build();
 		builder.addService(s1).addService(s2);
 		
 		VehicleRoutingProblem vrp = builder.build();

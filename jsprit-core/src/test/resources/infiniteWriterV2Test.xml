@@ -50,7 +50,7 @@
           </type>
      </vehicleTypes>
      <services>
-          <service id="2" type="delivery">
+          <service id="2" type="service">
                <locationId>loc2</locationId>
                <capacity-demand>1</capacity-demand>
                <duration>4.0</duration>
@@ -61,7 +61,7 @@
                     </timeWindow>
                </timeWindows>
           </service>
-          <service id="1" type="delivery">
+          <service id="1" type="service">
                <locationId>loc</locationId>
                <capacity-demand>1</capacity-demand>
                <duration>2.0</duration>
@@ -82,12 +82,12 @@
                          <driverId>noDriver</driverId>
                          <vehicleId>v1</vehicleId>
                          <start>10.0</start>
-                         <act type="delivery">
+                         <act type="service">
                               <serviceId>1</serviceId>
                               <arrTime>20.0</arrTime>
                               <endTime>30.0</endTime>
                          </act>
-                         <act type="delivery">
+                         <act type="service">
                               <serviceId>2</serviceId>
                               <arrTime>40.0</arrTime>
                               <endTime>80.0</endTime>

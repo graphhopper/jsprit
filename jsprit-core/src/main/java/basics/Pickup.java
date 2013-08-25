@@ -13,6 +13,7 @@ public class Pickup extends Service {
 		}
 		
 		public Pickup build(){
+			this.setType("pickup");
 			return new Pickup(this);
 		}
 		

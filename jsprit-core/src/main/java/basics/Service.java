@@ -34,7 +34,7 @@ public class Service implements Job {
 		
 		private String id;
 		private String locationId;
-		private String name = "service";
+		private String type = "service";
 		private Coordinate coord;
 		private double serviceTime;
 		private TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
@@ -46,8 +46,8 @@ public class Service implements Job {
 			this.demand = size;
 		}
 		
-		public Builder setName(String name){
-			this.name = name;
+		protected Builder setType(String name){
+			this.type = name;
 			return this;
 		}
 		
@@ -76,7 +76,7 @@ public class Service implements Job {
 				if(coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
 				locationId = coord.toString();
 			}
-			
+			this.setType("service");
 			return new Service(this);
 		}
 		
@@ -87,7 +87,7 @@ public class Service implements Job {
 
 	private final String locationId;
 	
-	private final String name;
+	private final String type;
 
 	private final Coordinate coord;
 	
@@ -104,7 +104,7 @@ public class Service implements Job {
 		serviceTime = builder.serviceTime;
 		timeWindow = builder.timeWindow;
 		demand = builder.demand;
-		name = builder.name;
+		type = builder.type;
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class Service implements Job {
 	 * @return the name
 	 */
 	public String getType() {
-		return name;
+		return type;
 	}
 
 	@Override

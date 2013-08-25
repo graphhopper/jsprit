@@ -14,6 +14,7 @@ public class Delivery extends Service{
 		}
 		
 		public Delivery build(){
+			this.setType("delivery");
 			return new Delivery(this);
 		}
 		
