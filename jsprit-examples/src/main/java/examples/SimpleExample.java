@@ -20,6 +20,7 @@
  ******************************************************************************/
 package examples;
 
+import java.io.File;
 import java.util.Collection;
 
 import util.Coordinate;
@@ -42,6 +43,16 @@ import basics.route.VehicleTypeImpl;
 public class SimpleExample {
 	
 	public static void main(String[] args) {
+		/*
+		 * some preparation - create output folder
+		 */
+		File dir = new File("output");
+		// if the directory does not exist, create it
+		if (!dir.exists()){
+			System.out.println("creating directory ./output");
+			boolean result = dir.mkdir();  
+			if(result) System.out.println("./output created");  
+		}
 		
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2

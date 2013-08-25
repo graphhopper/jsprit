@@ -20,6 +20,8 @@
  ******************************************************************************/
 package examples;
 
+import java.io.File;
+
 import readers.SolomonReader;
 import algorithms.GreedySchrimpfFactory;
 import algorithms.SchrimpfFactory;
@@ -35,7 +37,16 @@ public class CompareAlgorithmExample {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		/*
+		 * some preparation - create output folder
+		 */
+		File dir = new File("output");
+		// if the directory does not exist, create it
+		if (!dir.exists()){
+			System.out.println("creating directory ./output");
+			boolean result = dir.mkdir();  
+			if(result) System.out.println("./output created");  
+		}
 		/*
 		 * Build the problem.
 		 * 

@@ -30,5 +30,5 @@ import basics.route.VehicleRoute;
 
 public interface JobInsertedListener extends InsertionListener{
 
-	public void informJobInserted(int nOfJobsStill2Recreate, Job job2insert, VehicleRoute insertedIn);
+	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime);
 }

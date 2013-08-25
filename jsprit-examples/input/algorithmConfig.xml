@@ -22,10 +22,12 @@
 <algorithm xmlns="http://www.w3schools.com"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3schools.com algorithm_schema.xsd">
 	
-	<iterations>10000</iterations>
+	<iterations>2000</iterations>
 
 	<construction>
-		<insertion name="bestInsertion"/>
+		<insertion name="bestInsertion">
+		 	<level forwardLooking="2" memory="1">route</level>
+		</insertion>	
 	</construction>
 	
 	<strategy>
@@ -33,10 +35,8 @@
 		<searchStrategies>
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="schrimpfAcceptance">
-					<alpha>0.1</alpha>  
-  					<warmup>100</warmup>  
-  				</acceptor>
+				<acceptor name="acceptNewRemoveWorst"/>
+					
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="randomRuin">
@@ -51,7 +51,7 @@
 			
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="schrimpfAcceptance"/>
+				<acceptor name="acceptNewRemoveWorst"/>
 					
 				<modules>
 					<module name="ruin_and_recreate">
@@ -67,7 +67,7 @@
 			
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="schrimpfAcceptance"/>  
+				<acceptor name="acceptNewRemoveWorst"/>  
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin id="2" name="radialRuin">

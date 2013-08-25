@@ -31,6 +31,7 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.End;
+import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivities;
 import basics.route.TourActivity;
@@ -50,7 +51,7 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 
 	private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
 	
-	private RouteStates routeStates;
+	private StateManager states;
 	
 	private int nuOfActsForwardLooking = 0;
 	
@@ -89,14 +90,10 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 			logger.info("initialise " + this);
 		}
 
-	public void setActivityStates(RouteStates actStates){
-		this.routeStates = actStates;
-	}
 
-	public ActivityState state(TourActivity act){
-		return routeStates.getState(act);
+	public void setStates(StateManager activityStates2){
+		this.states = activityStates2;
 	}
-
 	
 	void setNuOfActsForwardLooking(int nOfActsForwardLooking) {
 		this.nuOfActsForwardLooking = nOfActsForwardLooking;
@@ -138,14 +135,14 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		/**
 		 * pre-check whether vehicle-capacity of new vehicle is sufficient to load service.
 		 */
-		if(routeStates.getRouteState(currentRoute).getLoad() + service.getCapacityDemand() > newVehicle.getCapacity()){
+		if(states.getRouteState(currentRoute, StateTypes.LOAD).toDouble() + service.getCapacityDemand() > newVehicle.getCapacity()){
 			return InsertionData.noInsertionFound();
 		}
 		
 		/**
 		 * some inis
 		 */
-		TourActivity serviceAct2Insert = routeStates.getActivity(service, true);
+		TourActivity serviceAct2Insert = ServiceActivity.newInstance(service);
 		int best_insertion_index = InsertionData.NO_INDEX;
 		
 		initialiseStartAndEnd(newVehicle, newVehicleDepartureTime);
@@ -245,6 +242,14 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		 *  
 		 */
 		
+		if(memorySize==0){
+			InsertionData insertion = bestInsertionsQueue.poll();
+			if(insertion != null){
+				best_insertion_index = insertion.getDeliveryInsertionIndex();
+				best_insertion_costs = insertion.getInsertionCost();
+			}
+		}
+		
 		for(int i=0;i<memorySize;i++){
 			InsertionData data = bestInsertionsQueue.poll();
 			if(data == null){
@@ -262,7 +267,7 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 			/**
 			 * compute cost-diff of tour with and without new activity --> insertion_costs
 			 */
-			double insertion_costs = auxilliaryPathCostCalculator.costOfPath(wholeTour, start.getEndTime(), newDriver, newVehicle) - routeStates.getRouteState(currentRoute).getCosts();
+			double insertion_costs = auxilliaryPathCostCalculator.costOfPath(wholeTour, start.getEndTime(), newDriver, newVehicle) - states.getRouteState(currentRoute,StateTypes.COSTS).toDouble();
 			
 			/**
 			 * if better than best known, make it the best known
@@ -307,9 +312,9 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 	private double pathCost_oldVehicle(VehicleRoute vehicleRoute, List<TourActivity> path) {
 		TourActivity act = path.get(path.size()-1);
 		if(act instanceof End){
-			return routeStates.getRouteState(vehicleRoute).getCosts();
+			return states.getRouteState(vehicleRoute,StateTypes.COSTS).toDouble();
 		}
-		return state(act).getCurrentCost();
+		return states.getActivityState(act,StateTypes.COSTS).toDouble();
 	}
 
 	/**

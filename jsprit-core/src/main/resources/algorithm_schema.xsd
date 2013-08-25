@@ -166,14 +166,16 @@
 
 <xs:group name="gendreau_group">
 	<xs:sequence>
-		<xs:element name="itertions" type="xs:integer"/>
+		<xs:element name="iterations" type="xs:integer"/>
 		<xs:element name="share" type="xs:double"/>
+		<xs:element name="ruin" type="ruinType"/>
+		<xs:element name="insertion" type="insertionType"/>
 	</xs:sequence>
 </xs:group>
 
 <xs:complexType name="ruinType">
 	<xs:sequence>
-		<xs:element name="share" minOccurs="1" maxOccurs="1">
+		<xs:element name="share" minOccurs="0" maxOccurs="1">
 			<xs:simpleType>
 				<xs:restriction base="xs:double">
 					<xs:minInclusive value="0.0"/>

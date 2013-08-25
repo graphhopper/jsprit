@@ -158,6 +158,11 @@ public class VehicleRoute {
 		start.setEndTime(vehicleDepTime);
 	}
 	
+	public double getDepartureTime(){
+		if(start == null) throw new IllegalStateException("cannot get departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
+		return start.getEndTime();
+	}
+	
 	private void setStartAndEnd(Vehicle vehicle, double vehicleDepTime) {
 		if(!(vehicle instanceof NoVehicle)){
 			if(start == null && end == null){

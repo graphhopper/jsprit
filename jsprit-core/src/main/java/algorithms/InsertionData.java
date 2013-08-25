@@ -55,6 +55,22 @@ class InsertionData {
 	
 	private double departureTime;
 	
+	private double additionalTime;
+	
+	/**
+	 * @return the additionalTime
+	 */
+	public double getAdditionalTime() {
+		return additionalTime;
+	}
+
+	/**
+	 * @param additionalTime the additionalTime to set
+	 */
+	public void setAdditionalTime(double additionalTime) {
+		this.additionalTime = additionalTime;
+	}
+
 	public InsertionData(double insertionCost, int pickupInsertionIndex, int deliveryInsertionIndex, Vehicle vehicle, Driver driver){
 		this.insertionCost = insertionCost;
 		this.pickupInsertionIndex = pickupInsertionIndex;

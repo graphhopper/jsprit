@@ -35,6 +35,7 @@ public class VehicleTypeImpl implements VehicleType {
 		
 		private String id;
 		private int capacity;
+		private double maxVelo = Double.MAX_VALUE;
 		/**
 		 * default cost values for default vehicle type
 		 */
@@ -48,6 +49,8 @@ public class VehicleTypeImpl implements VehicleType {
 			this.capacity = capacity;
 		}
 
+		public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds){ this.maxVelo = inMeterPerSeconds; return this; }
+		
 		public VehicleTypeImpl.Builder setFixedCost(double fixedCost) { this.fixedCost = fixedCost; return this; }
 
 		public VehicleTypeImpl.Builder setCostPerDistance(double perDistance){ this.perDistance = perDistance; return this; }
@@ -86,9 +89,13 @@ public class VehicleTypeImpl implements VehicleType {
 		return true;
 	}
 
-	public final String typeId;
-	public final int capacity;
-	public final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
+	private final String typeId;
+	
+	private final int capacity;
+	
+	private final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
+	
+	private double maxVelocity;
 
 	public static VehicleTypeImpl newInstance(String typeId, int capacity, VehicleTypeImpl.VehicleCostParams para){
 		return new VehicleTypeImpl(typeId, capacity, para);
@@ -97,6 +104,7 @@ public class VehicleTypeImpl implements VehicleType {
 	private VehicleTypeImpl(VehicleTypeImpl.Builder builder){
 		typeId = builder.id;
 		capacity = builder.capacity;
+		maxVelocity = builder.maxVelo;
 		vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance);
 	}
 
@@ -134,5 +142,10 @@ public class VehicleTypeImpl implements VehicleType {
 	@Override
 	public String toString() {
 		return "[typeId="+typeId+"][capacity="+capacity+"]" + vehicleCostParams;
+	}
+
+	@Override
+	public double getMaxVelocity() {
+		return maxVelocity;
 	}
 }

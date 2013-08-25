@@ -106,7 +106,7 @@ final class FindCheaperVehicleAlgo {
 				throw new IllegalStateException(e);
 			}
 			TourActivities newTour = TourActivities.copyOf(vehicleRoute.getTourActivities());
-			tourStateCalculator.updateRoute(vehicleRoute);
+			tourStateCalculator.iterate(vehicleRoute);
 			return VehicleRoute.newInstance(newTour,vehicleRoute.getDriver(),bestVehicle);
 		}
 		return vehicleRoute;

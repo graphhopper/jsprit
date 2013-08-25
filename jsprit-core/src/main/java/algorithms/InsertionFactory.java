@@ -37,8 +37,8 @@ class InsertionFactory {
 	
 	private static Logger log = Logger.getLogger(InsertionFactory.class);
 	
-	public static AbstractInsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
-			VehicleFleetManager vehicleFleetManager, RouteStates activityStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads){
+	public static InsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
+			VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads){
 		boolean concurrentInsertion = false;
 		if(executorService != null) concurrentInsertion = true;
 		if(config.containsKey("[@name]")){
@@ -46,12 +46,12 @@ class InsertionFactory {
 			if(!insertionName.equals("bestInsertion") && !insertionName.equals("regretInsertion")){
 				new IllegalStateException(insertionName + " is not supported. use either \"bestInsertion\" or \"regretInsertion\"");
 			}
-			AbstractInsertionStrategy insertionStrategy = null;
+			InsertionStrategy insertionStrategy = null;
 			List<InsertionListener> insertionListeners = new ArrayList<InsertionListener>();
 			List<PrioritizedVRAListener> algoListeners = new ArrayList<PrioritizedVRAListener>();
 	
 			CalculatorBuilder calcBuilder = new CalculatorBuilder(insertionListeners, algorithmListeners);
-			calcBuilder.setActivityStates(activityStates);
+			calcBuilder.setStates(routeStates);
 			calcBuilder.setVehicleRoutingProblem(vrp);
 			calcBuilder.setVehicleFleetManager(vehicleFleetManager);
 			
@@ -94,34 +94,23 @@ class InsertionFactory {
 			}
 			
 			JobInsertionCalculator jic = calcBuilder.build();
-			TourStateUpdater tourStateCalculator = new TourStateUpdater(activityStates, vrp.getTransportCosts(), vrp.getActivityCosts());
-			RouteAlgorithm routeAlgorithm = RouteAlgorithmImpl.newInstance(jic, tourStateCalculator);
-			routeAlgorithm.getListeners().add(new VehicleSwitched(vehicleFleetManager));
-			((RouteAlgorithmImpl) routeAlgorithm).setActivityStates(activityStates);
+
 	
 			if(insertionName.equals("bestInsertion")){		
-				if(concurrentInsertion){
-					insertionStrategy = BestInsertionConcurrent.newInstance(routeAlgorithm,executorService,nuOfThreads);
-				}
-				else{
-					insertionStrategy = BestInsertion.newInstance(routeAlgorithm);
-				}
+				insertionStrategy = new BestInsertion(jic);
 			}
-			else if(insertionName.equals("regretInsertion")){
-				insertionStrategy = RegretInsertion.newInstance(routeAlgorithm);
-			}
-//			else if(insertionName.equals("concurrentBestInsertion")){
-//				String processorsString = config.getString("[@processors]");
-//				int processors = 1;
-//				if(processorsString != null) processors = Integer.parseInt(processorsString);
-////				BestInsertionConcurrent.newInstance(routeAlgorithm,)
-//				
-//				
+//			else if(insertionName.equals("regretInsertion")){
+//				insertionStrategy = RegretInsertion.newInstance(routeAlgorithm);
 //			}
 		
-//			insertionStrategy.addListener(new RemoveEmptyVehicles(vehicleFleetManager));
+			insertionStrategy.addListener(new RemoveEmptyVehicles(vehicleFleetManager));
 			insertionStrategy.addListener(new ResetAndIniFleetManager(vehicleFleetManager));
-			insertionStrategy.addAllListener(insertionListeners);
+			insertionStrategy.addListener(new VehicleSwitched(vehicleFleetManager));
+			
+//			insertionStrategy.addListener(new UpdateLoadAtRouteLevel(routeStates));
+			
+			insertionStrategy.addListener(new UpdateStates(routeStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
+			for(InsertionListener l : insertionListeners) insertionStrategy.addListener(l);
 //			insertionStrategy.addListener(new FindCheaperVehicle(
 //					new FindCheaperVehicleAlgoNew(vehicleFleetManager, tourStateCalculator, auxCalculator)));
 			

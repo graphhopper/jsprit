@@ -24,6 +24,6 @@ import basics.route.VehicleRoute;
 
 interface VehicleRouteUpdater {
 	
-	public boolean updateRoute(VehicleRoute vehicleRoute);
+	public void iterate(VehicleRoute vehicleRoute);
 	
 }

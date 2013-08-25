@@ -20,12 +20,12 @@
  ******************************************************************************/
 package examples;
 
+import java.io.File;
 import java.util.Collection;
 
 import readers.SolomonReader;
-import algorithms.SchrimpfFactory;
+import algorithms.VehicleRoutingAlgorithms;
 import algorithms.selectors.SelectBest;
-import analysis.AlgorithmSearchProgressChartListener;
 import analysis.SolutionPlotter;
 import analysis.SolutionPrinter;
 import analysis.SolutionPrinter.Print;
@@ -36,7 +36,16 @@ import basics.VehicleRoutingProblemSolution;
 public class SolomonExample {
 	
 	public static void main(String[] args) {
-		
+		/*
+		 * some preparation - create output folder
+		 */
+		File dir = new File("output");
+		// if the directory does not exist, create it
+		if (!dir.exists()){
+			System.out.println("creating directory ./output");
+			boolean result = dir.mkdir();  
+			if(result) System.out.println("./output created");  
+		}
 		
 		/*
 		 * Build the problem.
@@ -62,8 +71,10 @@ public class SolomonExample {
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+//		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
+		vra.setPrematureBreak(100);
+//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
 		 * 

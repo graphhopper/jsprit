@@ -41,7 +41,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import util.Coordinate;
 import util.Locations;
+import basics.Delivery;
 import basics.Job;
+import basics.Pickup;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
@@ -264,13 +266,33 @@ public class SolutionPlotter {
 		}
 		coll.addSeries(vehicleSeries);
 		
-		XYSeries jobSeries = new XYSeries("service", false, true);
+		XYSeries serviceSeries = new XYSeries("service", false, true);
+		XYSeries pickupSeries = new XYSeries("pickup", false, true);
+		XYSeries deliverySeries = new XYSeries("delivery", false, true);
 		for(Job job : services){
-			Service service = (Service)job;
-			Coordinate coord = service.getCoord();
-			jobSeries.add(coord.getX(), coord.getY());
+			if(job instanceof Pickup){
+				Pickup service = (Pickup)job;
+				Coordinate coord = service.getCoord();
+				pickupSeries.add(coord.getX(), coord.getY());
+			}
+			else if(job instanceof Delivery){
+				Delivery service = (Delivery)job;
+				Coordinate coord = service.getCoord();
+				deliverySeries.add(coord.getX(), coord.getY());
+			}
+			else if(job instanceof Service){
+				Service service = (Service)job;
+				Coordinate coord = service.getCoord();
+				serviceSeries.add(coord.getX(), coord.getY());
+			}
+			else{
+				throw new IllegalStateException("job instanceof " + job.getClass().toString() + ". this is not supported.");
+			}
+			
 		}
-		coll.addSeries(jobSeries);
+		if(!serviceSeries.isEmpty()) coll.addSeries(serviceSeries);
+		if(!pickupSeries.isEmpty()) coll.addSeries(pickupSeries);
+		if(!deliverySeries.isEmpty()) coll.addSeries(deliverySeries);
 		return coll;
 	}
 	

@@ -35,10 +35,6 @@ import basics.route.VehicleRoute;
  */
 
 final class RuinRandom implements RuinStrategy {
-
-	public static RuinRandom newInstance(VehicleRoutingProblem vrp, double fraction, JobRemover jobRemover, VehicleRouteUpdater routeUpdater){
-		return new RuinRandom(vrp, fraction, jobRemover, routeUpdater);
-	}
 	
 	private Logger logger = Logger.getLogger(RuinRandom.class);
 
@@ -47,10 +43,8 @@ final class RuinRandom implements RuinStrategy {
 	private double fractionOfAllNodes2beRuined;
 
 	private Random random = RandomNumberGeneration.getRandom();
-
-	private JobRemover jobRemover;
-
-	private VehicleRouteUpdater vehicleRouteUpdater;
+	
+	private RuinListeners ruinListeners;
 
 	public void setRandom(Random random) {
 		this.random = random;
@@ -61,15 +55,12 @@ final class RuinRandom implements RuinStrategy {
 	 * 
 	 * @param vrp
 	 * @param fraction which is the fraction of total c
-	 * @param jobRemover
-	 * @param vehicleRouteUpdater
 	 */
-	public RuinRandom(VehicleRoutingProblem vrp, double fraction, JobRemover jobRemover, VehicleRouteUpdater vehicleRouteUpdater) {
+	public RuinRandom(VehicleRoutingProblem vrp, double fraction) {
 		super();
 		this.vrp = vrp;
-		this.jobRemover = jobRemover;
-		this.vehicleRouteUpdater = vehicleRouteUpdater;
 		this.fractionOfAllNodes2beRuined = fraction;
+		ruinListeners = new RuinListeners();
 		logger.info("initialise " + this);
 		logger.info("done");
 	}
@@ -81,9 +72,11 @@ final class RuinRandom implements RuinStrategy {
 	 */
 	@Override
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
+		ruinListeners.ruinStarts(vehicleRoutes);
 		List<Job> unassignedJobs = new ArrayList<Job>();
 		int nOfJobs2BeRemoved = selectNuOfJobs2BeRemoved();
 		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
+		ruinListeners.ruinEnds(vehicleRoutes, unassignedJobs);
 		return unassignedJobs;
 	}
 
@@ -92,19 +85,22 @@ final class RuinRandom implements RuinStrategy {
 	 */
 	@Override
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
+		ruinListeners.ruinStarts(vehicleRoutes);
 		List<Job> unassignedJobs = new ArrayList<Job>();
 		if(targetJob != null){
 			boolean removed = false;
 			for (VehicleRoute route : vehicleRoutes) {
-				removed = jobRemover.removeJobWithoutTourUpdate(targetJob, route);
+				removed = route.getTourActivities().removeJob(targetJob);
 				if (removed) {
 					nOfJobs2BeRemoved--;
 					unassignedJobs.add(targetJob);
+					ruinListeners.removed(targetJob,route);
 					break;
 				}
 			}
 		}
 		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
+		ruinListeners.ruinEnds(vehicleRoutes, unassignedJobs);
 		return unassignedJobs;
 	}
 
@@ -113,27 +109,23 @@ final class RuinRandom implements RuinStrategy {
 		logger.info("fraction set " + this);
 	}
 
-	private void ruin(Collection<VehicleRoute> vehicleRoutes,int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
+	private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
 		LinkedList<Job> availableJobs = new LinkedList<Job>(vrp.getJobs().values());
 		for (int i = 0; i < nOfJobs2BeRemoved; i++) {
 			Job job = pickRandomJob(availableJobs);
 			unassignedJobs.add(job);
 			availableJobs.remove(job);
 			for (VehicleRoute route : vehicleRoutes) {
-				boolean removed = jobRemover.removeJobWithoutTourUpdate(job, route);
-				if (removed) break;
+				boolean removed = route.getTourActivities().removeJob(job);
+				if (removed) {
+					ruinListeners.removed(job,route);
+					break;
+				}
 			}
 		}
-		updateRoutes(vehicleRoutes);
 	}
 
-	private void updateRoutes(Collection<VehicleRoute> vehicleRoutes) {
-		for(VehicleRoute route : vehicleRoutes){
-			vehicleRouteUpdater.updateRoute(route);
-		}
-	}
-
-	
+		
 	@Override
 	public String toString() {
 		return "[name=randomRuin][fraction="+fractionOfAllNodes2beRuined+"]";
@@ -146,6 +138,21 @@ final class RuinRandom implements RuinStrategy {
 
 	private int selectNuOfJobs2BeRemoved() {
 		return (int) Math.ceil(vrp.getJobs().values().size() * fractionOfAllNodes2beRuined);
+	}
+
+	@Override
+	public void addListener(RuinListener ruinListener) {
+		ruinListeners.addListener(ruinListener);
+	}
+
+	@Override
+	public void removeListener(RuinListener ruinListener) {
+		ruinListeners.removeListener(ruinListener);
+	}
+
+	@Override
+	public Collection<RuinListener> getListeners() {
+		return ruinListeners.getListeners();
 	}
 
 }

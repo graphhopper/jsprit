@@ -36,7 +36,6 @@ import algorithms.selectors.SelectRandomlyTest;
 	GendreauPostOptTest.class,
 	TestAlgorithmReader.class,
 //	TestAux.class,
-	TestCalculatesActivityInsertion.class,
 	TestCalculatesServiceInsertion.class,
 	TestCalculatesServiceInsertionOnRouteLevel.class,
 	TestSchrimpf.class,

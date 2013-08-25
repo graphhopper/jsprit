@@ -29,29 +29,11 @@ import util.RandomNumberGeneration;
 import util.StopWatch;
 import basics.Job;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblemSolution;
-import basics.algo.SearchStrategyModule;
 import basics.route.VehicleRoute;
 
 
 
 final class RuinRadial implements RuinStrategy {
-
-	private final static String NAME = "radialRuin";
-	
-	/**
-	 * returns a new creation of instance of ruinRadial
-	 * @param vrp
-	 * @param fraction TODO
-	 * @param jobDistance
-	 * @param jobRemover TODO
-	 * @param routeUpdater TODO
-	 * @return
-	 */
-	static RuinRadial newInstance(VehicleRoutingProblem vrp, double fraction, JobDistance jobDistance, JobRemover jobRemover, VehicleRouteUpdater routeUpdater){
-		return new RuinRadial(vrp, fraction, jobDistance, jobRemover, routeUpdater);
-	}
-	
 	
 	static class ReferencedJob {
 		private Job job;
@@ -84,21 +66,18 @@ final class RuinRadial implements RuinStrategy {
 
 	private JobDistance jobDistance;
 	
-	private JobRemover jobRemover;
+	private RuinListeners ruinListeners;
 	
-	private VehicleRouteUpdater routeUpdater;
-
 	public void setRandom(Random random) {
 		this.random = random;
 	}
 
-	public RuinRadial(VehicleRoutingProblem vrp, double fraction, JobDistance jobDistance, JobRemover jobRemover, VehicleRouteUpdater routeUpdater) {
+	public RuinRadial(VehicleRoutingProblem vrp, double fraction, JobDistance jobDistance) {
 		super();
 		this.vrp = vrp;
 		this.jobDistance = jobDistance;
-		this.jobRemover = jobRemover;
-		this.routeUpdater = routeUpdater;
 		this.fractionOfAllNodes2beRuined = fraction;
+		ruinListeners = new RuinListeners();
 		calculateDistancesFromJob2Job();
 		logger.info("intialise " + this);
 	}
@@ -158,6 +137,7 @@ final class RuinRadial implements RuinStrategy {
 	}
 	
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved){
+		ruinListeners.ruinStarts(vehicleRoutes);
 		List<Job> unassignedJobs = new ArrayList<Job>();
 		TreeSet<ReferencedJob> tree = distanceNodeTree.get(targetJob.getId());
 		Iterator<ReferencedJob> descendingIterator = tree.descendingIterator();
@@ -169,15 +149,14 @@ final class RuinRadial implements RuinStrategy {
 			counter++;
 			boolean removed = false;
 			for (VehicleRoute route : vehicleRoutes) {
-				removed = jobRemover.removeJobWithoutTourUpdate(job, route); 
+				removed = route.getTourActivities().removeJob(job);; 
 				if (removed) {
+					ruinListeners.removed(job,route);
 					break;
 				}
 			}
 		}
-		for(VehicleRoute route : vehicleRoutes){
-			routeUpdater.updateRoute(route);
-		}
+		ruinListeners.ruinEnds(vehicleRoutes, unassignedJobs);
 		return unassignedJobs;
 	}
 	
@@ -193,15 +172,20 @@ final class RuinRadial implements RuinStrategy {
 				* fractionOfAllNodes2beRuined);
 	}
 
-//	@Override
-//	public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-//		ruin(vrpSolution.getRoutes());
-//		return vrpSolution;
-//	}
-//
-//	@Override
-//	public String getName() {
-//		return NAME;
-//	}
+	@Override
+	public void addListener(RuinListener ruinListener) {
+		ruinListeners.addListener(ruinListener);
+	}
+
+	@Override
+	public void removeListener(RuinListener ruinListener) {
+		ruinListeners.removeListener(ruinListener);
+	}
+
+	@Override
+	public Collection<RuinListener> getListeners() {
+		return ruinListeners.getListeners();
+	}
+
 
 }

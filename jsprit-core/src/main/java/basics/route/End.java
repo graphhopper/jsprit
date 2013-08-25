@@ -61,12 +61,15 @@ public final class End implements TourActivity {
 		this.locationId = locationId;
 		theoretical_earliestOperationStartTime = theoreticalStart;
 		theoretical_latestOperationStartTime = theoreticalEnd;
+		endTime = theoreticalEnd;
 	}
 
 	public End(End end) {
 		this.locationId = end.getLocationId();
 		theoretical_earliestOperationStartTime = end.getTheoreticalEarliestOperationStartTime();
 		theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime();
+		arrTime = end.getArrTime();
+		endTime = end.getEndTime();
 	}
 
 	public double getTheoreticalEarliestOperationStartTime() {

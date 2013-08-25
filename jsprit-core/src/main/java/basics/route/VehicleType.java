@@ -8,6 +8,8 @@ public interface VehicleType {
 	public String getTypeId();
 
 	public int getCapacity();
+	
+	public double getMaxVelocity();
 
 	public VehicleCostParams getVehicleCostParams();
 

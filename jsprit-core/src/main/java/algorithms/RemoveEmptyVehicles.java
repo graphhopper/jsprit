@@ -26,11 +26,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 
+import basics.Job;
 import basics.algo.InsertionEndsListener;
 import basics.algo.InsertionStartsListener;
 import basics.route.VehicleRoute;
 
-class RemoveEmptyVehicles implements InsertionStartsListener, InsertionEndsListener{
+class RemoveEmptyVehicles implements InsertionEndsListener{
 
 	private static Logger log = Logger.getLogger(RemoveEmptyVehicles.class); 
 	
@@ -39,21 +40,6 @@ class RemoveEmptyVehicles implements InsertionStartsListener, InsertionEndsListe
 	RemoveEmptyVehicles(VehicleFleetManager fleetManager) {
 		super();
 		this.fleetManager = fleetManager;
-	}
-
-	@Override
-	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2Recreate) {
-//		List<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
-//		for(VehicleRoute route : routes){
-//			if(route.isEmpty()) { vehicleRoutes.remove(route); }
-//		}
-//		List<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
-//		for(VehicleRoute route : routes){
-//			if(route.isEmpty()) { 
-//				fleetManager.unlock(route.getVehicle());
-//				vehicleRoutes.remove(route); 
-//			}
-//		}
 	}
 
 	@Override
