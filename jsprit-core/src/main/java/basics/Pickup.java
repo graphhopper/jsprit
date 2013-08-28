@@ -1,6 +1,6 @@
 package basics;
 
-public class Pickup extends Service {
+public final class Pickup extends Service {
 
 	public static class Builder extends Service.Builder {
 
@@ -13,6 +13,10 @@ public class Pickup extends Service {
 		}
 		
 		public Pickup build(){
+			if(locationId == null) { 
+				if(coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
+				locationId = coord.toString();
+			}
 			this.setType("pickup");
 			return new Pickup(this);
 		}
@@ -23,15 +27,4 @@ public class Pickup extends Service {
 		super(builder);
 	}
 	
-	public static void main(String[] args) {
-		Pickup.Builder pickupBuilder = Pickup.Builder.newInstance("myPick", 10);
-		Pickup pickup = (Pickup) pickupBuilder.setLocationId("foo").build();
-		 
-		System.out.println("loc="+pickup.getLocationId());
-		System.out.println("capDemand="+pickup.getCapacityDemand());
-	}
-
-	
-	
-
 }

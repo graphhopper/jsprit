@@ -33,12 +33,12 @@ public class Service implements Job {
 		}
 		
 		private String id;
-		private String locationId;
+		protected String locationId;
 		private String type = "service";
-		private Coordinate coord;
-		private double serviceTime;
-		private TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
-		private int demand;
+		protected Coordinate coord;
+		protected double serviceTime;
+		protected TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
+		protected int demand;
 		
 		Builder(String id, int size) {
 			super();

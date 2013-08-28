@@ -31,6 +31,8 @@ public class ServiceActivity implements JobActivity<Service>{
 	
 	public double endTime;
 	
+	public int capacityDemand;
+	
 	/**
 	 * @return the arrTime
 	 */
@@ -67,18 +69,31 @@ public class ServiceActivity implements JobActivity<Service>{
 		return new ServiceActivity(service);
 	}
 	
+	/**
+	 * creates a new instance of {@link ServiceActivity} with a flag that indicates whether smthing is unloaded or loaded. 
+	 * 
+	 * @param service
+	 * @param capacityDemand
+	 * @return
+	 */
+//	public static ServiceActivity newInstance(Service service, boolean isPickup){
+//		return new ServiceActivity(service, capacityDemand);
+//	}
+	
 	private final Service service;
 			
-	private ServiceActivity(Service service) {
+	protected ServiceActivity(Service service) {
 		counter++;
 		this.service = service;
+		this.capacityDemand = service.getCapacityDemand();
 	}
-
-	private ServiceActivity(ServiceActivity serviceActivity) {
+	
+	protected ServiceActivity(ServiceActivity serviceActivity) {
 		counter++;
 		this.service = serviceActivity.getJob();
 		this.arrTime = serviceActivity.getArrTime();
 		this.endTime = serviceActivity.getEndTime();
+		this.capacityDemand = serviceActivity.getCapacityDemand();
 	}
 	
 	
@@ -123,7 +138,7 @@ public class ServiceActivity implements JobActivity<Service>{
 
 	@Override
 	public int getCapacityDemand() {
-		return service.getCapacityDemand();
+		return this.capacityDemand;
 	}
 
 	@Override
