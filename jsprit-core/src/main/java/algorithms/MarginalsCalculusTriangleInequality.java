@@ -21,16 +21,16 @@ class MarginalsCalculusTriangleInequality implements MarginalsCalculus{
 
 	@Override
 	public Marginals calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
+		if(!hardConstraint.fulfilled(iFacts, prevAct, newAct, nextAct, depTimeAtPrevAct)){
+			return null;
+		}
+		
 		double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocationId(), newAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
 		double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
 		
-		if(!hardConstraint.fulfilled(iFacts, newAct, newAct_arrTime)){
-			return null;
-		}
-		
-		double newAct_endTime = CalcUtils.getStartTimeAtAct(newAct_arrTime, newAct);
+		double newAct_endTime = CalcUtils.getActivityEndTime(newAct_arrTime, newAct);
 		
 		double act_costs_newAct = activityCosts.getActivityCost(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
@@ -38,11 +38,7 @@ class MarginalsCalculusTriangleInequality implements MarginalsCalculus{
 		double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
 		double nextAct_arrTime = newAct_endTime + tp_time_newAct_nextAct;
-		
-		if(!hardConstraint.fulfilled(iFacts, nextAct, nextAct_arrTime)){
-			return null;
-		}
-		
+				
 		double act_costs_nextAct = activityCosts.getActivityCost(nextAct, nextAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
 		double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct + act_costs_newAct + act_costs_nextAct; 

@@ -1,6 +1,7 @@
 package algorithms;
 
 import basics.Service;
+import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
 
 class HardConstraints {
@@ -13,7 +14,7 @@ class HardConstraints {
 	
 	interface HardActivityLevelConstraint {
 		
-		public boolean fulfilled(InsertionContext iFacts, TourActivity act, double arrTime);
+		public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);
 
 	}
 	
@@ -41,19 +42,27 @@ class HardConstraints {
 
 		private StateManager states;
 		
-		public HardTimeWindowConstraint(StateManager states) {
+		private VehicleRoutingTransportCosts routingCosts;
+		
+		public HardTimeWindowConstraint(StateManager states, VehicleRoutingTransportCosts routingCosts) {
 			super();
 			this.states = states;
+			this.routingCosts = routingCosts;
 		}
 
 		@Override
-		public boolean fulfilled(InsertionContext iFacts, TourActivity act, double arrTime) {
-			if(arrTime > states.getActivityState(act, StateTypes.LATEST_OPERATION_START_TIME).toDouble()){
+		public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			if(arrTimeAtNewAct > states.getActivityState(newAct, StateTypes.LATEST_OPERATION_START_TIME).toDouble()){
+				return false;
+			}
+			double endTimeAtNewAct = CalcUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
+			double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			if(arrTimeAtNextAct > states.getActivityState(nextAct, StateTypes.LATEST_OPERATION_START_TIME).toDouble()){
 				return false;
 			}
 			return true;
 		}
-
 	}
 
 }

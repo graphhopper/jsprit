@@ -21,17 +21,15 @@
 package algorithms;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import algorithms.VehicleFleetManager.TypeKey;
 import basics.route.TourActivities;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
-import basics.route.VehicleRoute;
 import basics.route.VehicleImpl.NoVehicle;
+import basics.route.VehicleRoute;
 
 
 
@@ -47,13 +45,13 @@ final class FindCheaperVehicleAlgo {
 	
 	private double weightFixCosts = 1.0;
 	
-	private RouteStates states;
+	private StateManager states;
 	
 	public void setWeightFixCosts(double weightFixCosts) {
 		this.weightFixCosts = weightFixCosts;
 	}
 	
-	public void setStates(RouteStates states) {
+	public void setStates(StateManager states) {
 		this.states = states;
 	}
 
@@ -85,11 +83,11 @@ final class FindCheaperVehicleAlgo {
 			if(vehicle.getType().getTypeId().equals(vehicleRoute.getVehicle().getType().getTypeId())){
 				continue;
 			}
-			if(states.getRouteState(vehicleRoute).getLoad() <= vehicle.getCapacity()){
+			if(states.getRouteState(vehicleRoute,StateTypes.LOAD).toDouble() <= vehicle.getCapacity()){
 				double fixCostSaving = vehicleRoute.getVehicle().getType().getVehicleCostParams().fix - vehicle.getType().getVehicleCostParams().fix;
 				double departureTime = vehicleRoute.getStart().getEndTime();
 				double newCost = auxilliaryCostCalculator.costOfPath(path, departureTime, vehicleRoute.getDriver(), vehicle);
-				double varCostSaving = states.getRouteState(vehicleRoute).getCosts() - newCost;
+				double varCostSaving = states.getRouteState(vehicleRoute, StateTypes.COSTS).toDouble() - newCost;
 				double totalCostSaving = varCostSaving + weightFixCosts*fixCostSaving;
 				if(totalCostSaving > bestSaving){
 					bestSaving = totalCostSaving;

@@ -25,6 +25,8 @@ import basics.route.End;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
+import basics.route.TourActivityFactory;
+import basics.route.DefaultTourActivityFactory;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl.NoVehicle;
 import basics.route.VehicleRoute;
@@ -49,6 +51,8 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 	
 	private VehicleRoutingTransportCosts transportCosts;
 	
+	private TourActivityFactory activityFactory;
+	
 	public void setNeighborhood(Neighborhood neighborhood) {
 		this.neighborhood = neighborhood;
 		logger.info("initialise neighborhood " + neighborhood);
@@ -59,6 +63,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		this.marginalCalculus = marginalsCalculus;
 		this.hardRouteLevelConstraint = hardRouteLevelConstraint;
 		this.transportCosts = routingCosts;
+		activityFactory = new DefaultTourActivityFactory();
 		logger.info("initialise " + this);
 	}
 	
@@ -86,7 +91,8 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		Marginals bestMarginals = null;
 		Service service = (Service)jobToInsert;
 		int insertionIndex = InsertionData.NO_INDEX;
-		TourActivity deliveryAct2Insert = ServiceActivity.newInstance(service);
+		
+		TourActivity deliveryAct2Insert = activityFactory.createActivity(service);
 		
 		Start start = Start.newInstance(newVehicle.getLocationId(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
 		start.setEndTime(newVehicleDepartureTime);

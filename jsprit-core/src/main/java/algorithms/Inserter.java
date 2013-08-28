@@ -4,14 +4,19 @@ import algorithms.InsertionData.NoInsertionFound;
 import basics.Job;
 import basics.Service;
 import basics.route.ServiceActivity;
+import basics.route.TourActivityFactory;
+import basics.route.DefaultTourActivityFactory;
 import basics.route.VehicleRoute;
 
 class Inserter {
 
 	private InsertionListeners insertionListeners;
 	
+	private TourActivityFactory activityFactory;
+	
 	public Inserter(InsertionListeners insertionListeners) {
 		this.insertionListeners = insertionListeners;
+		activityFactory = new DefaultTourActivityFactory();
 	}
 
 	public void insertJob(Job job, InsertionData insertionData, VehicleRoute vehicleRoute){
@@ -25,7 +30,7 @@ class Inserter {
 		}
 //		if(vehicleRoute.getDepartureTime() != vehicleRoute.g)
 		if(job instanceof Service) {
-			vehicleRoute.getTourActivities().addActivity(insertionData.getDeliveryInsertionIndex(), ServiceActivity.newInstance((Service)job));
+			vehicleRoute.getTourActivities().addActivity(insertionData.getDeliveryInsertionIndex(), activityFactory.createActivity((Service)job));
 			vehicleRoute.setDepartureTime(insertionData.getVehicleDepartureTime());
 		}
 		else throw new IllegalStateException("neither service nor shipment. this is not supported.");

@@ -1,6 +1,5 @@
 package algorithms;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,29 +27,29 @@ class StateManagerImpl implements StateManager{
 	
 	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, StateManager.States>();
 	
-	public Map<VehicleRoute, States> getRouteStates() {
-		return Collections.unmodifiableMap(vehicleRouteStates);
-	}
-	
-	public States getRouteStates(VehicleRoute route){
-		return vehicleRouteStates.get(route);
-	}
-
-	public void put(VehicleRoute route, States states) {
-		vehicleRouteStates.put(route, states);
-	}
-
-	public Map<TourActivity, States> getActivityStates() {
-		return Collections.unmodifiableMap(activityStates);
-	}
-
-	public States getActivityStates(TourActivity act){
-		return activityStates.get(act);
-	}
-	
-	public void put(TourActivity act, States states) {
-		activityStates.put(act, states);
-	}
+//	Map<VehicleRoute, States> getRouteStates() {
+//		return Collections.unmodifiableMap(vehicleRouteStates);
+//	}
+//	
+//	States getRouteStates(VehicleRoute route){
+//		return vehicleRouteStates.get(route);
+//	}
+//
+//	void put(VehicleRoute route, States states) {
+//		vehicleRouteStates.put(route, states);
+//	}
+//
+//	Map<TourActivity, States> getActivityStates() {
+//		return Collections.unmodifiableMap(activityStates);
+//	}
+//
+//	States getActivityStates(TourActivity act){
+//		return activityStates.get(act);
+//	}
+//	
+//	void put(TourActivity act, States states) {
+//		activityStates.put(act, states);
+//	}
 	
 	public void clear(){
 		vehicleRouteStates.clear();
@@ -90,6 +89,7 @@ class StateManagerImpl implements StateManager{
 	
 	private State getDefaultRouteState(String stateType, VehicleRoute route){
 		if(stateType.equals(StateTypes.LOAD)) return new StateImpl(0);
+		if(stateType.equals(StateTypes.LOAD_AT_DEPOT)) return new StateImpl(0);
 		if(stateType.equals(StateTypes.COSTS)) return new StateImpl(0);
 		if(stateType.equals(StateTypes.DURATION)) return new StateImpl(0);
 		return null;
