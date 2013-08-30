@@ -111,8 +111,8 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 					}
 				}
 			}
-			prevAct = nextAct;
 			prevActStartTime = CalcUtils.getStartTimeAtAct(prevActStartTime, transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActStartTime, newDriver, newVehicle), nextAct);
+			prevAct = nextAct;
 			actIndex++;
 		}
 		End nextAct = end;
