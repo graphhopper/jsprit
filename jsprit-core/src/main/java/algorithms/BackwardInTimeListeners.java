@@ -49,4 +49,8 @@ class BackwardInTimeListeners {
 		for(BackwardInTimeListener l : listeners){ l.end(start, latestDepartureTime); }
 	}
 
+	public boolean isEmpty() {
+		return listeners.isEmpty();
+	}
+
 }

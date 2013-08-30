@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
+import algorithms.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -38,7 +39,6 @@ import basics.route.TourActivities;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
-import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
 

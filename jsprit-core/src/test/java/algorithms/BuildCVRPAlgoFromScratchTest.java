@@ -1,6 +1,6 @@
 package algorithms;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 
@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import util.Solutions;
 import algorithms.HardConstraints.HardActivityLevelConstraint;
+import algorithms.StateUpdates.UpdateCostsAtRouteLevel;
+import algorithms.StateUpdates.UpdateLoadAtRouteLevel;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.selectors.SelectBest;
 import basics.VehicleRoutingAlgorithm;
@@ -76,7 +78,7 @@ public class BuildCVRPAlgoFromScratchTest {
 		vra.getAlgorithmListeners().addListener(clearStateManager);
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
 		
-		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UdateCostsAtRouteLevel(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
+		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateCostsAtRouteLevel(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateLoadAtRouteLevel(stateManager));
 		
 		VehicleRoutingProblemSolution iniSolution = new CreateInitialSolution(bestInsertion).createInitialSolution(vrp);

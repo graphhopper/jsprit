@@ -25,11 +25,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
+import algorithms.StateUpdates.UpdateStates;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblem.FleetComposition;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 

@@ -36,10 +36,10 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
 import util.RouteUtils;
-import algorithms.RuinStrategy.RuinListener;
-import algorithms.VehicleRoutingAlgorithms.TypedMap.InsertionStrategyKey;
+import algorithms.StateUpdates.UpdateStates;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
+import algorithms.VehicleRoutingAlgorithms.TypedMap.InsertionStrategyKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.RuinStrategyKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.SelectorKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.StrategyModuleKey;
@@ -71,7 +71,6 @@ import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.AlgorithmConfig;
 import basics.io.AlgorithmConfigXmlReader;
-import basics.route.VehicleRoute;
 
 
 

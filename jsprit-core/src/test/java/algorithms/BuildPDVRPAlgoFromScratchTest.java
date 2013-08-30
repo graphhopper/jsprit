@@ -9,8 +9,12 @@ import org.junit.Test;
 import util.Solutions;
 import algorithms.BackwardInTimeListeners.BackwardInTimeListener;
 import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
-import algorithms.HardConstraints.HardActivityLevelConstraintAccumulator;
+import algorithms.HardConstraints.HardActivityLevelConstraintManager;
 import algorithms.StateManager.StateImpl;
+import algorithms.StateUpdates.UpdateActivityTimes;
+import algorithms.StateUpdates.UpdateCostsAtAllLevels;
+import algorithms.StateUpdates.UpdateEarliestStartTimeWindowAtActLocations;
+import algorithms.StateUpdates.UpdateLatestOperationStartTimeAtActLocations;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.selectors.SelectBest;
 import basics.Delivery;
@@ -28,6 +32,7 @@ import basics.io.VrpXMLReader;
 import basics.io.VrpXMLWriter;
 import basics.route.DeliveryActivity;
 import basics.route.End;
+import basics.route.PickupActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
@@ -49,7 +54,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 			
 			final StateManagerImpl stateManager = new StateManagerImpl();
 			
-			HardActivityLevelConstraintAccumulator actLevelConstraintAccumulator = new HardActivityLevelConstraintAccumulator();
+			HardActivityLevelConstraintManager actLevelConstraintAccumulator = new HardActivityLevelConstraintManager();
 			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryConstraint(stateManager));
 			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardTimeWindowConstraint(stateManager, vrp.getTransportCosts()));
 			
@@ -80,16 +85,8 @@ public class BuildPDVRPAlgoFromScratchTest {
 			
 			vra = new VehicleRoutingAlgorithm(vrp, strategyManager);
 			
-			//listeners
-			IterationStartsListener clearStateManager = new IterationStartsListener() {
-				
-				@Override
-				public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-					stateManager.clear();
-				}
-				
-			};
-			vra.getAlgorithmListeners().addListener(clearStateManager);
+			
+			vra.getAlgorithmListeners().addListener(new StateUpdates.ResetStateManager(stateManager));
 			
 			final IterateRouteForwardInTime iterateForward = new IterateRouteForwardInTime(vrp.getTransportCosts());
 			
@@ -97,74 +94,12 @@ public class BuildPDVRPAlgoFromScratchTest {
 			iterateForward.addListener(new UpdateEarliestStartTimeWindowAtActLocations(stateManager));
 			iterateForward.addListener(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 			
-//			iterateForward.addListener(new UpdateLoadAtAllLevels(stateManager));
+			iterateForward.addListener(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
+			iterateForward.addListener(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
 			
-			iterateForward.addListener(new ForwardInTimeListener() {
-				
-				private int currentLoad = 0;
-				private int deliveries = 0; 
-				private VehicleRoute route;
-				
-				@Override
-				public void start(VehicleRoute route, Start start, double departureTime) {
-//					log.info("iterate forward");
-					currentLoad = (int) stateManager.getRouteState(route, StateTypes.LOAD_AT_DEPOT).toDouble();
-					this.route = route; 
-//					log.info("currentLoad="+currentLoad);
-				}
-				
-				@Override
-				public void nextActivity(TourActivity act, double arrTime, double endTime) {
-//					log.info("nextAct="+act.getClass().toString()+ " capDemand=" + act.getCapacityDemand() + " currentLoad="+currentLoad);
-					currentLoad += act.getCapacityDemand();
-					if(act instanceof DeliveryActivity){
-						deliveries += Math.abs(act.getCapacityDemand());
-					}
-					stateManager.putActivityState(act, StateTypes.LOAD, new StateImpl(currentLoad));
-					stateManager.putActivityState(act, StateTypes.PAST_DELIVERIES, new StateImpl(deliveries));
-					if(currentLoad < 0) throw new IllegalStateException("currentload < 0");
-					if(currentLoad > route.getVehicle().getCapacity()){
-						throw new IllegalStateException("currentload="+currentLoad+" wich is > " + route.getVehicle().getCapacity());
-					}
-					
-				}
-				
-				@Override
-				public void end(End end, double arrivalTime) {
-//					log.info("currentLoad="+currentLoad);
-//					stateManager.putRouteState(route, StateTypes.LOAD, new StateImpl(currentLoad));
-					currentLoad = 0;
-					deliveries = 0;
-					route = null;
-				}
-			});
-//			
 			final IterateRouteBackwardInTime iterateBackward = new IterateRouteBackwardInTime(vrp.getTransportCosts());
 			iterateBackward.addListener(new UpdateLatestOperationStartTimeAtActLocations(stateManager));
-			iterateBackward.addListener(new BackwardInTimeListener() {
-				
-				int futurePicks = 0;
-				@Override
-				public void start(VehicleRoute route, End end, double latestArrivalTime) {
-					
-					
-				}
-				
-				@Override
-				public void prevActivity(TourActivity act, double latestDepartureTime, double latestOperationStartTime) {
-					stateManager.putActivityState(act, StateTypes.FUTURE_PICKS, new StateImpl(futurePicks));
-					if(act.getCapacityDemand() > 0){
-						futurePicks += act.getCapacityDemand();
-					}
-					
-				}
-				
-				@Override
-				public void end(Start start, double latestDepartureTime) {
-					futurePicks = 0;
-					
-				}
-			});
+			iterateBackward.addListener(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
 			
 			
 			InsertionStartsListener loadVehicleInDepot = new InsertionStartsListener() {
@@ -192,9 +127,6 @@ public class BuildPDVRPAlgoFromScratchTest {
 			};
 			
 			vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
-		
-//			vra.getSearchStrategyManager().addSearchStrategyModuleListener(loadVehicleInDepot);
-			
 			
 			JobInsertedListener updateLoadAfterJobHasBeenInserted = new JobInsertedListener() {
 				
@@ -212,14 +144,11 @@ public class BuildPDVRPAlgoFromScratchTest {
 //						log.info("loadAtEnd="+loadAtEnd);
 						stateManager.putRouteState(inRoute, StateTypes.LOAD, new StateImpl(loadAtEnd + job2insert.getCapacityDemand()));
 					}
-					
 					iterateForward.iterate(inRoute);
 					iterateBackward.iterate(inRoute);
 				}
 			};
-			
-//			vra.getSearchStrategyManager().addSearchStrategyModuleListener(updateLoadAfterJobHasBeenInserted);
-			
+						
 			bestInsertion.addListener(loadVehicleInDepot);
 			bestInsertion.addListener(updateLoadAfterJobHasBeenInserted);
 			

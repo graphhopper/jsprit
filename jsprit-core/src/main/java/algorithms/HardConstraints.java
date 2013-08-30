@@ -28,7 +28,7 @@ class HardConstraints {
 
 	}
 	
-	static class HardRouteLevelConstraintAccumulator implements HardRouteLevelConstraint {
+	static class HardRouteLevelConstraintManager implements HardRouteLevelConstraint {
 
 		private Collection<HardRouteLevelConstraint> hardConstraints = new ArrayList<HardRouteLevelConstraint>();
 		
@@ -50,7 +50,7 @@ class HardConstraints {
 	
 	
 	
-	static class HardActivityLevelConstraintAccumulator implements HardActivityLevelConstraint {
+	static class HardActivityLevelConstraintManager implements HardActivityLevelConstraint {
 
 		private Collection<HardActivityLevelConstraint> hardConstraints = new ArrayList<HardActivityLevelConstraint>();
 		

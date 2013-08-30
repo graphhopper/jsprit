@@ -34,18 +34,19 @@ import org.junit.Test;
 
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
+import algorithms.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.DriverImpl;
+import basics.route.DriverImpl.NoDriver;
 import basics.route.ServiceActivity;
 import basics.route.TimeWindow;
 import basics.route.TourActivities;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleRoute;
-import basics.route.DriverImpl.NoDriver;
 
 
 

@@ -48,6 +48,7 @@ class IterateRouteForwardInTime implements VehicleRouteUpdater{
 	 * 
 	 */
 	public void iterate(VehicleRoute vehicleRoute) {
+		if(listeners.isEmpty()) return;
 		listeners.start(vehicleRoute, vehicleRoute.getStart(), vehicleRoute.getStart().getEndTime());
 		
 		Vehicle vehicle = vehicleRoute.getVehicle();

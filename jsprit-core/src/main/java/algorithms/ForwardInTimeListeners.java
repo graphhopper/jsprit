@@ -38,4 +38,8 @@ class ForwardInTimeListeners {
 		for(ForwardInTimeListener l : listeners){ l.end(end, arrivalTime); }
 	}
 
+	public boolean isEmpty() {
+		return listeners.isEmpty();
+	}
+
 }
