@@ -9,8 +9,7 @@ import org.junit.Test;
 import util.Solutions;
 import algorithms.BackwardInTimeListeners.BackwardInTimeListener;
 import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
-import algorithms.HardConstraints.HardActivityLevelConstraint;
-import algorithms.StateManager.State;
+import algorithms.HardConstraints.HardActivityLevelConstraintAccumulator;
 import algorithms.StateManager.StateImpl;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.selectors.SelectBest;
@@ -29,7 +28,6 @@ import basics.io.VrpXMLReader;
 import basics.io.VrpXMLWriter;
 import basics.route.DeliveryActivity;
 import basics.route.End;
-import basics.route.PickupActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
@@ -46,80 +44,19 @@ public class BuildPDVRPAlgoFromScratchTest {
 	public void setup(){
 		
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-			new VrpXMLReader(builder).read("src/test/resources/pdVRP_vrpnc1_jsprit.xml");
+			new VrpXMLReader(builder).read("src/test/resources/pd_solomon_r101.xml");
 			vrp = builder.build();
 			
 			final StateManagerImpl stateManager = new StateManagerImpl();
 			
-			HardActivityLevelConstraint hardActLevelConstraint = new HardActivityLevelConstraint() {
-				
-				@Override
-				public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-//					if(newAct instanceof PickupActivity && nextAct instanceof DeliveryActivity){ return false; }
-//					if(newAct instanceof DeliveryActivity && prevAct instanceof PickupActivity){ return false; }
-					int loadAtPrevAct;
-					int futurePicks;
-					int pastDeliveries;
-					if(prevAct instanceof Start){
-						loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateTypes.LOAD_AT_DEPOT).toDouble();
-						futurePicks = (int)stateManager.getRouteState(iFacts.getRoute(), StateTypes.LOAD).toDouble();
-						pastDeliveries = 0;
-					}
-					else{
-						loadAtPrevAct = (int) stateManager.getActivityState(prevAct, StateTypes.LOAD).toDouble();
-						State futurePickState = stateManager.getActivityState(prevAct, "futurePicks");
-						if(futurePickState == null) {
-							futurePicks = 0;
-						}
-						else {
-							futurePicks = (int) futurePickState.toDouble();
-						}
-						State pastDeliveryState = stateManager.getActivityState(prevAct, "pastDeliveries");
-						if(pastDeliveryState == null){
-							pastDeliveries = 0;
-						}
-						else {
-							pastDeliveries = (int) pastDeliveryState.toDouble();
-						}
-					}
-					if(newAct instanceof PickupActivity){
-						if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){
-							return false;
-						}
-					}
-					if(newAct instanceof DeliveryActivity){
-						if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) + pastDeliveries > iFacts.getNewVehicle().getCapacity()){
-							return false;
-						}
-						
-					}
-					return true;
-				}
-				
-			};
+			HardActivityLevelConstraintAccumulator actLevelConstraintAccumulator = new HardActivityLevelConstraintAccumulator();
+			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryConstraint(stateManager));
+			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardTimeWindowConstraint(stateManager, vrp.getTransportCosts()));
 			
-			MarginalsCalculus marginalCalculus = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), hardActLevelConstraint);
-			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardRouteLevelConstraint() {
-				
-				@Override
-				public boolean fulfilled(InsertionContext insertionContext) {
-					if(insertionContext.getJob() instanceof Delivery){
-						int loadAtDepot = (int) stateManager.getRouteState(insertionContext.getRoute(), StateTypes.LOAD_AT_DEPOT).toDouble();
-						if(loadAtDepot + insertionContext.getJob().getCapacityDemand() > insertionContext.getNewVehicle().getCapacity()){
-							return false;
-						}
-					}
-					else if(insertionContext.getJob() instanceof Pickup){
-						int loadAtEnd = (int) stateManager.getRouteState(insertionContext.getRoute(), StateTypes.LOAD).toDouble();
-						if(loadAtEnd + insertionContext.getJob().getCapacityDemand() > insertionContext.getNewVehicle().getCapacity()){
-							return false;
-						}
-					}
-					else throw new IllegalStateException("ähh");
-					return true;
-				}
-				
-			});
+			MarginalsCalculus marginalCalculus = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), actLevelConstraintAccumulator);
+
+			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardPickupAndDeliveryLoadConstraint(stateManager));
+//			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
 			
 			VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
 			JobInsertionCalculator finalServiceInsertion = new CalculatesVehTypeDepServiceInsertion(fleetManager, serviceInsertion);
@@ -156,16 +93,23 @@ public class BuildPDVRPAlgoFromScratchTest {
 			
 			final IterateRouteForwardInTime iterateForward = new IterateRouteForwardInTime(vrp.getTransportCosts());
 			
+			iterateForward.addListener(new UpdateActivityTimes());
+			iterateForward.addListener(new UpdateEarliestStartTimeWindowAtActLocations(stateManager));
 			iterateForward.addListener(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+			
+//			iterateForward.addListener(new UpdateLoadAtAllLevels(stateManager));
+			
 			iterateForward.addListener(new ForwardInTimeListener() {
 				
 				private int currentLoad = 0;
-				private int deliveries = 0;  
+				private int deliveries = 0; 
+				private VehicleRoute route;
 				
 				@Override
 				public void start(VehicleRoute route, Start start, double departureTime) {
 //					log.info("iterate forward");
 					currentLoad = (int) stateManager.getRouteState(route, StateTypes.LOAD_AT_DEPOT).toDouble();
+					this.route = route; 
 //					log.info("currentLoad="+currentLoad);
 				}
 				
@@ -177,11 +121,12 @@ public class BuildPDVRPAlgoFromScratchTest {
 						deliveries += Math.abs(act.getCapacityDemand());
 					}
 					stateManager.putActivityState(act, StateTypes.LOAD, new StateImpl(currentLoad));
-					stateManager.putActivityState(act, "pastDeliveries", new StateImpl(deliveries));
+					stateManager.putActivityState(act, StateTypes.PAST_DELIVERIES, new StateImpl(deliveries));
 					if(currentLoad < 0) throw new IllegalStateException("currentload < 0");
-					if(currentLoad > 50){
-						throw new IllegalStateException("currentload="+currentLoad+" wich is > 50");
+					if(currentLoad > route.getVehicle().getCapacity()){
+						throw new IllegalStateException("currentload="+currentLoad+" wich is > " + route.getVehicle().getCapacity());
 					}
+					
 				}
 				
 				@Override
@@ -190,10 +135,12 @@ public class BuildPDVRPAlgoFromScratchTest {
 //					stateManager.putRouteState(route, StateTypes.LOAD, new StateImpl(currentLoad));
 					currentLoad = 0;
 					deliveries = 0;
+					route = null;
 				}
 			});
-			
+//			
 			final IterateRouteBackwardInTime iterateBackward = new IterateRouteBackwardInTime(vrp.getTransportCosts());
+			iterateBackward.addListener(new UpdateLatestOperationStartTimeAtActLocations(stateManager));
 			iterateBackward.addListener(new BackwardInTimeListener() {
 				
 				int futurePicks = 0;
@@ -205,7 +152,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 				
 				@Override
 				public void prevActivity(TourActivity act, double latestDepartureTime, double latestOperationStartTime) {
-					stateManager.putActivityState(act, "futurePicks", new StateImpl(futurePicks));
+					stateManager.putActivityState(act, StateTypes.FUTURE_PICKS, new StateImpl(futurePicks));
 					if(act.getCapacityDemand() > 0){
 						futurePicks += act.getCapacityDemand();
 					}
@@ -218,7 +165,6 @@ public class BuildPDVRPAlgoFromScratchTest {
 					
 				}
 			});
-			
 			
 			
 			InsertionStartsListener loadVehicleInDepot = new InsertionStartsListener() {
@@ -246,14 +192,16 @@ public class BuildPDVRPAlgoFromScratchTest {
 			};
 			
 			vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
-			vra.getSearchStrategyManager().addSearchStrategyModuleListener(loadVehicleInDepot);
+		
+//			vra.getSearchStrategyManager().addSearchStrategyModuleListener(loadVehicleInDepot);
 			
 			
 			JobInsertedListener updateLoadAfterJobHasBeenInserted = new JobInsertedListener() {
 				
 				@Override
 				public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
-//					log.info("insert job " + job2insert.getClass().toString() + " " + job2insert.getCapacityDemand() + " in route " + inRoute.getTourActivities());
+//					log.info("insert job " + job2insert.getClass().toString() + " job " + job2insert + "" + job2insert.getCapacityDemand() + " in route " + inRoute.getTourActivities());
+					
 					if(job2insert instanceof Delivery){
 						int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateTypes.LOAD_AT_DEPOT).toDouble();
 //						log.info("loadAtDepot="+loadAtDepot);
@@ -270,14 +218,17 @@ public class BuildPDVRPAlgoFromScratchTest {
 				}
 			};
 			
-			vra.getSearchStrategyManager().addSearchStrategyModuleListener(updateLoadAfterJobHasBeenInserted);
+//			vra.getSearchStrategyManager().addSearchStrategyModuleListener(updateLoadAfterJobHasBeenInserted);
+			
+			bestInsertion.addListener(loadVehicleInDepot);
+			bestInsertion.addListener(updateLoadAfterJobHasBeenInserted);
 			
 			VehicleRoutingProblemSolution iniSolution = new CreateInitialSolution(bestInsertion).createInitialSolution(vrp);
 //			System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 			vra.addInitialSolution(iniSolution);
 			
-			vra.setNuOfIterations(2000);
-//			vra.setPrematureBreak(200);
+			vra.setNuOfIterations(10000);
+			vra.setPrematureBreak(1000);
 			
 	}
 	
@@ -285,7 +236,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 	public void test(){
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		System.out.println(Solutions.getBest(solutions).getCost());
-		new VrpXMLWriter(vrp, solutions).write("output/pdvrp_sol.xml");
+		new VrpXMLWriter(vrp, solutions).write("output/pd_solomon_r101.xml");
 		
 	}
 

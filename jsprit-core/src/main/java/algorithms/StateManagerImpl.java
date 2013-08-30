@@ -27,30 +27,6 @@ class StateManagerImpl implements StateManager{
 	
 	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, StateManager.States>();
 	
-//	Map<VehicleRoute, States> getRouteStates() {
-//		return Collections.unmodifiableMap(vehicleRouteStates);
-//	}
-//	
-//	States getRouteStates(VehicleRoute route){
-//		return vehicleRouteStates.get(route);
-//	}
-//
-//	void put(VehicleRoute route, States states) {
-//		vehicleRouteStates.put(route, states);
-//	}
-//
-//	Map<TourActivity, States> getActivityStates() {
-//		return Collections.unmodifiableMap(activityStates);
-//	}
-//
-//	States getActivityStates(TourActivity act){
-//		return activityStates.get(act);
-//	}
-//	
-//	void put(TourActivity act, States states) {
-//		activityStates.put(act, states);
-//	}
-	
 	public void clear(){
 		vehicleRouteStates.clear();
 		activityStates.clear();
@@ -84,6 +60,8 @@ class StateManagerImpl implements StateManager{
 		if(stateType.equals(StateTypes.DURATION)) return new StateImpl(0);
 		if(stateType.equals(StateTypes.EARLIEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalEarliestOperationStartTime());
 		if(stateType.equals(StateTypes.LATEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalLatestOperationStartTime());
+		if(stateType.equals(StateTypes.FUTURE_PICKS)) return new StateImpl(0);
+		if(stateType.equals(StateTypes.PAST_DELIVERIES)) return new StateImpl(0);
 		return null;
 	}
 	

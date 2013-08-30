@@ -49,6 +49,10 @@ import basics.route.VehicleTypeImpl;
  */
 public class VehicleRoutingProblem {
 	
+	public static class VehicleRoutingProblemType {
+		
+	}
+	
 	/**
 	 * Builder to build the routing-problem.
 	 * 

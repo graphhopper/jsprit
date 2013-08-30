@@ -1,5 +1,7 @@
 package algorithms;
 
+import org.apache.log4j.Logger;
+
 import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
 import algorithms.StateManager.StateImpl;
 import basics.costs.ForwardTransportCost;
@@ -7,10 +9,13 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.route.End;
 import basics.route.Start;
 import basics.route.TourActivity;
+import basics.route.TourActivity.JobActivity;
 import basics.route.VehicleRoute;
 
 class UpdateCostsAtAllLevels implements ForwardInTimeListener{
 
+	private static Logger log = Logger.getLogger(UpdateCostsAtAllLevels.class);
+	
 	private VehicleRoutingActivityCosts activityCost;
 
 	private ForwardTransportCost transportCost;
@@ -38,16 +43,22 @@ class UpdateCostsAtAllLevels implements ForwardInTimeListener{
 		vehicleRoute.getVehicleRouteCostCalculator().reset();
 		prevAct = start;
 		startTimeAtPrevAct = departureTime;
+//		log.info(start + " depTime=" + departureTime);
 	}
 
 	@Override
 	public void nextActivity(TourActivity act, double arrTime, double endTime) {
+//		log.info(act + " job " + ((JobActivity)act).getJob().getId() + " arrTime=" + arrTime + " endTime=" +  endTime);
 		double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), act.getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 		double actCost = activityCost.getActivityCost(act, arrTime, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 
 		vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
 		vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
 
+		if(transportCost > 10000 || actCost > 100000){
+			throw new IllegalStateException("aaaääähh");
+		}
+		
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
 
@@ -59,11 +70,16 @@ class UpdateCostsAtAllLevels implements ForwardInTimeListener{
 
 	@Override
 	public void end(End end, double arrivalTime) {
+//		log.info(end + " arrTime=" + arrivalTime);
 		double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), end.getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 		double actCost = activityCost.getActivityCost(end, arrivalTime, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 		
 		vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
 		vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
+		
+		if(transportCost > 10000 || actCost > 100000){
+			throw new IllegalStateException("aaaääähh");
+		}
 		
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;

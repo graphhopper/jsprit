@@ -11,5 +11,9 @@ class StateTypes {
 	
 	final static String EARLIEST_OPERATION_START_TIME = "earliestOST";
 
-	public static final String COSTS = "costs";
+	static final String COSTS = "costs";
+	
+	final static String FUTURE_PICKS = "futurePicks";
+	
+	final static String PAST_DELIVERIES = "pastDeliveries";
 }
