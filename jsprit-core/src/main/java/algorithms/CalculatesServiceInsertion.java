@@ -102,11 +102,9 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		TourActivity prevAct = start;
 		double prevActStartTime = newVehicleDepartureTime;
 		int actIndex = 0;
-
+//		logger.info("start");
 		for(TourActivity nextAct : currentRoute.getTourActivities().getActivities()){
-			if(deliveryAct2Insert.getTheoreticalLatestOperationStartTime() < prevAct.getTheoreticalEarliestOperationStartTime()){
-				break;
-			}
+//			logger.info("prevActStartTime="+prevActStartTime);
 			if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
 				Marginals mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
 				if(mc != null){ 
@@ -117,10 +115,14 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 					}
 				}
 			}
+			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActStartTime, newDriver, newVehicle);
+			double nextActEndTime = CalcUtils.getActivityEndTime(nextActArrTime, nextAct);
+			
+			prevActStartTime = nextActEndTime;
 			prevAct = nextAct;
-			prevActStartTime = CalcUtils.getStartTimeAtAct(prevActStartTime, transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActStartTime, newDriver, newVehicle), nextAct);
 			actIndex++;
 		}
+//		logger.info("prevActStartTime="+prevActStartTime);
 		End nextAct = end;
 		if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
 			Marginals mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
