@@ -20,7 +20,9 @@
  ******************************************************************************/
 package analysis;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -32,16 +34,22 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYShapeAnnotation;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.XYItemLabelGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataItem;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import util.Coordinate;
 import util.Locations;
+import basics.Delivery;
 import basics.Job;
+import basics.Pickup;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
@@ -80,13 +88,14 @@ public class SolutionPlotter {
 	public static void plotVrpAsPNG(VehicleRoutingProblem vrp, String pngFile, String title){
 		log.info("plot routes to " + pngFile);
 		XYSeriesCollection problem;
+		Map<XYDataItem,String> labels = new HashMap<XYDataItem, String>();
 		try {
-			problem = makeVrpSeries(vrp);
+			problem = makeVrpSeries(vrp, labels);
 		} catch (NoLocationFoundException e) {
 			log.warn("cannot plot vrp, since coord is missing");
 			return;	
 		}
-		XYPlot plot = createPlot(problem);
+		XYPlot plot = createPlot(problem, labels);
 		JFreeChart chart = new JFreeChart(title, plot);
 		save(chart,pngFile);
 	}
@@ -103,14 +112,15 @@ public class SolutionPlotter {
 	public static void plotRoutesAsPNG(Collection<VehicleRoute> routes, Locations locations, String pngFile, String title) {
 		log.info("plot routes to " + pngFile);
 		XYSeriesCollection problem;
+		Map<XYDataItem,String> labels = new HashMap<XYDataItem, String>();
 		try {
-			problem = makeVrpSeries(routes);
+			problem = makeVrpSeries(routes, labels);
 		} catch (NoLocationFoundException e) {
 			log.warn("cannot plot vrp, since coord is missing");
 			return;	
 		}
 		XYSeriesCollection solutionColl = makeSolutionSeries(routes,locations);
-		XYPlot plot = createPlot(problem, solutionColl);
+		XYPlot plot = createPlot(problem, solutionColl, labels);
 		JFreeChart chart = new JFreeChart(title, plot);
 		save(chart,pngFile);
 	}
@@ -130,14 +140,15 @@ public class SolutionPlotter {
 		log.info("plot solution to " + pngFile);
 		XYSeriesCollection problem;
 		XYSeriesCollection solutionColl;
+		Map<XYDataItem,String> labels = new HashMap<XYDataItem, String>();
 		try {
-			problem = makeVrpSeries(vrp);
+			problem = makeVrpSeries(vrp, labels);
 			solutionColl = makeSolutionSeries(vrp, solution);
 		} catch (NoLocationFoundException e) {
 			log.warn("cannot plot vrp, since coord is missing");
 			return;	
 		}
-		XYPlot plot = createPlot(problem, solutionColl);
+		XYPlot plot = createPlot(problem, solutionColl, labels);
 		JFreeChart chart = new JFreeChart(title, plot);
 		save(chart,pngFile);
 		
@@ -145,13 +156,23 @@ public class SolutionPlotter {
 	
 	
 
-	private static XYPlot createPlot(XYSeriesCollection problem) {
+	private static XYPlot createPlot(final XYSeriesCollection problem, final Map<XYDataItem, String> labels) {
 		XYPlot plot = new XYPlot();
 		plot.setBackgroundPaint(Color.LIGHT_GRAY);
 		plot.setRangeGridlinePaint(Color.WHITE);
 		plot.setDomainGridlinePaint(Color.WHITE);
 		
 		XYItemRenderer problemRenderer = new XYLineAndShapeRenderer(false, true);   // Shapes only
+//		problemRenderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
+//			
+//			@Override
+//			public String generateLabel(XYDataset arg0, int arg1, int arg2) {
+//				XYDataItem item = problem.getSeries(arg1).getDataItem(arg2);
+//				return labels.get(item);
+//			}
+//		});
+		problemRenderer.setBaseItemLabelsVisible(true);
+		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
 		
 		NumberAxis xAxis = new NumberAxis();		
 		xAxis.setRangeWithMargins(problem.getDomainBounds(true));
@@ -167,13 +188,24 @@ public class SolutionPlotter {
 		return plot;
 	}
 
-	private static XYPlot createPlot(XYSeriesCollection problem, XYSeriesCollection solutionColl) {
+	private static XYPlot createPlot(final XYSeriesCollection problem, XYSeriesCollection solutionColl, final Map<XYDataItem, String> labels) {
 		XYPlot plot = new XYPlot();
 		plot.setBackgroundPaint(Color.LIGHT_GRAY);
 		plot.setRangeGridlinePaint(Color.WHITE);
 		plot.setDomainGridlinePaint(Color.WHITE);
 		
 		XYItemRenderer problemRenderer = new XYLineAndShapeRenderer(false, true);   // Shapes only
+//		problemRenderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
+//			
+//			@Override
+//			public String generateLabel(XYDataset arg0, int arg1, int arg2) {
+//				XYDataItem item = problem.getSeries(arg1).getDataItem(arg2);
+//				return labels.get(item);
+//			}
+//		});
+		problemRenderer.setBaseItemLabelsVisible(true);
+		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
+
 		
 		NumberAxis xAxis = new NumberAxis();		
 		xAxis.setRangeWithMargins(problem.getDomainBounds(true));
@@ -186,7 +218,13 @@ public class SolutionPlotter {
 		plot.setDomainAxis(0, xAxis);
 		plot.setRangeAxis(0, yAxis);
 		
+		
 		XYItemRenderer solutionRenderer = new XYLineAndShapeRenderer(true, false);   // Lines only
+//		for(int i=0;i<solutionColl.getSeriesCount();i++){
+//			XYSeries s = solutionColl.getSeries(i);
+//			XYDataItem firstCustomer = s.getDataItem(1);
+//			solutionRenderer.addAnnotation(new XYShapeAnnotation( new Ellipse2D.Double(firstCustomer.getXValue()-0.7, firstCustomer.getYValue()-0.7, 1.5, 1.5), new BasicStroke(1.0f), Color.RED));
+//		}
 		plot.setDataset(1, solutionColl);
 		plot.setRenderer(1, solutionRenderer);
 		plot.setDomainAxis(1, xAxis);
@@ -254,7 +292,7 @@ public class SolutionPlotter {
 		return coll;
 	}
 	
-	private static XYSeriesCollection makeVrpSeries(Collection<Vehicle> vehicles, Collection<Job> services) throws NoLocationFoundException{
+	private static XYSeriesCollection makeVrpSeries(Collection<Vehicle> vehicles, Collection<Job> services, Map<XYDataItem, String> labels) throws NoLocationFoundException{
 		XYSeriesCollection coll = new XYSeriesCollection();
 		XYSeries vehicleSeries = new XYSeries("depot", false, true);
 		for(Vehicle v : vehicles){
@@ -264,28 +302,54 @@ public class SolutionPlotter {
 		}
 		coll.addSeries(vehicleSeries);
 		
-		XYSeries jobSeries = new XYSeries("service", false, true);
+		XYSeries serviceSeries = new XYSeries("service", false, true);
+		XYSeries pickupSeries = new XYSeries("pickup", false, true);
+		XYSeries deliverySeries = new XYSeries("delivery", false, true);
 		for(Job job : services){
-			Service service = (Service)job;
-			Coordinate coord = service.getCoord();
-			jobSeries.add(coord.getX(), coord.getY());
+			if(job instanceof Pickup){
+				Pickup service = (Pickup)job;
+				Coordinate coord = service.getCoord();
+				XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+				pickupSeries.add(dataItem);
+				labels.put(dataItem, String.valueOf(service.getCapacityDemand()));
+			}
+			else if(job instanceof Delivery){
+				Delivery service = (Delivery)job;
+				Coordinate coord = service.getCoord();
+				XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+				deliverySeries.add(dataItem);
+				labels.put(dataItem, String.valueOf(service.getCapacityDemand()));
+			}
+			else if(job instanceof Service){
+				Service service = (Service)job;
+				Coordinate coord = service.getCoord();
+				XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+				serviceSeries.add(dataItem);
+				labels.put(dataItem, String.valueOf(service.getCapacityDemand()));
+			}
+			else{
+				throw new IllegalStateException("job instanceof " + job.getClass().toString() + ". this is not supported.");
+			}
+			
 		}
-		coll.addSeries(jobSeries);
+		if(!serviceSeries.isEmpty()) coll.addSeries(serviceSeries);
+		if(!pickupSeries.isEmpty()) coll.addSeries(pickupSeries);
+		if(!deliverySeries.isEmpty()) coll.addSeries(deliverySeries);
 		return coll;
 	}
 	
-	private static XYSeriesCollection makeVrpSeries(Collection<VehicleRoute> routes) throws NoLocationFoundException{
+	private static XYSeriesCollection makeVrpSeries(Collection<VehicleRoute> routes, Map<XYDataItem, String> labels) throws NoLocationFoundException{
 		Set<Vehicle> vehicles = new HashSet<Vehicle>();
 		Set<Job> jobs = new HashSet<Job>();
 		for(VehicleRoute route : routes){
 			vehicles.add(route.getVehicle());
 			jobs.addAll(route.getTourActivities().getJobs());
 		}
-		return makeVrpSeries(vehicles, jobs);
+		return makeVrpSeries(vehicles, jobs, labels);
 	}
 	
-	private static XYSeriesCollection makeVrpSeries(VehicleRoutingProblem vrp) throws NoLocationFoundException{
-		return makeVrpSeries(vrp.getVehicles(), vrp.getJobs().values());
+	private static XYSeriesCollection makeVrpSeries(VehicleRoutingProblem vrp, Map<XYDataItem, String> labels) throws NoLocationFoundException{
+		return makeVrpSeries(vrp.getVehicles(), vrp.getJobs().values(), labels);
 	}
 	
 	private static Locations retrieveLocations(VehicleRoutingProblem vrp) throws NoLocationFoundException {

@@ -75,7 +75,7 @@
      </vehicleTypes>
      
      <services>
-     	 <service id="1" type="delivery">
+     	 <service id="1" type="service">
                <locationId>j(1,5)</locationId>
                 <coord x="10.0" y="10.0"/>
                <capacity-demand>1</capacity-demand>
@@ -88,7 +88,7 @@
                </timeWindows>
           </service>
           
-           <service id="2" type="delivery">
+           <service id="2" type="service">
                <locationId>i(3,9)</locationId>
                <coord x="10.0" y="10.0"/>
                <capacity-demand>1</capacity-demand>

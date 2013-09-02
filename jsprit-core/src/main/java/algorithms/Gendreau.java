@@ -32,9 +32,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import util.RandomNumberGeneration;
+import algorithms.RuinStrategy.RuinListener;
 import basics.Job;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
+import basics.algo.InsertionListener;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
 import basics.route.TourActivity;
@@ -53,8 +55,6 @@ final class Gendreau implements SearchStrategyModule{
 	
 	private final InsertionStrategy insertionStrategy;
 	
-	private final Inserter inserter;
-	
 	private VehicleFleetManager fleetManager;
 
 	private Random random = RandomNumberGeneration.getRandom();
@@ -71,7 +71,7 @@ final class Gendreau implements SearchStrategyModule{
 		super();
 		InsertionListeners insertionListeners = new InsertionListeners();
 		insertionListeners.addAllListeners(insertionStrategy.getListeners());
-		inserter = new Inserter(insertionListeners);
+		new Inserter(insertionListeners);
 		this.ruin = ruin;
 		this.vrp = vrp;
 		this.insertionStrategy = insertionStrategy;
@@ -205,7 +205,18 @@ final class Gendreau implements SearchStrategyModule{
 
 	@Override
 	public void addModuleListener(SearchStrategyModuleListener moduleListener) {
-		// TODO Auto-generated method stub
+		if(moduleListener instanceof InsertionListener){
+			InsertionListener iListener = (InsertionListener) moduleListener; 
+			if(!insertionStrategy.getListeners().contains(iListener)){
+				insertionStrategy.addListener(iListener);
+			}
+		}
+		if(moduleListener instanceof RuinListener){
+			RuinListener rListener = (RuinListener) moduleListener;
+			if(!ruin.getListeners().contains(rListener)){
+				ruin.addListener(rListener);
+			}
+		}
 		
 	}
 }

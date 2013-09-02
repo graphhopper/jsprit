@@ -33,6 +33,7 @@ import org.junit.Test;
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
 import util.RouteUtils;
+import algorithms.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.VehicleRoutingProblem;
@@ -151,7 +152,7 @@ public class GendreauPostOptTest {
 		
 		activityCosts = new ExampleActivityCostFunction();
 		
-		CalculatesServiceInsertion standardServiceInsertion = new CalculatesServiceInsertion(cost, new MarginalsCalculusTriangleInequality(cost, activityCosts, new HardConstraints.HardTimeWindowConstraint(states)), new HardConstraints.HardLoadConstraint(states));
+		CalculatesServiceInsertion standardServiceInsertion = new CalculatesServiceInsertion(cost, new MarginalsCalculusTriangleInequality(cost, activityCosts, new HardConstraints.HardTimeWindowActivityLevelConstraint(states, cost)), new HardConstraints.HardLoadConstraint(states));
 		
 		CalculatesServiceInsertionConsideringFixCost withFixCost = new CalculatesServiceInsertionConsideringFixCost(standardServiceInsertion, states);
 		withFixCost.setWeightOfFixCost(1.2);

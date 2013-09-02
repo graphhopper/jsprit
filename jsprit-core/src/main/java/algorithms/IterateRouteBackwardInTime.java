@@ -46,6 +46,7 @@ class IterateRouteBackwardInTime implements VehicleRouteUpdater{
 	 * 
 	 */
 	public void iterate(VehicleRoute vehicleRoute) {
+		if(listeners.isEmpty()) return;
 		listeners.start(vehicleRoute, vehicleRoute.getEnd(), vehicleRoute.getEnd().getTheoreticalLatestOperationStartTime());
 		
 		Iterator<TourActivity> reverseActIter = vehicleRoute.getTourActivities().reverseActivityIterator();

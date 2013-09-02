@@ -20,6 +20,6 @@
  ******************************************************************************/
 package basics.algo;
 
-public class SearchStrategyListener {
+public interface SearchStrategyListener extends VehicleRoutingAlgorithmListener{
 
 }

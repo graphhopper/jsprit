@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
+import algorithms.HardConstraints.ConstraintManager;
+import algorithms.StateUpdates.UpdateStates;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblem.FleetComposition;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 
@@ -38,7 +38,7 @@ class InsertionFactory {
 	private static Logger log = Logger.getLogger(InsertionFactory.class);
 	
 	public static InsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
-			VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads){
+			VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager){
 		boolean concurrentInsertion = false;
 		if(executorService != null) concurrentInsertion = true;
 		if(config.containsKey("[@name]")){
@@ -54,6 +54,7 @@ class InsertionFactory {
 			calcBuilder.setStates(routeStates);
 			calcBuilder.setVehicleRoutingProblem(vrp);
 			calcBuilder.setVehicleFleetManager(vehicleFleetManager);
+			calcBuilder.setConstraintManager(constraintManager);
 			
 			if(config.containsKey("level")){
 				String level = config.getString("level");
@@ -103,13 +104,13 @@ class InsertionFactory {
 //				insertionStrategy = RegretInsertion.newInstance(routeAlgorithm);
 //			}
 		
-			insertionStrategy.addListener(new RemoveEmptyVehicles(vehicleFleetManager));
-			insertionStrategy.addListener(new ResetAndIniFleetManager(vehicleFleetManager));
-			insertionStrategy.addListener(new VehicleSwitched(vehicleFleetManager));
+//			insertionStrategy.addListener(new RemoveEmptyVehicles(vehicleFleetManager));
+//			insertionStrategy.addListener(new ResetAndIniFleetManager(vehicleFleetManager));
+//			insertionStrategy.addListener(new VehicleSwitched(vehicleFleetManager));
 			
 //			insertionStrategy.addListener(new UpdateLoadAtRouteLevel(routeStates));
 			
-			insertionStrategy.addListener(new UpdateStates(routeStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
+//			insertionStrategy.addListener(new UpdateStates(routeStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
 			for(InsertionListener l : insertionListeners) insertionStrategy.addListener(l);
 //			insertionStrategy.addListener(new FindCheaperVehicle(
 //					new FindCheaperVehicleAlgoNew(vehicleFleetManager, tourStateCalculator, auxCalculator)));

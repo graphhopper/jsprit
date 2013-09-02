@@ -38,25 +38,52 @@ import org.xml.sax.SAXException;
 
 import util.Coordinate;
 import util.Resource;
+import basics.Delivery;
+import basics.Pickup;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.FleetComposition;
 import basics.VehicleRoutingProblem.FleetSize;
 import basics.VehicleRoutingProblemSolution;
+import basics.route.DefaultTourActivityFactory;
+import basics.route.DeliveryActivity;
 import basics.route.Driver;
 import basics.route.DriverImpl;
 import basics.route.End;
+import basics.route.PickupActivity;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TimeWindow;
+import basics.route.TourActivity;
+import basics.route.TourActivityFactory;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleImpl.Builder;
 import basics.route.VehicleRoute;
-import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
 public class VrpXMLReader{
+	
+	public interface ServiceBuilderFactory {
+		Service.Builder createBuilder(String serviceType, String id, int size);
+	}
+	
+	static class DefaultServiceBuilderFactory implements ServiceBuilderFactory{
+
+		@Override
+		public basics.Service.Builder createBuilder(String serviceType, String id, int size) {
+			if(serviceType.equals("pickup")){
+				return Pickup.Builder.newInstance(id, size);
+			}
+			else if(serviceType.equals("delivery")){
+				return Delivery.Builder.newInstance(id, size);
+			}
+			else{
+				return Service.Builder.newInstance(id, size);
+			}
+		}
+	}
+	
 
 	private static Logger logger = Logger.getLogger(VrpXMLReader.class);
 	
@@ -69,6 +96,18 @@ public class VrpXMLReader{
 	private boolean schemaValidation = true;
 
 	private Collection<VehicleRoutingProblemSolution> solutions;
+	
+	private ServiceBuilderFactory serviceBuilderFactory = new DefaultServiceBuilderFactory();
+	
+	private TourActivityFactory tourActivityFactory = new DefaultTourActivityFactory();
+	
+	public void setTourActivityFactory(TourActivityFactory tourActivityFactory){
+		this.tourActivityFactory = tourActivityFactory;
+	}
+	
+	public void setServiceBuilderFactory(ServiceBuilderFactory serviceBuilderFactory){
+		this.serviceBuilderFactory=serviceBuilderFactory;
+	}
 	
 	/**
 	 * @param schemaValidation the schemaValidation to set
@@ -170,10 +209,10 @@ public class VrpXMLReader{
 					if(arrTime == null) throw new IllegalStateException("act.arrTime is missing.");
 					String endTime = actConfig.getString("endTime");
 					if(endTime == null) throw new IllegalStateException("act.endTime is missing.");
-					ServiceActivity serviceActivity = ServiceActivity.newInstance(service);
-					serviceActivity.setArrTime(Double.parseDouble(arrTime));
-					serviceActivity.setEndTime(Double.parseDouble(endTime));
-					routeBuilder.addActivity(serviceActivity);
+					TourActivity tourActivity = tourActivityFactory.createActivity(service); 	
+					tourActivity.setArrTime(Double.parseDouble(arrTime));
+					tourActivity.setEndTime(Double.parseDouble(endTime));
+					routeBuilder.addActivity(tourActivity);
 				}
 				routes.add(routeBuilder.build());
 			}
@@ -210,13 +249,12 @@ public class VrpXMLReader{
 		for(HierarchicalConfiguration serviceConfig : serviceConfigs){
 			String id = serviceConfig.getString("[@id]");
 			if(id == null) throw new IllegalStateException("service[@id] is missing.");
-			String name = serviceConfig.getString("[@type]");
-			if(name == null) name = "service";
+			String type = serviceConfig.getString("[@type]");
+			if(type == null) type = "service";
 			String capacityDemand = serviceConfig.getString("capacity-demand");
 			int cap = 0;
 			if(capacityDemand != null) cap = Integer.parseInt(capacityDemand);
-			Service.Builder builder = Service.Builder.newInstance(id, cap);
-			builder.setName(name);
+			Service.Builder builder = serviceBuilderFactory.createBuilder(type, id, cap);
 			String serviceLocationId = serviceConfig.getString("locationId");
 			builder.setLocationId(serviceLocationId);
 			Coordinate serviceCoord = null;
@@ -235,8 +273,6 @@ public class VrpXMLReader{
 					builder.setLocationId(serviceCoord.toString());
 				}
 			}
-			
-			
 			if(serviceConfig.containsKey("duration")){
 				builder.setServiceTime(serviceConfig.getDouble("duration"));
 			}
@@ -264,15 +300,12 @@ public class VrpXMLReader{
 			Double fix = typeConfig.getDouble("costs.fixed");
 			Double timeC = typeConfig.getDouble("costs.time");
 			Double distC = typeConfig.getDouble("costs.distance");
-//			Double start = typeConfig.getDouble("timeSchedule.start");
-//			Double end = typeConfig.getDouble("timeSchedule.end");
 			if(typeId == null) throw new IllegalStateException("typeId is missing.");
 			if(capacity == null) throw new IllegalStateException("capacity is missing.");
 			VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId, capacity);
 			if(fix != null) typeBuilder.setFixedCost(fix);
 			if(timeC != null) typeBuilder.setCostPerTime(timeC);
 			if(distC != null) typeBuilder.setCostPerDistance(distC);
-//			if(start != null && end != null) typeBuilder.setTimeSchedule(new TimeSchedule(start, end));
 			VehicleTypeImpl type = typeBuilder.build();
 			types.put(type.getTypeId(), type);
 			vrpBuilder.addVehicleType(type);
@@ -310,7 +343,6 @@ public class VrpXMLReader{
 			if(start != null) builder.setEarliestStart(Double.parseDouble(start));
 			if(end != null) builder.setLatestArrival(Double.parseDouble(end));
 			VehicleImpl vehicle = builder.build();
-//			vehicleMap.put(vehicle.getId(), vehicle);
 			vrpBuilder.addVehicle(vehicle);
 			vehicleMap.put(vehicleId, vehicle);
 		}

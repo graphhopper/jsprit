@@ -20,8 +20,6 @@
  ******************************************************************************/
 package basics.io;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,19 +29,15 @@ import org.junit.Test;
 
 import basics.Service;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblemSolution;
-import basics.Service.Builder;
 import basics.VehicleRoutingProblem.FleetComposition;
 import basics.VehicleRoutingProblem.FleetSize;
-import basics.io.VrpXMLReader;
-import basics.io.VrpXMLWriter;
+import basics.VehicleRoutingProblemSolution;
 import basics.route.End;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
-import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
 public class VrpWriterV3Test {
@@ -69,8 +63,8 @@ public class VrpWriterV3Test {
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
 		
-		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("loc").setName("delivery").setServiceTime(2.0).build();
-		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setName("delivery").setServiceTime(4.0).build();
+		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("loc").setServiceTime(2.0).build();
+		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setServiceTime(4.0).build();
 		builder.addService(s1).addService(s2);
 		
 		VehicleRoutingProblem vrp = builder.build();

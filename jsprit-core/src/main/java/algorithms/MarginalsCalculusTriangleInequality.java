@@ -1,3 +1,23 @@
+/*******************************************************************************
+ * Copyright (C) 2013  Stefan Schroeder
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ * Contributors:
+ *     Stefan Schroeder - initial API and implementation
+ ******************************************************************************/
 package algorithms;
 
 import algorithms.HardConstraints.HardActivityLevelConstraint;
@@ -21,16 +41,16 @@ class MarginalsCalculusTriangleInequality implements MarginalsCalculus{
 
 	@Override
 	public Marginals calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
+		if(!hardConstraint.fulfilled(iFacts, prevAct, newAct, nextAct, depTimeAtPrevAct)){
+			return null;
+		}
+		
 		double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocationId(), newAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
 		double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
 		
-		if(!hardConstraint.fulfilled(iFacts, newAct, newAct_arrTime)){
-			return null;
-		}
-		
-		double newAct_endTime = CalcUtils.getStartTimeAtAct(newAct_arrTime, newAct);
+		double newAct_endTime = CalcUtils.getActivityEndTime(newAct_arrTime, newAct);
 		
 		double act_costs_newAct = activityCosts.getActivityCost(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
@@ -38,11 +58,7 @@ class MarginalsCalculusTriangleInequality implements MarginalsCalculus{
 		double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
 		double nextAct_arrTime = newAct_endTime + tp_time_newAct_nextAct;
-		
-		if(!hardConstraint.fulfilled(iFacts, nextAct, nextAct_arrTime)){
-			return null;
-		}
-		
+				
 		double act_costs_nextAct = activityCosts.getActivityCost(nextAct, nextAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
 		double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct + act_costs_newAct + act_costs_nextAct; 

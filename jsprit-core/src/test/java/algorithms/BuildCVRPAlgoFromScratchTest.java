@@ -1,6 +1,26 @@
+/*******************************************************************************
+ * Copyright (C) 2013  Stefan Schroeder
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ * Contributors:
+ *     Stefan Schroeder - initial API and implementation
+ ******************************************************************************/
 package algorithms;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 
@@ -9,6 +29,8 @@ import org.junit.Test;
 
 import util.Solutions;
 import algorithms.HardConstraints.HardActivityLevelConstraint;
+import algorithms.StateUpdates.UpdateCostsAtRouteLevel;
+import algorithms.StateUpdates.UpdateLoadAtRouteLevel;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.selectors.SelectBest;
 import basics.VehicleRoutingAlgorithm;
@@ -36,7 +58,7 @@ public class BuildCVRPAlgoFromScratchTest {
 		HardActivityLevelConstraint hardActLevelConstraint = new HardActivityLevelConstraint() {
 			
 			@Override
-			public boolean fulfilled(InsertionContext iFacts, TourActivity act, double arrTime) {
+			public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 				return true;
 			}
 		};
@@ -76,7 +98,7 @@ public class BuildCVRPAlgoFromScratchTest {
 		vra.getAlgorithmListeners().addListener(clearStateManager);
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
 		
-		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UdateCostsAtRouteLevel(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
+		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateCostsAtRouteLevel(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateLoadAtRouteLevel(stateManager));
 		
 		VehicleRoutingProblemSolution iniSolution = new CreateInitialSolution(bestInsertion).createInitialSolution(vrp);

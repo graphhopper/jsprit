@@ -39,6 +39,7 @@ import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.route.ServiceActivity;
 import basics.route.TourActivity;
+import basics.route.TourActivity.JobActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 import basics.route.VehicleType;
@@ -84,7 +85,6 @@ public class VrpXMLWriter {
 		writeProblemType(xmlConfig);
 		writeVehiclesAndTheirTypes(xmlConfig);
 		writerServices(xmlConfig);
-//		writeShipments(xmlConfig);
 		writeSolutions(xmlConfig);
 		
 		OutputFormat format = new OutputFormat();
@@ -133,8 +133,8 @@ public class VrpXMLWriter {
 				int actCounter = 0;
 				for(TourActivity act : route.getTourActivities().getActivities()){
 					xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+")[@type]", act.getName());
-					if(act instanceof ServiceActivity){
-						xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").serviceId", ((ServiceActivity) act).getJob().getId());
+					if(act instanceof JobActivity){
+						xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").serviceId", ((JobActivity) act).getJob().getId());
 					}
 					xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").arrTime", act.getArrTime());
 					xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").endTime", act.getEndTime());
@@ -169,36 +169,6 @@ public class VrpXMLWriter {
 		
 		
 	}
-
-//	private void writeShipments(XMLConf xmlConfig) {
-//		String shipmentPathString = "shipments.shipment";
-//		int counter = 0;
-//		for(Job j : vrp.getJobs().values()){
-//			Shipment shipment = (Shipment) j;
-//			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@id]", shipment.getId());
-//			if(shipment.getFromId() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.locationId", shipment.getFromId());
-//			if(shipment.getFromCoord() != null) {
-//				xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.coord[@x]", shipment.getFromCoord().getX());
-//				xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.coord[@y]", shipment.getFromCoord().getY());
-//			}
-//			if(shipment.getToId() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.locationId", shipment.getToId());
-//			if(shipment.getFromCoord() != null) {
-//				xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.coord[@x]", shipment.getToCoord().getX());
-//				xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.coord[@y]", shipment.getToCoord().getY());
-//			}
-//			xmlConfig.setProperty(shipmentPathString + "("+counter+").size", shipment.getSize());
-//			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.serviceTime", shipment.getPickupServiceTime());
-//			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.timeWindows.timeWindow(0).start", shipment.getPickupTW().getStart());
-//			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.timeWindows.timeWindow(0).end", shipment.getPickupTW().getEnd());
-//			
-//			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.serviceTime", shipment.getDeliveryServiceTime());
-//			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).start", shipment.getDeliveryTW().getStart());
-//			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).end", shipment.getDeliveryTW().getEnd());
-//			
-//			counter++;
-//		}
-//		
-//	}
 	
 	private void writeProblemType(XMLConfiguration xmlConfig){
 		xmlConfig.setProperty("problemType.fleetSize", vrp.getFleetSize());
@@ -206,19 +176,6 @@ public class VrpXMLWriter {
 	}
 
 	private void writeVehiclesAndTheirTypes(XMLConfiguration xmlConfig) {
-		
-//		//depots
-//		Map<Depot,Integer> depot2id = new HashMap<Depot, Integer>();
-//		int depotCounter = 0;
-//		for(Depot depot : vrp.getDepots()){
-//			int depotId = depotCounter+1;
-//			depot2id.put(depot, depotId);
-//			xmlConfig.setProperty("depots.depot" + "("+depotCounter+")[@id]", (depotId));
-//			xmlConfig.setProperty("depots.depot" + "("+depotCounter+").locationId", depot.getId());
-//			xmlConfig.setProperty("depots.depot" + "("+depotCounter+").coord[@x]", depot.getCoord().getX());
-//			xmlConfig.setProperty("depots.depot" + "("+depotCounter+").coord[@y]", depot.getCoord().getY());
-//			depotCounter++;
-//		}
 
 		//vehicles
 		String vehiclePathString = new StringBuilder().append(Schema.VEHICLES).append(".").
@@ -234,13 +191,7 @@ public class VrpXMLWriter {
 			}
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.start", vehicle.getEarliestDeparture());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.end", vehicle.getLatestArrival());
-//			if(vehicle.getLocationId() != null) xmlConfig.setProperty(vehiclePathString + "("+counter+").locationId", vehicle.getLocationId());
-//			if(vehicle.getCoord() != null) {
-//				xmlConfig.setProperty(vehiclePathString + "("+counter+").coord[@x]", vehicle.getCoord().getX());
-//				xmlConfig.setProperty(vehiclePathString + "("+counter+").coord[@y]", vehicle.getCoord().getY());
-//			}
-//			xmlConfig.setProperty(vehiclePathString + "("+counter+").earliestStart", vehicle.getEarliestDeparture());
-//			xmlConfig.setProperty(vehiclePathString + "("+counter+").latestEnd", vehicle.getLatestArrival());
+
 			counter++;
 		}
 
@@ -250,44 +201,13 @@ public class VrpXMLWriter {
 		for(VehicleType type : vrp.getTypes()){
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").id", type.getTypeId());
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").capacity", type.getCapacity());
-//			xmlConfig.setProperty(typePathString + "("+typeCounter+").timeSchedule.start", type.getTimeSchedule().getEarliestStart());
-//			xmlConfig.setProperty(typePathString + "("+typeCounter+").timeSchedule.end", type.getTimeSchedule().getLatestEnd());
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.fixed", type.getVehicleCostParams().fix);
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.distance", type.getVehicleCostParams().perDistanceUnit);
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.time", type.getVehicleCostParams().perTimeUnit);
 			typeCounter++;
 		}
 
-		
-//		//type2depot assignments
-//		int assignmentCounter = 0;
-//		boolean first = true;
-//		for(Depot depot : vrp.getDepotToVehicleTypeAssignments().keySet()){
-//			if(first){
-//				xmlConfig.setProperty("assignments[@type]", "vehicleType2depot");
-//			}
-//			for(VehicleType type : vrp.getDepotToVehicleTypeAssignments().get(depot)){
-//				xmlConfig.setProperty("assignments.assignment" + "("+assignmentCounter+").depotId", depot2id.get(depot));
-//				xmlConfig.setProperty("assignments.assignment" + "("+assignmentCounter+").vehicleTypeId", type.getTypeId());
-//				assignmentCounter++;
-//			}
-//		}
-//		
-//		//vehicle2depot assignments
-//		int vehicleAssignmentCounter = 0;
-//		boolean first_ = true;
-//		for(Depot depot : vrp.getDepotToVehicleAssignments().keySet()){
-//			if(first_){
-//				xmlConfig.setProperty("assignments[@type]", "vehicle2depot");
-//			}
-//			for(Vehicle vehicle : vrp.getDepotToVehicleAssignments().get(depot)){
-//				xmlConfig.setProperty("assignments.assignment" + "("+vehicleAssignmentCounter+").depotId", depot2id.get(depot));
-//				xmlConfig.setProperty("assignments.assignment" + "("+vehicleAssignmentCounter+").vehicleId", vehicle.getId());
-//				vehicleAssignmentCounter++;
-//			}
-//		}
-//		
-	
+
 		
 		
 	}

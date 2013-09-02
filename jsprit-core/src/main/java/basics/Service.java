@@ -26,8 +26,6 @@ import util.Coordinate;
 
 public class Service implements Job {
 
-	
-	
 	public static class Builder {
 		
 		public static Builder newInstance(String id, int size){
@@ -35,21 +33,21 @@ public class Service implements Job {
 		}
 		
 		private String id;
-		private String locationId;
-		private String name = "service";
-		private Coordinate coord;
-		private double serviceTime;
-		private TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
-		private int demand;
+		protected String locationId;
+		private String type = "service";
+		protected Coordinate coord;
+		protected double serviceTime;
+		protected TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
+		protected int demand;
 		
-		private Builder(String id, int size) {
-			super();
+		Builder(String id, int size) {
+			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 			this.id = id;
 			this.demand = size;
 		}
 		
-		public Builder setName(String name){
-			this.name = name;
+		protected Builder setType(String name){
+			this.type = name;
 			return this;
 		}
 		
@@ -64,6 +62,7 @@ public class Service implements Job {
 		}
 		
 		public Builder setServiceTime(double serviceTime){
+			if(serviceTime < 0) throw new IllegalArgumentException("serviceTime must be greate than or equal to zero");
 			this.serviceTime = serviceTime;
 			return this;
 		}
@@ -78,7 +77,7 @@ public class Service implements Job {
 				if(coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
 				locationId = coord.toString();
 			}
-			
+			this.setType("service");
 			return new Service(this);
 		}
 		
@@ -89,7 +88,7 @@ public class Service implements Job {
 
 	private final String locationId;
 	
-	private final String name;
+	private final String type;
 
 	private final Coordinate coord;
 	
@@ -99,14 +98,14 @@ public class Service implements Job {
 
 	private final int demand;
 
-	private Service(Builder builder){
+	Service(Builder builder){
 		id = builder.id;
 		locationId = builder.locationId;
 		coord = builder.coord;
 		serviceTime = builder.serviceTime;
 		timeWindow = builder.timeWindow;
 		demand = builder.demand;
-		name = builder.name;
+		type = builder.type;
 	}
 
 	@Override
@@ -139,7 +138,7 @@ public class Service implements Job {
 	 * @return the name
 	 */
 	public String getType() {
-		return name;
+		return type;
 	}
 
 	@Override

@@ -1,6 +1,25 @@
+/*******************************************************************************
+ * Copyright (C) 2013  Stefan Schroeder
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ * Contributors:
+ *     Stefan Schroeder - initial API and implementation
+ ******************************************************************************/
 package algorithms;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,30 +46,6 @@ class StateManagerImpl implements StateManager{
 	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, StateManager.States>();
 	
 	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, StateManager.States>();
-	
-	public Map<VehicleRoute, States> getRouteStates() {
-		return Collections.unmodifiableMap(vehicleRouteStates);
-	}
-	
-	public States getRouteStates(VehicleRoute route){
-		return vehicleRouteStates.get(route);
-	}
-
-	public void put(VehicleRoute route, States states) {
-		vehicleRouteStates.put(route, states);
-	}
-
-	public Map<TourActivity, States> getActivityStates() {
-		return Collections.unmodifiableMap(activityStates);
-	}
-
-	public States getActivityStates(TourActivity act){
-		return activityStates.get(act);
-	}
-	
-	public void put(TourActivity act, States states) {
-		activityStates.put(act, states);
-	}
 	
 	public void clear(){
 		vehicleRouteStates.clear();
@@ -85,11 +80,14 @@ class StateManagerImpl implements StateManager{
 		if(stateType.equals(StateTypes.DURATION)) return new StateImpl(0);
 		if(stateType.equals(StateTypes.EARLIEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalEarliestOperationStartTime());
 		if(stateType.equals(StateTypes.LATEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalLatestOperationStartTime());
+		if(stateType.equals(StateTypes.FUTURE_PICKS)) return new StateImpl(0);
+		if(stateType.equals(StateTypes.PAST_DELIVERIES)) return new StateImpl(0);
 		return null;
 	}
 	
 	private State getDefaultRouteState(String stateType, VehicleRoute route){
 		if(stateType.equals(StateTypes.LOAD)) return new StateImpl(0);
+		if(stateType.equals(StateTypes.LOAD_AT_DEPOT)) return new StateImpl(0);
 		if(stateType.equals(StateTypes.COSTS)) return new StateImpl(0);
 		if(stateType.equals(StateTypes.DURATION)) return new StateImpl(0);
 		return null;

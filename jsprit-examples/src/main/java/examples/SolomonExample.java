@@ -26,7 +26,6 @@ import java.util.Collection;
 import readers.SolomonReader;
 import algorithms.VehicleRoutingAlgorithms;
 import algorithms.selectors.SelectBest;
-import analysis.AlgorithmSearchProgressChartListener;
 import analysis.SolutionPlotter;
 import analysis.SolutionPrinter;
 import analysis.SolutionPrinter.Print;

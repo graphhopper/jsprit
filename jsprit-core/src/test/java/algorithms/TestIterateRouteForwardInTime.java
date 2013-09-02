@@ -1,3 +1,23 @@
+/*******************************************************************************
+ * Copyright (C) 2013  Stefan Schroeder
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ * Contributors:
+ *     Stefan Schroeder - initial API and implementation
+ ******************************************************************************/
 package algorithms;
 
 import static org.junit.Assert.assertEquals;
@@ -10,6 +30,10 @@ import org.junit.Test;
 
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
+import algorithms.StateUpdates.UpdateActivityTimes;
+import algorithms.StateUpdates.UpdateCostsAtAllLevels;
+import algorithms.StateUpdates.UpdateEarliestStartTimeWindowAtActLocations;
+import algorithms.StateUpdates.UpdateLoadAtAllLevels;
 import basics.Job;
 import basics.Service;
 import basics.costs.DefaultVehicleRoutingActivityCosts;
@@ -34,10 +58,6 @@ public class TestIterateRouteForwardInTime {
 
 	TourActivities anotherTour;
 
-	
-	
-	RouteStates states;
-
 	private VehicleRoute vehicleRoute;
 	
 	private VehicleRoutingTransportCosts cost;
@@ -45,6 +65,8 @@ public class TestIterateRouteForwardInTime {
 	ServiceActivity firstAct;
 	
 	ServiceActivity secondAct;
+	
+	StateManagerImpl stateManager;
 	
 	@Before
 	public void setUp(){
@@ -99,6 +121,8 @@ public class TestIterateRouteForwardInTime {
 		tour.addActivity(secondAct);
 	
 		vehicleRoute = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),vehicle);
+		
+		stateManager = new StateManagerImpl();
 	}
 	
 	@Test
@@ -129,12 +153,11 @@ public class TestIterateRouteForwardInTime {
 	@Test
 	public void whenIteratingWithLoadUpdateAtActLocations_itShouldUpdateLoad() {
 		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		StateManagerImpl states = new StateManagerImpl();
-		forwardInTime.addListener(new UpdateLoadAtAllLevels(states));
+		forwardInTime.addListener(new UpdateLoadAtAllLevels(stateManager));
 		forwardInTime.iterate(vehicleRoute);
 		
-		assertEquals(5.0, states.getActivityStates(firstAct).getState(StateTypes.LOAD).toDouble(), 0.01);
-		assertEquals(10.0, states.getActivityStates(secondAct).getState(StateTypes.LOAD).toDouble(), 0.01);
+		assertEquals(5.0, stateManager.getActivityState(firstAct,StateTypes.LOAD).toDouble(), 0.01);
+		assertEquals(10.0, stateManager.getActivityState(secondAct,StateTypes.LOAD).toDouble(), 0.01);
 	}
 	
 	
@@ -153,42 +176,41 @@ public class TestIterateRouteForwardInTime {
 	@Test
 	public void testStatesOfAct1(){
 		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		StateManagerImpl states = new StateManagerImpl();
-		forwardInTime.addListener(new UpdateLoadAtAllLevels(states));
-		forwardInTime.addListener(new UpdateEarliestStartTimeWindowAtActLocations(states));
-		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, states));
+		forwardInTime.addListener(new UpdateLoadAtAllLevels(stateManager));
+		forwardInTime.addListener(new UpdateEarliestStartTimeWindowAtActLocations(stateManager));
+		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
 		forwardInTime.iterate(vehicleRoute);
 		
-		assertEquals(10.0, states.getActivityStates(firstAct).getState(StateTypes.COSTS).toDouble(),0.05);
-		assertEquals(5.0, states.getActivityStates(firstAct).getState(StateTypes.LOAD).toDouble(),0.05);
-		assertEquals(10.0, states.getActivityStates(firstAct).getState(StateTypes.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
+		assertEquals(10.0, stateManager.getActivityState(firstAct, StateTypes.COSTS).toDouble(),0.05);
+		assertEquals(5.0, stateManager.getActivityState(firstAct, StateTypes.LOAD).toDouble(),0.05);
+		assertEquals(10.0, stateManager.getActivityState(firstAct, StateTypes.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
 //		assertEquals(20.0, states.getState(tour.getActivities().get(0)).getLatestOperationStart(),0.05);
 	}
 	
 	@Test
 	public void testStatesOfAct2(){
 		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		StateManagerImpl states = new StateManagerImpl();
-		forwardInTime.addListener(new UpdateLoadAtAllLevels(states));
-		forwardInTime.addListener(new UpdateEarliestStartTimeWindowAtActLocations(states));
-		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, states));
+		
+		forwardInTime.addListener(new UpdateLoadAtAllLevels(stateManager));
+		forwardInTime.addListener(new UpdateEarliestStartTimeWindowAtActLocations(stateManager));
+		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
 		forwardInTime.iterate(vehicleRoute);
 		
-		assertEquals(30.0, states.getActivityStates(secondAct).getState(StateTypes.COSTS).toDouble(),0.05);
-		assertEquals(10.0, states.getActivityStates(secondAct).getState(StateTypes.LOAD).toDouble(),0.05);
-		assertEquals(30.0, states.getActivityStates(secondAct).getState(StateTypes.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
+		assertEquals(30.0, stateManager.getActivityState(secondAct, StateTypes.COSTS).toDouble(),0.05);
+		assertEquals(10.0, stateManager.getActivityState(secondAct, StateTypes.LOAD).toDouble(),0.05);
+		assertEquals(30.0, stateManager.getActivityState(secondAct, StateTypes.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
 //		assertEquals(40.0, states.getState(tour.getActivities().get(1)).getLatestOperationStart(),0.05);
 	}
 	
 	@Test
 	public void testStatesOfAct3(){
 		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		StateManagerImpl states = new StateManagerImpl();
+		
 		forwardInTime.addListener(new UpdateActivityTimes());
-		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, states));
+		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
 		forwardInTime.iterate(vehicleRoute);
 		
-		assertEquals(40.0, states.getRouteStates(vehicleRoute).getState(StateTypes.COSTS).toDouble(), 0.05);
+		assertEquals(40.0, stateManager.getRouteState(vehicleRoute,StateTypes.COSTS).toDouble(), 0.05);
 		assertEquals(40.0, vehicleRoute.getEnd().getArrTime(),0.05);
 		assertEquals(50.0, vehicleRoute.getEnd().getTheoreticalLatestOperationStartTime(),0.05);
 	}

@@ -125,7 +125,7 @@ public class VrpReaderV2Test {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Service s1 = (Service) vrp.getJobs().get("1");
-		assertEquals("delivery",s1.getType());
+		assertEquals("service",s1.getType());
 		assertEquals(1,s1.getCapacityDemand());
 		assertEquals(0.0,s1.getServiceDuration(),0.01);
 		assertEquals(2, vrp.getJobs().size());

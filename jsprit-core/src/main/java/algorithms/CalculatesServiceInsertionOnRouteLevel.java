@@ -23,21 +23,21 @@ import java.util.PriorityQueue;
 import org.apache.log4j.Logger;
 
 import util.Neighborhood;
-
-import algorithms.RouteStates.ActivityState;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
+import basics.route.DefaultTourActivityFactory;
 import basics.route.Driver;
 import basics.route.End;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivities;
 import basics.route.TourActivity;
+import basics.route.TourActivityFactory;
 import basics.route.Vehicle;
-import basics.route.VehicleRoute;
 import basics.route.VehicleImpl.NoVehicle;
+import basics.route.VehicleRoute;
 
 
 
@@ -50,6 +50,8 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 	private final VehicleRoutingActivityCosts activityCosts;
 
 	private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
+	
+	private TourActivityFactory tourActivityFactory = new DefaultTourActivityFactory();
 	
 	private StateManager states;
 	
@@ -70,7 +72,9 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		
 	};
 	
-	
+	public void setTourActivityFactory(TourActivityFactory tourActivityFactory){
+		this.tourActivityFactory=tourActivityFactory;
+	}
 	
 	public void setNeighborhood(Neighborhood neighborhood) {
 		this.neighborhood = neighborhood;
@@ -142,7 +146,7 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		/**
 		 * some inis
 		 */
-		TourActivity serviceAct2Insert = ServiceActivity.newInstance(service);
+		TourActivity serviceAct2Insert = tourActivityFactory.createActivity(service);
 		int best_insertion_index = InsertionData.NO_INDEX;
 		
 		initialiseStartAndEnd(newVehicle, newVehicleDepartureTime);
