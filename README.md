@@ -6,7 +6,7 @@ It is lightweight and easy-to-use, and based on heuristics currently solving
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/" target="_blank">Multiple Depot VRP</a>
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-time-windows" target="_blank">VRP with Time Windows</a>
 - VRP with Backhauls
-- VRP with Pickups and Deliveries*
+- VRP with Pickups and Deliveries
 - VRP with Heterogeneous Fleet
 - Time-dependent VRP
 - Various combination of these types
@@ -17,12 +17,6 @@ reading classical VRP instances to benchmark your algorithm.
 Additionally, jsprit can be used along with <a href="http://www.matsim.org" target="blank_">MATSim</a> 
 to solve the above problem-types in real networks (i.e. without preprocessing transport times and costs). A variety of least cost path algorithms such as Dijkstra and A*
 can be used, and a dynamic and interactive visualiser greatly enhances the analysis.
-
-*either pickup or delivery has to be conducted at the depot
-
-##In Development
-- 
-
 
 ##License
 This program is free software; you can redistribute it and/or
