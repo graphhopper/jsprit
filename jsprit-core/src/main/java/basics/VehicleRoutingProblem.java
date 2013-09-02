@@ -49,8 +49,16 @@ import basics.route.VehicleTypeImpl;
  */
 public class VehicleRoutingProblem {
 	
-	public static class VehicleRoutingProblemType {
-		
+	/**
+	 * Overall problem constraints.
+	 * 
+	 * <p>DELIIVERIES_FIRST corresponds to the vehicle routing problem with back hauls, i.e. before a vehicle is not entirely unloaded, no pickup can be made. 
+	 * 
+	 * @author stefan
+	 *
+	 */
+	public enum Constraint {
+		DELIVERIES_FIRST
 	}
 	
 	/**
@@ -85,6 +93,8 @@ public class VehicleRoutingProblem {
 		private FleetComposition fleetComposition = FleetComposition.HOMOGENEOUS;
 		
 		private Collection<VehicleType> vehicleTypes;
+		
+		private Collection<Constraint> problemConstraints;
 
 		/**
 		 * by default all locations are neighbors
@@ -103,6 +113,7 @@ public class VehicleRoutingProblem {
 			coordinates = new HashMap<String, Coordinate>();
 			vehicleTypes = new ArrayList<VehicleType>();
 			services = new ArrayList<Service>();
+			problemConstraints = new ArrayList<VehicleRoutingProblem.Constraint>();
 		}
 
 		/**
@@ -121,6 +132,7 @@ public class VehicleRoutingProblem {
 			}
 			return id;
 		}
+	
 
 		/**
 		 * Returns the unmodifiable map of locations (mapped by their id).
@@ -149,6 +161,12 @@ public class VehicleRoutingProblem {
 			};
 		}
 
+		
+		public void addProblemConstraint(Constraint constraint){
+			if(!problemConstraints.contains(constraint)) problemConstraints.add(constraint);
+		}
+		
+		
 		/**
 		 * Sets routing costs.
 		 * 
@@ -391,6 +409,8 @@ public class VehicleRoutingProblem {
 	private FleetComposition fleetComposition;
 	
 
+	private Collection<Constraint> problemConstraints;
+	
 	private VehicleRoutingProblem(Builder builder) {
 		this.jobs = builder.jobs;
 		this.fleetComposition = builder.fleetComposition;
@@ -400,6 +420,7 @@ public class VehicleRoutingProblem {
 		this.transportCosts = builder.transportCosts;
 		this.activityCosts = builder.activityCosts;
 		this.neighborhood = builder.neighborhood;
+		this.problemConstraints = builder.problemConstraints;
 		log.info("initialise " + this);
 	}
 	
@@ -445,6 +466,14 @@ public class VehicleRoutingProblem {
 		return Collections.unmodifiableMap(jobs);
 	}
 
+	/**
+	 * Returns unmodifiable collection of problem-constraints.
+	 * 
+	 * @return
+	 */
+	public Collection<Constraint> getProblemConstraints(){
+		return Collections.unmodifiableCollection(problemConstraints);
+	}
 	
 	/**
 	 * Returns the entire, unmodifiable collection of types.
