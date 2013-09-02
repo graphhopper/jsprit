@@ -164,8 +164,8 @@ public class BuildPDVRPAlgoFromScratchTest {
 	@Test
 	public void test(){
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-		System.out.println(Solutions.getBest(solutions).getCost());
-		new VrpXMLWriter(vrp, solutions).write("output/pd_solomon_r101.xml");
+//		System.out.println(Solutions.getBest(solutions).getCost());
+//		new VrpXMLWriter(vrp, solutions).write("output/pd_solomon_r101.xml");
 		
 	}
 
