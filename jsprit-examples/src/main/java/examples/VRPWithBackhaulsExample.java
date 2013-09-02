@@ -6,8 +6,10 @@ import java.util.Collection;
 import algorithms.VehicleRoutingAlgorithms;
 import algorithms.selectors.SelectBest;
 import analysis.AlgorithmSearchProgressChartListener;
+import analysis.Plotter;
 import analysis.SolutionPlotter;
 import analysis.SolutionPrinter;
+import analysis.Plotter.Label;
 import analysis.SolutionPrinter.Print;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
@@ -40,7 +42,7 @@ public class VRPWithBackhaulsExample {
 		/*
 		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
-		new VrpXMLReader(vrpBuilder).read("input/pickups_and_deliveries_tw_solomon_r101.xml");
+		new VrpXMLReader(vrpBuilder).read("input/pickups_and_deliveries_solomon_r101.xml");
 		
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
@@ -78,9 +80,10 @@ public class VRPWithBackhaulsExample {
 		/*
 		 * Plot solution. 
 		 */
-		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/pd_withBackhauls_solomon_r101_solution.png","pd_withBackhauls_r101");
-		
-	
+		Plotter plotter = new Plotter(vrp, solution);
+		plotter.setLabel(Label.SIZE);
+		plotter.setShowFirstActivity(true);
+		plotter.plot("output/pd_withBackhauls_solomon_r101_solution.png","pd_withBackhauls_r101");
 		
 		
 	}

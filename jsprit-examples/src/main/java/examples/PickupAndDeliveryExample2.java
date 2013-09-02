@@ -17,7 +17,7 @@ import basics.VehicleRoutingProblemSolution;
 import basics.VehicleRoutingProblem.Constraint;
 import basics.io.VrpXMLReader;
 
-public class PickupAndDeliveryExample {
+public class PickupAndDeliveryExample2 {
 	
 	public static void main(String[] args) {
 		
@@ -42,7 +42,7 @@ public class PickupAndDeliveryExample {
 		/*
 		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
-		new VrpXMLReader(vrpBuilder).read("input/pickups_and_deliveries_solomon_r101.xml");
+		new VrpXMLReader(vrpBuilder).read("input/pd_christophides_vrpnc1_vcap50.xml");
 		
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
@@ -50,7 +50,7 @@ public class PickupAndDeliveryExample {
 		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/pd_solomon_r101.png", "pd_r101");
+		SolutionPlotter.plotVrpAsPNG(vrp, "output/pd_christophides_vrpnc1.png", "pd_vrpnc1");
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.
@@ -84,7 +84,7 @@ public class PickupAndDeliveryExample {
 		Plotter plotter = new Plotter(vrp, solution);
 		plotter.setLabel(Label.SIZE);
 		plotter.setShowFirstActivity(true);
-		plotter.plot("output/pd_solomon_r101_solution.png","pd_r101");
+		plotter.plot("output/pd_christophides_vrpnc1.png","pd_vrpnc1");
 	
 		
 		
