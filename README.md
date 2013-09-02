@@ -18,6 +18,10 @@ Additionally, jsprit can be used along with <a href="http://www.matsim.org" targ
 to solve the above problem-types in real networks (i.e. without preprocessing transport times and costs). A variety of least cost path algorithms such as Dijkstra and A*
 can be used, and a dynamic and interactive visualiser greatly enhances the analysis.
 
+##In Development
+- continues improvement of code, handling and performance
+- stable API to easily build customized algorithms from scratch
+
 ##Documentation
 
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
