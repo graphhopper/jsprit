@@ -41,7 +41,7 @@ public class Service implements Job {
 		protected int demand;
 		
 		Builder(String id, int size) {
-			super();
+			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 			this.id = id;
 			this.demand = size;
 		}
@@ -62,6 +62,7 @@ public class Service implements Job {
 		}
 		
 		public Builder setServiceTime(double serviceTime){
+			if(serviceTime < 0) throw new IllegalArgumentException("serviceTime must be greate than or equal to zero");
 			this.serviceTime = serviceTime;
 			return this;
 		}
