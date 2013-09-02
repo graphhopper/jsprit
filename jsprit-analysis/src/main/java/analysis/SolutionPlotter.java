@@ -163,14 +163,14 @@ public class SolutionPlotter {
 		plot.setDomainGridlinePaint(Color.WHITE);
 		
 		XYItemRenderer problemRenderer = new XYLineAndShapeRenderer(false, true);   // Shapes only
-		problemRenderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
-			
-			@Override
-			public String generateLabel(XYDataset arg0, int arg1, int arg2) {
-				XYDataItem item = problem.getSeries(arg1).getDataItem(arg2);
-				return labels.get(item);
-			}
-		});
+//		problemRenderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
+//			
+//			@Override
+//			public String generateLabel(XYDataset arg0, int arg1, int arg2) {
+//				XYDataItem item = problem.getSeries(arg1).getDataItem(arg2);
+//				return labels.get(item);
+//			}
+//		});
 		problemRenderer.setBaseItemLabelsVisible(true);
 		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
 		
@@ -195,14 +195,14 @@ public class SolutionPlotter {
 		plot.setDomainGridlinePaint(Color.WHITE);
 		
 		XYItemRenderer problemRenderer = new XYLineAndShapeRenderer(false, true);   // Shapes only
-		problemRenderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
-			
-			@Override
-			public String generateLabel(XYDataset arg0, int arg1, int arg2) {
-				XYDataItem item = problem.getSeries(arg1).getDataItem(arg2);
-				return labels.get(item);
-			}
-		});
+//		problemRenderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
+//			
+//			@Override
+//			public String generateLabel(XYDataset arg0, int arg1, int arg2) {
+//				XYDataItem item = problem.getSeries(arg1).getDataItem(arg2);
+//				return labels.get(item);
+//			}
+//		});
 		problemRenderer.setBaseItemLabelsVisible(true);
 		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
 
@@ -220,11 +220,11 @@ public class SolutionPlotter {
 		
 		
 		XYItemRenderer solutionRenderer = new XYLineAndShapeRenderer(true, false);   // Lines only
-		for(int i=0;i<solutionColl.getSeriesCount();i++){
-			XYSeries s = solutionColl.getSeries(i);
-			XYDataItem firstCustomer = s.getDataItem(1);
-			solutionRenderer.addAnnotation(new XYShapeAnnotation( new Ellipse2D.Double(firstCustomer.getXValue()-0.7, firstCustomer.getYValue()-0.7, 1.5, 1.5), new BasicStroke(1.0f), Color.RED));
-		}
+//		for(int i=0;i<solutionColl.getSeriesCount();i++){
+//			XYSeries s = solutionColl.getSeries(i);
+//			XYDataItem firstCustomer = s.getDataItem(1);
+//			solutionRenderer.addAnnotation(new XYShapeAnnotation( new Ellipse2D.Double(firstCustomer.getXValue()-0.7, firstCustomer.getYValue()-0.7, 1.5, 1.5), new BasicStroke(1.0f), Color.RED));
+//		}
 		plot.setDataset(1, solutionColl);
 		plot.setRenderer(1, solutionRenderer);
 		plot.setDomainAxis(1, xAxis);
