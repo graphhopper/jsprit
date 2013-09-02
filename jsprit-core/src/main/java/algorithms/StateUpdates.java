@@ -11,7 +11,9 @@ import algorithms.BackwardInTimeListeners.BackwardInTimeListener;
 import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
 import algorithms.RuinStrategy.RuinListener;
 import algorithms.StateManager.StateImpl;
+import basics.Delivery;
 import basics.Job;
+import basics.Pickup;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
@@ -27,6 +29,7 @@ import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.DeliveryActivity;
 import basics.route.End;
 import basics.route.PickupActivity;
+import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
@@ -444,7 +447,7 @@ class StateUpdates {
 		@Override
 		public void prevActivity(TourActivity act, double latestDepartureTime, double latestOperationStartTime) {
 			stateManager.putActivityState(act, StateTypes.FUTURE_PICKS, new StateImpl(futurePicks));
-			if(act instanceof PickupActivity){
+			if(act instanceof PickupActivity || act instanceof ServiceActivity){
 				futurePicks += act.getCapacityDemand();
 			}
 			assert futurePicks <= route.getVehicle().getCapacity() : "sum of pickups must not be > vehicleCap";
@@ -542,15 +545,79 @@ class StateUpdates {
 		}
 	}
 	
-	static class WalkThroughAndUpdateRoutesOnceTheyChanged implements InsertionStartsListener, JobInsertedListener {
+	static interface InsertionStarts {
+		
+		void insertionStarts(VehicleRoute route);
+		
+	}
+	
+	static class UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts implements InsertionStarts {
+
+		private StateManagerImpl stateManager;
+		
+		public UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(StateManagerImpl stateManager) {
+			super();
+			this.stateManager = stateManager;
+		}
+
+		@Override
+		public void insertionStarts(VehicleRoute route) {
+			int loadAtDepot = 0;
+			int loadAtEnd = 0;
+			for(Job j : route.getTourActivities().getJobs()){
+				if(j instanceof Delivery){
+					loadAtDepot += j.getCapacityDemand();
+				}
+				else if(j instanceof Pickup || j instanceof Service){
+					loadAtEnd += j.getCapacityDemand();
+				}
+			}
+			stateManager.putRouteState(route, StateTypes.LOAD_AT_DEPOT, new StateImpl(loadAtDepot));
+			stateManager.putRouteState(route, StateTypes.LOAD, new StateImpl(loadAtEnd));
+		}
+		
+	}
+	
+	static class UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted implements JobInsertedListener {
+
+		private StateManagerImpl stateManager;
+		
+		public UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(StateManagerImpl stateManager) {
+			super();
+			this.stateManager = stateManager;
+		}
+
+		@Override
+		public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+			if(job2insert instanceof Delivery){
+				int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateTypes.LOAD_AT_DEPOT).toDouble();
+//				log.info("loadAtDepot="+loadAtDepot);
+				stateManager.putRouteState(inRoute, StateTypes.LOAD_AT_DEPOT, new StateImpl(loadAtDepot + job2insert.getCapacityDemand()));
+			}
+			else if(job2insert instanceof Pickup || job2insert instanceof Service){
+				int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateTypes.LOAD).toDouble();
+//				log.info("loadAtEnd="+loadAtEnd);
+				stateManager.putRouteState(inRoute, StateTypes.LOAD, new StateImpl(loadAtEnd + job2insert.getCapacityDemand()));
+			}
+		}
+		
+	}
+	
+	static class UpdateRouteStatesOnceTheRouteHasBeenChanged implements InsertionStartsListener, JobInsertedListener {
 
 		private IterateRouteForwardInTime forwardInTimeIterator;
 		
 		private IterateRouteBackwardInTime backwardInTimeIterator;
 		
-		public WalkThroughAndUpdateRoutesOnceTheyChanged(VehicleRoutingTransportCosts routingCosts) {
+		private Collection<InsertionStarts> insertionStartsListeners;
+	
+		private Collection<JobInsertedListener> jobInsertionListeners;
+		
+		public UpdateRouteStatesOnceTheRouteHasBeenChanged(VehicleRoutingTransportCosts routingCosts) {
 			forwardInTimeIterator = new IterateRouteForwardInTime(routingCosts);
 			backwardInTimeIterator = new IterateRouteBackwardInTime(routingCosts);
+			insertionStartsListeners = new ArrayList<InsertionStarts>();
+			jobInsertionListeners = new ArrayList<JobInsertedListener>();
 		}
 		
 		void addListener(ForwardInTimeListener l){
@@ -560,16 +627,31 @@ class StateUpdates {
 		void addListener(BackwardInTimeListener l){
 			backwardInTimeIterator.addListener(l);
 		}
+		
+		void addInsertionStartsListener(InsertionStarts insertionStartListener){
+			insertionStartsListeners.add(insertionStartListener);
+		}
+		
+		void addJobInsertedListener(JobInsertedListener jobInsertedListener){
+			jobInsertionListeners.add(jobInsertedListener);
+		}
 
 		@Override
 		public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
-			
+			for(JobInsertedListener l : jobInsertionListeners){ l.informJobInserted(job2insert, inRoute, additionalCosts, additionalTime); }
+			forwardInTimeIterator.iterate(inRoute);
+			backwardInTimeIterator.iterate(inRoute);
 		}
 
 		@Override
 		public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
-			// TODO Auto-generated method stub
-			
+			for(VehicleRoute route : vehicleRoutes){
+				for(InsertionStarts insertionsStartsHandler : insertionStartsListeners){
+					insertionsStartsHandler.insertionStarts(route);
+				}
+				forwardInTimeIterator.iterate(route);
+				backwardInTimeIterator.iterate(route);
+			}
 		}
 		
 	}

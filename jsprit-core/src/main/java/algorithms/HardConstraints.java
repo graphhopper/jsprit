@@ -11,9 +11,24 @@ import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.DeliveryActivity;
 import basics.route.PickupActivity;
+import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
 
+/**
+ * collection of hard constrainters bot at activity and at route level.
+ * 
+ * <p>HardPickupAndDeliveryLoadConstraint requires LOAD_AT_DEPOT and LOAD (i.e. load at end) at route-level
+ * 
+ * <p>HardTimeWindowConstraint requires LATEST_OPERATION_START_TIME
+ * 
+ * <p>HardPickupAndDeliveryConstraint requires LOAD_AT_DEPOT and LOAD at route-level and FUTURE_PICKS and PAST_DELIVIERS on activity-level
+ * 
+ * <p>HardPickupAndDeliveryBackhaulConstraint requires LOAD_AT_DEPOT and LOAD at route-level and FUTURE_PICKS and PAST_DELIVIERS on activity-level
+ * 
+ * @author stefan
+ *
+ */
 class HardConstraints {
 	
 	interface HardRouteLevelConstraint {
@@ -48,7 +63,31 @@ class HardConstraints {
 		
 	}
 	
-	
+	static class ConstraintManager implements HardActivityLevelConstraint, HardRouteLevelConstraint{
+
+		private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
+		
+		private HardRouteLevelConstraintManager routeLevelConstraintManager = new HardRouteLevelConstraintManager();
+		
+		public void addConstraint(HardActivityLevelConstraint actLevelConstraint){
+			actLevelConstraintManager.addConstraint(actLevelConstraint);
+		}
+		
+		public void addConstraint(HardRouteLevelConstraint routeLevelConstraint){
+			routeLevelConstraintManager.addConstraint(routeLevelConstraint);
+		}
+		
+		@Override
+		public boolean fulfilled(InsertionContext insertionContext) {
+			return routeLevelConstraintManager.fulfilled(insertionContext);
+		}
+
+		@Override
+		public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
+		}
+		
+	}
 	
 	static class HardActivityLevelConstraintManager implements HardActivityLevelConstraint {
 
@@ -90,6 +129,12 @@ class HardConstraints {
 		}
 	}
 	
+	/**
+	 * lsjdfjsdlfjsa
+	 * 
+	 * @author stefan
+	 *
+	 */
 	static class HardPickupAndDeliveryLoadConstraint implements HardRouteLevelConstraint {
 
 		private StateManager stateManager;
@@ -107,7 +152,7 @@ class HardConstraints {
 					return false;
 				}
 			}
-			else if(insertionContext.getJob() instanceof Pickup){
+			else if(insertionContext.getJob() instanceof Pickup || insertionContext.getJob() instanceof Service){
 				int loadAtEnd = (int) stateManager.getRouteState(insertionContext.getRoute(), StateTypes.LOAD).toDouble();
 				if(loadAtEnd + insertionContext.getJob().getCapacityDemand() > insertionContext.getNewVehicle().getCapacity()){
 					return false;
@@ -118,15 +163,20 @@ class HardConstraints {
 		
 	}
 	
-	static class HardTimeWindowConstraint implements HardActivityLevelConstraint {
+	/**
+	 * ljsljslfjs
+	 * @author stefan
+	 *
+	 */
+	public static class HardTimeWindowActivityLevelConstraint implements HardActivityLevelConstraint {
 
-		private static Logger log = Logger.getLogger(HardTimeWindowConstraint.class);
+		private static Logger log = Logger.getLogger(HardTimeWindowActivityLevelConstraint.class);
 		
 		private StateManager states;
 		
 		private VehicleRoutingTransportCosts routingCosts;
 		
-		public HardTimeWindowConstraint(StateManager states, VehicleRoutingTransportCosts routingCosts) {
+		public HardTimeWindowActivityLevelConstraint(StateManager states, VehicleRoutingTransportCosts routingCosts) {
 			super();
 			this.states = states;
 			this.routingCosts = routingCosts;
@@ -152,11 +202,11 @@ class HardConstraints {
 		}
 	}
 	
-	static class HardPickupAndDeliveryConstraint implements HardActivityLevelConstraint {
+	static class HardPickupAndDeliveryActivityLevelConstraint implements HardActivityLevelConstraint {
 		
 		private StateManager stateManager;
 		
-		public HardPickupAndDeliveryConstraint(StateManager stateManager) {
+		public HardPickupAndDeliveryActivityLevelConstraint(StateManager stateManager) {
 			super();
 			this.stateManager = stateManager;
 		}
@@ -176,7 +226,7 @@ class HardConstraints {
 				futurePicks = (int) stateManager.getActivityState(prevAct, StateTypes.FUTURE_PICKS).toDouble();
 				pastDeliveries = (int) stateManager.getActivityState(prevAct, StateTypes.PAST_DELIVERIES).toDouble();
 			}
-			if(newAct instanceof PickupActivity){
+			if(newAct instanceof PickupActivity || newAct instanceof ServiceActivity){
 				if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){
 					return false;
 				}
@@ -192,11 +242,11 @@ class HardConstraints {
 			
 	}
 	
-	static class HardPickupAndDeliveryBackhaulConstraint implements HardActivityLevelConstraint {
+	static class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements HardActivityLevelConstraint {
 		
 		private StateManager stateManager;
 		
-		public HardPickupAndDeliveryBackhaulConstraint(StateManager stateManager) {
+		public HardPickupAndDeliveryBackhaulActivityLevelConstraint(StateManager stateManager) {
 			super();
 			this.stateManager = stateManager;
 		}
@@ -204,7 +254,9 @@ class HardConstraints {
 		@Override
 		public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 			if(newAct instanceof PickupActivity && nextAct instanceof DeliveryActivity){ return false; }
+			if(newAct instanceof ServiceActivity && nextAct instanceof DeliveryActivity){ return false; }
 			if(newAct instanceof DeliveryActivity && prevAct instanceof PickupActivity){ return false; }
+			if(newAct instanceof DeliveryActivity && prevAct instanceof ServiceActivity){ return false; }
 			int loadAtPrevAct;
 			int futurePicks;
 			int pastDeliveries;
@@ -218,7 +270,7 @@ class HardConstraints {
 				futurePicks = (int) stateManager.getActivityState(prevAct, StateTypes.FUTURE_PICKS).toDouble();
 				pastDeliveries = (int) stateManager.getActivityState(prevAct, StateTypes.PAST_DELIVERIES).toDouble();
 			}
-			if(newAct instanceof PickupActivity){
+			if(newAct instanceof PickupActivity || newAct instanceof ServiceActivity){
 				if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){
 					return false;
 				}

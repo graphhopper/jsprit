@@ -23,6 +23,7 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
+import algorithms.HardConstraints.ConstraintManager;
 import basics.VehicleRoutingProblem;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
@@ -81,6 +82,8 @@ class CalculatorBuilder {
 	private double timeSlice;
 
 	private int neighbors;
+	
+	private ConstraintManager constraintManager;
 
 	/**
 	 * Constructs the builder.
@@ -213,9 +216,11 @@ class CalculatorBuilder {
 		}
 	}
 
-	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateManager activityStates2){
-		MarginalsCalculus defaultCalc = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), new HardConstraints.HardTimeWindowConstraint(activityStates2, vrp.getTransportCosts()) );
-		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), defaultCalc, new HardConstraints.HardLoadConstraint(activityStates2));
+	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateManager statesManager){
+		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
+ 		
+		MarginalsCalculus defaultCalc = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager);
+		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), defaultCalc, constraintManager);
 		
 		((CalculatesServiceInsertion) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(standardServiceInsertion);
@@ -244,6 +249,10 @@ class CalculatorBuilder {
 
 	private JobInsertionCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCalculator baseCalc, StateManager activityStates2){
 		return new CalculatesVehTypeDepServiceInsertion(fleetManager, baseCalc);
+	}
+
+	public void setConstraintManager(ConstraintManager constraintManager) {
+		this.constraintManager = constraintManager;
 	}
 
 }

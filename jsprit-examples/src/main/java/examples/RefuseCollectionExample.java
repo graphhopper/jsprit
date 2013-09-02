@@ -201,7 +201,7 @@ public class RefuseCollectionExample {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
-		vra.setPrematureBreak(10);
+		vra.setPrematureBreak(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.getBest(solutions),Print.VERBOSE);

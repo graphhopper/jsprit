@@ -55,8 +55,8 @@ public class BuildPDVRPAlgoFromScratchTest {
 			final StateManagerImpl stateManager = new StateManagerImpl();
 			
 			HardActivityLevelConstraintManager actLevelConstraintAccumulator = new HardActivityLevelConstraintManager();
-			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryConstraint(stateManager));
-			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardTimeWindowConstraint(stateManager, vrp.getTransportCosts()));
+			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryActivityLevelConstraint(stateManager));
+			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
 			
 			MarginalsCalculus marginalCalculus = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), actLevelConstraintAccumulator);
 
