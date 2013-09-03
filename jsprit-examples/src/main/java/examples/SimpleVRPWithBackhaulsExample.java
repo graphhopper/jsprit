@@ -45,7 +45,7 @@ import basics.route.VehicleImpl.Builder;
 import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
-public class SimplePickupAndDeliveryExample {
+public class SimpleVRPWithBackhaulsExample {
 	
 	public static void main(String[] args) {
 		/*
@@ -87,6 +87,8 @@ public class SimplePickupAndDeliveryExample {
 		vrpBuilder.addVehicle(vehicle);
 		vrpBuilder.addService(pickup1).addService(pickup2).addService(delivery1).addService(delivery2);
 		
+		//
+		vrpBuilder.addProblemConstraint(Constraint.DELIVERIES_FIRST);
 		
 		VehicleRoutingProblem problem = vrpBuilder.build();
 		
