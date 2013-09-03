@@ -65,9 +65,13 @@ public class VRPWithBackhaulsExample2 {
 		new VrpXMLReader(vrpBuilder).read("input/pd_christophides_vrpnc1_vcap50.xml");
 		
 		/*
-		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
+		 * add the backhaul constraint to the problem
 		 */
 		vrpBuilder.addProblemConstraint(Constraint.DELIVERIES_FIRST);
+		
+		/*
+		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
+		 */
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		SolutionPlotter.plotVrpAsPNG(vrp, "output/pd_christophides_vrpnc1.png", "pd_vrpnc1");
@@ -77,9 +81,8 @@ public class VRPWithBackhaulsExample2 {
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-//		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
-		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+
 		/*
 		 * Solve the problem.
 		 * 
