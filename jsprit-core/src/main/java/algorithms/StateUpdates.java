@@ -266,10 +266,6 @@ class StateUpdates {
 			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
 			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
 			
-			if(transportCost > 10000 || actCost > 100000){
-				throw new IllegalStateException("aaaääähh");
-			}
-			
 			totalOperationCost += transportCost;
 			totalOperationCost += actCost;
 			
