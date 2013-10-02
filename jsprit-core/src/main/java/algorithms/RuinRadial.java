@@ -106,7 +106,7 @@ final class RuinRadial implements RuinStrategy {
 					});
 			distanceNodeTree.put(i.getId(), treeSet);
 			for (Job j : vrp.getJobs().values()) {
-				double distance = jobDistance.calculateDistance(i, j);
+				double distance = jobDistance.getDistance(i, j);
 				ReferencedJob refNode = new ReferencedJob(j, distance);
 				treeSet.add(refNode);
 				nuOfDistancesStored++;

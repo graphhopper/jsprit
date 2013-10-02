@@ -22,7 +22,7 @@ package algorithms;
 
 import basics.route.TourActivity;
 
-interface MarginalsCalculus {
+interface ActivityInsertionCostCalculator {
 	
 	class Marginals {
 		
@@ -51,5 +51,7 @@ interface MarginalsCalculus {
 	}
 	
 	Marginals calculate(InsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct);
+	
+	
 
 }

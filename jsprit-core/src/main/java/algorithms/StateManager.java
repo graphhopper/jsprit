@@ -23,7 +23,7 @@ package algorithms;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-interface StateManager {
+public interface StateManager {
 	
 	interface State {
 		double toDouble();

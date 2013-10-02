@@ -30,7 +30,7 @@ import basics.algo.InsertionListener;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
 
-class RuinAndRecreateModule implements SearchStrategyModule{
+public class RuinAndRecreateModule implements SearchStrategyModule{
 
 	private InsertionStrategy insertion;
 	
@@ -49,9 +49,13 @@ class RuinAndRecreateModule implements SearchStrategyModule{
 	public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
 		Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
 		insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobs);
+		scoreSolution(vrpSolution);
+		return vrpSolution;
+	}
+
+	private void scoreSolution(VehicleRoutingProblemSolution vrpSolution) {
 		double totalCost = RouteUtils.getTotalCost(vrpSolution.getRoutes());
 		vrpSolution.setCost(totalCost);
-		return vrpSolution;
 	}
 
 	@Override

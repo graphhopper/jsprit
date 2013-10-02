@@ -25,7 +25,7 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
 
-class MarginalsCalculusTriangleInequality implements MarginalsCalculus{
+class MarginalsCalculusTriangleInequality implements ActivityInsertionCostCalculator{
 
 	private HardActivityLevelConstraint hardConstraint;
 

@@ -27,7 +27,7 @@ import basics.route.VehicleRoute;
  * 
  */
 
-interface InsertionStrategy {
+public interface InsertionStrategy {
 
 	class Insertion {
 		

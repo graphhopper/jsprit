@@ -26,7 +26,7 @@ import basics.route.VehicleRoute;
  * 
  */
 
-interface RuinStrategy {
+public interface RuinStrategy {
 	
 	/**
 	 * Listener that listens to the ruin-process. It informs whoever is interested about start, end and about a removal of a job.

@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import util.Neighborhood;
 import algorithms.HardConstraints.HardRouteLevelConstraint;
-import algorithms.MarginalsCalculus.Marginals;
+import algorithms.ActivityInsertionCostCalculator.Marginals;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -47,7 +47,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		}
 	};
 	
-	private MarginalsCalculus marginalCalculus;
+	private ActivityInsertionCostCalculator marginalCalculus;
 	
 	private VehicleRoutingTransportCosts transportCosts;
 	
@@ -58,7 +58,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		logger.info("initialise neighborhood " + neighborhood);
 	}
 	
-	public CalculatesServiceInsertion(VehicleRoutingTransportCosts routingCosts, MarginalsCalculus marginalsCalculus, HardRouteLevelConstraint hardRouteLevelConstraint) {
+	public CalculatesServiceInsertion(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostCalculator marginalsCalculus, HardRouteLevelConstraint hardRouteLevelConstraint) {
 		super();
 		this.marginalCalculus = marginalsCalculus;
 		this.hardRouteLevelConstraint = hardRouteLevelConstraint;

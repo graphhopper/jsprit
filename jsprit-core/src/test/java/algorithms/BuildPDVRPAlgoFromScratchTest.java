@@ -78,7 +78,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryActivityLevelConstraint(stateManager));
 			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
 			
-			MarginalsCalculus marginalCalculus = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), actLevelConstraintAccumulator);
+			ActivityInsertionCostCalculator marginalCalculus = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), actLevelConstraintAccumulator);
 
 			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardPickupAndDeliveryLoadConstraint(stateManager));
 //			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
@@ -104,8 +104,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 			strategyManager.addStrategy(randomStrategy, 0.5);
 			
 			vra = new VehicleRoutingAlgorithm(vrp, strategyManager);
-			
-			
+	
 			vra.getAlgorithmListeners().addListener(new StateUpdates.ResetStateManager(stateManager));
 			
 			final IterateRouteForwardInTime iterateForward = new IterateRouteForwardInTime(vrp.getTransportCosts());
