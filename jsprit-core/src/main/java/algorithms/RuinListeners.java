@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import algorithms.RuinStrategy.RuinListener;
 import basics.Job;
+import basics.algo.RuinListener;
 import basics.route.VehicleRoute;
 
 class RuinListeners {

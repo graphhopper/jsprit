@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 
 import algorithms.BackwardInTimeListeners.BackwardInTimeListener;
 import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
-import algorithms.RuinStrategy.RuinListener;
 import algorithms.StateManager.StateImpl;
 import basics.Delivery;
 import basics.Job;
@@ -42,6 +41,7 @@ import basics.algo.InsertionStartsListener;
 import basics.algo.IterationEndsListener;
 import basics.algo.IterationStartsListener;
 import basics.algo.JobInsertedListener;
+import basics.algo.RuinListener;
 import basics.algo.VehicleRoutingAlgorithmListener;
 import basics.costs.ForwardTransportCost;
 import basics.costs.ForwardTransportTime;

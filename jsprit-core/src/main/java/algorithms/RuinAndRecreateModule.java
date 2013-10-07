@@ -23,10 +23,10 @@ package algorithms;
 import java.util.Collection;
 
 import util.RouteUtils;
-import algorithms.RuinStrategy.RuinListener;
 import basics.Job;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.InsertionListener;
+import basics.algo.RuinListener;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
 

@@ -32,11 +32,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import util.RandomNumberGeneration;
-import algorithms.RuinStrategy.RuinListener;
 import basics.Job;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.InsertionListener;
+import basics.algo.RuinListener;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
 import basics.route.TourActivity;

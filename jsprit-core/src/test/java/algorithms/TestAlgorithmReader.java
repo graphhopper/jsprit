@@ -46,6 +46,7 @@ import basics.Job;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
+import basics.algo.RuinListener;
 import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;

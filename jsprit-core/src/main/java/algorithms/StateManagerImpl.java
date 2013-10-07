@@ -26,12 +26,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import basics.Job;
+import basics.VehicleRoutingProblem;
+import basics.VehicleRoutingProblemSolution;
+import basics.algo.InsertionEndsListener;
+import basics.algo.InsertionListener;
 import basics.algo.InsertionStartsListener;
+import basics.algo.IterationStartsListener;
 import basics.algo.JobInsertedListener;
+import basics.algo.RuinListener;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-class StateManagerImpl implements StateManager, InsertionStartsListener, JobInsertedListener {
+public class StateManagerImpl implements StateManager, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 
 	static class StatesImpl implements States{
 
@@ -151,5 +157,34 @@ class StateManagerImpl implements StateManager, InsertionStartsListener, JobInse
 
 	public void addRouteVisitor(RouteVisitor routeVisitor){
 		routeVisitors.add(routeVisitor);
+	}
+
+	@Override
+	public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+		clear();
+	}
+
+	@Override
+	public void ruinStarts(Collection<VehicleRoute> routes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removed(Job job, VehicleRoute fromRoute) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
+		// TODO Auto-generated method stub
+		
 	}
 }
