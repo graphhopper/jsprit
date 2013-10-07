@@ -32,7 +32,15 @@ import basics.VehicleRoutingProblem;
 import basics.route.VehicleRoute;
 
 
-
+/**
+ * 
+ * RuinStrategy that ruins the neighborhood of a randomly selected service. The size and the structure of the neighborhood is defined by 
+ * the share of jobs to be removed and the distance between jobs (where distance not necessarily mean Euclidean distance but an arbitrary 
+ * measure).
+ * 
+ * @author stefan
+ *
+ */
 final class RuinRadial implements RuinStrategy {
 	
 	static class ReferencedJob {
@@ -72,19 +80,21 @@ final class RuinRadial implements RuinStrategy {
 		this.random = random;
 	}
 
-	public RuinRadial(VehicleRoutingProblem vrp, double fraction, JobDistance jobDistance) {
+	/**
+	 * Constructs RuinRadial.
+	 * 
+	 * @param vrp
+	 * @param fraction2beRemoved i.e. the share of jobs to be removed (relative to the total number of jobs in vrp)
+	 * @param jobDistance i.e. a measure to define the distance between two jobs and whether they are located close or distant to eachother
+	 */
+	public RuinRadial(VehicleRoutingProblem vrp, double fraction2beRemoved, JobDistance jobDistance) {
 		super();
 		this.vrp = vrp;
 		this.jobDistance = jobDistance;
-		this.fractionOfAllNodes2beRuined = fraction;
+		this.fractionOfAllNodes2beRuined = fraction2beRemoved;
 		ruinListeners = new RuinListeners();
 		calculateDistancesFromJob2Job();
 		logger.info("intialise " + this);
-	}
-
-	public void setRuinFraction(double fractionOfAllNodes) {
-		this.fractionOfAllNodes2beRuined = fractionOfAllNodes;
-		logger.info("fraction set " + this);
 	}
 
 	private void calculateDistancesFromJob2Job() {
@@ -122,6 +132,10 @@ final class RuinRadial implements RuinStrategy {
 		return "[name=radialRuin][fraction="+fractionOfAllNodes2beRuined+"]";
 	}
 
+	/**
+	 * Ruins the collection of vehicleRoutes, i.e. removes a share of jobs. First, it selects a job randomly. Second, it identifies its neighborhood. And finally, it removes 
+	 * the neighborhood plus the randomly selected job from the number of vehicleRoutes. All removed jobs are then returned as a collection.
+	 */
 	@Override
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
 		if(vehicleRoutes.isEmpty()){
@@ -136,6 +150,9 @@ final class RuinRadial implements RuinStrategy {
 		return unassignedJobs;
 	}
 	
+	/**
+	 * Removes targetJob and its neighborhood and returns the removed jobs.
+	 */
 	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved){
 		ruinListeners.ruinStarts(vehicleRoutes);
 		List<Job> unassignedJobs = new ArrayList<Job>();
