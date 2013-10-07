@@ -104,7 +104,7 @@ public class PickupAndDeliveryExample2 {
 		Plotter plotter = new Plotter(vrp, solution);
 		plotter.setLabel(Label.SIZE);
 		plotter.setShowFirstActivity(true);
-		plotter.plot("output/pd_christophides_vrpnc1.png","pd_vrpnc1");
+		plotter.plot("output/pd_christophides_vrpnc1_solution.png","pd_vrpnc1");
 	
 		
 		

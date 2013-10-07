@@ -107,18 +107,18 @@ public class BuildPDVRPAlgoFromScratchTest {
 	
 			vra.getAlgorithmListeners().addListener(new StateUpdates.ResetStateManager(stateManager));
 			
-			final IterateRouteForwardInTime iterateForward = new IterateRouteForwardInTime(vrp.getTransportCosts());
+			final RouteActivityVisitor iterateForward = new RouteActivityVisitor();
 			
-			iterateForward.addListener(new UpdateActivityTimes());
-			iterateForward.addListener(new UpdateEarliestStartTimeWindowAtActLocations(stateManager));
-			iterateForward.addListener(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+			iterateForward.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
+			iterateForward.addActivityVisitor(new UpdateEarliestStartTimeWindowAtActLocations(stateManager, vrp.getTransportCosts()));
+			iterateForward.addActivityVisitor(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 			
-			iterateForward.addListener(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
-			iterateForward.addListener(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
+			iterateForward.addActivityVisitor(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
+			iterateForward.addActivityVisitor(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
 			
-			final IterateRouteBackwardInTime iterateBackward = new IterateRouteBackwardInTime(vrp.getTransportCosts());
-			iterateBackward.addListener(new UpdateLatestOperationStartTimeAtActLocations(stateManager));
-			iterateBackward.addListener(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
+			final ReverseRouteActivityVisitor iterateBackward = new ReverseRouteActivityVisitor();
+			iterateBackward.addActivityVisitor(new UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
+			iterateBackward.addActivityVisitor(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
 			
 			
 			InsertionStartsListener loadVehicleInDepot = new InsertionStartsListener() {
@@ -138,8 +138,8 @@ public class BuildPDVRPAlgoFromScratchTest {
 						}
 						stateManager.putRouteState(route, StateTypes.LOAD_AT_DEPOT, new StateImpl(loadAtDepot));
 						stateManager.putRouteState(route, StateTypes.LOAD, new StateImpl(loadAtEnd));
-						iterateForward.iterate(route);
-						iterateBackward.iterate(route);
+						iterateForward.visit(route);
+						iterateBackward.visit(route);
 					}
 				}
 				
@@ -163,8 +163,8 @@ public class BuildPDVRPAlgoFromScratchTest {
 //						log.info("loadAtEnd="+loadAtEnd);
 						stateManager.putRouteState(inRoute, StateTypes.LOAD, new StateImpl(loadAtEnd + job2insert.getCapacityDemand()));
 					}
-					iterateForward.iterate(inRoute);
-					iterateBackward.iterate(inRoute);
+					iterateForward.visit(inRoute);
+					iterateBackward.visit(inRoute);
 				}
 			};
 						
