@@ -74,7 +74,7 @@ public class VRPWithBackhaulsExample2 {
 		 */
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/pd_christophides_vrpnc1.png", "pd_vrpnc1");
+		SolutionPlotter.plotVrpAsPNG(vrp, "output/vrpwbh_christophides_vrpnc1.png", "pd_vrpnc1");
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.
@@ -107,7 +107,7 @@ public class VRPWithBackhaulsExample2 {
 		Plotter plotter = new Plotter(vrp, solution);
 		plotter.setLabel(Label.SIZE);
 		plotter.setShowFirstActivity(true);
-		plotter.plot("output/vrpwbh_christophides_vrpnc1.png","vrpwbh_vrpnc1");
+		plotter.plot("output/vrpwbh_christophides_vrpnc1_solution.png","vrpwbh_vrpnc1");
 	
 		
 		

@@ -35,7 +35,11 @@ import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.VehicleRoutingProblem.Constraint;
+import basics.costs.VehicleRoutingActivityCosts;
 import basics.io.VrpXMLReader;
+import basics.route.Driver;
+import basics.route.TourActivity;
+import basics.route.Vehicle;
 
 public class VRPWithBackhaulsExample {
 	
@@ -68,9 +72,10 @@ public class VRPWithBackhaulsExample {
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
 		vrpBuilder.addProblemConstraint(Constraint.DELIVERIES_FIRST);
+		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/pd_solomon_r101.png", "pd_r101");
+//		SolutionPlotter.plotVrpAsPNG(vrp, "output/vrpwbh_solomon_r101.png", "pd_r101");
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.
@@ -103,7 +108,7 @@ public class VRPWithBackhaulsExample {
 		Plotter plotter = new Plotter(vrp, solution);
 		plotter.setLabel(Label.SIZE);
 		plotter.setShowFirstActivity(true);
-		plotter.plot("output/pd_withBackhauls_solomon_r101_solution.png","pd_withBackhauls_r101");
+		plotter.plot("output/vrpwbh_solomon_r101_solution.png","vrpwbh_r101");
 		
 		
 	}

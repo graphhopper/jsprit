@@ -20,13 +20,18 @@
  ******************************************************************************/
 package algorithms;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import basics.Job;
+import basics.algo.InsertionStartsListener;
+import basics.algo.JobInsertedListener;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-class StateManagerImpl implements StateManager{
+class StateManagerImpl implements StateManager, InsertionStartsListener, JobInsertedListener {
 
 	static class StatesImpl implements States{
 
@@ -46,6 +51,12 @@ class StateManagerImpl implements StateManager{
 	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, StateManager.States>();
 	
 	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, StateManager.States>();
+	
+	private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
+	
+	private ReverseRouteActivityVisitor revRouteActivityVisitor = new ReverseRouteActivityVisitor();
+	
+	private Collection<RouteVisitor> routeVisitors = new ArrayList<RouteVisitor>();
 	
 	public void clear(){
 		vehicleRouteStates.clear();
@@ -113,7 +124,32 @@ class StateManagerImpl implements StateManager{
 		StatesImpl routeStates = (StatesImpl) vehicleRouteStates.get(route);
 		routeStates.putState(stateType, state);
 	}
-	
-	
 
+	@Override
+	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+		for(RouteVisitor v : routeVisitors){ v.visit(inRoute); }
+		routeActivityVisitor.visit(inRoute);
+		revRouteActivityVisitor.visit(inRoute);
+	}
+
+	@Override
+	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes,Collection<Job> unassignedJobs) {
+		for(VehicleRoute route : vehicleRoutes){ 
+			for(RouteVisitor v : routeVisitors){ v.visit(route); }
+			routeActivityVisitor.visit(route);
+			revRouteActivityVisitor.visit(route);
+		}
+	}
+	
+	public void addActivityVisitor(ActivityVisitor activityVistor){
+		routeActivityVisitor.addActivityVisitor(activityVistor);
+	}
+	
+	public void addActivityVisitor(ReverseActivityVisitor activityVistor){
+		revRouteActivityVisitor.addActivityVisitor(activityVistor);
+	}
+
+	public void addRouteVisitor(RouteVisitor routeVisitor){
+		routeVisitors.add(routeVisitor);
+	}
 }

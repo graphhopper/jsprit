@@ -139,9 +139,9 @@ public class TestIterateRouteForwardInTime {
 	
 	@Test
 	public void whenIteratingWithActivityTimeUpdater_itShouldUpdateActivityTimes() {
-		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		forwardInTime.addListener(new UpdateActivityTimes());
-		forwardInTime.iterate(vehicleRoute);
+		RouteActivityVisitor forwardInTime = new RouteActivityVisitor();
+		forwardInTime.addActivityVisitor(new UpdateActivityTimes(cost));
+		forwardInTime.visit(vehicleRoute);
 		
 		assertEquals(10.0,firstAct.getArrTime(),0.1);
 		assertEquals(10.0,firstAct.getEndTime(),0.1);
@@ -152,9 +152,9 @@ public class TestIterateRouteForwardInTime {
 	
 	@Test
 	public void whenIteratingWithLoadUpdateAtActLocations_itShouldUpdateLoad() {
-		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		forwardInTime.addListener(new UpdateLoadAtAllLevels(stateManager));
-		forwardInTime.iterate(vehicleRoute);
+		RouteActivityVisitor forwardInTime = new RouteActivityVisitor();
+		forwardInTime.addActivityVisitor(new UpdateLoadAtAllLevels(stateManager));
+		forwardInTime.visit(vehicleRoute);
 		
 		assertEquals(5.0, stateManager.getActivityState(firstAct,StateTypes.LOAD).toDouble(), 0.01);
 		assertEquals(10.0, stateManager.getActivityState(secondAct,StateTypes.LOAD).toDouble(), 0.01);
@@ -163,8 +163,8 @@ public class TestIterateRouteForwardInTime {
 	
 	@Test
 	public void testStatesOfAct0(){
-		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		forwardInTime.iterate(vehicleRoute);
+		RouteActivityVisitor forwardInTime = new RouteActivityVisitor();
+		forwardInTime.visit(vehicleRoute);
 		
 		assertEquals(0.0, vehicleRoute.getStart().getEndTime(),0.05);
 		assertEquals(vehicleRoute.getVehicle().getLocationId(), vehicleRoute.getStart().getLocationId());
@@ -175,11 +175,11 @@ public class TestIterateRouteForwardInTime {
 	
 	@Test
 	public void testStatesOfAct1(){
-		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
-		forwardInTime.addListener(new UpdateLoadAtAllLevels(stateManager));
-		forwardInTime.addListener(new UpdateEarliestStartTimeWindowAtActLocations(stateManager));
-		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
-		forwardInTime.iterate(vehicleRoute);
+		RouteActivityVisitor forwardInTime = new RouteActivityVisitor();
+		forwardInTime.addActivityVisitor(new UpdateLoadAtAllLevels(stateManager));
+		forwardInTime.addActivityVisitor(new UpdateEarliestStartTimeWindowAtActLocations(stateManager, cost));
+		forwardInTime.addActivityVisitor(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
+		forwardInTime.visit(vehicleRoute);
 		
 		assertEquals(10.0, stateManager.getActivityState(firstAct, StateTypes.COSTS).toDouble(),0.05);
 		assertEquals(5.0, stateManager.getActivityState(firstAct, StateTypes.LOAD).toDouble(),0.05);
@@ -189,12 +189,12 @@ public class TestIterateRouteForwardInTime {
 	
 	@Test
 	public void testStatesOfAct2(){
-		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
+		RouteActivityVisitor forwardInTime = new RouteActivityVisitor();
 		
-		forwardInTime.addListener(new UpdateLoadAtAllLevels(stateManager));
-		forwardInTime.addListener(new UpdateEarliestStartTimeWindowAtActLocations(stateManager));
-		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
-		forwardInTime.iterate(vehicleRoute);
+		forwardInTime.addActivityVisitor(new UpdateLoadAtAllLevels(stateManager));
+		forwardInTime.addActivityVisitor(new UpdateEarliestStartTimeWindowAtActLocations(stateManager, cost));
+		forwardInTime.addActivityVisitor(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
+		forwardInTime.visit(vehicleRoute);
 		
 		assertEquals(30.0, stateManager.getActivityState(secondAct, StateTypes.COSTS).toDouble(),0.05);
 		assertEquals(10.0, stateManager.getActivityState(secondAct, StateTypes.LOAD).toDouble(),0.05);
@@ -204,11 +204,11 @@ public class TestIterateRouteForwardInTime {
 	
 	@Test
 	public void testStatesOfAct3(){
-		IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(cost);
+		RouteActivityVisitor forwardInTime = new RouteActivityVisitor();
 		
-		forwardInTime.addListener(new UpdateActivityTimes());
-		forwardInTime.addListener(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
-		forwardInTime.iterate(vehicleRoute);
+		forwardInTime.addActivityVisitor(new UpdateActivityTimes(cost));
+		forwardInTime.addActivityVisitor(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
+		forwardInTime.visit(vehicleRoute);
 		
 		assertEquals(40.0, stateManager.getRouteState(vehicleRoute,StateTypes.COSTS).toDouble(), 0.05);
 		assertEquals(40.0, vehicleRoute.getEnd().getArrTime(),0.05);

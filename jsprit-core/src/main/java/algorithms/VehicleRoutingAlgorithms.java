@@ -506,13 +506,13 @@ public class VehicleRoutingAlgorithms {
 		routeChangedListener.addInsertionStartsListener(new StateUpdates.UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
 		routeChangedListener.addJobInsertedListener(new StateUpdates.UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
 		
-		routeChangedListener.addListener(new StateUpdates.UpdateActivityTimes());
-		routeChangedListener.addListener(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
-		routeChangedListener.addListener(new StateUpdates.UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+		routeChangedListener.addVisitor(new StateUpdates.UpdateActivityTimes(vrp.getTransportCosts()));
+		routeChangedListener.addVisitor(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
+		routeChangedListener.addVisitor(new StateUpdates.UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 		
-		routeChangedListener.addListener(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
-		routeChangedListener.addListener(new StateUpdates.UpdateLatestOperationStartTimeAtActLocations(stateManager));
-		routeChangedListener.addListener(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
+		routeChangedListener.addVisitor(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
+		routeChangedListener.addVisitor(new StateUpdates.UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
+		routeChangedListener.addVisitor(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
 		
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(routeChangedListener);
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(vehicleFleetManager));
