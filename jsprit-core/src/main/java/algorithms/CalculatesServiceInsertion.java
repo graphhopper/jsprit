@@ -15,18 +15,17 @@ package algorithms;
 import org.apache.log4j.Logger;
 
 import util.Neighborhood;
-import algorithms.HardConstraints.HardRouteLevelConstraint;
 import algorithms.ActivityInsertionCostCalculator.Marginals;
+import algorithms.constraints.HardRouteLevelConstraint;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
+import basics.route.DefaultTourActivityFactory;
 import basics.route.Driver;
 import basics.route.End;
-import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
 import basics.route.TourActivityFactory;
-import basics.route.DefaultTourActivityFactory;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl.NoVehicle;
 import basics.route.VehicleRoute;
@@ -117,7 +116,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 			}
 
 			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActStartTime, newDriver, newVehicle);
-			double nextActEndTime = CalcUtils.getActivityEndTime(nextActArrTime, nextAct);
+			double nextActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
 			
 			prevActStartTime = nextActEndTime;
 

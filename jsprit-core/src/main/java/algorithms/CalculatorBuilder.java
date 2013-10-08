@@ -23,7 +23,7 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
-import algorithms.HardConstraints.ConstraintManager;
+import algorithms.constraints.ConstraintManager;
 import basics.VehicleRoutingProblem;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;

@@ -17,8 +17,8 @@ import basics.VehicleRoutingProblemSolution;
 
 
 
-interface InitialSolutionFactory {
+public interface InitialSolutionFactory {
 
-	public VehicleRoutingProblemSolution createInitialSolution(VehicleRoutingProblem vrp);
+	public VehicleRoutingProblemSolution createSolution(VehicleRoutingProblem vrp);
 
 }

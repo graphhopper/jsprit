@@ -20,7 +20,7 @@
  ******************************************************************************/
 package algorithms;
 
-import algorithms.HardConstraints.HardActivityLevelConstraint;
+import algorithms.constraints.HardActivityLevelConstraint;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
@@ -50,7 +50,7 @@ class MarginalsCalculusTriangleInequality implements ActivityInsertionCostCalcul
 		
 		double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
 		
-		double newAct_endTime = CalcUtils.getActivityEndTime(newAct_arrTime, newAct);
+		double newAct_endTime = CalculationUtils.getActivityEndTime(newAct_arrTime, newAct);
 		
 		double act_costs_newAct = activityCosts.getActivityCost(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		

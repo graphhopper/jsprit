@@ -1,5 +1,6 @@
-package algorithms;
+package algorithms.states;
 
+import algorithms.ActivityVisitor;
 import basics.costs.ForwardTransportTime;
 import basics.route.Driver;
 import basics.route.TourActivity;

@@ -6,7 +6,7 @@ import java.util.Collection;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-class RouteActivityVisitor implements RouteVisitor{
+public class RouteActivityVisitor implements RouteVisitor{
 
 	private Collection<ActivityVisitor> visitors = new ArrayList<ActivityVisitor>();
 	

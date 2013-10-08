@@ -1,8 +1,10 @@
 package algorithms;
 
+import algorithms.constraints.ConstraintManager;
+import algorithms.constraints.HardActivityLevelConstraint;
+import algorithms.constraints.HardRouteLevelConstraint;
 import basics.VehicleRoutingProblem;
-import algorithms.HardConstraints.HardActivityLevelConstraint;
-import algorithms.HardConstraints.HardRouteLevelConstraint;
+import basics.VehicleRoutingProblem.FleetSize;
 
 public class BestInsertionBuilder implements InsertionStrategyBuilder{
 
@@ -10,25 +12,58 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 	
 	private StateManager stateManager;
 	
+	private boolean local = true;
+	
+	private ConstraintManager constraintManager;
+
+	private VehicleFleetManager fleetManager;
+	
 	public BestInsertionBuilder(VehicleRoutingProblem vrp, StateManager stateManager) {
 		super();
 		this.vrp = vrp;
 		this.stateManager = stateManager;
+		this.constraintManager = new ConstraintManager();
 	}
 
-	public void addConstraint(HardActivityLevelConstraint hardActvitiyLevelConstraint){};
+	public void addConstraint(HardActivityLevelConstraint hardActvitiyLevelConstraint){
+		constraintManager.addConstraint(hardActvitiyLevelConstraint);
+	};
 	
-	public void addConstraint(HardRouteLevelConstraint hardRouteLevelConstraint){};
+	public void addConstraint(HardRouteLevelConstraint hardRouteLevelConstraint){
+		constraintManager.addConstraint(hardRouteLevelConstraint);
+	};
 	
-	public void setRouteLevel(int forwardLooking, int memory){};
+	//public void setRouteLevel(int forwardLooking, int memory){};
 	
-	public void setLocalLevel(){};
+	public void setLocalLevel(){
+		local = true;
+	};
 	
-	public void setActivityInsertionCostCalculator(ActivityInsertionCostCalculator costCalc){};
+	public void setFleetManager(VehicleFleetManager fleetManager){
+		this.fleetManager = fleetManager;
+	}
+	
+	//public void setActivityInsertionCostCalculator(ActivityInsertionCostCalculator costCalc){};
 	
 	@Override
 	public InsertionStrategy build() {
-		return null;
+		CalculatorBuilder calcBuilder = new CalculatorBuilder(null, null);
+		if(local){
+			calcBuilder.setLocalLevel();
+		}
+		calcBuilder.setConstraintManager(constraintManager);
+		calcBuilder.setStates(stateManager);
+		calcBuilder.setVehicleRoutingProblem(vrp);
+		calcBuilder.setVehicleFleetManager(fleetManager);
+		JobInsertionCalculator jobInsertions = calcBuilder.build();
+		return new BestInsertion(jobInsertions);
+	}
+
+	private VehicleFleetManager createFleetManager(VehicleRoutingProblem vrp) {
+		if(vrp.getFleetSize().equals(FleetSize.INFINITE)){
+			return new InfiniteVehicles(vrp.getVehicles());
+		}
+		else return new VehicleFleetManagerImpl(vrp.getVehicles());
 	}
 
 }

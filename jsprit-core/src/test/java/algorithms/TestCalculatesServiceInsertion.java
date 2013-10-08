@@ -32,7 +32,9 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import algorithms.StateUpdates.UpdateStates;
+import algorithms.constraints.HardLoadConstraint;
+import algorithms.constraints.HardTimeWindowActivityLevelConstraint;
+import algorithms.states.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -157,7 +159,7 @@ public class TestCalculatesServiceInsertion {
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 
-		serviceInsertion = new CalculatesServiceInsertion(costs, new MarginalsCalculusTriangleInequality(costs, activityCosts, new HardConstraints.HardTimeWindowActivityLevelConstraint(states, costs)), new HardConstraints.HardLoadConstraint(states));
+		serviceInsertion = new CalculatesServiceInsertion(costs, new MarginalsCalculusTriangleInequality(costs, activityCosts, new HardTimeWindowActivityLevelConstraint(states, costs)), new HardLoadConstraint(states));
 		
 		stateUpdater = new UpdateStates(states, costs, activityCosts);
 		

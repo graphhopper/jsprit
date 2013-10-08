@@ -18,21 +18,27 @@
  * Contributors:
  *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
-package algorithms;
+package algorithms.constraints;
 
-import basics.route.TourActivity;
 
-class CalcUtils {
+
+
+/**
+ * collection of hard constrainters bot at activity and at route level.
+ * 
+ * <p>HardPickupAndDeliveryLoadConstraint requires LOAD_AT_DEPOT and LOAD (i.e. load at end) at route-level
+ * 
+ * <p>HardTimeWindowConstraint requires LATEST_OPERATION_START_TIME
+ * 
+ * <p>HardPickupAndDeliveryConstraint requires LOAD_AT_DEPOT and LOAD at route-level and FUTURE_PICKS and PAST_DELIVIERS on activity-level
+ * 
+ * <p>HardPickupAndDeliveryBackhaulConstraint requires LOAD_AT_DEPOT and LOAD at route-level and FUTURE_PICKS and PAST_DELIVIERS on activity-level
+ * 
+ * @author stefan
+ *
+ */
+class HardConstraints {
+	
 	
 
-	/**
-	 * Calculates actEndTime assuming that activity can at earliest start at act.getTheoreticalEarliestOperationStartTime().
-	 * 
-	 * @param actArrTime
-	 * @param act
-	 * @return
-	 */
-	static double getActivityEndTime(double actArrTime, TourActivity act){
-		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
-	}
 }

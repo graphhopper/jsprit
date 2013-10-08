@@ -47,9 +47,9 @@ import basics.route.VehicleRoute;
 
 
 
-final class CreateInitialSolution implements InitialSolutionFactory {
+public final class BestInsertionInitialSolutionFactory implements InitialSolutionFactory {
 
-	private static final Logger logger = Logger.getLogger(CreateInitialSolution.class);
+	private static final Logger logger = Logger.getLogger(BestInsertionInitialSolutionFactory.class);
 
 	private final InsertionStrategy insertion;
 	
@@ -59,13 +59,13 @@ final class CreateInitialSolution implements InitialSolutionFactory {
 		this.generateAsMuchAsRoutesAsVehiclesExist = generateAsMuchAsRoutesAsVehiclesExist;
 	}
 
-	public CreateInitialSolution(InsertionStrategy insertionStrategy) {
+	public BestInsertionInitialSolutionFactory(InsertionStrategy insertionStrategy) {
 		super();
 		this.insertion = insertionStrategy;
 	}
 
 	@Override
-	public VehicleRoutingProblemSolution createInitialSolution(final VehicleRoutingProblem vrp) {
+	public VehicleRoutingProblemSolution createSolution(final VehicleRoutingProblem vrp) {
 		logger.info("create initial solution.");
 		List<VehicleRoute> vehicleRoutes = new ArrayList<VehicleRoute>();
 		if(generateAsMuchAsRoutesAsVehiclesExist){

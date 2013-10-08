@@ -35,13 +35,6 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
-import algorithms.HardConstraints.ConstraintManager;
-import algorithms.HardConstraints.HardTimeWindowActivityLevelConstraint;
-import algorithms.StateUpdates.UpdateActivityTimes;
-import algorithms.StateUpdates.UpdateCostsAtAllLevels;
-import algorithms.StateUpdates.UpdateEarliestStartTimeWindowAtActLocations;
-import algorithms.StateUpdates.UpdateLatestOperationStartTimeAtActLocations;
-import algorithms.StateUpdates.UpdateStates;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.InsertionStrategyKey;
@@ -52,9 +45,22 @@ import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.acceptors.AcceptNewRemoveFirst;
 import algorithms.acceptors.SchrimpfAcceptance;
 import algorithms.acceptors.SolutionAcceptor;
+import algorithms.constraints.ConstraintManager;
+import algorithms.constraints.HardPickupAndDeliveryActivityLevelConstraint;
+import algorithms.constraints.HardPickupAndDeliveryBackhaulActivityLevelConstraint;
+import algorithms.constraints.HardPickupAndDeliveryLoadConstraint;
+import algorithms.constraints.HardTimeWindowActivityLevelConstraint;
 import algorithms.selectors.SelectBest;
 import algorithms.selectors.SelectRandomly;
 import algorithms.selectors.SolutionSelector;
+import algorithms.states.InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts;
+import algorithms.states.UpdateActivityTimes;
+import algorithms.states.UpdateCostsAtAllLevels;
+import algorithms.states.UpdateFuturePickupsAtActivityLevel;
+import algorithms.states.UpdateLatestOperationStartTimeAtActLocations;
+import algorithms.states.UpdateLoadAtActivityLevel;
+import algorithms.states.UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted;
+import algorithms.states.UpdateOccuredDeliveriesAtActivityLevel;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.Constraint;
@@ -451,16 +457,16 @@ public class VehicleRoutingAlgorithms {
 		 */
 		//constraint manager
 		ConstraintManager constraintManager = new ConstraintManager();
-		constraintManager.addConstraint(new HardConstraints.HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
+		constraintManager.addConstraint(new HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
 	
 		if(vrp.getProblemConstraints().contains(Constraint.DELIVERIES_FIRST)){
-			constraintManager.addConstraint(new HardConstraints.HardPickupAndDeliveryBackhaulActivityLevelConstraint(stateManager));
+			constraintManager.addConstraint(new HardPickupAndDeliveryBackhaulActivityLevelConstraint(stateManager));
 		}
 		else{
-			constraintManager.addConstraint(new HardConstraints.HardPickupAndDeliveryActivityLevelConstraint(stateManager));
+			constraintManager.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
 		}
 		
-		constraintManager.addConstraint(new HardConstraints.HardPickupAndDeliveryLoadConstraint(stateManager));
+		constraintManager.addConstraint(new HardPickupAndDeliveryLoadConstraint(stateManager));
 		
 		//construct initial solution creator 
 		AlgorithmStartsListener createInitialSolution = createInitialSolution(config,vrp,vehicleFleetManager,stateManager,algorithmListeners,definedClasses,executorService,nuOfThreads,constraintManager);
@@ -498,23 +504,38 @@ public class VehicleRoutingAlgorithms {
 		 */
 		
 		//reset stateManager
-		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new StateUpdates.ResetStateManager(stateManager)));
+//		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new StateUpdates.ResetStateManager(stateManager)));
 		//update states
 //		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateStates(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
-		StateUpdates.UpdateRouteStatesOnceTheRouteHasBeenChanged routeChangedListener = new StateUpdates.UpdateRouteStatesOnceTheRouteHasBeenChanged(vrp.getTransportCosts());
+//		UpdateRouteStatesOnceTheRouteHasBeenChanged routeChangedListener = new StateUpdates.UpdateRouteStatesOnceTheRouteHasBeenChanged(vrp.getTransportCosts());
+//		
+//		routeChangedListener.addInsertionStartsListener(new InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts.UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
+//		routeChangedListener.addJobInsertedListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
+//		
+//		routeChangedListener.addVisitor(new StateUpdates.UpdateActivityTimes(vrp.getTransportCosts()));
+//		routeChangedListener.addVisitor(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
+//		routeChangedListener.addVisitor(new StateUpdates.UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+//		
+//		routeChangedListener.addVisitor(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
+//		routeChangedListener.addVisitor(new StateUpdates.UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
+//		routeChangedListener.addVisitor(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
 		
-		routeChangedListener.addInsertionStartsListener(new StateUpdates.UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
-		routeChangedListener.addJobInsertedListener(new StateUpdates.UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
+		stateManager.addListener(new InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
+		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
+	
+		stateManager.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
+		stateManager.addActivityVisitor(new UpdateLoadAtActivityLevel(stateManager));
 		
-		routeChangedListener.addVisitor(new StateUpdates.UpdateActivityTimes(vrp.getTransportCosts()));
-		routeChangedListener.addVisitor(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
-		routeChangedListener.addVisitor(new StateUpdates.UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+		stateManager.addActivityVisitor(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 		
-		routeChangedListener.addVisitor(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
-		routeChangedListener.addVisitor(new StateUpdates.UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
-		routeChangedListener.addVisitor(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
+		stateManager.addActivityVisitor(new UpdateOccuredDeliveriesAtActivityLevel(stateManager));
+		stateManager.addActivityVisitor(new UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
+		stateManager.addActivityVisitor(new UpdateFuturePickupsAtActivityLevel(stateManager));
+
 		
-		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(routeChangedListener);
+		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(stateManager);
+		metaAlgorithm.getAlgorithmListeners().addListener(stateManager);
+		
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(vehicleFleetManager));
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new ResetAndIniFleetManager(vehicleFleetManager));
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new VehicleSwitched(vehicleFleetManager));
@@ -637,9 +658,9 @@ public class VehicleRoutingAlgorithms {
 			@Override
 			public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
 
-				CreateInitialSolution createInitialSolution = new CreateInitialSolution(finalInsertionStrategy);
+				BestInsertionInitialSolutionFactory createInitialSolution = new BestInsertionInitialSolutionFactory(finalInsertionStrategy);
 				createInitialSolution.setGenerateAsMuchAsRoutesAsVehiclesExist(false);
-				VehicleRoutingProblemSolution vrpSol = createInitialSolution.createInitialSolution(vrp);
+				VehicleRoutingProblemSolution vrpSol = createInitialSolution.createSolution(vrp);
 				solutions.add(vrpSol);
 
 			}
@@ -834,6 +855,8 @@ public class VehicleRoutingAlgorithms {
 		InsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, routeStates, algorithmListeners, executorService, nuOfThreads, constraintManager);
 		return insertion;
 	}
+
+	
 	
 
 }

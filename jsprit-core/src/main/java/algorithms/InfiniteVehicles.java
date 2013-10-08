@@ -45,9 +45,9 @@ class InfiniteVehicles implements VehicleFleetManager{
 	
 	private static Logger logger = Logger.getLogger(InfiniteVehicles.class);
 	
-	private Map<TypeKey,Vehicle> types = new HashMap<TypeKey, Vehicle>();
+	private Map<VehicleTypeKey,Vehicle> types = new HashMap<VehicleTypeKey, Vehicle>();
 	
-	private List<TypeKey> sortedTypes = new ArrayList<VehicleFleetManager.TypeKey>();
+	private List<VehicleTypeKey> sortedTypes = new ArrayList<VehicleTypeKey>();
 		
 	public InfiniteVehicles(Collection<Vehicle> vehicles){
 		extractTypes(vehicles);
@@ -61,7 +61,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 
 	private void extractTypes(Collection<Vehicle> vehicles) {
 		for(Vehicle v : vehicles){
-			TypeKey typeKey = new TypeKey(v.getType().getTypeId(),v.getLocationId());
+			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(),v.getLocationId());
 			types.put(typeKey,v);
 			sortedTypes.add(typeKey);
 
@@ -99,8 +99,8 @@ class InfiniteVehicles implements VehicleFleetManager{
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId) {
 		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-		TypeKey thisKey = new TypeKey(withoutThisType,locationId);
-		for(TypeKey key : types.keySet()){
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType,locationId);
+		for(VehicleTypeKey key : types.keySet()){
 			if(!key.equals(thisKey)){
 				vehicles.add(types.get(key));
 			}

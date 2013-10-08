@@ -3,7 +3,7 @@ package algorithms;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-interface ActivityVisitor {
+public interface ActivityVisitor {
 	
 	public void begin(VehicleRoute route);
 	

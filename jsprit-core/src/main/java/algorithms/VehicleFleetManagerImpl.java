@@ -58,11 +58,11 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	
 	static class TypeContainer {
 		
-		private TypeKey type;
+		private VehicleTypeKey type;
 
 		private ArrayList<Vehicle> vehicleList;
 		
-		public TypeContainer(TypeKey type) {
+		public TypeContainer(VehicleTypeKey type) {
 			super();
 			this.type = type;
 			vehicleList = new ArrayList<Vehicle>();
@@ -96,9 +96,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	
 	private Set<Vehicle> lockedVehicles;
 
-	private Map<TypeKey,TypeContainer> typeMapOfAvailableVehicles;
+	private Map<VehicleTypeKey,TypeContainer> typeMapOfAvailableVehicles;
 	
-	private Map<TypeKey,Vehicle> penaltyVehicles = new HashMap<VehicleFleetManager.TypeKey, Vehicle>();
+	private Map<VehicleTypeKey,Vehicle> penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
 	
 //	private Map<TypeKey,TypeContainer> typeMapOfAvailablePenaltyVehicles;
 	
@@ -126,8 +126,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	}
 
 	private void makeMap() {
-		typeMapOfAvailableVehicles = new HashMap<TypeKey, TypeContainer>();
-		penaltyVehicles = new HashMap<VehicleFleetManager.TypeKey, Vehicle>();
+		typeMapOfAvailableVehicles = new HashMap<VehicleTypeKey, TypeContainer>();
+		penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
 		for(Vehicle v : vehicles){
 			addVehicle(v);
 		}
@@ -139,11 +139,11 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		}
 		String typeId = v.getType().getTypeId();
 		if(v.getType() instanceof PenaltyVehicleType){
-			TypeKey typeKey = new TypeKey(typeId,v.getLocationId());
+			VehicleTypeKey typeKey = new VehicleTypeKey(typeId,v.getLocationId());
 			penaltyVehicles.put(typeKey, v);
 		}
 		else{
-			TypeKey typeKey = new TypeKey(v.getType().getTypeId(),v.getLocationId());
+			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(),v.getLocationId());
 			if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
 				typeMapOfAvailableVehicles.put(typeKey, new TypeContainer(typeKey));
 			}
@@ -154,7 +154,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	private void removeVehicle(Vehicle v){
 		//it might be better to introduce a class PenaltyVehicle
 		if(!(v.getType() instanceof PenaltyVehicleType)){
-			TypeKey key = new TypeKey(v.getType().getTypeId(),v.getLocationId());
+			VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(),v.getLocationId());
 			if(typeMapOfAvailableVehicles.containsKey(key)){
 				typeMapOfAvailableVehicles.get(key).remove(v);
 			}
@@ -171,7 +171,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	@Override
 	public Collection<Vehicle> getAvailableVehicles() {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		for(TypeKey key : typeMapOfAvailableVehicles.keySet()){
+		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
 			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
 				vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
 			}
@@ -197,8 +197,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String withThisLocationId) {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		TypeKey thisKey = new TypeKey(withoutThisType,withThisLocationId);
-		for(TypeKey key : typeMapOfAvailableVehicles.keySet()){
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType,withThisLocationId);
+		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
 			if(key.equals(thisKey)) continue;
 			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
 				vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());

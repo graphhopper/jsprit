@@ -24,65 +24,18 @@ import java.util.Collection;
 
 import basics.route.Vehicle;
 
-interface VehicleFleetManager {
+public interface VehicleFleetManager {
 	
-	static class TypeKey {
-		
-		public final String type;
-		public final String locationId;
-		
-		public TypeKey(String typeId, String locationId) {
-			super();
-			this.type = typeId;
-			this.locationId = locationId;
-		}
+	public abstract void lock(Vehicle vehicle);
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ ((locationId == null) ? 0 : locationId.hashCode());
-			result = prime * result + ((type == null) ? 0 : type.hashCode());
-			return result;
-		}
+	public abstract void unlock(Vehicle vehicle);
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			TypeKey other = (TypeKey) obj;
-			if (locationId == null) {
-				if (other.locationId != null)
-					return false;
-			} else if (!locationId.equals(other.locationId))
-				return false;
-			if (type == null) {
-				if (other.type != null)
-					return false;
-			} else if (!type.equals(other.type))
-				return false;
-			return true;
-		}
+	public abstract boolean isLocked(Vehicle vehicle);
 
-				
-		
-	}
+	public abstract void unlockAll();
 
-	abstract void lock(Vehicle vehicle);
+	public abstract Collection<Vehicle> getAvailableVehicles();
 
-	abstract void unlock(Vehicle vehicle);
-
-	abstract boolean isLocked(Vehicle vehicle);
-
-	abstract void unlockAll();
-
-	abstract Collection<Vehicle> getAvailableVehicles();
-
-	Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId);
+	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId);
 
 }

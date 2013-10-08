@@ -31,13 +31,13 @@ import basics.algo.InsertionEndsListener;
 import basics.algo.InsertionStartsListener;
 import basics.route.VehicleRoute;
 
-class RemoveEmptyVehicles implements InsertionEndsListener{
+public class RemoveEmptyVehicles implements InsertionEndsListener{
 
 	private static Logger log = Logger.getLogger(RemoveEmptyVehicles.class); 
 	
 	private VehicleFleetManager fleetManager;
 	
-	RemoveEmptyVehicles(VehicleFleetManager fleetManager) {
+	public RemoveEmptyVehicles(VehicleFleetManager fleetManager) {
 		super();
 		this.fleetManager = fleetManager;
 	}

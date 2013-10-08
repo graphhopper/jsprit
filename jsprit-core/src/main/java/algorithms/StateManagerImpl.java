@@ -25,21 +25,45 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import algorithms.StateManager.State;
 import basics.Job;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.InsertionEndsListener;
 import basics.algo.InsertionListener;
+import basics.algo.InsertionListeners;
 import basics.algo.InsertionStartsListener;
 import basics.algo.IterationStartsListener;
 import basics.algo.JobInsertedListener;
 import basics.algo.RuinListener;
+import basics.algo.RuinListeners;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
 public class StateManagerImpl implements StateManager, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 
-	static class StatesImpl implements States{
+	private interface States {
+		
+		State getState(String key);
+		
+	}
+	
+	public static class StateImpl implements State{
+		double state;
+
+		public StateImpl(double state) {
+			super();
+			this.state = state;
+		}
+
+		@Override
+		public double toDouble() {
+			return state;
+		}
+		
+	}
+	
+	private static class StatesImpl implements States{
 
 		private Map<String,State> states = new HashMap<String, State>();
 		
@@ -54,15 +78,36 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 
 	}
 	
-	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, StateManager.States>();
+	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, States>();
 	
-	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, StateManager.States>();
+	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, States>();
 	
 	private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
 	
 	private ReverseRouteActivityVisitor revRouteActivityVisitor = new ReverseRouteActivityVisitor();
 	
 	private Collection<RouteVisitor> routeVisitors = new ArrayList<RouteVisitor>();
+	
+	private RuinListeners ruinListeners = new RuinListeners();
+	
+	private InsertionListeners insertionListeners = new InsertionListeners();
+	
+	public void addListener(RuinListener ruinListener){
+		ruinListeners.addListener(ruinListener);
+	}
+	
+	public void removeListener(RuinListener ruinListener){
+		ruinListeners.removeListener(ruinListener);
+	}
+	
+	public void addListener(InsertionListener insertionListener){
+		insertionListeners.addListener(insertionListener);
+	}
+	
+	public void removeListener(InsertionListener insertionListener){
+		insertionListeners.removeListener(insertionListener);
+	}
+	
 	
 	public void clear(){
 		vehicleRouteStates.clear();
@@ -133,6 +178,7 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 
 	@Override
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+		insertionListeners.jobInserted(job2insert, inRoute, additionalCosts, additionalTime);
 		for(RouteVisitor v : routeVisitors){ v.visit(inRoute); }
 		routeActivityVisitor.visit(inRoute);
 		revRouteActivityVisitor.visit(inRoute);
@@ -140,6 +186,7 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 
 	@Override
 	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes,Collection<Job> unassignedJobs) {
+		insertionListeners.insertionStarts(vehicleRoutes, unassignedJobs);
 		for(VehicleRoute route : vehicleRoutes){ 
 			for(RouteVisitor v : routeVisitors){ v.visit(route); }
 			routeActivityVisitor.visit(route);
@@ -147,10 +194,24 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 		}
 	}
 	
+	/**
+	 * Adds an activityVisitor.
+	 * <p>This visitor visits all activities in a route subsequently in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
+	 * and, second, if a job has been inserted and thus if a route has changed. 
+	 * 
+	 * @param activityVistor
+	 */
 	public void addActivityVisitor(ActivityVisitor activityVistor){
 		routeActivityVisitor.addActivityVisitor(activityVistor);
 	}
 	
+	/**
+	 * Adds an reverseActivityVisitor.
+	 * <p>This reverseVisitor visits all activities in a route subsequently (starting from the end of the route) in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
+	 * and, second, if a job has been inserted and thus if a route has changed. 
+	 * 
+	 * @param reverseActivityVistor
+	 */
 	public void addActivityVisitor(ReverseActivityVisitor activityVistor){
 		revRouteActivityVisitor.addActivityVisitor(activityVistor);
 	}
@@ -166,25 +227,21 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 
 	@Override
 	public void ruinStarts(Collection<VehicleRoute> routes) {
-		// TODO Auto-generated method stub
-		
+		ruinListeners.ruinStarts(routes);
 	}
 
 	@Override
 	public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-		// TODO Auto-generated method stub
-		
+		ruinListeners.ruinEnds(routes, unassignedJobs);		
 	}
 
 	@Override
 	public void removed(Job job, VehicleRoute fromRoute) {
-		// TODO Auto-generated method stub
-		
+		ruinListeners.removed(job, fromRoute);
 	}
 
 	@Override
 	public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
-		// TODO Auto-generated method stub
-		
+		insertionListeners.insertionEnds(vehicleRoutes);
 	}
 }

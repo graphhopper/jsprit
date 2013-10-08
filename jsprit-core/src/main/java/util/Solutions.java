@@ -26,7 +26,18 @@ import basics.VehicleRoutingProblemSolution;
 
 public class Solutions {
 	
+	@Deprecated
 	public static VehicleRoutingProblemSolution getBest(Collection<VehicleRoutingProblemSolution> solutions){
+		VehicleRoutingProblemSolution best = null;
+		for(VehicleRoutingProblemSolution s : solutions){
+			if(best == null) best = s;
+			else if(s.getCost() < best.getCost()) best = s;
+		}
+		return best;
+	}
+	
+	
+	public static VehicleRoutingProblemSolution bestOf(Collection<VehicleRoutingProblemSolution> solutions){
 		VehicleRoutingProblemSolution best = null;
 		for(VehicleRoutingProblemSolution s : solutions){
 			if(best == null) best = s;

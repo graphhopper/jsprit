@@ -20,39 +20,19 @@
  ******************************************************************************/
 package algorithms;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import basics.route.TourActivity;
 
-import basics.Job;
-import basics.algo.RuinListener;
-import basics.route.VehicleRoute;
+public class CalculationUtils {
+	
 
-class RuinListeners {
-	
-	private Collection<RuinListener> ruinListeners = new ArrayList<RuinListener>();
-
-	void ruinStarts(Collection<VehicleRoute> routes){
-		for(RuinListener l : ruinListeners) l.ruinStarts(routes);
-	}
-	
-	void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs){
-		for(RuinListener l : ruinListeners) l.ruinEnds(routes, unassignedJobs);
-	}
-	
-	void removed(Job job, VehicleRoute fromRoute){
-		for(RuinListener l : ruinListeners) l.removed(job, fromRoute);
-	}
-	
-	void addListener(RuinListener ruinListener){
-		ruinListeners.add(ruinListener);
-	}
-	
-	void removeListener(RuinListener ruinListener){
-		ruinListeners.remove(ruinListener);
-	}
-	
-	Collection<RuinListener> getListeners(){
-		return Collections.unmodifiableCollection(ruinListeners);
+	/**
+	 * Calculates actEndTime assuming that activity can at earliest start at act.getTheoreticalEarliestOperationStartTime().
+	 * 
+	 * @param actArrTime
+	 * @param act
+	 * @return
+	 */
+	public static double getActivityEndTime(double actArrTime, TourActivity act){
+		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
 	}
 }

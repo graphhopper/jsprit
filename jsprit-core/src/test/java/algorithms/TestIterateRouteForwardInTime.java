@@ -30,10 +30,10 @@ import org.junit.Test;
 
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
-import algorithms.StateUpdates.UpdateActivityTimes;
-import algorithms.StateUpdates.UpdateCostsAtAllLevels;
-import algorithms.StateUpdates.UpdateEarliestStartTimeWindowAtActLocations;
-import algorithms.StateUpdates.UpdateLoadAtAllLevels;
+import algorithms.states.UpdateActivityTimes;
+import algorithms.states.UpdateCostsAtAllLevels;
+import algorithms.states.UpdateEarliestStartTimeWindowAtActLocations;
+import algorithms.states.UpdateLoadAtAllLevels;
 import basics.Job;
 import basics.Service;
 import basics.costs.DefaultVehicleRoutingActivityCosts;

@@ -20,20 +20,20 @@
  ******************************************************************************/
 package algorithms;
 
-class StateTypes {
-	final static String LOAD = "load";
+public class StateTypes {
+	public final static String LOAD = "load";
 	
-	final static String LOAD_AT_DEPOT = "loadAtDepot";
+	public final static String LOAD_AT_DEPOT = "loadAtDepot";
 	
-	final static String DURATION = "duration";
+	public final static String DURATION = "duration";
 	
-	final static String LATEST_OPERATION_START_TIME = "latestOST";
+	public final static String LATEST_OPERATION_START_TIME = "latestOST";
 	
-	final static String EARLIEST_OPERATION_START_TIME = "earliestOST";
+	public final static String EARLIEST_OPERATION_START_TIME = "earliestOST";
 
-	static final String COSTS = "costs";
+	public static final String COSTS = "costs";
 	
-	final static String FUTURE_PICKS = "futurePicks";
+	public final static String FUTURE_PICKS = "futurePicks";
 	
-	final static String PAST_DELIVERIES = "pastDeliveries";
+	public final static String PAST_DELIVERIES = "pastDeliveries";
 }

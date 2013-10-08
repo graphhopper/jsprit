@@ -25,7 +25,7 @@ import basics.route.Driver;
 import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
-class InsertionContext {
+public class InsertionContext {
 	
 	private VehicleRoute route;
 	private Job job;

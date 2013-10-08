@@ -38,6 +38,28 @@ import basics.route.VehicleRoute;
 
 final class BestInsertion implements InsertionStrategy{
 	
+	class Insertion {
+		
+		private final VehicleRoute route;
+		
+		private final InsertionData insertionData;
+
+		public Insertion(VehicleRoute vehicleRoute, InsertionData insertionData) {
+			super();
+			this.route = vehicleRoute;
+			this.insertionData = insertionData;
+		}
+
+		public VehicleRoute getRoute() {
+			return route;
+		}
+		
+		public InsertionData getInsertionData() {
+			return insertionData;
+		}
+		
+	}
+	
 	private static Logger logger = Logger.getLogger(BestInsertion.class);
 
 	private Random random = RandomNumberGeneration.getRandom();

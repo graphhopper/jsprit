@@ -7,7 +7,7 @@ import java.util.Iterator;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-class ReverseRouteActivityVisitor implements RouteVisitor{
+public class ReverseRouteActivityVisitor implements RouteVisitor{
 
 	private Collection<ReverseActivityVisitor> visitors = new ArrayList<ReverseActivityVisitor>();
 	

@@ -26,17 +26,20 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import util.Solutions;
-import algorithms.BackwardInTimeListeners.BackwardInTimeListener;
-import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
-import algorithms.HardConstraints.HardActivityLevelConstraintManager;
-import algorithms.StateManager.StateImpl;
-import algorithms.StateUpdates.UpdateActivityTimes;
-import algorithms.StateUpdates.UpdateCostsAtAllLevels;
-import algorithms.StateUpdates.UpdateEarliestStartTimeWindowAtActLocations;
-import algorithms.StateUpdates.UpdateLatestOperationStartTimeAtActLocations;
+import algorithms.StateManagerImpl.StateImpl;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
+import algorithms.constraints.ConstraintManager;
+import algorithms.constraints.HardPickupAndDeliveryActivityLevelConstraint;
+import algorithms.constraints.HardPickupAndDeliveryLoadConstraint;
+import algorithms.constraints.HardTimeWindowActivityLevelConstraint;
 import algorithms.selectors.SelectBest;
+import algorithms.states.UpdateActivityTimes;
+import algorithms.states.UpdateCostsAtAllLevels;
+import algorithms.states.UpdateEarliestStartTimeWindowAtActLocations;
+import algorithms.states.UpdateFuturePickupsAtActivityLevel;
+import algorithms.states.UpdateLatestOperationStartTimeAtActLocations;
+import algorithms.states.UpdateLoadAtActivityLevel;
+import algorithms.states.UpdateOccuredDeliveriesAtActivityLevel;
 import basics.Delivery;
 import basics.Job;
 import basics.Pickup;
@@ -44,17 +47,10 @@ import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.InsertionStartsListener;
-import basics.algo.IterationStartsListener;
 import basics.algo.JobInsertedListener;
 import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyManager;
 import basics.io.VrpXMLReader;
-import basics.io.VrpXMLWriter;
-import basics.route.DeliveryActivity;
-import basics.route.End;
-import basics.route.PickupActivity;
-import basics.route.Start;
-import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
 public class BuildPDVRPAlgoFromScratchTest {
@@ -74,13 +70,13 @@ public class BuildPDVRPAlgoFromScratchTest {
 			
 			final StateManagerImpl stateManager = new StateManagerImpl();
 			
-			HardActivityLevelConstraintManager actLevelConstraintAccumulator = new HardActivityLevelConstraintManager();
-			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryActivityLevelConstraint(stateManager));
-			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
+			ConstraintManager actLevelConstraintAccumulator = new ConstraintManager();
+			actLevelConstraintAccumulator.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
+			actLevelConstraintAccumulator.addConstraint(new HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
 			
 			ActivityInsertionCostCalculator marginalCalculus = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), actLevelConstraintAccumulator);
 
-			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardPickupAndDeliveryLoadConstraint(stateManager));
+			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardPickupAndDeliveryLoadConstraint(stateManager));
 //			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
 			
 			VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
@@ -105,7 +101,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 			
 			vra = new VehicleRoutingAlgorithm(vrp, strategyManager);
 	
-			vra.getAlgorithmListeners().addListener(new StateUpdates.ResetStateManager(stateManager));
+			vra.getAlgorithmListeners().addListener(stateManager);
 			
 			final RouteActivityVisitor iterateForward = new RouteActivityVisitor();
 			
@@ -113,12 +109,12 @@ public class BuildPDVRPAlgoFromScratchTest {
 			iterateForward.addActivityVisitor(new UpdateEarliestStartTimeWindowAtActLocations(stateManager, vrp.getTransportCosts()));
 			iterateForward.addActivityVisitor(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 			
-			iterateForward.addActivityVisitor(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
-			iterateForward.addActivityVisitor(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
+			iterateForward.addActivityVisitor(new UpdateOccuredDeliveriesAtActivityLevel(stateManager));
+			iterateForward.addActivityVisitor(new UpdateLoadAtActivityLevel(stateManager));
 			
 			final ReverseRouteActivityVisitor iterateBackward = new ReverseRouteActivityVisitor();
 			iterateBackward.addActivityVisitor(new UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
-			iterateBackward.addActivityVisitor(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
+			iterateBackward.addActivityVisitor(new UpdateFuturePickupsAtActivityLevel(stateManager));
 			
 			
 			InsertionStartsListener loadVehicleInDepot = new InsertionStartsListener() {
@@ -171,7 +167,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 			bestInsertion.addListener(loadVehicleInDepot);
 			bestInsertion.addListener(updateLoadAfterJobHasBeenInserted);
 			
-			VehicleRoutingProblemSolution iniSolution = new CreateInitialSolution(bestInsertion).createInitialSolution(vrp);
+			VehicleRoutingProblemSolution iniSolution = new BestInsertionInitialSolutionFactory(bestInsertion).createSolution(vrp);
 //			System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 			vra.addInitialSolution(iniSolution);
 			
