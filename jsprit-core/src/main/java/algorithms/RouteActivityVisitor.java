@@ -13,6 +13,7 @@ public class RouteActivityVisitor implements RouteVisitor{
 	@Override
 	public void visit(VehicleRoute route) {
 		if(visitors.isEmpty()) return;
+		if(route.isEmpty()) return;
 		begin(route);
 		for(TourActivity act : route.getTourActivities().getActivities()){
 			visit(act);

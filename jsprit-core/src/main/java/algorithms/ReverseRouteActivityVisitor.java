@@ -14,6 +14,7 @@ public class ReverseRouteActivityVisitor implements RouteVisitor{
 	@Override
 	public void visit(VehicleRoute route) {
 		if(visitors.isEmpty()) return;
+		if(route.isEmpty()) return;
 		begin(route);
 		Iterator<TourActivity> revIterator = route.getTourActivities().reverseActivityIterator();
 		while(revIterator.hasNext()){
