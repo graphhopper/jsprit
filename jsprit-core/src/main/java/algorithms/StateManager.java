@@ -42,35 +42,14 @@ interface StateManager {
 			return state;
 		}
 		
-//		public void setState(double val){
-//			state=val;
-//		}
 	}
 	
 	interface States {
 		
-//		void putState(String key, State state);
-		
 		State getState(String key);
 		
 	}
-	
-	interface StateId {
 		
-		String toString();
-		
-	}
-	
-	
-	
-//	Map<VehicleRoute, States> getRouteStates();
-	
-//	void put(VehicleRoute route, States states);
-	
-//	Map<TourActivity, States> getActivityStates();
-	
-//	void put(TourActivity act, States states);
-	
 	State getActivityState(TourActivity act, String stateType);
 	
 	State getRouteState(VehicleRoute route, String stateType);

@@ -66,6 +66,7 @@ public class SolutionPrinter {
 	 * @param solution
 	 * @param level
 	 */
+	@Deprecated
 	public static void print(VehicleRoutingProblemSolution solution, Print level){
 		if(level.equals(Print.CONCISE)){
 			print(solution);

@@ -20,7 +20,6 @@
  ******************************************************************************/
 package algorithms;
 
-import algorithms.StateManager.StateId;
 
 class StateTypes {
 	
@@ -42,7 +41,4 @@ class StateTypes {
 	
 	final static String PAST_DELIVERIES = "pastDeliveries";
 	
-	public static StateId createId(String stateId){
-		
-	}
 }
