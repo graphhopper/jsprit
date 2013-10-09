@@ -22,7 +22,7 @@ public class HardPickupAndDeliveryLoadConstraint implements HardRouteLevelConstr
 	@Override
 	public boolean fulfilled(InsertionContext insertionContext) {
 		if(insertionContext.getJob() instanceof Delivery){
-			int loadAtDepot = (int) stateManager.getRouteState(insertionContext.getRoute(), StateIdFactory.LOAD_AT_DEPOT).toDouble();
+			int loadAtDepot = (int) stateManager.getRouteState(insertionContext.getRoute(), StateIdFactory.LOAD_AT_BEGINNING).toDouble();
 			if(loadAtDepot + insertionContext.getJob().getCapacityDemand() > insertionContext.getNewVehicle().getCapacity()){
 				return false;
 			}

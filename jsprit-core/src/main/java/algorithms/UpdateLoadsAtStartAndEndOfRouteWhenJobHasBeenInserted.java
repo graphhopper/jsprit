@@ -38,9 +38,9 @@ public class UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted implements Jo
 		@Override
 		public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 			if(job2insert instanceof Delivery){
-				int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD_AT_DEPOT).toDouble();
+				int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD_AT_BEGINNING).toDouble();
 //				log.info("loadAtDepot="+loadAtDepot);
-				stateManager.putRouteState(inRoute, StateIdFactory.LOAD_AT_DEPOT, new StateImpl(loadAtDepot + job2insert.getCapacityDemand()));
+				stateManager.putRouteState(inRoute, StateIdFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot + job2insert.getCapacityDemand()));
 			}
 			else if(job2insert instanceof Pickup || job2insert instanceof Service){
 				int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD).toDouble();

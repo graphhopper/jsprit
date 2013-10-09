@@ -50,7 +50,7 @@ public class InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts implements I
 				loadAtEnd += j.getCapacityDemand();
 			}
 		}
-		stateManager.putRouteState(route, StateIdFactory.LOAD_AT_DEPOT, new StateImpl(loadAtDepot));
+		stateManager.putRouteState(route, StateIdFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot));
 		stateManager.putRouteState(route, StateIdFactory.LOAD, new StateImpl(loadAtEnd));
 	}
 

@@ -25,7 +25,7 @@ public class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements Har
 		int futurePicks;
 		int pastDeliveries;
 		if(prevAct instanceof Start){
-			loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateIdFactory.LOAD_AT_DEPOT).toDouble();
+			loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateIdFactory.LOAD_AT_BEGINNING).toDouble();
 			futurePicks = (int)stateManager.getRouteState(iFacts.getRoute(), StateIdFactory.LOAD).toDouble();
 			pastDeliveries = 0;
 		}

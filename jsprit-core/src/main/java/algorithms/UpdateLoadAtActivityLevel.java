@@ -46,7 +46,7 @@ public class UpdateLoadAtActivityLevel implements ActivityVisitor {
 	
 	@Override
 	public void begin(VehicleRoute route) {
-		currentLoad = (int) stateManager.getRouteState(route, StateIdFactory.LOAD_AT_DEPOT).toDouble();
+		currentLoad = (int) stateManager.getRouteState(route, StateIdFactory.LOAD_AT_BEGINNING).toDouble();
 		this.route = route;
 	}
 

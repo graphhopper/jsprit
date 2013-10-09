@@ -121,7 +121,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 								loadAtEnd += j.getCapacityDemand();
 							}
 						}
-						stateManager.putRouteState(route, StateIdFactory.LOAD_AT_DEPOT, new StateImpl(loadAtDepot));
+						stateManager.putRouteState(route, StateIdFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot));
 						stateManager.putRouteState(route, StateIdFactory.LOAD, new StateImpl(loadAtEnd));
 						iterateForward.visit(route);
 						iterateBackward.visit(route);
@@ -139,9 +139,9 @@ public class BuildPDVRPAlgoFromScratchTest {
 //					log.info("insert job " + job2insert.getClass().toString() + " job " + job2insert + "" + job2insert.getCapacityDemand() + " in route " + inRoute.getTourActivities());
 					
 					if(job2insert instanceof Delivery){
-						int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD_AT_DEPOT).toDouble();
+						int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD_AT_BEGINNING).toDouble();
 //						log.info("loadAtDepot="+loadAtDepot);
-						stateManager.putRouteState(inRoute, StateIdFactory.LOAD_AT_DEPOT, new StateImpl(loadAtDepot + job2insert.getCapacityDemand()));
+						stateManager.putRouteState(inRoute, StateIdFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot + job2insert.getCapacityDemand()));
 					}
 					if(job2insert instanceof Pickup){
 						int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD).toDouble();

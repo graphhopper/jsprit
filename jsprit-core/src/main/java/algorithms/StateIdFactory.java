@@ -26,27 +26,14 @@ import java.util.List;
 import algorithms.StateManager.StateId;
 
 public class StateIdFactory {
-//	public final static String LOAD = "load";
-	
-//	public final static String LOAD_AT_DEPOT = "loadAtDepot";
-	
-//	public final static String DURATION = "duration";
-	
-//	public final static String LATEST_OPERATION_START_TIME = "latestOST";
-	
-//	public final static String EARLIEST_OPERATION_START_TIME = "earliestOST";
-
-//	public static final String COSTS = "costs";
-	
-//	public final static String FUTURE_PICKS = "futurePicks";
-	
-//	public final static String PAST_DELIVERIES = "pastDeliveries";
 	
 	final static StateId LOAD = new StateIdImpl("load");
 	
 	final static StateId COSTS = new StateIdImpl("costs");
 	
-	final static StateId LOAD_AT_DEPOT = new StateIdImpl("loadAtDepot");
+	final static StateId LOAD_AT_BEGINNING = new StateIdImpl("loadAtBeginning");
+	
+	final static StateId LOAD_AT_END = new StateIdImpl("loadAtEnd");
 	
 	final static StateId DURATION = new StateIdImpl("duration");
 	
@@ -58,7 +45,7 @@ public class StateIdFactory {
 	
 	final static StateId PAST_DELIVERIES = new StateIdImpl("pastDeliveries");
 	
-	final static List<String> reservedIds = Arrays.asList("load","costs","loadAtDepot","duration","latestOST","earliestOST"
+	final static List<String> reservedIds = Arrays.asList("load","costs","loadAtBeginning","loadAtEnd","duration","latestOST","earliestOST"
 			,"futurePicks","pastDeliveries");
 			
 	

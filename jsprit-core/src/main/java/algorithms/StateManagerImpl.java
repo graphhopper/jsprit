@@ -148,7 +148,7 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 	
 	private State getDefaultRouteState(StateId stateId, VehicleRoute route){
 		if(stateId.equals(StateIdFactory.LOAD)) return new StateImpl(0);
-		if(stateId.equals(StateIdFactory.LOAD_AT_DEPOT)) return new StateImpl(0);
+		if(stateId.equals(StateIdFactory.LOAD_AT_BEGINNING)) return new StateImpl(0);
 		if(stateId.equals(StateIdFactory.COSTS)) return new StateImpl(0);
 		if(stateId.equals(StateIdFactory.DURATION)) return new StateImpl(0);
 		return null;
