@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import util.Neighborhood;
 import algorithms.ActivityInsertionCostCalculator.Marginals;
-import algorithms.constraints.HardRouteLevelConstraint;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;

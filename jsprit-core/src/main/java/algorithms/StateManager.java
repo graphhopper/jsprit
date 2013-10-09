@@ -25,12 +25,16 @@ import basics.route.VehicleRoute;
 
 public interface StateManager {
 	
-	interface State {
+	public interface StateId {
+		
+	}
+	
+	public interface State {
 		double toDouble();
 	}
 	
-	State getActivityState(TourActivity act, String stateType);
+	State getActivityState(TourActivity act, StateId stateId);
 	
-	State getRouteState(VehicleRoute route, String stateType);
+	State getRouteState(VehicleRoute route, StateId stateId);
 
 }

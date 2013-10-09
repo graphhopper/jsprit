@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
-import algorithms.states.StateUpdates.UpdateStates;
+import algorithms.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -120,8 +120,8 @@ public class TestTourStateUpdaterWithService {
 	@Test
 	public void testCalculatedCost() {
 		updateStates.update(vehicleRoute);
-		assertEquals(40.0, states.getRouteState(vehicleRoute,StateTypes.COSTS).toDouble(), 0.05);
-		assertEquals(10, states.getRouteState(vehicleRoute, StateTypes.LOAD).toDouble(), 0.05);
+		assertEquals(40.0, states.getRouteState(vehicleRoute,StateIdFactory.COSTS).toDouble(), 0.05);
+		assertEquals(10, states.getRouteState(vehicleRoute, StateIdFactory.LOAD).toDouble(), 0.05);
 	}
 	
 	@Test
@@ -137,27 +137,27 @@ public class TestTourStateUpdaterWithService {
 	@Test
 	public void testStatesOfAct1(){
 		updateStates.update(vehicleRoute);
-		assertEquals(10.0, states.getActivityState(tour.getActivities().get(0), StateTypes.COSTS).toDouble(),0.05);
-		assertEquals(5.0, states.getActivityState(tour.getActivities().get(0), StateTypes.LOAD).toDouble(),0.05);
+		assertEquals(10.0, states.getActivityState(tour.getActivities().get(0), StateIdFactory.COSTS).toDouble(),0.05);
+		assertEquals(5.0, states.getActivityState(tour.getActivities().get(0), StateIdFactory.LOAD).toDouble(),0.05);
 //		assertEquals(10.0, states.getActivityState(tour.getActivities().get(0), StateTypes.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
-		assertEquals(20.0, states.getActivityState(tour.getActivities().get(0), StateTypes.LATEST_OPERATION_START_TIME).toDouble(),0.05);
+		assertEquals(20.0, states.getActivityState(tour.getActivities().get(0), StateIdFactory.LATEST_OPERATION_START_TIME).toDouble(),0.05);
 	}
 	
 	@Test
 	public void testStatesOfAct2(){
 		updateStates.update(vehicleRoute);
 		
-		assertEquals(30.0, states.getActivityState(tour.getActivities().get(1), StateTypes.COSTS).toDouble(),0.05);
-		assertEquals(10.0, states.getActivityState(tour.getActivities().get(1), StateTypes.LOAD).toDouble(),0.05);
+		assertEquals(30.0, states.getActivityState(tour.getActivities().get(1), StateIdFactory.COSTS).toDouble(),0.05);
+		assertEquals(10.0, states.getActivityState(tour.getActivities().get(1), StateIdFactory.LOAD).toDouble(),0.05);
 //		assertEquals(10.0, states.getActivityState(tour.getActivities().get(0), StateTypes.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
-		assertEquals(40.0, states.getActivityState(tour.getActivities().get(1), StateTypes.LATEST_OPERATION_START_TIME).toDouble(),0.05);
+		assertEquals(40.0, states.getActivityState(tour.getActivities().get(1), StateIdFactory.LATEST_OPERATION_START_TIME).toDouble(),0.05);
 	}
 	
 	@Test
 	public void testStatesOfAct3(){
 		updateStates.update(vehicleRoute);
 		
-		assertEquals(40.0, states.getRouteState(vehicleRoute, StateTypes.COSTS).toDouble(), 0.05);
+		assertEquals(40.0, states.getRouteState(vehicleRoute, StateIdFactory.COSTS).toDouble(), 0.05);
 		assertEquals(40.0, vehicleRoute.getEnd().getArrTime(),0.05);
 		assertEquals(50.0, vehicleRoute.getEnd().getTheoreticalLatestOperationStartTime(),0.05);
 	}

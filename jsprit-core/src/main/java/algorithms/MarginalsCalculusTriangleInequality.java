@@ -20,7 +20,6 @@
  ******************************************************************************/
 package algorithms;
 
-import algorithms.constraints.HardActivityLevelConstraint;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;

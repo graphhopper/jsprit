@@ -114,7 +114,7 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	}
 
 	private int getCurrentLoad(VehicleRoute route) {
-		return (int) states.getRouteState(route, StateTypes.LOAD).toDouble();
+		return (int) states.getRouteState(route, StateIdFactory.LOAD).toDouble();
 	}
 
 }

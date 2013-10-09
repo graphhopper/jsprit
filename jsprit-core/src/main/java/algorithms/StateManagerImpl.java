@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import algorithms.StateManager.State;
 import basics.Job;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
@@ -44,7 +43,7 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 
 	private interface States {
 		
-		State getState(String key);
+		State getState(StateId key);
 		
 	}
 	
@@ -65,14 +64,14 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 	
 	private static class StatesImpl implements States{
 
-		private Map<String,State> states = new HashMap<String, State>();
+		private Map<StateId,State> states = new HashMap<StateId, State>();
 		
-		public void putState(String key, State state) {
+		public void putState(StateId key, State state) {
 			states.put(key, state);
 		}
 
 		@Override
-		public State getState(String key) {
+		public State getState(StateId key) {
 			return states.get(key);
 		}
 
@@ -115,65 +114,65 @@ public class StateManagerImpl implements StateManager, IterationStartsListener, 
 	}
 
 	@Override
-	public State getActivityState(TourActivity act, String stateType) {
+	public State getActivityState(TourActivity act, StateId stateId) {
 		if(!activityStates.containsKey(act)){
-			return getDefaultActState(stateType,act);
+			return getDefaultActState(stateId,act);
 		}
 		StatesImpl actStates = (StatesImpl) activityStates.get(act);
-		State state = actStates.getState(stateType);
+		State state = actStates.getState(stateId);
 		if(state == null){
-			return getDefaultActState(stateType,act);
+			return getDefaultActState(stateId,act);
 		}
 		return state;
 	}
 	
-	public void putActivityState(TourActivity act, String stateType, State state){
+	public void putActivityState(TourActivity act, StateId stateId, State state){
 		if(!activityStates.containsKey(act)){
 			activityStates.put(act, new StatesImpl());
 		}
 		StatesImpl actStates = (StatesImpl) activityStates.get(act);
-		actStates.putState(stateType, state);
+		actStates.putState(stateId, state);
 	}
 	
 	
-	private State getDefaultActState(String stateType, TourActivity act){
-		if(stateType.equals(StateTypes.LOAD)) return new StateImpl(0);
-		if(stateType.equals(StateTypes.COSTS)) return new StateImpl(0);
-		if(stateType.equals(StateTypes.DURATION)) return new StateImpl(0);
-		if(stateType.equals(StateTypes.EARLIEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalEarliestOperationStartTime());
-		if(stateType.equals(StateTypes.LATEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalLatestOperationStartTime());
-		if(stateType.equals(StateTypes.FUTURE_PICKS)) return new StateImpl(0);
-		if(stateType.equals(StateTypes.PAST_DELIVERIES)) return new StateImpl(0);
+	private State getDefaultActState(StateId stateId, TourActivity act){
+		if(stateId.equals(StateIdFactory.LOAD)) return new StateImpl(0);
+		if(stateId.equals(StateIdFactory.COSTS)) return new StateImpl(0);
+		if(stateId.equals(StateIdFactory.DURATION)) return new StateImpl(0);
+		if(stateId.equals(StateIdFactory.EARLIEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalEarliestOperationStartTime());
+		if(stateId.equals(StateIdFactory.LATEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalLatestOperationStartTime());
+		if(stateId.equals(StateIdFactory.FUTURE_PICKS)) return new StateImpl(0);
+		if(stateId.equals(StateIdFactory.PAST_DELIVERIES)) return new StateImpl(0);
 		return null;
 	}
 	
-	private State getDefaultRouteState(String stateType, VehicleRoute route){
-		if(stateType.equals(StateTypes.LOAD)) return new StateImpl(0);
-		if(stateType.equals(StateTypes.LOAD_AT_DEPOT)) return new StateImpl(0);
-		if(stateType.equals(StateTypes.COSTS)) return new StateImpl(0);
-		if(stateType.equals(StateTypes.DURATION)) return new StateImpl(0);
+	private State getDefaultRouteState(StateId stateId, VehicleRoute route){
+		if(stateId.equals(StateIdFactory.LOAD)) return new StateImpl(0);
+		if(stateId.equals(StateIdFactory.LOAD_AT_DEPOT)) return new StateImpl(0);
+		if(stateId.equals(StateIdFactory.COSTS)) return new StateImpl(0);
+		if(stateId.equals(StateIdFactory.DURATION)) return new StateImpl(0);
 		return null;
 	}
 
 	@Override
-	public State getRouteState(VehicleRoute route, String stateType) {
+	public State getRouteState(VehicleRoute route, StateId stateId) {
 		if(!vehicleRouteStates.containsKey(route)){
-			return getDefaultRouteState(stateType,route);
+			return getDefaultRouteState(stateId,route);
 		}
 		StatesImpl routeStates = (StatesImpl) vehicleRouteStates.get(route);
-		State state = routeStates.getState(stateType);
+		State state = routeStates.getState(stateId);
 		if(state == null){
-			return getDefaultRouteState(stateType, route);
+			return getDefaultRouteState(stateId, route);
 		}
 		return state;
 	}
 	
-	public void putRouteState(VehicleRoute route, String stateType, State state){
+	public void putRouteState(VehicleRoute route, StateId stateId, State state){
 		if(!vehicleRouteStates.containsKey(route)){
 			vehicleRouteStates.put(route, new StatesImpl());
 		}
 		StatesImpl routeStates = (StatesImpl) vehicleRouteStates.get(route);
-		routeStates.putState(stateType, state);
+		routeStates.putState(stateId, state);
 	}
 
 	@Override

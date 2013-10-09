@@ -1,8 +1,5 @@
 package algorithms;
 
-import algorithms.constraints.ConstraintManager;
-import algorithms.constraints.HardActivityLevelConstraint;
-import algorithms.constraints.HardRouteLevelConstraint;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.FleetSize;
 

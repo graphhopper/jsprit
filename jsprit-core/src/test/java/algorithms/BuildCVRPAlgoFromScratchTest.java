@@ -29,11 +29,7 @@ import org.junit.Test;
 
 import util.Solutions;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
-import algorithms.constraints.HardActivityLevelConstraint;
-import algorithms.constraints.HardLoadConstraint;
 import algorithms.selectors.SelectBest;
-import algorithms.states.UpdateCostsAtRouteLevel;
-import algorithms.states.UpdateLoadAtRouteLevel;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;

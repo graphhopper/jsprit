@@ -139,7 +139,7 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		/**
 		 * pre-check whether vehicle-capacity of new vehicle is sufficient to load service.
 		 */
-		if(states.getRouteState(currentRoute, StateTypes.LOAD).toDouble() + service.getCapacityDemand() > newVehicle.getCapacity()){
+		if(states.getRouteState(currentRoute, StateIdFactory.LOAD).toDouble() + service.getCapacityDemand() > newVehicle.getCapacity()){
 			return InsertionData.noInsertionFound();
 		}
 		
@@ -271,7 +271,7 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 			/**
 			 * compute cost-diff of tour with and without new activity --> insertion_costs
 			 */
-			double insertion_costs = auxilliaryPathCostCalculator.costOfPath(wholeTour, start.getEndTime(), newDriver, newVehicle) - states.getRouteState(currentRoute,StateTypes.COSTS).toDouble();
+			double insertion_costs = auxilliaryPathCostCalculator.costOfPath(wholeTour, start.getEndTime(), newDriver, newVehicle) - states.getRouteState(currentRoute,StateIdFactory.COSTS).toDouble();
 			
 			/**
 			 * if better than best known, make it the best known
@@ -316,9 +316,9 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 	private double pathCost_oldVehicle(VehicleRoute vehicleRoute, List<TourActivity> path) {
 		TourActivity act = path.get(path.size()-1);
 		if(act instanceof End){
-			return states.getRouteState(vehicleRoute,StateTypes.COSTS).toDouble();
+			return states.getRouteState(vehicleRoute,StateIdFactory.COSTS).toDouble();
 		}
-		return states.getActivityState(act,StateTypes.COSTS).toDouble();
+		return states.getActivityState(act,StateIdFactory.COSTS).toDouble();
 	}
 
 	/**

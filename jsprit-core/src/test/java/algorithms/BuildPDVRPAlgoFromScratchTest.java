@@ -28,18 +28,7 @@ import org.junit.Test;
 
 import algorithms.StateManagerImpl.StateImpl;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
-import algorithms.constraints.ConstraintManager;
-import algorithms.constraints.HardPickupAndDeliveryActivityLevelConstraint;
-import algorithms.constraints.HardPickupAndDeliveryLoadConstraint;
-import algorithms.constraints.HardTimeWindowActivityLevelConstraint;
 import algorithms.selectors.SelectBest;
-import algorithms.states.UpdateActivityTimes;
-import algorithms.states.UpdateCostsAtAllLevels;
-import algorithms.states.UpdateEarliestStartTimeWindowAtActLocations;
-import algorithms.states.UpdateFuturePickupsAtActivityLevel;
-import algorithms.states.UpdateLatestOperationStartTimeAtActLocations;
-import algorithms.states.UpdateLoadAtActivityLevel;
-import algorithms.states.UpdateOccuredDeliveriesAtActivityLevel;
 import basics.Delivery;
 import basics.Job;
 import basics.Pickup;
@@ -132,8 +121,8 @@ public class BuildPDVRPAlgoFromScratchTest {
 								loadAtEnd += j.getCapacityDemand();
 							}
 						}
-						stateManager.putRouteState(route, StateTypes.LOAD_AT_DEPOT, new StateImpl(loadAtDepot));
-						stateManager.putRouteState(route, StateTypes.LOAD, new StateImpl(loadAtEnd));
+						stateManager.putRouteState(route, StateIdFactory.LOAD_AT_DEPOT, new StateImpl(loadAtDepot));
+						stateManager.putRouteState(route, StateIdFactory.LOAD, new StateImpl(loadAtEnd));
 						iterateForward.visit(route);
 						iterateBackward.visit(route);
 					}
@@ -150,14 +139,14 @@ public class BuildPDVRPAlgoFromScratchTest {
 //					log.info("insert job " + job2insert.getClass().toString() + " job " + job2insert + "" + job2insert.getCapacityDemand() + " in route " + inRoute.getTourActivities());
 					
 					if(job2insert instanceof Delivery){
-						int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateTypes.LOAD_AT_DEPOT).toDouble();
+						int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD_AT_DEPOT).toDouble();
 //						log.info("loadAtDepot="+loadAtDepot);
-						stateManager.putRouteState(inRoute, StateTypes.LOAD_AT_DEPOT, new StateImpl(loadAtDepot + job2insert.getCapacityDemand()));
+						stateManager.putRouteState(inRoute, StateIdFactory.LOAD_AT_DEPOT, new StateImpl(loadAtDepot + job2insert.getCapacityDemand()));
 					}
 					if(job2insert instanceof Pickup){
-						int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateTypes.LOAD).toDouble();
+						int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD).toDouble();
 //						log.info("loadAtEnd="+loadAtEnd);
-						stateManager.putRouteState(inRoute, StateTypes.LOAD, new StateImpl(loadAtEnd + job2insert.getCapacityDemand()));
+						stateManager.putRouteState(inRoute, StateIdFactory.LOAD, new StateImpl(loadAtEnd + job2insert.getCapacityDemand()));
 					}
 					iterateForward.visit(inRoute);
 					iterateBackward.visit(inRoute);

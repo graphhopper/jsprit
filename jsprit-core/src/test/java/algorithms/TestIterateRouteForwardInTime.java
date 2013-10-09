@@ -30,10 +30,6 @@ import org.junit.Test;
 
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
-import algorithms.states.UpdateActivityTimes;
-import algorithms.states.UpdateCostsAtAllLevels;
-import algorithms.states.UpdateEarliestStartTimeWindowAtActLocations;
-import algorithms.states.UpdateLoadAtAllLevels;
 import basics.Job;
 import basics.Service;
 import basics.costs.DefaultVehicleRoutingActivityCosts;
@@ -156,8 +152,8 @@ public class TestIterateRouteForwardInTime {
 		forwardInTime.addActivityVisitor(new UpdateLoadAtAllLevels(stateManager));
 		forwardInTime.visit(vehicleRoute);
 		
-		assertEquals(5.0, stateManager.getActivityState(firstAct,StateTypes.LOAD).toDouble(), 0.01);
-		assertEquals(10.0, stateManager.getActivityState(secondAct,StateTypes.LOAD).toDouble(), 0.01);
+		assertEquals(5.0, stateManager.getActivityState(firstAct,StateIdFactory.LOAD).toDouble(), 0.01);
+		assertEquals(10.0, stateManager.getActivityState(secondAct,StateIdFactory.LOAD).toDouble(), 0.01);
 	}
 	
 	
@@ -181,9 +177,9 @@ public class TestIterateRouteForwardInTime {
 		forwardInTime.addActivityVisitor(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
 		forwardInTime.visit(vehicleRoute);
 		
-		assertEquals(10.0, stateManager.getActivityState(firstAct, StateTypes.COSTS).toDouble(),0.05);
-		assertEquals(5.0, stateManager.getActivityState(firstAct, StateTypes.LOAD).toDouble(),0.05);
-		assertEquals(10.0, stateManager.getActivityState(firstAct, StateTypes.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
+		assertEquals(10.0, stateManager.getActivityState(firstAct, StateIdFactory.COSTS).toDouble(),0.05);
+		assertEquals(5.0, stateManager.getActivityState(firstAct, StateIdFactory.LOAD).toDouble(),0.05);
+		assertEquals(10.0, stateManager.getActivityState(firstAct, StateIdFactory.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
 //		assertEquals(20.0, states.getState(tour.getActivities().get(0)).getLatestOperationStart(),0.05);
 	}
 	
@@ -196,9 +192,9 @@ public class TestIterateRouteForwardInTime {
 		forwardInTime.addActivityVisitor(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
 		forwardInTime.visit(vehicleRoute);
 		
-		assertEquals(30.0, stateManager.getActivityState(secondAct, StateTypes.COSTS).toDouble(),0.05);
-		assertEquals(10.0, stateManager.getActivityState(secondAct, StateTypes.LOAD).toDouble(),0.05);
-		assertEquals(30.0, stateManager.getActivityState(secondAct, StateTypes.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
+		assertEquals(30.0, stateManager.getActivityState(secondAct, StateIdFactory.COSTS).toDouble(),0.05);
+		assertEquals(10.0, stateManager.getActivityState(secondAct, StateIdFactory.LOAD).toDouble(),0.05);
+		assertEquals(30.0, stateManager.getActivityState(secondAct, StateIdFactory.EARLIEST_OPERATION_START_TIME).toDouble(),0.05);
 //		assertEquals(40.0, states.getState(tour.getActivities().get(1)).getLatestOperationStart(),0.05);
 	}
 	
@@ -210,7 +206,7 @@ public class TestIterateRouteForwardInTime {
 		forwardInTime.addActivityVisitor(new UpdateCostsAtAllLevels(new DefaultVehicleRoutingActivityCosts(), cost, stateManager));
 		forwardInTime.visit(vehicleRoute);
 		
-		assertEquals(40.0, stateManager.getRouteState(vehicleRoute,StateTypes.COSTS).toDouble(), 0.05);
+		assertEquals(40.0, stateManager.getRouteState(vehicleRoute,StateIdFactory.COSTS).toDouble(), 0.05);
 		assertEquals(40.0, vehicleRoute.getEnd().getArrTime(),0.05);
 		assertEquals(50.0, vehicleRoute.getEnd().getTheoreticalLatestOperationStartTime(),0.05);
 	}

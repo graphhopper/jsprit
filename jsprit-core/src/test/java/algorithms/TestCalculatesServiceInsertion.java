@@ -32,9 +32,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import algorithms.constraints.HardLoadConstraint;
-import algorithms.constraints.HardTimeWindowActivityLevelConstraint;
-import algorithms.states.StateUpdates.UpdateStates;
+import algorithms.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
