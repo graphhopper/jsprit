@@ -49,8 +49,8 @@ class RuinAndRecreateModule implements SearchStrategyModule{
 	public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
 		Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
 		insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobs);
-		double totalCost = RouteUtils.getTotalCost(vrpSolution.getRoutes());
-		vrpSolution.setCost(totalCost);
+//		double totalCost = RouteUtils.getTotalCost(vrpSolution.getRoutes());
+//		vrpSolution.setCost(totalCost);
 		return vrpSolution;
 	}
 

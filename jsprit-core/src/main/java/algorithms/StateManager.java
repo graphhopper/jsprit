@@ -55,6 +55,12 @@ interface StateManager {
 		
 	}
 	
+	interface StateId {
+		
+		String toString();
+		
+	}
+	
 	
 	
 //	Map<VehicleRoute, States> getRouteStates();

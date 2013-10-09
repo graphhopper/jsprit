@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 import basics.Job;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
+import basics.algo.SolutionCostCalculator;
 import basics.route.DriverImpl;
 import basics.route.TourActivities;
 import basics.route.Vehicle;
@@ -53,15 +54,18 @@ final class CreateInitialSolution implements InitialSolutionFactory {
 
 	private final InsertionStrategy insertion;
 	
+	private SolutionCostCalculator solutionCostCalculator;
+	
 	private boolean generateAsMuchAsRoutesAsVehiclesExist = false;
 	
 	public void setGenerateAsMuchAsRoutesAsVehiclesExist(boolean generateAsMuchAsRoutesAsVehiclesExist) {
 		this.generateAsMuchAsRoutesAsVehiclesExist = generateAsMuchAsRoutesAsVehiclesExist;
 	}
 
-	public CreateInitialSolution(InsertionStrategy insertionStrategy) {
+	public CreateInitialSolution(InsertionStrategy insertionStrategy, SolutionCostCalculator solutionCostCalculator) {
 		super();
 		this.insertion = insertionStrategy;
+		this.solutionCostCalculator = solutionCostCalculator;
 	}
 
 	@Override
@@ -74,17 +78,11 @@ final class CreateInitialSolution implements InitialSolutionFactory {
 			}
 		}
 		insertion.insertJobs(vehicleRoutes, getUnassignedJobs(vrp));
-		double totalCost = getTotalCost(vehicleRoutes);
+//		double totalCost = getTotalCost(vehicleRoutes);
 		logger.info("creation done");
-		return new VehicleRoutingProblemSolution(vehicleRoutes, totalCost);
-	}
-
-	private double getTotalCost(List<VehicleRoute> serviceProviders) {
-		double c = 0.0;
-		for(VehicleRoute a : serviceProviders){
-			c += a.getCost();
-		}
-		return c;
+		VehicleRoutingProblemSolution vehicleRoutingProblemSolution = new VehicleRoutingProblemSolution(vehicleRoutes, 0.0);
+		solutionCostCalculator.calculateCosts(vehicleRoutingProblemSolution);
+		return vehicleRoutingProblemSolution;
 	}
 
 	private List<Job> getUnassignedJobs(VehicleRoutingProblem vrp) {

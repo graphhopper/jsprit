@@ -20,7 +20,7 @@
  ******************************************************************************/
 package basics.route;
 
-
+@Deprecated
 public interface VehicleRouteCostCalculator {
 	
 	public void addTransportCost(double cost);

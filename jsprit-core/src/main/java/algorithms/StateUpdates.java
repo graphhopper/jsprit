@@ -56,6 +56,7 @@ import basics.route.Start;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleRoute;
+import basics.route.VehicleType;
 
 class StateUpdates {
 	
@@ -97,13 +98,13 @@ class StateUpdates {
 			
 //			IterateRouteForwardInTime forwardInTime = new IterateRouteForwardInTime(tpCosts);
 //			forwardInTime.addListener(new UpdateCostsAtAllLevels(actCosts, tpCosts, states));
-			for(VehicleRoute route : vehicleRoutes){
-				if(route.isEmpty()) continue;
-				route.getVehicleRouteCostCalculator().reset();
-				route.getVehicleRouteCostCalculator().addOtherCost(states.getRouteState(route, StateTypes.COSTS).toDouble());
-				route.getVehicleRouteCostCalculator().price(route.getVehicle());
+//			for(VehicleRoute route : vehicleRoutes){
+//				if(route.isEmpty()) continue;
+//				route.getVehicleRouteCostCalculator().reset();
+//				route.getVehicleRouteCostCalculator().addOtherCost(states.getRouteState(route, StateTypes.COSTS).toDouble());
+//				route.getVehicleRouteCostCalculator().price(route.getVehicle());
 //				forwardInTime.iterate(route);
-			}
+//			}
 			
 		}
 
@@ -188,8 +189,8 @@ class StateUpdates {
 			double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), act.getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 			double actCost = activityCost.getActivityCost(act, timeTracker.getActArrTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 
-			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
-			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
+//			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
+//			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
 			
 			totalOperationCost += transportCost;
 			totalOperationCost += actCost;
@@ -206,23 +207,32 @@ class StateUpdates {
 			double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), vehicleRoute.getEnd().getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 			double actCost = activityCost.getActivityCost(vehicleRoute.getEnd(), timeTracker.getActEndTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 			
-			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
-			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
+//			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
+//			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
 			
 			totalOperationCost += transportCost;
 			totalOperationCost += actCost;
+			totalOperationCost += getFixCosts();
 			
 			states.putRouteState(vehicleRoute, StateTypes.COSTS, new StateImpl(totalOperationCost));
 			
 			//this is rather strange and likely to change
-			vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getDriver());
-			vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getVehicle());
-			vehicleRoute.getVehicleRouteCostCalculator().finish();
+//			vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getDriver());
+//			vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getVehicle());
+//			vehicleRoute.getVehicleRouteCostCalculator().finish();
 			
 			startTimeAtPrevAct = 0.0;
 			prevAct = null;
 			vehicleRoute = null;
 			totalOperationCost = 0.0;
+		}
+
+		private double getFixCosts() {
+			Vehicle vehicle = vehicleRoute.getVehicle();
+			if(vehicle == null) return 0.0;
+			VehicleType type = vehicle.getType();
+			if(type == null) return 0.0;
+			return type.getVehicleCostParams().fix;
 		}
 
 	}

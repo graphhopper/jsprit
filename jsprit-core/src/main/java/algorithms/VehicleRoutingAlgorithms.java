@@ -36,12 +36,6 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
 import algorithms.HardConstraints.ConstraintManager;
-import algorithms.HardConstraints.HardTimeWindowActivityLevelConstraint;
-import algorithms.StateUpdates.UpdateActivityTimes;
-import algorithms.StateUpdates.UpdateCostsAtAllLevels;
-import algorithms.StateUpdates.UpdateEarliestStartTimeWindowAtActLocations;
-import algorithms.StateUpdates.UpdateLatestOperationStartTimeAtActLocations;
-import algorithms.StateUpdates.UpdateStates;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.InsertionStrategyKey;
@@ -68,12 +62,14 @@ import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategy.DiscoveredSolution;
 import basics.algo.SearchStrategyManager;
 import basics.algo.SearchStrategyModule;
+import basics.algo.SolutionCostCalculator;
 import basics.algo.TimeBreaker;
 import basics.algo.VariationCoefficientBreaker;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.AlgorithmConfig;
 import basics.io.AlgorithmConfigXmlReader;
+import basics.route.VehicleRoute;
 
 
 
@@ -474,7 +470,8 @@ public class VehicleRoutingAlgorithms {
 			String name = getName(strategyConfig);
 			SolutionAcceptor acceptor = getAcceptor(strategyConfig,vrp,algorithmListeners,definedClasses,solutionMemory);
 			SolutionSelector selector = getSelector(strategyConfig,vrp,algorithmListeners,definedClasses);
-			SearchStrategy strategy = new SearchStrategy(selector, acceptor);
+			SolutionCostCalculator costCalculator = getCostCalculator(stateManager);
+			SearchStrategy strategy = new SearchStrategy(selector, acceptor, costCalculator);
 			strategy.setName(name);
 			List<HierarchicalConfiguration> modulesConfig = strategyConfig.configurationsAt("modules.module");
 			for(HierarchicalConfiguration moduleConfig : modulesConfig){
@@ -530,6 +527,21 @@ public class VehicleRoutingAlgorithms {
 		registerListeners(metaAlgorithm,algorithmListeners);
 		registerInsertionListeners(definedClasses,insertionListeners);
 		return metaAlgorithm;	
+	}
+
+	private static SolutionCostCalculator getCostCalculator(final StateManagerImpl stateManager) {
+		SolutionCostCalculator calc = new SolutionCostCalculator() {
+			
+			@Override
+			public void calculateCosts(VehicleRoutingProblemSolution solution) {
+				double costs = 0.0;
+				for(VehicleRoute route : solution.getRoutes()){
+					costs += stateManager.getRouteState(route, StateTypes.COSTS).toDouble();
+				}
+				solution.setCost(costs);
+			}
+		};
+		return calc;
 	}
 
 	private static VehicleFleetManager createFleetManager(final VehicleRoutingProblem vrp) {
@@ -611,7 +623,7 @@ public class VehicleRoutingAlgorithms {
 		metaAlgorithm.getAlgorithmListeners().addAll(algorithmListeners);
 	}
 	
-	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
+	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, final StateManagerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
 		List<HierarchicalConfiguration> modConfigs = config.configurationsAt("construction.insertion");
 		if(modConfigs == null) return null;
 		if(modConfigs.isEmpty()) return null;
@@ -636,12 +648,10 @@ public class VehicleRoutingAlgorithms {
 
 			@Override
 			public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
-
-				CreateInitialSolution createInitialSolution = new CreateInitialSolution(finalInsertionStrategy);
+				CreateInitialSolution createInitialSolution = new CreateInitialSolution(finalInsertionStrategy, getCostCalculator(routeStates));
 				createInitialSolution.setGenerateAsMuchAsRoutesAsVehiclesExist(false);
 				VehicleRoutingProblemSolution vrpSol = createInitialSolution.createInitialSolution(vrp);
 				solutions.add(vrpSol);
-
 			}
 		};
 
