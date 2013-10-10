@@ -70,6 +70,7 @@ import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.AlgorithmConfig;
 import basics.io.AlgorithmConfigXmlReader;
+import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
 
@@ -552,9 +553,17 @@ public class VehicleRoutingAlgorithms {
 			public void calculateCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, StateIdFactory.COSTS).toDouble();
+
+					costs += stateManager.getRouteState(route, StateIdFactory.COSTS).toDouble() + getFixedCosts(route.getVehicle());
+
 				}
 				solution.setCost(costs);
+			}
+
+			private double getFixedCosts(Vehicle vehicle) {
+				if(vehicle == null) return 0.0;
+				if(vehicle.getType() == null) return 0.0;
+				return vehicle.getType().getVehicleCostParams().fix;
 			}
 		};
 		return calc;

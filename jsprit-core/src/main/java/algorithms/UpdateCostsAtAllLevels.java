@@ -99,7 +99,7 @@ public class UpdateCostsAtAllLevels implements ActivityVisitor{
 		
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
-		totalOperationCost += getFixCosts(vehicleRoute.getVehicle());
+//		totalOperationCost += getFixCosts(vehicleRoute.getVehicle());
 		
 		states.putRouteState(vehicleRoute, StateIdFactory.COSTS, new StateImpl(totalOperationCost));
 		
