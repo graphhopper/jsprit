@@ -5,7 +5,7 @@ It is lightweight and easy-to-use, and based on heuristics currently solving
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/capacitated-vrp/" target="_blank">Capacitated VRP</a>
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/" target="_blank">Multiple Depot VRP</a>
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-time-windows" target="_blank">VRP with Time Windows</a>
-- <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-backhauls/" target="_blank">VRP with Backhauls</a>
+- <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-backhauls/" target="_blank">VRP with Backhauls</a> (transportation from/to a depot)
 - VRP with Heterogeneous Fleet
 - Time-dependent VRP
 - Various combination of these types
