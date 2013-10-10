@@ -20,7 +20,7 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 ##In Development
 - continues improvement of code, handling and performance
 - stable API to easily build algorithms from scratch
-- VRP with pickup and deliveries
+- VRP with pickups and deliveries
 - release 1.0.0
 
 ##Documentation
