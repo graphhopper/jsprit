@@ -212,7 +212,7 @@ class StateUpdates {
 			
 			totalOperationCost += transportCost;
 			totalOperationCost += actCost;
-			totalOperationCost += getFixCosts();
+//			totalOperationCost += getFixCosts();
 			
 			states.putRouteState(vehicleRoute, StateTypes.COSTS, new StateImpl(totalOperationCost));
 			

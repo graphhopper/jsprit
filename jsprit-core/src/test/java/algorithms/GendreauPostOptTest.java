@@ -186,8 +186,8 @@ public class GendreauPostOptTest {
 		routes.add(route);
 //		routes.add(new VehicleRoute(getEmptyTour(),getDriver(),getNoVehicle()));
 //		routes.add(new VehicleRoute(getEmptyTour(),getDriver(),getNoVehicle()));
-
-		VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(routes, states.getRouteState(route, StateTypes.COSTS).toDouble());
+		
+		VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(routes, states.getRouteState(route, StateTypes.COSTS).toDouble() + getFixedCosts(routes));
 		
 		assertEquals(110.0, sol.getCost(), 0.5);
 		
@@ -209,10 +209,16 @@ public class GendreauPostOptTest {
 		assertEquals(80.0,newSolution.getCost(),0.5);
 	}
 	
+	private double getFixedCosts(Collection<VehicleRoute> routes) {
+		double c = 0.0;
+		for(VehicleRoute r : routes){ c += r.getVehicle().getType().getVehicleCostParams().fix; }
+		return c;
+	}
+
 	private double getCosts(VehicleRoutingProblemSolution newSolution, StateManagerImpl states) {
 		double c = 0.0;
 		for(VehicleRoute r : newSolution.getRoutes()){
-			c += states.getRouteState(r, StateTypes.COSTS).toDouble();
+			c += states.getRouteState(r, StateTypes.COSTS).toDouble() + r.getVehicle().getType().getVehicleCostParams().fix;
 		}
 		return c;
 	}
