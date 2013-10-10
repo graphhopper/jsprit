@@ -6,7 +6,7 @@ import basics.route.TourActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
-class ActivityTimeTracker implements ActivityVisitor{
+public class ActivityTimeTracker implements ActivityVisitor{
 
 	private ForwardTransportTime transportTime;
 	

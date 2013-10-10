@@ -1,7 +1,6 @@
 package algorithms;
 
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblem.FleetSize;
 
 public class BestInsertionBuilder implements InsertionStrategyBuilder{
 
@@ -14,6 +13,10 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 	private ConstraintManager constraintManager;
 
 	private VehicleFleetManager fleetManager;
+
+	private double weightOfFixedCosts;
+
+	private boolean considerFixedCosts = false;
 	
 	public BestInsertionBuilder(VehicleRoutingProblem vrp, StateManager stateManager) {
 		super();
@@ -36,6 +39,11 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		local = true;
 	};
 	
+	public void considerFixedCosts(double weightOfFixedCosts){
+		this.weightOfFixedCosts = weightOfFixedCosts;
+		this.considerFixedCosts  = true;
+	}
+	
 	public void setFleetManager(VehicleFleetManager fleetManager){
 		this.fleetManager = fleetManager;
 	}
@@ -52,15 +60,9 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		calcBuilder.setStates(stateManager);
 		calcBuilder.setVehicleRoutingProblem(vrp);
 		calcBuilder.setVehicleFleetManager(fleetManager);
+		if(considerFixedCosts) calcBuilder.considerFixedCosts(weightOfFixedCosts);
 		JobInsertionCalculator jobInsertions = calcBuilder.build();
 		return new BestInsertion(jobInsertions);
-	}
-
-	private VehicleFleetManager createFleetManager(VehicleRoutingProblem vrp) {
-		if(vrp.getFleetSize().equals(FleetSize.INFINITE)){
-			return new InfiniteVehicles(vrp.getVehicles());
-		}
-		else return new VehicleFleetManagerImpl(vrp.getVehicles());
 	}
 
 }
