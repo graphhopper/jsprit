@@ -20,6 +20,8 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 ##In Development
 - continues improvement of code, handling and performance
 - stable API to easily build algorithms from scratch
+- release 1.0.0
+- VRP with pickup and deliveries
 
 ##Documentation
 
