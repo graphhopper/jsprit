@@ -6,7 +6,7 @@ It is lightweight and easy-to-use, and based on heuristics currently solving
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/" target="_blank">Multiple Depot VRP</a>
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-time-windows" target="_blank">VRP with Time Windows</a>
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-backhauls/" target="_blank">VRP with Backhauls</a>
-- <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-pick-up-and-delivering/" target="_blank">VRP with Pickups and Deliveries (all Pickups and Deliveries are Depot-bound)</a>
+- <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-pick-up-and-delivering/" target="_blank">VRP with Pickups and Deliveries</a>
 - VRP with Heterogeneous Fleet
 - Time-dependent VRP
 - Various combination of these types
