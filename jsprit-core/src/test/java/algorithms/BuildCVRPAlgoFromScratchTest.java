@@ -36,8 +36,10 @@ import basics.VehicleRoutingProblemSolution;
 import basics.algo.IterationStartsListener;
 import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyManager;
+import basics.algo.SolutionCostCalculator;
 import basics.io.VrpXMLReader;
 import basics.route.TourActivity;
+import basics.route.VehicleRoute;
 
 public class BuildCVRPAlgoFromScratchTest {
 	
@@ -70,11 +72,23 @@ public class BuildCVRPAlgoFromScratchTest {
 		RuinRadial radial = new RuinRadial(vrp, 0.15, new JobDistanceAvgCosts(vrp.getTransportCosts()));
 		RuinRandom random = new RuinRandom(vrp, 0.25);
 		
-		SearchStrategy randomStrategy = new SearchStrategy(new SelectBest(), new AcceptNewIfBetterThanWorst(1));
+		SolutionCostCalculator solutionCostCalculator = new SolutionCostCalculator() {
+			
+			@Override
+			public void calculateCosts(VehicleRoutingProblemSolution solution) {
+				double costs = 0.0;
+				for(VehicleRoute route : solution.getRoutes()){
+					costs += stateManager.getRouteState(route, StateIdFactory.COSTS).toDouble();
+				}
+				solution.setCost(costs);
+			}
+		};
+		
+		SearchStrategy randomStrategy = new SearchStrategy(new SelectBest(), new AcceptNewIfBetterThanWorst(1), solutionCostCalculator);
 		RuinAndRecreateModule randomModule = new RuinAndRecreateModule("randomRuin_bestInsertion", bestInsertion, random);
 		randomStrategy.addModule(randomModule);
 		
-		SearchStrategy radialStrategy = new SearchStrategy(new SelectBest(), new AcceptNewIfBetterThanWorst(1));
+		SearchStrategy radialStrategy = new SearchStrategy(new SelectBest(), new AcceptNewIfBetterThanWorst(1), solutionCostCalculator);
 		RuinAndRecreateModule radialModule = new RuinAndRecreateModule("radialRuin_bestInsertion", bestInsertion, radial);
 		radialStrategy.addModule(radialModule);
 		
@@ -98,7 +112,9 @@ public class BuildCVRPAlgoFromScratchTest {
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateCostsAtRouteLevel(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateLoadAtRouteLevel(stateManager));
 		
-		VehicleRoutingProblemSolution iniSolution = new BestInsertionInitialSolutionFactory(bestInsertion).createSolution(vrp);
+
+		VehicleRoutingProblemSolution iniSolution = new CreateInitialSolution(bestInsertion, solutionCostCalculator).createSolution(vrp);
+
 //		System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 		vra.addInitialSolution(iniSolution);
 		

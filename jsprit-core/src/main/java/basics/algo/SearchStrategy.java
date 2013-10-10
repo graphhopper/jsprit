@@ -68,15 +68,18 @@ public class SearchStrategy {
 	private Collection<SearchStrategyModule> searchStrategyModules = new ArrayList<SearchStrategyModule>();
 	
 	private SolutionSelector solutionSelector;
+	
+	private SolutionCostCalculator solutionCostCalculator;
 
 	private SolutionAcceptor solutionAcceptor;
 	
 	private String name;
 	
-	public SearchStrategy(SolutionSelector solutionSelector, SolutionAcceptor solutionAcceptor) {
+	public SearchStrategy(SolutionSelector solutionSelector, SolutionAcceptor solutionAcceptor, SolutionCostCalculator solutionCostCalculator) {
 		super();
 		this.solutionSelector = solutionSelector;
 		this.solutionAcceptor = solutionAcceptor;
+		this.solutionCostCalculator = solutionCostCalculator;
 		logger.info("initialise " + this);
 	}
 
@@ -126,6 +129,7 @@ public class SearchStrategy {
 			VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(lastSolution);
 			lastSolution = newSolution;
 		}
+		solutionCostCalculator.calculateCosts(lastSolution);
 		boolean solutionAccepted = solutionAcceptor.acceptSolution(solutions, lastSolution);
 		DiscoveredSolution discoveredSolution = new DiscoveredSolution(lastSolution, solutionAccepted, getName());
 		return discoveredSolution;

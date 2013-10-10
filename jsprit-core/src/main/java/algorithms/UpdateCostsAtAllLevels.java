@@ -7,6 +7,7 @@ import basics.costs.ForwardTransportCost;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
+import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
 /**
@@ -98,6 +99,7 @@ public class UpdateCostsAtAllLevels implements ActivityVisitor{
 		
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
+		totalOperationCost += getFixCosts(vehicleRoute.getVehicle());
 		
 		states.putRouteState(vehicleRoute, StateIdFactory.COSTS, new StateImpl(totalOperationCost));
 		
@@ -110,6 +112,12 @@ public class UpdateCostsAtAllLevels implements ActivityVisitor{
 		prevAct = null;
 		vehicleRoute = null;
 		totalOperationCost = 0.0;
+	}
+
+	private double getFixCosts(Vehicle vehicle) {
+		if(vehicle == null) return 0.0;
+		if(vehicle.getType() == null) return 0.0;
+		return vehicle.getType().getVehicleCostParams().fix;
 	}
 
 }

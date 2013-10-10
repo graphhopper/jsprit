@@ -84,21 +84,12 @@ public class VehicleRoute {
 	
 	private End end;
 	
+	@Deprecated
 	private VehicleRouteCostCalculator costCalculator = new DefaultVehicleRouteCostCalculator();
 	
-	public void setVehicleRouteCostCalculator(VehicleRouteCostCalculator costAccumulator){
-		this.costCalculator = costAccumulator;
-	}
-	
+	@Deprecated
 	public VehicleRouteCostCalculator getVehicleRouteCostCalculator(){
 		return costCalculator;
-	}
-	
-	public double getCost() {
-		if(tourActivities.isEmpty()){
-			return 0.0;
-		}
-		return costCalculator.getCosts();
 	}
 	
 	private VehicleRoute(VehicleRoute route){
@@ -191,6 +182,19 @@ public class VehicleRoute {
 
 	public End getEnd() {
 		return end;
+	}
+
+	@Deprecated
+	public void setVehicleRouteCostCalculator(VehicleRouteCostCalculator costAccumulator){
+		this.costCalculator = costAccumulator;
+	}
+
+	@Deprecated
+	public double getCost() {
+		if(tourActivities.isEmpty()){
+			return 0.0;
+		}
+		return costCalculator.getCosts();
 	}
 	
 }

@@ -33,8 +33,10 @@ public interface StateManager {
 		double toDouble();
 	}
 	
+
 	State getActivityState(TourActivity act, StateId stateId);
-	
+
 	State getRouteState(VehicleRoute route, StateId stateId);
+
 
 }

@@ -46,8 +46,9 @@ public class SearchStrategyTest {
 	public void whenANullModule_IsAdded_throwException(){
 		SolutionSelector select = mock(SolutionSelector.class);
 		SolutionAcceptor accept = mock(SolutionAcceptor.class);
+		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
 		
-		SearchStrategy strat = new SearchStrategy(select, accept);
+		SearchStrategy strat = new SearchStrategy(select, accept, calc);
 		strat.addModule(null);
 		
 	}
@@ -56,6 +57,7 @@ public class SearchStrategyTest {
 	public void whenStratRunsWithOneModule_runItOnes(){
 		SolutionSelector select = mock(SolutionSelector.class);
 		SolutionAcceptor accept = mock(SolutionAcceptor.class);
+		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
 		
 		final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
@@ -64,7 +66,7 @@ public class SearchStrategyTest {
 		
 		final Collection<Integer> runs = new ArrayList<Integer>();
 		
-		SearchStrategy strat = new SearchStrategy(select, accept);
+		SearchStrategy strat = new SearchStrategy(select, accept, calc);
 		SearchStrategyModule mod = new SearchStrategyModule() {
 			
 			@Override
@@ -96,6 +98,7 @@ public class SearchStrategyTest {
 	public void whenStratRunsWithTwoModule_runItTwice(){
 		SolutionSelector select = mock(SolutionSelector.class);
 		SolutionAcceptor accept = mock(SolutionAcceptor.class);
+		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
 		
 		final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
@@ -104,7 +107,7 @@ public class SearchStrategyTest {
 		
 		final Collection<Integer> runs = new ArrayList<Integer>();
 		
-		SearchStrategy strat = new SearchStrategy(select, accept);
+		SearchStrategy strat = new SearchStrategy(select, accept, calc);
 		
 		SearchStrategyModule mod = new SearchStrategyModule() {
 			
@@ -159,6 +162,7 @@ public class SearchStrategyTest {
 	public void whenStratRunsWithNModule_runItNTimes(){
 		SolutionSelector select = mock(SolutionSelector.class);
 		SolutionAcceptor accept = mock(SolutionAcceptor.class);
+		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
 		
 		final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
@@ -169,7 +173,7 @@ public class SearchStrategyTest {
 		
 		final Collection<Integer> runs = new ArrayList<Integer>();
 		
-		SearchStrategy strat = new SearchStrategy(select, accept);
+		SearchStrategy strat = new SearchStrategy(select, accept, calc);
 		
 		for(int i=0;i<N;i++){
 			SearchStrategyModule mod = new SearchStrategyModule() {
@@ -203,6 +207,7 @@ public class SearchStrategyTest {
 	public void whenSelectorDeliversNullSolution_throwException(){
 		SolutionSelector select = mock(SolutionSelector.class);
 		SolutionAcceptor accept = mock(SolutionAcceptor.class);
+		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
 		
 		final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
@@ -212,7 +217,7 @@ public class SearchStrategyTest {
 		
 		final Collection<Integer> runs = new ArrayList<Integer>();
 		
-		SearchStrategy strat = new SearchStrategy(select, accept);
+		SearchStrategy strat = new SearchStrategy(select, accept, calc);
 		
 		for(int i=0;i<N;i++){
 			SearchStrategyModule mod = new SearchStrategyModule() {
