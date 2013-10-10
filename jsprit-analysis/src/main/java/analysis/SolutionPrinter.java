@@ -65,6 +65,8 @@ public class SolutionPrinter {
 	 * 
 	 * @param solution
 	 * @param level
+	 * 
+	 * @deprecated is not going to work anymore
 	 */
 	@Deprecated
 	public static void print(VehicleRoutingProblemSolution solution, Print level){

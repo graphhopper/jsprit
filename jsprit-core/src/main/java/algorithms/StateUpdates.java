@@ -189,8 +189,8 @@ class StateUpdates {
 			double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), act.getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 			double actCost = activityCost.getActivityCost(act, timeTracker.getActArrTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 
-//			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
-//			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
+			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
+			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
 			
 			totalOperationCost += transportCost;
 			totalOperationCost += actCost;
@@ -207,8 +207,8 @@ class StateUpdates {
 			double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), vehicleRoute.getEnd().getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 			double actCost = activityCost.getActivityCost(vehicleRoute.getEnd(), timeTracker.getActEndTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 			
-//			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
-//			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
+			vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
+			vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
 			
 			totalOperationCost += transportCost;
 			totalOperationCost += actCost;
@@ -216,10 +216,10 @@ class StateUpdates {
 			
 			states.putRouteState(vehicleRoute, StateTypes.COSTS, new StateImpl(totalOperationCost));
 			
-			//this is rather strange and likely to change
-//			vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getDriver());
-//			vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getVehicle());
-//			vehicleRoute.getVehicleRouteCostCalculator().finish();
+//			this is rather strange and likely to change
+			vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getDriver());
+			vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getVehicle());
+			vehicleRoute.getVehicleRouteCostCalculator().finish();
 			
 			startTimeAtPrevAct = 0.0;
 			prevAct = null;

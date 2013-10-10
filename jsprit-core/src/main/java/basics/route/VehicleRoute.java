@@ -84,8 +84,10 @@ public class VehicleRoute {
 	
 	private End end;
 	
+	@Deprecated
 	private VehicleRouteCostCalculator costCalculator = new DefaultVehicleRouteCostCalculator();
 	
+	@Deprecated
 	public VehicleRouteCostCalculator getVehicleRouteCostCalculator(){
 		return costCalculator;
 	}
