@@ -1,6 +1,11 @@
 package algorithms;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import basics.VehicleRoutingProblem;
+import basics.algo.InsertionListener;
+import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 
 public class BestInsertionBuilder implements InsertionStrategyBuilder{
 
@@ -52,7 +57,9 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 	
 	@Override
 	public InsertionStrategy build() {
-		CalculatorBuilder calcBuilder = new CalculatorBuilder(null, null);
+		List<InsertionListener> iListeners = new ArrayList<InsertionListener>();
+		List<PrioritizedVRAListener> algorithmListeners = new ArrayList<PrioritizedVRAListener>();
+		CalculatorBuilder calcBuilder = new CalculatorBuilder(iListeners, algorithmListeners);
 		if(local){
 			calcBuilder.setLocalLevel();
 		}
@@ -62,7 +69,9 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		calcBuilder.setVehicleFleetManager(fleetManager);
 		if(considerFixedCosts) calcBuilder.considerFixedCosts(weightOfFixedCosts);
 		JobInsertionCalculator jobInsertions = calcBuilder.build();
-		return new BestInsertion(jobInsertions);
+		BestInsertion bestInsertion = new BestInsertion(jobInsertions);
+		for(InsertionListener l : iListeners) bestInsertion.addListener(l); 
+		return bestInsertion;
 	}
 
 }
