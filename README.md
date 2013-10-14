@@ -32,7 +32,7 @@ This software is released under [LGPL]()
 
 For more information, please visit [GNU Lesser General Public License](http://opensource.org/licenses/LGPL-3.0).
 
-<strike>This software is released under GPLv2</strike>
+<STRIKE>This software is released under GPLv2</STRIKE>
 
 ##Getting started in 2 seconds
 
