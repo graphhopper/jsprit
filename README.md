@@ -28,12 +28,11 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 
 ##License
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+This software is released under [LGPL]()
 
-For more information, please visit [GNU Public License](http://opensource.org/licenses/GPL-2.0).
+For more information, please visit [GNU Lesser General Public License](http://opensource.org/licenses/LGPL-3.0).
+
+<strike>This software is released under GPLv2</strike>
 
 ##Getting started in 2 seconds
 
