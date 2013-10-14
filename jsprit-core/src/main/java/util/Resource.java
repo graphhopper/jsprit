@@ -1,14 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2013 Stefan Schroeder.
- * eMail: stefan.schroeder@kit.edu
+ * Copyright (C) 2013  Stefan Schroeder
  * 
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either 
+ * version 3.0 of the License, or (at your option) any later version.
  * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package util;
 
@@ -21,12 +25,7 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 
-import algorithms.SchrimpfFactory;
-
 /**
- * This is a copy of MatsimResource.java (see matsim.org).
- * 
- * It makes sure that resources can also be located within jar files, since it looks for resources in several places.
  * 
  * @author stefan schroeder
  *
@@ -35,46 +34,31 @@ public class Resource {
 	
 	private static Logger log = Logger.getLogger(Resource.class);
 	
-	/**
-	 * Returns URL from the relative path of a resource.
-	 * 
-	 * @param filename
-	 * @return
-	 */
 	public final static URL getAsURL(final String filename) {
-		// look for the file locally
 		File file = new File(filename);
 		if (file.exists()) {
 			try {
 				return file.toURI().toURL();
 			} catch (MalformedURLException e) {
-				log.warn("Found resource-file, but could not return URL for it.", e);				// just continue, maybe we have more luck in the classpath
+				log.warn("Even resource exists, could not return its URL.", e);				
 			}
 		}
-		// maybe we find the file in the classpath, possibly inside a jar-file
-		URL url = SchrimpfFactory.class.getResource("/" + filename);
+		URL url = Resource.class.getResource("/" + filename);
 		if (url == null) {
-			log.warn("Resource '" + filename + "' not found!");
+			log.warn("Could not find resource '" + filename + "'!");
 		}
 		return url;
 	}
 
-	/**
-	 * @param filename relative path from within the resource directory to a file to be loaded
-	 * @return a Stream to the requested resource file, or <code>null</code> if no such file exists.
-	 */
 	public final static InputStream getAsInputStream(final String filename) {
-		// look for the file locally
 		try {
 			return new FileInputStream("/" + filename);
 		} catch (FileNotFoundException e) {
-			log.info("Resource '" + filename + "' not found locally. May not be fatal.");
-			// just continue, maybe we have more luck in the classpath
+			log.info("Could not find '" + filename + "'!.");
 		}
-		// maybe we find the file in the classpath, possibly inside a jar-file
 		InputStream stream = Resource.class.getResourceAsStream("/" + filename);
 		if (stream == null) {
-			log.warn("Resource '" + filename + "' not found!");
+			log.warn("Could not find resource '" + filename + "'!");
 		}
 		return stream;
 	}
