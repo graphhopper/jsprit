@@ -64,7 +64,7 @@ public class BuildCVRPAlgoFromScratchTest {
 				return true;
 			}
 		};
-		MarginalsCalculus marginalCalculus = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), hardActLevelConstraint);
+		ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), hardActLevelConstraint);
 		CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
 		
 		VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());

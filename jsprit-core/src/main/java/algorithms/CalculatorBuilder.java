@@ -219,7 +219,7 @@ class CalculatorBuilder {
 	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateManager statesManager){
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
  		
-		MarginalsCalculus defaultCalc = new MarginalsCalculusTriangleInequality(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager);
+		ActivityInsertionCostsCalculator defaultCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager);
 		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), defaultCalc, constraintManager);
 		
 		((CalculatesServiceInsertion) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
@@ -238,7 +238,7 @@ class CalculatorBuilder {
 
 	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, StateManager activityStates2, int forwardLooking, int solutionMemory){
 		int after = forwardLooking;
-		JobInsertionCalculator jobInsertionCalculator = new CalculatesServiceInsertionOnRouteLevel(vrp.getTransportCosts(), vrp.getActivityCosts());
+		JobInsertionCalculator jobInsertionCalculator = new CalculatesServiceInsertionOnRouteLevel(vrp.getTransportCosts(), vrp.getActivityCosts(), hardRouteLevelConstraint);
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNuOfActsForwardLooking(after);
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setMemorySize(solutionMemory);
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNeighborhood(vrp.getNeighborhood());
