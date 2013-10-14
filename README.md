@@ -28,9 +28,9 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 
 ##License
-This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0)
+This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
-<s>This software is released under GPLv2</s>
+<del>This software is released under GPLv2</del>
 
 ##Getting started in 2 seconds
 
