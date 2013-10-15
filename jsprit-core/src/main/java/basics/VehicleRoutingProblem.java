@@ -28,7 +28,6 @@ import basics.costs.DefaultVehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Vehicle;
-import basics.route.VehicleImpl;
 import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 

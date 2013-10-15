@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import basics.VehicleRoutingProblem;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.Vehicle;

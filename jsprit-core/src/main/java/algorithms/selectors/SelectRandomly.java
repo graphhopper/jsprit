@@ -25,9 +25,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import basics.VehicleRoutingProblemSolution;
-
 import util.RandomNumberGeneration;
+import basics.VehicleRoutingProblemSolution;
 
 
 

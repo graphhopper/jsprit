@@ -20,8 +20,8 @@
  ******************************************************************************/
 package basics;
 
-import basics.route.TimeWindow;
 import util.Coordinate;
+import basics.route.TimeWindow;
 
 
 public class Service implements Job {

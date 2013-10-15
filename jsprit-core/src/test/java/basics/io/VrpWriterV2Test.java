@@ -31,19 +31,16 @@ import org.junit.Test;
 
 import basics.Service;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblemSolution;
 import basics.VehicleRoutingProblem.Builder;
 import basics.VehicleRoutingProblem.FleetComposition;
 import basics.VehicleRoutingProblem.FleetSize;
-import basics.io.VrpXMLReader;
-import basics.io.VrpXMLWriter;
+import basics.VehicleRoutingProblemSolution;
 import basics.route.End;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
-import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
 public class VrpWriterV2Test {

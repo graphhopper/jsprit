@@ -31,7 +31,6 @@ import util.EuclideanDistanceCalculator;
 import util.Locations;
 import util.NeighborhoodImpl;
 import util.Solutions;
-import algorithms.selectors.SelectBest;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;

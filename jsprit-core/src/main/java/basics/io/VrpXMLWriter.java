@@ -37,7 +37,6 @@ import basics.Job;
 import basics.Service;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
-import basics.route.ServiceActivity;
 import basics.route.TourActivity;
 import basics.route.TourActivity.JobActivity;
 import basics.route.Vehicle;

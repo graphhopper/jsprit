@@ -32,8 +32,6 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import algorithms.selectors.SelectRandomly;
-import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 
 

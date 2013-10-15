@@ -26,7 +26,6 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 import algorithms.InsertionData.NoInsertionFound;
-import algorithms.VehicleFleetManager.TypeKey;
 import basics.Job;
 import basics.route.Driver;
 import basics.route.Vehicle;

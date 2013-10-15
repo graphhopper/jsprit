@@ -22,13 +22,9 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import algorithms.BackwardInTimeListeners.BackwardInTimeListener;
-import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
 import algorithms.RuinStrategy.RuinListener;
 import algorithms.StateManager.StateImpl;
 import basics.Delivery;
@@ -39,20 +35,15 @@ import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.InsertionEndsListener;
 import basics.algo.InsertionStartsListener;
-import basics.algo.IterationEndsListener;
 import basics.algo.IterationStartsListener;
 import basics.algo.JobInsertedListener;
-import basics.algo.VehicleRoutingAlgorithmListener;
 import basics.costs.ForwardTransportCost;
 import basics.costs.ForwardTransportTime;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.DeliveryActivity;
-import basics.route.Driver;
-import basics.route.End;
 import basics.route.PickupActivity;
 import basics.route.ServiceActivity;
-import basics.route.Start;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleRoute;

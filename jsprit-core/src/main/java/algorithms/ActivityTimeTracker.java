@@ -1,9 +1,7 @@
 package algorithms;
 
 import basics.costs.ForwardTransportTime;
-import basics.route.Driver;
 import basics.route.TourActivity;
-import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
 class ActivityTimeTracker implements ActivityVisitor{

@@ -26,9 +26,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import util.Solutions;
-import algorithms.BackwardInTimeListeners.BackwardInTimeListener;
-import algorithms.ForwardInTimeListeners.ForwardInTimeListener;
 import algorithms.HardConstraints.HardActivityLevelConstraintManager;
 import algorithms.StateManager.StateImpl;
 import algorithms.StateUpdates.UpdateActivityTimes;
@@ -44,18 +41,11 @@ import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.InsertionStartsListener;
-import basics.algo.IterationStartsListener;
 import basics.algo.JobInsertedListener;
 import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyManager;
 import basics.algo.SolutionCostCalculator;
 import basics.io.VrpXMLReader;
-import basics.io.VrpXMLWriter;
-import basics.route.DeliveryActivity;
-import basics.route.End;
-import basics.route.PickupActivity;
-import basics.route.Start;
-import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
 public class BuildPDVRPAlgoFromScratchTest {
