@@ -238,7 +238,8 @@ class CalculatorBuilder {
 
 	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, StateManager activityStates2, int forwardLooking, int solutionMemory){
 		int after = forwardLooking;
-		JobInsertionCalculator jobInsertionCalculator = new CalculatesServiceInsertionOnRouteLevel(vrp.getTransportCosts(), vrp.getActivityCosts(), hardRouteLevelConstraint);
+		ActivityInsertionCostsCalculator routeLevelCostEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager, activityStates2);
+		JobInsertionCalculator jobInsertionCalculator = new CalculatesServiceInsertionOnRouteLevel(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager, routeLevelCostEstimator);
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNuOfActsForwardLooking(after);
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setMemorySize(solutionMemory);
 		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNeighborhood(vrp.getNeighborhood());
