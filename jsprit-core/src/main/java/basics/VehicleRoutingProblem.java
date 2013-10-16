@@ -236,7 +236,10 @@ public class VehicleRoutingProblem {
 			if(job instanceof Service) { 
 				addService((Service) job);
 			}
-			else throw new IllegalStateException("job can only be a shipment or a service, but is instance of " + job.getClass());
+			else{
+				if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
+				jobs.put(job.getId(),job);
+			}
 			return this;
 		}
 
@@ -356,6 +359,10 @@ public class VehicleRoutingProblem {
 		 */
 		public Collection<Service> getAddedServices(){
 			return Collections.unmodifiableCollection(services);
+		}
+		
+		public Collection<Job> getAddedJobs(){
+			return Collections.unmodifiableCollection(jobs.values());
 		}
 }
 	

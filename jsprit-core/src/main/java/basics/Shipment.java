@@ -133,7 +133,7 @@ public class Shipment implements Job{
 		return demand;
 	}
 
-	public int getDemand() {
+	public int getSize() {
 		return demand;
 	}
 

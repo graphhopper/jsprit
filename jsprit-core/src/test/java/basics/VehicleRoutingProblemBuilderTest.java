@@ -64,5 +64,20 @@ public class VehicleRoutingProblemBuilderTest {
 
 	}
 	
+	@Test
+	public void whenShipmentsAreAdded_theyShouldBePartOfTheProblem(){
+		Shipment s = Shipment.Builder.newInstance("s", 10).setPickupLocation("foofoo").setDeliveryLocation("foo").build();
+		Shipment s2 = Shipment.Builder.newInstance("s2", 100).setPickupLocation("foofoo").setDeliveryLocation("foo").build();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.addJob(s);
+		vrpBuilder.addJob(s2);
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+		assertEquals(2,vrp.getJobs().size());
+		
+		Job j = vrp.getJobs().get("s");
+		assertEquals(s,j);
+		assertEquals(s2,vrp.getJobs().get("s2"));
+	}
+	
 
 }

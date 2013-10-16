@@ -38,7 +38,7 @@ import basics.route.VehicleRoute;
 
 /**
  * 
- * RuinStrategy that ruins the neighborhood of a randomly selected service. The size and the structure of the neighborhood is defined by 
+ * RuinStrategy that ruins the neighborhood of a randomly selected job. The size and the structure of the neighborhood is defined by 
  * the share of jobs to be removed and the distance between jobs (where distance not necessarily mean Euclidean distance but an arbitrary 
  * measure).
  * 
