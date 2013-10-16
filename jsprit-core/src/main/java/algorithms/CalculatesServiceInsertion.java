@@ -1,21 +1,25 @@
 /*******************************************************************************
- * Copyright (c) 2011 Stefan Schroeder.
- * eMail: stefan.schroeder@kit.edu
+ * Copyright (C) 2013  Stefan Schroeder
  * 
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either 
+ * version 3.0 of the License, or (at your option) any later version.
  * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package algorithms;
 
 import org.apache.log4j.Logger;
 
 import util.Neighborhood;
-import algorithms.ActivityInsertionCostCalculator.Marginals;
+import algorithms.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -45,7 +49,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		}
 	};
 	
-	private ActivityInsertionCostCalculator marginalCalculus;
+	private ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 	
 	private VehicleRoutingTransportCosts transportCosts;
 	
@@ -56,9 +60,11 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		logger.info("initialise neighborhood " + neighborhood);
 	}
 	
-	public CalculatesServiceInsertion(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostCalculator marginalsCalculus, HardRouteLevelConstraint hardRouteLevelConstraint) {
+
+	public CalculatesServiceInsertion(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint) {
+
 		super();
-		this.marginalCalculus = marginalsCalculus;
+		this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
 		this.hardRouteLevelConstraint = hardRouteLevelConstraint;
 		this.transportCosts = routingCosts;
 		activityFactory = new DefaultTourActivityFactory();
@@ -86,7 +92,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		}
 		
 		double bestCost = bestKnownCosts;
-		Marginals bestMarginals = null;
+		ActivityInsertionCosts bestMarginals = null;
 		Service service = (Service)jobToInsert;
 		int insertionIndex = InsertionData.NO_INDEX;
 		
@@ -100,11 +106,10 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		TourActivity prevAct = start;
 		double prevActStartTime = newVehicleDepartureTime;
 		int actIndex = 0;
-//		logger.info("start");
+
 		for(TourActivity nextAct : currentRoute.getTourActivities().getActivities()){
-//			logger.info("prevActStartTime="+prevActStartTime);
 			if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-				Marginals mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+				ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
 				if(mc != null){ 
 					if(mc.getAdditionalCosts() < bestCost){
 						bestCost = mc.getAdditionalCosts();
@@ -113,7 +118,6 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 					}
 				}
 			}
-
 			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActStartTime, newDriver, newVehicle);
 			double nextActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
 			
@@ -122,10 +126,9 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 			prevAct = nextAct;
 			actIndex++;
 		}
-//		logger.info("prevActStartTime="+prevActStartTime);
 		End nextAct = end;
 		if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-			Marginals mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+			ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
 			if(mc != null) {
 				if(mc.getAdditionalCosts() < bestCost){
 					bestCost = mc.getAdditionalCosts();
@@ -144,8 +147,8 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		return insertionData;
 	}
 
-	public Marginals calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double departureTimeAtPrevAct) {	
-		return marginalCalculus.calculate(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);
+	public ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double departureTimeAtPrevAct) {	
+		return activityInsertionCostsCalculator.calculate(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);
 		
 	}
 }

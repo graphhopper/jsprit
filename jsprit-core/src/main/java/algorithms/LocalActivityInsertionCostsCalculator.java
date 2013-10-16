@@ -24,14 +24,14 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
 
-class MarginalsCalculusTriangleInequality implements ActivityInsertionCostCalculator{
+class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCalculator{
 
 	private HardActivityLevelConstraint hardConstraint;
 
 	private VehicleRoutingTransportCosts routingCosts;
 	private VehicleRoutingActivityCosts activityCosts;
 	
-	public MarginalsCalculusTriangleInequality(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, HardActivityLevelConstraint hardActivityLevelConstraint) {
+	public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, HardActivityLevelConstraint hardActivityLevelConstraint) {
 		super();
 		this.routingCosts = routingCosts;
 		this.activityCosts = actCosts;
@@ -39,7 +39,7 @@ class MarginalsCalculusTriangleInequality implements ActivityInsertionCostCalcul
 	}
 
 	@Override
-	public Marginals calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
+	public ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
 		if(!hardConstraint.fulfilled(iFacts, prevAct, newAct, nextAct, depTimeAtPrevAct)){
 			return null;
 		}
@@ -80,7 +80,7 @@ class MarginalsCalculusTriangleInequality implements ActivityInsertionCostCalcul
 		double additionalCosts = totalCosts - oldCosts;
 		double additionalTime = (nextAct_arrTime - iFacts.getNewDepTime()) - oldTime;
 
-		return new Marginals(additionalCosts,additionalTime);
+		return new ActivityInsertionCosts(additionalCosts,additionalTime);
 	}
 
 }
