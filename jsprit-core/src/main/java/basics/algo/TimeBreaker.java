@@ -18,9 +18,6 @@ package basics.algo;
 
 import java.util.Collection;
 
-import org.apache.commons.math.stat.StatUtils;
-import org.apache.commons.math.stat.descriptive.moment.Mean;
-import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
 import org.apache.log4j.Logger;
 
 import basics.VehicleRoutingAlgorithm;

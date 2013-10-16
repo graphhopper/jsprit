@@ -19,8 +19,6 @@ package algorithms;
 import org.apache.log4j.Logger;
 
 import algorithms.InsertionData.NoInsertionFound;
-import algorithms.StateManager.State;
-import algorithms.StateManager.States;
 import basics.Job;
 import basics.route.Driver;
 import basics.route.Vehicle;

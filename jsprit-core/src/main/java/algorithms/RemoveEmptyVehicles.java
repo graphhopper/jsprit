@@ -19,12 +19,10 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 
-
-import basics.Job;
 import basics.algo.InsertionEndsListener;
-import basics.algo.InsertionStartsListener;
 import basics.route.VehicleRoute;
 
 class RemoveEmptyVehicles implements InsertionEndsListener{

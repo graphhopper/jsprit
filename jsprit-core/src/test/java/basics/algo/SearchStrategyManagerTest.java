@@ -27,9 +27,6 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import basics.algo.SearchStrategy;
-import basics.algo.SearchStrategyManager;
-
 
 
 public class SearchStrategyManagerTest {

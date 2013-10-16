@@ -16,26 +16,6 @@
  ******************************************************************************/
 package algorithms;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
-import org.apache.log4j.Logger;
-
-import util.RandomNumberGeneration;
-import algorithms.InsertionData.NoInsertionFound;
-import basics.Job;
-import basics.algo.InsertionListener;
-import basics.route.VehicleRoute;
 
 //
 //

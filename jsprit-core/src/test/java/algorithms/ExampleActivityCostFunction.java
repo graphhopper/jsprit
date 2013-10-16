@@ -17,11 +17,10 @@
 package algorithms;
 
 import basics.costs.VehicleRoutingActivityCosts;
-import basics.costs.VehicleRoutingActivityCosts.Time;
 import basics.route.Driver;
 import basics.route.TourActivity;
-import basics.route.Vehicle;
 import basics.route.TourActivity.JobActivity;
+import basics.route.Vehicle;
 
 
 public class ExampleActivityCostFunction implements VehicleRoutingActivityCosts{

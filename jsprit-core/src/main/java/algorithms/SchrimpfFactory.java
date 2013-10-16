@@ -16,14 +16,9 @@
  ******************************************************************************/
 package algorithms;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import util.Resource;
-
-
-
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.io.AlgorithmConfig;

@@ -143,13 +143,12 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		states = new StateManagerImpl();
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
-		serviceInsertion = new CalculatesServiceInsertionOnRouteLevel(costs,activityCosts);
+		ActivityInsertionCostsCalculator actInsertionCostCalculator = new RouteLevelActivityInsertionCostsEstimator(costs, activityCosts, new HardConstraints.HardTimeWindowActivityLevelConstraint(states, costs), states);
+		serviceInsertion = new CalculatesServiceInsertionOnRouteLevel(costs,activityCosts, new HardConstraints.HardLoadConstraint(states), actInsertionCostCalculator);
 		serviceInsertion.setNuOfActsForwardLooking(4);
 		serviceInsertion.setStates(states);
 		
 		updateStates = new UpdateStates(states, costs, activityCosts);
-		
-		
 		
 	}
 	

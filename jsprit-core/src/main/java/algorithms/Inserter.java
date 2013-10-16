@@ -19,9 +19,8 @@ package algorithms;
 import algorithms.InsertionData.NoInsertionFound;
 import basics.Job;
 import basics.Service;
-import basics.route.ServiceActivity;
-import basics.route.TourActivityFactory;
 import basics.route.DefaultTourActivityFactory;
+import basics.route.TourActivityFactory;
 import basics.route.VehicleRoute;
 
 class Inserter {

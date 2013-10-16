@@ -30,10 +30,8 @@ import org.junit.Test;
 
 import basics.Service;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblem.Builder;
 import basics.VehicleRoutingProblem.FleetComposition;
 import basics.VehicleRoutingProblem.FleetSize;
-import basics.io.VrpXMLReader;
 import basics.route.Vehicle;
 
 public class VrpReaderV2Test {

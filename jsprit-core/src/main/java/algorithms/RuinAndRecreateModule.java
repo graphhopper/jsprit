@@ -18,7 +18,6 @@ package algorithms;
 
 import java.util.Collection;
 
-import util.RouteUtils;
 import algorithms.RuinStrategy.RuinListener;
 import basics.Job;
 import basics.VehicleRoutingProblemSolution;
