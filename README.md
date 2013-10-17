@@ -36,6 +36,8 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 [Add the latest snapshot to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
 
+[Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
+
 ##About
 The jsprit-project is created and maintained by Stefan Schröder. It is motivated by two issues. 
 
