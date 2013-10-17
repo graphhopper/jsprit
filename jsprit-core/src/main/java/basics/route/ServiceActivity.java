@@ -19,7 +19,7 @@ package basics.route;
 import basics.Service;
 import basics.route.TourActivity.JobActivity;
 
-public class ServiceActivity implements JobActivity<Service>{
+public class ServiceActivity implements JobActivity{
 	
 	public static int counter = 0;
 	

@@ -26,13 +26,13 @@ public class DefaultTourActivityFactory implements TourActivityFactory{
 	public TourActivity createActivity(Service service) {
 		TourActivity act;
 		if(service instanceof Pickup){
-			act = new PickupActivity((Pickup) service);
+			act = new PickupService((Pickup) service);
 		}
 		else if(service instanceof Delivery){
-			act = new DeliveryActivity((Delivery) service);
+			act = new DeliverService((Delivery) service);
 		}
 		else{
-			act = ServiceActivity.newInstance(service);
+			act = new PickupService(service);
 		}
 		return act;
 	}

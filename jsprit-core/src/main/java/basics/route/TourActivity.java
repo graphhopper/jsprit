@@ -21,9 +21,9 @@ import basics.Job;
 
 public interface TourActivity {
 
-	public interface JobActivity<T extends Job> extends TourActivity {
+	public interface JobActivity extends TourActivity {
 		
-		public T getJob();
+		public Job getJob();
 		
 	}
 	
