@@ -62,7 +62,6 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 	
 
 	public CalculatesServiceInsertion(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint) {
-
 		super();
 		this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
 		this.hardRouteLevelConstraint = hardRouteLevelConstraint;

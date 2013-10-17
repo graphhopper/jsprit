@@ -30,27 +30,32 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		this.constraintManager = new ConstraintManager();
 	}
 
-	public void addConstraint(HardActivityLevelConstraint hardActvitiyLevelConstraint){
+	public BestInsertionBuilder addConstraint(HardActivityLevelConstraint hardActvitiyLevelConstraint){
 		constraintManager.addConstraint(hardActvitiyLevelConstraint);
+		return this;
 	};
 	
-	public void addConstraint(HardRouteLevelConstraint hardRouteLevelConstraint){
+	public BestInsertionBuilder addConstraint(HardRouteLevelConstraint hardRouteLevelConstraint){
 		constraintManager.addConstraint(hardRouteLevelConstraint);
+		return this;
 	};
 	
 	//public void setRouteLevel(int forwardLooking, int memory){};
 	
-	public void setLocalLevel(){
+	public BestInsertionBuilder setLocalLevel(){
 		local = true;
+		return this;
 	};
 	
-	public void considerFixedCosts(double weightOfFixedCosts){
+	public BestInsertionBuilder considerFixedCosts(double weightOfFixedCosts){
 		this.weightOfFixedCosts = weightOfFixedCosts;
 		this.considerFixedCosts  = true;
+		return this;
 	}
 	
-	public void setFleetManager(VehicleFleetManager fleetManager){
+	public BestInsertionBuilder setFleetManager(VehicleFleetManager fleetManager){
 		this.fleetManager = fleetManager;
+		return this;
 	}
 	
 	//public void setActivityInsertionCostCalculator(ActivityInsertionCostCalculator costCalc){};

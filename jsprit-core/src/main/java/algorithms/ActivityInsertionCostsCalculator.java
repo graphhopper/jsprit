@@ -22,9 +22,9 @@ package algorithms;
 
 import basics.route.TourActivity;
 
-interface ActivityInsertionCostsCalculator {
+public interface ActivityInsertionCostsCalculator {
 	
-	class ActivityInsertionCosts {
+	public class ActivityInsertionCosts {
 		
 		private double additionalCosts;
 		private double additionalTime;
@@ -50,6 +50,6 @@ interface ActivityInsertionCostsCalculator {
 
 	}
 	
-	ActivityInsertionCosts calculate(InsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct);
+	public ActivityInsertionCosts calculate(InsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct);
 
 }
