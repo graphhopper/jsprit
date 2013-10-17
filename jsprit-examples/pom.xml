@@ -22,11 +22,12 @@
   <parent>
   	<groupId>jsprit</groupId>
   	<artifactId>jsprit</artifactId>
-  	<version>0.0.5-SNAPSHOT</version>
+  	<version>q</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   
   <artifactId>jsprit-examples</artifactId>
+  <version>0.0.5</version>
   
   <dependencies>
   	<dependency>
