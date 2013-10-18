@@ -48,7 +48,7 @@ import basics.route.VehicleRoute;
 
 public class TestCalculatesServiceInsertionOnRouteLevel {
 	
-	CalculatesServiceInsertionOnRouteLevel serviceInsertion;
+	ServiceInsertionOnRouteLevelCalculator serviceInsertion;
 	
 	VehicleRoutingTransportCosts costs;
 	
@@ -143,8 +143,8 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		states = new StateManagerImpl();
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
-		ActivityInsertionCostsCalculator actInsertionCostCalculator = new RouteLevelActivityInsertionCostsEstimator(costs, activityCosts, new HardTimeWindowActivityLevelConstraint(states, costs), states);
-		serviceInsertion = new CalculatesServiceInsertionOnRouteLevel(costs,activityCosts, new HardLoadConstraint(states), actInsertionCostCalculator);
+		ActivityInsertionCostsCalculator actInsertionCostCalculator = new RouteLevelActivityInsertionCostsEstimator(costs, activityCosts, states);
+		serviceInsertion = new ServiceInsertionOnRouteLevelCalculator(costs,activityCosts, actInsertionCostCalculator, new HardLoadConstraint(states), new HardTimeWindowActivityLevelConstraint(states, costs));
 		serviceInsertion.setNuOfActsForwardLooking(4);
 		serviceInsertion.setStates(states);
 		

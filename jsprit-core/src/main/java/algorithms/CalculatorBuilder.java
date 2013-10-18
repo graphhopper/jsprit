@@ -79,6 +79,8 @@ class CalculatorBuilder {
 	private int neighbors;
 	
 	private ConstraintManager constraintManager;
+	
+	private ActivityInsertionCostsCalculator activityInsertionCostCalculator = null;
 
 	/**
 	 * Constructs the builder.
@@ -135,6 +137,10 @@ class CalculatorBuilder {
 	 */
 	public void setLocalLevel(){
 		local = true;
+	}
+	
+	public void setActivityInsertionCostsCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
+		this.activityInsertionCostCalculator = activityInsertionCostsCalculator;
 	}
 
 	/**
@@ -214,11 +220,16 @@ class CalculatorBuilder {
 	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateManager statesManager){
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
  		
-		ActivityInsertionCostsCalculator defaultCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager);
+		ActivityInsertionCostsCalculator actInsertionCalc;
+		if(activityInsertionCostCalculator == null){
+			actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
+		}
+		else{
+			actInsertionCalc = activityInsertionCostCalculator;
+		}
 
-		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), defaultCalc, constraintManager);
-		
-		((CalculatesServiceInsertion) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
+		JobInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
+		((ServiceInsertionCalculator) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(standardServiceInsertion);
 		
 		return calcPlusListeners;
@@ -234,12 +245,18 @@ class CalculatorBuilder {
 
 	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, StateManager activityStates2, int forwardLooking, int solutionMemory){
 		int after = forwardLooking;
-		ActivityInsertionCostsCalculator routeLevelCostEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager, activityStates2);
-		JobInsertionCalculator jobInsertionCalculator = new CalculatesServiceInsertionOnRouteLevel(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager, routeLevelCostEstimator);
-		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNuOfActsForwardLooking(after);
-		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setMemorySize(solutionMemory);
-		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNeighborhood(vrp.getNeighborhood());
-		((CalculatesServiceInsertionOnRouteLevel) jobInsertionCalculator).setStates(activityStates2);
+		ActivityInsertionCostsCalculator routeLevelCostEstimator;
+		if(activityInsertionCostCalculator == null){
+			routeLevelCostEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityStates2);
+		}
+		else{
+			routeLevelCostEstimator = activityInsertionCostCalculator;
+		}
+		JobInsertionCalculator jobInsertionCalculator = new ServiceInsertionOnRouteLevelCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), routeLevelCostEstimator, constraintManager, constraintManager);
+		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setNuOfActsForwardLooking(after);
+		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setMemorySize(solutionMemory);
+		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setNeighborhood(vrp.getNeighborhood());
+		((ServiceInsertionOnRouteLevelCalculator) jobInsertionCalculator).setStates(activityStates2);
 		CalculatorPlusListeners calcPlusListener = new CalculatorPlusListeners(jobInsertionCalculator);
 		return calcPlusListener;
 	}

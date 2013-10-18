@@ -44,9 +44,9 @@ import basics.route.VehicleRoute;
 
 
 
-final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalculator{
+final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCalculator{
 	
-	private static final Logger logger = Logger.getLogger(CalculatesServiceInsertionOnRouteLevel.class);
+	private static final Logger logger = Logger.getLogger(ServiceInsertionOnRouteLevelCalculator.class);
 	
 	private final VehicleRoutingTransportCosts transportCosts;
 	
@@ -59,6 +59,8 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 	private StateManager stateManager;
 	
 	private HardRouteLevelConstraint hardRouteLevelConstraint;
+	
+	private HardActivityLevelConstraint hardActivityLevelConstraint;
 	
 	private ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 	
@@ -93,12 +95,13 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		logger.info("set [solutionMemory="+memorySize+"]");
 	}
 
-	public CalculatesServiceInsertionOnRouteLevel(VehicleRoutingTransportCosts vehicleRoutingCosts, VehicleRoutingActivityCosts costFunc, HardRouteLevelConstraint hardRouteLevelConstraint, ActivityInsertionCostsCalculator activityInsertionCostsCalculator) {
+	public ServiceInsertionOnRouteLevelCalculator(VehicleRoutingTransportCosts vehicleRoutingCosts, VehicleRoutingActivityCosts costFunc, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint, HardActivityLevelConstraint hardActivityLevelConstraint) {
 			super();
 			this.transportCosts = vehicleRoutingCosts;
 			this.activityCosts = costFunc;
-			this.hardRouteLevelConstraint = hardRouteLevelConstraint;
 			this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
+			this.hardRouteLevelConstraint = hardRouteLevelConstraint;
+			this.hardActivityLevelConstraint = hardActivityLevelConstraint;
 			auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(transportCosts, activityCosts);
 			logger.info("initialise " + this);
 		}
@@ -172,12 +175,12 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		 */
 		for(TourActivity nextAct : tour.getActivities()){
 			if(neighborhood.areNeighbors(serviceAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(serviceAct2Insert.getLocationId(), nextAct.getLocationId())){
-				/**
-				 * builds a path on this route forwardPath={i,k,j,j+1,j+2,...,j+nuOfActsForwardLooking}
-				 */		
-				InsertionContext iContext = new InsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, prevActDepTime_newVehicle);
-				ActivityInsertionCosts actInsertionCosts = activityInsertionCostsCalculator.calculate(iContext, prevAct, nextAct, serviceAct2Insert, prevActDepTime_newVehicle);
-				if(actInsertionCosts != null){
+				if(hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, serviceAct2Insert, nextAct, prevActDepTime_newVehicle)){
+					/**
+					 * builds a path on this route forwardPath={i,k,j,j+1,j+2,...,j+nuOfActsForwardLooking}
+					 */		
+					ActivityInsertionCosts actInsertionCosts = activityInsertionCostsCalculator.calculate(insertionContext, prevAct, nextAct, serviceAct2Insert, prevActDepTime_newVehicle);
+
 					/**
 					 * insertion_cost_approximation = c({0,1,...,i},newVehicle) + c({i,k,j,j+1,j+2,...,j+nuOfActsForwardLooking},newVehicle) - c({0,1,...,i,j,j+1,...,j+nuOfActsForwardLooking},oldVehicle)
 					 */
@@ -190,6 +193,7 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 						bestInsertionsQueue.add(new InsertionData(insertion_cost_approximation, InsertionData.NO_INDEX, actIndex, newVehicle, newDriver));
 					}
 				}
+
 			}
 
 			/**
@@ -221,20 +225,20 @@ final class CalculatesServiceInsertionOnRouteLevel implements JobInsertionCalcul
 		}
 		End nextAct = end;
 		if(neighborhood.areNeighbors(serviceAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(serviceAct2Insert.getLocationId(), nextAct.getLocationId())){
+			if(hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, serviceAct2Insert, nextAct, prevActDepTime_newVehicle)){
+				ActivityInsertionCosts actInsertionCosts = activityInsertionCostsCalculator.calculate(insertionContext, prevAct, nextAct, serviceAct2Insert, prevActDepTime_newVehicle);
+				if(actInsertionCosts != null){
+					/**
+					 * insertion_cost_approximation = c({0,1,...,i},newVehicle) + c({i,k,j,j+1,j+2,...,j+nuOfActsForwardLooking},newVehicle) - c({0,1,...,i,j,j+1,...,j+nuOfActsForwardLooking},oldVehicle)
+					 */
+					double insertion_cost_approximation = sumOf_prevCosts_newVehicle - sumOf_prevCosts_oldVehicle(currentRoute,prevAct) + actInsertionCosts.getAdditionalCosts(); 
 
-			InsertionContext iContext = new InsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, prevActDepTime_newVehicle);
-			ActivityInsertionCosts actInsertionCosts = activityInsertionCostsCalculator.calculate(iContext, prevAct, nextAct, serviceAct2Insert, prevActDepTime_newVehicle);
-			if(actInsertionCosts != null){
-				/**
-				 * insertion_cost_approximation = c({0,1,...,i},newVehicle) + c({i,k,j,j+1,j+2,...,j+nuOfActsForwardLooking},newVehicle) - c({0,1,...,i,j,j+1,...,j+nuOfActsForwardLooking},oldVehicle)
-				 */
-				double insertion_cost_approximation = sumOf_prevCosts_newVehicle - sumOf_prevCosts_oldVehicle(currentRoute,prevAct) + actInsertionCosts.getAdditionalCosts(); 
-
-				/**
-				 * memorize it in insertion-queue
-				 */
-				if(insertion_cost_approximation < best_known_insertion_costs){
-					bestInsertionsQueue.add(new InsertionData(insertion_cost_approximation, InsertionData.NO_INDEX, actIndex, newVehicle, newDriver));
+					/**
+					 * memorize it in insertion-queue
+					 */
+					if(insertion_cost_approximation < best_known_insertion_costs){
+						bestInsertionsQueue.add(new InsertionData(insertion_cost_approximation, InsertionData.NO_INDEX, actIndex, newVehicle, newDriver));
+					}
 				}
 			}
 		}

@@ -26,23 +26,17 @@ import basics.route.TourActivity;
 
 class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCalculator{
 
-	private HardActivityLevelConstraint hardConstraint;
-
 	private VehicleRoutingTransportCosts routingCosts;
 	private VehicleRoutingActivityCosts activityCosts;
 	
-	public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, HardActivityLevelConstraint hardActivityLevelConstraint) {
+	public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts) {
 		super();
 		this.routingCosts = routingCosts;
 		this.activityCosts = actCosts;
-		this.hardConstraint = hardActivityLevelConstraint;
 	}
 
 	@Override
 	public ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
-		if(!hardConstraint.fulfilled(iFacts, prevAct, newAct, nextAct, depTimeAtPrevAct)){
-			return null;
-		}
 		
 		double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocationId(), newAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());

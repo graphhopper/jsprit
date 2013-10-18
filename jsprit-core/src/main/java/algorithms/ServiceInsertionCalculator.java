@@ -35,11 +35,13 @@ import basics.route.VehicleRoute;
 
 
 
-final class CalculatesServiceInsertion implements JobInsertionCalculator{
+final class ServiceInsertionCalculator implements JobInsertionCalculator{
 
-	private static final Logger logger = Logger.getLogger(CalculatesServiceInsertion.class);
+	private static final Logger logger = Logger.getLogger(ServiceInsertionCalculator.class);
 
 	private HardRouteLevelConstraint hardRouteLevelConstraint;
+	
+	private HardActivityLevelConstraint hardActivityLevelConstraint;
 	
 	private Neighborhood neighborhood = new Neighborhood() {
 		
@@ -61,10 +63,11 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 	}
 	
 
-	public CalculatesServiceInsertion(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint) {
+	public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint, HardActivityLevelConstraint hardActivityLevelConstraint) {
 		super();
 		this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
 		this.hardRouteLevelConstraint = hardRouteLevelConstraint;
+		this.hardActivityLevelConstraint = hardActivityLevelConstraint;
 		this.transportCosts = routingCosts;
 		activityFactory = new DefaultTourActivityFactory();
 		logger.info("initialise " + this);
@@ -108,8 +111,8 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 
 		for(TourActivity nextAct : currentRoute.getTourActivities().getActivities()){
 			if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-				ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-				if(mc != null){ 
+				if(hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime)){
+					ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
 					if(mc.getAdditionalCosts() < bestCost){
 						bestCost = mc.getAdditionalCosts();
 						bestMarginals = mc;
@@ -127,8 +130,8 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		}
 		End nextAct = end;
 		if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-			ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-			if(mc != null) {
+			if(hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime)){
+				ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
 				if(mc.getAdditionalCosts() < bestCost){
 					bestCost = mc.getAdditionalCosts();
 					bestMarginals = mc;

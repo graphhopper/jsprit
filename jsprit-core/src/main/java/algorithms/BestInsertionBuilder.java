@@ -22,6 +22,8 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 	private double weightOfFixedCosts;
 
 	private boolean considerFixedCosts = false;
+
+	private ActivityInsertionCostsCalculator actInsertionCostsCalculator = null;
 	
 	public BestInsertionBuilder(VehicleRoutingProblem vrp, StateManager stateManager) {
 		super();
@@ -58,7 +60,9 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		return this;
 	}
 	
-	//public void setActivityInsertionCostCalculator(ActivityInsertionCostCalculator costCalc){};
+	public void setActivityInsertionCostCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
+		this.actInsertionCostsCalculator = activityInsertionCostsCalculator;
+	};
 	
 	@Override
 	public InsertionStrategy build() {
@@ -72,6 +76,7 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		calcBuilder.setStates(stateManager);
 		calcBuilder.setVehicleRoutingProblem(vrp);
 		calcBuilder.setVehicleFleetManager(fleetManager);
+		calcBuilder.setActivityInsertionCostsCalculator(actInsertionCostsCalculator);
 		if(considerFixedCosts) calcBuilder.considerFixedCosts(weightOfFixedCosts);
 		JobInsertionCalculator jobInsertions = calcBuilder.build();
 		BestInsertion bestInsertion = new BestInsertion(jobInsertions);

@@ -58,8 +58,8 @@ public class BuildCVRPAlgoFromScratchTest {
 			}
 		};
 
-		ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), hardActLevelConstraint);
-		CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardLoadConstraint(stateManager));
+		ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
+		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardLoadConstraint(stateManager), hardActLevelConstraint);
 
 		
 		VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());

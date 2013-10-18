@@ -32,8 +32,6 @@ import basics.route.VehicleRoute;
 
 class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCostsCalculator{
 
-	private HardActivityLevelConstraint hardConstraint;
-
 	private VehicleRoutingActivityCosts activityCosts;
 	
 	private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
@@ -42,20 +40,15 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 	
 	private int nuOfActivities2LookForward = 0;
 	
-	public RouteLevelActivityInsertionCostsEstimator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, HardActivityLevelConstraint hardActivityLevelConstraint, StateManager stateManager) {
+	public RouteLevelActivityInsertionCostsEstimator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, StateManager stateManager) {
 		super();
 		this.activityCosts = actCosts;
-		this.hardConstraint = hardActivityLevelConstraint;
 		this.stateManager = stateManager;
 		auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(routingCosts, activityCosts);
 	}
 
 	@Override
 	public ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
-		if(!hardConstraint.fulfilled(iFacts, prevAct, newAct, nextAct, depTimeAtPrevAct)){
-			return null;
-		}
-		
 		List<TourActivity> path = new ArrayList<TourActivity>();
 		path.add(prevAct); path.add(newAct); path.add(nextAct);
 		int actIndex;

@@ -60,10 +60,10 @@ public class BuildPDVRPAlgoFromScratchTest {
 			actLevelConstraintAccumulator.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
 			actLevelConstraintAccumulator.addConstraint(new HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
 			
-			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actLevelConstraintAccumulator);
+			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
 
 
-			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardPickupAndDeliveryLoadConstraint(stateManager));
+			ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardPickupAndDeliveryLoadConstraint(stateManager), actLevelConstraintAccumulator);
 //			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
 			
 			VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
