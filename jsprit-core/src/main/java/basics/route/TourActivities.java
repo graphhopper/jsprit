@@ -145,12 +145,6 @@ public class TourActivities {
 					activityRemoved = true;
 				}
 			}
-			else if(c instanceof ServiceActivity){
-				if(job.equals(((ServiceActivity) c).getJob())){
-					tourActivities.remove(c);
-					activityRemoved = true;
-				}
-			}
 		}
 		if(jobRemoved != activityRemoved) throw new IllegalStateException("job removed, but belonging activity not.");
 		return activityRemoved;
@@ -177,13 +171,9 @@ public class TourActivities {
 	}
 
 	private void addJob(TourActivity act) {
-		
 		if(act instanceof JobActivity){
 			Job job = ((JobActivity) act).getJob();
 			jobs.add(job);
-		}
-		else if(act instanceof ServiceActivity){
-			jobs.add(((ServiceActivity) act).getJob());
 		}
 	}
 
