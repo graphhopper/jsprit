@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import basics.Service;
+import basics.Shipment;
 
 
 public class TestTour {
@@ -47,14 +48,14 @@ public class TestTour {
 	}
 	
 	@Test(expected=IllegalStateException.class)
-	public void whenAddingServiceActTwice_serviceActIsAdded(){
+	public void whenAddingServiceActTwice_anExceptionIsThrown(){
 		assertFalse(tour.servesJob(service));
 		tour.addActivity(act);
 		tour.addActivity(act);
 	}
 	
 	@Test
-	public void whenAddingServiceAndRemoveIt_tourShouldNotServeService(){
+	public void whenAddingServiceAndRemovingItImmediately_tourShouldNotServeServiceAnymore(){
 		assertFalse(tour.servesJob(service));
 		tour.addActivity(act);
 		assertTrue(tour.servesJob(service));
@@ -63,7 +64,7 @@ public class TestTour {
 	}
 	
 	@Test
-	public void noNameYet(){
+	public void whenAddingAServiceAndThenRemovingTheServiceAgain_tourShouldNotServeItAnymore(){
 		assertEquals(0, tour.getActivities().size());
 		tour.addActivity(act);
 		assertEquals(1, tour.getActivities().size());
@@ -71,8 +72,47 @@ public class TestTour {
 		assertTrue(service.equals(anotherServiceInstance));
 		boolean removed = tour.removeJob(anotherServiceInstance);
 		assertTrue(removed);
-//		assertEquals(0, tour.getActivities().size());
+		assertEquals(0, tour.getActivities().size());
 	}
 	
+	@Test
+	public void whenAddingAShipmentActivity_tourShouldServeShipment(){
+		Shipment s = Shipment.Builder.newInstance("s", 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
+		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
+		TourActivity pickupShipment = fac.createPickup(s);
+		TourActivity deliverShipment = fac.createDelivery(s);
+		tour.addActivity(pickupShipment);
+		tour.addActivity(deliverShipment);
+		assertTrue(tour.servesJob(s));
+		assertEquals(2,tour.getActivities().size());
+	}
+	
+	@Test
+	public void whenRemovingShipment_tourShouldNotServiceItAnymore(){
+		Shipment s = Shipment.Builder.newInstance("s", 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
+		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
+		TourActivity pickupShipment = fac.createPickup(s);
+		TourActivity deliverShipment = fac.createDelivery(s);
+		tour.addActivity(pickupShipment);
+		tour.addActivity(deliverShipment);
+		
+		tour.removeJob(s);
+		assertFalse(tour.servesJob(s));
+	}
+
+	
+	@Test
+	public void whenRemovingShipment_theirCorrespondingActivitiesShouldBeRemoved(){
+		Shipment s = Shipment.Builder.newInstance("s", 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
+		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
+		TourActivity pickupShipment = fac.createPickup(s);
+		TourActivity deliverShipment = fac.createDelivery(s);
+		tour.addActivity(pickupShipment);
+		tour.addActivity(deliverShipment);
+		
+		assertEquals(2, tour.getActivities().size());
+		tour.removeJob(s);
+		assertEquals(0, tour.getActivities().size());
+	}
 	
 }
