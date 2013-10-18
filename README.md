@@ -21,7 +21,6 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 - continues improvement of code, handling and performance
 - relaxed API to easily build algorithms from scratch
 - VRP with pickups and deliveries
-- release 1.0.0
 
 ##Documentation
 
@@ -35,6 +34,8 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 ##Getting started in 2 seconds
 
 [Add the latest snapshot to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
+
+[Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
 
 ##About
 The jsprit-project is created and maintained by Stefan Schröder. It is motivated by two issues. 
