@@ -35,7 +35,7 @@ import basics.algo.VehicleRoutingAlgorithmFactory;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-public class NeighborhoodThresholdInitialiser implements AlgorithmStartsListener{
+class NeighborhoodThresholdInitialiser implements AlgorithmStartsListener{
 
 	private static Logger log = Logger.getLogger(NeighborhoodThresholdInitialiser.class);
 	
