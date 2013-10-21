@@ -58,7 +58,7 @@ class CalculatorBuilder {
 
 	private VehicleRoutingProblem vrp;
 
-	private StateManager states;
+	private StateGetter states;
 
 	private boolean local = true;
 
@@ -103,7 +103,7 @@ class CalculatorBuilder {
 	 * 
 	 * @return
 	 */
-	public CalculatorBuilder setStates(StateManager states){
+	public CalculatorBuilder setStates(StateGetter states){
 		this.states = states;
 		return this;
 	}
@@ -217,7 +217,7 @@ class CalculatorBuilder {
 		}
 	}
 
-	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateManager statesManager){
+	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateGetter statesManager){
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
  		
 		ActivityInsertionCostsCalculator actInsertionCalc;
@@ -235,7 +235,7 @@ class CalculatorBuilder {
 		return calcPlusListeners;
 	}
 
-	private CalculatorPlusListeners createCalculatorConsideringFixedCosts(VehicleRoutingProblem vrp, JobInsertionCalculator baseCalculator, StateManager activityStates2, double weightOfFixedCosts){
+	private CalculatorPlusListeners createCalculatorConsideringFixedCosts(VehicleRoutingProblem vrp, JobInsertionCalculator baseCalculator, StateGetter activityStates2, double weightOfFixedCosts){
 		final CalculatesServiceInsertionConsideringFixCost withFixCost = new CalculatesServiceInsertionConsideringFixCost(baseCalculator, activityStates2);
 		withFixCost.setWeightOfFixCost(weightOfFixedCosts);
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(withFixCost);
@@ -243,7 +243,7 @@ class CalculatorBuilder {
 		return calcPlusListeners;
 	}
 
-	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, StateManager activityStates2, int forwardLooking, int solutionMemory){
+	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, StateGetter activityStates2, int forwardLooking, int solutionMemory){
 		int after = forwardLooking;
 		ActivityInsertionCostsCalculator routeLevelCostEstimator;
 		if(activityInsertionCostCalculator == null){
@@ -261,7 +261,7 @@ class CalculatorBuilder {
 		return calcPlusListener;
 	}
 
-	private JobInsertionCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCalculator baseCalc, StateManager activityStates2){
+	private JobInsertionCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCalculator baseCalc, StateGetter activityStates2){
 		return new CalculatesVehTypeDepServiceInsertion(fleetManager, baseCalc);
 	}
 

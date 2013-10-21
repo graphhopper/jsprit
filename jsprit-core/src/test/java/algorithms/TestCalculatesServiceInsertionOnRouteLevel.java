@@ -62,7 +62,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 
 	private Service third;
 
-	private StateManagerImpl states;
+	private StateManager states;
 
 	private NoDriver driver;
 	
@@ -140,7 +140,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		jobs.add(second);
 		jobs.add(third);
 		
-		states = new StateManagerImpl();
+		states = new StateManager();
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 		ActivityInsertionCostsCalculator actInsertionCostCalculator = new RouteLevelActivityInsertionCostsEstimator(costs, activityCosts, states);

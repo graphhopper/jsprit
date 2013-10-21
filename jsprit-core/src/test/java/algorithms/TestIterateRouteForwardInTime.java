@@ -58,7 +58,7 @@ public class TestIterateRouteForwardInTime {
 	
 	ServiceActivity secondAct;
 	
-	StateManagerImpl stateManager;
+	StateManager stateManager;
 	
 	@Before
 	public void setUp(){
@@ -114,7 +114,7 @@ public class TestIterateRouteForwardInTime {
 	
 		vehicleRoute = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),vehicle);
 		
-		stateManager = new StateManagerImpl();
+		stateManager = new StateManager();
 	}
 	
 	@Test

@@ -1,17 +1,17 @@
 package algorithms;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.route.PickupActivity;
 import basics.route.ServiceActivity;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-public class UpdateFuturePickupsAtActivityLevel implements ReverseActivityVisitor {
-	private StateManagerImpl stateManager;
+class UpdateFuturePickupsAtActivityLevel implements ReverseActivityVisitor, StateUpdater {
+	private StateManager stateManager;
 	private int futurePicks = 0;
 	private VehicleRoute route;
 	
-	public UpdateFuturePickupsAtActivityLevel(StateManagerImpl stateManager) {
+	public UpdateFuturePickupsAtActivityLevel(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}

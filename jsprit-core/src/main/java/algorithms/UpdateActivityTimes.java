@@ -14,7 +14,7 @@ import basics.route.VehicleRoute;
  * @author stefan
  *
  */
-public class UpdateActivityTimes implements ActivityVisitor{
+class UpdateActivityTimes implements ActivityVisitor, StateUpdater{
 
 	private Logger log = Logger.getLogger(UpdateActivityTimes.class);
 	

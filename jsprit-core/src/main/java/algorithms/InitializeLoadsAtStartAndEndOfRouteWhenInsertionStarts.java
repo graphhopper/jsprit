@@ -2,7 +2,7 @@ package algorithms;
 
 import java.util.Collection;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.Delivery;
 import basics.Job;
 import basics.Pickup;
@@ -20,9 +20,9 @@ import basics.route.VehicleRoute;
  * 
  * @param stateManager
  */
-public class InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts implements InsertionStartsListener {
+class InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts implements InsertionStartsListener {
 
-	private StateManagerImpl stateManager;
+	private StateManager stateManager;
 	
 	/**
 	 * Initializes the load of each route/vehicle at start- and end-location before insertion starts.
@@ -34,7 +34,7 @@ public class InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts implements I
 	 * 
 	 * @param stateManager
 	 */
-	public InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts(StateManagerImpl stateManager) {
+	public InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}

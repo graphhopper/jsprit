@@ -2,7 +2,7 @@ package algorithms;
 
 import org.apache.log4j.Logger;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.costs.ForwardTransportCost;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -21,7 +21,7 @@ import basics.route.VehicleRoute;
  * @param transportCost
  * @param states
  */
-public class UpdateCostsAtAllLevels implements ActivityVisitor{
+class UpdateCostsAtAllLevels implements ActivityVisitor,StateUpdater{
 
 	private static Logger log = Logger.getLogger(UpdateCostsAtAllLevels.class);
 	
@@ -29,7 +29,7 @@ public class UpdateCostsAtAllLevels implements ActivityVisitor{
 
 	private ForwardTransportCost transportCost;
 	
-	private StateManagerImpl states;
+	private StateManager states;
 	
 	private double totalOperationCost = 0.0;
 	
@@ -52,7 +52,7 @@ public class UpdateCostsAtAllLevels implements ActivityVisitor{
 	 * @param transportCost
 	 * @param states
 	 */
-	public UpdateCostsAtAllLevels(VehicleRoutingActivityCosts activityCost, VehicleRoutingTransportCosts transportCost, StateManagerImpl states) {
+	public UpdateCostsAtAllLevels(VehicleRoutingActivityCosts activityCost, VehicleRoutingTransportCosts transportCost, StateManager states) {
 		super();
 		this.activityCost = activityCost;
 		this.transportCost = transportCost;

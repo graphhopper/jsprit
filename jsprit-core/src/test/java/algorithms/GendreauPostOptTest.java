@@ -68,7 +68,7 @@ public class GendreauPostOptTest {
 	
 	Service job3;
 
-	private StateManagerImpl states;
+	private StateManager states;
 
 	private List<Vehicle> vehicles;
 
@@ -144,7 +144,7 @@ public class GendreauPostOptTest {
 		
 //		Collection<Vehicle> vehicles = Arrays.asList(lightVehicle1,lightVehicle2, heavyVehicle);
 		fleetManager = new VehicleFleetManagerImpl(vehicles);
-		states = new StateManagerImpl();
+		states = new StateManager();
 		
 		activityCosts = new ExampleActivityCostFunction();
 		
@@ -214,7 +214,7 @@ public class GendreauPostOptTest {
 		return c;
 	}
 
-	private double getCosts(VehicleRoutingProblemSolution newSolution, StateManagerImpl states) {
+	private double getCosts(VehicleRoutingProblemSolution newSolution, StateManager states) {
 		double c = 0.0;
 		for(VehicleRoute r : newSolution.getRoutes()){
 

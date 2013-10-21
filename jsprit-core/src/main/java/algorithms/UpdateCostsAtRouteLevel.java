@@ -2,7 +2,7 @@ package algorithms;
 
 import java.util.Collection;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.Job;
 import basics.algo.InsertionEndsListener;
 import basics.algo.InsertionStartsListener;
@@ -11,15 +11,15 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.VehicleRoute;
 
-public class UpdateCostsAtRouteLevel implements JobInsertedListener, InsertionStartsListener, InsertionEndsListener{
+class UpdateCostsAtRouteLevel implements StateUpdater,JobInsertedListener, InsertionStartsListener, InsertionEndsListener{
 		
-		private StateManagerImpl states;
+		private StateManager states;
 		
 		private VehicleRoutingTransportCosts tpCosts;
 		
 		private VehicleRoutingActivityCosts actCosts;
 		
-		public UpdateCostsAtRouteLevel(StateManagerImpl states, VehicleRoutingTransportCosts tpCosts, VehicleRoutingActivityCosts actCosts) {
+		public UpdateCostsAtRouteLevel(StateManager states, VehicleRoutingTransportCosts tpCosts, VehicleRoutingActivityCosts actCosts) {
 			super();
 			this.states = states;
 			this.tpCosts = tpCosts;

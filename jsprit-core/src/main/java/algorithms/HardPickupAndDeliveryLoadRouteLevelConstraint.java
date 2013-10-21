@@ -10,11 +10,11 @@ import basics.Service;
  * @author stefan
  *
  */
-public class HardPickupAndDeliveryLoadConstraint implements HardRouteLevelConstraint {
+class HardPickupAndDeliveryLoadRouteLevelConstraint implements HardRouteLevelConstraint {
 
-	private StateManager stateManager;
+	private StateGetter stateManager;
 	
-	public HardPickupAndDeliveryLoadConstraint(StateManager stateManager) {
+	public HardPickupAndDeliveryLoadRouteLevelConstraint(StateGetter stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}

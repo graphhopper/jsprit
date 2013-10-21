@@ -1,6 +1,6 @@
 package algorithms;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
@@ -15,8 +15,8 @@ import basics.route.VehicleRoute;
  * @author stefan
  *
  */
-public class UpdateLoadAtActivityLevel implements ActivityVisitor {
-	private StateManagerImpl stateManager;
+class UpdateLoadAtActivityLevel implements ActivityVisitor, StateUpdater {
+	private StateManager stateManager;
 	private int currentLoad = 0;
 	private VehicleRoute route;
 	
@@ -39,7 +39,7 @@ public class UpdateLoadAtActivityLevel implements ActivityVisitor {
 	 * @author stefan
 	 *
 	 */
-	public UpdateLoadAtActivityLevel(StateManagerImpl stateManager) {
+	public UpdateLoadAtActivityLevel(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}

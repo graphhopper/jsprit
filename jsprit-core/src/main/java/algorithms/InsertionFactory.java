@@ -32,7 +32,7 @@ class InsertionFactory {
 	private static Logger log = Logger.getLogger(InsertionFactory.class);
 	
 	public static InsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
-			VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager){
+			VehicleFleetManager vehicleFleetManager, StateManager routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager){
 
 		if(config.containsKey("[@name]")){
 			String insertionName = config.getString("[@name]");

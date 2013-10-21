@@ -23,7 +23,7 @@ package algorithms;
 import java.util.Arrays;
 import java.util.List;
 
-import algorithms.StateManager.StateId;
+import algorithms.StateGetter.StateId;
 
 public class StateIdFactory {
 	

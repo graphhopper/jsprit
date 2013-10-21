@@ -1,16 +1,16 @@
 package algorithms;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.route.DeliveryActivity;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-public class UpdateOccuredDeliveriesAtActivityLevel implements ActivityVisitor {
-	private StateManagerImpl stateManager;
+class UpdateOccuredDeliveriesAtActivityLevel implements ActivityVisitor, StateUpdater {
+	private StateManager stateManager;
 	private int deliveries = 0; 
 	private VehicleRoute route;
 	
-	public UpdateOccuredDeliveriesAtActivityLevel(StateManagerImpl stateManager) {
+	public UpdateOccuredDeliveriesAtActivityLevel(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}

@@ -2,16 +2,16 @@ package algorithms;
 
 import org.apache.log4j.Logger;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-public class UpdateLatestOperationStartTimeAtActLocations implements ReverseActivityVisitor{
+class UpdateLatestOperationStartTimeAtActLocations implements ReverseActivityVisitor, StateUpdater{
 
 	private static Logger log = Logger.getLogger(UpdateLatestOperationStartTimeAtActLocations.class);
 	
-	private StateManagerImpl states;
+	private StateManager states;
 	
 	private VehicleRoute route;
 	
@@ -21,7 +21,7 @@ public class UpdateLatestOperationStartTimeAtActLocations implements ReverseActi
 	
 	private TourActivity prevAct;
 	
-	public UpdateLatestOperationStartTimeAtActLocations(StateManagerImpl states, VehicleRoutingTransportCosts tpCosts) {
+	public UpdateLatestOperationStartTimeAtActLocations(StateManager states, VehicleRoutingTransportCosts tpCosts) {
 		super();
 		this.states = states;
 		this.transportCosts = tpCosts;

@@ -1,17 +1,17 @@
 package algorithms;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-public class UpdateEarliestStartTimeWindowAtActLocations implements ActivityVisitor{
+class UpdateEarliestStartTimeWindowAtActLocations implements ActivityVisitor,StateUpdater{
 
-	private StateManagerImpl states;
+	private StateManager states;
 	
 	private ActivityTimeTracker timeTracker;
 	
-	public UpdateEarliestStartTimeWindowAtActLocations(StateManagerImpl states, VehicleRoutingTransportCosts transportCosts) {
+	public UpdateEarliestStartTimeWindowAtActLocations(StateManager states, VehicleRoutingTransportCosts transportCosts) {
 		super();
 		this.states = states;
 		timeTracker = new ActivityTimeTracker(transportCosts);

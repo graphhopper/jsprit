@@ -49,7 +49,7 @@ public class BuildCVRPAlgoFromScratchTest {
 		new VrpXMLReader(builder).read("src/test/resources/vrpnc1-jsprit.xml");
 		vrp = builder.build();
 		
-		final StateManagerImpl stateManager = new StateManagerImpl();
+		final StateManager stateManager = new StateManager();
 		HardActivityLevelConstraint hardActLevelConstraint = new HardActivityLevelConstraint() {
 			
 			@Override

@@ -22,7 +22,7 @@ package algorithms;
 
 import basics.route.TourActivity;
 
-public class CalculationUtils {
+class CalculationUtils {
 	
 
 	/**

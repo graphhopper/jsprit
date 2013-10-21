@@ -24,10 +24,21 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
 
+/**
+ * Calculates activity insertion costs locally, i.e. by comparing the additional costs of insertion the new activity k between
+ * activity i (prevAct) and j (nextAct).
+ * Additional costs are then basically calculated as delta c = c_ik + c_kj - c_ij.
+ * 
+ * <p>Note once time has an effect on costs this class requires activity endTimes.
+ * 
+ * @author stefan
+ *
+ */
 class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCalculator{
 
 	private VehicleRoutingTransportCosts routingCosts;
 	private VehicleRoutingActivityCosts activityCosts;
+	
 	
 	public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts) {
 		super();

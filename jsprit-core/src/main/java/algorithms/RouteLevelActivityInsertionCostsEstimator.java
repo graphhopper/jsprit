@@ -36,11 +36,11 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 	
 	private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
 	
-	private StateManager stateManager;
+	private StateGetter stateManager;
 	
 	private int nuOfActivities2LookForward = 0;
 	
-	public RouteLevelActivityInsertionCostsEstimator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, StateManager stateManager) {
+	public RouteLevelActivityInsertionCostsEstimator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, StateGetter stateManager) {
 		super();
 		this.activityCosts = actCosts;
 		this.stateManager = stateManager;

@@ -41,13 +41,13 @@ final class FindCheaperVehicleAlgo {
 	
 	private double weightFixCosts = 1.0;
 	
-	private StateManager states;
+	private StateGetter states;
 	
 	public void setWeightFixCosts(double weightFixCosts) {
 		this.weightFixCosts = weightFixCosts;
 	}
 	
-	public void setStates(StateManager states) {
+	public void setStates(StateGetter states) {
 		this.states = states;
 	}
 

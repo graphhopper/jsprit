@@ -6,11 +6,11 @@ import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
 
-public class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements HardActivityLevelConstraint {
+class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements HardActivityLevelConstraint {
 	
-	private StateManager stateManager;
+	private StateGetter stateManager;
 	
-	public HardPickupAndDeliveryBackhaulActivityLevelConstraint(StateManager stateManager) {
+	public HardPickupAndDeliveryBackhaulActivityLevelConstraint(StateGetter stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}

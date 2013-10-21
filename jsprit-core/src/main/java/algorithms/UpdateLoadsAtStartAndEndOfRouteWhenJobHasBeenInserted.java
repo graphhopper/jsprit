@@ -1,6 +1,6 @@
 package algorithms;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.Delivery;
 import basics.Job;
 import basics.Pickup;
@@ -17,9 +17,9 @@ import basics.route.VehicleRoute;
  * 
  * @param stateManager
  */
-public class UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted implements JobInsertedListener {
+class UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted implements JobInsertedListener, StateUpdater {
 
-		private StateManagerImpl stateManager;
+		private StateManager stateManager;
 		
 		/**
 		 * Updates loads at start and end of a route if a job has been inserted in that route.
@@ -30,7 +30,7 @@ public class UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted implements Jo
 		 * 
 		 * @param stateManager
 		 */
-		public UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(StateManagerImpl stateManager) {
+		public UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(StateManager stateManager) {
 			super();
 			this.stateManager = stateManager;
 		}

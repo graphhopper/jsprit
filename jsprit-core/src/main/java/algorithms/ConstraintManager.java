@@ -2,7 +2,7 @@ package algorithms;
 
 import basics.route.TourActivity;
 
-public class ConstraintManager implements HardActivityLevelConstraint, HardRouteLevelConstraint{
+class ConstraintManager implements HardActivityLevelConstraint, HardRouteLevelConstraint{
 
 	private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
 	

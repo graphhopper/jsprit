@@ -37,9 +37,9 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	
 	private double solution_completeness_ratio = 0.5;
 	
-	private StateManager states;
+	private StateGetter states;
 
-	public CalculatesServiceInsertionConsideringFixCost(final JobInsertionCalculator standardInsertionCalculator, StateManager activityStates2) {
+	public CalculatesServiceInsertionConsideringFixCost(final JobInsertionCalculator standardInsertionCalculator, StateGetter activityStates2) {
 		super();
 		this.standardServiceInsertion = standardInsertionCalculator;
 		this.states = activityStates2;

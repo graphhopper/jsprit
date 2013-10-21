@@ -438,7 +438,7 @@ public class VehicleRoutingAlgorithms {
 		final VehicleFleetManager vehicleFleetManager = createFleetManager(vrp);
 		
 		//create state-manager
-		final StateManagerImpl stateManager = new StateManagerImpl();
+		final StateManager stateManager = new StateManager();
 		
 		/*
 		 * define constraints
@@ -454,7 +454,7 @@ public class VehicleRoutingAlgorithms {
 			constraintManager.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
 		}
 		
-		constraintManager.addConstraint(new HardPickupAndDeliveryLoadConstraint(stateManager));
+		constraintManager.addConstraint(new HardPickupAndDeliveryLoadRouteLevelConstraint(stateManager));
 		
 		//construct initial solution creator 
 		AlgorithmStartsListener createInitialSolution = createInitialSolution(config,vrp,vehicleFleetManager,stateManager,algorithmListeners,definedClasses,executorService,nuOfThreads,constraintManager);
@@ -542,7 +542,7 @@ public class VehicleRoutingAlgorithms {
 		return metaAlgorithm;	
 	}
 
-	private static SolutionCostCalculator getCostCalculator(final StateManagerImpl stateManager) {
+	private static SolutionCostCalculator getCostCalculator(final StateManager stateManager) {
 		SolutionCostCalculator calc = new SolutionCostCalculator() {
 			
 			@Override
@@ -644,7 +644,7 @@ public class VehicleRoutingAlgorithms {
 		metaAlgorithm.getAlgorithmListeners().addAll(algorithmListeners);
 	}
 	
-	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, final StateManagerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
+	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, final StateManager routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
 		List<HierarchicalConfiguration> modConfigs = config.configurationsAt("construction.insertion");
 		if(modConfigs == null) return null;
 		if(modConfigs.isEmpty()) return null;
@@ -741,7 +741,7 @@ public class VehicleRoutingAlgorithms {
 	}
 	
 	private static SearchStrategyModule buildModule(HierarchicalConfiguration moduleConfig, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, 
-			final StateManagerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
+			final StateManager routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
 		String moduleName = moduleConfig.getString("[@name]");
 		if(moduleName == null) throw new IllegalStateException("module(-name) is missing.");
 		String moduleId = moduleConfig.getString("[@id]");
@@ -843,7 +843,7 @@ public class VehicleRoutingAlgorithms {
 				"\n\tgendreauPostOpt");
 	}
 
-	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StateManagerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
+	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
@@ -853,7 +853,7 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 
-	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final StateManagerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
+	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
@@ -863,7 +863,7 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 	
-	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
+	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, StateManager routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
 		InsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, routeStates, algorithmListeners, executorService, nuOfThreads, constraintManager);
 		return insertion;
 	}

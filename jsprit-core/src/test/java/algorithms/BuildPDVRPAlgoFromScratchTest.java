@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.selectors.SelectBest;
 import basics.Delivery;
@@ -54,7 +54,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 			new VrpXMLReader(builder).read("src/test/resources/pd_solomon_r101.xml");
 			vrp = builder.build();
 			
-			final StateManagerImpl stateManager = new StateManagerImpl();
+			final StateManager stateManager = new StateManager();
 			
 			ConstraintManager actLevelConstraintAccumulator = new ConstraintManager();
 			actLevelConstraintAccumulator.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
@@ -63,7 +63,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
 
 
-			ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardPickupAndDeliveryLoadConstraint(stateManager), actLevelConstraintAccumulator);
+			ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardPickupAndDeliveryLoadRouteLevelConstraint(stateManager), actLevelConstraintAccumulator);
 //			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
 			
 			VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());

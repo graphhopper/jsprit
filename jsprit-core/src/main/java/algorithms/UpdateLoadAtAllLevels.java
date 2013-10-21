@@ -1,18 +1,18 @@
 package algorithms;
 
-import algorithms.StateManagerImpl.StateImpl;
+import algorithms.StateManager.StateImpl;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-public class UpdateLoadAtAllLevels implements ActivityVisitor{
+class UpdateLoadAtAllLevels implements ActivityVisitor,StateUpdater{
 
 	private double load = 0.0;
 	
-	private StateManagerImpl states;
+	private StateManager states;
 	
 	private VehicleRoute vehicleRoute;
 	
-	public UpdateLoadAtAllLevels(StateManagerImpl states) {
+	public UpdateLoadAtAllLevels(StateManager states) {
 		super();
 		this.states = states;
 	}

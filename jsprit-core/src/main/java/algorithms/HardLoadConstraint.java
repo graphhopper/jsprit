@@ -2,11 +2,11 @@ package algorithms;
 
 import basics.Service;
 
-public class HardLoadConstraint implements HardRouteLevelConstraint{
+class HardLoadConstraint implements HardRouteLevelConstraint{
 
-	private StateManager states;
+	private StateGetter states;
 	
-	public HardLoadConstraint(StateManager states) {
+	public HardLoadConstraint(StateGetter states) {
 		super();
 		this.states = states;
 	}

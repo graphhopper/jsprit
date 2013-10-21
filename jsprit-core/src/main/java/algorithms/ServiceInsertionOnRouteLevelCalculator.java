@@ -56,7 +56,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCalcul
 	
 	private TourActivityFactory tourActivityFactory = new DefaultTourActivityFactory();
 	
-	private StateManager stateManager;
+	private StateGetter stateManager;
 	
 	private HardRouteLevelConstraint hardRouteLevelConstraint;
 	
@@ -107,7 +107,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCalcul
 		}
 
 
-	public void setStates(StateManager stateManager){
+	public void setStates(StateGetter stateManager){
 		this.stateManager = stateManager;
 	}
 	

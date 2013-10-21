@@ -618,7 +618,7 @@ class StateUpdates {
 		
 		private ReverseRouteActivityVisitor revRouteActivityVisitor;
 		
-		public UpdateStates(StateManagerImpl states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
+		public UpdateStates(StateManager states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
 			routeActivityVisitor = new RouteActivityVisitor();
 			routeActivityVisitor.addActivityVisitor(new UpdateActivityTimes(routingCosts));
 			routeActivityVisitor.addActivityVisitor(new UpdateCostsAtAllLevels(activityCosts, routingCosts, states));
