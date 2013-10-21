@@ -79,5 +79,10 @@ public final class PickupShipment implements PickupActivity{
 	public TourActivity duplicate() {
 		return new PickupShipment(this);
 	}
+	
+	@Override
+	public String toString() {
+		return "[act="+getName()+"][loc="+getLocationId()+"]";
+	}
 
 }

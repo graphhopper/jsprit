@@ -145,7 +145,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCalculator{
 				if(totalActivityInsertionCosts < bestCost){
 					bestCost = totalActivityInsertionCosts;
 					pickupInsertionIndex = i;
-					deliveryInsertionIndex = activities.size() - 1;
+					deliveryInsertionIndex = activities.size();
 				}
 			}
 			//update prevAct and endTime
@@ -166,43 +166,11 @@ final class ShipmentInsertionCalculator implements JobInsertionCalculator{
 				double totalActivityInsertionCosts = pickupAIC.getAdditionalCosts() + deliveryAIC.getAdditionalCosts();
 				if(totalActivityInsertionCosts < bestCost){
 					bestCost = totalActivityInsertionCosts;
-					pickupInsertionIndex = activities.size() - 1;
-					deliveryInsertionIndex = activities.size() - 1;
+					pickupInsertionIndex = activities.size();
+					deliveryInsertionIndex = activities.size();
 				}
 			}
 		}
-		
-//		for(TourActivity nextAct : activities){
-//			if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-//				ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActEndTime);
-//				if(mc != null){ 
-//					if(mc.getAdditionalCosts() < bestCost){
-//						bestCost = mc.getAdditionalCosts();
-//						bestMarginals = mc;
-//						insertionIndex = actIndex;
-//					}
-//				}
-//			}
-//			double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActEndTime, newDriver, newVehicle);
-//			double nextActEndTime = CalcUtils.getActivityEndTime(nextActArrTime, nextAct);
-//			
-//			prevActEndTime = nextActEndTime;
-//
-//			prevAct = nextAct;
-//			actIndex++;
-//		}
-//		End nextAct = end;
-//		if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-//			ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActEndTime);
-//			if(mc != null) {
-//				if(mc.getAdditionalCosts() < bestCost){
-//					bestCost = mc.getAdditionalCosts();
-//					bestMarginals = mc;
-//					insertionIndex = actIndex;
-//				}
-//			}
-//		}			
-
 		if(pickupInsertionIndex == InsertionData.NO_INDEX) {
 			return InsertionData.noInsertionFound();
 		}
@@ -211,7 +179,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCalculator{
 		return insertionData;
 	}
 
-	public ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double departureTimeAtPrevAct) {	
+	private ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double departureTimeAtPrevAct) {	
 		return activityInsertionCostsCalculator.calculate(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);
 		
 	}

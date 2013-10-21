@@ -152,6 +152,7 @@ public class TourActivities {
 
 	public void addActivity(int insertionIndex, TourActivity act) {
 		assert insertionIndex >= 0 : "insertionIndex == 0, this cannot be";
+		if(tourActivities.contains(act)) throw new IllegalStateException("act " + act + " already in tour. cannot add act twice.");
 		/*
 		 * if 1 --> between start and act(0) --> act(0)
 		 * if 2 && 2 <= acts.size --> between act(0) and act(1) --> act(1)
@@ -164,6 +165,12 @@ public class TourActivities {
 		addJob(act);
 	}
 	
+	/**
+	 * adds activity.
+	 * 
+	 * @throw {@link IllegalStateException} if same activity is added twice.
+	 * @param act
+	 */
 	public void addActivity(TourActivity act){
 		if(tourActivities.contains(act)) throw new IllegalStateException("act " + act + " already in tour. cannot add act twice.");
 		tourActivities.add(act);

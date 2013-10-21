@@ -80,4 +80,8 @@ public final class DeliverShipment implements DeliveryActivity{
 		return new DeliverShipment(this);
 	}
 
+	@Override
+	public String toString() {
+		return "[act="+getName()+"][loc="+getLocationId()+"]";
+	}
 }

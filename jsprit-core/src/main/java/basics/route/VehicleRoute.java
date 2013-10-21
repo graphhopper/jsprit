@@ -187,6 +187,11 @@ public class VehicleRoute {
 	public End getEnd() {
 		return end;
 	}
+	
+	@Override
+	public String toString() {
+		return "[start="+start+"][end=" + end + "][departureTime=" + start.getEndTime() + "][vehicle=" + vehicle + "][driver=" + driver + "][nuOfActs="+tourActivities.getActivities().size()+"]";
+	}
 
 	@Deprecated
 	public void setVehicleRouteCostCalculator(VehicleRouteCostCalculator costAccumulator){

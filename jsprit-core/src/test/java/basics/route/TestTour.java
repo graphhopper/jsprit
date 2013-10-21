@@ -87,6 +87,8 @@ public class TestTour {
 		assertEquals(2,tour.getActivities().size());
 	}
 	
+	
+	
 	@Test
 	public void whenRemovingShipment_tourShouldNotServiceItAnymore(){
 		Shipment s = Shipment.Builder.newInstance("s", 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();

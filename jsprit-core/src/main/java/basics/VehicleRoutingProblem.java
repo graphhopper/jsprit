@@ -236,13 +236,24 @@ public class VehicleRoutingProblem {
 			if(job instanceof Service) { 
 				addService((Service) job);
 			}
+			else if(job instanceof Shipment){
+				addShipment((Shipment)job);
+			}
 			else{
-				if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
-				jobs.put(job.getId(),job);
+//				if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
+//				coordinates.put(job.getLocationId(), job.getCoord());
+//				jobs.put(job.getId(),job);
 			}
 			return this;
 		}
 
+
+		private void addShipment(Shipment job) {
+			if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
+			coordinates.put(job.getPickupLocation(), job.getPickupCoord());
+			coordinates.put(job.getDeliveryLocation(), job.getDeliveryCoord());
+			jobs.put(job.getId(),job);
+		}
 
 		/**
 		 * Adds a vehicle.

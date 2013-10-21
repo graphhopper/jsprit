@@ -30,6 +30,7 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 	private HardActivityLevelConstraint hardConstraint;
 
 	private VehicleRoutingTransportCosts routingCosts;
+	
 	private VehicleRoutingActivityCosts activityCosts;
 	
 	public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, HardActivityLevelConstraint hardActivityLevelConstraint) {
@@ -66,12 +67,16 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 		double oldCosts;
 		double oldTime;
 		if(iFacts.getRoute().isEmpty()){
-			oldCosts = 0.0;
-			oldTime = 0.0;
+			double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocationId(), nextAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			double arrTime_nextAct = routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			
+			double actCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			oldCosts = tp_costs_prevAct_nextAct + actCost_nextAct;
+			oldTime = (nextAct.getArrTime() - depTimeAtPrevAct);
 		}
 		else{
 			double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocationId(), nextAct.getLocationId(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
-			double arrTime_nextAct = routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevAct.getEndTime(), iFacts.getNewDriver(), iFacts.getNewVehicle());
+			double arrTime_nextAct = routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
 			
 			double actCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct, iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
 			oldCosts = tp_costs_prevAct_nextAct + actCost_nextAct;
