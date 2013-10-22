@@ -39,7 +39,7 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
 		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
 		
-//		stateManager.addActivityVisitor(new UpdateMaxLoad(stateManager));
+		stateManager.addActivityVisitor(new UpdateMaxLoad(stateManager));
 		stateManager.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
 		stateManager.addActivityVisitor(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 	}
