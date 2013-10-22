@@ -97,8 +97,6 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		List<InsertionListener> iListeners = new ArrayList<InsertionListener>();
 		List<PrioritizedVRAListener> algorithmListeners = new ArrayList<PrioritizedVRAListener>();
 		CalculatorBuilder calcBuilder = new CalculatorBuilder(iListeners, algorithmListeners);
-		addCoreUpdater();
-		
 		if(local){
 			calcBuilder.setLocalLevel();
 		}
@@ -120,30 +118,6 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		BestInsertion bestInsertion = new BestInsertion(jobInsertions);
 		for(InsertionListener l : iListeners) bestInsertion.addListener(l); 
 		return bestInsertion;
-	}
-
-	private void addCoreUpdater() {
-		if(!hasActivityTimeUpdater()){
-			
-		}
-//		if(!hasLoadUpdater()){
-//			stateManager.addActivityVisitor(new UpdateLoadAtActivityLevel(stateManager));
-//		}
-		
-	}
-
-	private boolean hasLoadUpdater() {
-		for(StateUpdater updater : stateManager.getStateUpdaters()){
-			if(updater instanceof UpdateLoadAtActivityLevel) return true;
-		}
-		return false;
-	}
-
-	private boolean hasActivityTimeUpdater() {
-		for(StateUpdater updater : stateManager.getStateUpdaters()){
-			if(updater instanceof UpdateActivityTimes) return true;
-		}
-		return false;
 	}
 
 }
