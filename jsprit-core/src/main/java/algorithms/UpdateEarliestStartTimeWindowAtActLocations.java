@@ -25,7 +25,7 @@ class UpdateEarliestStartTimeWindowAtActLocations implements ActivityVisitor,Sta
 	@Override
 	public void visit(TourActivity activity) {
 		timeTracker.visit(activity);
-		states.putActivityState(activity, StateIdFactory.EARLIEST_OPERATION_START_TIME, new StateImpl(Math.max(timeTracker.getActArrTime(), activity.getTheoreticalEarliestOperationStartTime())));
+		states.putActivityState(activity, StateFactory.EARLIEST_OPERATION_START_TIME, new StateImpl(Math.max(timeTracker.getActArrTime(), activity.getTheoreticalEarliestOperationStartTime())));
 		
 	}
 

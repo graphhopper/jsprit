@@ -20,7 +20,7 @@ import basics.route.VehicleRoute;
  * 
  * @param stateManager
  */
-class InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts implements InsertionStartsListener {
+class UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts implements InsertionStartsListener {
 
 	private StateManager stateManager;
 	
@@ -34,7 +34,7 @@ class InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts implements Insertio
 	 * 
 	 * @param stateManager
 	 */
-	public InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts(StateManager stateManager) {
+	public UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}
@@ -50,8 +50,8 @@ class InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts implements Insertio
 				loadAtEnd += j.getCapacityDemand();
 			}
 		}
-		stateManager.putRouteState(route, StateIdFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot));
-		stateManager.putRouteState(route, StateIdFactory.LOAD, new StateImpl(loadAtEnd));
+		stateManager.putRouteState(route, StateFactory.LOAD_AT_BEGINNING, StateFactory.createState(loadAtDepot));
+		stateManager.putRouteState(route, StateFactory.LOAD_AT_END, StateFactory.createState(loadAtEnd));
 	}
 
 	@Override

@@ -25,14 +25,14 @@ class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements HardActivi
 		int futurePicks;
 		int pastDeliveries;
 		if(prevAct instanceof Start){
-			loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateIdFactory.LOAD_AT_BEGINNING).toDouble();
-			futurePicks = (int)stateManager.getRouteState(iFacts.getRoute(), StateIdFactory.LOAD).toDouble();
+			loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING).toDouble();
+			futurePicks = (int)stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_END).toDouble();
 			pastDeliveries = 0;
 		}
 		else{
-			loadAtPrevAct = (int) stateManager.getActivityState(prevAct, StateIdFactory.LOAD).toDouble();
-			futurePicks = (int) stateManager.getActivityState(prevAct, StateIdFactory.FUTURE_PICKS).toDouble();
-			pastDeliveries = (int) stateManager.getActivityState(prevAct, StateIdFactory.PAST_DELIVERIES).toDouble();
+			loadAtPrevAct = (int) stateManager.getActivityState(prevAct, StateFactory.LOAD).toDouble();
+			futurePicks = (int) stateManager.getActivityState(prevAct, StateFactory.FUTURE_PICKS).toDouble();
+			pastDeliveries = (int) stateManager.getActivityState(prevAct, StateFactory.PAST_DELIVERIES).toDouble();
 		}
 		if(newAct instanceof PickupActivity || newAct instanceof ServiceActivity){
 			if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){

@@ -79,11 +79,11 @@ final class FindCheaperVehicleAlgo {
 			if(vehicle.getType().getTypeId().equals(vehicleRoute.getVehicle().getType().getTypeId())){
 				continue;
 			}
-			if(states.getRouteState(vehicleRoute,StateIdFactory.LOAD).toDouble() <= vehicle.getCapacity()){
+			if(states.getRouteState(vehicleRoute,StateFactory.LOAD).toDouble() <= vehicle.getCapacity()){
 				double fixCostSaving = vehicleRoute.getVehicle().getType().getVehicleCostParams().fix - vehicle.getType().getVehicleCostParams().fix;
 				double departureTime = vehicleRoute.getStart().getEndTime();
 				double newCost = auxilliaryCostCalculator.costOfPath(path, departureTime, vehicleRoute.getDriver(), vehicle);
-				double varCostSaving = states.getRouteState(vehicleRoute, StateIdFactory.COSTS).toDouble() - newCost;
+				double varCostSaving = states.getRouteState(vehicleRoute, StateFactory.COSTS).toDouble() - newCost;
 				double totalCostSaving = varCostSaving + weightFixCosts*fixCostSaving;
 				if(totalCostSaving > bestSaving){
 					bestSaving = totalCostSaving;

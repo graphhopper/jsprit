@@ -37,11 +37,11 @@ final class ConfigureFixCostCalculator implements InsertionStartsListener, JobIn
 	
 	VehicleRoutingProblem vrp;
 	
-	CalculatesServiceInsertionConsideringFixCost calcConsideringFix;
+	JobInsertionConsideringFixCostsCalculator calcConsideringFix;
 	
 	private int nuOfJobsToRecreate;
 
-	public ConfigureFixCostCalculator(VehicleRoutingProblem vrp, CalculatesServiceInsertionConsideringFixCost calcConsideringFix) {
+	public ConfigureFixCostCalculator(VehicleRoutingProblem vrp, JobInsertionConsideringFixCostsCalculator calcConsideringFix) {
 		super();
 		this.vrp = vrp;
 		this.calcConsideringFix = calcConsideringFix;

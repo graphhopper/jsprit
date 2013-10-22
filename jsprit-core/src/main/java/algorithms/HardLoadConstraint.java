@@ -13,7 +13,7 @@ class HardLoadConstraint implements HardRouteLevelConstraint{
 
 	@Override
 	public boolean fulfilled(InsertionContext insertionContext) {
-		int currentLoad = (int) states.getRouteState(insertionContext.getRoute(), StateIdFactory.LOAD).toDouble();
+		int currentLoad = (int) states.getRouteState(insertionContext.getRoute(), StateFactory.LOAD).toDouble();
 		Service service = (Service) insertionContext.getJob();
 		if(currentLoad + service.getCapacityDemand() > insertionContext.getNewVehicle().getCapacity()){
 			return false;

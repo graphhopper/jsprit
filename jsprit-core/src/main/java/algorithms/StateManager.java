@@ -46,7 +46,7 @@ public class StateManager implements StateGetter, IterationStartsListener, RuinL
 		
 	}
 	
-	public static class StateImpl implements State{
+	static class StateImpl implements State{
 		double state;
 
 		public StateImpl(double state) {
@@ -91,6 +91,18 @@ public class StateManager implements StateGetter, IterationStartsListener, RuinL
 	private InsertionListeners insertionListeners = new InsertionListeners();
 	
 	private Collection<StateUpdater> updaters = new ArrayList<StateUpdater>();
+	
+	private Map<StateId,State> defaultRouteStates = new HashMap<StateGetter.StateId, StateGetter.State>();
+	
+	private Map<StateId,State> defaultActivityStates = new HashMap<StateId, State>();
+	
+	public void addDefaultRouteState(StateId stateId, State defaultState){
+		defaultRouteStates.put(stateId, defaultState);
+	}
+	
+	public void addDefaultActivityState(StateId stateId, State defaultState){
+		defaultActivityStates.put(stateId, defaultState);
+	}
 	
 	public void clear(){
 		vehicleRouteStates.clear();
@@ -208,21 +220,23 @@ public class StateManager implements StateGetter, IterationStartsListener, RuinL
 	}
 
 	private State getDefaultActState(StateId stateId, TourActivity act){
-		if(stateId.equals(StateIdFactory.LOAD)) return new StateImpl(0);
-		if(stateId.equals(StateIdFactory.COSTS)) return new StateImpl(0);
-		if(stateId.equals(StateIdFactory.DURATION)) return new StateImpl(0);
-		if(stateId.equals(StateIdFactory.EARLIEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalEarliestOperationStartTime());
-		if(stateId.equals(StateIdFactory.LATEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalLatestOperationStartTime());
-		if(stateId.equals(StateIdFactory.FUTURE_PICKS)) return new StateImpl(0);
-		if(stateId.equals(StateIdFactory.PAST_DELIVERIES)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.LOAD)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.COSTS)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.DURATION)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.EARLIEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalEarliestOperationStartTime());
+		if(stateId.equals(StateFactory.LATEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalLatestOperationStartTime());
+		if(stateId.equals(StateFactory.FUTURE_PICKS)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.PAST_DELIVERIES)) return new StateImpl(0);
 		return null;
 	}
 	
 	private State getDefaultRouteState(StateId stateId, VehicleRoute route){
-		if(stateId.equals(StateIdFactory.LOAD)) return new StateImpl(0);
-		if(stateId.equals(StateIdFactory.LOAD_AT_BEGINNING)) return new StateImpl(0);
-		if(stateId.equals(StateIdFactory.COSTS)) return new StateImpl(0);
-		if(stateId.equals(StateIdFactory.DURATION)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.MAXLOAD)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.LOAD)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.LOAD_AT_END)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.LOAD_AT_BEGINNING)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.COSTS)) return new StateImpl(0);
+		if(stateId.equals(StateFactory.DURATION)) return new StateImpl(0);
 		return null;
 	}
 

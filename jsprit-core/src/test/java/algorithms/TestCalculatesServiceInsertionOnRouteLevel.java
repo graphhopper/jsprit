@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
-import algorithms.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;

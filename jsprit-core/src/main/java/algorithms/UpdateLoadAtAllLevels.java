@@ -25,12 +25,12 @@ class UpdateLoadAtAllLevels implements ActivityVisitor,StateUpdater{
 	@Override
 	public void visit(TourActivity activity) {
 		load += (double)activity.getCapacityDemand();
-		states.putActivityState(activity, StateIdFactory.LOAD, new StateImpl(load));
+		states.putActivityState(activity, StateFactory.LOAD, new StateImpl(load));
 	}
 
 	@Override
 	public void finish() {
-		states.putRouteState(vehicleRoute, StateIdFactory.LOAD, new StateImpl(load));
+		states.putRouteState(vehicleRoute, StateFactory.LOAD, new StateImpl(load));
 		load=0;
 		vehicleRoute = null;
 	}

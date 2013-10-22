@@ -236,7 +236,7 @@ class CalculatorBuilder {
 	}
 
 	private CalculatorPlusListeners createCalculatorConsideringFixedCosts(VehicleRoutingProblem vrp, JobInsertionCalculator baseCalculator, StateGetter activityStates2, double weightOfFixedCosts){
-		final CalculatesServiceInsertionConsideringFixCost withFixCost = new CalculatesServiceInsertionConsideringFixCost(baseCalculator, activityStates2);
+		final JobInsertionConsideringFixCostsCalculator withFixCost = new JobInsertionConsideringFixCostsCalculator(baseCalculator, activityStates2);
 		withFixCost.setWeightOfFixCost(weightOfFixedCosts);
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(withFixCost);
 		calcPlusListeners.getInsertionListener().add(new ConfigureFixCostCalculator(vrp, withFixCost));
@@ -262,7 +262,7 @@ class CalculatorBuilder {
 	}
 
 	private JobInsertionCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCalculator baseCalc, StateGetter activityStates2){
-		return new CalculatesVehTypeDepServiceInsertion(fleetManager, baseCalc);
+		return new VehicleTypeDependentJobInsertionCalculator(fleetManager, baseCalc);
 	}
 
 	public void setConstraintManager(ConstraintManager constraintManager) {

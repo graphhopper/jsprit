@@ -32,29 +32,38 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		this.stateManager = stateManager;
 		this.constraintManager = new ConstraintManager();
 		this.fleetManager = vehicleFleetManager;
+		addCoreStateUpdaters();
 	}
 	
-	/**
-	 * Adds core constraints, i.e.
-	 * 
-	 * <p>HardPickupAndDeliveryLoadRouteLevelConstraint<br>
-	 * HardTimeWindowActivityLevelConstraint<br>
-	 * if(Constraint.DELIVERIES_FIRST) HardPickupAndDeliveryBackhaulActivityLevelConstraint<br>
-	 * else HardPickupAndDeliveryActivityLevelConstraint
-	 * @return
-	 */
-	public BestInsertionBuilder addCoreConstraints(){
+	private void addCoreStateUpdaters(){
+		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
+		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
+		
+		stateManager.addActivityVisitor(new UpdateMaxLoad(stateManager));
+		stateManager.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
+		stateManager.addActivityVisitor(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+	}
+	
+	public BestInsertionBuilder addHardLoadConstraints(){
 		constraintManager.addConstraint(new HardPickupAndDeliveryLoadRouteLevelConstraint(stateManager));
-		constraintManager.addConstraint(new HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
 		if(vrp.getProblemConstraints().contains(Constraint.DELIVERIES_FIRST)){
 			constraintManager.addConstraint(new HardPickupAndDeliveryBackhaulActivityLevelConstraint(stateManager));
 		}
 		else{
 			constraintManager.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
 		}
-		StateUtils.addCoreStateUpdaters(vrp, stateManager);
+		stateManager.addActivityVisitor(new UpdateOccuredDeliveriesAtActivityLevel(stateManager));
+		stateManager.addActivityVisitor(new UpdateFuturePickupsAtActivityLevel(stateManager));
 		return this;
 	}
+	
+	public BestInsertionBuilder addHardTimeWindowConstraint(){
+		constraintManager.addConstraint(new HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
+		stateManager.addActivityVisitor(new UpdateEarliestStartTimeWindowAtActLocations(stateManager, vrp.getTransportCosts()));
+		stateManager.addActivityVisitor(new UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
+		return this;
+	}
+	
 
 	public BestInsertionBuilder addConstraint(HardActivityLevelConstraint hardActvitiyLevelConstraint){
 		constraintManager.addConstraint(hardActvitiyLevelConstraint);
@@ -115,7 +124,7 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 
 	private void addCoreUpdater() {
 		if(!hasActivityTimeUpdater()){
-			stateManager.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
+			
 		}
 //		if(!hasLoadUpdater()){
 //			stateManager.addActivityVisitor(new UpdateLoadAtActivityLevel(stateManager));

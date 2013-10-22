@@ -67,7 +67,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 //			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
 			
 			VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
-			JobInsertionCalculator finalServiceInsertion = new CalculatesVehTypeDepServiceInsertion(fleetManager, serviceInsertion);
+			JobInsertionCalculator finalServiceInsertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager, serviceInsertion);
 			
 			BestInsertion bestInsertion = new BestInsertion(finalServiceInsertion);
 			
@@ -80,7 +80,7 @@ public class BuildPDVRPAlgoFromScratchTest {
 				public void calculateCosts(VehicleRoutingProblemSolution solution) {
 					double costs = 0.0;
 					for(VehicleRoute route : solution.getRoutes()){
-						costs += stateManager.getRouteState(route, StateIdFactory.COSTS).toDouble();
+						costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble();
 					}
 					solution.setCost(costs);
 				}
@@ -131,8 +131,8 @@ public class BuildPDVRPAlgoFromScratchTest {
 								loadAtEnd += j.getCapacityDemand();
 							}
 						}
-						stateManager.putRouteState(route, StateIdFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot));
-						stateManager.putRouteState(route, StateIdFactory.LOAD, new StateImpl(loadAtEnd));
+						stateManager.putRouteState(route, StateFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot));
+						stateManager.putRouteState(route, StateFactory.LOAD, new StateImpl(loadAtEnd));
 						iterateForward.visit(route);
 						iterateBackward.visit(route);
 					}
@@ -149,14 +149,14 @@ public class BuildPDVRPAlgoFromScratchTest {
 //					log.info("insert job " + job2insert.getClass().toString() + " job " + job2insert + "" + job2insert.getCapacityDemand() + " in route " + inRoute.getTourActivities());
 					
 					if(job2insert instanceof Delivery){
-						int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD_AT_BEGINNING).toDouble();
+						int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING).toDouble();
 //						log.info("loadAtDepot="+loadAtDepot);
-						stateManager.putRouteState(inRoute, StateIdFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot + job2insert.getCapacityDemand()));
+						stateManager.putRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, StateFactory.createState(loadAtDepot + job2insert.getCapacityDemand()));
 					}
 					if(job2insert instanceof Pickup){
-						int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateIdFactory.LOAD).toDouble();
+						int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_END).toDouble();
 //						log.info("loadAtEnd="+loadAtEnd);
-						stateManager.putRouteState(inRoute, StateIdFactory.LOAD, new StateImpl(loadAtEnd + job2insert.getCapacityDemand()));
+						stateManager.putRouteState(inRoute, StateFactory.LOAD_AT_END, StateFactory.createState(loadAtEnd + job2insert.getCapacityDemand()));
 					}
 					iterateForward.visit(inRoute);
 					iterateBackward.visit(inRoute);

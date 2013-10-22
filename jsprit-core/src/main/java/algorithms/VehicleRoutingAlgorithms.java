@@ -509,7 +509,7 @@ public class VehicleRoutingAlgorithms {
 //		routeChangedListener.addVisitor(new StateUpdates.UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
 //		routeChangedListener.addVisitor(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
 		
-		stateManager.addListener(new InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
+		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
 		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
 	
 		stateManager.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
@@ -550,7 +550,7 @@ public class VehicleRoutingAlgorithms {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
 
-					costs += stateManager.getRouteState(route, StateIdFactory.COSTS).toDouble() + getFixedCosts(route.getVehicle());
+					costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble() + getFixedCosts(route.getVehicle());
 
 				}
 				solution.setCost(costs);

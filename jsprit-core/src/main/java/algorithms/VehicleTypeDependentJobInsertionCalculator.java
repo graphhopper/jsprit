@@ -30,15 +30,15 @@ import basics.route.VehicleRoute;
 
 
 
-final class CalculatesVehTypeDepServiceInsertion implements JobInsertionCalculator{
+final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCalculator{
 
-	private Logger logger = Logger.getLogger(CalculatesVehTypeDepServiceInsertion.class);
+	private Logger logger = Logger.getLogger(VehicleTypeDependentJobInsertionCalculator.class);
 	
 	private final VehicleFleetManager fleetManager;
 	
 	private final JobInsertionCalculator insertionCalculator;
 
-	public CalculatesVehTypeDepServiceInsertion(final VehicleFleetManager fleetManager, final JobInsertionCalculator jobInsertionCalc) {
+	public VehicleTypeDependentJobInsertionCalculator(final VehicleFleetManager fleetManager, final JobInsertionCalculator jobInsertionCalc) {
 		this.fleetManager = fleetManager;
 		this.insertionCalculator = jobInsertionCalc;
 		logger.info("inialise " + this);

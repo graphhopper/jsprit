@@ -27,9 +27,9 @@ import basics.route.VehicleRoute;
 
 
 
-final class CalculatesServiceInsertionConsideringFixCost implements JobInsertionCalculator{
+final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCalculator{
 
-	private static final Logger logger = Logger.getLogger(CalculatesServiceInsertionConsideringFixCost.class);
+	private static final Logger logger = Logger.getLogger(JobInsertionConsideringFixCostsCalculator.class);
 	
 	private final JobInsertionCalculator standardServiceInsertion;
 	
@@ -37,12 +37,12 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	
 	private double solution_completeness_ratio = 0.5;
 	
-	private StateGetter states;
+	private StateGetter stateGetter;
 
-	public CalculatesServiceInsertionConsideringFixCost(final JobInsertionCalculator standardInsertionCalculator, StateGetter activityStates2) {
+	public JobInsertionConsideringFixCostsCalculator(final JobInsertionCalculator standardInsertionCalculator, StateGetter stateGetter) {
 		super();
 		this.standardServiceInsertion = standardInsertionCalculator;
-		this.states = activityStates2;
+		this.stateGetter = stateGetter;
 		logger.info("inialise " + this);
 	}
 
@@ -80,7 +80,7 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	}
 
 	private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
-		double load = getCurrentLoad(route) + job.getCapacityDemand();
+		double load = getCurrentMaxLoadInRoute(route) + job.getCapacityDemand();
 		double currentFix = 0.0;
 		if(route.getVehicle() != null){
 			if(!(route.getVehicle() instanceof NoVehicle)){
@@ -94,7 +94,7 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 	}
 
 	private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
-		int currentLoad = getCurrentLoad(route);
+		int currentLoad = getCurrentMaxLoadInRoute(route);
 		double load = currentLoad + job.getCapacityDemand();
 		double currentRelFix = 0.0;
 		if(route.getVehicle() != null){
@@ -109,8 +109,8 @@ final class CalculatesServiceInsertionConsideringFixCost implements JobInsertion
 		return relativeFixCost;
 	}
 
-	private int getCurrentLoad(VehicleRoute route) {
-		return (int) states.getRouteState(route, StateIdFactory.LOAD).toDouble();
+	private int getCurrentMaxLoadInRoute(VehicleRoute route) {
+		return (int) stateGetter.getRouteState(route, StateFactory.MAXLOAD).toDouble();
 	}
 
 }

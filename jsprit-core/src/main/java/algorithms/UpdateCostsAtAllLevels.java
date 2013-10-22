@@ -82,7 +82,7 @@ class UpdateCostsAtAllLevels implements ActivityVisitor,StateUpdater{
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
 
-		states.putActivityState(act, StateIdFactory.COSTS, new StateImpl(totalOperationCost));
+		states.putActivityState(act, StateFactory.COSTS, new StateImpl(totalOperationCost));
 
 		prevAct = act;
 		startTimeAtPrevAct = timeTracker.getActEndTime();
@@ -101,7 +101,7 @@ class UpdateCostsAtAllLevels implements ActivityVisitor,StateUpdater{
 		totalOperationCost += actCost;
 //		totalOperationCost += getFixCosts(vehicleRoute.getVehicle());
 		
-		states.putRouteState(vehicleRoute, StateIdFactory.COSTS, new StateImpl(totalOperationCost));
+		states.putRouteState(vehicleRoute, StateFactory.COSTS, new StateImpl(totalOperationCost));
 		
 		//this is rather strange and likely to change
 		vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getDriver());

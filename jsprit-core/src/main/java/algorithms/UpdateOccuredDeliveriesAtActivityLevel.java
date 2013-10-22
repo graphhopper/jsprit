@@ -25,7 +25,7 @@ class UpdateOccuredDeliveriesAtActivityLevel implements ActivityVisitor, StateUp
 		if(act instanceof DeliveryActivity){
 			deliveries += Math.abs(act.getCapacityDemand());
 		}
-		stateManager.putActivityState(act, StateIdFactory.PAST_DELIVERIES, new StateImpl(deliveries));
+		stateManager.putActivityState(act, StateFactory.PAST_DELIVERIES, StateFactory.createState(deliveries));
 		assert deliveries >= 0 : "deliveries < 0";
 		assert deliveries <= route.getVehicle().getCapacity() : "deliveries > vehicleCap";
 	}

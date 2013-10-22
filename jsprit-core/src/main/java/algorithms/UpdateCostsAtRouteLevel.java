@@ -29,9 +29,9 @@ class UpdateCostsAtRouteLevel implements StateUpdater,JobInsertedListener, Inser
 		@Override
 		public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 //			inRoute.getVehicleRouteCostCalculator().addTransportCost(additionalCosts);
-			double oldCosts = states.getRouteState(inRoute, StateIdFactory.COSTS).toDouble();
+			double oldCosts = states.getRouteState(inRoute, StateFactory.COSTS).toDouble();
 			oldCosts += additionalCosts;
-			states.putRouteState(inRoute, StateIdFactory.COSTS, new StateImpl(oldCosts));
+			states.putRouteState(inRoute, StateFactory.COSTS, new StateImpl(oldCosts));
 		}
 
 		@Override
@@ -52,7 +52,7 @@ class UpdateCostsAtRouteLevel implements StateUpdater,JobInsertedListener, Inser
 			for(VehicleRoute route : vehicleRoutes){
 				if(route.isEmpty()) continue;
 				route.getVehicleRouteCostCalculator().reset();
-				route.getVehicleRouteCostCalculator().addOtherCost(states.getRouteState(route, StateIdFactory.COSTS).toDouble());
+				route.getVehicleRouteCostCalculator().addOtherCost(states.getRouteState(route, StateFactory.COSTS).toDouble());
 				route.getVehicleRouteCostCalculator().price(route.getVehicle());
 //				forwardInTime.iterate(route);
 			}

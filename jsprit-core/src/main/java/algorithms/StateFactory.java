@@ -23,9 +23,13 @@ package algorithms;
 import java.util.Arrays;
 import java.util.List;
 
+import algorithms.StateGetter.State;
 import algorithms.StateGetter.StateId;
+import algorithms.StateManager.StateImpl;
 
-public class StateIdFactory {
+public class StateFactory {
+	
+	final static StateId MAXLOAD = new StateIdImpl("maxload");
 	
 	final static StateId LOAD = new StateIdImpl("load");
 	
@@ -45,13 +49,17 @@ public class StateIdFactory {
 	
 	final static StateId PAST_DELIVERIES = new StateIdImpl("pastDeliveries");
 	
-	final static List<String> reservedIds = Arrays.asList("load","costs","loadAtBeginning","loadAtEnd","duration","latestOST","earliestOST"
+	final static List<String> reservedIds = Arrays.asList("maxload","load","costs","loadAtBeginning","loadAtEnd","duration","latestOST","earliestOST"
 			,"futurePicks","pastDeliveries");
 			
 	
 	public static StateId createId(String name){
 		if(reservedIds.contains(name)){ throwException(name); }
 		return new StateIdImpl(name);
+	}
+	
+	public static State createState(double value){
+		return new StateImpl(value);
 	}
 
 	private static void throwException(String name) {

@@ -1,6 +1,5 @@
 package algorithms;
 
-import algorithms.StateManager.StateImpl;
 import basics.route.PickupActivity;
 import basics.route.ServiceActivity;
 import basics.route.TourActivity;
@@ -23,7 +22,7 @@ class UpdateFuturePickupsAtActivityLevel implements ReverseActivityVisitor, Stat
 
 	@Override
 	public void visit(TourActivity act) {
-		stateManager.putActivityState(act, StateIdFactory.FUTURE_PICKS, new StateImpl(futurePicks));
+		stateManager.putActivityState(act, StateFactory.FUTURE_PICKS, StateFactory.createState(futurePicks));
 		if(act instanceof PickupActivity || act instanceof ServiceActivity){
 			futurePicks += act.getCapacityDemand();
 		}

@@ -1,6 +1,5 @@
 package algorithms;
 
-import algorithms.StateManager.StateImpl;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
@@ -15,10 +14,11 @@ import basics.route.VehicleRoute;
  * @author stefan
  *
  */
-class UpdateLoadAtActivityLevel implements ActivityVisitor, StateUpdater {
+class UpdateMaxLoad implements ActivityVisitor, StateUpdater {
 	private StateManager stateManager;
 	private int currentLoad = 0;
 	private VehicleRoute route;
+	private int maxLoad = 0;
 	
 	/**
 	 * Updates load at activity level. 
@@ -39,7 +39,7 @@ class UpdateLoadAtActivityLevel implements ActivityVisitor, StateUpdater {
 	 * @author stefan
 	 *
 	 */
-	public UpdateLoadAtActivityLevel(StateManager stateManager) {
+	public UpdateMaxLoad(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}
@@ -47,20 +47,22 @@ class UpdateLoadAtActivityLevel implements ActivityVisitor, StateUpdater {
 	@Override
 	public void begin(VehicleRoute route) {
 		currentLoad = (int) stateManager.getRouteState(route, StateFactory.LOAD_AT_BEGINNING).toDouble();
+		maxLoad = currentLoad;
 		this.route = route;
 	}
 
 	@Override
 	public void visit(TourActivity act) {
 		currentLoad += act.getCapacityDemand();
-		stateManager.putActivityState(act, StateFactory.LOAD, StateFactory.createState(currentLoad));
+		maxLoad = Math.max(maxLoad, currentLoad);
 		assert currentLoad <= route.getVehicle().getCapacity() : "currentLoad at activity must not be > vehicleCapacity";
 		assert currentLoad >= 0 : "currentLoad at act must not be < 0";
 	}
 
 	@Override
 	public void finish() {
-//		stateManager.putRouteState(route, StateFactory., state)
+		stateManager.putRouteState(route, StateFactory.MAXLOAD, StateFactory.createState(maxLoad));
 		currentLoad = 0;
+		maxLoad = 0;
 	}
 }

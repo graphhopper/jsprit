@@ -39,7 +39,7 @@ class UpdateLatestOperationStartTimeAtActLocations implements ReverseActivityVis
 		double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocationId(), prevAct.getLocationId(), latestArrTimeAtPrevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
 		double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
 		
-		states.putActivityState(activity, StateIdFactory.LATEST_OPERATION_START_TIME, new StateImpl(latestArrivalTime));
+		states.putActivityState(activity, StateFactory.LATEST_OPERATION_START_TIME, new StateImpl(latestArrivalTime));
 		
 		latestArrTimeAtPrevAct = latestArrivalTime;
 		prevAct = activity;

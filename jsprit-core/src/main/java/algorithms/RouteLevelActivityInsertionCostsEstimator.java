@@ -69,9 +69,9 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 	
 	private double actCostsOld(VehicleRoute vehicleRoute, TourActivity act) {
 		if(act instanceof End){
-			return stateManager.getRouteState(vehicleRoute,StateIdFactory.COSTS).toDouble();
+			return stateManager.getRouteState(vehicleRoute,StateFactory.COSTS).toDouble();
 		}
-		return stateManager.getActivityState(act,StateIdFactory.COSTS).toDouble();
+		return stateManager.getActivityState(act,StateFactory.COSTS).toDouble();
 	}
 	
 	private List<TourActivity> getForwardLookingPath(VehicleRoute route, int actIndex) {

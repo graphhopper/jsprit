@@ -35,8 +35,8 @@ class UpdateLoadAtRouteLevel implements JobInsertedListener, InsertionStartsList
 		if(!(job2insert instanceof Service)){
 			return;
 		}
-		double oldLoad = states.getRouteState(inRoute, StateIdFactory.LOAD).toDouble();
-		states.putRouteState(inRoute, StateIdFactory.LOAD, new StateImpl(oldLoad + job2insert.getCapacityDemand()));
+		double oldLoad = states.getRouteState(inRoute, StateFactory.LOAD).toDouble();
+		states.putRouteState(inRoute, StateFactory.LOAD, StateFactory.createState(oldLoad + job2insert.getCapacityDemand()));
 	}
 
 	@Override
@@ -46,7 +46,7 @@ class UpdateLoadAtRouteLevel implements JobInsertedListener, InsertionStartsList
 			for(Job j : route.getTourActivities().getJobs()){
 				load += j.getCapacityDemand();
 			}
-			states.putRouteState(route, StateIdFactory.LOAD, new StateImpl(load));
+			states.putRouteState(route, StateFactory.LOAD, new StateImpl(load));
 		}
 		
 	}

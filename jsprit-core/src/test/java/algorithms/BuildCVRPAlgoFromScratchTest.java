@@ -63,7 +63,7 @@ public class BuildCVRPAlgoFromScratchTest {
 
 		
 		VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
-		JobInsertionCalculator finalServiceInsertion = new CalculatesVehTypeDepServiceInsertion(fleetManager, serviceInsertion);
+		JobInsertionCalculator finalServiceInsertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager, serviceInsertion);
 		
 		BestInsertion bestInsertion = new BestInsertion(finalServiceInsertion);
 		
@@ -76,7 +76,7 @@ public class BuildCVRPAlgoFromScratchTest {
 			public void calculateCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, StateIdFactory.COSTS).toDouble();
+					costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble();
 				}
 				solution.setCost(costs);
 			}

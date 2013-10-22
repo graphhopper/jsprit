@@ -77,7 +77,7 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 		when(calc.calculate(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
 		when(calc.calculate(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
 		when(calc.calculate(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 10.0)).thenReturn(iDataVeh2);
-		CalculatesVehTypeDepServiceInsertion insertion = new CalculatesVehTypeDepServiceInsertion(fleetManager,calc);
+		VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager,calc);
 		InsertionData iData = insertion.calculate(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
 		assertThat(iData.getSelectedVehicle(), is(veh1));
 
@@ -91,7 +91,7 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 		when(calc.calculate(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
 		when(calc.calculate(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
 		when(calc.calculate(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 20.0)).thenReturn(iDataVeh2);
-		CalculatesVehTypeDepServiceInsertion insertion = new CalculatesVehTypeDepServiceInsertion(fleetManager,calc);
+		VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager,calc);
 		InsertionData iData = insertion.calculate(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
 		assertThat(iData.getSelectedVehicle(), is(veh2));
 
