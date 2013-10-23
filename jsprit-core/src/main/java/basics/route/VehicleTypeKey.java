@@ -1,4 +1,4 @@
-package algorithms;
+package basics.route;
 
 class VehicleTypeKey {
 	

@@ -171,7 +171,7 @@ public class TestCalculatesServiceInsertion {
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(0, iData.getDeliveryInsertionIndex());
 	}
@@ -184,7 +184,7 @@ public class TestCalculatesServiceInsertion {
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(0, iData.getDeliveryInsertionIndex());
 	}
@@ -199,7 +199,7 @@ public class TestCalculatesServiceInsertion {
 		
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(0.0, iData.getInsertionCost(), 0.2);
 		assertEquals(1, iData.getDeliveryInsertionIndex());
 	}
@@ -214,7 +214,7 @@ public class TestCalculatesServiceInsertion {
 		
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(1, iData.getDeliveryInsertionIndex());
 	}
@@ -228,7 +228,7 @@ public class TestCalculatesServiceInsertion {
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(0.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}
@@ -244,7 +244,7 @@ public class TestCalculatesServiceInsertion {
 //		route.addActivity(states.getActivity(third,true));
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}

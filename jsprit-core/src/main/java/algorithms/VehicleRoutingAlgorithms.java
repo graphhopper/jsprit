@@ -31,8 +31,6 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
-
-
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.InsertionStrategyKey;
@@ -66,7 +64,10 @@ import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.AlgorithmConfig;
 import basics.io.AlgorithmConfigXmlReader;
+import basics.route.FiniteFleetManagerFactory;
+import basics.route.InfiniteFleetManagerFactory;
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
 
@@ -492,23 +493,6 @@ public class VehicleRoutingAlgorithms {
 		 * define stateUpdates
 		 */
 		
-		//reset stateManager
-//		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new StateUpdates.ResetStateManager(stateManager)));
-		//update states
-//		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateStates(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
-//		UpdateRouteStatesOnceTheRouteHasBeenChanged routeChangedListener = new StateUpdates.UpdateRouteStatesOnceTheRouteHasBeenChanged(vrp.getTransportCosts());
-//		
-//		routeChangedListener.addInsertionStartsListener(new InitializeLoadsAtStartAndEndOfRouteWhenInsertionStarts.UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
-//		routeChangedListener.addJobInsertedListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
-//		
-//		routeChangedListener.addVisitor(new StateUpdates.UpdateActivityTimes(vrp.getTransportCosts()));
-//		routeChangedListener.addVisitor(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
-//		routeChangedListener.addVisitor(new StateUpdates.UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
-//		
-//		routeChangedListener.addVisitor(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
-//		routeChangedListener.addVisitor(new StateUpdates.UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
-//		routeChangedListener.addVisitor(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
-		
 		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
 		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
 	
@@ -546,14 +530,12 @@ public class VehicleRoutingAlgorithms {
 		SolutionCostCalculator calc = new SolutionCostCalculator() {
 			
 			@Override
-			public void calculateCosts(VehicleRoutingProblemSolution solution) {
+			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-
 					costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble() + getFixedCosts(route.getVehicle());
-
 				}
-				solution.setCost(costs);
+				return costs;
 			}
 
 			private double getFixedCosts(Vehicle vehicle) {
@@ -567,11 +549,11 @@ public class VehicleRoutingAlgorithms {
 
 	private static VehicleFleetManager createFleetManager(final VehicleRoutingProblem vrp) {
 		if(vrp.getFleetSize().equals(FleetSize.INFINITE)){
-			return new InfiniteVehicles(vrp.getVehicles());
+			return new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 
 		}
 		else if(vrp.getFleetSize().equals(FleetSize.FINITE)){ 
-			return new VehicleFleetManagerImpl(vrp.getVehicles()); 
+			return new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager(); 
 		}
 		throw new IllegalStateException("fleet size can only be infinite or finite. " +
 				"makes sure your config file contains one of these options");
@@ -669,11 +651,11 @@ public class VehicleRoutingAlgorithms {
 
 			@Override
 			public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
-
-				CreateInitialSolution createInitialSolution = new CreateInitialSolution(finalInsertionStrategy, getCostCalculator(routeStates));
-
-				createInitialSolution.setGenerateAsMuchAsRoutesAsVehiclesExist(false);
-				VehicleRoutingProblemSolution vrpSol = createInitialSolution.createSolution(vrp);
+				InsertionInitialSolutionFactory insertionInitialSolutionFactory = new InsertionInitialSolutionFactory(finalInsertionStrategy, getCostCalculator(routeStates));
+//				CreateInitialSolution createInitialSolution = new CreateInitialSolution(finalInsertionStrategy, getCostCalculator(routeStates));
+//
+//				createInitialSolution.setGenerateAsMuchAsRoutesAsVehiclesExist(false);
+				VehicleRoutingProblemSolution vrpSol = insertionInitialSolutionFactory.createSolution(vrp);
 				solutions.add(vrpSol);
 			}
 		};

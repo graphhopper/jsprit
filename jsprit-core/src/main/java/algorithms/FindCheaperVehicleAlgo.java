@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import basics.route.TourActivities;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleImpl.NoVehicle;
 import basics.route.VehicleRoute;
 

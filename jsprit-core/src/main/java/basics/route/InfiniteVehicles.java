@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algorithms;
+package basics.route;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,20 +24,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import basics.route.Vehicle;
 
 class InfiniteVehicles implements VehicleFleetManager{
-
-//	static class TypeKeyComparator implements Comparator<TypeKey>{
-//
-//		@Override
-//		public int compare(TypeKey k1, TypeKey k2) {
-//			double k1_fix = k1.type.getVehicleCostParams().fix;
-//			double k2_fix = k2.type.getVehicleCostParams().fix;
-//			return (int)(k1_fix - k2_fix);
-//		}
-//		
-//	}
 	
 	private static Logger logger = Logger.getLogger(InfiniteVehicles.class);
 	
@@ -62,7 +50,6 @@ class InfiniteVehicles implements VehicleFleetManager{
 			sortedTypes.add(typeKey);
 
 		}
-//		Collections.sort(sortedTypes, new TypeKeyComparator());
 	}
 
 	

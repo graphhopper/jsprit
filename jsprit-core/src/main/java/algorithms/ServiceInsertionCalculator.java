@@ -36,7 +36,7 @@ import basics.route.VehicleRoute;
 
 
 
-final class ServiceInsertionCalculator implements JobInsertionCalculator{
+final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 
 	private static final Logger logger = Logger.getLogger(ServiceInsertionCalculator.class);
 
@@ -85,13 +85,13 @@ final class ServiceInsertionCalculator implements JobInsertionCalculator{
 	 *  
 	 */
 	@Override
-	public InsertionData calculate(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
+	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
 		if(jobToInsert == null) throw new IllegalStateException("jobToInsert is missing.");
 		if(newVehicle == null || newVehicle instanceof NoVehicle) throw new IllegalStateException("newVehicle is missing.");
 		
 		InsertionContext insertionContext = new InsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
 		if(!hardRouteLevelConstraint.fulfilled(insertionContext)){
-			return InsertionData.noInsertionFound();
+			return InsertionData.createEmptyInsertionData();
 		}
 		
 		double bestCost = bestKnownCosts;
@@ -146,7 +146,7 @@ final class ServiceInsertionCalculator implements JobInsertionCalculator{
 		}
 
 		if(insertionIndex == InsertionData.NO_INDEX) {
-			return InsertionData.noInsertionFound();
+			return InsertionData.createEmptyInsertionData();
 		}
 		InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
@@ -155,7 +155,7 @@ final class ServiceInsertionCalculator implements JobInsertionCalculator{
 	}
 
 	public ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double departureTimeAtPrevAct) {	
-		return activityInsertionCostsCalculator.calculate(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);
+		return activityInsertionCostsCalculator.getCosts(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);
 		
 	}
 }

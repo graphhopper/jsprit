@@ -14,17 +14,23 @@
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algorithms;
+package basics.route;
 
-import basics.route.TourActivity;
-import basics.route.VehicleRoute;
+import java.util.Collection;
 
-public interface ReverseActivityVisitor {
+
+public interface VehicleFleetManager {
 	
-	public void begin(VehicleRoute route);
-	
-	public void visit(TourActivity activity);
-	
-	public void finish();
+	public abstract void lock(Vehicle vehicle);
+
+	public abstract void unlock(Vehicle vehicle);
+
+	public abstract boolean isLocked(Vehicle vehicle);
+
+	public abstract void unlockAll();
+
+	public abstract Collection<Vehicle> getAvailableVehicles();
+
+	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId);
 
 }

@@ -4,11 +4,11 @@ import basics.VehicleRoutingProblemSolution;
 import basics.algo.SolutionCostCalculator;
 import basics.route.VehicleRoute;
 
-public class SolutionCostCalculatorFactory {
+public class VariablePlusFixedSolutionCostCalculatorFactory {
 	
 	private StateManager stateManager;
 	
-	public SolutionCostCalculatorFactory(StateManager stateManager) {
+	public VariablePlusFixedSolutionCostCalculatorFactory(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}
@@ -17,13 +17,13 @@ public class SolutionCostCalculatorFactory {
 		return new SolutionCostCalculator() {
 			
 			@Override
-			public void calculateCosts(VehicleRoutingProblemSolution solution) {
+			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double c = 0.0;
 				for(VehicleRoute r : solution.getRoutes()){
 					c += stateManager.getRouteState(r, StateFactory.COSTS).toDouble();
 					c += r.getVehicle().getType().getVehicleCostParams().fix;
 				}
-				solution.setCost(c);
+				return c;
 			}
 		};
 	}

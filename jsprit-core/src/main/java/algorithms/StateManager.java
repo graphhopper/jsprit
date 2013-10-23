@@ -33,6 +33,11 @@ import basics.algo.IterationStartsListener;
 import basics.algo.JobInsertedListener;
 import basics.algo.RuinListener;
 import basics.algo.RuinListeners;
+import basics.route.ActivityVisitor;
+import basics.route.ReverseActivityVisitor;
+import basics.route.ReverseRouteActivityVisitor;
+import basics.route.RouteActivityVisitor;
+import basics.route.RouteVisitor;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 

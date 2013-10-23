@@ -1,6 +1,7 @@
 package algorithms;
 
 import algorithms.StateManager.StateImpl;
+import basics.route.ActivityVisitor;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 

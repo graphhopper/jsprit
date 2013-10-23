@@ -113,6 +113,12 @@ public class TourActivities {
 		return Collections.unmodifiableSet(jobs);
 	}
 	
+	/**
+	 * Returns true if job is in jobList, otherwise false.
+	 * 
+	 * @param job
+	 * @return
+	 */
 	public boolean servesJob(Job job) {
 		return jobs.contains(job);
 	}
@@ -152,12 +158,22 @@ public class TourActivities {
 				}
 			}
 		}
-		if(jobRemoved != activityRemoved) throw new IllegalStateException("job removed, but belonging activity not.");
+		assert jobRemoved == activityRemoved : "job removed, but belonging activity not.";
 		return activityRemoved;
 	}
 
+	/**
+	 * Inserts the specified activity add the specified insertionIndex. Shifts the element currently at that position (if any) and 
+	 * any subsequent elements to the right (adds one to their indices). 
+	 * <p>If specified activity instanceof JobActivity, it adds job to jobList.
+	 * <p>If insertionIndex > tourActivitiies.size(), it just adds the specified act at the end.
+	 * 
+	 * @param insertionIndex
+	 * @param act
+	 * @throws IndexOutOfBoundsException if insertionIndex < 0;
+	 */
 	public void addActivity(int insertionIndex, TourActivity act) {
-		assert insertionIndex >= 0 : "insertionIndex == 0, this cannot be";
+		assert insertionIndex >= 0 : "insertionIndex < 0, this cannot be";
 		/*
 		 * if 1 --> between start and act(0) --> act(0)
 		 * if 2 && 2 <= acts.size --> between act(0) and act(1) --> act(1)
@@ -170,6 +186,12 @@ public class TourActivities {
 		addJob(act);
 	}
 	
+	/**
+	 * Adds specified activity at the end of activity-list. 
+	 * <p>If act instanceof JobActivity, it adds underlying job also.
+	 * @throws IllegalStateException if activity-list already contains act.
+	 * @param act
+	 */
 	public void addActivity(TourActivity act){
 		if(tourActivities.contains(act)) throw new IllegalStateException("act " + act + " already in tour. cannot add act twice.");
 		tourActivities.add(act);
@@ -177,7 +199,6 @@ public class TourActivities {
 	}
 
 	private void addJob(TourActivity act) {
-		
 		if(act instanceof JobActivity){
 			Job job = ((JobActivity) act).getJob();
 			jobs.add(job);
@@ -187,6 +208,11 @@ public class TourActivities {
 		}
 	}
 
+	/**
+	 * Returns number of jobs.
+	 * 
+	 * @return
+	 */
 	public int jobSize() {
 		return jobs.size();
 	}

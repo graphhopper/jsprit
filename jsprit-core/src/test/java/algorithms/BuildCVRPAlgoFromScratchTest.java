@@ -34,7 +34,9 @@ import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyManager;
 import basics.algo.SolutionCostCalculator;
 import basics.io.VrpXMLReader;
+import basics.route.InfiniteFleetManagerFactory;
 import basics.route.TourActivity;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
 public class BuildCVRPAlgoFromScratchTest {
@@ -62,8 +64,8 @@ public class BuildCVRPAlgoFromScratchTest {
 		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardLoadConstraint(stateManager), hardActLevelConstraint);
 
 		
-		VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
-		JobInsertionCalculator finalServiceInsertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager, serviceInsertion);
+		VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
+		JobInsertionCostsCalculator finalServiceInsertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager, serviceInsertion);
 		
 		BestInsertion bestInsertion = new BestInsertion(finalServiceInsertion);
 		
@@ -73,12 +75,12 @@ public class BuildCVRPAlgoFromScratchTest {
 		SolutionCostCalculator solutionCostCalculator = new SolutionCostCalculator() {
 			
 			@Override
-			public void calculateCosts(VehicleRoutingProblemSolution solution) {
+			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
 					costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble();
 				}
-				solution.setCost(costs);
+				return costs;
 			}
 		};
 		
@@ -111,7 +113,7 @@ public class BuildCVRPAlgoFromScratchTest {
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateLoadAtRouteLevel(stateManager));
 		
 
-		VehicleRoutingProblemSolution iniSolution = new CreateInitialSolution(bestInsertion, solutionCostCalculator).createSolution(vrp);
+		VehicleRoutingProblemSolution iniSolution = new InsertionInitialSolutionFactory(bestInsertion, solutionCostCalculator).createSolution(vrp);
 
 //		System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 		vra.addInitialSolution(iniSolution);

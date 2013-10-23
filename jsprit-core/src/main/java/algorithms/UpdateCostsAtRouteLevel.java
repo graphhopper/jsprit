@@ -9,6 +9,7 @@ import basics.algo.InsertionStartsListener;
 import basics.algo.JobInsertedListener;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
+import basics.route.RouteActivityVisitor;
 import basics.route.VehicleRoute;
 
 class UpdateCostsAtRouteLevel implements StateUpdater,JobInsertedListener, InsertionStartsListener, InsertionEndsListener{

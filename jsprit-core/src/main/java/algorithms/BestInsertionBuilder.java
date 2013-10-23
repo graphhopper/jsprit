@@ -7,6 +7,7 @@ import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.Constraint;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
+import basics.route.VehicleFleetManager;
 
 public class BestInsertionBuilder implements InsertionStrategyBuilder{
 
@@ -25,6 +26,10 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 	private boolean considerFixedCosts = false;
 
 	private ActivityInsertionCostsCalculator actInsertionCostsCalculator = null;
+
+	private int forwaredLooking;
+
+	private int memory;
 	
 	public BestInsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager) {
 		super();
@@ -75,7 +80,11 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		return this;
 	};
 	
-	//public void setRouteLevel(int forwardLooking, int memory){};
+	public void setRouteLevel(int forwardLooking, int memory){
+		local = false;
+		this.forwaredLooking = forwardLooking;
+		this.memory = memory;
+	};
 	
 	public BestInsertionBuilder setLocalLevel(){
 		local = true;
@@ -101,11 +110,8 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 			calcBuilder.setLocalLevel();
 		}
 		else {
-			//add CostsUpdater
-			
+			calcBuilder.setRouteLevel(forwaredLooking, memory);
 		}
-//			calcBuilder.setRouteLevel(forwardLooking, memory);
-//		}
 		calcBuilder.setConstraintManager(constraintManager);
 		calcBuilder.setStates(stateManager);
 		calcBuilder.setVehicleRoutingProblem(vrp);
@@ -114,7 +120,7 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		if(considerFixedCosts) {
 			calcBuilder.considerFixedCosts(weightOfFixedCosts);
 		}
-		JobInsertionCalculator jobInsertions = calcBuilder.build();
+		JobInsertionCostsCalculator jobInsertions = calcBuilder.build();
 		BestInsertion bestInsertion = new BestInsertion(jobInsertions);
 		for(InsertionListener l : iListeners) bestInsertion.addListener(l); 
 		return bestInsertion;

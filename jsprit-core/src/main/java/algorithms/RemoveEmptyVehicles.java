@@ -23,9 +23,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import basics.algo.InsertionEndsListener;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
-public class RemoveEmptyVehicles implements InsertionEndsListener{
+class RemoveEmptyVehicles implements InsertionEndsListener{
 
 	private static Logger log = Logger.getLogger(RemoveEmptyVehicles.class); 
 	

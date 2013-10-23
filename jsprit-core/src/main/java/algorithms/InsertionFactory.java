@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import basics.VehicleRoutingProblem;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
+import basics.route.VehicleFleetManager;
 
 class InsertionFactory {
 	
@@ -87,7 +88,7 @@ class InsertionFactory {
 				calcBuilder.experimentalTimeScheduler(Double.parseDouble(timeSliceString),Integer.parseInt(neighbors));
 			}
 			
-			JobInsertionCalculator jic = calcBuilder.build();
+			JobInsertionCostsCalculator jic = calcBuilder.build();
 
 	
 			if(insertionName.equals("bestInsertion")){		

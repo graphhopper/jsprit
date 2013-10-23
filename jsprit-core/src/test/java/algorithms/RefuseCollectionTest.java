@@ -186,8 +186,8 @@ public class RefuseCollectionTest {
 		vra.setPrematureBreak(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		assertEquals(397.0,Solutions.getBest(solutions).getCost(),0.01);
-		assertEquals(2,Solutions.getBest(solutions).getRoutes().size());
+		assertEquals(397.0,Solutions.bestOf(solutions).getCost(),0.01);
+		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
 	}
 
 

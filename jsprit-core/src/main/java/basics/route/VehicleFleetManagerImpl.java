@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algorithms;
+package basics.route;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,9 +27,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import basics.route.PenaltyVehicleType;
-import basics.route.Vehicle;
 import basics.route.VehicleImpl.NoVehicle;
+
 
 
 

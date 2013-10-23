@@ -14,12 +14,15 @@
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algorithms;
+package basics.route;
 
-import basics.route.VehicleRoute;
 
-public interface RouteVisitor {
+public interface ActivityVisitor {
 	
-	public void visit(VehicleRoute route);
+	public void begin(VehicleRoute route);
+	
+	public void visit(TourActivity activity);
+	
+	public void finish();
 
 }

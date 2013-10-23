@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algorithms;
+package util;
 
 import basics.costs.ForwardTransportTime;
+import basics.route.ActivityVisitor;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 

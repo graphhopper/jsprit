@@ -36,6 +36,7 @@ import basics.algo.RuinListener;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
 import basics.route.TourActivity;
+import basics.route.VehicleFleetManager;
 import basics.route.TourActivity.JobActivity;
 import basics.route.VehicleRoute;
 

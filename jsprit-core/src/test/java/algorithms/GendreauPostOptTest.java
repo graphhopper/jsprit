@@ -37,10 +37,12 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.DriverImpl;
+import basics.route.FiniteFleetManagerFactory;
 import basics.route.ServiceActivity;
 import basics.route.TimeWindow;
 import basics.route.TourActivities;
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
 import basics.route.VehicleTypeImpl;
@@ -71,9 +73,9 @@ public class GendreauPostOptTest {
 
 	private List<Vehicle> vehicles;
 
-	private VehicleFleetManagerImpl fleetManager;
+	private VehicleFleetManager fleetManager;
 	
-	private JobInsertionCalculator insertionCalc;
+	private JobInsertionCostsCalculator insertionCalc;
 
 	@Before
 	public void setUp(){
@@ -142,7 +144,7 @@ public class GendreauPostOptTest {
 		vehicles = Arrays.asList(lightVehicle1,lightVehicle2, heavyVehicle);
 		
 //		Collection<Vehicle> vehicles = Arrays.asList(lightVehicle1,lightVehicle2, heavyVehicle);
-		fleetManager = new VehicleFleetManagerImpl(vehicles);
+		fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
 		states = new StateManager();
 		
 		activityCosts = new ExampleActivityCostFunction();

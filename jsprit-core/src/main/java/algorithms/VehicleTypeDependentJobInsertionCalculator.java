@@ -25,20 +25,21 @@ import algorithms.InsertionData.NoInsertionFound;
 import basics.Job;
 import basics.route.Driver;
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleImpl.NoVehicle;
 import basics.route.VehicleRoute;
 
 
 
-final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCalculator{
+final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCostsCalculator{
 
 	private Logger logger = Logger.getLogger(VehicleTypeDependentJobInsertionCalculator.class);
 	
 	private final VehicleFleetManager fleetManager;
 	
-	private final JobInsertionCalculator insertionCalculator;
+	private final JobInsertionCostsCalculator insertionCalculator;
 
-	public VehicleTypeDependentJobInsertionCalculator(final VehicleFleetManager fleetManager, final JobInsertionCalculator jobInsertionCalc) {
+	public VehicleTypeDependentJobInsertionCalculator(final VehicleFleetManager fleetManager, final JobInsertionCostsCalculator jobInsertionCalc) {
 		this.fleetManager = fleetManager;
 		this.insertionCalculator = jobInsertionCalc;
 		logger.info("inialise " + this);
@@ -49,10 +50,10 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCa
 		return "[name=vehicleTypeDependentServiceInsertion]";
 	}
 	
-	public InsertionData calculate(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle vehicle, double newVehicleDepartureTime, final Driver driver, final double bestKnownCost) {
+	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle vehicle, double newVehicleDepartureTime, final Driver driver, final double bestKnownCost) {
 		Vehicle selectedVehicle = currentRoute.getVehicle();
 		Driver selectedDriver = currentRoute.getDriver();
-		InsertionData bestIData = InsertionData.noInsertionFound();
+		InsertionData bestIData = InsertionData.createEmptyInsertionData();
 		double bestKnownCost_ = bestKnownCost;
 		Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
 		if(!(selectedVehicle instanceof NoVehicle)) {
@@ -65,7 +66,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCa
 
 		for(Vehicle v : relevantVehicles){
 			double depTime = v.getEarliestDeparture();
-			InsertionData iData = insertionCalculator.calculate(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);
+			InsertionData iData = insertionCalculator.getInsertionData(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);
 			if(iData instanceof NoInsertionFound) { 
 				if(bestIData instanceof NoInsertionFound) bestIData = iData;
 				continue;

@@ -17,6 +17,7 @@
 package algorithms;
 
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
 

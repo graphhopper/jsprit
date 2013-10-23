@@ -78,7 +78,7 @@ final class BestInsertion implements InsertionStrategy{
 	
 	private Inserter inserter;
 	
-	private JobInsertionCalculator bestInsertionCostCalculator;
+	private JobInsertionCostsCalculator bestInsertionCostCalculator;
 
 	private boolean minVehiclesFirst = false;
 
@@ -86,7 +86,7 @@ final class BestInsertion implements InsertionStrategy{
 		this.random = random;
 	}
 	
-	public BestInsertion(JobInsertionCalculator jobInsertionCalculator) {
+	public BestInsertion(JobInsertionCostsCalculator jobInsertionCalculator) {
 		super();
 		this.insertionsListeners = new InsertionListeners();
 		inserter = new Inserter(insertionsListeners);
@@ -108,7 +108,7 @@ final class BestInsertion implements InsertionStrategy{
 			Insertion bestInsertion = null;
 			double bestInsertionCost = Double.MAX_VALUE;
 			for(VehicleRoute vehicleRoute : vehicleRoutes){
-				InsertionData iData = bestInsertionCostCalculator.calculate(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost); 
+				InsertionData iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost); 
 				if(iData instanceof NoInsertionFound) {
 					continue;
 				}
@@ -119,7 +119,7 @@ final class BestInsertion implements InsertionStrategy{
 			}
 			if(!minVehiclesFirst){
 				VehicleRoute newRoute = VehicleRoute.emptyRoute();
-				InsertionData newIData = bestInsertionCostCalculator.calculate(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
+				InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
 				if(newIData.getInsertionCost() < bestInsertionCost){
 					bestInsertion = new Insertion(newRoute,newIData);
 					bestInsertionCost = newIData.getInsertionCost();
@@ -128,7 +128,7 @@ final class BestInsertion implements InsertionStrategy{
 			}			
 			if(bestInsertion == null){
 				VehicleRoute newRoute = VehicleRoute.emptyRoute();
-				InsertionData bestI = bestInsertionCostCalculator.calculate(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+				InsertionData bestI = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
 				if(bestI instanceof InsertionData.NoInsertionFound){
 					throw new IllegalStateException(getErrorMsg(unassignedJob));
 				}

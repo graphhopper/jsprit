@@ -48,7 +48,7 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 	}
 
 	@Override
-	public ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
+	public ActivityInsertionCosts getCosts(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
 		List<TourActivity> path = new ArrayList<TourActivity>();
 		path.add(prevAct); path.add(newAct); path.add(nextAct);
 		int actIndex;

@@ -1,8 +1,7 @@
-package algorithms;
+package basics.route;
 
 import java.util.Collection;
 
-import basics.route.Vehicle;
 
 public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 

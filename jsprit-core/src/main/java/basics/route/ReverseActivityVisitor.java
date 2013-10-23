@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algorithms;
-
-import basics.Job;
-import basics.route.Driver;
-import basics.route.Vehicle;
-import basics.route.VehicleRoute;
+package basics.route;
 
 
- interface JobInsertionCalculator {
+public interface ReverseActivityVisitor {
 	
-	public InsertionData calculate(VehicleRoute currentRoute, Job jobToInsert, Vehicle newVehicle, double newVehicleDepartureTime, Driver newDriver, double bestKnownScore);
+	public void begin(VehicleRoute route);
+	
+	public void visit(TourActivity activity);
+	
+	public void finish();
 
 }

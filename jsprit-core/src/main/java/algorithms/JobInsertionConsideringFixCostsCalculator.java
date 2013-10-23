@@ -27,11 +27,11 @@ import basics.route.VehicleRoute;
 
 
 
-final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCalculator{
+final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCostsCalculator{
 
 	private static final Logger logger = Logger.getLogger(JobInsertionConsideringFixCostsCalculator.class);
 	
-	private final JobInsertionCalculator standardServiceInsertion;
+	private final JobInsertionCostsCalculator standardServiceInsertion;
 	
 	private double weight_deltaFixCost = 0.5;
 	
@@ -39,7 +39,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCal
 	
 	private StateGetter stateGetter;
 
-	public JobInsertionConsideringFixCostsCalculator(final JobInsertionCalculator standardInsertionCalculator, StateGetter stateGetter) {
+	public JobInsertionConsideringFixCostsCalculator(final JobInsertionCostsCalculator standardInsertionCalculator, StateGetter stateGetter) {
 		super();
 		this.standardServiceInsertion = standardInsertionCalculator;
 		this.stateGetter = stateGetter;
@@ -47,15 +47,15 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCal
 	}
 
 	@Override
-	public InsertionData calculate(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownPrice) {
+	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownPrice) {
 		double relFixCost = getDeltaRelativeFixCost(currentRoute, newVehicle, jobToInsert);
 		double absFixCost = getDeltaAbsoluteFixCost(currentRoute, newVehicle, jobToInsert);
 		double deltaFixCost = (1-solution_completeness_ratio)*relFixCost + solution_completeness_ratio*absFixCost;
 		double fixcost_contribution = weight_deltaFixCost*solution_completeness_ratio*deltaFixCost;
 		if(fixcost_contribution > bestKnownPrice){
-			return InsertionData.noInsertionFound();
+			return InsertionData.createEmptyInsertionData();
 		}
-		InsertionData iData = standardServiceInsertion.calculate(currentRoute, jobToInsert, newVehicle, newVehicleDepartureTime, newDriver, bestKnownPrice);
+		InsertionData iData = standardServiceInsertion.getInsertionData(currentRoute, jobToInsert, newVehicle, newVehicleDepartureTime, newDriver, bestKnownPrice);
 		if(iData instanceof NoInsertionFound){
 			return iData;
 		} 

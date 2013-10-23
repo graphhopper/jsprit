@@ -21,8 +21,10 @@ import java.util.Collection;
 import java.util.List;
 
 import junit.framework.TestCase;
+import basics.route.FiniteFleetManagerFactory;
 import basics.route.PenaltyVehicleType;
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleImpl;
 import basics.route.VehicleTypeImpl;
 
@@ -42,7 +44,7 @@ public class TestVehicleFleetManager extends TestCase{
 
 		vehicles.add(v1);
 		vehicles.add(v2);
-		fleetManager = new VehicleFleetManagerImpl(vehicles);	
+		fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();	
 	}
 	
 	public void testGetVehicles(){
@@ -94,7 +96,7 @@ public class TestVehicleFleetManager extends TestCase{
 		vehicles.add(v1);
 		vehicles.add(v2);
 		vehicles.add(penalty4standard);
-		VehicleFleetManager fleetManager = new VehicleFleetManagerImpl(vehicles);
+		VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
 		
 		Collection<Vehicle> availableVehicles = fleetManager.getAvailableVehicles();
 		assertEquals(2, availableVehicles.size());
@@ -115,7 +117,7 @@ public class TestVehicleFleetManager extends TestCase{
 		vehicles.add(v2);
 		vehicles.add(penalty4standard);
 		vehicles.add(v3);
-		VehicleFleetManager fleetManager = new VehicleFleetManagerImpl(vehicles);
+		VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
 		fleetManager.lock(v1);
 		fleetManager.lock(v2);
 		Collection<Vehicle> availableVehicles = fleetManager.getAvailableVehicles();
@@ -133,7 +135,7 @@ public class TestVehicleFleetManager extends TestCase{
 		vehicles.add(v1);
 		vehicles.add(v2);
 		vehicles.add(penalty4standard);
-		VehicleFleetManager fleetManager = new VehicleFleetManagerImpl(vehicles);
+		VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
 		fleetManager.lock(v1);
 		fleetManager.lock(v2);
 		Collection<Vehicle> availableVehicles = fleetManager.getAvailableVehicles();

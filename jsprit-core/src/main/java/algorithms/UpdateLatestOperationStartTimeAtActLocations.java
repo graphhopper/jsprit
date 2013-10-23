@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import algorithms.StateManager.StateImpl;
 import basics.costs.VehicleRoutingTransportCosts;
+import basics.route.ReverseActivityVisitor;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 

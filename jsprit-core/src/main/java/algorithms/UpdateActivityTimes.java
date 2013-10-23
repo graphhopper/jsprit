@@ -2,7 +2,10 @@ package algorithms;
 
 import org.apache.log4j.Logger;
 
+import util.ActivityTimeTracker;
+
 import basics.costs.ForwardTransportTime;
+import basics.route.ActivityVisitor;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
