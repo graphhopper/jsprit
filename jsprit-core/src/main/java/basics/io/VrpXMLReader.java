@@ -236,6 +236,8 @@ public class VrpXMLReader{
 		else vrpBuilder.setFleetComposition(FleetComposition.HOMOGENEOUS);
 		
 	}
+	
+//	private void readShipments(XMLConfiguration)
 
 	private void readServices(XMLConfiguration vrpProblem) {
 		List<HierarchicalConfiguration> serviceConfigs = vrpProblem.configurationsAt("services.service");
