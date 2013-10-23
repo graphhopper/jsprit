@@ -151,12 +151,6 @@ public class TourActivities {
 					activityRemoved = true;
 				}
 			}
-			else if(c instanceof ServiceActivity){
-				if(job.equals(((ServiceActivity) c).getJob())){
-					tourActivities.remove(c);
-					activityRemoved = true;
-				}
-			}
 		}
 		assert jobRemoved == activityRemoved : "job removed, but belonging activity not.";
 		return activityRemoved;
@@ -202,9 +196,6 @@ public class TourActivities {
 		if(act instanceof JobActivity){
 			Job job = ((JobActivity) act).getJob();
 			jobs.add(job);
-		}
-		else if(act instanceof ServiceActivity){
-			jobs.add(((ServiceActivity) act).getJob());
 		}
 	}
 
