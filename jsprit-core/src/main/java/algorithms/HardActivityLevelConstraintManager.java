@@ -14,13 +14,14 @@ class HardActivityLevelConstraintManager implements HardActivityLevelConstraint 
 	}
 	
 	@Override
-	public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+	public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 		for(HardActivityLevelConstraint constraint : hardConstraints){
-			if(!constraint.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime)){
-				return false;
+			ConstraintsStatus status = constraint.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
+			if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK) || status.equals(ConstraintsStatus.NOT_FULFILLED)){
+				return status;
 			}
 		}
-		return true;
+		return ConstraintsStatus.FULFILLED;
 	}
 	
 }

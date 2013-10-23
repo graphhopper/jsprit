@@ -22,7 +22,7 @@ class ConstraintManager implements HardActivityLevelConstraint, HardRouteLevelCo
 	}
 
 	@Override
-	public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+	public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 		return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
 	}
 	

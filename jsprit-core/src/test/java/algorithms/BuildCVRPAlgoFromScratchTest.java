@@ -53,8 +53,8 @@ public class BuildCVRPAlgoFromScratchTest {
 		HardActivityLevelConstraint hardActLevelConstraint = new HardActivityLevelConstraint() {
 			
 			@Override
-			public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-				return true;
+			public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+				return ConstraintsStatus.FULFILLED;
 			}
 		};
 

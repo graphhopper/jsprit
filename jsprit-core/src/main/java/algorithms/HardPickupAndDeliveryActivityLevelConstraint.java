@@ -16,7 +16,7 @@ class HardPickupAndDeliveryActivityLevelConstraint implements HardActivityLevelC
 	}
 
 	@Override
-	public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+	public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 		int loadAtPrevAct;
 		int futurePicks;
 		int pastDeliveries;
@@ -32,16 +32,16 @@ class HardPickupAndDeliveryActivityLevelConstraint implements HardActivityLevelC
 		}
 		if(newAct instanceof PickupActivity || newAct instanceof ServiceActivity){
 			if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){
-				return false;
+				return ConstraintsStatus.NOT_FULFILLED;
 			}
 		}
 		if(newAct instanceof DeliveryActivity){
 			if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) + pastDeliveries > iFacts.getNewVehicle().getCapacity()){
-				return false;
+				return ConstraintsStatus.NOT_FULFILLED;
 			}
 			
 		}
-		return true;
+		return ConstraintsStatus.FULFILLED;
 	}
 		
 }

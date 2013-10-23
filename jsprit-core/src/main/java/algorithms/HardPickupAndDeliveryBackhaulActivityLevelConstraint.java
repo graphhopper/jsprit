@@ -16,11 +16,11 @@ class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements HardActivi
 	}
 
 	@Override
-	public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-		if(newAct instanceof PickupActivity && nextAct instanceof DeliveryActivity){ return false; }
-		if(newAct instanceof ServiceActivity && nextAct instanceof DeliveryActivity){ return false; }
-		if(newAct instanceof DeliveryActivity && prevAct instanceof PickupActivity){ return false; }
-		if(newAct instanceof DeliveryActivity && prevAct instanceof ServiceActivity){ return false; }
+	public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+		if(newAct instanceof PickupActivity && nextAct instanceof DeliveryActivity){ return ConstraintsStatus.NOT_FULFILLED; }
+		if(newAct instanceof ServiceActivity && nextAct instanceof DeliveryActivity){ return ConstraintsStatus.NOT_FULFILLED; }
+		if(newAct instanceof DeliveryActivity && prevAct instanceof PickupActivity){ return ConstraintsStatus.NOT_FULFILLED; }
+		if(newAct instanceof DeliveryActivity && prevAct instanceof ServiceActivity){ return ConstraintsStatus.NOT_FULFILLED; }
 		int loadAtPrevAct;
 		int futurePicks;
 		int pastDeliveries;
@@ -36,16 +36,16 @@ class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements HardActivi
 		}
 		if(newAct instanceof PickupActivity || newAct instanceof ServiceActivity){
 			if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){
-				return false;
+				return ConstraintsStatus.NOT_FULFILLED;
 			}
 		}
 		if(newAct instanceof DeliveryActivity){
 			if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) + pastDeliveries > iFacts.getNewVehicle().getCapacity()){
-				return false;
+				return ConstraintsStatus.NOT_FULFILLED;
 			}
 			
 		}
-		return true;
+		return ConstraintsStatus.FULFILLED;
 	}
 		
 }
