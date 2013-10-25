@@ -83,6 +83,8 @@ public class Plotter {
 	private VehicleRoutingProblemSolution solution;
 	
 	private boolean plotSolutionAsWell = false;
+
+	private boolean plotShipments = true;
 	
 	public void setShowFirstActivity(boolean show){
 		showFirstActivity = show;
@@ -330,6 +332,7 @@ public class Plotter {
 	
 	private XYSeriesCollection makeShipmentSeries(Collection<Job> jobs, Map<XYDataItem, String> labels) throws NoLocationFoundException{
 		XYSeriesCollection coll = new XYSeriesCollection();
+		if(!plotShipments) return coll;
 		int sCounter = 1;
 		String ship = "shipment";
 		boolean first = true;
@@ -468,6 +471,10 @@ public class Plotter {
 				return locs.get(id);
 			}
 		};
+	}
+
+	public void plotShipments(boolean plotShipments) {
+		this.plotShipments  = plotShipments;
 	}
 
 }
