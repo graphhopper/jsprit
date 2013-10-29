@@ -111,45 +111,7 @@ public class VrpXMLReader{
 
 		@Override
 		public void readConfig(XMLConfiguration config) {
-			List<HierarchicalConfiguration> shipmentConfigs = config.configurationsAt("shipments.shipment");
-			for(HierarchicalConfiguration shipmentConfig : shipmentConfigs){
-				String id = shipmentConfig.getString("[@id]");
-				if(id == null) throw new IllegalStateException("shipment[@id] is missing.");
-				int cap = getCap(shipmentConfig);
-				Shipment.Builder builder = Shipment.Builder.newInstance(id, cap);
-				
-				String pickupLocationId = shipmentConfig.getString("pickup.locationId");
-				builder.setPickupLocation(pickupLocationId);
-				
-				Coordinate pickupCoord = getCoord(shipmentConfig,"pickup.");
-				builder.setPickupCoord(pickupCoord);
-				
-				if(pickupCoord != null){
-					if(pickupLocationId != null){
-						vrpBuilder.addLocation(pickupLocationId,pickupCoord);
-					}
-					else{
-						vrpBuilder.addLocation(pickupCoord.toString(),pickupCoord);
-						builder.setPickupLocation(pickupCoord.toString());
-					}
-				}
-				
-				String deliveryLocationId = shipmentConfig.getString("delivery.locationId");
-				builder.setDeliveryLocation(deliveryLocationId);
-				
-				Coordinate deliveryCoord = getCoord(shipmentConfig,"delivery.");
-				builder.setDeliveryCoord(deliveryCoord);
-				
-				if(deliveryCoord != null){
-					if(deliveryLocationId != null){
-						vrpBuilder.addLocation(deliveryLocationId,deliveryCoord);
-					}
-					else{
-						vrpBuilder.addLocation(deliveryCoord.toString(),deliveryCoord);
-						builder.setPickupLocation(deliveryCoord.toString());
-					}
-				}
-			}
+			
 		}
 		
 	}
@@ -243,10 +205,7 @@ public class VrpXMLReader{
 		readProblemType(xmlConfig);
 		readVehiclesAndTheirTypes(xmlConfig);
 		
-//		for(JobConfigReader jobConfigReader : jobConfigReaders){
-//			jobConfigReader.readConfig(xmlConfig);
-//		}
-		
+		readShipments(xmlConfig);
 		readServices(xmlConfig);
 		readSolutions(xmlConfig);
 	}
@@ -283,16 +242,22 @@ public class VrpXMLReader{
 					String type = actConfig.getString("[@type]");
 					if(type == null) throw new IllegalStateException("act[@type] is missing.");
 					String serviceId = actConfig.getString("serviceId");
-					if(serviceId == null) throw new IllegalStateException("act.serviceId is missing.");
-					Service service = getService(serviceId);
-					String arrTime = actConfig.getString("arrTime");
-					if(arrTime == null) throw new IllegalStateException("act.arrTime is missing.");
-					String endTime = actConfig.getString("endTime");
-					if(endTime == null) throw new IllegalStateException("act.endTime is missing.");
-					TourActivity tourActivity = tourActivityFactory.createActivity(service); 	
-					tourActivity.setArrTime(Double.parseDouble(arrTime));
-					tourActivity.setEndTime(Double.parseDouble(endTime));
-					routeBuilder.addActivity(tourActivity);
+					if(serviceId != null) {
+						Service service = getService(serviceId);
+						String arrTime = actConfig.getString("arrTime");
+						if(arrTime == null) throw new IllegalStateException("act.arrTime is missing.");
+						String endTime = actConfig.getString("endTime");
+						if(endTime == null) throw new IllegalStateException("act.endTime is missing.");
+						TourActivity tourActivity = tourActivityFactory.createActivity(service); 	
+						tourActivity.setArrTime(Double.parseDouble(arrTime));
+						tourActivity.setEndTime(Double.parseDouble(endTime));
+						routeBuilder.addActivity(tourActivity);
+					}
+					else{
+						String shipmentId = actConfig.getString("shipmentId");
+						if(shipmentId == null) throw new IllegalStateException("either serviceId or shipmentId is missing");
+					}
+					
 				}
 				routes.add(routeBuilder.build());
 			}
