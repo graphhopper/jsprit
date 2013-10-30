@@ -42,18 +42,17 @@ import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.FleetComposition;
 import basics.VehicleRoutingProblem.FleetSize;
 import basics.VehicleRoutingProblemSolution;
-import basics.route.DefaultTourActivityFactory;
 import basics.route.Driver;
 import basics.route.DriverImpl;
 import basics.route.End;
 import basics.route.Start;
 import basics.route.TimeWindow;
-import basics.route.TourActivity;
 import basics.route.TourActivityFactory;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
 import basics.route.VehicleImpl.Builder;
 import basics.route.VehicleRoute;
+import basics.route.VehicleRouteBuilder;
 import basics.route.VehicleTypeImpl;
 
 public class VrpXMLReader{
@@ -125,21 +124,21 @@ public class VrpXMLReader{
 
 	private Map<String, Service> serviceMap; 
 	
+	private Map<String, Shipment> shipmentMap;
+	
 	private boolean schemaValidation = true;
 
 	private Collection<VehicleRoutingProblemSolution> solutions;
 	
 	private ServiceBuilderFactory serviceBuilderFactory = new DefaultServiceBuilderFactory();
 	
-	private TourActivityFactory tourActivityFactory = new DefaultTourActivityFactory();
-	
 	private Collection<JobConfigReader> jobConfigReaders = new ArrayList<VrpXMLReader.JobConfigReader>();
+
 	
 	public void addJobConfigReader(JobConfigReader reader){
 		jobConfigReaders.add(reader);
 	}
 	public void setTourActivityFactory(TourActivityFactory tourActivityFactory){
-		this.tourActivityFactory = tourActivityFactory;
 	}
 	
 	public void setServiceBuilderFactory(ServiceBuilderFactory serviceBuilderFactory){
@@ -157,6 +156,7 @@ public class VrpXMLReader{
 		this.vrpBuilder = vrpBuilder;
 		this.vehicleMap = new HashMap<String, Vehicle>();
 		this.serviceMap = new HashMap<String, Service>();
+		this.shipmentMap = new HashMap<String, Shipment>();
 		this.solutions = solutions;
 	}
 	
@@ -164,6 +164,7 @@ public class VrpXMLReader{
 		this.vrpBuilder = vrpBuilder;
 		this.vehicleMap = new HashMap<String, Vehicle>();
 		this.serviceMap = new HashMap<String, Service>();
+		this.shipmentMap = new HashMap<String, Shipment>();
 		this.solutions = null;
 	}
 	
@@ -207,6 +208,7 @@ public class VrpXMLReader{
 		
 		readShipments(xmlConfig);
 		readServices(xmlConfig);
+		
 		readSolutions(xmlConfig);
 	}
 
@@ -234,28 +236,36 @@ public class VrpXMLReader{
 				startAct.setEndTime(Double.parseDouble(start));
 				End endAct = End.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
 				endAct.setArrTime(Double.parseDouble(end));
-				VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(startAct, endAct);
-				routeBuilder.setDriver(driver);
-				routeBuilder.setVehicle(vehicle);
+				
+				VehicleRouteBuilder routeBuilder = new VehicleRouteBuilder(vehicle, driver);
 				List<HierarchicalConfiguration> actConfigs = routeConfig.configurationsAt("act");
 				for(HierarchicalConfiguration actConfig : actConfigs){
 					String type = actConfig.getString("[@type]");
 					if(type == null) throw new IllegalStateException("act[@type] is missing.");
+					
+					String arrTimeS = actConfig.getString("arrTime");
+					if(arrTimeS == null) throw new IllegalStateException("act.arrTime is missing.");
+					String endTimeS = actConfig.getString("endTime");
+					if(endTimeS == null) throw new IllegalStateException("act.endTime is missing.");
+					double arrTime = Double.parseDouble(arrTimeS);
+					double endTime = Double.parseDouble(endTimeS);
 					String serviceId = actConfig.getString("serviceId");
 					if(serviceId != null) {
 						Service service = getService(serviceId);
-						String arrTime = actConfig.getString("arrTime");
-						if(arrTime == null) throw new IllegalStateException("act.arrTime is missing.");
-						String endTime = actConfig.getString("endTime");
-						if(endTime == null) throw new IllegalStateException("act.endTime is missing.");
-						TourActivity tourActivity = tourActivityFactory.createActivity(service); 	
-						tourActivity.setArrTime(Double.parseDouble(arrTime));
-						tourActivity.setEndTime(Double.parseDouble(endTime));
-						routeBuilder.addActivity(tourActivity);
+						routeBuilder.addService(service, arrTime, endTime);
 					}
 					else{
 						String shipmentId = actConfig.getString("shipmentId");
 						if(shipmentId == null) throw new IllegalStateException("either serviceId or shipmentId is missing");
+						Shipment shipment = getShipment(shipmentId);
+						if(shipment == null) throw new IllegalStateException("shipment with id " + shipmentId + " does not exist.");
+						if(type.equals("pickupShipment")){
+							routeBuilder.addPickup(shipment, arrTime, endTime);
+						}
+						else if(type.equals("deliverShipment")){
+							routeBuilder.addDelivery(shipment, arrTime, endTime);
+						}
+						else throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
 					}
 					
 				}
@@ -266,6 +276,9 @@ public class VrpXMLReader{
 		}
 	}
 	
+	private Shipment getShipment(String shipmentId) {
+		return shipmentMap.get(shipmentId);
+	}
 	private Service getService(String serviceId) {
 		return serviceMap.get(serviceId);
 	}
@@ -328,6 +341,9 @@ public class VrpXMLReader{
 					builder.setPickupLocation(deliveryCoord.toString());
 				}
 			}
+			Shipment shipment = builder.build();
+			vrpBuilder.addJob(shipment);
+			shipmentMap .put(shipment.getId(),shipment);
 		}
 	}
 

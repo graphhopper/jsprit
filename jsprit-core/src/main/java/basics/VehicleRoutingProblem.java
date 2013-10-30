@@ -228,11 +228,14 @@ public class VehicleRoutingProblem {
 		/**
 		 * Adds a job which is either a service or a shipment.
 		 * 
+		 * <p>Note that job.getId() must be unique, i.e. no job (either it is a shipment or a service) is allowed to have an already allocated id.
+		 * 
 		 * @param job
 		 * @return
-		 * @throws IllegalStateException if job is neither a shipment or a service.
+		 * @throws IllegalStateException if job is neither a shipment or a service, or jobId has already been added.
 		 */
 		public Builder addJob(Job job) {
+			if(jobs.containsKey(job.getId())) throw new IllegalStateException("jobList already contains a job with id " + job.getId() + ". make sure you use unique ids for your jobs (i.e. service and shipments)");
 			if(job instanceof Service) { 
 				addService((Service) job);
 			}

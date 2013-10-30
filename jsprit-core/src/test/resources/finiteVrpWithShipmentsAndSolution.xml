@@ -1,24 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright (C) 2013  Stefan Schroeder
-  
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU General Public License
-  as published by the Free Software Foundation; either version 2
-  of the License, or (at your option) any later version.
-  
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-  
-  Contributors:
-      Stefan Schroeder - initial API and implementation
--->
+
 <problem xmlns="http://www.w3schools.com"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
      xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
@@ -100,7 +81,6 @@
                     </timeWindow>
                </timeWindows>
           </service>
-     
      </services>
      
      <shipments>
@@ -130,5 +110,40 @@
      		<capacity-demand>1</capacity-demand>
      	</shipment>
      </shipments>
+    
+     <solutions>
+          <solution>
+               <cost>100.0</cost>
+               <routes>
+                    <route>
+                         <cost>0.0</cost>
+                         <driverId>noDriver</driverId>
+                         <vehicleId>v1</vehicleId>
+                         <start>10.0</start>
+                         <act type="service">
+                              <serviceId>1</serviceId>
+                              <arrTime>20.0</arrTime>
+                              <endTime>30.0</endTime>
+                         </act>
+                         <act type="service">
+                              <serviceId>2</serviceId>
+                              <arrTime>40.0</arrTime>
+                              <endTime>80.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>3</shipmentId>
+                              <arrTime>40.0</arrTime>
+                              <endTime>80.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>3</shipmentId>
+                              <arrTime>40.0</arrTime>
+                              <endTime>80.0</endTime>
+                         </act>
+                         <end>100.0</end>
+                    </route>
+               </routes>
+          </solution>
+     </solutions>
     
 </problem>

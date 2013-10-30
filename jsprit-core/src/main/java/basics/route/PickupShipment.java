@@ -32,7 +32,7 @@ public final class PickupShipment implements PickupActivity{
 
 	@Override
 	public String getName() {
-		return "PickupShipment";
+		return "pickupShipment";
 	}
 
 	@Override

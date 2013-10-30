@@ -32,7 +32,7 @@ public final class DeliverShipment implements DeliveryActivity{
 
 	@Override
 	public String getName() {
-		return "DeliverShipment";
+		return "deliverShipment";
 	}
 
 	@Override

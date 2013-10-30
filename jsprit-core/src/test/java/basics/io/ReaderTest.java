@@ -16,12 +16,21 @@
  ******************************************************************************/
 package basics.io;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
 import basics.VehicleRoutingProblem;
+import basics.VehicleRoutingProblem.Builder;
 import basics.VehicleRoutingProblemSolution;
+import basics.route.DeliverShipment;
+import basics.route.PickupService;
+import basics.route.PickupShipment;
+import basics.route.TourActivity;
 
 public class ReaderTest {
 	
@@ -29,7 +38,24 @@ public class ReaderTest {
 	@Test
 	public void testRead_ifReaderIsCalled_itReadsSuccessfully(){	 
 		new VrpXMLReader(VehicleRoutingProblem.Builder.newInstance(), new ArrayList<VehicleRoutingProblemSolution>()).read("src/test/resources/lui-shen-solution.xml");
+	}
+	
+	@Test
+	public void testRead_ifReaderIsCalled_itReadsSuccessfullyV2(){	 
+		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+		ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+		new VrpXMLReader(vrpBuilder, solutions).read("src/test/resources/finiteVrpWithShipmentsAndSolution.xml");
+		assertEquals(3,vrp.getJobs().size());
+		assertEquals(1,solutions.size());
 		
+		assertEquals(1,solutions.get(0).getRoutes().size());
+		List<TourActivity> activities = solutions.get(0).getRoutes().iterator().next().getTourActivities().getActivities();
+		assertEquals(4,activities.size());
+		assertTrue(activities.get(0) instanceof PickupService);
+		assertTrue(activities.get(1) instanceof PickupService);
+		assertTrue(activities.get(2) instanceof PickupShipment);
+		assertTrue(activities.get(3) instanceof DeliverShipment);
 	}
 
 }

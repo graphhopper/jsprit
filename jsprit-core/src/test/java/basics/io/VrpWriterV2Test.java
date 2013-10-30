@@ -129,7 +129,7 @@ public class VrpWriterV2Test {
 		VehicleRoutingProblem vrp = builder.addService(s1).addService(s2).build();
 		new VrpXMLWriter(vrp, null).write(infileName);
 		
-		VehicleRoutingProblem.Builder vrpToReadBuilder = builder;
+		VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
 		VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 		assertEquals(2,readVrp.getJobs().size());

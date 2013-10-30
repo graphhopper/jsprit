@@ -62,7 +62,15 @@ public class VehicleRouteBuilder {
 	}
 	
 	public VehicleRouteBuilder addService(Service service){
-		tourActivities.addActivity(serviceActivityFactory.createActivity(service));
+		addService(service,0.0,0.0);
+		return this;
+	}
+	
+	public VehicleRouteBuilder addService(Service service, double arrTime, double endTime){
+		TourActivity act = serviceActivityFactory.createActivity(service);
+		act.setArrTime(arrTime);
+		act.setEndTime(endTime);
+		tourActivities.addActivity(act);
 		return this;
 	}
 	
@@ -74,8 +82,23 @@ public class VehicleRouteBuilder {
 	 * @return
 	 */
 	public VehicleRouteBuilder addPickup(Shipment shipment){
+		addPickup(shipment,0.0,0.0);
+		return this;
+	}
+	
+	/**
+	 * Adds a the pickup of the specified shipment at specified arrival and end-time.
+	 * 
+	 * @param shipment
+	 * @throws IllegalStateException if method has already been called with the specified shipment.
+	 * @return
+	 */
+	public VehicleRouteBuilder addPickup(Shipment shipment, double arrTime, double endTime){
 		if(openShipments.contains(shipment)) throw new IllegalStateException("shipment has already been added. cannot add it twice.");
-		tourActivities.addActivity(shipmentActivityFactory.createPickup(shipment));
+		TourActivity act = shipmentActivityFactory.createPickup(shipment);
+		act.setArrTime(arrTime);
+		act.setEndTime(endTime);
+		tourActivities.addActivity(act);
 		openShipments.add(shipment);
 		return this;
 	}
@@ -88,8 +111,23 @@ public class VehicleRouteBuilder {
 	 * @return
 	 */
 	public VehicleRouteBuilder addDelivery(Shipment shipment){
+		addDelivery(shipment,0.0,0.0);
+		return this;
+	}
+	
+	/**
+	 * Adds a the delivery of the specified shipment at a specified arrival and endTime.
+	 * 
+	 * @param shipment
+	 * @throws IllegalStateException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
+	 * @return
+	 */
+	public VehicleRouteBuilder addDelivery(Shipment shipment, double arrTime, double endTime){
 		if(openShipments.contains(shipment)){
-			tourActivities.addActivity(shipmentActivityFactory.createDelivery(shipment));
+			TourActivity act = shipmentActivityFactory.createDelivery(shipment);
+			act.setArrTime(arrTime);
+			act.setEndTime(endTime);
+			tourActivities.addActivity(act);
 			openShipments.remove(shipment);
 		}
 		else{ throw new IllegalStateException("cannot deliver shipment. shipment " + shipment + " needs to be picked up first."); }

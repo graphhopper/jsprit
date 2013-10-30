@@ -31,6 +31,7 @@ import org.w3c.dom.Element;
 
 import basics.Job;
 import basics.Service;
+import basics.Shipment;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.route.TourActivity;
@@ -79,7 +80,8 @@ public class VrpXMLWriter {
 		
 		writeProblemType(xmlConfig);
 		writeVehiclesAndTheirTypes(xmlConfig);
-		writerServices(xmlConfig);
+		writeServices(xmlConfig);
+		writeShipments(xmlConfig);
 		writeSolutions(xmlConfig);
 		
 		OutputFormat format = new OutputFormat();
@@ -129,7 +131,16 @@ public class VrpXMLWriter {
 				for(TourActivity act : route.getTourActivities().getActivities()){
 					xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+")[@type]", act.getName());
 					if(act instanceof JobActivity){
-						xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").serviceId", ((JobActivity) act).getJob().getId());
+						Job job = ((JobActivity) act).getJob();
+						if(job instanceof Service){
+							xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").serviceId", job.getId());
+						}
+						else if(job instanceof Shipment){
+							xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").shipmentId", job.getId());
+						}
+						else{
+							throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
+						}
 					}
 					xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").arrTime", act.getArrTime());
 					xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act("+actCounter+").endTime", act.getEndTime());
@@ -142,10 +153,11 @@ public class VrpXMLWriter {
 		}
 	}
 
-	private void writerServices(XMLConf xmlConfig) {
+	private void writeServices(XMLConf xmlConfig) {
 		String shipmentPathString = "services.service";
 		int counter = 0;
 		for(Job j : vrp.getJobs().values()){
+			if(!(j instanceof Service)) continue;
 			Service service = (Service) j;
 			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@id]", service.getId());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@type]", service.getType());
@@ -161,8 +173,41 @@ public class VrpXMLWriter {
 			
 			counter++;
 		}
-		
-		
+	}
+	
+	private void writeShipments(XMLConf xmlConfig) {
+		String shipmentPathString = "shipments.shipment";
+		int counter = 0;
+		for(Job j : vrp.getJobs().values()){
+			if(!(j instanceof Shipment)) continue;
+			Shipment shipment = (Shipment) j;
+			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@id]", shipment.getId());
+//			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@type]", service.getType());
+			if(shipment.getPickupLocation() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.locationId", shipment.getPickupLocation());
+			if(shipment.getPickupCoord() != null) {
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.coord[@x]", shipment.getPickupCoord().getX());
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.coord[@y]", shipment.getPickupCoord().getY());
+			}
+			
+			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.duration", shipment.getPickupServiceTime());
+			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.timeWindows.timeWindow(0).start", shipment.getPickupTimeWindow().getStart());
+			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.timeWindows.timeWindow(0).end", shipment.getPickupTimeWindow().getEnd());
+			
+			
+			if(shipment.getDeliveryLocation() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.locationId", shipment.getDeliveryLocation());
+			if(shipment.getDeliveryCoord() != null) {
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.coord[@x]", shipment.getDeliveryCoord().getX());
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.coord[@y]", shipment.getDeliveryCoord().getY());
+			}
+			
+			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.duration", shipment.getDeliveryServiceTime());
+			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).start", shipment.getDeliveryTimeWindow().getStart());
+			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).end", shipment.getDeliveryTimeWindow().getEnd());
+			
+			
+			xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-demand", shipment.getCapacityDemand());
+			counter++;
+		}
 	}
 	
 	private void writeProblemType(XMLConfiguration xmlConfig){

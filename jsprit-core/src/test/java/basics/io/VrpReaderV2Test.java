@@ -28,7 +28,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import basics.Job;
 import basics.Service;
+import basics.Shipment;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblem.FleetComposition;
 import basics.VehicleRoutingProblem.FleetSize;
@@ -110,7 +112,25 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(2, vrp.getJobs().size());
+		assertEquals(3, vrp.getJobs().size());
+		int servCounter = 0;
+		for(Job j : vrp.getJobs().values()){
+			if(j instanceof Service) servCounter++;
+		}
+		assertEquals(2,servCounter);
+	}
+	
+	@Test
+	public void whenReadingShipments_itReadsThemCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(3, vrp.getJobs().size());
+		int shipCounter = 0;
+		for(Job j : vrp.getJobs().values()){
+			if(j instanceof Shipment) shipCounter++;
+		}
+		assertEquals(1,shipCounter);
 	}
 	
 	@Test
@@ -122,6 +142,6 @@ public class VrpReaderV2Test {
 		assertEquals("service",s1.getType());
 		assertEquals(1,s1.getCapacityDemand());
 		assertEquals(0.0,s1.getServiceDuration(),0.01);
-		assertEquals(2, vrp.getJobs().size());
+		assertEquals(3, vrp.getJobs().size());
 	}
 }

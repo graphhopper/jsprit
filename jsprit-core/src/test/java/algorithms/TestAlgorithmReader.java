@@ -59,7 +59,7 @@ public class TestAlgorithmReader {
 		config = new XMLConfiguration("src/test/resources/testConfig.xml");
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		solutions = new ArrayList<VehicleRoutingProblemSolution>();
-		new VrpXMLReader(vrpBuilder,solutions).read("src/test/resources/finiteVrpForReaderV2Test.xml");
+		new VrpXMLReader(vrpBuilder,solutions).read("src/test/resources/finiteVrp.xml");
 		vrp = vrpBuilder.build();
 	}
 	
