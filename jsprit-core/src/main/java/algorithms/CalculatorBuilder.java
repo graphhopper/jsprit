@@ -216,9 +216,9 @@ class CalculatorBuilder {
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
  		
 		ActivityInsertionCostsCalculator defaultCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager);
-		JobInsertionCalculator standardServiceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), defaultCalc, constraintManager);
+		JobInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), defaultCalc, constraintManager);
 		
-		((CalculatesServiceInsertion) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
+		((ServiceInsertionCalculator) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(standardServiceInsertion);
 		
 		return calcPlusListeners;

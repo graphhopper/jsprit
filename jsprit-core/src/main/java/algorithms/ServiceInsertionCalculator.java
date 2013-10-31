@@ -36,9 +36,9 @@ import basics.route.VehicleRoute;
 
 
 
-final class CalculatesServiceInsertion implements JobInsertionCalculator{
+final class ServiceInsertionCalculator implements JobInsertionCalculator{
 
-	private static final Logger logger = Logger.getLogger(CalculatesServiceInsertion.class);
+	private static final Logger logger = Logger.getLogger(ServiceInsertionCalculator.class);
 
 	private HardRouteLevelConstraint hardRouteLevelConstraint;
 	
@@ -61,7 +61,7 @@ final class CalculatesServiceInsertion implements JobInsertionCalculator{
 		logger.info("initialise neighborhood " + neighborhood);
 	}
 	
-	public CalculatesServiceInsertion(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint) {
+	public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint) {
 		super();
 		this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
 		this.hardRouteLevelConstraint = hardRouteLevelConstraint;

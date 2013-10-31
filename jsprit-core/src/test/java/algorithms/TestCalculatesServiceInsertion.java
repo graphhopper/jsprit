@@ -45,7 +45,7 @@ import basics.route.VehicleRoute;
 
 public class TestCalculatesServiceInsertion {
 	
-	CalculatesServiceInsertion serviceInsertion;
+	ServiceInsertionCalculator serviceInsertion;
 	
 	VehicleRoutingTransportCosts costs;
 	
@@ -153,7 +153,7 @@ public class TestCalculatesServiceInsertion {
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 
-		serviceInsertion = new CalculatesServiceInsertion(costs, new LocalActivityInsertionCostsCalculator(costs, activityCosts, new HardConstraints.HardTimeWindowActivityLevelConstraint(states, costs)), new HardConstraints.HardLoadConstraint(states));
+		serviceInsertion = new ServiceInsertionCalculator(costs, new LocalActivityInsertionCostsCalculator(costs, activityCosts, new HardConstraints.HardTimeWindowActivityLevelConstraint(states, costs)), new HardConstraints.HardLoadConstraint(states));
 		
 		stateUpdater = new UpdateStates(states, costs, activityCosts);
 		

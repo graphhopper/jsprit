@@ -86,6 +86,9 @@ public final class PickupService implements PickupActivity{
 		return pickup.getCapacityDemand();
 	}
 
-	
+	@Override
+	public String toString() {
+		return "[act="+getName()+"][loc="+getLocationId()+"]";
+	}
 
 }

@@ -35,6 +35,7 @@ import algorithms.selectors.SelectBest;
 import basics.Delivery;
 import basics.Job;
 import basics.Pickup;
+import basics.Service;
 import basics.Shipment;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
@@ -69,7 +70,11 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			
 			Shipment s1 = Shipment.Builder.newInstance("s1", 1).setPickupCoord(Coordinate.newInstance(0, 0)).setDeliveryCoord(Coordinate.newInstance(10, 10)).build();
 			Shipment s2 = Shipment.Builder.newInstance("s2", 1).setPickupCoord(Coordinate.newInstance(1, 1)).setDeliveryCoord(Coordinate.newInstance(10, 10)).build();
-			builder.addJob(s1).addJob(s2);
+			
+			Service serv1 = Service.Builder.newInstance("serv1", 1).setCoord(Coordinate.newInstance(0, 5)).build();
+			Service serv2 = Service.Builder.newInstance("serv2", 1).setCoord(Coordinate.newInstance(5, 0)).build();
+			
+			builder.addJob(s1).addJob(s2).addJob(serv1).addJob(serv2);
 			builder.addVehicle(v);
 			
 			vrp = builder.build();
@@ -82,11 +87,16 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			
 			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actLevelConstraintAccumulator);
 
-			ShipmentInsertionCalculator serviceInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardPickupAndDeliveryLoadConstraint(stateManager));
-//			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
+			ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardPickupAndDeliveryLoadConstraint(stateManager));
+			
+			ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
+			
+			JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
+			switcher.put(Shipment.class, shipmentInsertion);
+			switcher.put(Service.class, serviceInsertion);
 			
 			VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
-			JobInsertionCalculator finalServiceInsertion = new CalculatesVehTypeDepServiceInsertion(fleetManager, serviceInsertion);
+			JobInsertionCalculator finalServiceInsertion = new CalculatesVehTypeDepServiceInsertion(fleetManager, switcher);
 			
 			BestInsertion bestInsertion = new BestInsertion(finalServiceInsertion);
 			
