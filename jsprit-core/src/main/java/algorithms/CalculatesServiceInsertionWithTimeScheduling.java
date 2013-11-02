@@ -27,6 +27,12 @@ import basics.route.Driver;
 import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
+/**
+ * This is experimental. It ignores vehicles' earliestStartTime.
+ * 
+ * @author schroeder
+ *
+ */
 class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCalculator{
 
 	private static Logger log = Logger.getLogger(CalculatesServiceInsertionWithTimeScheduling.class);
@@ -67,9 +73,13 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCalcul
 		
 		for(int i=0;i<nOfDepartureTimes;i++){
 			double neighborStartTime_earlier = currentStart - (i+1)*timeSlice;
-			if(neighborStartTime_earlier > earliestDeparture) vehicleDepartureTimes.add(neighborStartTime_earlier);
+//			if(neighborStartTime_earlier > earliestDeparture) {
+				vehicleDepartureTimes.add(neighborStartTime_earlier);
+//			}
 			double neighborStartTime_later = currentStart + (i+1)*timeSlice;
-			if(neighborStartTime_later < latestEnd) vehicleDepartureTimes.add(neighborStartTime_later);
+//			if(neighborStartTime_later < latestEnd) {
+				vehicleDepartureTimes.add(neighborStartTime_later);
+//			}
 		}
 	
 		InsertionData bestIData = null;
