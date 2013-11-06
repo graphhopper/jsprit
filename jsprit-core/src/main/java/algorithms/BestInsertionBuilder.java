@@ -9,7 +9,7 @@ import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.route.VehicleFleetManager;
 
-public class BestInsertionBuilder implements InsertionStrategyBuilder{
+public class BestInsertionBuilder {
 
 	private VehicleRoutingProblem vrp;
 	
@@ -101,7 +101,7 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		this.actInsertionCostsCalculator = activityInsertionCostsCalculator;
 	};
 	
-	@Override
+
 	public InsertionStrategy build() {
 		List<InsertionListener> iListeners = new ArrayList<InsertionListener>();
 		List<PrioritizedVRAListener> algorithmListeners = new ArrayList<PrioritizedVRAListener>();
