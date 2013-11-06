@@ -22,6 +22,12 @@ import basics.VehicleRoutingProblemSolution;
 
 public class Solutions {
 	
+	/**
+	 * 
+	 * @deprecated use bestOf instead.
+	 * @param solutions
+	 * @return
+	 */
 	@Deprecated
 	public static VehicleRoutingProblemSolution getBest(Collection<VehicleRoutingProblemSolution> solutions){
 		VehicleRoutingProblemSolution best = null;
