@@ -122,6 +122,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 				}
 				else if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)){
 					loopBroken = true;
+					break;
 				}
 			}
 			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActStartTime, newDriver, newVehicle);
