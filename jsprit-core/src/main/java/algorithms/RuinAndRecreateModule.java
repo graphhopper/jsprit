@@ -18,14 +18,14 @@ package algorithms;
 
 import java.util.Collection;
 
-import algorithms.RuinStrategy.RuinListener;
 import basics.Job;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.InsertionListener;
+import basics.algo.RuinListener;
 import basics.algo.SearchStrategyModule;
 import basics.algo.SearchStrategyModuleListener;
 
-class RuinAndRecreateModule implements SearchStrategyModule{
+public class RuinAndRecreateModule implements SearchStrategyModule{
 
 	private InsertionStrategy insertion;
 	
@@ -44,9 +44,8 @@ class RuinAndRecreateModule implements SearchStrategyModule{
 	public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
 		Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
 		insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobs);
-//		double totalCost = RouteUtils.getTotalCost(vrpSolution.getRoutes());
-//		vrpSolution.setCost(totalCost);
 		return vrpSolution;
+
 	}
 
 	@Override

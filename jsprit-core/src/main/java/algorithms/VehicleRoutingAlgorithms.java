@@ -31,7 +31,6 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
-import algorithms.HardConstraints.ConstraintManager;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
 import algorithms.VehicleRoutingAlgorithms.TypedMap.InsertionStrategyKey;
@@ -65,7 +64,10 @@ import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 import basics.io.AlgorithmConfig;
 import basics.io.AlgorithmConfigXmlReader;
+import basics.route.FiniteFleetManagerFactory;
+import basics.route.InfiniteFleetManagerFactory;
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
 
@@ -437,23 +439,23 @@ public class VehicleRoutingAlgorithms {
 		final VehicleFleetManager vehicleFleetManager = createFleetManager(vrp);
 		
 		//create state-manager
-		final StateManagerImpl stateManager = new StateManagerImpl();
+		final StateManager stateManager = new StateManager();
 		
 		/*
 		 * define constraints
 		 */
 		//constraint manager
 		ConstraintManager constraintManager = new ConstraintManager();
-		constraintManager.addConstraint(new HardConstraints.HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
+		constraintManager.addConstraint(new HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
 	
 		if(vrp.getProblemConstraints().contains(Constraint.DELIVERIES_FIRST)){
-			constraintManager.addConstraint(new HardConstraints.HardPickupAndDeliveryBackhaulActivityLevelConstraint(stateManager));
+			constraintManager.addConstraint(new HardPickupAndDeliveryBackhaulActivityLevelConstraint(stateManager));
 		}
 		else{
-			constraintManager.addConstraint(new HardConstraints.HardPickupAndDeliveryActivityLevelConstraint(stateManager));
+			constraintManager.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
 		}
 		
-		constraintManager.addConstraint(new HardConstraints.HardPickupAndDeliveryLoadConstraint(stateManager));
+		constraintManager.addConstraint(new HardPickupAndDeliveryLoadRouteLevelConstraint(stateManager));
 		
 		//construct initial solution creator 
 		AlgorithmStartsListener createInitialSolution = createInitialSolution(config,vrp,vehicleFleetManager,stateManager,algorithmListeners,definedClasses,executorService,nuOfThreads,constraintManager);
@@ -491,24 +493,22 @@ public class VehicleRoutingAlgorithms {
 		 * define stateUpdates
 		 */
 		
-		//reset stateManager
-		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new StateUpdates.ResetStateManager(stateManager)));
-		//update states
-//		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateStates(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
-		StateUpdates.UpdateRouteStatesOnceTheRouteHasBeenChanged routeChangedListener = new StateUpdates.UpdateRouteStatesOnceTheRouteHasBeenChanged(vrp.getTransportCosts());
+		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
+		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
+	
+		stateManager.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
+		stateManager.addActivityVisitor(new UpdateLoadAtActivityLevel(stateManager));
 		
-		routeChangedListener.addInsertionStartsListener(new StateUpdates.UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
-		routeChangedListener.addJobInsertedListener(new StateUpdates.UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
+		stateManager.addActivityVisitor(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 		
-		routeChangedListener.addVisitor(new StateUpdates.UpdateActivityTimes(vrp.getTransportCosts()));
-		routeChangedListener.addVisitor(new StateUpdates.UpdateLoadAtActivityLevel(stateManager));
-		routeChangedListener.addVisitor(new StateUpdates.UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+		stateManager.addActivityVisitor(new UpdateOccuredDeliveriesAtActivityLevel(stateManager));
+		stateManager.addActivityVisitor(new UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
+		stateManager.addActivityVisitor(new UpdateFuturePickupsAtActivityLevel(stateManager));
+
 		
-		routeChangedListener.addVisitor(new StateUpdates.UpdateOccuredDeliveriesAtActivityLevel(stateManager));
-		routeChangedListener.addVisitor(new StateUpdates.UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
-		routeChangedListener.addVisitor(new StateUpdates.UpdateFuturePickupsAtActivityLevel(stateManager));
+		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(stateManager);
+		metaAlgorithm.getAlgorithmListeners().addListener(stateManager);
 		
-		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(routeChangedListener);
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(vehicleFleetManager));
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new ResetAndIniFleetManager(vehicleFleetManager));
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new VehicleSwitched(vehicleFleetManager));
@@ -526,16 +526,16 @@ public class VehicleRoutingAlgorithms {
 		return metaAlgorithm;	
 	}
 
-	private static SolutionCostCalculator getCostCalculator(final StateManagerImpl stateManager) {
+	private static SolutionCostCalculator getCostCalculator(final StateManager stateManager) {
 		SolutionCostCalculator calc = new SolutionCostCalculator() {
 			
 			@Override
-			public void calculateCosts(VehicleRoutingProblemSolution solution) {
+			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, StateTypes.COSTS).toDouble() + getFixedCosts(route.getVehicle());
+					costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble() + getFixedCosts(route.getVehicle());
 				}
-				solution.setCost(costs);
+				return costs;
 			}
 
 			private double getFixedCosts(Vehicle vehicle) {
@@ -549,11 +549,11 @@ public class VehicleRoutingAlgorithms {
 
 	private static VehicleFleetManager createFleetManager(final VehicleRoutingProblem vrp) {
 		if(vrp.getFleetSize().equals(FleetSize.INFINITE)){
-			return new InfiniteVehicles(vrp.getVehicles());
+			return new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 
 		}
 		else if(vrp.getFleetSize().equals(FleetSize.FINITE)){ 
-			return new VehicleFleetManagerImpl(vrp.getVehicles()); 
+			return new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager(); 
 		}
 		throw new IllegalStateException("fleet size can only be infinite or finite. " +
 				"makes sure your config file contains one of these options");
@@ -626,7 +626,7 @@ public class VehicleRoutingAlgorithms {
 		metaAlgorithm.getAlgorithmListeners().addAll(algorithmListeners);
 	}
 	
-	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, final StateManagerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
+	private static AlgorithmStartsListener createInitialSolution(XMLConfiguration config, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, final StateManager routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
 		List<HierarchicalConfiguration> modConfigs = config.configurationsAt("construction.insertion");
 		if(modConfigs == null) return null;
 		if(modConfigs.isEmpty()) return null;
@@ -651,9 +651,11 @@ public class VehicleRoutingAlgorithms {
 
 			@Override
 			public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
-				CreateInitialSolution createInitialSolution = new CreateInitialSolution(finalInsertionStrategy, getCostCalculator(routeStates));
-				createInitialSolution.setGenerateAsMuchAsRoutesAsVehiclesExist(false);
-				VehicleRoutingProblemSolution vrpSol = createInitialSolution.createInitialSolution(vrp);
+				InsertionInitialSolutionFactory insertionInitialSolutionFactory = new InsertionInitialSolutionFactory(finalInsertionStrategy, getCostCalculator(routeStates));
+//				CreateInitialSolution createInitialSolution = new CreateInitialSolution(finalInsertionStrategy, getCostCalculator(routeStates));
+//
+//				createInitialSolution.setGenerateAsMuchAsRoutesAsVehiclesExist(false);
+				VehicleRoutingProblemSolution vrpSol = insertionInitialSolutionFactory.createSolution(vrp);
 				solutions.add(vrpSol);
 			}
 		};
@@ -721,7 +723,7 @@ public class VehicleRoutingAlgorithms {
 	}
 	
 	private static SearchStrategyModule buildModule(HierarchicalConfiguration moduleConfig, final VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, 
-			final StateManagerImpl routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
+			final StateManager routeStates, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedClasses, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
 		String moduleName = moduleConfig.getString("[@name]");
 		if(moduleName == null) throw new IllegalStateException("module(-name) is missing.");
 		String moduleId = moduleConfig.getString("[@id]");
@@ -823,7 +825,7 @@ public class VehicleRoutingAlgorithms {
 				"\n\tgendreauPostOpt");
 	}
 
-	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StateManagerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
+	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
@@ -833,7 +835,7 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 
-	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final StateManagerImpl routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
+	private static RuinStrategy getRandomRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin) {
 		RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
 		RuinStrategy ruin = definedClasses.get(stratKey);
 		if(ruin == null){
@@ -843,10 +845,12 @@ public class VehicleRoutingAlgorithms {
 		return ruin;
 	}
 	
-	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
+	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, StateManager routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager) {
 		InsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, routeStates, algorithmListeners, executorService, nuOfThreads, constraintManager);
 		return insertion;
 	}
+
+	
 	
 
 }

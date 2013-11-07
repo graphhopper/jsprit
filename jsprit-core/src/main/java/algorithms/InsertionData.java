@@ -19,9 +19,14 @@ package algorithms;
 import basics.route.Driver;
 import basics.route.Vehicle;
 
-
-
-class InsertionData {
+/**
+ * Data object that collects insertion information. It collects insertionCosts, insertionIndeces, vehicle and driver to be employed
+ * and departureTime of vehicle at vehicle's start location (e.g. depot).
+ * 
+ * @author stefan
+ *
+ */
+public class InsertionData {
 	
 	static class NoInsertionFound extends InsertionData{
 		
@@ -33,7 +38,15 @@ class InsertionData {
 	
 	private static InsertionData noInsertion = new NoInsertionFound();
 	
-	public static InsertionData noInsertionFound(){
+	/**
+	 * Returns an instance of InsertionData that represents an EmptyInsertionData (which might indicate
+	 * that no insertion has been found). It is internally instantiated as follows:<br>
+	 * <code>new InsertionData(Double.MAX_VALUE, NO_INDEX, NO_INDEX, null, null);</code><br>
+	 * where NO_INDEX=-1. 
+	 * 
+	 * @return
+	 */
+	public static InsertionData createEmptyInsertionData(){
 		return noInsertion;
 	}
 	
@@ -80,22 +93,47 @@ class InsertionData {
 		return "[iCost="+insertionCost+"][iIndex="+deliveryInsertionIndex+"][depTime="+departureTime+"][vehicle="+selectedVehicle+"][driver="+selectedDriver+"]";
 	}
 	
+	/**
+	 * Returns insertionIndex of deliveryActivity. If no insertionPosition is found, it returns NO_INDEX (=-1). 
+	 * 
+	 * @return
+	 */
 	public int getDeliveryInsertionIndex(){
 		return deliveryInsertionIndex;
 	}
 	
+	/**
+	 * Returns insertionIndex of pickkupActivity. If no insertionPosition is found, it returns NO_INDEX (=-1).
+	 * 
+	 * @return
+	 */
 	public int getPickupInsertionIndex(){
 		return pickupInsertionIndex;
 	}
 	
+	/**
+	 * Returns insertion costs (which might be the additional costs of inserting the corresponding job).
+	 * 
+	 * @return
+	 */
 	public double getInsertionCost() {
 		return insertionCost;
 	}
 
+	/**
+	 * Returns the vehicle to be employed.
+	 * 
+	 * @return
+	 */
 	public Vehicle getSelectedVehicle() {
 		return selectedVehicle;
 	}
 	
+	/**
+	 * Returns the vehicle to be employed.
+	 * 
+	 * @return
+	 */
 	public Driver getSelectedDriver(){
 		return selectedDriver;
 	}

@@ -118,8 +118,10 @@ public class AlgorithmSearchProgressChartListener implements IterationEndsListen
 		XYPlot plot = chart.getXYPlot();
 		
 		NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
-		Range rangeY = new Range(minValue-0.05*minValue,maxValue + 0.05*maxValue);
-		yAxis.setRange(rangeY);
+		Range rangeBounds = coll.getRangeBounds(true);
+		double upper = Math.min(rangeBounds.getUpperBound(), rangeBounds.getLowerBound()*5);
+		if(upper == 0.0){ upper = 10000; }
+		yAxis.setRangeWithMargins(rangeBounds.getLowerBound(),upper);
 		
 		try {
 			ChartUtilities.saveChartAsJPEG(new File(filename), chart, 1000, 600);
@@ -143,9 +145,9 @@ public class AlgorithmSearchProgressChartListener implements IterationEndsListen
 		double best = Double.MAX_VALUE;
 		double sum = 0.0;
 		for(VehicleRoutingProblemSolution sol : solutions){
-			if(sol.getCost() > worst) worst = sol.getCost();
+			if(sol.getCost() > worst) worst = Math.min(sol.getCost(),Double.MAX_VALUE);
 			if(sol.getCost() < best) best = sol.getCost();
-			sum += sol.getCost();
+			sum += Math.min(sol.getCost(),Double.MAX_VALUE);
 		}
 		bestResultList.add(best);
 		worstResultList.add(worst);

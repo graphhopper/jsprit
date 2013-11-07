@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 import util.RandomNumberGeneration;
 import basics.Job;
 import basics.VehicleRoutingProblem;
+import basics.algo.RuinListener;
+import basics.algo.RuinListeners;
 import basics.route.VehicleRoute;
 
 

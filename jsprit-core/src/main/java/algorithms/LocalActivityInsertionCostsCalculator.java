@@ -20,38 +20,42 @@
  ******************************************************************************/
 package algorithms;
 
-import algorithms.HardConstraints.HardActivityLevelConstraint;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.TourActivity;
 
+/**
+ * Calculates activity insertion costs locally, i.e. by comparing the additional costs of insertion the new activity k between
+ * activity i (prevAct) and j (nextAct).
+ * Additional costs are then basically calculated as delta c = c_ik + c_kj - c_ij.
+ * 
+ * <p>Note once time has an effect on costs this class requires activity endTimes.
+ * 
+ * @author stefan
+ *
+ */
 class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCalculator{
-
-	private HardActivityLevelConstraint hardConstraint;
 
 	private VehicleRoutingTransportCosts routingCosts;
 	
 	private VehicleRoutingActivityCosts activityCosts;
 	
-	public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, HardActivityLevelConstraint hardActivityLevelConstraint) {
+	
+	public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts) {
 		super();
 		this.routingCosts = routingCosts;
 		this.activityCosts = actCosts;
-		this.hardConstraint = hardActivityLevelConstraint;
 	}
 
 	@Override
-	public ActivityInsertionCosts calculate(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
-		if(!hardConstraint.fulfilled(iFacts, prevAct, newAct, nextAct, depTimeAtPrevAct)){
-			return null;
-		}
+	public ActivityInsertionCosts getCosts(InsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
 		
 		double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocationId(), newAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
 		double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
 		
-		double newAct_endTime = CalcUtils.getActivityEndTime(newAct_arrTime, newAct);
+		double newAct_endTime = CalculationUtils.getActivityEndTime(newAct_arrTime, newAct);
 		
 		double act_costs_newAct = activityCosts.getActivityCost(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		

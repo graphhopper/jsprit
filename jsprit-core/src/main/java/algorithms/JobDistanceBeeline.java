@@ -33,7 +33,7 @@ class JobDistanceBeeline implements JobDistance {
 	}
 
 	@Override
-	public double calculateDistance(Job i, Job j) {
+	public double getDistance(Job i, Job j) {
 		double avgCost = 0.0;
 		if (i instanceof Service && j instanceof Service) {
 			if (i.equals(j)) {

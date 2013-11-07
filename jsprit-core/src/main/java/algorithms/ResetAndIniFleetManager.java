@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 
 import basics.Job;
 import basics.algo.InsertionStartsListener;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
 class ResetAndIniFleetManager implements InsertionStartsListener{

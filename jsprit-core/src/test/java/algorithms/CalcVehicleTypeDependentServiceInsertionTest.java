@@ -29,6 +29,7 @@ import org.junit.Test;
 import basics.Service;
 import basics.route.TimeWindow;
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
 import basics.route.VehicleTypeImpl;
@@ -71,28 +72,28 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 	
 	@Test
 	public void whenHaving2Vehicle_calcInsertionOfCheapest(){
-		JobInsertionCalculator calc = mock(JobInsertionCalculator.class);
+		JobInsertionCostsCalculator calc = mock(JobInsertionCostsCalculator.class);
 		InsertionData iDataVeh1 = new InsertionData(10.0,InsertionData.NO_INDEX, 1, veh1, null);
 		InsertionData iDataVeh2 = new InsertionData(20.0,InsertionData.NO_INDEX, 1, veh2, null);
-		when(calc.calculate(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
-		when(calc.calculate(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
-		when(calc.calculate(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 10.0)).thenReturn(iDataVeh2);
-		CalculatesVehTypeDepServiceInsertion insertion = new CalculatesVehTypeDepServiceInsertion(fleetManager,calc);
-		InsertionData iData = insertion.calculate(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
+		when(calc.getInsertionData(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
+		when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
+		when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 10.0)).thenReturn(iDataVeh2);
+		VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager,calc);
+		InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
 		assertThat(iData.getSelectedVehicle(), is(veh1));
 
 	}
 
 	@Test
 	public void whenHaving2Vehicle_calcInsertionOfCheapest2(){
-		JobInsertionCalculator calc = mock(JobInsertionCalculator.class);
+		JobInsertionCostsCalculator calc = mock(JobInsertionCostsCalculator.class);
 		InsertionData iDataVeh1 = new InsertionData(20.0,InsertionData.NO_INDEX, 1, veh1, null);
 		InsertionData iDataVeh2 = new InsertionData(10.0,InsertionData.NO_INDEX, 1, veh2, null);
-		when(calc.calculate(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
-		when(calc.calculate(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
-		when(calc.calculate(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 20.0)).thenReturn(iDataVeh2);
-		CalculatesVehTypeDepServiceInsertion insertion = new CalculatesVehTypeDepServiceInsertion(fleetManager,calc);
-		InsertionData iData = insertion.calculate(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
+		when(calc.getInsertionData(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
+		when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
+		when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 20.0)).thenReturn(iDataVeh2);
+		VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager,calc);
+		InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
 		assertThat(iData.getSelectedVehicle(), is(veh2));
 
 	}

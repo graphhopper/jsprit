@@ -20,8 +20,8 @@ import basics.Job;
 
 
 
-interface JobDistance {
+public interface JobDistance {
 
-	public double calculateDistance(Job i, Job j);
+	public double getDistance(Job i, Job j);
 
 }

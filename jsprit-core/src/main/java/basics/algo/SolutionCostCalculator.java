@@ -21,10 +21,11 @@ import basics.VehicleRoutingProblemSolution;
 public interface SolutionCostCalculator {
 	
 	/**
-	 * This assumes that the solution is modified by setting its costs <br>
-	 * <code>solution.setCost(costs);</code>
+	 * Returns costs of solution.
+	 * 
 	 * @param solution
+	 * @return TODO
 	 */
-	public void calculateCosts(VehicleRoutingProblemSolution solution);
+	public double getCosts(VehicleRoutingProblemSolution solution);
 
 }

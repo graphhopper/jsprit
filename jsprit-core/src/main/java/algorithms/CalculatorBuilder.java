@@ -19,10 +19,10 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
-import algorithms.HardConstraints.ConstraintManager;
 import basics.VehicleRoutingProblem;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
+import basics.route.VehicleFleetManager;
 
 
 
@@ -30,16 +30,16 @@ class CalculatorBuilder {
 
 	private static class CalculatorPlusListeners {
 
-		private JobInsertionCalculator calculator;
+		private JobInsertionCostsCalculator calculator;
 
-		public JobInsertionCalculator getCalculator() {
+		public JobInsertionCostsCalculator getCalculator() {
 			return calculator;
 		}
 
 		private List<PrioritizedVRAListener> algorithmListener = new ArrayList<PrioritizedVRAListener>();
 		private List<InsertionListener> insertionListener = new ArrayList<InsertionListener>();
 
-		public CalculatorPlusListeners(JobInsertionCalculator calculator) {
+		public CalculatorPlusListeners(JobInsertionCostsCalculator calculator) {
 			super();
 			this.calculator = calculator;
 		}
@@ -59,7 +59,7 @@ class CalculatorBuilder {
 
 	private VehicleRoutingProblem vrp;
 
-	private StateManager states;
+	private StateGetter states;
 
 	private boolean local = true;
 
@@ -80,6 +80,8 @@ class CalculatorBuilder {
 	private int neighbors;
 	
 	private ConstraintManager constraintManager;
+	
+	private ActivityInsertionCostsCalculator activityInsertionCostCalculator = null;
 
 	/**
 	 * Constructs the builder.
@@ -102,7 +104,7 @@ class CalculatorBuilder {
 	 * 
 	 * @return
 	 */
-	public CalculatorBuilder setStates(StateManager states){
+	public CalculatorBuilder setStates(StateGetter states){
 		this.states = states;
 		return this;
 	}
@@ -136,6 +138,10 @@ class CalculatorBuilder {
 	 */
 	public void setLocalLevel(){
 		local = true;
+	}
+	
+	public void setActivityInsertionCostsCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
+		this.activityInsertionCostCalculator = activityInsertionCostsCalculator;
 	}
 
 	/**
@@ -173,11 +179,11 @@ class CalculatorBuilder {
 	 * @return jobInsertionCalculator.
 	 * @throws IllegalStateException if vrp == null or activityStates == null or fleetManager == null.
 	 */
-	public JobInsertionCalculator build(){
+	public JobInsertionCostsCalculator build(){
 		if(vrp == null) throw new IllegalStateException("vehicle-routing-problem is null, but it must be set (this.setVehicleRoutingProblem(vrp))");
 		if(states == null) throw new IllegalStateException("states is null, but is must be set (this.setStates(states))");
 		if(fleetManager == null) throw new IllegalStateException("fleetManager is null, but it must be set (this.setVehicleFleetManager(fleetManager))");
-		JobInsertionCalculator baseCalculator = null;
+		JobInsertionCostsCalculator baseCalculator = null;
 		CalculatorPlusListeners standardLocal = null;
 		if(local){
 			standardLocal = createStandardLocal(vrp, states);
@@ -212,40 +218,58 @@ class CalculatorBuilder {
 		}
 	}
 
-	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateManager statesManager){
+	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateGetter statesManager){
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
  		
-		ActivityInsertionCostsCalculator defaultCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager);
-		JobInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), defaultCalc, constraintManager);
-		
+//<<<<<<< HEAD
+//		ActivityInsertionCostsCalculator defaultCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager);
+//		JobInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), defaultCalc, constraintManager);
+//		
+//=======
+		ActivityInsertionCostsCalculator actInsertionCalc;
+		if(activityInsertionCostCalculator == null){
+			actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
+		}
+		else{
+			actInsertionCalc = activityInsertionCostCalculator;
+		}
+
+		JobInsertionCostsCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
+//>>>>>>> refs/remotes/choose_remote_name/relaxAPI
 		((ServiceInsertionCalculator) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(standardServiceInsertion);
 		
 		return calcPlusListeners;
 	}
 
-	private CalculatorPlusListeners createCalculatorConsideringFixedCosts(VehicleRoutingProblem vrp, JobInsertionCalculator baseCalculator, StateManager activityStates2, double weightOfFixedCosts){
-		final CalculatesServiceInsertionConsideringFixCost withFixCost = new CalculatesServiceInsertionConsideringFixCost(baseCalculator, activityStates2);
+	private CalculatorPlusListeners createCalculatorConsideringFixedCosts(VehicleRoutingProblem vrp, JobInsertionCostsCalculator baseCalculator, StateGetter activityStates2, double weightOfFixedCosts){
+		final JobInsertionConsideringFixCostsCalculator withFixCost = new JobInsertionConsideringFixCostsCalculator(baseCalculator, activityStates2);
 		withFixCost.setWeightOfFixCost(weightOfFixedCosts);
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(withFixCost);
 		calcPlusListeners.getInsertionListener().add(new ConfigureFixCostCalculator(vrp, withFixCost));
 		return calcPlusListeners;
 	}
 
-	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, StateManager activityStates2, int forwardLooking, int solutionMemory){
+	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, StateGetter activityStates2, int forwardLooking, int solutionMemory){
 		int after = forwardLooking;
-		ActivityInsertionCostsCalculator routeLevelCostEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager, activityStates2);
-		JobInsertionCalculator jobInsertionCalculator = new CalculatesServiceInsertionOnRouteLevel(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager, routeLevelCostEstimator);
-		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNuOfActsForwardLooking(after);
-		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setMemorySize(solutionMemory);
-		((CalculatesServiceInsertionOnRouteLevel)jobInsertionCalculator).setNeighborhood(vrp.getNeighborhood());
-		((CalculatesServiceInsertionOnRouteLevel) jobInsertionCalculator).setStates(activityStates2);
+		ActivityInsertionCostsCalculator routeLevelCostEstimator;
+		if(activityInsertionCostCalculator == null){
+			routeLevelCostEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityStates2);
+		}
+		else{
+			routeLevelCostEstimator = activityInsertionCostCalculator;
+		}
+		JobInsertionCostsCalculator jobInsertionCalculator = new ServiceInsertionOnRouteLevelCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), routeLevelCostEstimator, constraintManager, constraintManager);
+		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setNuOfActsForwardLooking(after);
+		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setMemorySize(solutionMemory);
+		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setNeighborhood(vrp.getNeighborhood());
+		((ServiceInsertionOnRouteLevelCalculator) jobInsertionCalculator).setStates(activityStates2);
 		CalculatorPlusListeners calcPlusListener = new CalculatorPlusListeners(jobInsertionCalculator);
 		return calcPlusListener;
 	}
 
-	private JobInsertionCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCalculator baseCalc, StateManager activityStates2){
-		return new CalculatesVehTypeDepServiceInsertion(fleetManager, baseCalc);
+	private JobInsertionCostsCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCostsCalculator baseCalc, StateGetter activityStates2){
+		return new VehicleTypeDependentJobInsertionCalculator(fleetManager, baseCalc);
 	}
 
 	public void setConstraintManager(ConstraintManager constraintManager) {

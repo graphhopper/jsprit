@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import basics.algo.InsertionEndsListener;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
 class RemoveEmptyVehicles implements InsertionEndsListener{
@@ -31,7 +32,7 @@ class RemoveEmptyVehicles implements InsertionEndsListener{
 	
 	private VehicleFleetManager fleetManager;
 	
-	RemoveEmptyVehicles(VehicleFleetManager fleetManager) {
+	public RemoveEmptyVehicles(VehicleFleetManager fleetManager) {
 		super();
 		this.fleetManager = fleetManager;
 	}

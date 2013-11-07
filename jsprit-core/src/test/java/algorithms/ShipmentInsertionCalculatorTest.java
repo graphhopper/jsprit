@@ -8,8 +8,7 @@ import org.junit.Test;
 import util.Coordinate;
 import util.Locations;
 import util.ManhattanCosts;
-import algorithms.HardConstraints.HardActivityLevelConstraint;
-import algorithms.HardConstraints.HardRouteLevelConstraint;
+import algorithms.HardActivityLevelConstraint.ConstraintsStatus;
 import basics.Shipment;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -37,8 +36,8 @@ public class ShipmentInsertionCalculatorTest {
 	HardActivityLevelConstraint hardActivityLevelConstraint = new HardActivityLevelConstraint() {
 		
 		@Override
-		public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-			return true;
+		public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			return ConstraintsStatus.FULFILLED;
 		}
 	};
 	
@@ -73,12 +72,12 @@ public class ShipmentInsertionCalculatorTest {
 		routingCosts = new ManhattanCosts(locations);
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 1).setCostPerDistance(1).build();
 		vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
-		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts, hardActivityLevelConstraint);
+		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
 	}
 
 	private void createInsertionCalculator(HardRouteLevelConstraint hardRouteLevelConstraint) {
-		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint);
+		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, hardActivityLevelConstraint);
 	}
 	
 	@Test
@@ -86,7 +85,7 @@ public class ShipmentInsertionCalculatorTest {
 		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		
-		InsertionData iData = insertionCalculator.calculate(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
+		InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(40.0,iData.getInsertionCost(),0.05);
 	}
 	
@@ -97,7 +96,7 @@ public class ShipmentInsertionCalculatorTest {
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		new Inserter(new InsertionListeners()).insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		
-		InsertionData iData = insertionCalculator.calculate(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
+		InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(0.0,iData.getInsertionCost(),0.05);
 		assertEquals(1,iData.getPickupInsertionIndex());
 		assertEquals(2,iData.getDeliveryInsertionIndex());
@@ -117,8 +116,8 @@ public class ShipmentInsertionCalculatorTest {
 			}
 			
 		});
-		InsertionData iData = insertionCalculator.calculate(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
-		assertEquals(InsertionData.noInsertionFound(),iData);
+		InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
+		assertEquals(InsertionData.createEmptyInsertionData(),iData);
 		
 	}
 	
@@ -134,7 +133,7 @@ public class ShipmentInsertionCalculatorTest {
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null),route);
 		
-		InsertionData iData = insertionCalculator.calculate(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
+		InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(0.0,iData.getInsertionCost(),0.05);
 		assertEquals(0,iData.getPickupInsertionIndex());
 		assertEquals(1,iData.getDeliveryInsertionIndex());
@@ -151,7 +150,7 @@ public class ShipmentInsertionCalculatorTest {
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null),route);
 		
-		InsertionData iData = insertionCalculator.calculate(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
+		InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(2.0,iData.getInsertionCost(),0.05);
 		assertEquals(0,iData.getPickupInsertionIndex());
 		assertEquals(1,iData.getDeliveryInsertionIndex());

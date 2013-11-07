@@ -49,7 +49,7 @@ class JobDistanceAvgCosts implements JobDistance {
 	 * <p>If the distance between two jobs cannot be calculated with input-transport costs, it tries the euclidean distance between these jobs.
 	 */ 
 	@Override
-	public double calculateDistance(Job i, Job j) {
+	public double getDistance(Job i, Job j) {
 		double avgCost = 0.0;
 		if (i instanceof Service && j instanceof Service) {
 			if (i.equals(j)) {
@@ -76,7 +76,7 @@ class JobDistanceAvgCosts implements JobDistance {
 			// now try the euclidean distance between these two services
 		}
 		EuclideanServiceDistance euclidean = new EuclideanServiceDistance();
-		distance = euclidean.calculateDistance(s_i, s_j);
+		distance = euclidean.getDistance(s_i, s_j);
 		return distance;
 	}
 

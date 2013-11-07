@@ -29,7 +29,6 @@ import org.junit.Test;
 import util.Coordinate;
 import util.ManhattanDistanceCalculator;
 import util.RouteUtils;
-import algorithms.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.VehicleRoutingProblem;
@@ -38,10 +37,12 @@ import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.DriverImpl;
+import basics.route.FiniteFleetManagerFactory;
 import basics.route.ServiceActivity;
 import basics.route.TimeWindow;
 import basics.route.TourActivities;
 import basics.route.Vehicle;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
 import basics.route.VehicleTypeImpl;
@@ -68,13 +69,13 @@ public class GendreauPostOptTest {
 	
 	Service job3;
 
-	private StateManagerImpl states;
+	private StateManager states;
 
 	private List<Vehicle> vehicles;
 
-	private VehicleFleetManagerImpl fleetManager;
+	private VehicleFleetManager fleetManager;
 	
-	private JobInsertionCalculator insertionCalc;
+	private JobInsertionCostsCalculator insertionCalc;
 
 	@Before
 	public void setUp(){
@@ -143,17 +144,20 @@ public class GendreauPostOptTest {
 		vehicles = Arrays.asList(lightVehicle1,lightVehicle2, heavyVehicle);
 		
 //		Collection<Vehicle> vehicles = Arrays.asList(lightVehicle1,lightVehicle2, heavyVehicle);
-		fleetManager = new VehicleFleetManagerImpl(vehicles);
-		states = new StateManagerImpl();
+		fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
+		states = new StateManager();
 		
 		activityCosts = new ExampleActivityCostFunction();
 		
-		ServiceInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(cost, new LocalActivityInsertionCostsCalculator(cost, activityCosts, new HardConstraints.HardTimeWindowActivityLevelConstraint(states, cost)), new HardConstraints.HardLoadConstraint(states));
+
+		ServiceInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(cost, new LocalActivityInsertionCostsCalculator(cost, activityCosts), new HardLoadConstraint(states), new HardTimeWindowActivityLevelConstraint(states, cost));
+
+
 		
-		CalculatesServiceInsertionConsideringFixCost withFixCost = new CalculatesServiceInsertionConsideringFixCost(standardServiceInsertion, states);
+		JobInsertionConsideringFixCostsCalculator withFixCost = new JobInsertionConsideringFixCostsCalculator(standardServiceInsertion, states);
 		withFixCost.setWeightOfFixCost(1.2);
 		
-		insertionCalc = new CalculatesVehTypeDepServiceInsertion(fleetManager, withFixCost);
+		insertionCalc = new VehicleTypeDependentJobInsertionCalculator(fleetManager, withFixCost);
 		
 //		updater = new TourStateUpdater(states, cost, activityCosts);
 		
@@ -182,14 +186,16 @@ public class GendreauPostOptTest {
 		routes.add(route);
 //		routes.add(new VehicleRoute(getEmptyTour(),getDriver(),getNoVehicle()));
 //		routes.add(new VehicleRoute(getEmptyTour(),getDriver(),getNoVehicle()));
-		
-		VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(routes, states.getRouteState(route, StateTypes.COSTS).toDouble() + getFixedCosts(routes));
+
+
+		VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(routes, states.getRouteState(route, StateFactory.COSTS).toDouble() + getFixedCosts(routes));
+
 		
 		assertEquals(110.0, sol.getCost(), 0.5);
 		
 		
 		RuinRadial radialRuin = new RuinRadial(vrp, 0.2, new JobDistanceAvgCosts(vrp.getTransportCosts()));
-		radialRuin.addListener(stateUpdater);
+//		radialRuin.addListener(stateUpdater);
 		
 		InsertionStrategy insertionStrategy = new BestInsertion(insertionCalc);
 		insertionStrategy.addListener(stateUpdater);
@@ -211,10 +217,12 @@ public class GendreauPostOptTest {
 		return c;
 	}
 
-	private double getCosts(VehicleRoutingProblemSolution newSolution, StateManagerImpl states) {
+	private double getCosts(VehicleRoutingProblemSolution newSolution, StateManager states) {
 		double c = 0.0;
 		for(VehicleRoute r : newSolution.getRoutes()){
-			c += states.getRouteState(r, StateTypes.COSTS).toDouble() + r.getVehicle().getType().getVehicleCostParams().fix;
+
+			c += states.getRouteState(r, StateFactory.COSTS).toDouble() + r.getVehicle().getType().getVehicleCostParams().fix;
+
 		}
 		return c;
 	}

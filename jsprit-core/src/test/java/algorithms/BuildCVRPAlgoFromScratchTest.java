@@ -24,9 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import util.Solutions;
-import algorithms.HardConstraints.HardActivityLevelConstraint;
-import algorithms.StateUpdates.UpdateCostsAtRouteLevel;
-import algorithms.StateUpdates.UpdateLoadAtRouteLevel;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.selectors.SelectBest;
 import basics.VehicleRoutingAlgorithm;
@@ -37,7 +34,9 @@ import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyManager;
 import basics.algo.SolutionCostCalculator;
 import basics.io.VrpXMLReader;
+import basics.route.InfiniteFleetManagerFactory;
 import basics.route.TourActivity;
+import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
 public class BuildCVRPAlgoFromScratchTest {
@@ -52,19 +51,21 @@ public class BuildCVRPAlgoFromScratchTest {
 		new VrpXMLReader(builder).read("src/test/resources/vrpnc1-jsprit.xml");
 		vrp = builder.build();
 		
-		final StateManagerImpl stateManager = new StateManagerImpl();
+		final StateManager stateManager = new StateManager();
 		HardActivityLevelConstraint hardActLevelConstraint = new HardActivityLevelConstraint() {
 			
 			@Override
-			public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-				return true;
+			public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+				return ConstraintsStatus.FULFILLED;
 			}
 		};
-		ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), hardActLevelConstraint);
-		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
+
+
+		ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
+		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardLoadConstraint(stateManager), hardActLevelConstraint);
 		
-		VehicleFleetManager fleetManager = new InfiniteVehicles(vrp.getVehicles());
-		JobInsertionCalculator finalServiceInsertion = new CalculatesVehTypeDepServiceInsertion(fleetManager, serviceInsertion);
+		VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
+		JobInsertionCostsCalculator finalServiceInsertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager, serviceInsertion);
 		
 		BestInsertion bestInsertion = new BestInsertion(finalServiceInsertion);
 		
@@ -74,12 +75,12 @@ public class BuildCVRPAlgoFromScratchTest {
 		SolutionCostCalculator solutionCostCalculator = new SolutionCostCalculator() {
 			
 			@Override
-			public void calculateCosts(VehicleRoutingProblemSolution solution) {
+			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, StateTypes.COSTS).toDouble();
+					costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble();
 				}
-				solution.setCost(costs);
+				return costs;
 			}
 		};
 		
@@ -111,7 +112,9 @@ public class BuildCVRPAlgoFromScratchTest {
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateCostsAtRouteLevel(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()));
 		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new UpdateLoadAtRouteLevel(stateManager));
 		
-		VehicleRoutingProblemSolution iniSolution = new CreateInitialSolution(bestInsertion, solutionCostCalculator).createInitialSolution(vrp);
+
+		VehicleRoutingProblemSolution iniSolution = new InsertionInitialSolutionFactory(bestInsertion, solutionCostCalculator).createSolution(vrp);
+
 //		System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 		vra.addInitialSolution(iniSolution);
 		

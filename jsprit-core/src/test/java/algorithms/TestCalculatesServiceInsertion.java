@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import algorithms.StateUpdates.UpdateStates;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -59,7 +58,7 @@ public class TestCalculatesServiceInsertion {
 
 	private Service third;
 
-	private StateManagerImpl states;
+	private StateManager states;
 
 	private NoDriver driver;
 	
@@ -149,11 +148,13 @@ public class TestCalculatesServiceInsertion {
 		jobs.add(second);
 		jobs.add(third);
 		
-		states = new StateManagerImpl();
+		states = new StateManager();
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 
-		serviceInsertion = new ServiceInsertionCalculator(costs, new LocalActivityInsertionCostsCalculator(costs, activityCosts, new HardConstraints.HardTimeWindowActivityLevelConstraint(states, costs)), new HardConstraints.HardLoadConstraint(states));
+
+		serviceInsertion = new ServiceInsertionCalculator(costs, new LocalActivityInsertionCostsCalculator(costs, activityCosts), new HardLoadConstraint(states), new HardTimeWindowActivityLevelConstraint(states, costs));
+
 		
 		stateUpdater = new UpdateStates(states, costs, activityCosts);
 		
@@ -172,7 +173,7 @@ public class TestCalculatesServiceInsertion {
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(0, iData.getDeliveryInsertionIndex());
 	}
@@ -185,7 +186,7 @@ public class TestCalculatesServiceInsertion {
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(0, iData.getDeliveryInsertionIndex());
 	}
@@ -200,7 +201,7 @@ public class TestCalculatesServiceInsertion {
 		
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(0.0, iData.getInsertionCost(), 0.2);
 		assertEquals(1, iData.getDeliveryInsertionIndex());
 	}
@@ -215,7 +216,7 @@ public class TestCalculatesServiceInsertion {
 		
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(1, iData.getDeliveryInsertionIndex());
 	}
@@ -229,7 +230,7 @@ public class TestCalculatesServiceInsertion {
 		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(0.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}
@@ -245,7 +246,7 @@ public class TestCalculatesServiceInsertion {
 //		route.addActivity(states.getActivity(third,true));
 		stateUpdater.update(route);
 		
-		InsertionData iData = serviceInsertion.calculate(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}

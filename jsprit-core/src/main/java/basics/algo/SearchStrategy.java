@@ -125,7 +125,8 @@ public class SearchStrategy {
 			VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(lastSolution);
 			lastSolution = newSolution;
 		}
-		solutionCostCalculator.calculateCosts(lastSolution);
+		double costs = solutionCostCalculator.getCosts(lastSolution);
+		lastSolution.setCost(costs);
 		boolean solutionAccepted = solutionAcceptor.acceptSolution(solutions, lastSolution);
 		DiscoveredSolution discoveredSolution = new DiscoveredSolution(lastSolution, solutionAccepted, getName());
 		return discoveredSolution;

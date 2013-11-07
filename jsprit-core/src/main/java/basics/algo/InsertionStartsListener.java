@@ -25,4 +25,5 @@ import basics.route.VehicleRoute;
 public interface InsertionStartsListener extends InsertionListener {
 
 	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);
+	
 }

@@ -23,19 +23,18 @@ import java.util.concurrent.ExecutorService;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.log4j.Logger;
 
-import algorithms.HardConstraints.ConstraintManager;
 import basics.VehicleRoutingProblem;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
+import basics.route.VehicleFleetManager;
 
 class InsertionFactory {
 	
 	private static Logger log = Logger.getLogger(InsertionFactory.class);
 	
 	public static InsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
-			VehicleFleetManager vehicleFleetManager, StateManagerImpl routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager){
-		boolean concurrentInsertion = false;
-		if(executorService != null) concurrentInsertion = true;
+			VehicleFleetManager vehicleFleetManager, StateManager routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager){
+
 		if(config.containsKey("[@name]")){
 			String insertionName = config.getString("[@name]");
 			if(!insertionName.equals("bestInsertion") && !insertionName.equals("regretInsertion")){
@@ -89,27 +88,14 @@ class InsertionFactory {
 				calcBuilder.experimentalTimeScheduler(Double.parseDouble(timeSliceString),Integer.parseInt(neighbors));
 			}
 			
-			JobInsertionCalculator jic = calcBuilder.build();
+			JobInsertionCostsCalculator jic = calcBuilder.build();
 
 	
 			if(insertionName.equals("bestInsertion")){		
 				insertionStrategy = new BestInsertion(jic);
 			}
-//			else if(insertionName.equals("regretInsertion")){
-//				insertionStrategy = RegretInsertion.newInstance(routeAlgorithm);
-//			}
-		
-//			insertionStrategy.addListener(new RemoveEmptyVehicles(vehicleFleetManager));
-//			insertionStrategy.addListener(new ResetAndIniFleetManager(vehicleFleetManager));
-//			insertionStrategy.addListener(new VehicleSwitched(vehicleFleetManager));
-			
-//			insertionStrategy.addListener(new UpdateLoadAtRouteLevel(routeStates));
-			
-//			insertionStrategy.addListener(new UpdateStates(routeStates, vrp.getTransportCosts(), vrp.getActivityCosts()));
 			for(InsertionListener l : insertionListeners) insertionStrategy.addListener(l);
-//			insertionStrategy.addListener(new FindCheaperVehicle(
-//					new FindCheaperVehicleAlgoNew(vehicleFleetManager, tourStateCalculator, auxCalculator)));
-			
+
 			algorithmListeners.addAll(algoListeners);
 			
 			return insertionStrategy;

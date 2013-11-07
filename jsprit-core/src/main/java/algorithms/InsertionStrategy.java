@@ -31,33 +31,7 @@ import basics.route.VehicleRoute;
  * 
  */
 
-interface InsertionStrategy {
-
-	class Insertion {
-		
-		private final VehicleRoute route;
-		
-		private final InsertionData insertionData;
-
-		public Insertion(VehicleRoute vehicleRoute, InsertionData insertionData) {
-			super();
-			this.route = vehicleRoute;
-			this.insertionData = insertionData;
-		}
-
-		public VehicleRoute getRoute() {
-			return route;
-		}
-		
-		public InsertionData getInsertionData() {
-			return insertionData;
-		}
-		
-	}
-
-	
-	
-
+public interface InsertionStrategy {
 
 	/**
 	 * Assigns the unassigned jobs to service-providers
