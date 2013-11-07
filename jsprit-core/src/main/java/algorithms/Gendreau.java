@@ -40,7 +40,7 @@ import basics.route.VehicleFleetManager;
 import basics.route.TourActivity.JobActivity;
 import basics.route.VehicleRoute;
 
-final class Gendreau implements SearchStrategyModule{
+public final class Gendreau implements SearchStrategyModule{
 
 	private final static Logger log = Logger.getLogger(Gendreau.class);
 	
