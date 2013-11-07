@@ -25,8 +25,12 @@ import basics.Delivery;
 import basics.Pickup;
 import basics.Service;
 import basics.costs.VehicleRoutingTransportCosts;
+import basics.route.DeliverService;
+import basics.route.DeliverShipment;
 import basics.route.DeliveryActivity;
 import basics.route.PickupActivity;
+import basics.route.PickupService;
+import basics.route.PickupShipment;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
@@ -222,13 +226,28 @@ class HardConstraints {
 		
 		private StateManager stateManager;
 		
+		private boolean backhaul = false;
+		
 		public HardPickupAndDeliveryActivityLevelConstraint(StateManager stateManager) {
 			super();
 			this.stateManager = stateManager;
 		}
+		
+		public HardPickupAndDeliveryActivityLevelConstraint(StateManager stateManager, boolean backhaul) {
+			super();
+			this.stateManager = stateManager;
+			this.backhaul = backhaul;
+		}
 
 		@Override
 		public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			if(!(newAct instanceof PickupService) && !(newAct instanceof DeliverService)){
+				return true;
+			}
+			if(backhaul){
+				if(newAct instanceof PickupService && nextAct instanceof DeliverService){ return false; }
+				if(newAct instanceof DeliverService && prevAct instanceof PickupService){ return false; }
+			}
 			int loadAtPrevAct;
 			int futurePicks;
 			int pastDeliveries;
@@ -242,12 +261,12 @@ class HardConstraints {
 				futurePicks = (int) stateManager.getActivityState(prevAct, StateTypes.FUTURE_PICKS).toDouble();
 				pastDeliveries = (int) stateManager.getActivityState(prevAct, StateTypes.PAST_DELIVERIES).toDouble();
 			}
-			if(newAct instanceof PickupActivity || newAct instanceof ServiceActivity){
+			if(newAct instanceof PickupService){
 				if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){
 					return false;
 				}
 			}
-			if(newAct instanceof DeliveryActivity){
+			if(newAct instanceof DeliverService){
 				if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) + pastDeliveries > iFacts.getNewVehicle().getCapacity()){
 					return false;
 				}
@@ -257,6 +276,62 @@ class HardConstraints {
 		}
 			
 	}
+
+	static class HardPickupAndDeliveryShipmentActivityLevelConstraint implements HardActivityLevelConstraint {
+		
+		private StateManager stateManager;
+		
+		private boolean backhaul = false;
+		
+		public HardPickupAndDeliveryShipmentActivityLevelConstraint(StateManager stateManager) {
+			super();
+			this.stateManager = stateManager;
+		}
+
+		public HardPickupAndDeliveryShipmentActivityLevelConstraint(StateManager stateManager, boolean backhaul) {
+			super();
+			this.stateManager = stateManager;
+			this.backhaul = backhaul;
+		}
+		
+		@Override
+		public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			if(!(newAct instanceof PickupShipment) && !(newAct instanceof DeliverShipment)){
+				return true;
+			}
+			if(backhaul){
+//				if(newAct instanceof PickupShipment && nextAct instanceof DeliverShipment){ return false; }
+				if(newAct instanceof DeliverShipment && prevAct instanceof PickupShipment){ return false; }
+			}
+			int loadAtPrevAct;
+//			int futurePicks;
+//			int pastDeliveries;
+			if(prevAct instanceof Start){
+				loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateTypes.LOAD_AT_DEPOT).toDouble();
+//				futurePicks = (int)stateManager.getRouteState(iFacts.getRoute(), StateTypes.LOAD).toDouble();
+//				pastDeliveries = 0;
+			}
+			else{
+				loadAtPrevAct = (int) stateManager.getActivityState(prevAct, StateTypes.LOAD).toDouble();
+//				futurePicks = (int) stateManager.getActivityState(prevAct, StateTypes.FUTURE_PICKS).toDouble();
+//				pastDeliveries = (int) stateManager.getActivityState(prevAct, StateTypes.PAST_DELIVERIES).toDouble();
+			}
+			if(newAct instanceof PickupShipment){
+				if(loadAtPrevAct + newAct.getCapacityDemand() > iFacts.getNewVehicle().getCapacity()){
+					return false;
+				}
+			}
+			if(newAct instanceof DeliverShipment){
+				if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) > iFacts.getNewVehicle().getCapacity()){
+					return false;
+				}
+				
+			}
+			return true;
+		}
+			
+	}
+
 	
 	static class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements HardActivityLevelConstraint {
 		
@@ -269,10 +344,10 @@ class HardConstraints {
 
 		@Override
 		public boolean fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-			if(newAct instanceof PickupActivity && nextAct instanceof DeliveryActivity){ return false; }
-			if(newAct instanceof ServiceActivity && nextAct instanceof DeliveryActivity){ return false; }
-			if(newAct instanceof DeliveryActivity && prevAct instanceof PickupActivity){ return false; }
-			if(newAct instanceof DeliveryActivity && prevAct instanceof ServiceActivity){ return false; }
+			if(newAct instanceof PickupService && nextAct instanceof DeliverService){ return false; }
+//			if(newAct instanceof ServiceActivity && nextAct instanceof DeliveryActivity){ return false; }
+			if(newAct instanceof DeliverService && prevAct instanceof PickupService){ return false; }
+//			if(newAct instanceof DeliveryActivity && prevAct instanceof ServiceActivity){ return false; }
 			int loadAtPrevAct;
 			int futurePicks;
 			int pastDeliveries;

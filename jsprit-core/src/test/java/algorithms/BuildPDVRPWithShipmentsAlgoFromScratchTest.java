@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import util.Coordinate;
 import util.Solutions;
 import algorithms.HardConstraints.HardActivityLevelConstraintManager;
 import algorithms.StateManager.StateImpl;
@@ -45,12 +44,10 @@ import basics.algo.JobInsertedListener;
 import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyManager;
 import basics.algo.SolutionCostCalculator;
+import basics.io.VrpXMLReader;
+import basics.io.VrpXMLWriter;
 import basics.route.TourActivity;
-import basics.route.Vehicle;
-import basics.route.VehicleImpl;
 import basics.route.VehicleRoute;
-import basics.route.VehicleType;
-import basics.route.VehicleTypeImpl;
 
 public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 	
@@ -64,26 +61,27 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 	public void setup(){
 		
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-			
-			VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1.0).build();
-			Vehicle v = VehicleImpl.Builder.newInstance("v").setLocationCoord(Coordinate.newInstance(-1, -1)).setType(type).build();
-			
-			Shipment s1 = Shipment.Builder.newInstance("s1", 1).setPickupCoord(Coordinate.newInstance(0, 0)).setDeliveryCoord(Coordinate.newInstance(10, 10)).build();
-			Shipment s2 = Shipment.Builder.newInstance("s2", 1).setPickupCoord(Coordinate.newInstance(1, 1)).setDeliveryCoord(Coordinate.newInstance(10, 10)).build();
-			
-			Service serv1 = Service.Builder.newInstance("serv1", 1).setCoord(Coordinate.newInstance(0, 5)).build();
-			Service serv2 = Service.Builder.newInstance("serv2", 1).setCoord(Coordinate.newInstance(5, 0)).build();
-			
-			builder.addJob(s1).addJob(s2).addJob(serv1).addJob(serv2);
-			builder.addVehicle(v);
+			new VrpXMLReader(builder).read("src/test/resources/C101_solomon_pd.xml");
+//			VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1.0).build();
+//			Vehicle v = VehicleImpl.Builder.newInstance("v").setLocationCoord(Coordinate.newInstance(-1, -1)).setType(type).build();
+//			
+//			Shipment s1 = Shipment.Builder.newInstance("s1", 1).setPickupCoord(Coordinate.newInstance(0, 0)).setDeliveryCoord(Coordinate.newInstance(10, 10)).build();
+//			Shipment s2 = Shipment.Builder.newInstance("s2", 1).setPickupCoord(Coordinate.newInstance(1, 1)).setDeliveryCoord(Coordinate.newInstance(10, 10)).build();
+//			
+//			Service serv1 = Service.Builder.newInstance("serv1", 1).setCoord(Coordinate.newInstance(0, 5)).build();
+//			Service serv2 = Service.Builder.newInstance("serv2", 1).setCoord(Coordinate.newInstance(5, 0)).build();
+//			
+//			builder.addJob(s1).addJob(s2).addJob(serv1).addJob(serv2);
+//			builder.addVehicle(v);
 			
 			vrp = builder.build();
 			
 			final StateManagerImpl stateManager = new StateManagerImpl();
 			
 			HardActivityLevelConstraintManager actLevelConstraintAccumulator = new HardActivityLevelConstraintManager();
-			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryActivityLevelConstraint(stateManager));
 			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
+			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryActivityLevelConstraint(stateManager));
+			actLevelConstraintAccumulator.addConstraint(new HardConstraints.HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager));
 			
 			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actLevelConstraintAccumulator);
 
@@ -200,8 +198,8 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 //			System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 			vra.addInitialSolution(iniSolution);
 			
-			vra.setNuOfIterations(10000);
-			vra.setPrematureBreak(1000);
+			vra.setNuOfIterations(1000);
+			vra.setPrematureBreak(100);
 			
 	}
 	
@@ -222,7 +220,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 		
 //		for()
 		
-//		new VrpXMLWriter(vrp, solutions).write("output/pd_solomon_r101.xml");
+		new VrpXMLWriter(vrp, solutions).write("src/test/resources/pd_solomon_c101_sol.xml");
 		
 	}
 
