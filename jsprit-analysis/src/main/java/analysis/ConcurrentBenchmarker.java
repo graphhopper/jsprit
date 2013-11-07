@@ -37,6 +37,7 @@ import algorithms.VehicleRoutingAlgorithms;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
+import basics.algo.VehicleRoutingAlgorithmFactory;
 import basics.algo.VehicleRoutingAlgorithmListeners.Priority;
 
 public class ConcurrentBenchmarker {
@@ -47,7 +48,7 @@ public class ConcurrentBenchmarker {
 	
 	
 	
-	private String algorithmConfig;
+	private String algorithmConfig = null;
 	
 	private List<BenchmarkInstance> benchmarkInstances = new ArrayList<BenchmarkInstance>();
 
@@ -65,6 +66,8 @@ public class ConcurrentBenchmarker {
 		}
 		
 	};
+
+	private VehicleRoutingAlgorithmFactory algorithmFactory;
 	
 	public void setCost(Cost cost){ this.cost = cost; }
 	
@@ -72,6 +75,10 @@ public class ConcurrentBenchmarker {
 		super();
 		this.algorithmConfig = algorithmConfig;
 		Logger.getRootLogger().setLevel(Level.ERROR);
+	}
+	
+	public ConcurrentBenchmarker(VehicleRoutingAlgorithmFactory algorithmFactory){
+		this.algorithmFactory = algorithmFactory;
 	}
 	
 	public void addBenchmarkWriter(BenchmarkWriter writer){
@@ -94,6 +101,12 @@ public class ConcurrentBenchmarker {
 		benchmarkInstances.add(new BenchmarkInstance(name,problem,bestKnownResult,bestKnownVehicles));
 	}
 	
+	/**
+	 * Sets nuOfRuns with same algorithm on same instance.
+	 * <p>Default is 1
+	 * 
+	 * @param runs
+	 */
 	public void setNuOfRuns(int runs){
 		this.runs = runs;
 	}
@@ -142,17 +155,27 @@ public class ConcurrentBenchmarker {
 		double[] times = new double[runs];
 		
 		for(int run=0;run<runs;run++){
-			VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(p.vrp, algorithmConfig);
+			VehicleRoutingAlgorithm vra = createAlgorithm(p);
 			StopWatch stopwatch = new StopWatch();
 			vra.getAlgorithmListeners().addListener(stopwatch,Priority.HIGH);
 			Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-			VehicleRoutingProblemSolution best = Solutions.getBest(solutions);
+			VehicleRoutingProblemSolution best = Solutions.bestOf(solutions);
 			vehicles[run] = best.getRoutes().size();
 			results[run] = cost.getCost(best);
 			times[run] = stopwatch.getCompTimeInSeconds();
 		}
 		
 		return new BenchmarkResult(p, runs, results, times, vehicles);
+	}
+
+	private VehicleRoutingAlgorithm createAlgorithm(BenchmarkInstance p) {
+		if(algorithmConfig != null){
+			return VehicleRoutingAlgorithms.readAndCreateAlgorithm(p.vrp, algorithmConfig);
+		}
+		else{
+			return algorithmFactory.createAlgorithm(p.vrp);
+		}
+		
 	}
 
 	private void print(Collection<BenchmarkResult> results) {
