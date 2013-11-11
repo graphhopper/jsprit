@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 
-import algorithms.HardActivityLevelConstraint.ConstraintsStatus;
+import algorithms.HardActivityStateLevelConstraint.ConstraintsStatus;
 import basics.Service;
 import basics.Shipment;
 import basics.route.DeliverShipment;

@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 import util.Neighborhood;
 import algorithms.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
-import algorithms.HardActivityLevelConstraint.ConstraintsStatus;
+import algorithms.HardActivityStateLevelConstraint.ConstraintsStatus;
 import basics.Job;
 import basics.Shipment;
 import basics.costs.VehicleRoutingTransportCosts;
@@ -42,9 +42,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 
 	private static final Logger logger = Logger.getLogger(ShipmentInsertionCalculator.class);
 
-	private HardRouteLevelConstraint hardRouteLevelConstraint;
+	private HardRouteStateLevelConstraint hardRouteLevelConstraint;
 	
-	private HardActivityLevelConstraint hardActivityLevelConstraint;
+	private HardActivityStateLevelConstraint hardActivityLevelConstraint;
 	
 	private Neighborhood neighborhood = new Neighborhood() {
 		
@@ -65,7 +65,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		logger.info("initialise neighborhood " + neighborhood);
 	}
 	
-	public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint, HardActivityLevelConstraint hardActivityLevelConstraint) {
+	public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteStateLevelConstraint hardRouteLevelConstraint, HardActivityStateLevelConstraint hardActivityLevelConstraint) {
 		super();
 		this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
 		this.hardRouteLevelConstraint = hardRouteLevelConstraint;

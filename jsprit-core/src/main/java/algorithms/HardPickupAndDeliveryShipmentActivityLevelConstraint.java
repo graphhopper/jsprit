@@ -2,12 +2,13 @@ package algorithms;
 
 import org.apache.log4j.Logger;
 
+import algorithms.HardActivityStateLevelConstraint.ConstraintsStatus;
 import basics.route.DeliverShipment;
 import basics.route.PickupShipment;
 import basics.route.Start;
 import basics.route.TourActivity;
 
-class HardPickupAndDeliveryShipmentActivityLevelConstraint implements HardActivityLevelConstraint {
+class HardPickupAndDeliveryShipmentActivityLevelConstraint implements HardActivityStateLevelConstraint {
 	
 	private static Logger logger = Logger.getLogger(HardPickupAndDeliveryShipmentActivityLevelConstraint.class);
 	

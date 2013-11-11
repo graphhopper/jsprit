@@ -1,18 +1,53 @@
 package algorithms;
 
+import basics.VehicleRoutingProblem;
 import basics.route.TourActivity;
 
-class ConstraintManager implements HardActivityLevelConstraint, HardRouteLevelConstraint{
+public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint{
 
 	private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
 	
 	private HardRouteLevelConstraintManager routeLevelConstraintManager = new HardRouteLevelConstraintManager();
 	
-	public void addConstraint(HardActivityLevelConstraint actLevelConstraint){
+	private VehicleRoutingProblem vrp;
+	
+	private StateManager stateManager;
+	
+	private boolean loadConstraintsSet = false;
+	
+	private boolean timeWindowConstraintsSet = false;
+	
+	public ConstraintManager(VehicleRoutingProblem vrp, StateManager stateManager) {
+		this.vrp = vrp;
+		this.stateManager = stateManager;
+	}
+	
+	public void addTimeWindowConstraint(){
+		if(!timeWindowConstraintsSet){
+			addConstraint(new TimeWindowConstraint(stateManager, vrp.getTransportCosts()));
+			stateManager.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
+			timeWindowConstraintsSet = true;
+		}
+	}
+
+	public void addLoadConstraint(){
+		if(!loadConstraintsSet){
+			addConstraint(new ServiceLoadRouteLevelConstraint(stateManager));
+			addConstraint(new ServiceLoadActivityLevelConstraint(stateManager));
+			UpdateLoads updateLoads = new UpdateLoads(stateManager);
+			stateManager.addActivityVisitor(updateLoads);
+			stateManager.addListener(updateLoads);
+			stateManager.addActivityVisitor(new UpdateFuturePickups(stateManager));
+			stateManager.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
+			loadConstraintsSet=true;
+		}
+	}
+	
+	public void addConstraint(HardActivityStateLevelConstraint actLevelConstraint){
 		actLevelConstraintManager.addConstraint(actLevelConstraint);
 	}
 	
-	public void addConstraint(HardRouteLevelConstraint routeLevelConstraint){
+	public void addConstraint(HardRouteStateLevelConstraint routeLevelConstraint){
 		routeLevelConstraintManager.addConstraint(routeLevelConstraint);
 	}
 	

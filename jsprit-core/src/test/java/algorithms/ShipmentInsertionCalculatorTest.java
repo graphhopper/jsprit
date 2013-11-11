@@ -1,7 +1,10 @@
 package algorithms;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +12,9 @@ import org.junit.Test;
 import util.Coordinate;
 import util.Locations;
 import util.ManhattanCosts;
+import algorithms.HardActivityStateLevelConstraint.ConstraintsStatus;
 import basics.Shipment;
+import basics.VehicleRoutingProblem;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
@@ -35,7 +40,7 @@ public class ShipmentInsertionCalculatorTest {
 		
 	};
 	
-	HardActivityLevelConstraint hardActivityLevelConstraint = new HardActivityLevelConstraint() {
+	HardActivityStateLevelConstraint hardActivityLevelConstraint = new HardActivityStateLevelConstraint() {
 		
 		@Override
 		public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
@@ -43,7 +48,7 @@ public class ShipmentInsertionCalculatorTest {
 		}
 	};
 	
-	HardRouteLevelConstraint hardRouteLevelConstraint = new HardRouteLevelConstraint(){
+	HardRouteStateLevelConstraint hardRouteLevelConstraint = new HardRouteStateLevelConstraint(){
 
 		@Override
 		public boolean fulfilled(InsertionContext insertionContext) {
@@ -78,7 +83,7 @@ public class ShipmentInsertionCalculatorTest {
 		createInsertionCalculator(hardRouteLevelConstraint);
 	}
 
-	private void createInsertionCalculator(HardRouteLevelConstraint hardRouteLevelConstraint) {
+	private void createInsertionCalculator(HardRouteStateLevelConstraint hardRouteLevelConstraint) {
 		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, hardActivityLevelConstraint);
 	}
 	
@@ -110,7 +115,7 @@ public class ShipmentInsertionCalculatorTest {
 		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		new Inserter(new InsertionListeners()).insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
-		createInsertionCalculator(new HardRouteLevelConstraint() {
+		createInsertionCalculator(new HardRouteStateLevelConstraint() {
 			
 			@Override
 			public boolean fulfilled(InsertionContext insertionContext) {
@@ -177,10 +182,12 @@ public class ShipmentInsertionCalculatorTest {
 		StateManager stateManager = new StateManager();
 		
 		RouteActivityVisitor routeActVisitor = new RouteActivityVisitor();
-		routeActVisitor.addActivityVisitor(new UpdateLoadAtActivityLevel(stateManager));
+		routeActVisitor.addActivityVisitor(new UpdateLoads(stateManager));
 		routeActVisitor.visit(route);
 		
-		ConstraintManager constraintManager = new ConstraintManager();
+		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+		
+		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 		
 		constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager,true));
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, 

@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 
-class HardRouteLevelConstraintManager implements HardRouteLevelConstraint {
+class HardRouteLevelConstraintManager implements HardRouteStateLevelConstraint {
 
-	private Collection<HardRouteLevelConstraint> hardConstraints = new ArrayList<HardRouteLevelConstraint>();
+	private Collection<HardRouteStateLevelConstraint> hardConstraints = new ArrayList<HardRouteStateLevelConstraint>();
 	
-	public void addConstraint(HardRouteLevelConstraint constraint){
+	public void addConstraint(HardRouteStateLevelConstraint constraint){
 		hardConstraints.add(constraint);
 	}
 
 	@Override
 	public boolean fulfilled(InsertionContext insertionContext) {
-		for(HardRouteLevelConstraint constraint : hardConstraints){
+		for(HardRouteStateLevelConstraint constraint : hardConstraints){
 			if(!constraint.fulfilled(insertionContext)){
 				return false;
 			}

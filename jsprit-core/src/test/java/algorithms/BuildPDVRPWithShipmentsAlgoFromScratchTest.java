@@ -77,11 +77,11 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			
 			final StateManager stateManager = new StateManager();
 			
-			ConstraintManager constraintManager = new ConstraintManager();
-			constraintManager.addConstraint(new HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
-			constraintManager.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
+			ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+			constraintManager.addTimeWindowConstraint();
+			constraintManager.addLoadConstraint();
 			constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager,true));
-			constraintManager.addConstraint(new HardPickupAndDeliveryLoadRouteLevelConstraint(stateManager));
+			
 			
 			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
 
@@ -135,15 +135,14 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			final RouteActivityVisitor iterateForward = new RouteActivityVisitor();
 			
 			iterateForward.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
-			iterateForward.addActivityVisitor(new UpdateEarliestStartTimeWindowAtActLocations(stateManager, vrp.getTransportCosts()));
-			iterateForward.addActivityVisitor(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+			iterateForward.addActivityVisitor(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 			
-			iterateForward.addActivityVisitor(new UpdateOccuredDeliveriesAtActivityLevel(stateManager));
-			iterateForward.addActivityVisitor(new UpdateLoadAtActivityLevel(stateManager));
+			iterateForward.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
+			iterateForward.addActivityVisitor(new UpdateLoads(stateManager));
 			
 			final ReverseRouteActivityVisitor iterateBackward = new ReverseRouteActivityVisitor();
-			iterateBackward.addActivityVisitor(new UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
-			iterateBackward.addActivityVisitor(new UpdateFuturePickupsAtActivityLevel(stateManager));
+			iterateBackward.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
+			iterateBackward.addActivityVisitor(new UpdateFuturePickups(stateManager));
 			
 			JobInsertedListener updateWhenJobHasBeenInserted = new JobInsertedListener() {
 				
@@ -169,8 +168,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			
 			vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
 			
-			bestInsertion.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
-			bestInsertion.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
+			bestInsertion.addListener(new UpdateLoads(stateManager));
 			bestInsertion.addListener(updateWhenJobHasBeenInserted);
 			bestInsertion.addListener(updateRoutesWhenInsertionStarts);
 			

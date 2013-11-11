@@ -52,7 +52,7 @@ public class BuildCVRPAlgoFromScratchTest {
 		vrp = builder.build();
 		
 		final StateManager stateManager = new StateManager();
-		HardActivityLevelConstraint hardActLevelConstraint = new HardActivityLevelConstraint() {
+		HardActivityStateLevelConstraint hardActLevelConstraint = new HardActivityStateLevelConstraint() {
 			
 			@Override
 			public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
@@ -62,7 +62,10 @@ public class BuildCVRPAlgoFromScratchTest {
 
 
 		ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
-		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new HardLoadConstraint(stateManager), hardActLevelConstraint);
+
+		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new LoadConstraint(stateManager), hardActLevelConstraint);
+
+
 		
 		VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 		JobInsertionCostsCalculator finalServiceInsertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager, serviceInsertion);

@@ -24,9 +24,9 @@ import basics.route.VehicleRoute;
  * @param transportCost
  * @param states
  */
-class UpdateCostsAtAllLevels implements ActivityVisitor,StateUpdater{
+class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 
-	private static Logger log = Logger.getLogger(UpdateCostsAtAllLevels.class);
+	private static Logger log = Logger.getLogger(UpdateVariableCosts.class);
 	
 	private VehicleRoutingActivityCosts activityCost;
 
@@ -55,7 +55,7 @@ class UpdateCostsAtAllLevels implements ActivityVisitor,StateUpdater{
 	 * @param transportCost
 	 * @param states
 	 */
-	public UpdateCostsAtAllLevels(VehicleRoutingActivityCosts activityCost, VehicleRoutingTransportCosts transportCost, StateManager states) {
+	public UpdateVariableCosts(VehicleRoutingActivityCosts activityCost, VehicleRoutingTransportCosts transportCost, StateManager states) {
 		super();
 		this.activityCost = activityCost;
 		this.transportCost = transportCost;
@@ -115,12 +115,6 @@ class UpdateCostsAtAllLevels implements ActivityVisitor,StateUpdater{
 		prevAct = null;
 		vehicleRoute = null;
 		totalOperationCost = 0.0;
-	}
-
-	private double getFixCosts(Vehicle vehicle) {
-		if(vehicle == null) return 0.0;
-		if(vehicle.getType() == null) return 0.0;
-		return vehicle.getType().getVehicleCostParams().fix;
 	}
 
 }
