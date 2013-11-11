@@ -8,7 +8,7 @@ import basics.route.PickupShipment;
 import basics.route.Start;
 import basics.route.TourActivity;
 
-class HardPickupAndDeliveryShipmentActivityLevelConstraint implements HardActivityStateLevelConstraint {
+public class HardPickupAndDeliveryShipmentActivityLevelConstraint implements HardActivityStateLevelConstraint {
 	
 	private static Logger logger = Logger.getLogger(HardPickupAndDeliveryShipmentActivityLevelConstraint.class);
 	

@@ -123,13 +123,13 @@ final class BestInsertionConc implements InsertionStrategy{
 		insertionsListeners.informInsertionStarts(vehicleRoutes,unassignedJobs);
 		List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
 		Collections.shuffle(unassignedJobList, random);
+		
+		List<Batch> batches = distributeRoutes(vehicleRoutes,nuOfBatches);
+		
 		for(final Job unassignedJob : unassignedJobList){			
-			
 			
 			Insertion bestInsertion = null;
 			double bestInsertionCost = Double.MAX_VALUE;
-			
-			List<Batch> batches = distributeRoutes(vehicleRoutes,nuOfBatches);
 			
 			for(final Batch batch : batches){
 				completionService.submit(new Callable<Insertion>() {
@@ -163,7 +163,6 @@ final class BestInsertionConc implements InsertionStrategy{
 				System.exit(1);
 			}
 			
-			
 			if(!minVehiclesFirst){
 				VehicleRoute newRoute = VehicleRoute.emptyRoute();
 				InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
@@ -171,8 +170,10 @@ final class BestInsertionConc implements InsertionStrategy{
 					bestInsertion = new Insertion(newRoute,newIData);
 					bestInsertionCost = newIData.getInsertionCost();
 					vehicleRoutes.add(newRoute);
+					batches.get(0).routes.add(newRoute);
 				}
-			}			
+			}	
+			
 			if(bestInsertion == null){
 				VehicleRoute newRoute = VehicleRoute.emptyRoute();
 				InsertionData bestI = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);

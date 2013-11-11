@@ -753,15 +753,15 @@ public class VehicleRoutingAlgorithms {
 			}
 			else if(ruin_name.equals("radialRuin")){
 				String ruin_distance = moduleConfig.getString("ruin.distance");
-				JobDistance jobDistance;
-				if(ruin_distance == null) jobDistance = new JobDistanceAvgCosts(vrp.getTransportCosts());
-				else {
-					if(ruin_distance.equals("euclidean")){
-						jobDistance = new EuclideanServiceDistance();
-					}
-					else throw new IllegalStateException("does not know ruin.distance " + ruin_distance + ". either ommit ruin.distance then the "
-							+ "default is used or use 'euclidean'");
-				}
+				JobDistance jobDistance = new AvgJobDistance(vrp.getTransportCosts());
+//				if(ruin_distance == null) jobDistance 
+//				else {
+//					if(ruin_distance.equals("euclidean")){
+//						jobDistance = new EuclideanServiceDistance();
+//					}
+//					else throw new IllegalStateException("does not know ruin.distance " + ruin_distance + ". either ommit ruin.distance then the "
+//							+ "default is used or use 'euclidean'");
+//				}
 				ruin = getRadialRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin, jobDistance);
 			}
 			else throw new IllegalStateException("ruin[@name] " + ruin_name + " is not known. Use either randomRuin or radialRuin.");
@@ -796,7 +796,7 @@ public class VehicleRoutingAlgorithms {
 			RuinStrategyKey stratKey = new RuinStrategyKey(ruinKey);
 			RuinStrategy ruin = definedClasses.get(stratKey);
 			if(ruin == null){
-				ruin = new RuinRadial(vrp, 0.3, new JobDistanceAvgCosts(vrp.getTransportCosts()));
+				ruin = new RuinRadial(vrp, 0.3, new AvgJobDistance(vrp.getTransportCosts()));
 				definedClasses.put(stratKey, ruin);
 			}
 			

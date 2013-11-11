@@ -2,6 +2,7 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import basics.VehicleRoutingProblem;
 import basics.algo.InsertionListener;
@@ -29,6 +30,10 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 	private int forwaredLooking;
 
 	private int memory;
+
+	private ExecutorService executor;
+
+	private int nuOfThreads;
 	
 	public BestInsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager) {
 		super();
@@ -57,9 +62,16 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		return this;
 	}
 	
-	public void setActivityInsertionCostCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
+	public BestInsertionBuilder setActivityInsertionCostCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
 		this.actInsertionCostsCalculator = activityInsertionCostsCalculator;
+		return this;
 	};
+	
+	public BestInsertionBuilder setConcurrentMode(ExecutorService executor, int nuOfThreads){
+		this.executor = executor;
+		this.nuOfThreads = nuOfThreads;
+		return this;
+	}
 	
 	@Override
 	public InsertionStrategy build() {
@@ -81,8 +93,15 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 			calcBuilder.considerFixedCosts(weightOfFixedCosts);
 		}
 		JobInsertionCostsCalculator jobInsertions = calcBuilder.build();
-		BestInsertion bestInsertion = new BestInsertion(jobInsertions);
-		for(InsertionListener l : iListeners) bestInsertion.addListener(l); 
+		InsertionStrategy bestInsertion;
+		if(executor == null){
+			bestInsertion = new BestInsertion(jobInsertions);
+			
+		}
+		else{
+			bestInsertion = new BestInsertionConc(jobInsertions,executor,nuOfThreads);
+		}
+		for(InsertionListener l : iListeners) bestInsertion.addListener(l);
 		return bestInsertion;
 	}
 
