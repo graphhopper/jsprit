@@ -6,21 +6,26 @@ import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
 
-class HardPickupAndDeliveryBackhaulActivityLevelConstraint implements HardActivityLevelConstraint {
+/**
+ * Ensures load constraint for inserting ServiceActivity.
+ * 
+ * <p>When using this, you need to use<br>
+ * 
+ * 
+ * @author schroeder
+ *
+ */
+class ServiceLoadActivityLevelConstraint implements HardActivityStateLevelConstraint {
 	
 	private StateGetter stateManager;
 	
-	public HardPickupAndDeliveryBackhaulActivityLevelConstraint(StateGetter stateManager) {
+	public ServiceLoadActivityLevelConstraint(StateGetter stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}
 
 	@Override
 	public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-		if(newAct instanceof PickupActivity && nextAct instanceof DeliveryActivity){ return ConstraintsStatus.NOT_FULFILLED; }
-		if(newAct instanceof ServiceActivity && nextAct instanceof DeliveryActivity){ return ConstraintsStatus.NOT_FULFILLED; }
-		if(newAct instanceof DeliveryActivity && prevAct instanceof PickupActivity){ return ConstraintsStatus.NOT_FULFILLED; }
-		if(newAct instanceof DeliveryActivity && prevAct instanceof ServiceActivity){ return ConstraintsStatus.NOT_FULFILLED; }
 		int loadAtPrevAct;
 		int futurePicks;
 		int pastDeliveries;

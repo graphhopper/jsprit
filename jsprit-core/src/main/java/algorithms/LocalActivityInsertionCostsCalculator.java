@@ -34,7 +34,7 @@ import basics.route.TourActivity;
  * @author stefan
  *
  */
-class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCalculator{
+public class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCalculator{
 
 	private VehicleRoutingTransportCosts routingCosts;
 	private VehicleRoutingActivityCosts activityCosts;

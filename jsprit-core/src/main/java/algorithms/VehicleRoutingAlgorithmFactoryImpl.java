@@ -1,44 +1,36 @@
 package algorithms;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.algo.SearchStrategyManager;
-import basics.algo.VehicleRoutingAlgorithmListener;
+import basics.algo.VehicleRoutingAlgorithmFactory;
 import basics.route.VehicleFleetManager;
 
-public class VehicleRoutingAlgorithmBuilder {
+public class VehicleRoutingAlgorithmFactoryImpl implements VehicleRoutingAlgorithmFactory{
 
-	private VehicleRoutingProblem vrp;
-	
 	private SearchStrategyManager searchStrategyManager;
 	
 	private StateManager stateManager;
-	
-	private Collection<VehicleRoutingAlgorithmListener> listeners = new ArrayList<VehicleRoutingAlgorithmListener>();
 
 	private VehicleFleetManager fleetManager;
 	
-	public VehicleRoutingAlgorithmBuilder(VehicleRoutingProblem vrp, SearchStrategyManager searchStrategyManager, StateManager stateManager, VehicleFleetManager vehicleFleetManager) {
+	public VehicleRoutingAlgorithmFactoryImpl(SearchStrategyManager searchStrategyManager,
+			StateManager stateManager, VehicleFleetManager fleetManager) {
 		super();
-		this.vrp = vrp;
 		this.searchStrategyManager = searchStrategyManager;
 		this.stateManager = stateManager;
-		this.fleetManager = vehicleFleetManager;
+		this.fleetManager = fleetManager;
 	}
-	
-	public void addListener(VehicleRoutingAlgorithmListener listener){
-		listeners.add(listener);
-	}
-	
-	public VehicleRoutingAlgorithm build(){
+
+	@Override
+	public VehicleRoutingAlgorithm createAlgorithm(VehicleRoutingProblem vrp) {
+		this.stateManager.addActivityVisitor(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), this.stateManager));
+		this.stateManager.addActivityVisitor(new UpdateMaxLoad(this.stateManager));
 		VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(vrp, searchStrategyManager);
 		algorithm.getAlgorithmListeners().addListener(stateManager);
 		algorithm.getSearchStrategyManager().addSearchStrategyModuleListener(stateManager);
 		algorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
 		return algorithm;
 	}
-	
+
 }

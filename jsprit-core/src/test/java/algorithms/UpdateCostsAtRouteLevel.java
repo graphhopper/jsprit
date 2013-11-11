@@ -38,7 +38,7 @@ class UpdateCostsAtRouteLevel implements StateUpdater,JobInsertedListener, Inser
 		@Override
 		public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
 			RouteActivityVisitor forwardInTime = new RouteActivityVisitor();
-			forwardInTime.addActivityVisitor(new UpdateCostsAtAllLevels(actCosts, tpCosts, states));
+			forwardInTime.addActivityVisitor(new UpdateVariableCosts(actCosts, tpCosts, states));
 			for(VehicleRoute route : vehicleRoutes){
 				forwardInTime.visit(route);
 			}

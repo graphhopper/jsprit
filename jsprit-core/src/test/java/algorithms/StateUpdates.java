@@ -43,13 +43,13 @@ class UpdateStates implements JobInsertedListener, InsertionStartsListener{
 		public UpdateStates(StateManager states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
 			routeActivityVisitor = new RouteActivityVisitor();
 			routeActivityVisitor.addActivityVisitor(new UpdateActivityTimes(routingCosts));
-			routeActivityVisitor.addActivityVisitor(new UpdateCostsAtAllLevels(activityCosts, routingCosts, states));
-			routeActivityVisitor.addActivityVisitor(new UpdateLoadAtAllLevels(states));
+			routeActivityVisitor.addActivityVisitor(new UpdateVariableCosts(activityCosts, routingCosts, states));
+			routeActivityVisitor.addActivityVisitor(new UpdateLoads(states));
 			routeActivityVisitor.addActivityVisitor(new UpdateMaxLoad(states));
 			revRouteActivityVisitor = new ReverseRouteActivityVisitor();
-			revRouteActivityVisitor.addActivityVisitor(new UpdateLatestOperationStartTimeAtActLocations(states, routingCosts));
-			insertionListeners.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(states));
-			insertionListeners.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(states));
+			revRouteActivityVisitor.addActivityVisitor(new TimeWindowUpdater(states, routingCosts));
+			insertionListeners.addListener(new UpdateLoads(states));
+//			insertionListeners.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(states));
 		}
 		
 		public void update(VehicleRoute route){

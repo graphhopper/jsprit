@@ -22,7 +22,7 @@ import basics.route.Vehicle;
 
 
 /**
- * Function that basically does not allow soft time-windows. Actually, it is allowed but it is penalized with Double.MaxValue(). 
+ * DefaultActivityCosts = 0.0, i.e. activities do not induce costs at all. 
  * 
  * @author schroeder
  *
@@ -31,15 +31,12 @@ public class DefaultVehicleRoutingActivityCosts implements VehicleRoutingActivit
 
 	@Override
 	public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
-		if(arrivalTime > tourAct.getTheoreticalLatestOperationStartTime()){
-			return Double.MAX_VALUE;
-		}
 		return 0;
 	}
 	
 	@Override
 	public String toString() {
-		return "[name=hardTimeWindowActCosts]";
+		return "[name=defaultActivityCosts]";
 	}
 
 }

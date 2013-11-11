@@ -10,15 +10,15 @@ import basics.route.TourActivity;
 	 * @author stefan
 	 *
 	 */
-	class HardTimeWindowActivityLevelConstraint implements HardActivityLevelConstraint {
+	class TimeWindowConstraint implements HardActivityStateLevelConstraint {
 
-		private static Logger log = Logger.getLogger(HardTimeWindowActivityLevelConstraint.class);
+		private static Logger log = Logger.getLogger(TimeWindowConstraint.class);
 		
 		private StateGetter states;
 		
 		private VehicleRoutingTransportCosts routingCosts;
 		
-		public HardTimeWindowActivityLevelConstraint(StateGetter states, VehicleRoutingTransportCosts routingCosts) {
+		public TimeWindowConstraint(StateGetter states, VehicleRoutingTransportCosts routingCosts) {
 			super();
 			this.states = states;
 			this.routingCosts = routingCosts;

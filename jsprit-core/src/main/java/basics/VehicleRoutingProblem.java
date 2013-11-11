@@ -260,9 +260,11 @@ public class VehicleRoutingProblem {
 		/**
 		 * Adds a vehicleType.
 		 * 
+		 * @deprecated use add vehicle instead
 		 * @param type
 		 * @return builder
 		 */
+		@Deprecated
 		public Builder addVehicleType(VehicleType type){
 			vehicleTypes.add(type);
 			return this;

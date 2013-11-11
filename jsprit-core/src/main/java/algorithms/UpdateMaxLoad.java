@@ -29,14 +29,12 @@ class UpdateMaxLoad implements ActivityVisitor, StateUpdater {
 	 *
 	 * <p>Thus it DEPENDS on StateTypes.LOAD_AT_DEPOT
 	 * 
-	 * <p>If you want to update StateTypes.LOAD_AT_DEPOT see {@link UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts}, {@link UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted}
+	 * 
 	 * 
 	 * <p>The loads can be retrieved by <br>
 	 * <code>stateManager.getActivityState(activity,StateTypes.LOAD);</code>
 	 * 
 	 * 
-	 * 
-	 * @see {@link UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts}, {@link UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted}
 	 * @author stefan
 	 *
 	 */

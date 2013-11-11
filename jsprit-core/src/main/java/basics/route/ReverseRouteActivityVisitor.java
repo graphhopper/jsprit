@@ -59,6 +59,8 @@ public class ReverseRouteActivityVisitor implements RouteVisitor{
 	}
 
 	public void addActivityVisitor(ReverseActivityVisitor activityVisitor){
-		visitors.add(activityVisitor);
+		if(!visitors.contains(activityVisitor)){
+			visitors.add(activityVisitor);
+		}
 	}
 }
