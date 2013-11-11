@@ -113,6 +113,10 @@ public class VehicleTypeImpl implements VehicleType {
 	
 	private double maxVelocity;
 
+	/**
+	 * @deprecated use builder instead
+	 */
+	@Deprecated
 	public static VehicleTypeImpl newInstance(String typeId, int capacity, VehicleTypeImpl.VehicleCostParams para){
 		return new VehicleTypeImpl(typeId, capacity, para);
 	}

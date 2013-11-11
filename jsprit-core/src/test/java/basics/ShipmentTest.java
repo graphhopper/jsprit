@@ -34,7 +34,7 @@ public class ShipmentTest {
 	public void whenShipmentIsInstantiatedWithASizeOf10_theSizeShouldBe10(){
 		Shipment one = Shipment.Builder.newInstance("s", 10).setPickupLocation("foo").
 				setDeliveryLocation("foofoo").setPickupServiceTime(10).setDeliveryServiceTime(20).build();
-		assertEquals(10,one.getSize());
+		assertEquals(10,one.getCapacityDemand());
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class ShipmentTest {
 				.setDeliveryLocation("foofoo").setDeliveryServiceTime(20).setDeliveryCoord(Coordinate.newInstance(1, 1)).
 				setDeliveryTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
 		assertEquals("s",one.getId());
-		assertEquals(10,one.getSize());
+		assertEquals(10,one.getCapacityDemand());
 		assertEquals("foo",one.getPickupLocation());
 		assertEquals(0,one.getPickupCoord().getX(),0.01);
 		assertEquals(1.0,one.getPickupServiceTime(),0.01);

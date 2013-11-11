@@ -1,6 +1,5 @@
 package algorithms;
 
-import algorithms.StateManager.StateImpl;
 import basics.Delivery;
 import basics.Job;
 import basics.Pickup;

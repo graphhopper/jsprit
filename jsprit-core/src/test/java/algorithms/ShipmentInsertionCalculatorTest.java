@@ -1,5 +1,6 @@
 package algorithms;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
@@ -8,11 +9,12 @@ import org.junit.Test;
 import util.Coordinate;
 import util.Locations;
 import util.ManhattanCosts;
-import algorithms.HardActivityLevelConstraint.ConstraintsStatus;
 import basics.Shipment;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
+import basics.route.DriverImpl;
+import basics.route.RouteActivityVisitor;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;
@@ -70,7 +72,7 @@ public class ShipmentInsertionCalculatorTest {
 			
 		};
 		routingCosts = new ManhattanCosts(locations);
-		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 1).setCostPerDistance(1).build();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1).build();
 		vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
@@ -154,6 +156,40 @@ public class ShipmentInsertionCalculatorTest {
 		assertEquals(2.0,iData.getInsertionCost(),0.05);
 		assertEquals(0,iData.getPickupInsertionIndex());
 		assertEquals(1,iData.getDeliveryInsertionIndex());
+	}
+	
+	@Test
+	public void whenInstertingShipmentWithLoadConstraintWhereCapIsNotSufficient_capConstraintsAreFulfilled(){
+		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
+		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
+		Shipment shipment3 = Shipment.Builder.newInstance("s3", 1).setPickupLocation("0,0").setDeliveryLocation("9,9").build();
+		
+		
+		
+		VehicleRoute route = VehicleRoute.emptyRoute();
+		route.setVehicle(vehicle, 0.0);
+		
+		Inserter inserter = new Inserter(new InsertionListeners());
+		
+		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
+		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
+		
+		StateManager stateManager = new StateManager();
+		
+		RouteActivityVisitor routeActVisitor = new RouteActivityVisitor();
+		routeActVisitor.addActivityVisitor(new UpdateLoadAtActivityLevel(stateManager));
+		routeActVisitor.visit(route);
+		
+		ConstraintManager constraintManager = new ConstraintManager();
+		
+		constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager,true));
+		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, 
+				hardRouteLevelConstraint, constraintManager);
+		
+		
+		InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
+		assertTrue(iData instanceof InsertionData.NoInsertionFound);
+		
 	}
 	
 }

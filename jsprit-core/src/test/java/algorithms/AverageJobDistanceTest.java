@@ -1,9 +1,7 @@
 package algorithms;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-
-import java.awt.image.CropImageFilter;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +9,6 @@ import org.junit.Test;
 import util.Coordinate;
 import util.CrowFlyCosts;
 import util.Locations;
-import util.ManhattanCosts;
 import basics.Service;
 import basics.Shipment;
 

@@ -1,6 +1,7 @@
 package algorithms;
 
-import algorithms.StateManager.StateImpl;
+import org.apache.log4j.Logger;
+
 import basics.route.ActivityVisitor;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
@@ -17,6 +18,9 @@ import basics.route.VehicleRoute;
  *
  */
 class UpdateLoadAtActivityLevel implements ActivityVisitor, StateUpdater {
+	
+	private static Logger logger = Logger.getLogger(UpdateLoadAtActivityLevel.class);
+	
 	private StateManager stateManager;
 	private int currentLoad = 0;
 	private VehicleRoute route;
@@ -48,6 +52,7 @@ class UpdateLoadAtActivityLevel implements ActivityVisitor, StateUpdater {
 	@Override
 	public void begin(VehicleRoute route) {
 		currentLoad = (int) stateManager.getRouteState(route, StateFactory.LOAD_AT_BEGINNING).toDouble();
+//		logger.info(route + " load@beginning=" + currentLoad);
 		this.route = route;
 	}
 
@@ -55,12 +60,14 @@ class UpdateLoadAtActivityLevel implements ActivityVisitor, StateUpdater {
 	public void visit(TourActivity act) {
 		currentLoad += act.getCapacityDemand();
 		stateManager.putActivityState(act, StateFactory.LOAD, StateFactory.createState(currentLoad));
+//		logger.info(act + " load@act=" + currentLoad + " vehcap=" + route.getVehicle().getCapacity());
 		assert currentLoad <= route.getVehicle().getCapacity() : "currentLoad at activity must not be > vehicleCapacity";
 		assert currentLoad >= 0 : "currentLoad at act must not be < 0";
 	}
 
 	@Override
 	public void finish() {
+//		logger.info("end of " + route);
 //		stateManager.putRouteState(route, StateFactory., state)
 		currentLoad = 0;
 	}

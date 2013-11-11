@@ -27,7 +27,7 @@ public final class DeliverShipment implements DeliveryActivity{
 
 	@Override
 	public int getCapacityDemand() {
-		return shipment.getSize()*-1;
+		return shipment.getCapacityDemand()*-1;
 	}
 
 	@Override

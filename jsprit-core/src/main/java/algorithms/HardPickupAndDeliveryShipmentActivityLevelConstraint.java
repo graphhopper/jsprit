@@ -1,11 +1,15 @@
 package algorithms;
 
+import org.apache.log4j.Logger;
+
 import basics.route.DeliverShipment;
 import basics.route.PickupShipment;
 import basics.route.Start;
 import basics.route.TourActivity;
 
 class HardPickupAndDeliveryShipmentActivityLevelConstraint implements HardActivityLevelConstraint {
+	
+	private static Logger logger = Logger.getLogger(HardPickupAndDeliveryShipmentActivityLevelConstraint.class);
 	
 	private StateManager stateManager;
 	
@@ -24,16 +28,22 @@ class HardPickupAndDeliveryShipmentActivityLevelConstraint implements HardActivi
 	
 	@Override
 	public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+//		logger.info(prevAct + " - " + newAct + " - " + nextAct);
 		if(!(newAct instanceof PickupShipment) && !(newAct instanceof DeliverShipment)){
 			return ConstraintsStatus.FULFILLED;
 		}
 		if(backhaul){
-//			if(newAct instanceof PickupShipment && nextAct instanceof DeliverShipment){ return false; }
-			if(newAct instanceof DeliverShipment && prevAct instanceof PickupShipment){ return ConstraintsStatus.NOT_FULFILLED; }
+			if(newAct instanceof PickupShipment && prevAct instanceof DeliverShipment){ 
+//				logger.info("NOT_FULFILLED_BREAK");
+				return ConstraintsStatus.NOT_FULFILLED_BREAK; }
+			if(newAct instanceof DeliverShipment && nextAct instanceof PickupShipment){ 
+//				logger.info("NOT_FULFILLED");
+				return ConstraintsStatus.NOT_FULFILLED; }
 		}
 		int loadAtPrevAct;
 //		int futurePicks;
 //		int pastDeliveries;
+		
 		if(prevAct instanceof Start){
 			loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING).toDouble();
 //			futurePicks = (int)stateManager.getRouteState(iFacts.getRoute(), StateTypes.LOAD).toDouble();
@@ -46,15 +56,18 @@ class HardPickupAndDeliveryShipmentActivityLevelConstraint implements HardActivi
 		}
 		if(newAct instanceof PickupShipment){
 			if(loadAtPrevAct + newAct.getCapacityDemand() > iFacts.getNewVehicle().getCapacity()){
+//				logger.info("NOT_FULFILLED");
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
 		}
 		if(newAct instanceof DeliverShipment){
 			if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) > iFacts.getNewVehicle().getCapacity()){
+//				logger.info("NOT_FULFILLED_BREAK");
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
 			
 		}
+//		logger.info("FULFILLED");
 		return ConstraintsStatus.FULFILLED;
 	}
 	

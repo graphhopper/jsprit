@@ -19,6 +19,8 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
+import basics.Service;
+import basics.Shipment;
 import basics.VehicleRoutingProblem;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
@@ -221,11 +223,7 @@ class CalculatorBuilder {
 	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, StateGetter statesManager){
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
  		
-//<<<<<<< HEAD
-//		ActivityInsertionCostsCalculator defaultCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), constraintManager);
-//		JobInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), defaultCalc, constraintManager);
-//		
-//=======
+
 		ActivityInsertionCostsCalculator actInsertionCalc;
 		if(activityInsertionCostCalculator == null){
 			actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
@@ -234,10 +232,16 @@ class CalculatorBuilder {
 			actInsertionCalc = activityInsertionCostCalculator;
 		}
 
-		JobInsertionCostsCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
-//>>>>>>> refs/remotes/choose_remote_name/relaxAPI
-		((ServiceInsertionCalculator) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
-		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(standardServiceInsertion);
+		ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
+		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
+		
+		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
+		switcher.put(Shipment.class, shipmentInsertion);
+		switcher.put(Service.class, serviceInsertion);
+		
+//		JobInsertionCostsCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
+//		((ServiceInsertionCalculator) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
+		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(switcher);
 		
 		return calcPlusListeners;
 	}

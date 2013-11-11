@@ -34,7 +34,7 @@ import basics.costs.VehicleRoutingTransportCosts;
  * @author stefan schroeder
  *
  */
-class AvgJobDistance implements JobDistance {
+public class AvgJobDistance implements JobDistance {
 
 	private static Logger log = Logger.getLogger(AvgJobDistance.class);
 	

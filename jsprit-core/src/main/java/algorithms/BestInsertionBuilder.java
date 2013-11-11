@@ -53,9 +53,11 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		constraintManager.addConstraint(new HardPickupAndDeliveryLoadRouteLevelConstraint(stateManager));
 		if(vrp.getProblemConstraints().contains(Constraint.DELIVERIES_FIRST)){
 			constraintManager.addConstraint(new HardPickupAndDeliveryBackhaulActivityLevelConstraint(stateManager));
+			constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager,true));
 		}
 		else{
 			constraintManager.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
+			constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager,true));
 		}
 		stateManager.addActivityVisitor(new UpdateOccuredDeliveriesAtActivityLevel(stateManager));
 		stateManager.addActivityVisitor(new UpdateFuturePickupsAtActivityLevel(stateManager));

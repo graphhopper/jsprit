@@ -133,10 +133,6 @@ public class Shipment implements Job{
 		return demand;
 	}
 
-	public int getSize() {
-		return demand;
-	}
-
 	public String getPickupLocation() {
 		return pickupLocation;
 	}

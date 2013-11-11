@@ -16,6 +16,8 @@
  ******************************************************************************/
 package algorithms;
 
+import org.apache.log4j.Logger;
+
 import algorithms.InsertionData.NoInsertionFound;
 import basics.Job;
 import basics.Service;
@@ -72,7 +74,7 @@ class Inserter {
 	}
 	
 	class ShipmentInsertionHandler implements JobInsertionHandler {
-
+		
 		private TourShipmentActivityFactory activityFactory = new DefaultShipmentActivityFactory();
 		
 		private JobInsertionHandler delegator = new JobExceptionHandler();
