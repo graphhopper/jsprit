@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblem.Constraint;
 import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.route.VehicleFleetManager;
@@ -35,55 +34,15 @@ public class BestInsertionBuilder {
 		super();
 		this.vrp = vrp;
 		this.stateManager = stateManager;
-		this.constraintManager = new ConstraintManager();
+		this.constraintManager = new ConstraintManager(vrp,stateManager);
 		this.fleetManager = vehicleFleetManager;
-		addCoreStateUpdaters();
 	}
-	
-	private void addCoreStateUpdaters(){
-		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
-		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
 		
-		stateManager.addActivityVisitor(new UpdateMaxLoad(stateManager));
-		stateManager.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
-		stateManager.addActivityVisitor(new UpdateCostsAtAllLevels(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
-	}
-	
-	public BestInsertionBuilder addHardLoadConstraints(){
-		constraintManager.addConstraint(new HardPickupAndDeliveryLoadRouteLevelConstraint(stateManager));
-		if(vrp.getProblemConstraints().contains(Constraint.DELIVERIES_FIRST)){
-			constraintManager.addConstraint(new HardPickupAndDeliveryBackhaulActivityLevelConstraint(stateManager));
-		}
-		else{
-			constraintManager.addConstraint(new HardPickupAndDeliveryActivityLevelConstraint(stateManager));
-		}
-		stateManager.addActivityVisitor(new UpdateOccuredDeliveriesAtActivityLevel(stateManager));
-		stateManager.addActivityVisitor(new UpdateFuturePickupsAtActivityLevel(stateManager));
-		return this;
-	}
-	
-	public BestInsertionBuilder addHardTimeWindowConstraint(){
-		constraintManager.addConstraint(new HardTimeWindowActivityLevelConstraint(stateManager, vrp.getTransportCosts()));
-//		stateManager.addActivityVisitor(new UpdateEarliestStartTimeWindowAtActLocations(stateManager, vrp.getTransportCosts()));
-		stateManager.addActivityVisitor(new UpdateLatestOperationStartTimeAtActLocations(stateManager, vrp.getTransportCosts()));
-		return this;
-	}
-	
-
-	public BestInsertionBuilder addConstraint(HardActivityLevelConstraint hardActvitiyLevelConstraint){
-		constraintManager.addConstraint(hardActvitiyLevelConstraint);
-		return this;
-	};
-	
-	public BestInsertionBuilder addConstraint(HardRouteLevelConstraint hardRouteLevelConstraint){
-		constraintManager.addConstraint(hardRouteLevelConstraint);
-		return this;
-	};
-	
-	public void setRouteLevel(int forwardLooking, int memory){
+	public BestInsertionBuilder setRouteLevel(int forwardLooking, int memory){
 		local = false;
 		this.forwaredLooking = forwardLooking;
 		this.memory = memory;
+		return this;
 	};
 	
 	public BestInsertionBuilder setLocalLevel(){
@@ -124,6 +83,10 @@ public class BestInsertionBuilder {
 		BestInsertion bestInsertion = new BestInsertion(jobInsertions);
 		for(InsertionListener l : iListeners) bestInsertion.addListener(l); 
 		return bestInsertion;
+	}
+
+	public void setConstraintManager(ConstraintManager constraintManager) {
+		this.constraintManager = constraintManager;
 	}
 
 }

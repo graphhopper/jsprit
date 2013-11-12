@@ -16,16 +16,16 @@ public class InsertionListeners {
 	
 	public void addListener(InsertionListener insertionListener){
 		if(insertionListener instanceof InsertionStartsListener) startListeners.add((InsertionStartsListener) insertionListener);
-		else if(insertionListener instanceof JobInsertedListener) jobInsertedListeners.add((JobInsertedListener) insertionListener);
-		else if(insertionListener instanceof InsertionEndsListener) endListeners.add((InsertionEndsListener) insertionListener);
-		else throw new IllegalStateException("cannot add this type of insertionListener");
+		if(insertionListener instanceof JobInsertedListener) jobInsertedListeners.add((JobInsertedListener) insertionListener);
+		if(insertionListener instanceof InsertionEndsListener) endListeners.add((InsertionEndsListener) insertionListener);
+//		else throw new IllegalStateException("cannot add this type of insertionListener");
 	}
 	
 	public void removeListener(InsertionListener insertionListener){
 		if(insertionListener instanceof InsertionStartsListener) startListeners.remove((InsertionStartsListener) insertionListener);
-		else if(insertionListener instanceof JobInsertedListener) jobInsertedListeners.remove((JobInsertedListener) insertionListener);
-		else if(insertionListener instanceof InsertionEndsListener) endListeners.remove((InsertionEndsListener) insertionListener);
-		else throw new IllegalStateException("cannot remove this type of insertionListener");
+		if(insertionListener instanceof JobInsertedListener) jobInsertedListeners.remove((JobInsertedListener) insertionListener);
+		if(insertionListener instanceof InsertionEndsListener) endListeners.remove((InsertionEndsListener) insertionListener);
+//		else throw new IllegalStateException("cannot remove this type of insertionListener");
 	}
 	
 	public void insertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs){

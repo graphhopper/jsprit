@@ -8,9 +8,9 @@ import basics.route.ReverseActivityVisitor;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
-class UpdateLatestOperationStartTimeAtActLocations implements ReverseActivityVisitor, StateUpdater{
+class TimeWindowUpdater implements ReverseActivityVisitor, StateUpdater{
 
-	private static Logger log = Logger.getLogger(UpdateLatestOperationStartTimeAtActLocations.class);
+	private static Logger log = Logger.getLogger(TimeWindowUpdater.class);
 	
 	private StateManager states;
 	
@@ -22,7 +22,7 @@ class UpdateLatestOperationStartTimeAtActLocations implements ReverseActivityVis
 	
 	private TourActivity prevAct;
 	
-	public UpdateLatestOperationStartTimeAtActLocations(StateManager states, VehicleRoutingTransportCosts tpCosts) {
+	public TimeWindowUpdater(StateManager states, VehicleRoutingTransportCosts tpCosts) {
 		super();
 		this.states = states;
 		this.transportCosts = tpCosts;

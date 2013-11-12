@@ -152,7 +152,7 @@ public class TestCalculatesServiceInsertion {
 		
 		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
 
-		serviceInsertion = new ServiceInsertionCalculator(costs, new LocalActivityInsertionCostsCalculator(costs, activityCosts), new HardLoadConstraint(states), new HardTimeWindowActivityLevelConstraint(states, costs));
+		serviceInsertion = new ServiceInsertionCalculator(costs, new LocalActivityInsertionCostsCalculator(costs, activityCosts), new LoadConstraint(states), new TimeWindowConstraint(states, costs));
 		
 		stateUpdater = new UpdateStates(states, costs, activityCosts);
 		

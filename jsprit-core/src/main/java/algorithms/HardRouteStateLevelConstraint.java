@@ -1,7 +1,7 @@
 package algorithms;
 
 
-public interface HardRouteLevelConstraint {
+public interface HardRouteStateLevelConstraint {
 
 	public boolean fulfilled(InsertionContext insertionContext);
 	

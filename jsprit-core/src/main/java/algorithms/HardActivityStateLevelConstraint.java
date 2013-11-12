@@ -2,7 +2,7 @@ package algorithms;
 
 import basics.route.TourActivity;
 
-public interface HardActivityLevelConstraint {
+public interface HardActivityStateLevelConstraint {
 	
 	static enum ConstraintsStatus {
 		

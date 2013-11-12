@@ -149,7 +149,7 @@ public class GendreauPostOptTest {
 		
 		activityCosts = new ExampleActivityCostFunction();
 		
-		ServiceInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(cost, new LocalActivityInsertionCostsCalculator(cost, activityCosts), new HardLoadConstraint(states), new HardTimeWindowActivityLevelConstraint(states, cost));
+		ServiceInsertionCalculator standardServiceInsertion = new ServiceInsertionCalculator(cost, new LocalActivityInsertionCostsCalculator(cost, activityCosts), new LoadConstraint(states), new TimeWindowConstraint(states, cost));
 
 		
 		JobInsertionConsideringFixCostsCalculator withFixCost = new JobInsertionConsideringFixCostsCalculator(standardServiceInsertion, states);

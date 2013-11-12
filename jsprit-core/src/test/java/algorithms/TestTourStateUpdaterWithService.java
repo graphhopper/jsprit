@@ -119,7 +119,7 @@ public class TestTourStateUpdaterWithService {
 	public void testCalculatedCost() {
 		updateStates.update(vehicleRoute);
 		assertEquals(40.0, states.getRouteState(vehicleRoute,StateFactory.COSTS).toDouble(), 0.05);
-		assertEquals(10, states.getRouteState(vehicleRoute, StateFactory.LOAD).toDouble(), 0.05);
+		assertEquals(10, states.getRouteState(vehicleRoute, StateFactory.LOAD_AT_END).toDouble(), 0.05);
 	}
 	
 	@Test

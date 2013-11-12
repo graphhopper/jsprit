@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 import util.Neighborhood;
 import algorithms.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
-import algorithms.HardActivityLevelConstraint.ConstraintsStatus;
+import algorithms.HardActivityStateLevelConstraint.ConstraintsStatus;
 import basics.Job;
 import basics.Service;
 import basics.costs.VehicleRoutingActivityCosts;
@@ -59,9 +59,9 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 	
 	private StateGetter stateManager;
 	
-	private HardRouteLevelConstraint hardRouteLevelConstraint;
+	private HardRouteStateLevelConstraint hardRouteLevelConstraint;
 	
-	private HardActivityLevelConstraint hardActivityLevelConstraint;
+	private HardActivityStateLevelConstraint hardActivityLevelConstraint;
 	
 	private ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 	
@@ -96,7 +96,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 		logger.info("set [solutionMemory="+memorySize+"]");
 	}
 
-	public ServiceInsertionOnRouteLevelCalculator(VehicleRoutingTransportCosts vehicleRoutingCosts, VehicleRoutingActivityCosts costFunc, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteLevelConstraint hardRouteLevelConstraint, HardActivityLevelConstraint hardActivityLevelConstraint) {
+	public ServiceInsertionOnRouteLevelCalculator(VehicleRoutingTransportCosts vehicleRoutingCosts, VehicleRoutingActivityCosts costFunc, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteStateLevelConstraint hardRouteLevelConstraint, HardActivityStateLevelConstraint hardActivityLevelConstraint) {
 			super();
 			this.transportCosts = vehicleRoutingCosts;
 			this.activityCosts = costFunc;
