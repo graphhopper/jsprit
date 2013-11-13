@@ -232,6 +232,7 @@ public class StateManager implements StateGetter, IterationStartsListener, RuinL
 		if(stateId.equals(StateFactory.LATEST_OPERATION_START_TIME)) return new StateImpl(act.getTheoreticalLatestOperationStartTime());
 		if(stateId.equals(StateFactory.FUTURE_PICKS)) return new StateImpl(0);
 		if(stateId.equals(StateFactory.PAST_DELIVERIES)) return new StateImpl(0);
+		if(defaultActivityStates.containsKey(stateId)) return defaultActivityStates.get(stateId);
 		return null;
 	}
 	
@@ -242,6 +243,7 @@ public class StateManager implements StateGetter, IterationStartsListener, RuinL
 		if(stateId.equals(StateFactory.LOAD_AT_BEGINNING)) return new StateImpl(0);
 		if(stateId.equals(StateFactory.COSTS)) return new StateImpl(0);
 		if(stateId.equals(StateFactory.DURATION)) return new StateImpl(0);
+		if(defaultRouteStates.containsKey(stateId)) return defaultRouteStates.get(stateId);
 		return null;
 	}
 

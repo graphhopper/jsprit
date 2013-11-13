@@ -26,7 +26,7 @@ import basics.algo.InsertionEndsListener;
 import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
-class RemoveEmptyVehicles implements InsertionEndsListener{
+public class RemoveEmptyVehicles implements InsertionEndsListener{
 
 	private static Logger log = Logger.getLogger(RemoveEmptyVehicles.class); 
 	
