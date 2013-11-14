@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import util.Solutions;
+import algorithms.ConstraintManager.Priority;
 import algorithms.StateManager.StateImpl;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.selectors.SelectBest;
@@ -62,8 +63,8 @@ public class BuildPDVRPAlgoFromScratchTest {
 			final StateManager stateManager = new StateManager();
 			
 			ConstraintManager actLevelConstraintAccumulator = new ConstraintManager(vrp,stateManager);
-			actLevelConstraintAccumulator.addConstraint(new ServiceLoadActivityLevelConstraint(stateManager));
-			actLevelConstraintAccumulator.addConstraint(new TimeWindowConstraint(stateManager, vrp.getTransportCosts()));
+			actLevelConstraintAccumulator.addConstraint(new ServiceLoadActivityLevelConstraint(stateManager),Priority.LOW);
+			actLevelConstraintAccumulator.addConstraint(new TimeWindowConstraint(stateManager, vrp.getTransportCosts()),Priority.HIGH);
 			
 			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
 

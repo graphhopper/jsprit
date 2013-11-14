@@ -1,7 +1,7 @@
 package algorithms;
 
-import basics.route.DeliveryActivity;
-import basics.route.PickupActivity;
+import basics.route.DeliverService;
+import basics.route.PickupService;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
@@ -39,12 +39,12 @@ class ServiceLoadActivityLevelConstraint implements HardActivityStateLevelConstr
 			futurePicks = (int) stateManager.getActivityState(prevAct, StateFactory.FUTURE_PICKS).toDouble();
 			pastDeliveries = (int) stateManager.getActivityState(prevAct, StateFactory.PAST_DELIVERIES).toDouble();
 		}
-		if(newAct instanceof PickupActivity || newAct instanceof ServiceActivity){
+		if(newAct instanceof PickupService || newAct instanceof ServiceActivity){
 			if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
 		}
-		if(newAct instanceof DeliveryActivity){
+		if(newAct instanceof DeliverService){
 			if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) + pastDeliveries > iFacts.getNewVehicle().getCapacity()){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}

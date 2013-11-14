@@ -1,7 +1,7 @@
 package algorithms;
 
 import basics.route.ActivityVisitor;
-import basics.route.DeliveryActivity;
+import basics.route.DeliverService;
 import basics.route.TourActivity;
 import basics.route.VehicleRoute;
 
@@ -22,7 +22,7 @@ class UpdateOccuredDeliveries implements ActivityVisitor, StateUpdater {
 
 	@Override
 	public void visit(TourActivity act) {
-		if(act instanceof DeliveryActivity){
+		if(act instanceof DeliverService){
 			deliveries += Math.abs(act.getCapacityDemand());
 		}
 		stateManager.putActivityState(act, StateFactory.PAST_DELIVERIES, StateFactory.createState(deliveries));

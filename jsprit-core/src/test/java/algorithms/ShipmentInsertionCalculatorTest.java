@@ -12,6 +12,7 @@ import org.junit.Test;
 import util.Coordinate;
 import util.Locations;
 import util.ManhattanCosts;
+import algorithms.ConstraintManager.Priority;
 import algorithms.HardActivityStateLevelConstraint.ConstraintsStatus;
 import basics.Shipment;
 import basics.VehicleRoutingProblem;
@@ -188,8 +189,9 @@ public class ShipmentInsertionCalculatorTest {
 		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-		
-		constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager,true));
+		constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager),Priority.CRITICAL);
+		constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(),Priority.CRITICAL);
+				
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, 
 				hardRouteLevelConstraint, constraintManager);
 		

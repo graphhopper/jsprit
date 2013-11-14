@@ -2534,318 +2534,104 @@
      </shipments>
      <solutions>
           <solution>
-               <cost>828.9368669428338</cost>
+               <cost>828.936866942834</cost>
                <routes>
                     <route>
-                         <cost>50.80359030264955</cost>
+                         <cost>95.94313062205805</cost>
                          <driverId>noDriver</driverId>
                          <vehicleId>solomonVehicle</vehicleId>
                          <start>0.0</start>
                          <act type="pickupShipment">
-                              <shipmentId>24</shipmentId>
+                              <shipmentId>98</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>20</shipmentId>
+                              <shipmentId>94</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>28</shipmentId>
+                              <shipmentId>97</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>26</shipmentId>
+                              <shipmentId>95</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>29</shipmentId>
+                              <shipmentId>100</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>23</shipmentId>
+                              <shipmentId>99</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>30</shipmentId>
+                              <shipmentId>96</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>22</shipmentId>
+                              <shipmentId>93</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>25</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>27</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>21</shipmentId>
+                              <shipmentId>92</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>20</shipmentId>
-                              <arrTime>10.0</arrTime>
-                              <endTime>10.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>24</shipmentId>
-                              <arrTime>15.0</arrTime>
-                              <endTime>65.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>25</shipmentId>
-                              <arrTime>67.0</arrTime>
-                              <endTime>169.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>27</shipmentId>
-                              <arrTime>171.0</arrTime>
-                              <endTime>261.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>29</shipmentId>
-                              <arrTime>264.605551275464</arrTime>
-                              <endTime>358.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>30</shipmentId>
-                              <arrTime>363.0</arrTime>
-                              <endTime>449.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>28</shipmentId>
-                              <arrTime>452.0</arrTime>
-                              <endTime>546.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>26</shipmentId>
-                              <arrTime>548.0</arrTime>
-                              <endTime>622.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>23</shipmentId>
-                              <arrTime>625.0</arrTime>
-                              <endTime>732.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>22</shipmentId>
-                              <arrTime>735.0</arrTime>
-                              <endTime>812.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>21</shipmentId>
-                              <arrTime>814.0</arrTime>
-                              <endTime>914.0</endTime>
-                         </act>
-                         <end>924.1980390271856</end>
-                    </route>
-                    <route>
-                         <cost>95.88470913081827</cost>
-                         <driverId>noDriver</driverId>
-                         <vehicleId>solomonVehicle</vehicleId>
-                         <start>0.0</start>
-                         <act type="pickupShipment">
-                              <shipmentId>16</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>19</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>12</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>15</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>17</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>13</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>18</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>14</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>13</shipmentId>
+                              <shipmentId>98</shipmentId>
                               <arrTime>30.805843601498726</arrTime>
                               <endTime>30.805843601498726</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>17</shipmentId>
-                              <arrTime>34.80584360149872</arrTime>
-                              <endTime>99.0</endTime>
+                              <shipmentId>96</shipmentId>
+                              <arrTime>36.19100840863323</arrTime>
+                              <endTime>95.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>18</shipmentId>
-                              <arrTime>102.0</arrTime>
-                              <endTime>179.0</endTime>
+                              <shipmentId>95</shipmentId>
+                              <arrTime>97.0</arrTime>
+                              <endTime>196.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>19</shipmentId>
-                              <arrTime>184.0</arrTime>
-                              <endTime>278.0</endTime>
+                              <shipmentId>94</shipmentId>
+                              <arrTime>199.605551275464</arrTime>
+                              <endTime>285.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>15</shipmentId>
-                              <arrTime>283.0</arrTime>
-                              <endTime>384.0</endTime>
+                              <shipmentId>92</shipmentId>
+                              <arrTime>288.605551275464</arrTime>
+                              <endTime>368.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>16</shipmentId>
-                              <arrTime>389.0</arrTime>
+                              <shipmentId>93</shipmentId>
+                              <arrTime>370.0</arrTime>
                               <endTime>475.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>14</shipmentId>
-                              <arrTime>477.0</arrTime>
-                              <endTime>567.0</endTime>
+                              <shipmentId>97</shipmentId>
+                              <arrTime>480.0</arrTime>
+                              <endTime>561.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>12</shipmentId>
-                              <arrTime>570.0</arrTime>
-                              <endTime>652.0</endTime>
-                         </act>
-                         <end>690.0788655293195</end>
-                    </route>
-                    <route>
-                         <cost>76.06956532288787</cost>
-                         <driverId>noDriver</driverId>
-                         <vehicleId>solomonVehicle</vehicleId>
-                         <start>0.0</start>
-                         <act type="pickupShipment">
-                              <shipmentId>83</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>87</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>85</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>88</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>86</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>90</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>91</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>89</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>84</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>82</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
+                              <shipmentId>100</shipmentId>
+                              <arrTime>566.0</arrTime>
+                              <endTime>647.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>90</shipmentId>
-                              <arrTime>20.615528128088304</arrTime>
-                              <endTime>20.615528128088304</endTime>
+                              <shipmentId>99</shipmentId>
+                              <arrTime>652.0</arrTime>
+                              <endTime>743.0</endTime>
                          </act>
-                         <act type="deliverShipment">
-                              <shipmentId>87</shipmentId>
-                              <arrTime>25.615528128088304</arrTime>
-                              <endTime>85.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>86</shipmentId>
-                              <arrTime>86.0</arrTime>
-                              <endTime>173.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>83</shipmentId>
-                              <arrTime>179.0</arrTime>
-                              <endTime>265.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>82</shipmentId>
-                              <arrTime>268.0</arrTime>
-                              <endTime>369.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>84</shipmentId>
-                              <arrTime>374.8309518948453</arrTime>
-                              <endTime>458.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>85</shipmentId>
-                              <arrTime>460.8284271247462</arrTime>
-                              <endTime>555.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>88</shipmentId>
-                              <arrTime>558.0</arrTime>
-                              <endTime>645.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>89</shipmentId>
-                              <arrTime>647.8284271247462</arrTime>
-                              <endTime>737.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>91</shipmentId>
-                              <arrTime>740.605551275464</arrTime>
-                              <endTime>836.0</endTime>
-                         </act>
-                         <end>858.360679774998</end>
+                         <end>776.5410196624969</end>
                     </route>
                     <route>
                          <cost>59.403108723710105</cost>
@@ -2858,27 +2644,17 @@
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>62</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>61</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
                               <shipmentId>74</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>67</shipmentId>
+                              <shipmentId>62</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>64</shipmentId>
+                              <shipmentId>65</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
@@ -2888,12 +2664,12 @@
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>72</shipmentId>
+                              <shipmentId>67</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>68</shipmentId>
+                              <shipmentId>61</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
@@ -2903,7 +2679,17 @@
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>65</shipmentId>
+                              <shipmentId>64</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>68</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>72</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
@@ -2965,12 +2751,293 @@
                          <end>931.8113883008419</end>
                     </route>
                     <route>
+                         <cost>95.88470913081827</cost>
+                         <driverId>noDriver</driverId>
+                         <vehicleId>solomonVehicle</vehicleId>
+                         <start>0.0</start>
+                         <act type="pickupShipment">
+                              <shipmentId>17</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>12</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>14</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>15</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>18</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>19</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>13</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>16</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>13</shipmentId>
+                              <arrTime>30.805843601498726</arrTime>
+                              <endTime>30.805843601498726</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>17</shipmentId>
+                              <arrTime>34.80584360149872</arrTime>
+                              <endTime>99.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>18</shipmentId>
+                              <arrTime>102.0</arrTime>
+                              <endTime>179.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>19</shipmentId>
+                              <arrTime>184.0</arrTime>
+                              <endTime>278.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>15</shipmentId>
+                              <arrTime>283.0</arrTime>
+                              <endTime>384.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>16</shipmentId>
+                              <arrTime>389.0</arrTime>
+                              <endTime>475.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>14</shipmentId>
+                              <arrTime>477.0</arrTime>
+                              <endTime>567.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>12</shipmentId>
+                              <arrTime>570.0</arrTime>
+                              <endTime>652.0</endTime>
+                         </act>
+                         <end>690.0788655293195</end>
+                    </route>
+                    <route>
+                         <cost>127.29748041459519</cost>
+                         <driverId>noDriver</driverId>
+                         <vehicleId>solomonVehicle</vehicleId>
+                         <start>0.0</start>
+                         <act type="pickupShipment">
+                              <shipmentId>80</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>76</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>79</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>77</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>73</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>78</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>70</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>81</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>71</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>81</shipmentId>
+                              <arrTime>47.43416490252569</arrTime>
+                              <endTime>47.43416490252569</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>78</shipmentId>
+                              <arrTime>50.43416490252569</arrTime>
+                              <endTime>109.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>76</shipmentId>
+                              <arrTime>111.0</arrTime>
+                              <endTime>203.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>71</shipmentId>
+                              <arrTime>208.0</arrTime>
+                              <endTime>293.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>70</shipmentId>
+                              <arrTime>298.0</arrTime>
+                              <endTime>387.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>73</shipmentId>
+                              <arrTime>390.0</arrTime>
+                              <endTime>478.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>77</shipmentId>
+                              <arrTime>482.0</arrTime>
+                              <endTime>574.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>79</shipmentId>
+                              <arrTime>575.0</arrTime>
+                              <endTime>668.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>80</shipmentId>
+                              <arrTime>673.3851648071345</arrTime>
+                              <endTime>769.0</endTime>
+                         </act>
+                         <end>820.478150704935</end>
+                    </route>
+                    <route>
+                         <cost>97.2271627850669</cost>
+                         <driverId>noDriver</driverId>
+                         <vehicleId>solomonVehicle</vehicleId>
+                         <start>0.0</start>
+                         <act type="pickupShipment">
+                              <shipmentId>31</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>38</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>37</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>33</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>32</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>36</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>35</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>39</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>34</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>32</shipmentId>
+                              <arrTime>31.622776601683793</arrTime>
+                              <endTime>31.622776601683793</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>33</shipmentId>
+                              <arrTime>33.622776601683796</arrTime>
+                              <endTime>87.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>31</shipmentId>
+                              <arrTime>92.3851648071345</arrTime>
+                              <endTime>200.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>35</shipmentId>
+                              <arrTime>205.0</arrTime>
+                              <endTime>283.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>37</shipmentId>
+                              <arrTime>288.8309518948453</arrTime>
+                              <endTime>383.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>38</shipmentId>
+                              <arrTime>385.0</arrTime>
+                              <endTime>479.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>39</shipmentId>
+                              <arrTime>484.0</arrTime>
+                              <endTime>567.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>36</shipmentId>
+                              <arrTime>572.0</arrTime>
+                              <endTime>665.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>34</shipmentId>
+                              <arrTime>668.0</arrTime>
+                              <endTime>751.0</endTime>
+                         </act>
+                         <end>783.3882694814033</end>
+                    </route>
+                    <route>
                          <cost>101.88256760196126</cost>
                          <driverId>noDriver</driverId>
                          <vehicleId>solomonVehicle</vehicleId>
                          <start>0.0</start>
                          <act type="pickupShipment">
-                              <shipmentId>53</shipmentId>
+                              <shipmentId>56</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
@@ -2985,16 +3052,6 @@
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>58</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>56</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
                               <shipmentId>59</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
@@ -3005,7 +3062,17 @@
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
+                              <shipmentId>58</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
                               <shipmentId>60</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>53</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
@@ -3052,131 +3119,111 @@
                          <end>686.0570962859163</end>
                     </route>
                     <route>
-                         <cost>59.618077542105574</cost>
+                         <cost>76.06956532288787</cost>
                          <driverId>noDriver</driverId>
                          <vehicleId>solomonVehicle</vehicleId>
                          <start>0.0</start>
                          <act type="pickupShipment">
-                              <shipmentId>3</shipmentId>
+                              <shipmentId>87</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>10</shipmentId>
+                              <shipmentId>86</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>75</shipmentId>
+                              <shipmentId>84</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>2</shipmentId>
+                              <shipmentId>83</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>9</shipmentId>
+                              <shipmentId>90</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>11</shipmentId>
+                              <shipmentId>91</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>6</shipmentId>
+                              <shipmentId>82</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>5</shipmentId>
+                              <shipmentId>85</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>7</shipmentId>
+                              <shipmentId>89</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>1</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>8</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>4</shipmentId>
+                              <shipmentId>88</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>5</shipmentId>
-                              <arrTime>15.132745950421556</arrTime>
-                              <endTime>15.132745950421556</endTime>
+                              <shipmentId>90</shipmentId>
+                              <arrTime>20.615528128088304</arrTime>
+                              <endTime>20.615528128088304</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>3</shipmentId>
-                              <arrTime>16.13274595042156</arrTime>
-                              <endTime>65.0</endTime>
+                              <shipmentId>87</shipmentId>
+                              <arrTime>25.615528128088304</arrTime>
+                              <endTime>85.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>7</shipmentId>
-                              <arrTime>67.0</arrTime>
-                              <endTime>170.0</endTime>
+                              <shipmentId>86</shipmentId>
+                              <arrTime>86.0</arrTime>
+                              <endTime>173.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>8</shipmentId>
-                              <arrTime>172.82842712474618</arrTime>
-                              <endTime>255.0</endTime>
+                              <shipmentId>83</shipmentId>
+                              <arrTime>179.0</arrTime>
+                              <endTime>265.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>10</shipmentId>
-                              <arrTime>258.605551275464</arrTime>
-                              <endTime>357.0</endTime>
+                              <shipmentId>82</shipmentId>
+                              <arrTime>268.0</arrTime>
+                              <endTime>369.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>11</shipmentId>
-                              <arrTime>360.0</arrTime>
-                              <endTime>448.0</endTime>
+                              <shipmentId>84</shipmentId>
+                              <arrTime>374.8309518948453</arrTime>
+                              <endTime>458.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>9</shipmentId>
-                              <arrTime>451.1622776601684</arrTime>
-                              <endTime>534.0</endTime>
+                              <shipmentId>85</shipmentId>
+                              <arrTime>460.8284271247462</arrTime>
+                              <endTime>555.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>6</shipmentId>
-                              <arrTime>536.2360679774998</arrTime>
-                              <endTime>621.0</endTime>
+                              <shipmentId>88</shipmentId>
+                              <arrTime>558.0</arrTime>
+                              <endTime>645.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>4</shipmentId>
-                              <arrTime>623.2360679774998</arrTime>
-                              <endTime>727.0</endTime>
+                              <shipmentId>89</shipmentId>
+                              <arrTime>647.8284271247462</arrTime>
+                              <endTime>737.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>2</shipmentId>
-                              <arrTime>730.605551275464</arrTime>
-                              <endTime>825.0</endTime>
+                              <shipmentId>91</shipmentId>
+                              <arrTime>740.605551275464</arrTime>
+                              <endTime>836.0</endTime>
                          </act>
-                         <act type="deliverShipment">
-                              <shipmentId>1</shipmentId>
-                              <arrTime>827.0</arrTime>
-                              <endTime>912.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>75</shipmentId>
-                              <arrTime>915.0</arrTime>
-                              <endTime>997.0</endTime>
-                         </act>
-                         <end>1012.8113883008419</end>
+                         <end>858.360679774998</end>
                     </route>
                     <route>
                          <cost>64.80747449698114</cost>
@@ -3184,27 +3231,17 @@
                          <vehicleId>solomonVehicle</vehicleId>
                          <start>0.0</start>
                          <act type="pickupShipment">
-                              <shipmentId>42</shipmentId>
+                              <shipmentId>45</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>48</shipmentId>
+                              <shipmentId>49</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>40</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>46</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>43</shipmentId>
+                              <shipmentId>47</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
@@ -3214,7 +3251,32 @@
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>47</shipmentId>
+                              <shipmentId>46</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>44</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>43</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>42</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>40</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>52</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
@@ -3229,22 +3291,7 @@
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>52</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>49</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>45</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>44</shipmentId>
+                              <shipmentId>48</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
@@ -3316,295 +3363,248 @@
                          <end>1072.02775637732</end>
                     </route>
                     <route>
-                         <cost>127.29748041459519</cost>
+                         <cost>50.80359030264955</cost>
                          <driverId>noDriver</driverId>
                          <vehicleId>solomonVehicle</vehicleId>
                          <start>0.0</start>
                          <act type="pickupShipment">
-                              <shipmentId>78</shipmentId>
+                              <shipmentId>20</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>80</shipmentId>
+                              <shipmentId>21</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>81</shipmentId>
+                              <shipmentId>23</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>70</shipmentId>
+                              <shipmentId>27</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>71</shipmentId>
+                              <shipmentId>30</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>77</shipmentId>
+                              <shipmentId>25</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>76</shipmentId>
+                              <shipmentId>24</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>79</shipmentId>
+                              <shipmentId>26</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>73</shipmentId>
+                              <shipmentId>28</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>29</shipmentId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <act type="pickupShipment">
+                              <shipmentId>22</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>81</shipmentId>
-                              <arrTime>47.43416490252569</arrTime>
-                              <endTime>47.43416490252569</endTime>
+                              <shipmentId>20</shipmentId>
+                              <arrTime>10.0</arrTime>
+                              <endTime>10.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>78</shipmentId>
-                              <arrTime>50.43416490252569</arrTime>
-                              <endTime>109.0</endTime>
+                              <shipmentId>24</shipmentId>
+                              <arrTime>15.0</arrTime>
+                              <endTime>65.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>76</shipmentId>
-                              <arrTime>111.0</arrTime>
-                              <endTime>203.0</endTime>
+                              <shipmentId>25</shipmentId>
+                              <arrTime>67.0</arrTime>
+                              <endTime>169.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>71</shipmentId>
-                              <arrTime>208.0</arrTime>
-                              <endTime>293.0</endTime>
+                              <shipmentId>27</shipmentId>
+                              <arrTime>171.0</arrTime>
+                              <endTime>261.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>70</shipmentId>
-                              <arrTime>298.0</arrTime>
-                              <endTime>387.0</endTime>
+                              <shipmentId>29</shipmentId>
+                              <arrTime>264.605551275464</arrTime>
+                              <endTime>358.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>73</shipmentId>
-                              <arrTime>390.0</arrTime>
-                              <endTime>478.0</endTime>
+                              <shipmentId>30</shipmentId>
+                              <arrTime>363.0</arrTime>
+                              <endTime>449.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>77</shipmentId>
-                              <arrTime>482.0</arrTime>
-                              <endTime>574.0</endTime>
+                              <shipmentId>28</shipmentId>
+                              <arrTime>452.0</arrTime>
+                              <endTime>546.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>79</shipmentId>
-                              <arrTime>575.0</arrTime>
-                              <endTime>668.0</endTime>
+                              <shipmentId>26</shipmentId>
+                              <arrTime>548.0</arrTime>
+                              <endTime>622.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>80</shipmentId>
-                              <arrTime>673.3851648071345</arrTime>
-                              <endTime>769.0</endTime>
+                              <shipmentId>23</shipmentId>
+                              <arrTime>625.0</arrTime>
+                              <endTime>732.0</endTime>
                          </act>
-                         <end>820.478150704935</end>
+                         <act type="deliverShipment">
+                              <shipmentId>22</shipmentId>
+                              <arrTime>735.0</arrTime>
+                              <endTime>812.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>21</shipmentId>
+                              <arrTime>814.0</arrTime>
+                              <endTime>914.0</endTime>
+                         </act>
+                         <end>924.1980390271856</end>
                     </route>
                     <route>
-                         <cost>95.94313062205805</cost>
+                         <cost>59.618077542105574</cost>
                          <driverId>noDriver</driverId>
                          <vehicleId>solomonVehicle</vehicleId>
                          <start>0.0</start>
                          <act type="pickupShipment">
-                              <shipmentId>94</shipmentId>
+                              <shipmentId>8</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>100</shipmentId>
+                              <shipmentId>7</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>97</shipmentId>
+                              <shipmentId>4</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>98</shipmentId>
+                              <shipmentId>2</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>93</shipmentId>
+                              <shipmentId>5</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>92</shipmentId>
+                              <shipmentId>10</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>96</shipmentId>
+                              <shipmentId>3</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>95</shipmentId>
+                              <shipmentId>75</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>99</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>98</shipmentId>
-                              <arrTime>30.805843601498726</arrTime>
-                              <endTime>30.805843601498726</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>96</shipmentId>
-                              <arrTime>36.19100840863323</arrTime>
-                              <endTime>95.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>95</shipmentId>
-                              <arrTime>97.0</arrTime>
-                              <endTime>196.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>94</shipmentId>
-                              <arrTime>199.605551275464</arrTime>
-                              <endTime>285.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>92</shipmentId>
-                              <arrTime>288.605551275464</arrTime>
-                              <endTime>368.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>93</shipmentId>
-                              <arrTime>370.0</arrTime>
-                              <endTime>475.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>97</shipmentId>
-                              <arrTime>480.0</arrTime>
-                              <endTime>561.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>100</shipmentId>
-                              <arrTime>566.0</arrTime>
-                              <endTime>647.0</endTime>
-                         </act>
-                         <act type="deliverShipment">
-                              <shipmentId>99</shipmentId>
-                              <arrTime>652.0</arrTime>
-                              <endTime>743.0</endTime>
-                         </act>
-                         <end>776.5410196624969</end>
-                    </route>
-                    <route>
-                         <cost>97.2271627850669</cost>
-                         <driverId>noDriver</driverId>
-                         <vehicleId>solomonVehicle</vehicleId>
-                         <start>0.0</start>
-                         <act type="pickupShipment">
-                              <shipmentId>34</shipmentId>
+                              <shipmentId>6</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>36</shipmentId>
+                              <shipmentId>11</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>39</shipmentId>
+                              <shipmentId>1</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="pickupShipment">
-                              <shipmentId>38</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>33</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>35</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>32</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>37</shipmentId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <act type="pickupShipment">
-                              <shipmentId>31</shipmentId>
+                              <shipmentId>9</shipmentId>
                               <arrTime>0.0</arrTime>
                               <endTime>0.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>32</shipmentId>
-                              <arrTime>31.622776601683793</arrTime>
-                              <endTime>31.622776601683793</endTime>
+                              <shipmentId>5</shipmentId>
+                              <arrTime>15.132745950421556</arrTime>
+                              <endTime>15.132745950421556</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>33</shipmentId>
-                              <arrTime>33.622776601683796</arrTime>
-                              <endTime>87.0</endTime>
+                              <shipmentId>3</shipmentId>
+                              <arrTime>16.13274595042156</arrTime>
+                              <endTime>65.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>31</shipmentId>
-                              <arrTime>92.3851648071345</arrTime>
-                              <endTime>200.0</endTime>
+                              <shipmentId>7</shipmentId>
+                              <arrTime>67.0</arrTime>
+                              <endTime>170.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>35</shipmentId>
-                              <arrTime>205.0</arrTime>
-                              <endTime>283.0</endTime>
+                              <shipmentId>8</shipmentId>
+                              <arrTime>172.82842712474618</arrTime>
+                              <endTime>255.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>37</shipmentId>
-                              <arrTime>288.8309518948453</arrTime>
-                              <endTime>383.0</endTime>
+                              <shipmentId>10</shipmentId>
+                              <arrTime>258.605551275464</arrTime>
+                              <endTime>357.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>38</shipmentId>
-                              <arrTime>385.0</arrTime>
-                              <endTime>479.0</endTime>
+                              <shipmentId>11</shipmentId>
+                              <arrTime>360.0</arrTime>
+                              <endTime>448.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>39</shipmentId>
-                              <arrTime>484.0</arrTime>
-                              <endTime>567.0</endTime>
+                              <shipmentId>9</shipmentId>
+                              <arrTime>451.1622776601684</arrTime>
+                              <endTime>534.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>36</shipmentId>
-                              <arrTime>572.0</arrTime>
-                              <endTime>665.0</endTime>
+                              <shipmentId>6</shipmentId>
+                              <arrTime>536.2360679774998</arrTime>
+                              <endTime>621.0</endTime>
                          </act>
                          <act type="deliverShipment">
-                              <shipmentId>34</shipmentId>
-                              <arrTime>668.0</arrTime>
-                              <endTime>751.0</endTime>
+                              <shipmentId>4</shipmentId>
+                              <arrTime>623.2360679774998</arrTime>
+                              <endTime>727.0</endTime>
                          </act>
-                         <end>783.3882694814033</end>
+                         <act type="deliverShipment">
+                              <shipmentId>2</shipmentId>
+                              <arrTime>730.605551275464</arrTime>
+                              <endTime>825.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>1</shipmentId>
+                              <arrTime>827.0</arrTime>
+                              <endTime>912.0</endTime>
+                         </act>
+                         <act type="deliverShipment">
+                              <shipmentId>75</shipmentId>
+                              <arrTime>915.0</arrTime>
+                              <endTime>997.0</endTime>
+                         </act>
+                         <end>1012.8113883008419</end>
                     </route>
                </routes>
           </solution>

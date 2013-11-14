@@ -1,6 +1,6 @@
 package algorithms;
 
-import basics.route.PickupActivity;
+import basics.route.PickupService;
 import basics.route.ReverseActivityVisitor;
 import basics.route.ServiceActivity;
 import basics.route.TourActivity;
@@ -24,7 +24,7 @@ class UpdateFuturePickups implements ReverseActivityVisitor, StateUpdater {
 	@Override
 	public void visit(TourActivity act) {
 		stateManager.putActivityState(act, StateFactory.FUTURE_PICKS, StateFactory.createState(futurePicks));
-		if(act instanceof PickupActivity || act instanceof ServiceActivity){
+		if(act instanceof PickupService || act instanceof ServiceActivity){
 			futurePicks += act.getCapacityDemand();
 		}
 		assert futurePicks <= route.getVehicle().getCapacity() : "sum of pickups must not be > vehicleCap";

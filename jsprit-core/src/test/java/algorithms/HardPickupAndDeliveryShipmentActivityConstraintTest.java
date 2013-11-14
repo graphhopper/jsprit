@@ -23,7 +23,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 	
 	Shipment shipment;
 	
-	HardPickupAndDeliveryShipmentActivityLevelConstraint constraint;
+	PickupAndDeliverShipmentLoadActivityLevelConstraint constraint;
 	
 	InsertionContext iFacts;
 	
@@ -35,7 +35,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		shipment = mock(Shipment.class);
 		when(shipment.getCapacityDemand()).thenReturn(1);
 		iFacts = new InsertionContext(null, null, vehicle, null, 0.0);
-		constraint = new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager);
+		constraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
 	}
 	
 	@Test

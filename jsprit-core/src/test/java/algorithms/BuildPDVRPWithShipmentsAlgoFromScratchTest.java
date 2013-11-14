@@ -80,7 +80,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 			constraintManager.addTimeWindowConstraint();
 			constraintManager.addLoadConstraint();
-			constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager,true));
+//			constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager));
 			
 			
 			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
@@ -176,7 +176,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 //			System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 			vra.addInitialSolution(iniSolution);
 			
-			vra.setNuOfIterations(1000);
+			vra.setNuOfIterations(100);
 //			vra.setPrematureBreak(500);
 			
 	}
