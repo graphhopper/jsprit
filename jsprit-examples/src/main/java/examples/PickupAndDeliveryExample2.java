@@ -19,6 +19,9 @@ package examples;
 import java.io.File;
 import java.util.Collection;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import algorithms.VehicleRoutingAlgorithms;
 import algorithms.selectors.SelectBest;
 import analysis.AlgorithmSearchProgressChartListener;
@@ -36,6 +39,8 @@ import basics.io.VrpXMLReader;
 public class PickupAndDeliveryExample2 {
 	
 	public static void main(String[] args) {
+		
+		Logger.getRootLogger().setLevel(Level.INFO);
 		
 		/*
 		 * some preparation - create output folder
