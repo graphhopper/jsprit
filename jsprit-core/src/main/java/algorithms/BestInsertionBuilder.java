@@ -35,11 +35,11 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 
 	private int nuOfThreads;
 	
-	public BestInsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager) {
+	public BestInsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
 		super();
 		this.vrp = vrp;
 		this.stateManager = stateManager;
-		this.constraintManager = new ConstraintManager(vrp,stateManager);
+		this.constraintManager = constraintManager;
 		this.fleetManager = vehicleFleetManager;
 	}
 		
@@ -105,8 +105,8 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		return bestInsertion;
 	}
 
-	public void setConstraintManager(ConstraintManager constraintManager) {
-		this.constraintManager = constraintManager;
-	}
+//	public void setConstraintManager(ConstraintManager constraintManager) {
+//		this.constraintManager = constraintManager;
+//	}
 
 }
