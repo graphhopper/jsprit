@@ -1,7 +1,6 @@
 package algorithms;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
@@ -12,17 +11,14 @@ import org.junit.Test;
 import util.Coordinate;
 import util.Locations;
 import util.ManhattanCosts;
-import algorithms.ConstraintManager.Priority;
 import basics.Delivery;
 import basics.Pickup;
-import basics.Service;
 import basics.Shipment;
 import basics.VehicleRoutingProblem;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.Driver;
 import basics.route.DriverImpl;
-import basics.route.RouteActivityVisitor;
 import basics.route.TourActivity;
 import basics.route.Vehicle;
 import basics.route.VehicleImpl;

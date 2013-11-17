@@ -3,14 +3,12 @@ package algorithms;
 import org.apache.log4j.Logger;
 
 import util.ActivityTimeTracker;
-
 import algorithms.StateManager.StateImpl;
 import basics.costs.ForwardTransportCost;
 import basics.costs.VehicleRoutingActivityCosts;
 import basics.costs.VehicleRoutingTransportCosts;
 import basics.route.ActivityVisitor;
 import basics.route.TourActivity;
-import basics.route.Vehicle;
 import basics.route.VehicleRoute;
 
 /**

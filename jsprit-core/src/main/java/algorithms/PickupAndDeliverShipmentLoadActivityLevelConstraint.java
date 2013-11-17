@@ -2,7 +2,6 @@ package algorithms;
 
 import org.apache.log4j.Logger;
 
-import algorithms.HardActivityStateLevelConstraint.ConstraintsStatus;
 import basics.route.DeliverShipment;
 import basics.route.PickupShipment;
 import basics.route.Start;

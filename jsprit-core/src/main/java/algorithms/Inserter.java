@@ -16,8 +16,6 @@
  ******************************************************************************/
 package algorithms;
 
-import org.apache.log4j.Logger;
-
 import algorithms.InsertionData.NoInsertionFound;
 import basics.Job;
 import basics.Service;

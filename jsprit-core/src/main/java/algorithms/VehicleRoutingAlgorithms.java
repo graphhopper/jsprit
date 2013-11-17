@@ -46,7 +46,6 @@ import algorithms.selectors.SelectRandomly;
 import algorithms.selectors.SolutionSelector;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblem.Constraint;
 import basics.VehicleRoutingProblem.FleetSize;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.AlgorithmStartsListener;

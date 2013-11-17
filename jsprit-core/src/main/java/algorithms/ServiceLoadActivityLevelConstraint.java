@@ -7,7 +7,6 @@ import basics.route.PickupService;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
-import basics.route.VehicleRoute;
 
 /**
  * Ensures load constraint for inserting ServiceActivity.
