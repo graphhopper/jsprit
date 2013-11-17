@@ -46,8 +46,9 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 			UpdateLoads updateLoads = new UpdateLoads(stateManager);
 			stateManager.addActivityVisitor(updateLoads);
 			stateManager.addListener(updateLoads);
-			stateManager.addActivityVisitor(new UpdateFuturePickups(stateManager));
-			stateManager.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
+			stateManager.addActivityVisitor(new UpdateMaxLoad(stateManager));
+			stateManager.addActivityVisitor(new UpdateMaxLoad_(stateManager));
+			stateManager.addActivityVisitor(new UpdatePrevMaxLoad(stateManager));
 			loadConstraintsSet=true;
 		}
 	}
