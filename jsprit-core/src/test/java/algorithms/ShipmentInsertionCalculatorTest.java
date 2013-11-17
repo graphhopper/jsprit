@@ -2,9 +2,9 @@ package algorithms;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,9 @@ import util.Coordinate;
 import util.Locations;
 import util.ManhattanCosts;
 import algorithms.ConstraintManager.Priority;
-import algorithms.HardActivityStateLevelConstraint.ConstraintsStatus;
+import basics.Delivery;
+import basics.Pickup;
+import basics.Service;
 import basics.Shipment;
 import basics.VehicleRoutingProblem;
 import basics.costs.VehicleRoutingActivityCosts;
@@ -200,5 +202,49 @@ public class ShipmentInsertionCalculatorTest {
 		assertTrue(iData instanceof InsertionData.NoInsertionFound);
 		
 	}
+	
+	@Test
+	public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnNoInsertionData(){
+		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("0,0").build();
+		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
+		Shipment shipment3 = Shipment.Builder.newInstance("s3", 1).setPickupLocation("10,10").setDeliveryLocation("0,").build();
+		
+		VehicleRoute route = VehicleRoute.emptyRoute();
+		route.setVehicle(vehicle, 0.0);
+		
+		Inserter inserter = new Inserter(new InsertionListeners());
+		
+		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
+		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
+//		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
+		
+		StateManager stateManager = new StateManager();
+		
+//		RouteActivityVisitor routeActVisitor = new RouteActivityVisitor();
+//		routeActVisitor.addActivityVisitor(new UpdateLoads(stateManager));
+//		routeActVisitor.visit(route);
+		
+		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+		
+		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+		constraintManager.addLoadConstraint();
+//		constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager),Priority.CRITICAL);
+//		constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(),Priority.CRITICAL);
+		
+		stateManager.informInsertionStarts(Arrays.asList(route), null);
+		
+		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
+		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, constraintManager);
+		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, constraintManager);
+		switcher.put(Pickup.class, serviceInsertionCalc);
+		switcher.put(Shipment.class, insertionCalculator);
+		
+		Pickup service = (Pickup)Pickup.Builder.newInstance("pick", 1).setLocationId("5,5").build();
+		InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
+//		routeActVisitor.visit(route);
+		
+		assertEquals(3, iData.getDeliveryInsertionIndex());
+	}
+	
 	
 }

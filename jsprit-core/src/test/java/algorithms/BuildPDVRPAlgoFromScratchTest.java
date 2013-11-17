@@ -23,25 +23,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import util.Solutions;
-import algorithms.ConstraintManager.Priority;
-import algorithms.StateManager.StateImpl;
 import algorithms.acceptors.AcceptNewIfBetterThanWorst;
 import algorithms.selectors.SelectBest;
-import basics.Delivery;
-import basics.Job;
-import basics.Pickup;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
-import basics.algo.InsertionStartsListener;
-import basics.algo.JobInsertedListener;
 import basics.algo.SearchStrategy;
 import basics.algo.SearchStrategyManager;
 import basics.algo.SolutionCostCalculator;
 import basics.io.VrpXMLReader;
 import basics.route.InfiniteFleetManagerFactory;
-import basics.route.ReverseRouteActivityVisitor;
-import basics.route.RouteActivityVisitor;
 import basics.route.VehicleFleetManager;
 import basics.route.VehicleRoute;
 
@@ -62,22 +53,16 @@ public class BuildPDVRPAlgoFromScratchTest {
 			
 			final StateManager stateManager = new StateManager();
 			
-			ConstraintManager actLevelConstraintAccumulator = new ConstraintManager(vrp,stateManager);
-			actLevelConstraintAccumulator.addConstraint(new ServiceLoadActivityLevelConstraint(stateManager),Priority.LOW);
-			actLevelConstraintAccumulator.addConstraint(new TimeWindowConstraint(stateManager, vrp.getTransportCosts()),Priority.HIGH);
-			
-			ActivityInsertionCostsCalculator marginalCalculus = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
-
-
-			ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), marginalCalculus, new ServiceLoadRouteLevelConstraint(stateManager), actLevelConstraintAccumulator);
-
-//			CalculatesServiceInsertion serviceInsertion = new CalculatesServiceInsertion(vrp.getTransportCosts(), marginalCalculus, new HardConstraints.HardLoadConstraint(stateManager));
+			ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+			constraintManager.addTimeWindowConstraint();
+			constraintManager.addLoadConstraint();
 			
 			VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
-			JobInsertionCostsCalculator finalServiceInsertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager, serviceInsertion);
 			
-			BestInsertion bestInsertion = new BestInsertion(finalServiceInsertion);
-			
+			BestInsertionBuilder iBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager, constraintManager);
+//			iBuilder.setConstraintManager(constraintManger);
+			InsertionStrategy bestInsertion = iBuilder.build();
+				
 			RuinRadial radial = new RuinRadial(vrp, 0.15, new JobDistanceAvgCosts(vrp.getTransportCosts()));
 			RuinRandom random = new RuinRandom(vrp, 0.25);
 			
@@ -105,80 +90,14 @@ public class BuildPDVRPAlgoFromScratchTest {
 			strategyManager.addStrategy(radialStrategy, 0.5);
 			strategyManager.addStrategy(randomStrategy, 0.5);
 			
-			vra = new VehicleRoutingAlgorithm(vrp, strategyManager);
-	
-			vra.getAlgorithmListeners().addListener(stateManager);
-			
-			final RouteActivityVisitor iterateForward = new RouteActivityVisitor();
-			
-			iterateForward.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
-//			iterateForward.addActivityVisitor(new UpdateEarliestStartTime(stateManager, vrp.getTransportCosts()));
-			iterateForward.addActivityVisitor(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
-			
-			iterateForward.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
-			iterateForward.addActivityVisitor(new UpdateLoads(stateManager));
-			
-			final ReverseRouteActivityVisitor iterateBackward = new ReverseRouteActivityVisitor();
-			iterateBackward.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
-			iterateBackward.addActivityVisitor(new UpdateFuturePickups(stateManager));
-			
-			
-			InsertionStartsListener loadVehicleInDepot = new InsertionStartsListener() {
-				
-				@Override
-				public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
-					for(VehicleRoute route : vehicleRoutes){
-						int loadAtDepot = 0;
-						int loadAtEnd = 0;
-						for(Job j : route.getTourActivities().getJobs()){
-							if(j instanceof Delivery){
-								loadAtDepot += j.getCapacityDemand();
-							}
-							if(j instanceof Pickup){
-								loadAtEnd += j.getCapacityDemand();
-							}
-						}
-						stateManager.putRouteState(route, StateFactory.LOAD_AT_BEGINNING, new StateImpl(loadAtDepot));
-						stateManager.putRouteState(route, StateFactory.LOAD, new StateImpl(loadAtEnd));
-						iterateForward.visit(route);
-						iterateBackward.visit(route);
-					}
-				}
-				
-			};
-			
-			vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
-			
-			JobInsertedListener updateLoadAfterJobHasBeenInserted = new JobInsertedListener() {
-				
-				@Override
-				public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
-//					log.info("insert job " + job2insert.getClass().toString() + " job " + job2insert + "" + job2insert.getCapacityDemand() + " in route " + inRoute.getTourActivities());
-					
-					if(job2insert instanceof Delivery){
-						int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING).toDouble();
-//						log.info("loadAtDepot="+loadAtDepot);
-						stateManager.putRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, StateFactory.createState(loadAtDepot + job2insert.getCapacityDemand()));
-					}
-					if(job2insert instanceof Pickup){
-						int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_END).toDouble();
-//						log.info("loadAtEnd="+loadAtEnd);
-						stateManager.putRouteState(inRoute, StateFactory.LOAD_AT_END, StateFactory.createState(loadAtEnd + job2insert.getCapacityDemand()));
-					}
-					iterateForward.visit(inRoute);
-					iterateBackward.visit(inRoute);
-				}
-			};
-						
-			bestInsertion.addListener(loadVehicleInDepot);
-			bestInsertion.addListener(updateLoadAfterJobHasBeenInserted);
+			vra = new VehicleRoutingAlgorithmFactoryImpl(strategyManager, stateManager, fleetManager).createAlgorithm(vrp);
 			
 			VehicleRoutingProblemSolution iniSolution = new InsertionInitialSolutionFactory(bestInsertion, solutionCostCalculator).createSolution(vrp);
 
 //			System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 			vra.addInitialSolution(iniSolution);
-			vra.setNuOfIterations(10000);
-			vra.setPrematureBreak(1000);
+			vra.setNuOfIterations(1000);
+			vra.setPrematureBreak(100);
 			
 	}
 	

@@ -137,12 +137,12 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			iterateForward.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
 			iterateForward.addActivityVisitor(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 			
-			iterateForward.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
+			iterateForward.addActivityVisitor(new UpdatePrevMaxLoad(stateManager));
 			iterateForward.addActivityVisitor(new UpdateLoads(stateManager));
 			
 			final ReverseRouteActivityVisitor iterateBackward = new ReverseRouteActivityVisitor();
 			iterateBackward.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
-			iterateBackward.addActivityVisitor(new UpdateFuturePickups(stateManager));
+			iterateBackward.addActivityVisitor(new UpdateMaxLoad(stateManager));
 			
 			JobInsertedListener updateWhenJobHasBeenInserted = new JobInsertedListener() {
 				
