@@ -139,7 +139,7 @@ public class Service implements Job {
 
 	@Override
 	public String toString() {
-		return "[id=" + id + "][locationId=" + locationId + "][coord="+coord+"][size=" + demand + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
+		return "[id=" + id + "][type="+type+"][locationId=" + locationId + "][coord="+coord+"][size=" + demand + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
 	}
 
 	/* (non-Javadoc)
