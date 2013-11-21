@@ -28,6 +28,16 @@ import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.SearchStrategy.DiscoveredSolution;
 
+/**
+ * Breaks algorithm prematurely based on variationCoefficient.
+ * 
+ * <p>Note that this must be registered in algorithm<br>
+ * <code>algorithm.getAlgorithmListeners().addListener(this);</code>
+ * 
+ * 
+ * @author stefan
+ *
+ */
 public class VariationCoefficientBreaker implements PrematureAlgorithmBreaker, IterationStartsListener, AlgorithmStartsListener, IterationEndsListener{
 
 	private static Logger logger = Logger.getLogger(VariationCoefficientBreaker.class);
@@ -42,6 +52,16 @@ public class VariationCoefficientBreaker implements PrematureAlgorithmBreaker, I
 	
 	private VehicleRoutingProblemSolution lastAccepted = null;
 	
+	/**
+	 * Breaks algorithm prematurely based on variationCoefficient.
+	 * 
+	 * <p>Note that this must be registered in algorithm<br>
+	 * <code>algorithm.getAlgorithmListeners().addListener(this);</code>
+	 * 
+	 * 
+	 * @author stefan
+	 *
+	 */
 	public VariationCoefficientBreaker(int nuOfIterations, double variationCoefficientThreshold) {
 		super();
 		this.nuOfIterations = nuOfIterations;

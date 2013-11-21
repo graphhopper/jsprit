@@ -87,8 +87,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			int nuOfThreads = 10;
 			executorService = Executors.newFixedThreadPool(nuOfThreads);
 			
-			BestInsertionBuilder bestIBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager);
-			bestIBuilder.setConstraintManager(constraintManager);
+			BestInsertionBuilder bestIBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager,constraintManager);
 			bestIBuilder.setConcurrentMode(executorService, nuOfThreads);
 			InsertionStrategy bestInsertion = bestIBuilder.build();
 			
@@ -187,7 +186,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 //			System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 			vra.addInitialSolution(iniSolution);
 			
-			vra.setNuOfIterations(100);
+			vra.setNuOfIterations(10);
 //			vra.setPrematureBreak(500);
 			
 	}

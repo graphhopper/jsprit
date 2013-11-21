@@ -18,7 +18,7 @@ package algorithms;
 
 import basics.VehicleRoutingProblem;
 
-interface InsertionStrategyFactory {
+public interface InsertionStrategyFactory {
 
 	public InsertionStrategy createStrategy(VehicleRoutingProblem vrp);
 	

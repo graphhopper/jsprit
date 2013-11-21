@@ -201,8 +201,7 @@ public class GendreauPostOptTest {
 		InsertionStrategy insertionStrategy = new BestInsertion(insertionCalc);
 		insertionStrategy.addListener(stateUpdater);
 		insertionStrategy.addListener(new VehicleSwitched(fleetManager));
-		Gendreau postOpt = new Gendreau(vrp, radialRuin, insertionStrategy);
-		postOpt.setFleetManager(fleetManager);
+		Gendreau postOpt = new Gendreau(vrp, radialRuin, insertionStrategy, fleetManager);
 		
 		VehicleRoutingProblemSolution newSolution = postOpt.runAndGetSolution(sol);
 		newSolution.setCost(getCosts(newSolution,states));
@@ -261,10 +260,10 @@ public class GendreauPostOptTest {
 		InsertionStrategy insertionStrategy = new BestInsertion(insertionCalc);
 		insertionStrategy.addListener(stateUpdater);
 		insertionStrategy.addListener(new VehicleSwitched(fleetManager));
-		Gendreau postOpt = new Gendreau(vrp, radialRuin, insertionStrategy);
+		Gendreau postOpt = new Gendreau(vrp, radialRuin, insertionStrategy, fleetManager);
 		postOpt.setShareOfJobsToRuin(1.0);
 		postOpt.setNuOfIterations(1);
-		postOpt.setFleetManager(fleetManager);
+
 //		postOpt.setWithFix(withFixCost);
 		VehicleRoutingProblemSolution newSolution = postOpt.runAndGetSolution(sol);
 		newSolution.setCost(getCosts(newSolution,states));

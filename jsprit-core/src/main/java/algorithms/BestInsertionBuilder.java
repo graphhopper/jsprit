@@ -9,7 +9,7 @@ import basics.algo.InsertionListener;
 import basics.algo.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import basics.route.VehicleFleetManager;
 
-public class BestInsertionBuilder implements InsertionStrategyBuilder{
+public class BestInsertionBuilder {
 
 	private VehicleRoutingProblem vrp;
 	
@@ -35,11 +35,11 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 
 	private int nuOfThreads;
 	
-	public BestInsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager) {
+	public BestInsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
 		super();
 		this.vrp = vrp;
 		this.stateManager = stateManager;
-		this.constraintManager = new ConstraintManager(vrp,stateManager);
+		this.constraintManager = constraintManager;
 		this.fleetManager = vehicleFleetManager;
 	}
 		
@@ -73,7 +73,7 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 		return this;
 	}
 	
-	@Override
+	
 	public InsertionStrategy build() {
 		List<InsertionListener> iListeners = new ArrayList<InsertionListener>();
 		List<PrioritizedVRAListener> algorithmListeners = new ArrayList<PrioritizedVRAListener>();
@@ -99,14 +99,12 @@ public class BestInsertionBuilder implements InsertionStrategyBuilder{
 			
 		}
 		else{
-			bestInsertion = new BestInsertionConc(jobInsertions,executor,nuOfThreads);
+
+			bestInsertion = new BestInsertionConcurrent(jobInsertions,executor,nuOfThreads);
+
 		}
 		for(InsertionListener l : iListeners) bestInsertion.addListener(l);
 		return bestInsertion;
-	}
-
-	public void setConstraintManager(ConstraintManager constraintManager) {
-		this.constraintManager = constraintManager;
 	}
 
 }

@@ -814,10 +814,9 @@ public class VehicleRoutingAlgorithms {
 				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, routeStates, prioListeners, executorService, nuOfThreads, constraintManager);
 				algorithmListeners.addAll(prioListeners);
 			}
-			Gendreau gendreau = new Gendreau(vrp, ruin, insertion);
+			Gendreau gendreau = new Gendreau(vrp, ruin, insertion, vehicleFleetManager);
 			gendreau.setShareOfJobsToRuin(share);
 			gendreau.setNuOfIterations(iterations);
-			gendreau.setFleetManager(vehicleFleetManager);
 			definedClasses.put(strategyModuleKey, gendreau);
 			return gendreau;
 		}

@@ -45,7 +45,7 @@ import basics.route.VehicleRoute;
  * 
  */
 
-final class BestInsertionConc implements InsertionStrategy{
+final class BestInsertionConcurrent implements InsertionStrategy{
 	
 	static class Batch {
 		List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
@@ -74,7 +74,7 @@ final class BestInsertionConc implements InsertionStrategy{
 		
 	}
 	
-	private static Logger logger = Logger.getLogger(BestInsertionConc.class);
+	private static Logger logger = Logger.getLogger(BestInsertionConcurrent.class);
 
 	private Random random = RandomNumberGeneration.getRandom();
 	
@@ -102,7 +102,7 @@ final class BestInsertionConc implements InsertionStrategy{
 		this.random = random;
 	}
 	
-	public BestInsertionConc(JobInsertionCostsCalculator jobInsertionCalculator, ExecutorService executorService, int nuOfBatches) {
+	public BestInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, ExecutorService executorService, int nuOfBatches) {
 		super();
 		this.insertionsListeners = new InsertionListeners();
 		this.executor = executorService;

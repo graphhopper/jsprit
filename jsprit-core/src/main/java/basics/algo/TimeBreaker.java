@@ -25,6 +25,15 @@ import basics.VehicleRoutingProblem;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.SearchStrategy.DiscoveredSolution;
 
+/**
+ * Breaks algorithm prematurely based on specified time.
+ * 
+ * <p>Note, TimeBreaker must be registered as AlgorithmListener <br>
+ * <code>agorithm.getAlgorithmListeners().addListener(this);</code>
+ * 
+ * @author stefan
+ *
+ */
 public class TimeBreaker implements PrematureAlgorithmBreaker, AlgorithmStartsListener{
 
 	private static Logger logger = Logger.getLogger(TimeBreaker.class);
@@ -33,9 +42,18 @@ public class TimeBreaker implements PrematureAlgorithmBreaker, AlgorithmStartsLi
 	
 	private double startTime;
 	
-	public TimeBreaker(double time) {
+	/**
+	 * Constructs TimeBreaker that breaks algorithm prematurely based on specified time.
+	 * 
+	 * <p>Note, TimeBreaker must be registered as AlgorithmListener <br>
+	 * <code>agorithm.getAlgorithmListeners().addListener(this);</code>
+	 * 
+	 * @author stefan
+	 *
+	 */
+	public TimeBreaker(double time_in_seconds) {
 		super();
-		this.timeThreshold = time;
+		this.timeThreshold = time_in_seconds;
 		logger.info("initialise " + this);
 	}
 	

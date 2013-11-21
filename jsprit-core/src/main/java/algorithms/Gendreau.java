@@ -40,7 +40,7 @@ import basics.route.VehicleFleetManager;
 import basics.route.TourActivity.JobActivity;
 import basics.route.VehicleRoute;
 
-final class Gendreau implements SearchStrategyModule{
+public final class Gendreau implements SearchStrategyModule{
 
 	private final static Logger log = Logger.getLogger(Gendreau.class);
 	
@@ -64,7 +64,7 @@ final class Gendreau implements SearchStrategyModule{
 		this.shareOfJobsToRuin = shareOfJobsToRuin;
 	}
 
-	public Gendreau(VehicleRoutingProblem vrp, RuinStrategy ruin, InsertionStrategy insertionStrategy) {
+	public Gendreau(VehicleRoutingProblem vrp, RuinStrategy ruin, InsertionStrategy insertionStrategy, VehicleFleetManager vehicleFleetManager) {
 		super();
 		InsertionListeners insertionListeners = new InsertionListeners();
 		insertionListeners.addAllListeners(insertionStrategy.getListeners());
@@ -72,6 +72,7 @@ final class Gendreau implements SearchStrategyModule{
 		this.ruin = ruin;
 		this.vrp = vrp;
 		this.insertionStrategy = insertionStrategy;
+		this.fleetManager = vehicleFleetManager;
 	}
 
 	@Override
@@ -88,10 +89,10 @@ final class Gendreau implements SearchStrategyModule{
 		this.nOfIterations = nOfIterations;
 	}
 
-	public void setFleetManager(VehicleFleetManager vehicleFleetManager) {
-		this.fleetManager = vehicleFleetManager;
-		
-	}
+//	public void setFleetManager(VehicleFleetManager vehicleFleetManager) {
+//		this.fleetManager = vehicleFleetManager;
+//		
+//	}
 
 	@Override
 	public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
@@ -119,14 +120,14 @@ final class Gendreau implements SearchStrategyModule{
 			VehicleRoute emptyRoute1 = VehicleRoute.emptyRoute();
 			copiedRoutes.add(emptyRoute1);
 			insertionStrategy.insertJobs(Arrays.asList(emptyRoute1), Arrays.asList(targetJob));
-//			routeAlgorithm.insertJob(targetJob, routeAlgorithm.calculateBestInsertion(emptyRoute1, targetJob, Double.MAX_VALUE), emptyRoute1);
+
 			unassignedJobs.remove(targetJob);
 			
 			VehicleRoute emptyRoute2 = VehicleRoute.emptyRoute();
 			copiedRoutes.add(emptyRoute2);
 			Job job2 = jobsInRoute.get(1);
 			insertionStrategy.insertJobs(Arrays.asList(emptyRoute2), Arrays.asList(job2));
-//			routeAlgorithm.insertJob(job2, routeAlgorithm.calculateBestInsertion(emptyRoute2, job2, Double.MAX_VALUE), emptyRoute2);
+
 			unassignedJobs.remove(job2);
 			
 			insertionStrategy.insertJobs(copiedRoutes, unassignedJobs);
