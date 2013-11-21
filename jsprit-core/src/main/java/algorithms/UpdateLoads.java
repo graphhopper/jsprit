@@ -2,6 +2,8 @@ package algorithms;
 
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import basics.Delivery;
 import basics.Job;
 import basics.Pickup;
@@ -27,6 +29,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	private StateManager stateManager;
 	private int currentLoad = 0;
 	private VehicleRoute route;
+	private static Logger log = Logger.getLogger(UpdateLoads.class);
 	
 	/**
 	 * Updates load at activity level. 
@@ -89,6 +92,8 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	
 	@Override
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+//		log.debug("insert("+job2insert+").into("+inRoute+")");
+//		log(inRoute);
 		if(job2insert instanceof Delivery){
 			int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING).toDouble();
 //			log.info("loadAtDepot="+loadAtDepot);
@@ -100,5 +105,14 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 			stateManager.putRouteState(inRoute, StateFactory.LOAD_AT_END, StateFactory.createState(loadAtEnd + job2insert.getCapacityDemand()));
 		}
 	}
+
+//	private void log(VehicleRoute inRoute) {
+//		log.debug(inRoute.getStart());
+//		for(TourActivity act : inRoute.getTourActivities().getActivities()){
+//			log.debug(act);
+//		}
+//		log.debug(inRoute.getEnd());
+//		
+//	}
 
 }

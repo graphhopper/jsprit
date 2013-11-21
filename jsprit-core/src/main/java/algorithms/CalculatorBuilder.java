@@ -19,6 +19,8 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
+import basics.Delivery;
+import basics.Pickup;
 import basics.Service;
 import basics.Shipment;
 import basics.VehicleRoutingProblem;
@@ -238,6 +240,8 @@ class CalculatorBuilder {
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
 		switcher.put(Shipment.class, shipmentInsertion);
 		switcher.put(Service.class, serviceInsertion);
+		switcher.put(Pickup.class, serviceInsertion);
+		switcher.put(Delivery.class, serviceInsertion);
 		
 //		JobInsertionCostsCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
 //		((ServiceInsertionCalculator) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());

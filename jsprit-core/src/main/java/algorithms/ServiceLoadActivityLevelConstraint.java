@@ -1,7 +1,9 @@
 package algorithms;
 
-import basics.route.DeliveryActivity;
-import basics.route.PickupActivity;
+import org.apache.log4j.Logger;
+
+import basics.route.DeliverService;
+import basics.route.PickupService;
 import basics.route.ServiceActivity;
 import basics.route.Start;
 import basics.route.TourActivity;
@@ -17,6 +19,8 @@ import basics.route.TourActivity;
  */
 class ServiceLoadActivityLevelConstraint implements HardActivityStateLevelConstraint {
 	
+	private static Logger log = Logger.getLogger(ServiceLoadActivityLevelConstraint.class);
+	
 	private StateGetter stateManager;
 	
 	public ServiceLoadActivityLevelConstraint(StateGetter stateManager) {
@@ -26,31 +30,31 @@ class ServiceLoadActivityLevelConstraint implements HardActivityStateLevelConstr
 
 	@Override
 	public ConstraintsStatus fulfilled(InsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-		int loadAtPrevAct;
-		int futurePicks;
-		int pastDeliveries;
+		int futureMaxLoad;
+		int prevMaxLoad;
 		if(prevAct instanceof Start){
-			loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING).toDouble();
-			futurePicks = (int)stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_END).toDouble();
-			pastDeliveries = 0;
+			futureMaxLoad = (int)stateManager.getRouteState(iFacts.getRoute(), StateFactory.MAXLOAD).toDouble();
+			prevMaxLoad = (int)stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING).toDouble();
 		}
 		else{
-			loadAtPrevAct = (int) stateManager.getActivityState(prevAct, StateFactory.LOAD).toDouble();
-			futurePicks = (int) stateManager.getActivityState(prevAct, StateFactory.FUTURE_PICKS).toDouble();
-			pastDeliveries = (int) stateManager.getActivityState(prevAct, StateFactory.PAST_DELIVERIES).toDouble();
+			futureMaxLoad = (int) stateManager.getActivityState(prevAct, StateFactory.FUTURE_PICKS).toDouble();
+			prevMaxLoad = (int) stateManager.getActivityState(prevAct, StateFactory.PAST_DELIVERIES).toDouble();
+			
 		}
-		if(newAct instanceof PickupActivity || newAct instanceof ServiceActivity){
-			if(loadAtPrevAct + newAct.getCapacityDemand() + futurePicks > iFacts.getNewVehicle().getCapacity()){
+		if(newAct instanceof PickupService || newAct instanceof ServiceActivity){
+			if(newAct.getCapacityDemand() + futureMaxLoad > iFacts.getNewVehicle().getCapacity()){
+//				log.debug("insertionOf("+newAct+").BETWEEN("+prevAct+").AND("+nextAct+")=NOT_POSSIBLE");
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
 		}
-		if(newAct instanceof DeliveryActivity){
-			if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) + pastDeliveries > iFacts.getNewVehicle().getCapacity()){
-				return ConstraintsStatus.NOT_FULFILLED;
+		if(newAct instanceof DeliverService){
+			if(Math.abs(newAct.getCapacityDemand()) + prevMaxLoad > iFacts.getNewVehicle().getCapacity()){
+//				log.debug("insertionOf("+newAct+").BETWEEN("+prevAct+").AND("+nextAct+")=NOT_POSSIBLE[break=neverBePossibleAnymore]");
+				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
 			
 		}
+//		log.debug("insertionOf("+newAct+").BETWEEN("+prevAct+").AND("+nextAct+")=POSSIBLE");
 		return ConstraintsStatus.FULFILLED;
-	}
-		
+	}		
 }

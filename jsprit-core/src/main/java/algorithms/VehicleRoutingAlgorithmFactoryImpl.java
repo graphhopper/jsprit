@@ -25,7 +25,7 @@ public class VehicleRoutingAlgorithmFactoryImpl implements VehicleRoutingAlgorit
 	@Override
 	public VehicleRoutingAlgorithm createAlgorithm(VehicleRoutingProblem vrp) {
 		this.stateManager.addActivityVisitor(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), this.stateManager));
-		this.stateManager.addActivityVisitor(new UpdateMaxLoad(this.stateManager));
+//		this.stateManager.addActivityVisitor(new UpdateMaxLoad_(this.stateManager));
 		VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(vrp, searchStrategyManager);
 		algorithm.getAlgorithmListeners().addListener(stateManager);
 		algorithm.getSearchStrategyManager().addSearchStrategyModuleListener(stateManager);
