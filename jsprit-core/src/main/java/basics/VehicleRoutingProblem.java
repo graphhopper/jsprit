@@ -55,7 +55,7 @@ public class VehicleRoutingProblem {
 	/**
 	 * Overall problem constraints.
 	 * 
-	 * <p>DELIIVERIES_FIRST corresponds to the vehicle routing problem with back hauls, i.e. before a vehicle is not entirely unloaded, no pickup can be made. 
+	 * <p>DELIVERIES_FIRST corresponds to the vehicle routing problem with back hauls, i.e. before a vehicle is not entirely unloaded, no pickup can be made. 
 	 * 
 	 * @author stefan
 	 *

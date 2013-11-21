@@ -41,7 +41,7 @@ import basics.route.VehicleImpl.Builder;
 import basics.route.VehicleType;
 import basics.route.VehicleTypeImpl;
 
-public class SimplePickupAndDeliveryExample {
+public class SimpleDepotBoundedPickupAndDeliveryExample {
 	
 	public static void main(String[] args) {
 		/*
