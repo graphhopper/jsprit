@@ -80,7 +80,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 			constraintManager.addTimeWindowConstraint();
 			constraintManager.addLoadConstraint();
-			constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager,true));
+//			constraintManager.addConstraint(new HardPickupAndDeliveryShipmentActivityLevelConstraint(stateManager));
 			
 			VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 			
@@ -88,6 +88,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			executorService = Executors.newFixedThreadPool(nuOfThreads);
 			
 			BestInsertionBuilder bestIBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager,constraintManager);
+
 			bestIBuilder.setConcurrentMode(executorService, nuOfThreads);
 			InsertionStrategy bestInsertion = bestIBuilder.build();
 			
@@ -139,20 +140,58 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 			strategyManager.addStrategy(randomStrategy, 0.5);
 			
 			vra = new VehicleRoutingAlgorithmFactoryImpl(strategyManager, stateManager, fleetManager).createAlgorithm(vrp);
-			
-//			vra.getAlgorithmListeners().addListener(stateManager);
-			
-//			final RouteActivityVisitor iterateForward = new RouteActivityVisitor();
-			
-//			iterateForward.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
-//			iterateForward.addActivityVisitor(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 //			
-//			iterateForward.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
+////			vra.getAlgorithmListeners().addListener(stateManager);
+//			
+////			final RouteActivityVisitor iterateForward = new RouteActivityVisitor();
+//			
+////			iterateForward.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
+////			iterateForward.addActivityVisitor(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+////			
+////			iterateForward.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
+////			iterateForward.addActivityVisitor(new UpdateLoads(stateManager));
+////			
+////			final ReverseRouteActivityVisitor iterateBackward = new ReverseRouteActivityVisitor();
+////			iterateBackward.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
+////			iterateBackward.addActivityVisitor(new UpdateFuturePickups(stateManager));
+////			
+////			JobInsertedListener updateWhenJobHasBeenInserted = new JobInsertedListener() {
+////				
+////				@Override
+////				public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+////					iterateForward.visit(inRoute);
+////					iterateBackward.visit(inRoute);
+////				}
+////				
+////			};
+////			
+////			InsertionStartsListener updateRoutesWhenInsertionStarts = new InsertionStartsListener() {
+////				
+////				@Override
+////				public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
+////					for(VehicleRoute route : vehicleRoutes){
+////						iterateForward.visit(route);
+////						iterateBackward.visit(route);
+////					}
+////					
+////				}
+////			};
+//			
+//<<<<<<< HEAD
+////			vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
+//=======
+//			iterateForward.addActivityVisitor(new UpdatePrevMaxLoad(stateManager));
 //			iterateForward.addActivityVisitor(new UpdateLoads(stateManager));
+//>>>>>>> branch 'PickupAndDelivery' of https://github.com/jsprit/jsprit.git
 //			
+//<<<<<<< HEAD
+////			bestInsertion.addListener(new UpdateLoads(stateManager));
+////			bestInsertion.addListener(updateWhenJobHasBeenInserted);
+////			bestInsertion.addListener(updateRoutesWhenInsertionStarts);
+//=======
 //			final ReverseRouteActivityVisitor iterateBackward = new ReverseRouteActivityVisitor();
 //			iterateBackward.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
-//			iterateBackward.addActivityVisitor(new UpdateFuturePickups(stateManager));
+//			iterateBackward.addActivityVisitor(new UpdateMaxLoad(stateManager));
 //			
 //			JobInsertedListener updateWhenJobHasBeenInserted = new JobInsertedListener() {
 //				
@@ -175,13 +214,14 @@ public class BuildPDVRPWithShipmentsAlgoFromScratchTest {
 //					
 //				}
 //			};
-			
+//			
 //			vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
-			
+//			
 //			bestInsertion.addListener(new UpdateLoads(stateManager));
 //			bestInsertion.addListener(updateWhenJobHasBeenInserted);
 //			bestInsertion.addListener(updateRoutesWhenInsertionStarts);
-			
+//>>>>>>> branch 'PickupAndDelivery' of https://github.com/jsprit/jsprit.git
+//			
 			VehicleRoutingProblemSolution iniSolution = new InsertionInitialSolutionFactory(bestInsertion, solutionCostCalculator).createSolution(vrp);
 //			System.out.println("ini: costs="+iniSolution.getCost()+";#routes="+iniSolution.getRoutes().size());
 			vra.addInitialSolution(iniSolution);

@@ -88,7 +88,7 @@ public final class PickupService implements PickupActivity{
 
 	@Override
 	public String toString() {
-		return "[act="+getName()+"][loc="+getLocationId()+"]";
+		return "[act="+getName()+"][capDemand="+getCapacityDemand()+"][loc="+getLocationId()+"]";
 	}
 
 }

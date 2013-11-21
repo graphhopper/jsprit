@@ -16,7 +16,6 @@
  ******************************************************************************/
 package basics.route;
 
-import basics.Delivery;
 import basics.route.TourActivity.JobActivity;
 
 public interface DeliveryActivity extends JobActivity{

@@ -83,6 +83,6 @@ public final class DeliverService implements DeliveryActivity{
 
 	@Override
 	public String toString() {
-		return "[act="+getName()+"][loc="+getLocationId()+"]";
+		return "[act="+getName()+"][capDemand="+getCapacityDemand()+"][loc="+getLocationId()+"]";
 	}
 }

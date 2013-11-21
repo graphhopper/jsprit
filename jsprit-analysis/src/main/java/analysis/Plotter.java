@@ -85,6 +85,8 @@ public class Plotter {
 	private boolean plotSolutionAsWell = false;
 
 	private boolean plotShipments = true;
+
+	private Collection<VehicleRoute> routes;
 	
 	public void setShowFirstActivity(boolean show){
 		showFirstActivity = show;
@@ -102,13 +104,20 @@ public class Plotter {
 	public Plotter(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution) {
 		super();
 		this.vrp = vrp;
-		this.solution = solution;
+		this.routes = solution.getRoutes();
 		plotSolutionAsWell = true;
 	}
 	
+	public Plotter(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) {
+		super();
+		this.vrp = vrp;
+		this.routes = routes;
+		plotSolutionAsWell = true;
+	}
+
 	public void plot(String pngFileName, String plotTitle){
 		if(plotSolutionAsWell){
-			plotSolutionAsPNG(vrp, solution, pngFileName, plotTitle);
+			plotSolutionAsPNG(vrp, routes, pngFileName, plotTitle);
 		}
 		else{
 			plotVrpAsPNG(vrp, pngFileName, plotTitle);
@@ -149,7 +158,7 @@ public class Plotter {
 		save(chart,pngFile);
 	}
 	
-	private void plotSolutionAsPNG(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, String pngFile, String title){
+	private void plotSolutionAsPNG(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes, String pngFile, String title){
 		log.info("plot solution to " + pngFile);
 		XYSeriesCollection problem;
 		XYSeriesCollection solutionColl;
@@ -158,7 +167,7 @@ public class Plotter {
 		try {
 			problem = makeVrpSeries(vrp, labels);
 			shipments = makeShipmentSeries(vrp.getJobs().values(), null);
-			solutionColl = makeSolutionSeries(vrp, solution);
+			solutionColl = makeSolutionSeries(vrp, routes);
 		} catch (NoLocationFoundException e) {
 			log.warn("cannot plot vrp, since coord is missing");
 			return;	
@@ -305,11 +314,11 @@ public class Plotter {
 		}
 	}
 
-	private XYSeriesCollection makeSolutionSeries(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution) throws NoLocationFoundException{
+	private XYSeriesCollection makeSolutionSeries(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) throws NoLocationFoundException{
 		Locations locations = retrieveLocations(vrp);
 		XYSeriesCollection coll = new XYSeriesCollection();
 		int counter = 1;
-		for(VehicleRoute route : solution.getRoutes()){
+		for(VehicleRoute route : routes){
 			if(route.isEmpty()) continue;
 			XYSeries series = new XYSeries(counter, false, true);
 			

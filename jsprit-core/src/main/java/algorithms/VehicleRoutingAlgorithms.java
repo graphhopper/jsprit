@@ -46,7 +46,6 @@ import algorithms.selectors.SelectRandomly;
 import algorithms.selectors.SolutionSelector;
 import basics.VehicleRoutingAlgorithm;
 import basics.VehicleRoutingProblem;
-import basics.VehicleRoutingProblem.Constraint;
 import basics.VehicleRoutingProblem.FleetSize;
 import basics.VehicleRoutingProblemSolution;
 import basics.algo.AlgorithmStartsListener;
@@ -446,16 +445,8 @@ public class VehicleRoutingAlgorithms {
 		 */
 		//constraint manager
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-		constraintManager.addConstraint(new TimeWindowConstraint(stateManager, vrp.getTransportCosts()));
-	
-		if(vrp.getProblemConstraints().contains(Constraint.DELIVERIES_FIRST)){
-			constraintManager.addConstraint(new ServiceBackhaulConstraint());
-		}
-		else{
-			constraintManager.addConstraint(new ServiceLoadActivityLevelConstraint(stateManager));
-		}
-		
-		constraintManager.addConstraint(new ServiceLoadRouteLevelConstraint(stateManager));
+		constraintManager.addTimeWindowConstraint();
+		constraintManager.addLoadConstraint();
 		
 		//construct initial solution creator 
 		AlgorithmStartsListener createInitialSolution = createInitialSolution(config,vrp,vehicleFleetManager,stateManager,algorithmListeners,definedClasses,executorService,nuOfThreads,constraintManager);
@@ -492,24 +483,15 @@ public class VehicleRoutingAlgorithms {
 		/*
 		 * define stateUpdates
 		 */
-		
-//		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenInsertionStarts(stateManager));
-//		stateManager.addListener(new UpdateLoadsAtStartAndEndOfRouteWhenJobHasBeenInserted(stateManager));
-//	
-
-		UpdateLoads loadUpdater = new UpdateLoads(stateManager);
-		stateManager.addListener(loadUpdater);
-		stateManager.addActivityVisitor(loadUpdater);
-		
+//		UpdateLoads loadUpdater = new UpdateLoads(stateManager);
+//		stateManager.addListener(loadUpdater);
+//		stateManager.addActivityVisitor(loadUpdater);
 		stateManager.addActivityVisitor(new UpdateActivityTimes(vrp.getTransportCosts()));
-		
-		
 		stateManager.addActivityVisitor(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 		
-		stateManager.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
-		stateManager.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
-		stateManager.addActivityVisitor(new UpdateFuturePickups(stateManager));
-
+//		stateManager.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
+//		stateManager.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
+//		stateManager.addActivityVisitor(new UpdateFuturePickups(stateManager));
 		
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(stateManager);
 		metaAlgorithm.getAlgorithmListeners().addListener(stateManager);
