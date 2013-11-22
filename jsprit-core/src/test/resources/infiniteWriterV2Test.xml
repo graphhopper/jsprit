@@ -2,8 +2,8 @@
 <problem xmlns="http://www.w3schools.com"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
      <problemType>
-          <fleetSize>FINITE</fleetSize>
-          <fleetComposition>HETEROGENEOUS</fleetComposition>
+          <fleetSize>INFINITE</fleetSize>
+          <fleetComposition>HOMOGENEOUS</fleetComposition>
      </problemType>
      <vehicles>
           <vehicle>
@@ -73,28 +73,4 @@
                </timeWindows>
           </service>
      </services>
-     <solutions>
-          <solution>
-               <cost>100.0</cost>
-               <routes>
-                    <route>
-                         <cost>0.0</cost>
-                         <driverId>noDriver</driverId>
-                         <vehicleId>v1</vehicleId>
-                         <start>10.0</start>
-                         <act type="service">
-                              <serviceId>1</serviceId>
-                              <arrTime>20.0</arrTime>
-                              <endTime>30.0</endTime>
-                         </act>
-                         <act type="service">
-                              <serviceId>2</serviceId>
-                              <arrTime>40.0</arrTime>
-                              <endTime>80.0</endTime>
-                         </act>
-                         <end>100.0</end>
-                    </route>
-               </routes>
-          </solution>
-     </solutions>
 </problem>

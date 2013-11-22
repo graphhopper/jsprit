@@ -99,7 +99,10 @@
 			<xs:restriction base="xs:string">
 				<xs:enumeration value="acceptNewRemoveWorst"/>
 				<xs:enumeration value="schrimpfAcceptance"/>
+				<xs:enumeration value="experimentalSchrimpfAcceptance"/>
 				<xs:enumeration value="acceptNewRemoveFirst"/>
+				<xs:enumeration value="greedyAcceptance"/>
+				<xs:enumeration value="greedyAcceptance_minVehFirst"/>
 			</xs:restriction>
 		</xs:simpleType>
 	</xs:attribute>

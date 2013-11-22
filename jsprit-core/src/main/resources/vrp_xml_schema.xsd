@@ -173,7 +173,7 @@
 									 			<xs:element name="route" minOccurs="0" maxOccurs="unbounded">
 									 				<xs:complexType>
 									 					<xs:sequence>
-									 						<xs:element name="cost" type="xs:double" minOccurs="1" maxOccurs="1"/>
+									 						<xs:element name="cost" type="xs:double" minOccurs="0" maxOccurs="1"/>
 									 						<xs:element name="driverId" type="xs:string" minOccurs="1" maxOccurs="1"/>
 									 						<xs:element name="vehicleId" type="xs:string" minOccurs="1" maxOccurs="1"/>
 									 						<xs:element name="start" type="xs:double" minOccurs="1" maxOccurs="1"/>
