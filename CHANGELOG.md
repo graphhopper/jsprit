@@ -1,5 +1,9 @@
 Change-log
 ==========
+**v0.0.5** @ 2013-11-22
+
+
+
 **v0.0.4** @ 2013-10-17
 
 - A number of internal improvements
