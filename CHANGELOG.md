@@ -2,7 +2,7 @@ Change-log
 ==========
 **v0.0.5** @ 2013-11-22
 
-- more memory-efficient RadialRuin (see #53)
+- more memory-efficient RadialRuin (see issue #53)
 
 
 **v0.0.4** @ 2013-10-17
