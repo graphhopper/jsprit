@@ -5,7 +5,6 @@ Change-log
 - re-organized API
 - new package names: jsprit.&lt;module&gt;.&lt;folder(s)&gt;
 - detailed changelog
-- most relevant:
 - SolutionPrinter.<del>print(solution, Print.VERBOSE)</del>
 - VehicleRoute: <del>getCosts()</del>, <del>getCostCalculator()</del>
 - TimeBreaker --> TimeTermination, VariationCoefficentBreaker --> ...Termination, Iteration...Breaker --> ...Termination
