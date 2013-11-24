@@ -2,13 +2,14 @@ Change-log
 ==========
 **v1.0.0** @ 2013-11-?? (break change)
 
-- re-organized API
+- re-organized API (re-organize imports)
 - new package names: jsprit.&lt;module&gt;.&lt;folder(s)&gt;
-- detailed changelog with all changes
+- detailed changelog
 - most relevant changes:
 - SolutionPrinter.<del>print(solution, Print.VERBOSE)</del>
 - VehicleRoute: <del>getCosts()</del>, <del>getCostCalculator()</del>
-- TimeBreaker -> TimeTermination, VariationCoefficentBreaker -> ...Termination, Iteration...Breaker -> ...Termination
+- TimeBreaker --> TimeTermination, VariationCoefficentBreaker --> ...Termination, Iteration...Breaker --> ...Termination
+- VehicleRoutingAlgorithm: setPrematureBreaker(...) --> setPrematureTermination(...)
 
 **v0.0.5** @ 2013-11-22
 
