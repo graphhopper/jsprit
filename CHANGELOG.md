@@ -1,5 +1,12 @@
 Change-log
 ==========
+**v1.0.0** @ 2013-11-?? (break change)
+
+- re-organized API
+- new package names: jsprit.<module>.<folder(s)>
+- most relevant changes:
+- detailed changelog
+
 **v0.0.5** @ 2013-11-22
 
 - more memory-efficient RadialRuin (issue #53)
