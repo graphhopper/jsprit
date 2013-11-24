@@ -6,8 +6,8 @@ Change-log
 - new package names: jsprit.&lt;module&gt;.&lt;folder(s)&gt;
 - detailed changelog with all changes
 - most relevant changes:
-- SolutionPrinter.<del>print(solution, Print.VERBOSE)<del>
-- VehicleRoute: <del>getCosts()<del>, <del>getCostCalculator()<del>
+- SolutionPrinter.<del>print(solution, Print.VERBOSE)</del>
+- VehicleRoute: <del>getCosts()</del>, <del>getCostCalculator()</del>
 
 **v0.0.5** @ 2013-11-22
 
