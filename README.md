@@ -29,8 +29,6 @@ Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 ##License
 This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
-<del>This software is released under GPLv2</del>
-
 ##Getting started in 2 seconds
 
 [Add the latest snapshot to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
