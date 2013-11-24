@@ -3,7 +3,7 @@ Change-log
 **v1.0.0** @ 2013-11-?? (break change)
 
 - re-organized API
-- new package names: jsprit.&lt;module&gt;.<folder(s)>
+- new package names: jsprit.&lt;module&gt;.&lt;folder(s)&gt;
 - most relevant changes:
 - detailed changelog
 
