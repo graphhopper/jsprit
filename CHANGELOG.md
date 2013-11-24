@@ -8,6 +8,7 @@ Change-log
 - most relevant changes:
 - SolutionPrinter.<del>print(solution, Print.VERBOSE)</del>
 - VehicleRoute: <del>getCosts()</del>, <del>getCostCalculator()</del>
+- TimeBreaker -> TimeTermination, VariationCoefficentBreaker -> ...Termination, Iteration...Breaker -> ...Termination
 
 **v0.0.5** @ 2013-11-22
 
