@@ -4,8 +4,9 @@ Change-log
 
 - re-organized API
 - new package names: jsprit.&lt;module&gt;.&lt;folder(s)&gt;
+- detailed changelog with all changes
 - most relevant changes:
-- detailed changelog
+- SolutionPrinter.print(solution, Print.VERBOSE)
 
 **v0.0.5** @ 2013-11-22
 
