@@ -103,7 +103,7 @@ public class CostMatrixExample {
 		VehicleRoutingTransportCosts costMatrix = costMatrixBuilder.build();
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(FleetSize.INFINITE).setRoutingCost(costMatrix)
-				.addVehicle(vehicle).addService(s1).addService(s2).addService(s3).build();
+				.addVehicle(vehicle).addJob(s1).addJob(s2).addJob(s3).build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/fastAlgo.xml");
 		

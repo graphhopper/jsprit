@@ -78,7 +78,7 @@ public class SimpleDepotBoundedPickupAndDeliveryExample {
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);
-		vrpBuilder.addService(pickup1).addService(pickup2).addService(delivery1).addService(delivery2);
+		vrpBuilder.addJob(pickup1).addJob(pickup2).addJob(delivery1).addJob(delivery2);
 		
 		
 		VehicleRoutingProblem problem = vrpBuilder.build();

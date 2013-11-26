@@ -224,7 +224,7 @@ public class RefuseCollectionExample {
 			/*
 			 * and add it to problem
 			 */
-			vrpBuilder.addService(service);
+			vrpBuilder.addJob(service);
 		}
 		reader.close();
 	}

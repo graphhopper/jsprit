@@ -76,7 +76,7 @@ public class SimpleExample {
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);
-		vrpBuilder.addService(service1).addService(service2).addService(service3).addService(service4);
+		vrpBuilder.addJob(service1).addJob(service2).addJob(service3).addJob(service4);
 		
 		VehicleRoutingProblem problem = vrpBuilder.build();
 		
