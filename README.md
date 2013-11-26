@@ -22,9 +22,9 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 
 ##In Development
 - continues improvement of code, handling and performance
-- handling soft constraints
+- soft constraints
 - various capacity dimensions and multiple time-windows
-- handling large scale instances
+- large scale instances
 
 ##Documentation
 
