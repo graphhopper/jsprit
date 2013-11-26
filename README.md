@@ -20,8 +20,9 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 
 ##In Development
 - continues improvement of code, handling and performance
-- relaxed API to easily build algorithms from scratch
-- VRP with pickups and deliveries
+- handling soft constraints
+- various capacity dimensions and multiple time-windows
+- performance, performance, performance
 
 ##Documentation
 
