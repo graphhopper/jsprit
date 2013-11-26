@@ -102,17 +102,26 @@ public class SimpleEnRoutePickupAndDeliveryExample {
 		 */
 		VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 		
+		/*
+		 * write out problem and solution to xml-file
+		 */
 		new VrpXMLWriter(problem, solutions).write("output/shipment-problem-with-solution.xml");
 		
+		/*
+		 * print nRoutes and totalCosts of bestSolution
+		 */
 		SolutionPrinter.print(bestSolution);
 		
 		/*
-		 * plot
+		 * plot problem without solution
 		 */
 		Plotter problemPlotter = new Plotter(problem);
 		problemPlotter.plotShipments(true);
 		problemPlotter.plot("output/simpleEnRoutePickupAndDeliveryExample_problem.png", "en-route pickup and delivery");
 		
+		/*
+		 * plot problem with solution
+		 */
 		Plotter solutionPlotter = new Plotter(problem,Arrays.asList(Solutions.bestOf(solutions).getRoutes().iterator().next()));
 		solutionPlotter.plotShipments(true);
 		solutionPlotter.plot("output/simpleEnRoutePickupAndDeliveryExample_solution.png", "en-route pickup and delivery");
