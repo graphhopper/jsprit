@@ -9,6 +9,8 @@ It is lightweight and easy-to-use, and based on heuristics currently solving
 - VRP with Pickups and Deliveries
 - VRP with Heterogeneous Fleet
 - Time-dependent VRP
+- TSP
+- Dial-a-Ride Problem (DARP)
 - Various combination of these types
 
 Setting up the problem, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
