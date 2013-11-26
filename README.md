@@ -1,6 +1,6 @@
 jsprit
 ======
-jsprit is a java based, open source toolkit for solving a set of well-known <a href="http://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">traveling salesman</a> and <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP). 
+jsprit is a java based, open source toolkit for solving a set of well-known <a href="http://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">traveling salesman</a> (TSP) and <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP). 
 It is lightweight and easy-to-use, and based on heuristics currently solving 
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/capacitated-vrp/" target="_blank">Capacitated VRP</a>
 - <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/" target="_blank">Multiple Depot VRP</a>
