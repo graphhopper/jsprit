@@ -4,11 +4,14 @@ Change-log
 
 - re-organized API
 - new package names: jsprit.&lt;module&gt;.&lt;folder(s)&gt;
-- detailed changelog
-- SolutionPrinter.<del>print(solution, Print.VERBOSE)</del>
+- most of the breaks can be fixed by (re-)organizing imports
+- however the following breaks have to be fixed manually:
+- SolutionPrinter.<del>print(solution, Print.VERBOSE)</del> --> use .print(solution) instead
 - VehicleRoute: <del>getCosts()</del>, <del>getCostCalculator()</del>
 - TimeBreaker --> TimeTermination, VariationCoefficentBreaker --> ...Termination, Iteration...Breaker --> ...Termination
 - VehicleRoutingAlgorithm: setPrematureBreaker(...) --> setPrematureTermination(...)
+- util.<del>Counter</del>
+- detailled changelog
 
 **v0.0.5** @ 2013-11-22
 
