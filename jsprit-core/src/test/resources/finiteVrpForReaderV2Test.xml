@@ -102,5 +102,33 @@
           </service>
      
      </services>
+     
+     <shipments>
+     	<shipment id="3">
+     		<pickup>
+     			<locationId>i(3,9)</locationId>
+               	<coord x="10.0" y="10.0"/>
+               	<duration>0.0</duration>
+               	<timeWindows>
+                    <timeWindow>
+                         <start>0.0</start>
+                         <end>4000.0</end>
+                    </timeWindow>
+               	</timeWindows>
+     		</pickup>
+     		<delivery>
+     			<locationId>i(9,9)</locationId>
+               	<coord x="10.0" y="0.0"/>
+               	<duration>0.0</duration>
+               	<timeWindows>
+                    <timeWindow>
+                         <start>0.0</start>
+                         <end>4000.0</end>
+                    </timeWindow>
+               	</timeWindows>
+     		</delivery>
+     		<capacity-demand>1</capacity-demand>
+     	</shipment>
+     </shipments>
     
 </problem>
