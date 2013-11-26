@@ -10,6 +10,7 @@ Change-log
 - VehicleRoute: <del>getCosts()</del>, <del>getCostCalculator()</del>
 - TimeBreaker --> TimeTermination, VariationCoefficentBreaker --> ...Termination, Iteration...Breaker --> ...Termination
 - VehicleRoutingAlgorithm: setPrematureBreaker(...) --> setPrematureTermination(...)
+- util.<del>Counter</del>
 - detailled changelog
 
 **v0.0.5** @ 2013-11-22
