@@ -25,7 +25,9 @@ import java.util.Map;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
+import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Job;
+import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.activity.TourActivity;
@@ -233,9 +235,11 @@ public class VehicleRoutingProblem {
 		 * 
 		 * <p>If jobList already contains service, a warning message is printed, and the existing job will be overwritten.
 		 * 
+		 * @deprecated use addJob(...) instead
 		 * @param service
 		 * @return
 		 */
+		@Deprecated
 		public Builder addService(Service service){
 			coordinates.put(service.getLocationId(), service.getCoord());
 			if(jobs.containsKey(service.getId())){ logger.warn("service " + service + " already in job list. overrides existing job."); }
@@ -255,18 +259,15 @@ public class VehicleRoutingProblem {
 		 */
 		public Builder addJob(Job job) {
 			if(jobs.containsKey(job.getId())) throw new IllegalStateException("jobList already contains a job with id " + job.getId() + ". make sure you use unique ids for your jobs (i.e. service and shipments)");
-			if(job instanceof Service) { 
+			if(job instanceof Service) {
 				addService((Service) job);
+				return this;
 			}
 			else if(job instanceof Shipment){
 				addShipment((Shipment)job);
+				return this;
 			}
-			else{
-//				if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
-//				coordinates.put(job.getLocationId(), job.getCoord());
-//				jobs.put(job.getId(),job);
-			}
-			return this;
+			throw new IllegalStateException("job must be either a service or a shipment");
 		}
 
 
@@ -339,7 +340,7 @@ public class VehicleRoutingProblem {
 		 * @return {@link VehicleRoutingProblem}
 		 */
 		public VehicleRoutingProblem build() {
-			log.info("build problem ...");
+			logger.info("build problem ...");
 			if(transportCosts == null){
 				logger.warn("set routing costs crowFlyDistance.");
 				transportCosts = new CrowFlyCosts(getLocations());
@@ -421,8 +422,6 @@ public class VehicleRoutingProblem {
 	public static enum FleetComposition {
 		HETEROGENEOUS, HOMOGENEOUS;
 	}
-
-	public static Logger log = Logger.getLogger(VehicleRoutingProblem.class);
 	
 	private static Logger logger = Logger.getLogger(VehicleRoutingProblem.class);
 
@@ -467,7 +466,7 @@ public class VehicleRoutingProblem {
 		this.activityCosts = builder.activityCosts;
 		this.neighborhood = builder.neighborhood;
 		this.problemConstraints = builder.problemConstraints;
-		log.info("initialise " + this);
+		logger.info("initialise " + this);
 	}
 	
 	@Override
