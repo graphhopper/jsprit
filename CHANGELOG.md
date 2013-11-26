@@ -11,7 +11,7 @@ Change-log
 - TimeBreaker --> TimeTermination, VariationCoefficentBreaker --> ...Termination, Iteration...Breaker --> ...Termination
 - VehicleRoutingAlgorithm: setPrematureBreaker(...) --> setPrematureTermination(...)
 - util.<del>Counter</del>
-- detailled changelog
+- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_0.0.5_to_1.0.0.txt)
 
 **v0.0.5** @ 2013-11-22
 
