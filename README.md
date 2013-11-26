@@ -24,6 +24,7 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 - continues improvement of code, handling and performance
 - handling soft constraints
 - various capacity dimensions and multiple time-windows
+- handling large scale instances
 
 ##Documentation
 
