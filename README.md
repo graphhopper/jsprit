@@ -24,6 +24,7 @@ can be used, and a dynamic and interactive visualiser greatly enhances the analy
 - continues improvement of code, handling and performance
 - soft constraints
 - various capacity dimensions and multiple time-windows
+- open routes (currently they have to return to the depot)
 - large scale instances
 
 ##Documentation
