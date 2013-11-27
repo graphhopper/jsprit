@@ -66,7 +66,7 @@ public class SimpleEnRoutePickupAndDeliveryExample {
 		Vehicle vehicle = vehicleBuilder.build();
 		
 		/*
-		 * build services at the required locations, each with a capacity-demand of 1.
+		 * build shipments at the required locations, each with a capacity-demand of 1.
 		 * 4 shipments
 		 * 1: (5,7)->(6,9)
 		 * 2: (5,13)->(6,11)
