@@ -62,8 +62,18 @@ class Inserter {
 			if(job instanceof Service){
 				route.getTourActivities().addActivity(iData.getDeliveryInsertionIndex(), this.activityFactory.createActivity((Service)job));
 				route.setDepartureTime(iData.getVehicleDepartureTime());
+				if(!iData.getSelectedVehicle().isReturnToDepot()){
+					if(iData.getDeliveryInsertionIndex()>=route.getTourActivities().getActivities().size()){
+						setEndLocation(route,(Service)job);
+					}
+				}
 			}
 			else delegator.handleJobInsertion(job, iData, route);
+		}
+		
+		private void setEndLocation(VehicleRoute route, Service service) {
+			route.getEnd().setCoordinate(service.getCoord());
+			route.getEnd().setLocationId(service.getLocationId());
 		}
 		
 		public void setNextHandler(JobInsertionHandler jobInsertionHandler){
@@ -86,10 +96,20 @@ class Inserter {
 				route.getTourActivities().addActivity(iData.getDeliveryInsertionIndex(), deliverShipment);
 				route.getTourActivities().addActivity(iData.getPickupInsertionIndex(), pickupShipment);
 				route.setDepartureTime(iData.getVehicleDepartureTime());
+				if(!iData.getSelectedVehicle().isReturnToDepot()){
+					if(iData.getDeliveryInsertionIndex()>=route.getTourActivities().getActivities().size()){
+						setEndLocation(route,(Shipment)job);
+					}
+				}
 			}
 			else delegator.handleJobInsertion(job, iData, route);
 		}
 		
+		private void setEndLocation(VehicleRoute route, Shipment shipment) {
+			route.getEnd().setCoordinate(shipment.getDeliveryCoord());
+			route.getEnd().setLocationId(shipment.getDeliveryLocation());
+		}
+
 		public void setNextHandler(JobInsertionHandler jobInsertionHandler){
 			this.delegator = jobInsertionHandler;
 		}

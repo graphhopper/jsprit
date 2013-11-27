@@ -54,6 +54,8 @@ public class VehicleImpl implements Vehicle {
 		private double earliestStart = 0.0;
 		private double latestArrival = Double.MAX_VALUE;
 		
+		private boolean returnToDepot = true;
+		
 		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default", 0).build();
 		
 		private Builder(String id) {
@@ -63,6 +65,11 @@ public class VehicleImpl implements Vehicle {
 		
 		public Builder setType(VehicleType type){
 			this.type = type;
+			return this;
+		}
+		
+		public Builder setReturnToDepot(boolean returnToDepot){
+			this.returnToDepot = returnToDepot;
 			return this;
 		}
 		
@@ -113,6 +120,8 @@ public class VehicleImpl implements Vehicle {
 	private final double earliestDeparture;
 
 	private final double latestArrival;
+	
+	private boolean returnToDepot;
 
 	private VehicleImpl(Builder builder){
 		id = builder.id;
@@ -121,6 +130,7 @@ public class VehicleImpl implements Vehicle {
 		locationId = builder.locationId;
 		earliestDeparture = builder.earliestStart;
 		latestArrival = builder.latestArrival;
+		returnToDepot = builder.returnToDepot;
 	}
 	
 	
@@ -193,5 +203,16 @@ public class VehicleImpl implements Vehicle {
 	public int getCapacity() {
 		return type.getCapacity();
 	}
+
+
+
+	/**
+	 * @return the returnToDepot
+	 */
+	public boolean isReturnToDepot() {
+		return returnToDepot;
+	}
+	
+	
 	
 }
