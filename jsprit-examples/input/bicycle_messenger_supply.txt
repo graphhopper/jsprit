@@ -1,0 +1,6 @@
+type	id	x	y
+messenger A 13750   57578
+messenger B 15104   53410
+messenger C 13728   55801
+messenger D 12741   63478
+messenger E 14676   18575
