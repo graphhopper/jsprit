@@ -93,22 +93,24 @@ public class BicycleMessenger {
 		readEnvelopes(problemBuilder);
 		readMessengers(problemBuilder);
 		problemBuilder.setFleetSize(FleetSize.FINITE);
-		problemBuilder.addConstraint(new ThreeTimesLessThanDirectRouteConstraint(new CrowFlyCosts(problemBuilder.getLocations()),problemBuilder.getAddedJobs(),problemBuilder.getAddedVehicles()));
+//		problemBuilder.addConstraint(new ThreeTimesLessThanDirectRouteConstraint(new CrowFlyCosts(problemBuilder.getLocations()),problemBuilder.getAddedJobs(),problemBuilder.getAddedVehicles()));
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
 		
-		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem, "input/algorithmConfig_open.xml");
-		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(200));
+		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem, 5,"input/algorithmConfig_open.xml");
+//		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(200));
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
 		Plotter plotter = new Plotter(bicycleMessengerProblem);
+//		plotter.setBoundingBox(10000, 47500, 20000, 67500);
 		plotter.plotShipments(true);
 		plotter.plot("output/bicycleMessengerProblem.png", "bicycleMessenger");
 		
 		
-		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Arrays.asList(Solutions.bestOf(solutions).getRoutes().iterator().next()));
+		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Solutions.bestOf(solutions));
 		plotter1.plotShipments(false);
 		plotter1.setShowFirstActivity(true);
+//		plotter1.setBoundingBox(10000, 47500, 20000, 67500);
 		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
 		
 
@@ -132,12 +134,12 @@ public class BicycleMessenger {
 		BufferedReader reader = new BufferedReader(new FileReader(new File("input/bicycle_messenger_supply.txt")));
 		String line = null;
 		boolean firstLine = true;
-		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType", 5).setCostPerDistance(1).build();
+		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType", Integer.MAX_VALUE).setCostPerDistance(1).build();
 		while((line = reader.readLine()) != null){
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
-					.setReturnToDepot(false).setType(messengerType).build();
+					.setReturnToDepot(true).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
 		}
 		reader.close();
