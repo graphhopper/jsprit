@@ -23,6 +23,7 @@ import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.SchrimpfFactory;
+import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Service;
@@ -54,6 +55,7 @@ public class SimpleExampleOpenRoutes {
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
 		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 2);
+		vehicleTypeBuilder.setFixedCost(100);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
 		/*
@@ -63,6 +65,7 @@ public class SimpleExampleOpenRoutes {
 		vehicleBuilder.setLocationCoord(Coordinate.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
 		vehicleBuilder.setReturnToDepot(false);
+		
 		Vehicle vehicle = vehicleBuilder.build();
 		
 		/*
@@ -84,7 +87,7 @@ public class SimpleExampleOpenRoutes {
 		/*
 		 * get the algorithm out-of-the-box. 
 		 */
-		VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
+		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig_fix.xml");
 		
 		/*
 		 * and search a solution
