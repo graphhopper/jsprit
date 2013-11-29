@@ -1,5 +1,6 @@
 package jsprit.core.problem.solution.route;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import jsprit.core.problem.driver.Driver;
@@ -58,4 +59,19 @@ public class VehicleRouteBuilderTest {
 		assertEquals(4,route.getTourActivities().getActivities().size());
 	}
 
+	@Test
+	public void whenBuildingOpenRoute(){
+		assertTrue(false);
+	}
+	
+	@Test
+	public void whenSettingDepartureTime(){
+		assertTrue(false);
+	}
+	
+	
+	@Test
+	public void whenSettingEndTime(){
+		assertTrue(false);
+	}
 }

@@ -17,6 +17,7 @@
 package jsprit.core.algorithm.recreate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -238,5 +239,11 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		assertEquals(40.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}
+	
+	@Test
+	public void whenInsertingAndRouteIsOpen(){
+		assertTrue(false);
+	}
+	
 	
 }
