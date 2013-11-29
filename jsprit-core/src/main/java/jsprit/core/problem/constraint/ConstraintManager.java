@@ -1,5 +1,9 @@
 package jsprit.core.problem.constraint;
 
+import java.util.Collection;
+
+import org.apache.log4j.Logger;
+
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Constraint;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -11,6 +15,8 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 	public static enum Priority {
 		CRITICAL, HIGH, LOW
 	}
+	
+	private static Logger log = Logger.getLogger(ConstraintManager.class);
 	
 	private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
 	
@@ -29,6 +35,30 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 		this.stateManager = stateManager;
 	}
 	
+	public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager, Collection<jsprit.core.problem.constraint.Constraint> constraints) {
+		this.vrp = vrp;
+		this.stateManager = stateManager;
+		resolveConstraints(constraints);
+	}
+	
+	private void resolveConstraints(Collection<jsprit.core.problem.constraint.Constraint> constraints) {
+		for(jsprit.core.problem.constraint.Constraint c : constraints){
+			boolean constraintTypeKnown = false;
+			if(c instanceof HardActivityStateLevelConstraint) {
+				actLevelConstraintManager.addConstraint((HardActivityStateLevelConstraint) c, Priority.HIGH);
+				constraintTypeKnown = true;
+			}
+			if(c instanceof HardRouteStateLevelConstraint) {
+				routeLevelConstraintManager.addConstraint((HardRouteStateLevelConstraint) c);
+				constraintTypeKnown = true;
+			}
+			if(!constraintTypeKnown){
+				log.warn("constraint " + c + " unknown thus ignores the constraint. currently, a constraint must implement either HardActivityStateLevelConstraint or HardRouteStateLevelConstraint");
+			}
+		}
+		
+	}
+
 	public void addTimeWindowConstraint(){
 		if(!timeWindowConstraintsSet){
 			addConstraint(new TimeWindowConstraint(stateManager, vrp.getTransportCosts()),Priority.HIGH);
