@@ -3,7 +3,7 @@ package jsprit.core.problem.constraint;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 
-public interface HardActivityStateLevelConstraint {
+public interface HardActivityStateLevelConstraint extends HardConstraint{
 	
 	static enum ConstraintsStatus {
 		

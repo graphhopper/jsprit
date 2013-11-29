@@ -117,6 +117,8 @@ public class VehicleRoutingProblem {
 		private Collection<VehicleType> vehicleTypes;
 		
 		private Collection<Constraint> problemConstraints;
+		
+		private Collection<jsprit.core.problem.constraint.Constraint> constraints;
 
 		/**
 		 * by default all locations are neighbors
@@ -136,6 +138,7 @@ public class VehicleRoutingProblem {
 			vehicleTypes = new ArrayList<VehicleType>();
 			services = new ArrayList<Service>();
 			problemConstraints = new ArrayList<VehicleRoutingProblem.Constraint>();
+			constraints = new ArrayList<jsprit.core.problem.constraint.Constraint>();
 		}
 
 		/**
@@ -388,6 +391,10 @@ public class VehicleRoutingProblem {
 			return Collections.unmodifiableCollection(vehicles);
 		}
 		
+		public void addConstraint(jsprit.core.problem.constraint.Constraint constraint){
+			constraints.add(constraint);
+		}
+		
 		/**
 		 * Gets an unmodifiable collection of already added services.
 		 * 
@@ -456,6 +463,8 @@ public class VehicleRoutingProblem {
 
 	private Collection<Constraint> problemConstraints;
 	
+	private Collection<jsprit.core.problem.constraint.Constraint> constraints;
+	
 	private VehicleRoutingProblem(Builder builder) {
 		this.jobs = builder.jobs;
 		this.fleetComposition = builder.fleetComposition;
@@ -466,6 +475,7 @@ public class VehicleRoutingProblem {
 		this.activityCosts = builder.activityCosts;
 		this.neighborhood = builder.neighborhood;
 		this.problemConstraints = builder.problemConstraints;
+		this.constraints = builder.constraints;
 		logger.info("initialise " + this);
 	}
 	
@@ -556,6 +566,10 @@ public class VehicleRoutingProblem {
 	 */
 	public VehicleRoutingActivityCosts getActivityCosts(){
 		return activityCosts;
+	}
+	
+	public Collection<jsprit.core.problem.constraint.Constraint> getConstraints(){
+		return Collections.unmodifiableCollection(constraints);
 	}
 	
 	
