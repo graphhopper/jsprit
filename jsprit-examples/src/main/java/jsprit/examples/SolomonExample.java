@@ -19,6 +19,7 @@ package jsprit.examples;
 import java.io.File;
 import java.util.Collection;
 
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -91,7 +92,10 @@ public class SolomonExample {
 		/*
 		 * Plot solution. 
 		 */
-		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_solution.png","C101");
+		Plotter plotter = new Plotter(vrp,solution);
+//		plotter.setBoundingBox(30, 0, 50, 20);
+		plotter.plot("output/solomon_C101_solution.png", "C101");
+//		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_solution.png","C101");
 		
 	
 		

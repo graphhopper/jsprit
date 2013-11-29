@@ -50,6 +50,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -58,6 +59,21 @@ import org.jfree.ui.RectangleEdge;
 
 
 public class Plotter {
+	
+	private static class BoundingBox {
+		double minX;
+		double minY;
+		double maxX;
+		double maxY;
+		public BoundingBox(double minX, double minY, double maxX, double maxY) {
+			super();
+			this.minX = minX;
+			this.minY = minY;
+			this.maxX = maxX;
+			this.maxY = maxY;
+		}
+		
+	}
 	
 	private static class NoLocationFoundException extends Exception{
 
@@ -87,12 +103,18 @@ public class Plotter {
 
 	private Collection<VehicleRoute> routes;
 	
+	private BoundingBox boundingBox = null;
+	
 	public void setShowFirstActivity(boolean show){
 		showFirstActivity = show;
 	}
 	
 	public void setLabel(Label label){
 		this.label = label;
+	}
+	
+	public void setBoundingBox(double minX, double minY, double maxX, double maxY){
+		boundingBox = new BoundingBox(minX,minY,maxX,maxY);
 	}
 
 	public Plotter(VehicleRoutingProblem vrp) {
@@ -198,7 +220,7 @@ public class Plotter {
 		
 	}
 	
-	private static XYPlot createProblemPlot(final XYSeriesCollection problem, XYSeriesCollection shipments, final Map<XYDataItem, String> labels) {
+	private XYPlot createProblemPlot(final XYSeriesCollection problem, XYSeriesCollection shipments, final Map<XYDataItem, String> labels) {
 		XYPlot plot = new XYPlot();
 		plot.setBackgroundPaint(Color.LIGHT_GRAY);
 		plot.setRangeGridlinePaint(Color.WHITE);
@@ -216,11 +238,12 @@ public class Plotter {
 		problemRenderer.setBaseItemLabelsVisible(true);
 		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
 		
-		NumberAxis xAxis = new NumberAxis();		
-		xAxis.setRangeWithMargins(problem.getDomainBounds(true));
+		NumberAxis xAxis = new NumberAxis();
+		
+		xAxis.setRangeWithMargins(getDomainRange(problem));
 		
 		NumberAxis yAxis = new NumberAxis();
-		yAxis.setRangeWithMargins(problem.getRangeBounds(false));
+		yAxis.setRangeWithMargins(getRange(problem));
 		
 		plot.setDataset(0, problem);
 		plot.setRenderer(0, problemRenderer);
@@ -245,6 +268,16 @@ public class Plotter {
 		return plot;
 	}
 
+	private Range getRange(final XYSeriesCollection problem) {
+		if(this.boundingBox==null) return problem.getRangeBounds(false);
+		else return new Range(boundingBox.minY, boundingBox.maxY);
+	}
+
+	private Range getDomainRange(final XYSeriesCollection problem) {
+		if(this.boundingBox == null) return problem.getDomainBounds(true);
+		else return new Range(boundingBox.minX, boundingBox.maxX);
+	}
+
 	private XYPlot createProblemSolutionPlot(final XYSeriesCollection problem, XYSeriesCollection shipments, XYSeriesCollection solutionColl, final Map<XYDataItem, String> labels) {
 		XYPlot plot = new XYPlot();
 		plot.setBackgroundPaint(Color.LIGHT_GRAY);
@@ -264,10 +297,10 @@ public class Plotter {
 		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
 
 		NumberAxis xAxis = new NumberAxis();		
-		xAxis.setRangeWithMargins(problem.getDomainBounds(true));
+		xAxis.setRangeWithMargins(getDomainRange(problem));
 		
 		NumberAxis yAxis = new NumberAxis();
-		yAxis.setRangeWithMargins(problem.getRangeBounds(true));
+		yAxis.setRangeWithMargins(getRange(problem));
 		
 		plot.setDataset(0, problem);
 		plot.setRenderer(0, problemRenderer);
