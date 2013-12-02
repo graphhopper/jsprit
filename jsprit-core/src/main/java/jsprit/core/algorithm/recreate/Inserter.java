@@ -72,7 +72,6 @@ class Inserter {
 		}
 		
 		private void setEndLocation(VehicleRoute route, Service service) {
-			route.getEnd().setCoordinate(service.getCoord());
 			route.getEnd().setLocationId(service.getLocationId());
 		}
 		
@@ -106,7 +105,6 @@ class Inserter {
 		}
 		
 		private void setEndLocation(VehicleRoute route, Shipment shipment) {
-			route.getEnd().setCoordinate(shipment.getDeliveryCoord());
 			route.getEnd().setLocationId(shipment.getDeliveryLocation());
 		}
 
