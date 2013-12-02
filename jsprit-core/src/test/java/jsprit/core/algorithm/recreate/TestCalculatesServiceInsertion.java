@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -80,12 +81,14 @@ public class TestCalculatesServiceInsertion {
 		when(vehicle.getLocationId()).thenReturn("depot");
 		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(vehicle.getLatestArrival()).thenReturn(100.0);
+		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
 		newVehicle = mock(Vehicle.class);
 		when(newVehicle.getCapacity()).thenReturn(1000);
 		when(newVehicle.getLocationId()).thenReturn("depot");
 		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(newVehicle.getLatestArrival()).thenReturn(100.0);
+		when(newVehicle.isReturnToDepot()).thenReturn(true);
 		
 		driver = DriverImpl.noDriver();
 		

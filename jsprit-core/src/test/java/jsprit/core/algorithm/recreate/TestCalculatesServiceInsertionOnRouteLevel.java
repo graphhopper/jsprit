@@ -17,6 +17,7 @@
 package jsprit.core.algorithm.recreate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -82,12 +83,14 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		when(vehicle.getLocationId()).thenReturn("0,0");
 		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(vehicle.getLatestArrival()).thenReturn(100.0);
+		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
 		newVehicle = mock(Vehicle.class);
 		when(newVehicle.getCapacity()).thenReturn(1000);
 		when(newVehicle.getLocationId()).thenReturn("0,0");
 		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(newVehicle.getLatestArrival()).thenReturn(100.0);
+		when(newVehicle.isReturnToDepot()).thenReturn(true);
 		
 		driver = DriverImpl.noDriver();
 
@@ -238,5 +241,6 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		assertEquals(40.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}
+	
 	
 }

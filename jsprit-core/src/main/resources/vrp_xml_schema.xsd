@@ -53,7 +53,7 @@
 									</xs:element>
 									<xs:element name="typeId" type="xs:string" minOccurs="1" maxOccurs="1"/>
 									<xs:element name="timeSchedule" type="timeWindowType"/>
-
+									<xs:element name="returnToDepot" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
 								</xs:all>
 							</xs:complexType>
 						</xs:element>
