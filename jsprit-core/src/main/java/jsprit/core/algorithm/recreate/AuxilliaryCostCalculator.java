@@ -22,6 +22,7 @@ import java.util.List;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
+import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 
@@ -33,10 +34,10 @@ final class AuxilliaryCostCalculator {
 	
 	private final VehicleRoutingActivityCosts activityCosts;
 
-	public AuxilliaryCostCalculator(final VehicleRoutingTransportCosts routingCosts, final VehicleRoutingActivityCosts costFunction) {
+	public AuxilliaryCostCalculator(final VehicleRoutingTransportCosts routingCosts, final VehicleRoutingActivityCosts actCosts) {
 		super();
 		this.routingCosts = routingCosts;
-		this.activityCosts = costFunction;
+		this.activityCosts = actCosts;
 	}
 	
 	/**
@@ -59,6 +60,11 @@ final class AuxilliaryCostCalculator {
 		double departureTimePrevAct = depTime;
 		while(actIter.hasNext()){
 			TourActivity act = actIter.next();
+			if(act instanceof End){
+				if(!vehicle.isReturnToDepot()){
+					return cost;
+				}
+			}
 			double transportCost = routingCosts.getTransportCost(prevAct.getLocationId(), act.getLocationId(), departureTimePrevAct, driver, vehicle);
 			double transportTime = routingCosts.getTransportTime(prevAct.getLocationId(), act.getLocationId(), departureTimePrevAct, driver, vehicle);
 			cost += transportCost;
@@ -72,37 +78,5 @@ final class AuxilliaryCostCalculator {
 		return cost;
 	}
 	
-	public double costOfPath(String startLocationId, final double startTime, final List<TourActivity> path, String endLocationId, final Driver driver, final Vehicle vehicle){
-		if(path.isEmpty()){
-			return 0.0;
-		}
-		double cost = 0.0;
-//		Iterator<TourActivity> actIter = path.iterator();
-		String prevActLocation = startLocationId;
-//		TourActivity prevAct = actIter.next();
-		double startCost = 0.0;
-		cost += startCost;
-		double departureTimePrevAct = startTime;
-		for(TourActivity act : path){
-//			TourActivity act = actIter.next();
-			double transportCost = routingCosts.getTransportCost(prevActLocation, act.getLocationId(), departureTimePrevAct, driver, vehicle);
-			double transportTime = routingCosts.getTransportTime(prevActLocation, act.getLocationId(), departureTimePrevAct, driver, vehicle);
-			cost += transportCost;
-			double actStartTime = departureTimePrevAct + transportTime;
-			double earliestOperationStartTime = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime());
-			double actEndTime = earliestOperationStartTime + act.getOperationTime();
-			departureTimePrevAct = actEndTime;
-			cost += activityCosts.getActivityCost(act, actStartTime, driver, vehicle);
-			prevActLocation = act.getLocationId();
-		}
-		
-		/*
-		 *!!! ENDLOCATION
-		=> Start u. End können primitiv sein. 
-		 
-		 */
-		
-		return cost;
-	}
 	
 }
