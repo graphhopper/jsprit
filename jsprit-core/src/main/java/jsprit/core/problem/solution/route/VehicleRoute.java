@@ -61,6 +61,8 @@ public class VehicleRoute {
 		
 		private Start start;
 		
+		private End end;
+		
 		private TourActivities tourActivities = new TourActivities();
 		
 		private TourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
@@ -79,6 +81,10 @@ public class VehicleRoute {
 
 		/**
 		 * Constructs the route-builder.
+		 * 
+		 * <p>Default startLocation is vehicle.getLocationId()<br>
+		 * Default departureTime is vehicle.getEarliestDeparture()<br>
+		 * Default endLocation is either vehicle.getLocationId() or (if !vehicle.isReturnToDepot()) last specified activityLocation
 		 * @param vehicle
 		 * @param driver
 		 */
@@ -88,7 +94,7 @@ public class VehicleRoute {
 			this.driver = driver;
 			start = Start.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
 			start.setEndTime(vehicle.getEarliestDeparture());
-			End.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+			end = End.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
 		}
 
 		/**
@@ -99,6 +105,11 @@ public class VehicleRoute {
 		 */
 		public Builder setDepartureTime(double departureTime){
 			start.setEndTime(departureTime);
+			return this;
+		}
+		
+		public Builder setRouteEndArrivalTime(double endTime){
+			end.setArrTime(endTime);
 			return this;
 		}
 		
@@ -185,7 +196,12 @@ public class VehicleRoute {
 			if(!openShipments.isEmpty()){
 				throw new IllegalStateException("there are still shipments that have not been delivered yet.");
 			}
-			VehicleRoute route = VehicleRoute.newInstance(tourActivities, driver, vehicle);
+			if(!vehicle.isReturnToDepot()){
+				if(!tourActivities.isEmpty()){
+					end.setLocationId(tourActivities.getActivities().get(tourActivities.getActivities().size()-1).getLocationId());
+				}
+			}
+			VehicleRoute route = new VehicleRoute(this);
 			return route;
 		}
 
@@ -218,13 +234,14 @@ public class VehicleRoute {
 		setStartAndEnd(vehicle, vehicle.getEarliestDeparture());
 	}
 	
-//	private VehicleRoute(Builder builder){
-//		this.tourActivities = builder.tour;
-//		this.vehicle = builder.vehicle;
-//		this.driver = builder.driver;
-//		this.start = builder.start;
-//		this.end = builder.end;
-//	}
+	
+	private VehicleRoute(Builder builder){
+		this.tourActivities = builder.tourActivities;
+		this.vehicle = builder.vehicle;
+		this.driver = builder.driver;
+		this.start = builder.start;
+		this.end = builder.end;
+	}
 
 	private void verify(TourActivities tour, Driver driver, Vehicle vehicle) {
 		if(tour == null || driver == null || vehicle == null) throw new IllegalStateException("null is not allowed for tour, driver or vehicle. use emptyRoute. use Tour.emptyTour, DriverImpl.noDriver() and VehicleImpl.noVehicle() instead." +

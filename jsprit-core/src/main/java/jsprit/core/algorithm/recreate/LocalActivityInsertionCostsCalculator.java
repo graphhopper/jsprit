@@ -23,6 +23,7 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
+import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.util.CalculationUtils;
 
@@ -60,6 +61,13 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 		double newAct_endTime = CalculationUtils.getActivityEndTime(newAct_arrTime, newAct);
 		
 		double act_costs_newAct = activityCosts.getActivityCost(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+		
+		//open routes
+		if(nextAct instanceof End){
+			if(!iFacts.getNewVehicle().isReturnToDepot()){
+				return new ActivityInsertionCosts(tp_costs_prevAct_newAct, tp_time_prevAct_newAct);
+			}
+		}
 		
 		double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocationId(), nextAct.getLocationId(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());

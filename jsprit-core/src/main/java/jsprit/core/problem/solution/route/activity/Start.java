@@ -65,11 +65,11 @@ public final class Start implements TourActivity {
 	
 	
 
-	public Coordinate getCoordinate() {
+	Coordinate getCoordinate() {
 		return coordinate;
 	}
 
-	public void setCoordinate(Coordinate coordinate) {
+	void setCoordinate(Coordinate coordinate) {
 		this.coordinate = coordinate;
 	}
 

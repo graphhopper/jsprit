@@ -230,14 +230,19 @@ public class VrpXMLReader{
 				if(vehicle == null) throw new IllegalStateException("vehicle is missing.");
 				String start = routeConfig.getString("start");
 				if(start == null) throw new IllegalStateException("route start-time is missing.");
+				double departureTime = Double.parseDouble(start);
+				
 				String end = routeConfig.getString("end");
 				if(end == null) throw new IllegalStateException("route end-time is missing.");
-				Start startAct = Start.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-				startAct.setEndTime(Double.parseDouble(start));
+				
+//				Start startAct = Start.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+//				startAct.setEndTime(Double.parseDouble(start));
 				End endAct = End.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
 				endAct.setArrTime(Double.parseDouble(end));
 				
 				VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
+				routeBuilder.setDepartureTime(departureTime);
+				routeBuilder.setRouteEndArrivalTime(Double.parseDouble(end));
 				List<HierarchicalConfiguration> actConfigs = routeConfig.configurationsAt("act");
 				for(HierarchicalConfiguration actConfig : actConfigs){
 					String type = actConfig.getString("[@type]");
@@ -466,6 +471,10 @@ public class VrpXMLReader{
 			String end = vehicleConfig.getString("timeSchedule.end");
 			if(start != null) builder.setEarliestStart(Double.parseDouble(start));
 			if(end != null) builder.setLatestArrival(Double.parseDouble(end));
+			String returnToDepot = vehicleConfig.getString("returnToDepot");
+			if(returnToDepot != null){
+				builder.setReturnToDepot(vehicleConfig.getBoolean("returnToDepot"));
+			}
 			VehicleImpl vehicle = builder.build();
 			vrpBuilder.addVehicle(vehicle);
 			vehicleMap.put(vehicleId, vehicle);

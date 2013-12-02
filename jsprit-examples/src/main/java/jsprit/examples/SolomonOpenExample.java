@@ -19,9 +19,6 @@ package jsprit.examples;
 import java.io.File;
 import java.util.Collection;
 
-import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
-import jsprit.analysis.toolbox.Plotter;
-import jsprit.analysis.toolbox.Plotter.Label;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -32,10 +29,9 @@ import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 
 
-public class PickupAndDeliveryExample {
+public class SolomonOpenExample {
 	
 	public static void main(String[] args) {
-		
 		/*
 		 * some preparation - create output folder
 		 */
@@ -57,15 +53,14 @@ public class PickupAndDeliveryExample {
 		/*
 		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
-		new VrpXMLReader(vrpBuilder).read("input/pickups_and_deliveries_solomon_r101_withoutTWs.xml");
+		new VrpXMLReader(vrpBuilder).read("input/deliveries_solomon_open_c101.xml");
 		
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
-		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/pd_solomon_r101.png", "pd_r101");
+		SolutionPlotter.plotVrpAsPNG(vrp, "output/solomon_C101_open.png", "C101");
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.
@@ -73,8 +68,9 @@ public class PickupAndDeliveryExample {
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
 //		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
-		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_fix.xml");
+//		vra.setPrematureBreak(100);
+//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
 		 * 
@@ -95,13 +91,9 @@ public class PickupAndDeliveryExample {
 		/*
 		 * Plot solution. 
 		 */
-//		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/pd_solomon_r101_solution.png","pd_r101");
-		Plotter plotter = new Plotter(vrp, solution);
-		plotter.setLabel(Label.SIZE);
-		plotter.setShowFirstActivity(true);
-		plotter.plot("output/pd_solomon_r101_solution.png","pd_r101");
-	
+		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_open_solution.png","C101");
 		
+	
 		
 	}
 

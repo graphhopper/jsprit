@@ -35,5 +35,7 @@ public interface Vehicle {
 	public abstract String getId();
 
 	public abstract int getCapacity();
+	
+	public abstract boolean isReturnToDepot();
 
 }

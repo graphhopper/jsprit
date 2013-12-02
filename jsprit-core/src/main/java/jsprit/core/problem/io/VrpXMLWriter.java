@@ -234,6 +234,7 @@ public class VrpXMLWriter {
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.start", vehicle.getEarliestDeparture());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.end", vehicle.getLatestArrival());
 
+			xmlConfig.setProperty(vehiclePathString + "("+counter+").returnToDepot", vehicle.isReturnToDepot());
 			counter++;
 		}
 
