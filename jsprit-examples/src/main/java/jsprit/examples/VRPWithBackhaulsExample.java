@@ -28,6 +28,7 @@ import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Constraint;
+import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 
@@ -62,7 +63,8 @@ public class VRPWithBackhaulsExample {
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
-		vrpBuilder.addProblemConstraint(Constraint.DELIVERIES_FIRST);
+//		vrpBuilder.addProblemConstraint(Constraint.DELIVERIES_FIRST);
+		vrpBuilder.addConstraint(new ServiceDeliveriesFirstConstraint());
 		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		

@@ -25,9 +25,7 @@ import java.util.Map;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
-import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Job;
-import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.activity.TourActivity;
@@ -64,9 +62,11 @@ public class VehicleRoutingProblem {
 	 * 
 	 * <p>DELIVERIES_FIRST corresponds to the vehicle routing problem with back hauls, i.e. before a vehicle is not entirely unloaded, no pickup can be made. 
 	 * 
+	 * @deprecated define constraint directly - since constraints are too diverse to put them in an enum
 	 * @author stefan
 	 *
 	 */
+	@Deprecated
 	public enum Constraint {
 		DELIVERIES_FIRST
 	}
@@ -186,7 +186,12 @@ public class VehicleRoutingProblem {
 			};
 		}
 
-		
+		/**
+		 * 
+		 * @deprecated use .addConstraint(new ServiceDeliveriesFirstConstraint())
+		 * @param constraint
+		 */
+		@Deprecated
 		public void addProblemConstraint(Constraint constraint){
 			if(!problemConstraints.contains(constraint)) problemConstraints.add(constraint);
 		}
@@ -313,9 +318,11 @@ public class VehicleRoutingProblem {
 		/**
 		 * Sets the neighborhood.
 		 * 
+		 * @deprecated use HardRoute- or ActivityLevelConstraint instead
 		 * @param neighborhood
 		 * @return
 		 */
+		@Deprecated
 		public Builder setNeighborhood(Neighborhood neighborhood){
 			this.neighborhood = neighborhood;
 			return this;
