@@ -1,14 +1,17 @@
 package jsprit.core.problem.constraint;
 
+import java.util.ArrayList;
 import java.util.Collection;
-
-import org.apache.log4j.Logger;
+import java.util.Collections;
+import java.util.List;
 
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Constraint;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+
+import org.apache.log4j.Logger;
 
 public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint{
 
@@ -94,6 +97,13 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 	@Override
 	public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 		return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
+	}
+	
+	public Collection<jsprit.core.problem.constraint.Constraint> getConstraints(){
+		List<jsprit.core.problem.constraint.Constraint> constraints = new ArrayList<jsprit.core.problem.constraint.Constraint>();
+		constraints.addAll(actLevelConstraintManager.getAllConstraints());
+		constraints.addAll(routeLevelConstraintManager.getConstraints());
+		return Collections.unmodifiableCollection(constraints);
 	}
 	
 }
