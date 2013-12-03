@@ -13,6 +13,7 @@ import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.algorithm.state.StateUpdater;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
@@ -26,7 +27,9 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.DeliverShipment;
+import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
@@ -88,6 +91,32 @@ public class BicycleMessenger {
 		
 	}
 	
+	static class UpdateLatestActivityStartTime implements StateUpdater, ReverseActivityVisitor {
+
+		private StateManager stateManager;
+		
+		public UpdateLatestActivityStartTime(StateManager stateManager) {
+			super();
+			this.stateManager = stateManager;
+		}
+
+		@Override
+		public void begin(VehicleRoute route) {
+			
+		}
+
+		@Override
+		public void visit(TourActivity activity) {
+			
+		}
+
+		@Override
+		public void finish() {
+			
+		}
+		
+	}
+	
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -109,8 +138,9 @@ public class BicycleMessenger {
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
 		
 		StateManager stateManager = new StateManager(bicycleMessengerProblem);
+		stateManager.addStateUpdater(new UpdateLatestActivityStartTime(stateManager));
 		
-		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml");
+		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
 		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(200));
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
