@@ -499,15 +499,6 @@ public class VehicleRoutingProblem {
 	}
 
 	/**
-	 * @deprecated see builder.setNeighborhood(...). addConstraint(...) instead.
-	 * @return the neighborhood
-	 */
-	@Deprecated
-	public Neighborhood getNeighborhood() {
-		return neighborhood;
-	}
-
-	/**
 	 * Returns fleet-composition.
 	 * 
 	 * @return fleetComposition which is either FleetComposition.HETEROGENEOUS or FleetComposition.HOMOGENEOUS
@@ -536,17 +527,6 @@ public class VehicleRoutingProblem {
 		return Collections.unmodifiableMap(jobs);
 	}
 
-	/**
-	 * Returns unmodifiable collection of problem-constraints.
-	 * 
-	 * @deprecated use .getConstraints() and builder.add
-	 * @return
-	 */
-	@Deprecated
-	public Collection<Constraint> getProblemConstraints(){
-		return Collections.unmodifiableCollection(problemConstraints);
-	}
-	
 	/**
 	 * Returns the entire, unmodifiable collection of types.
 	 * 
@@ -592,6 +572,26 @@ public class VehicleRoutingProblem {
 	 */
 	public Collection<jsprit.core.problem.constraint.Constraint> getConstraints(){
 		return Collections.unmodifiableCollection(constraints);
+	}
+
+	/**
+	 * @deprecated see builder.setNeighborhood(...). addConstraint(...) instead.
+	 * @return the neighborhood
+	 */
+	@Deprecated
+	public Neighborhood getNeighborhood() {
+		return neighborhood;
+	}
+
+	/**
+	 * Returns unmodifiable collection of problem-constraints.
+	 * 
+	 * @deprecated use .getConstraints() and builder.add
+	 * @return
+	 */
+	@Deprecated
+	public Collection<Constraint> getProblemConstraints(){
+		return Collections.unmodifiableCollection(problemConstraints);
 	}
 	
 	
