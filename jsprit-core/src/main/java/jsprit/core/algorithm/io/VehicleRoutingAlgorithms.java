@@ -392,12 +392,12 @@ public class VehicleRoutingAlgorithms {
 	 * @return {@link VehicleRoutingAlgorithm}
 	 */
 	public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp, final AlgorithmConfig algorithmConfig){
-		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, null);
 	}
 	
 	@Deprecated
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final XMLConfiguration config){
-		return createAlgo(vrp,config,0);
+		return createAlgo(vrp,config,0, null);
 	}
 	
 	/**
@@ -411,7 +411,7 @@ public class VehicleRoutingAlgorithms {
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
 		xmlReader.read(configURL);
-		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, null);
 	}
 	
 	/**
@@ -425,17 +425,26 @@ public class VehicleRoutingAlgorithms {
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
 		xmlReader.read(configFileName);
-		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, null);
+	}
+
+	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final String configFileName, StateManager stateManager){
+		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
+		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
+		xmlReader.read(configFileName);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, stateManager);
 	}
 	
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(VehicleRoutingProblem vrp, int nThreads, String configFileName) {
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
 		xmlReader.read(configFileName);
-		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),nThreads);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),nThreads, null);
 	}
+	
+	
 
-	private static VehicleRoutingAlgorithm createAlgo(final VehicleRoutingProblem vrp, XMLConfiguration config, int nuOfThreads){
+	private static VehicleRoutingAlgorithm createAlgo(final VehicleRoutingProblem vrp, XMLConfiguration config, int nuOfThreads, StateManager stateMan){
 		
 		
 		// map to store constructed modules
@@ -484,7 +493,13 @@ public class VehicleRoutingAlgorithms {
 		final VehicleFleetManager vehicleFleetManager = createFleetManager(vrp);
 		
 		//create state-manager
-		final StateManager stateManager = new StateManager(vrp);
+		final StateManager stateManager;
+		if(stateMan!=null) {
+			stateManager = stateMan;
+		}
+		else{
+			stateManager = 	new StateManager(vrp);
+		}
 		stateManager.updateLoadStates();
 		stateManager.updateTimeWindowStates();
 		
