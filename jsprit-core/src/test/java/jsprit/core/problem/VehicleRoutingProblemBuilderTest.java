@@ -17,8 +17,9 @@
 package jsprit.core.problem;
 
 import static org.junit.Assert.assertEquals;
-import jsprit.core.problem.VehicleRoutingProblem;
+import static org.mockito.Mockito.mock;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
+import jsprit.core.problem.constraint.Constraint;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -80,6 +81,16 @@ public class VehicleRoutingProblemBuilderTest {
 		Job j = vrp.getJobs().get("s");
 		assertEquals(s,j);
 		assertEquals(s2,vrp.getJobs().get("s2"));
+	}
+	
+	@Test
+	public void whenConstraintsAdded_theyShouldAppearInConstraintCollection(){
+		Constraint c1 = mock(Constraint.class);
+		Constraint c2 = mock(Constraint.class);
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		builder.addConstraint(c1).addConstraint(c2);
+		VehicleRoutingProblem problem = builder.build();
+		assertEquals(2,problem.getConstraints().size());
 	}
 	
 
