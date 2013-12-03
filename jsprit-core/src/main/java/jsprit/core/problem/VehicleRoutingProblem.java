@@ -187,17 +187,6 @@ public class VehicleRoutingProblem {
 		}
 
 		/**
-		 * 
-		 * @deprecated use .addConstraint(new ServiceDeliveriesFirstConstraint())
-		 * @param constraint
-		 */
-		@Deprecated
-		public void addProblemConstraint(Constraint constraint){
-			if(!problemConstraints.contains(constraint)) problemConstraints.add(constraint);
-		}
-		
-		
-		/**
 		 * Sets routing costs.
 		 * 
 		 * @param costs
@@ -220,39 +209,6 @@ public class VehicleRoutingProblem {
 		 */
 		public Builder setFleetSize(FleetSize fleetSize){
 			this.fleetSize = fleetSize;
-			return this;
-		}
-
-		/**
-		 * Sets the fleetComposition.
-		 * 
-		 * <p>FleetComposition is either FleetComposition.HETEROGENEOUS or FleetComposition.HOMOGENEOUS
-		 * 
-		 * @deprecated has no effect
-		 * @param fleetComposition
-		 * @return
-		 */
-		@Deprecated
-		public Builder setFleetComposition(FleetComposition fleetComposition){
-			this.fleetComposition = fleetComposition;
-			return this;
-		}
-
-		/**
-		 * Adds a service to jobList.
-		 * 
-		 * <p>If jobList already contains service, a warning message is printed, and the existing job will be overwritten.
-		 * 
-		 * @deprecated use addJob(...) instead
-		 * @param service
-		 * @return
-		 */
-		@Deprecated
-		public Builder addService(Service service){
-			coordinates.put(service.getLocationId(), service.getCoord());
-			if(jobs.containsKey(service.getId())){ logger.warn("service " + service + " already in job list. overrides existing job."); }
-			jobs.put(service.getId(),service);
-			services.add(service);
 			return this;
 		}
 
@@ -299,32 +255,6 @@ public class VehicleRoutingProblem {
 				vehicleTypes.add(vehicle.getType());
 			}
 			coordinates.put(vehicle.getLocationId(), vehicle.getCoord());
-			return this;
-		}
-		
-		/**
-		 * Adds a vehicleType.
-		 * 
-		 * @deprecated use add vehicle instead
-		 * @param type
-		 * @return builder
-		 */
-		@Deprecated
-		public Builder addVehicleType(VehicleType type){
-			vehicleTypes.add(type);
-			return this;
-		}
-
-		/**
-		 * Sets the neighborhood.
-		 * 
-		 * @deprecated use HardRoute- or ActivityLevelConstraint instead
-		 * @param neighborhood
-		 * @return
-		 */
-		@Deprecated
-		public Builder setNeighborhood(Neighborhood neighborhood){
-			this.neighborhood = neighborhood;
 			return this;
 		}
 		
@@ -398,8 +328,15 @@ public class VehicleRoutingProblem {
 			return Collections.unmodifiableCollection(vehicles);
 		}
 		
-		public void addConstraint(jsprit.core.problem.constraint.Constraint constraint){
+		/**
+		 * Adds constraint to problem.
+		 * 
+		 * @param constraint
+		 * @return
+		 */
+		public Builder addConstraint(jsprit.core.problem.constraint.Constraint constraint){
 			constraints.add(constraint);
+			return this;
 		}
 		
 		/**
@@ -413,6 +350,75 @@ public class VehicleRoutingProblem {
 		
 		public Collection<Job> getAddedJobs(){
 			return Collections.unmodifiableCollection(jobs.values());
+		}
+
+		/**
+		 * Sets the fleetComposition.
+		 * 
+		 * <p>FleetComposition is either FleetComposition.HETEROGENEOUS or FleetComposition.HOMOGENEOUS
+		 * 
+		 * @deprecated has no effect
+		 * @param fleetComposition
+		 * @return
+		 */
+		@Deprecated
+		public Builder setFleetComposition(FleetComposition fleetComposition){
+			this.fleetComposition = fleetComposition;
+			return this;
+		}
+
+		/**
+		 * Adds a service to jobList.
+		 * 
+		 * <p>If jobList already contains service, a warning message is printed, and the existing job will be overwritten.
+		 * 
+		 * @deprecated use addJob(...) instead
+		 * @param service
+		 * @return
+		 */
+		@Deprecated
+		public Builder addService(Service service){
+			coordinates.put(service.getLocationId(), service.getCoord());
+			if(jobs.containsKey(service.getId())){ logger.warn("service " + service + " already in job list. overrides existing job."); }
+			jobs.put(service.getId(),service);
+			services.add(service);
+			return this;
+		}
+
+		/**
+		 * Adds a vehicleType.
+		 * 
+		 * @deprecated use add vehicle instead
+		 * @param type
+		 * @return builder
+		 */
+		@Deprecated
+		public Builder addVehicleType(VehicleType type){
+			vehicleTypes.add(type);
+			return this;
+		}
+
+		/**
+		 * Sets the neighborhood.
+		 * 
+		 * @deprecated use HardRoute- or ActivityLevelConstraint instead
+		 * @param neighborhood
+		 * @return
+		 */
+		@Deprecated
+		public Builder setNeighborhood(Neighborhood neighborhood){
+			this.neighborhood = neighborhood;
+			return this;
+		}
+
+		/**
+		 * 
+		 * @deprecated use .addConstraint(new ServiceDeliveriesFirstConstraint())
+		 * @param constraint
+		 */
+		@Deprecated
+		public void addProblemConstraint(Constraint constraint){
+			if(!problemConstraints.contains(constraint)) problemConstraints.add(constraint);
 		}
 }
 	
@@ -493,8 +499,10 @@ public class VehicleRoutingProblem {
 	}
 
 	/**
+	 * @deprecated see builder.setNeighborhood(...). addConstraint(...) instead.
 	 * @return the neighborhood
 	 */
+	@Deprecated
 	public Neighborhood getNeighborhood() {
 		return neighborhood;
 	}
@@ -531,8 +539,10 @@ public class VehicleRoutingProblem {
 	/**
 	 * Returns unmodifiable collection of problem-constraints.
 	 * 
+	 * @deprecated use .getConstraints() and builder.add
 	 * @return
 	 */
+	@Deprecated
 	public Collection<Constraint> getProblemConstraints(){
 		return Collections.unmodifiableCollection(problemConstraints);
 	}
@@ -575,6 +585,11 @@ public class VehicleRoutingProblem {
 		return activityCosts;
 	}
 	
+	/**
+	 * Returns an unmodifiable collection of constraints.
+	 * 
+	 * @return
+	 */
 	public Collection<jsprit.core.problem.constraint.Constraint> getConstraints(){
 		return Collections.unmodifiableCollection(constraints);
 	}
