@@ -2,6 +2,8 @@ package jsprit.core.problem.constraint;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import jsprit.core.problem.constraint.ConstraintManager.Priority;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -26,6 +28,20 @@ class HardActivityLevelConstraintManager implements HardActivityStateLevelConstr
 		else{
 			lowPrioConstraints.add(constraint);
 		}
+	}
+	
+	Collection<HardActivityStateLevelConstraint> getCriticalConstraints(){ return Collections.unmodifiableCollection(criticalConstraints); }
+	
+	Collection<HardActivityStateLevelConstraint> getHighPrioConstraints(){ return Collections.unmodifiableCollection(highPrioConstraints); }
+	
+	Collection<HardActivityStateLevelConstraint> getLowPrioConstraints(){ return Collections.unmodifiableCollection(lowPrioConstraints); }
+	
+	Collection<HardActivityStateLevelConstraint> getAllConstraints(){
+		List<HardActivityStateLevelConstraint> c = new ArrayList<HardActivityStateLevelConstraint>();
+		c.addAll(criticalConstraints);
+		c.addAll(highPrioConstraints);
+		c.addAll(lowPrioConstraints);
+		return Collections.unmodifiableCollection(c); 
 	}
 	
 	@Override

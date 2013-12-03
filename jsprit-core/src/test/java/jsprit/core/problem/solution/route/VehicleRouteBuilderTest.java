@@ -1,8 +1,8 @@
 package jsprit.core.problem.solution.route;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -60,18 +60,73 @@ public class VehicleRouteBuilderTest {
 	}
 
 	@Test
-	public void whenBuildingOpenRoute(){
-		assertTrue(false);
+	public void whenBuildingClosedRoute_routeEndShouldHaveLocationOfVehicle(){
+		Shipment s = mock(Shipment.class);
+		Shipment s2 = mock(Shipment.class);
+		Vehicle vehicle = mock(Vehicle.class);
+		when(vehicle.isReturnToDepot()).thenReturn(true);
+		when(vehicle.getLocationId()).thenReturn("vehLoc");
+		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
+		builder.addPickup(s);
+		builder.addPickup(s2);
+		builder.addDelivery(s);
+		builder.addDelivery(s2);
+		VehicleRoute route = builder.build();
+		assertEquals(route.getEnd().getLocationId(), vehicle.getLocationId());
+	}
+	
+	@Test
+	public void whenBuildingOpenRoute_routeEndShouldHaveLocationOfLastActivity(){
+		Shipment s = mock(Shipment.class);
+		Shipment s2 = mock(Shipment.class);
+		when(s2.getDeliveryLocation()).thenReturn("delLoc");
+		Vehicle vehicle = mock(Vehicle.class);
+		when(vehicle.isReturnToDepot()).thenReturn(false);
+		when(vehicle.getLocationId()).thenReturn("vehLoc");
+		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
+		builder.addPickup(s);
+		builder.addPickup(s2);
+		builder.addDelivery(s);
+		builder.addDelivery(s2);
+		VehicleRoute route = builder.build();
+		assertEquals(route.getEnd().getLocationId(), s2.getDeliveryLocation());
 	}
 	
 	@Test
 	public void whenSettingDepartureTime(){
-		assertTrue(false);
+		Shipment s = mock(Shipment.class);
+		Shipment s2 = mock(Shipment.class);
+		when(s2.getDeliveryLocation()).thenReturn("delLoc");
+		Vehicle vehicle = mock(Vehicle.class);
+		when(vehicle.isReturnToDepot()).thenReturn(false);
+		when(vehicle.getLocationId()).thenReturn("vehLoc");
+		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
+		builder.addPickup(s);
+		builder.addPickup(s2);
+		builder.addDelivery(s);
+		builder.addDelivery(s2);
+		builder.setDepartureTime(100);
+		VehicleRoute route = builder.build();
+		assertEquals(100.0,route.getDepartureTime(),0.01);
+		assertEquals(100.0,route.getStart().getEndTime(),0.01);
 	}
 	
 	
 	@Test
 	public void whenSettingEndTime(){
-		assertTrue(false);
+		Shipment s = mock(Shipment.class);
+		Shipment s2 = mock(Shipment.class);
+		when(s2.getDeliveryLocation()).thenReturn("delLoc");
+		Vehicle vehicle = mock(Vehicle.class);
+		when(vehicle.isReturnToDepot()).thenReturn(false);
+		when(vehicle.getLocationId()).thenReturn("vehLoc");
+		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
+		builder.addPickup(s);
+		builder.addPickup(s2);
+		builder.addDelivery(s);
+		builder.addDelivery(s2);
+		builder.setRouteEndArrivalTime(100.0);
+		VehicleRoute route = builder.build();
+		assertEquals(100.0,route.getEnd().getArrTime(),0.01);
 	}
 }

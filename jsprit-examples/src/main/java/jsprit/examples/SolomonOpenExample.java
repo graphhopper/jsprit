@@ -27,7 +27,6 @@ import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.instance.reader.SolomonReader;
 
 
 public class SolomonOpenExample {

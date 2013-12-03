@@ -35,11 +35,11 @@ public final class End implements TourActivity {
 	
 	private Coordinate coordinate;
 	
-	public Coordinate getCoordinate() {
+	Coordinate getCoordinate() {
 		return coordinate;
 	}
 
-	public void setCoordinate(Coordinate coordinate) {
+	void setCoordinate(Coordinate coordinate) {
 		this.coordinate = coordinate;
 	}
 

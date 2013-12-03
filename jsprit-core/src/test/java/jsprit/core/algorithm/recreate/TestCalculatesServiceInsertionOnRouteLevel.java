@@ -83,12 +83,14 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		when(vehicle.getLocationId()).thenReturn("0,0");
 		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(vehicle.getLatestArrival()).thenReturn(100.0);
+		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
 		newVehicle = mock(Vehicle.class);
 		when(newVehicle.getCapacity()).thenReturn(1000);
 		when(newVehicle.getLocationId()).thenReturn("0,0");
 		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(newVehicle.getLatestArrival()).thenReturn(100.0);
+		when(newVehicle.isReturnToDepot()).thenReturn(true);
 		
 		driver = DriverImpl.noDriver();
 
@@ -238,11 +240,6 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(40.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
-	}
-	
-	@Test
-	public void whenInsertingAndRouteIsOpen(){
-		assertTrue(false);
 	}
 	
 	

@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,8 +17,10 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
+import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.DriverImpl;
+import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -39,46 +39,50 @@ public class BicycleMessenger {
 
 	static class ThreeTimesLessThanDirectRouteConstraint implements HardActivityStateLevelConstraint {
 
-		private VehicleRoutingTransportCosts vrpCosts;
+		private VehicleRoutingTransportCosts routingCosts;
 		
 		//jobId map direct-distance by nearestMessenger
 		private Map<String,Double> bestMessengers = new HashMap<String, Double>();
 		
-		public ThreeTimesLessThanDirectRouteConstraint(VehicleRoutingTransportCosts vrpCosts, Collection<Job> envelopes, Collection<Vehicle> messengers) {
-			super();
-			this.vrpCosts = vrpCosts;
-			determineNearestMessenger(envelopes,messengers);
-		}
-		
-		private void determineNearestMessenger(Collection<Job> envelopes,Collection<Vehicle> messengers) {
-			for(Job envelope : envelopes){
-				double minDirect = Double.MAX_VALUE;
-				for(Vehicle m : messengers){
-					double direct = getDirectRouteDistance(envelope,m);
-					if(direct < minDirect){
-						minDirect = direct;
-					}
-				}
-				bestMessengers.put(envelope.getId(), minDirect);
-			}
-		}
-
-		private double getDirectRouteDistance(Job job, Vehicle v) {
-			Shipment envelope = (Shipment) job;
-			double direct = vrpCosts.getTransportTime(v.getLocationId(), envelope.getPickupLocation(), 0.0, DriverImpl.noDriver(), v) + 
-					vrpCosts.getTransportTime(envelope.getPickupLocation(), envelope.getDeliveryLocation(), 0.0, DriverImpl.noDriver(), v);
-			return direct;
+		public ThreeTimesLessThanDirectRouteConstraint(Map<String, Double> nearestMessengers, VehicleRoutingTransportCosts routingCosts) {
+			this.bestMessengers = nearestMessengers;
+			this.routingCosts = routingCosts;
 		}
 
 		@Override
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts,TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 			if(newAct instanceof DeliverShipment){
-				double deliveryTime = prevActDepTime + vrpCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-				if(deliveryTime > 3 * bestMessengers.get(((DeliverShipment) newAct).getJob().getId())){
+				double deliveryTime = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+				double directTimeOfNearestMessenger = bestMessengers.get(((DeliverShipment) newAct).getJob().getId());
+				if(deliveryTime > 3 * directTimeOfNearestMessenger){
 					return ConstraintsStatus.NOT_FULFILLED_BREAK;
 				}
 			}
 			return ConstraintsStatus.FULFILLED;
+		}
+		
+	}
+	
+	static class IgnoreMessengerThatCanNeverMeetTimeRequirements implements HardRouteStateLevelConstraint {
+
+		private Map<String,Double> bestMessengers = new HashMap<String, Double>();
+		
+		private VehicleRoutingTransportCosts routingCosts;
+		
+		public IgnoreMessengerThatCanNeverMeetTimeRequirements(Map<String, Double> bestMessengers,VehicleRoutingTransportCosts routingCosts) {
+			super();
+			this.bestMessengers = bestMessengers;
+			this.routingCosts = routingCosts;
+		}
+
+		@Override
+		public boolean fulfilled(JobInsertionContext insertionContext) {
+			double timeOfDirectRoute = getTimeOfDirectRoute(insertionContext.getJob(), insertionContext.getNewVehicle(), routingCosts); 
+			double timeOfNearestMessenger = bestMessengers.get(insertionContext.getJob().getId());
+			if(timeOfDirectRoute > 3 * timeOfNearestMessenger){
+				return false;
+			}
+			return true;
 		}
 		
 	}
@@ -89,15 +93,22 @@ public class BicycleMessenger {
 	 */
 	public static void main(String[] args) throws IOException {
 		
+		
 		VehicleRoutingProblem.Builder problemBuilder = VehicleRoutingProblem.Builder.newInstance();
 		readEnvelopes(problemBuilder);
 		readMessengers(problemBuilder);
+		
+		VehicleRoutingTransportCosts routingCosts = new CrowFlyCosts(problemBuilder.getLocations());
+		Map<String,Double> nearestMessengers = getNearestMessengers(routingCosts, problemBuilder.getAddedJobs(), problemBuilder.getAddedVehicles());
+		
 		problemBuilder.setFleetSize(FleetSize.FINITE);
-//		problemBuilder.addConstraint(new ThreeTimesLessThanDirectRouteConstraint(new CrowFlyCosts(problemBuilder.getLocations()),problemBuilder.getAddedJobs(),problemBuilder.getAddedVehicles()));
+		problemBuilder.addConstraint(new ThreeTimesLessThanDirectRouteConstraint(nearestMessengers, routingCosts));
+		problemBuilder.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
+		
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
 		
-		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem, 5,"input/algorithmConfig_open.xml");
-//		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(200));
+		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml");
+		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(200));
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
@@ -113,7 +124,31 @@ public class BicycleMessenger {
 //		plotter1.setBoundingBox(10000, 47500, 20000, 67500);
 		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
 		
+		new VrpXMLWriter(bicycleMessengerProblem, solutions).write("output/bicycleMessenger.xml");
+		
 
+	}
+
+	static Map<String,Double> getNearestMessengers(VehicleRoutingTransportCosts routingCosts, Collection<Job> envelopes, Collection<Vehicle> messengers) {
+		Map<String,Double> nearestMessengers = new HashMap<String, Double>();	
+		for(Job envelope : envelopes){
+			double minDirect = Double.MAX_VALUE;
+			for(Vehicle m : messengers){
+				double direct = getTimeOfDirectRoute(envelope, m, routingCosts);
+				if(direct < minDirect){
+					minDirect = direct;
+				}
+			}
+			nearestMessengers.put(envelope.getId(), minDirect);
+		}
+		return nearestMessengers;
+	}
+	
+	static double getTimeOfDirectRoute(Job job, Vehicle v, VehicleRoutingTransportCosts routingCosts) {
+		Shipment envelope = (Shipment) job;
+		double direct = routingCosts.getTransportTime(v.getLocationId(), envelope.getPickupLocation(), 0.0, DriverImpl.noDriver(), v) + 
+				routingCosts.getTransportTime(envelope.getPickupLocation(), envelope.getDeliveryLocation(), 0.0, DriverImpl.noDriver(), v);
+		return direct;
 	}
 
 	private static void readEnvelopes(Builder problemBuilder) throws IOException {
@@ -134,7 +169,7 @@ public class BicycleMessenger {
 		BufferedReader reader = new BufferedReader(new FileReader(new File("input/bicycle_messenger_supply.txt")));
 		String line = null;
 		boolean firstLine = true;
-		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType", Integer.MAX_VALUE).setCostPerDistance(1).build();
+		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setCostPerDistance(1).build();
 		while((line = reader.readLine()) != null){
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");

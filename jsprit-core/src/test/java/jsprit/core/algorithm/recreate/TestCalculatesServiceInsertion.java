@@ -267,9 +267,6 @@ public class TestCalculatesServiceInsertion {
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}
 	
-	@Test
-	public void whenInsertingAndRouteIsOpen(){
-		assertTrue(false);
-	}
+	
 	
 }

@@ -45,6 +45,14 @@ public class VehicleImpl implements Vehicle {
 		
 	}
 	
+	/**
+	 * builds the vehicle.
+	 * 
+	 * <p>by default, it returns to the depot.
+	 * 
+	 * @author stefan
+	 *
+	 */
 	public static class Builder {
 		static Logger log = Logger.getLogger(Builder.class); 
 		private String id;
