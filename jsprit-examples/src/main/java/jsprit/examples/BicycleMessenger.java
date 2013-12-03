@@ -12,6 +12,7 @@ import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
@@ -106,6 +107,8 @@ public class BicycleMessenger {
 		problemBuilder.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
 		
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
+		
+		StateManager stateManager = new StateManager(bicycleMessengerProblem);
 		
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml");
 		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(200));
