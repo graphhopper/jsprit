@@ -71,6 +71,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	private VehicleRoutingProblem vrp;
 	
+	private boolean updateLoad = false;
+	
+	private boolean updateTWs = false;
+	
 	public StateManager(VehicleRoutingProblem vrp) {
 		super();
 		this.vrp = vrp;
@@ -276,16 +280,22 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		insertionListeners.informInsertionEndsListeners(vehicleRoutes);
 	}
 	
-	 public void updateLoadStates() {
-         UpdateLoads updateLoads = new UpdateLoads(this);
-         addActivityVisitor(updateLoads);
-         addListener(updateLoads);
-         addActivityVisitor(new UpdatePrevMaxLoad(this));
-         addActivityVisitor(new UpdateMaxLoad(this));
-         addActivityVisitor(new UpdateMaxLoad_(this));
- }
+	public void updateLoadStates() {
+		if(!updateLoad){
+			updateLoad=true;
+			UpdateLoads updateLoads = new UpdateLoads(this);
+			addActivityVisitor(updateLoads);
+			addListener(updateLoads);
+			addActivityVisitor(new UpdatePrevMaxLoad(this));
+			addActivityVisitor(new UpdateMaxLoad(this));
+			addActivityVisitor(new UpdateMaxLoad_(this));
+		}
+	}
 
- public void updateTimeWindowStates() {
-         addActivityVisitor(new UpdateTimeWindow(this, vrp.getTransportCosts()));
- }
+	public void updateTimeWindowStates() {
+		if(!updateTWs){
+			updateTWs=true;
+			addActivityVisitor(new UpdateTimeWindow(this, vrp.getTransportCosts()));
+		}
+	}
 }
