@@ -46,6 +46,12 @@ import jsprit.core.util.Solutions;
 
 public class BicycleMessenger {
 
+	/**
+	 * Hard constraint: delivery of envelope must not take longer than 3*bestDirect (i.e. fastest messenger on direct delivery) 
+	 * 
+	 * @author stefan
+	 *
+	 */
 	static class ThreeTimesLessThanBestDirectRouteConstraint implements HardActivityStateLevelConstraint {
 
 		private VehicleRoutingTransportCosts routingCosts;
@@ -75,6 +81,7 @@ public class BicycleMessenger {
 			//impact on whole route, since insertion of newAct shifts all subsequent activities forward in time
 			double departureTime_at_newAct = arrivalTime_at_newAct + newAct.getOperationTime();
 			double deliverTimeAtNextAct = departureTime_at_newAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), departureTime_at_newAct, iFacts.getNewDriver(), iFacts.getNewVehicle());;
+			//here you need an activity state
 			if(deliverTimeAtNextAct > stateManager.getActivityState(nextAct, StateFactory.createId("latest-activity-start-time")).toDouble()){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
@@ -84,7 +91,9 @@ public class BicycleMessenger {
 	}
 	
 	/**
-	 * one does not need this constraint. but it is faster. the earlier the solution-space can be constraint the better/faster.
+	 * When inserting the activities of an envelope which are pickup and deliver envelope, this constraint makes insertion procedure to ignore messengers that are too far away to meet the 3*directTime-Constraint.  
+	 * 
+	 * <p>one does not need this constraint. but it is faster. the earlier the solution-space can be constraint the better/faster.
 	 * @author schroeder
 	 *
 	 */
@@ -113,8 +122,11 @@ public class BicycleMessenger {
 	}
 	
 	/**
-	 * updates the state "latest-activity-start-time" once route/activity states changed, i.e. when removing or inserting an envelope-activity
+	 * updates the state "latest-activity-start-time" (required above) once route/activity states changed, i.e. when removing or inserting an envelope-activity
 	 * 
+	 * <p>thus once either the insertion-procedure starts or an envelope has been inserted, this visitor runs through the route in reverse order (i.e. starting with the end of the route) and 
+	 * calculates the latest-activity-start-time (or latest-activity-arrival-time) which is the time to just meet the constraints of subsequent activities.
+	 *   
 	 * @author schroeder
 	 *
 	 */
@@ -166,47 +178,86 @@ public class BicycleMessenger {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
+		createOutputFolder();//for output generated below
 		
-		
+		//build the problem
 		VehicleRoutingProblem.Builder problemBuilder = VehicleRoutingProblem.Builder.newInstance();
+		problemBuilder.setFleetSize(FleetSize.FINITE);
 		readEnvelopes(problemBuilder);
 		readMessengers(problemBuilder);
 		
-		VehicleRoutingTransportCosts routingCosts = new CrowFlyCosts(problemBuilder.getLocations());
+		//add constraints to problem
+		VehicleRoutingTransportCosts routingCosts = new CrowFlyCosts(problemBuilder.getLocations()); //which is the default VehicleRoutingTransportCosts in builder above
+		//map mapping nearest messengers, i.e. for each envelope the direct-delivery-time with the fastest messenger is stored here
 		Map<String,Double> nearestMessengers = getNearestMessengers(routingCosts, problemBuilder.getAddedJobs(), problemBuilder.getAddedVehicles());
+		//define stateManager to update the required activity-state: "latest-activity-start-time"
 		StateManager stateManager = new StateManager(routingCosts);
+		//default states makes it more comfortable since state has a value and cannot be null (thus u dont need to check nulls)
 		stateManager.addDefaultActivityState(StateFactory.createId("latest-activity-start-time"), StateFactory.createState(Double.MAX_VALUE));
 		
-		problemBuilder.setFleetSize(FleetSize.FINITE);
+		//add the above problem-constraints
 		problemBuilder.addConstraint(new ThreeTimesLessThanBestDirectRouteConstraint(nearestMessengers, routingCosts, stateManager));
 		problemBuilder.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
 		
+		//finally build the problem
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
 		
+		//and make sure you update the activity-state "latest-activity-start-time" the way it is defined above
 		stateManager.addStateUpdater(new UpdateLatestActivityStartTimes(stateManager, routingCosts, nearestMessengers));
 		
+		//create your algorithm
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
+		//if you want, terminate it after 1000 iterations with no change
 		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
-		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-//		algorithm.setNuOfIterations(5000);
+//		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+		algorithm.setNuOfIterations(500);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
+		//this is just to ensure that solution meet the above constraints
+		validateSolution(Solutions.bestOf(solutions), bicycleMessengerProblem, nearestMessengers);
+		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
+		
+		//you may want to plot the problem
 		Plotter plotter = new Plotter(bicycleMessengerProblem);
 //		plotter.setBoundingBox(10000, 47500, 20000, 67500);
 		plotter.plotShipments(true);
 		plotter.plot("output/bicycleMessengerProblem.png", "bicycleMessenger");
 		
-		
+		//and the problem as well as the solution
 		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Solutions.bestOf(solutions));
 		plotter1.plotShipments(true);
 		plotter1.setShowFirstActivity(true);
-		plotter1.setBoundingBox(5000, 45500, 25000, 66500);
+//		plotter1.setBoundingBox(5000, 45500, 25000, 66500);
 		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
 		
+		//and write out your solution in xml
 		new VrpXMLWriter(bicycleMessengerProblem, solutions).write("output/bicycleMessenger.xml");
 		
 
+	}
+
+	//if you wanne run this enable assertion by putting an '-ea' in your vmargument list - Run As --> Run Configurations --> (x)=Arguments --> VM arguments: -ea
+	private static void validateSolution(VehicleRoutingProblemSolution bestOf, VehicleRoutingProblem bicycleMessengerProblem, Map<String, Double> nearestMessengers) {
+		for(VehicleRoute route : bestOf.getRoutes()){
+			assert !(route.getVehicle().getType() instanceof PenaltyVehicleType) : "penaltyVehicle in solution. if there is a valid solution, this should not be";
+			for(TourActivity act : route.getTourActivities().getActivities()){ //getTourActivities().getActivities() is strange and thus may be replaced sooner or later by another name
+				assert act.getArrTime() < 3*nearestMessengers.get(((JobActivity)act).getJob().getId()) : "three times less than ... constraint broken. this must not be"; 
+			}
+		}
+	}
+
+	private static void createOutputFolder() {
+		/*
+		 * some preparation - create output folder
+		 */
+		File dir = new File("output");
+		// if the directory does not exist, create it
+		if (!dir.exists()){
+			System.out.println("creating directory ./output");
+			boolean result = dir.mkdir();  
+			if(result) System.out.println("./output created");  
+		}
 	}
 
 	static Map<String,Double> getNearestMessengers(VehicleRoutingTransportCosts routingCosts, Collection<Job> envelopes, Collection<Vehicle> messengers) {
@@ -238,6 +289,7 @@ public class BicycleMessenger {
 		while((line = reader.readLine()) != null){
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
+			//define your envelope which is basically a shipment from A to B
 			Shipment envelope = Shipment.Builder.newInstance(tokens[1], 1).setPickupCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setDeliveryCoord(Coordinate.newInstance(Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]))).build();
 			problemBuilder.addJob(envelope);
@@ -250,15 +302,23 @@ public class BicycleMessenger {
 		String line = null;
 		boolean firstLine = true;
 		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setCostPerDistance(1).build();
+		/*
+		 * the algo requires some time and space to search for a valid solution. if you ommit a penalty-type, it probably throws an Exception once it cannot insert an envelope anymore
+		 * thus, give it space by defining a penalty/shadow vehicle with higher variable and fixed costs to up the pressure to find solutions without penalty type
+		 * 
+		 * it is important to give it the same typeId as the type you want to shadow
+		 */
 		VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setFixedCost(50000).setCostPerDistance(4).build();
 		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType,4);
 		
 		while((line = reader.readLine()) != null){
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
+			//build your vehicle
 			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setReturnToDepot(false).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
+			//build the penalty vehicle
 			Vehicle penaltyVehicle = VehicleImpl.Builder.newInstance(tokens[1]+"_penalty").setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setReturnToDepot(true).setType(penaltyVehicleType).build();
 			problemBuilder.addVehicle(penaltyVehicle);
