@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -31,6 +32,10 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.DeliverShipment;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
+import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+import jsprit.core.problem.solution.route.state.StateFactory;
+import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -41,32 +46,48 @@ import jsprit.core.util.Solutions;
 
 public class BicycleMessenger {
 
-	static class ThreeTimesLessThanDirectRouteConstraint implements HardActivityStateLevelConstraint {
+	static class ThreeTimesLessThanBestDirectRouteConstraint implements HardActivityStateLevelConstraint {
 
 		private VehicleRoutingTransportCosts routingCosts;
+		
+		private RouteAndActivityStateGetter stateManager;
 		
 		//jobId map direct-distance by nearestMessenger
 		private Map<String,Double> bestMessengers = new HashMap<String, Double>();
 		
-		public ThreeTimesLessThanDirectRouteConstraint(Map<String, Double> nearestMessengers, VehicleRoutingTransportCosts routingCosts) {
+		public ThreeTimesLessThanBestDirectRouteConstraint(Map<String, Double> nearestMessengers, VehicleRoutingTransportCosts routingCosts, RouteAndActivityStateGetter stateManager) {
 			this.bestMessengers = nearestMessengers;
 			this.routingCosts = routingCosts;
+			this.stateManager = stateManager;
 		}
 
 		@Override
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts,TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			double arrivalTime_at_newAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			//local impact
 			if(newAct instanceof DeliverShipment){
-				double deliveryTime = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 				double directTimeOfNearestMessenger = bestMessengers.get(((DeliverShipment) newAct).getJob().getId());
-				if(deliveryTime > 3 * directTimeOfNearestMessenger){
+				if(arrivalTime_at_newAct > 3 * directTimeOfNearestMessenger){
+					//not fulfilled AND it can never be fulfilled anymore by going forward in route, thus NOT_FULFILLED_BREAK
 					return ConstraintsStatus.NOT_FULFILLED_BREAK;
 				}
+			}
+			//impact on whole route, since insertion of newAct shifts all subsequent activities forward in time
+			double departureTime_at_newAct = arrivalTime_at_newAct + newAct.getOperationTime();
+			double deliverTimeAtNextAct = departureTime_at_newAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), departureTime_at_newAct, iFacts.getNewDriver(), iFacts.getNewVehicle());;
+			if(deliverTimeAtNextAct > stateManager.getActivityState(nextAct, StateFactory.createId("latest-activity-start-time")).toDouble()){
+				return ConstraintsStatus.NOT_FULFILLED;
 			}
 			return ConstraintsStatus.FULFILLED;
 		}
 		
 	}
 	
+	/**
+	 * one does not need this constraint. but it is faster. the earlier the solution-space can be constraint the better/faster.
+	 * @author schroeder
+	 *
+	 */
 	static class IgnoreMessengerThatCanNeverMeetTimeRequirements implements HardRouteStateLevelConstraint {
 
 		private Map<String,Double> bestMessengers = new HashMap<String, Double>();
@@ -91,29 +112,52 @@ public class BicycleMessenger {
 		
 	}
 	
-	static class UpdateLatestActivityStartTime implements StateUpdater, ReverseActivityVisitor {
+	/**
+	 * updates the state "latest-activity-start-time" once route/activity states changed, i.e. when removing or inserting an envelope-activity
+	 * 
+	 * @author schroeder
+	 *
+	 */
+	static class UpdateLatestActivityStartTimes implements StateUpdater, ReverseActivityVisitor {
 
 		private StateManager stateManager;
 		
-		public UpdateLatestActivityStartTime(StateManager stateManager) {
+		private VehicleRoutingTransportCosts routingCosts;
+		
+		private Map<String,Double> bestMessengers;
+		
+		private VehicleRoute route;
+		
+		private TourActivity prevAct;
+		
+		private double latestArrivalTime_at_prevAct;
+		
+		public UpdateLatestActivityStartTimes(StateManager stateManager, VehicleRoutingTransportCosts routingCosts, Map<String, Double> bestMessengers) {
 			super();
 			this.stateManager = stateManager;
+			this.routingCosts = routingCosts;
+			this.bestMessengers = bestMessengers;
 		}
 
 		@Override
 		public void begin(VehicleRoute route) {
-			
+			this.route = route;
+			latestArrivalTime_at_prevAct = route.getEnd().getTheoreticalLatestOperationStartTime();
+			prevAct = route.getEnd();
 		}
 
 		@Override
 		public void visit(TourActivity activity) {
-			
+			double timeOfNearestMessenger = bestMessengers.get(((JobActivity)activity).getJob().getId());
+			double potentialLatestArrivalTimeAtCurrAct = latestArrivalTime_at_prevAct - routingCosts.getBackwardTransportTime(activity.getLocationId(), prevAct.getLocationId(), latestArrivalTime_at_prevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
+			double latestArrivalTime_at_activity = Math.min(3*timeOfNearestMessenger, potentialLatestArrivalTimeAtCurrAct);
+			stateManager.putActivityState(activity, StateFactory.createId("latest-activity-start-time"), StateFactory.createState(latestArrivalTime_at_activity));
+			latestArrivalTime_at_prevAct = latestArrivalTime_at_activity;
+			prevAct = activity;
 		}
 
 		@Override
-		public void finish() {
-			
-		}
+		public void finish() {}
 		
 	}
 	
@@ -130,18 +174,20 @@ public class BicycleMessenger {
 		
 		VehicleRoutingTransportCosts routingCosts = new CrowFlyCosts(problemBuilder.getLocations());
 		Map<String,Double> nearestMessengers = getNearestMessengers(routingCosts, problemBuilder.getAddedJobs(), problemBuilder.getAddedVehicles());
+		StateManager stateManager = new StateManager(routingCosts);
+		stateManager.addDefaultActivityState(StateFactory.createId("latest-activity-start-time"), StateFactory.createState(Double.MAX_VALUE));
 		
 		problemBuilder.setFleetSize(FleetSize.FINITE);
-		problemBuilder.addConstraint(new ThreeTimesLessThanDirectRouteConstraint(nearestMessengers, routingCosts));
+		problemBuilder.addConstraint(new ThreeTimesLessThanBestDirectRouteConstraint(nearestMessengers, routingCosts, stateManager));
 		problemBuilder.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
 		
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
 		
-		StateManager stateManager = new StateManager(bicycleMessengerProblem);
-		stateManager.addStateUpdater(new UpdateLatestActivityStartTime(stateManager));
+		stateManager.addStateUpdater(new UpdateLatestActivityStartTimes(stateManager, routingCosts, nearestMessengers));
 		
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
-		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(200));
+//		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(500));
+		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
@@ -203,12 +249,18 @@ public class BicycleMessenger {
 		String line = null;
 		boolean firstLine = true;
 		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setCostPerDistance(1).build();
+		VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setFixedCost(200).setCostPerDistance(4).build();
+		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
+		
 		while((line = reader.readLine()) != null){
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setReturnToDepot(true).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
+			Vehicle penaltyVehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
+					.setReturnToDepot(true).setType(penaltyVehicleType).build();
+			problemBuilder.addVehicle(penaltyVehicle);
 		}
 		reader.close();
 	}

@@ -31,6 +31,7 @@ import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.ReverseRouteActivityVisitor;
@@ -69,7 +70,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	private Map<StateId,State> defaultActivityStates = new HashMap<StateId, State>();
 	
-	private VehicleRoutingProblem vrp;
+	private VehicleRoutingTransportCosts routingCosts;
 	
 	private boolean updateLoad = false;
 	
@@ -77,8 +78,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	public StateManager(VehicleRoutingProblem vrp) {
 		super();
-		this.vrp = vrp;
+		this.routingCosts = vrp.getTransportCosts();
 	}
+	
+	public StateManager(VehicleRoutingTransportCosts routingCosts){
+		this.routingCosts = routingCosts;
+	}
+	
 
 	public void addDefaultRouteState(StateId stateId, State defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
@@ -295,7 +301,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	public void updateTimeWindowStates() {
 		if(!updateTWs){
 			updateTWs=true;
-			addActivityVisitor(new UpdateTimeWindow(this, vrp.getTransportCosts()));
+			addActivityVisitor(new UpdateTimeWindow(this, routingCosts));
 		}
 	}
 }
