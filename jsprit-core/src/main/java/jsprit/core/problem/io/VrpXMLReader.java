@@ -36,12 +36,13 @@ import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.End;
-import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivityFactory;
+import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
+import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Resource;
@@ -421,7 +422,7 @@ public class VrpXMLReader{
 	private void readVehiclesAndTheirTypes(XMLConfiguration vrpProblem) {
 
 		//read vehicle-types
-		Map<String, VehicleTypeImpl> types = new HashMap<String, VehicleTypeImpl>();
+		Map<String, VehicleType> types = new HashMap<String, VehicleType>();
 		List<HierarchicalConfiguration> typeConfigs = vrpProblem.configurationsAt("vehicleTypes.type");
 		for(HierarchicalConfiguration typeConfig : typeConfigs){
 			String typeId = typeConfig.getString("id");
@@ -435,9 +436,16 @@ public class VrpXMLReader{
 			if(fix != null) typeBuilder.setFixedCost(fix);
 			if(timeC != null) typeBuilder.setCostPerTime(timeC);
 			if(distC != null) typeBuilder.setCostPerDistance(distC);
-			VehicleTypeImpl type = typeBuilder.build();
-			types.put(type.getTypeId(), type);
-//			vrpBuilder.addVehicleType(type);
+			VehicleType type = typeBuilder.build();
+			String id = type.getTypeId();
+			String penalty = typeConfig.getString("[@type]");
+			if(penalty != null){
+				if(penalty.equals("penalty")){
+					type = new PenaltyVehicleType(type);
+					id = id + "_penalty";
+				}
+			}
+			types.put(id, type);
 		}
 		
 		//read vehicles
@@ -449,7 +457,13 @@ public class VrpXMLReader{
 			Builder builder = VehicleImpl.Builder.newInstance(vehicleId);
 			String typeId = vehicleConfig.getString("typeId");
 			if(typeId == null) throw new IllegalStateException("typeId is missing.");
-			VehicleTypeImpl type = types.get(typeId);
+			String vType = vehicleConfig.getString("[@type]");
+			if(vType!=null){
+				if(vType.equals("penalty")){
+					typeId+="_penalty";
+				}
+			}
+			VehicleType type = types.get(typeId);
 			if(type == null) throw new IllegalStateException("vehicleType with typeId " + typeId + " is missing.");
 			builder.setType(type);
 			String locationId = vehicleConfig.getString("location.id");

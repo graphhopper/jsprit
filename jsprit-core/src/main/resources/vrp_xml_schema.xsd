@@ -55,6 +55,7 @@
 									<xs:element name="timeSchedule" type="timeWindowType"/>
 									<xs:element name="returnToDepot" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
 								</xs:all>
+								<xs:attribute name="type" type="xs:string" use="optional" />
 							</xs:complexType>
 						</xs:element>
 			
@@ -80,6 +81,7 @@
 										</xs:complexType>
 									</xs:element>
 								</xs:all>
+								<xs:attribute name="type" type="xs:string" use="optional" />
 							</xs:complexType>
 						</xs:element>
 					</xs:sequence>

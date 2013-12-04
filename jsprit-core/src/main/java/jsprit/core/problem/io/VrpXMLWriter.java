@@ -29,6 +29,7 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
+import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleType;
 
@@ -224,6 +225,9 @@ public class VrpXMLWriter {
 				append(Schema.VEHICLE).toString();
 		int counter = 0;
 		for(Vehicle vehicle : vrp.getVehicles()){
+			if(vehicle.getType() instanceof PenaltyVehicleType){
+				xmlConfig.setProperty(vehiclePathString + "("+counter+")[@type]", "penalty");
+			}
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").id", vehicle.getId());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").typeId", vehicle.getType().getTypeId());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").location.id", vehicle.getLocationId());
@@ -242,6 +246,9 @@ public class VrpXMLWriter {
 		String typePathString = Schema.builder().append(Schema.TYPES).dot(Schema.TYPE).build();
 		int typeCounter = 0;
 		for(VehicleType type : vrp.getTypes()){
+			if(type instanceof PenaltyVehicleType){
+				xmlConfig.setProperty(typePathString + "("+typeCounter+")[@type]", "penalty");
+			}
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").id", type.getTypeId());
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").capacity", type.getCapacity());
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.fixed", type.getVehicleCostParams().fix);
