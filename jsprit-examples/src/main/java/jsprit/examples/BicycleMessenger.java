@@ -186,8 +186,9 @@ public class BicycleMessenger {
 		stateManager.addStateUpdater(new UpdateLatestActivityStartTimes(stateManager, routingCosts, nearestMessengers));
 		
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
-//		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(500));
+		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
 		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+//		algorithm.setNuOfIterations(5000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
@@ -198,9 +199,9 @@ public class BicycleMessenger {
 		
 		
 		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Solutions.bestOf(solutions));
-		plotter1.plotShipments(false);
+		plotter1.plotShipments(true);
 		plotter1.setShowFirstActivity(true);
-//		plotter1.setBoundingBox(10000, 47500, 20000, 67500);
+		plotter1.setBoundingBox(5000, 45500, 25000, 66500);
 		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
 		
 		new VrpXMLWriter(bicycleMessengerProblem, solutions).write("output/bicycleMessenger.xml");
@@ -249,16 +250,16 @@ public class BicycleMessenger {
 		String line = null;
 		boolean firstLine = true;
 		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setCostPerDistance(1).build();
-		VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setFixedCost(200).setCostPerDistance(4).build();
-		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
+		VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setFixedCost(50000).setCostPerDistance(4).build();
+		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType,4);
 		
 		while((line = reader.readLine()) != null){
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
-					.setReturnToDepot(true).setType(messengerType).build();
+					.setReturnToDepot(false).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
-			Vehicle penaltyVehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
+			Vehicle penaltyVehicle = VehicleImpl.Builder.newInstance(tokens[1]+"_penalty").setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setReturnToDepot(true).setType(penaltyVehicleType).build();
 			problemBuilder.addVehicle(penaltyVehicle);
 		}
