@@ -22,9 +22,21 @@ public class PenaltyVehicleType implements VehicleType{
 
 	private VehicleType type;
 	
+	private double penaltyFactor = 2;
+	
 	public PenaltyVehicleType(VehicleType type) {
 		super();
 		this.type = type;
+	}
+	
+	public PenaltyVehicleType(VehicleType type, double penaltyFactor) {
+		super();
+		this.type = type;
+		this.penaltyFactor = penaltyFactor;
+	}
+
+	public double getPenaltyFactor(){
+		return this.penaltyFactor;
 	}
 
 	@Override

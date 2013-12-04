@@ -33,6 +33,7 @@ import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourShipmentActivityFactory;
+import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import jsprit.core.util.CalculationUtils;
@@ -51,14 +52,6 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 	
 	private HardActivityStateLevelConstraint hardActivityLevelConstraint;
 	
-	private Neighborhood neighborhood = new Neighborhood() {
-		
-		@Override
-		public boolean areNeighbors(String location1, String location2) {
-			return true;
-		}
-	};
-	
 	private ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 	
 	private VehicleRoutingTransportCosts transportCosts;
@@ -66,7 +59,6 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 	private TourShipmentActivityFactory activityFactory;
 	
 	public void setNeighborhood(Neighborhood neighborhood) {
-		this.neighborhood = neighborhood;
 		logger.info("initialise neighborhood " + neighborhood);
 	}
 	
@@ -201,7 +193,6 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 			return InsertionData.createEmptyInsertionData();
 		}
 		InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
-//		logger.info("pickupIndex="+pickupInsertionIndex + ";deliveryIndex=" + deliveryInsertionIndex);
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
 		return insertionData;
 	}

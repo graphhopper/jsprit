@@ -259,9 +259,11 @@ class CalculatorBuilder {
 		switcher.put(Pickup.class, serviceInsertion);
 		switcher.put(Delivery.class, serviceInsertion);
 		
+		PenalyzeInsertionCostsWithPenaltyVehicle penalyzeInsertionCosts = new PenalyzeInsertionCostsWithPenaltyVehicle(switcher);
+		
 //		JobInsertionCostsCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
 //		((ServiceInsertionCalculator) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
-		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(switcher);
+		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(penalyzeInsertionCosts);
 		
 		return calcPlusListeners;
 	}
@@ -288,7 +290,10 @@ class CalculatorBuilder {
 		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setMemorySize(solutionMemory);
 		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setNeighborhood(vrp.getNeighborhood());
 		((ServiceInsertionOnRouteLevelCalculator) jobInsertionCalculator).setStates(activityStates2);
-		CalculatorPlusListeners calcPlusListener = new CalculatorPlusListeners(jobInsertionCalculator);
+		
+		PenalyzeInsertionCostsWithPenaltyVehicle penalyzeInsertionCosts = new PenalyzeInsertionCostsWithPenaltyVehicle(jobInsertionCalculator);
+		
+		CalculatorPlusListeners calcPlusListener = new CalculatorPlusListeners(penalyzeInsertionCosts);
 		return calcPlusListener;
 	}
 
