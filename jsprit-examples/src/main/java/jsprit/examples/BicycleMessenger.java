@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
@@ -29,7 +30,6 @@ import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.DeliverShipment;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
@@ -43,6 +43,9 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Solutions;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 public class BicycleMessenger {
 
@@ -69,6 +72,12 @@ public class BicycleMessenger {
 
 		@Override
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts,TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			//make sure vehicle can manage direct path
+			double directArr_at_next = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			if(directArr_at_next > stateManager.getActivityState(nextAct, StateFactory.createId("latest-act-arrival-time")).toDouble()){
+				return ConstraintsStatus.NOT_FULFILLED_BREAK;
+			}
+			
 			double arrivalTime_at_newAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 			//local impact
 			//no matter whether it is a pickupShipment or deliverShipment activities. both arrivalTimes must be < 3*best. 
@@ -80,9 +89,9 @@ public class BicycleMessenger {
 
 			//impact on whole route, since insertion of newAct shifts all subsequent activities forward in time
 			double departureTime_at_newAct = arrivalTime_at_newAct + newAct.getOperationTime();
-			double deliverTimeAtNextAct = departureTime_at_newAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), departureTime_at_newAct, iFacts.getNewDriver(), iFacts.getNewVehicle());;
+			double arrTimeAtNextAct = departureTime_at_newAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), departureTime_at_newAct, iFacts.getNewDriver(), iFacts.getNewVehicle());;
 			//here you need an activity state
-			if(deliverTimeAtNextAct > stateManager.getActivityState(nextAct, StateFactory.createId("latest-activity-start-time")).toDouble()){
+			if(arrTimeAtNextAct > stateManager.getActivityState(nextAct, StateFactory.createId("latest-act-arrival-time")).toDouble()){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
 			return ConstraintsStatus.FULFILLED;
@@ -132,11 +141,11 @@ public class BicycleMessenger {
 	 */
 	static class UpdateLatestActivityStartTimes implements StateUpdater, ReverseActivityVisitor {
 
-		private StateManager stateManager;
+		private final StateManager stateManager;
 		
-		private VehicleRoutingTransportCosts routingCosts;
+		private final VehicleRoutingTransportCosts routingCosts;
 		
-		private Map<String,Double> bestMessengers;
+		private final Map<String,Double> bestMessengers;
 		
 		private VehicleRoute route;
 		
@@ -161,9 +170,11 @@ public class BicycleMessenger {
 		@Override
 		public void visit(TourActivity activity) {
 			double timeOfNearestMessenger = bestMessengers.get(((JobActivity)activity).getJob().getId());
-			double potentialLatestArrivalTimeAtCurrAct = latestArrivalTime_at_prevAct - routingCosts.getBackwardTransportTime(activity.getLocationId(), prevAct.getLocationId(), latestArrivalTime_at_prevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
+			double potentialLatestArrivalTimeAtCurrAct = 
+					latestArrivalTime_at_prevAct - routingCosts.getBackwardTransportTime(activity.getLocationId(), prevAct.getLocationId(), latestArrivalTime_at_prevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
 			double latestArrivalTime_at_activity = Math.min(3*timeOfNearestMessenger, potentialLatestArrivalTimeAtCurrAct);
-			stateManager.putActivityState(activity, StateFactory.createId("latest-activity-start-time"), StateFactory.createState(latestArrivalTime_at_activity));
+			stateManager.putActivityState(activity, StateFactory.createId("latest-act-arrival-time"), StateFactory.createState(latestArrivalTime_at_activity));
+			assert activity.getArrTime() <= latestArrivalTime_at_activity : "this must not be since it breaks condition; actArrTime: " + activity.getArrTime() + " latestArrTime: " + latestArrivalTime_at_activity + " vehicle: " + route.getVehicle().getId();
 			latestArrivalTime_at_prevAct = latestArrivalTime_at_activity;
 			prevAct = activity;
 		}
@@ -179,7 +190,7 @@ public class BicycleMessenger {
 	 */
 	public static void main(String[] args) throws IOException {
 		createOutputFolder();//for output generated below
-		
+		Logger.getRootLogger().setLevel(Level.INFO);
 		//build the problem
 		VehicleRoutingProblem.Builder problemBuilder = VehicleRoutingProblem.Builder.newInstance();
 		problemBuilder.setFleetSize(FleetSize.FINITE);
@@ -193,7 +204,7 @@ public class BicycleMessenger {
 		//define stateManager to update the required activity-state: "latest-activity-start-time"
 		StateManager stateManager = new StateManager(routingCosts);
 		//default states makes it more comfortable since state has a value and cannot be null (thus u dont need to check nulls)
-		stateManager.addDefaultActivityState(StateFactory.createId("latest-activity-start-time"), StateFactory.createState(Double.MAX_VALUE));
+		stateManager.addDefaultActivityState(StateFactory.createId("latest-act-arrival-time"), StateFactory.createState(Double.MAX_VALUE));
 		
 		//add the above problem-constraints
 		problemBuilder.addConstraint(new ThreeTimesLessThanBestDirectRouteConstraint(nearestMessengers, routingCosts, stateManager));
@@ -206,11 +217,11 @@ public class BicycleMessenger {
 		stateManager.addStateUpdater(new UpdateLatestActivityStartTimes(stateManager, routingCosts, nearestMessengers));
 		
 		//create your algorithm
-		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,4,"input/algorithmConfig_open.xml", stateManager);
+		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
 		//if you want, terminate it after 1000 iterations with no change
-		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
-//		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-//		algorithm.setNuOfIterations(50);
+		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
+		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+		algorithm.setNuOfIterations(2000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints
@@ -240,9 +251,15 @@ public class BicycleMessenger {
 	//if you wanne run this enable assertion by putting an '-ea' in your vmargument list - Run As --> Run Configurations --> (x)=Arguments --> VM arguments: -ea
 	private static void validateSolution(VehicleRoutingProblemSolution bestOf, VehicleRoutingProblem bicycleMessengerProblem, Map<String, Double> nearestMessengers) {
 		for(VehicleRoute route : bestOf.getRoutes()){
-			assert !(route.getVehicle().getType() instanceof PenaltyVehicleType) : "penaltyVehicle in solution. if there is a valid solution, this should not be";
 			for(TourActivity act : route.getActivities()){ 
-				assert act.getArrTime() < 3*nearestMessengers.get(((JobActivity)act).getJob().getId()) : "three times less than ... constraint broken. this must not be"; 
+				if(act.getArrTime() > 3*nearestMessengers.get(((JobActivity)act).getJob().getId())){
+					SolutionPrinter.print(bicycleMessengerProblem, bestOf, Print.VERBOSE);
+					throw new IllegalStateException("three times less than ... constraint broken. this must not be. act.getArrTime(): " + act.getArrTime() + " allowed: " + 3*nearestMessengers.get(((JobActivity)act).getJob().getId())); 
+				}
+			}
+			if(route.getVehicle().getType() instanceof PenaltyVehicleType){
+				SolutionPrinter.print(bicycleMessengerProblem, bestOf, Print.VERBOSE);
+				throw new IllegalStateException("penaltyVehicle in solution. if there is a valid solution, this should not be");
 			}
 		}
 	}
@@ -320,7 +337,7 @@ public class BicycleMessenger {
 			problemBuilder.addVehicle(vehicle);
 			//build the penalty vehicle
 			Vehicle penaltyVehicle = VehicleImpl.Builder.newInstance(tokens[1]+"_penalty").setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
-					.setReturnToDepot(true).setType(penaltyVehicleType).build();
+					.setReturnToDepot(false).setType(penaltyVehicleType).build();
 			problemBuilder.addVehicle(penaltyVehicle);
 		}
 		reader.close();
