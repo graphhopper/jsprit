@@ -248,6 +248,7 @@ public class VrpXMLWriter {
 		for(VehicleType type : vrp.getTypes()){
 			if(type instanceof PenaltyVehicleType){
 				xmlConfig.setProperty(typePathString + "("+typeCounter+")[@type]", "penalty");
+				xmlConfig.setProperty(typePathString + "("+typeCounter+")[@penaltyFactor]", ((PenaltyVehicleType)type).getPenaltyFactor());
 			}
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").id", type.getTypeId());
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").capacity", type.getCapacity());

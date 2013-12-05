@@ -441,10 +441,15 @@ public class VrpXMLReader{
 			String penalty = typeConfig.getString("[@type]");
 			if(penalty != null){
 				if(penalty.equals("penalty")){
-					type = new PenaltyVehicleType(type);
+					String penaltyFactor = typeConfig.getString("[@penaltyFactor]");
+					if(penaltyFactor != null){
+						type = new PenaltyVehicleType(type,Double.parseDouble(penaltyFactor));
+					}
+					else type = new PenaltyVehicleType(type);
 					id = id + "_penalty";
 				}
 			}
+			
 			types.put(id, type);
 		}
 		

@@ -82,6 +82,7 @@
 									</xs:element>
 								</xs:all>
 								<xs:attribute name="type" type="xs:string" use="optional" />
+								<xs:attribute name="penaltyFactor" type="xs:string" use="optional" />
 							</xs:complexType>
 						</xs:element>
 					</xs:sequence>
