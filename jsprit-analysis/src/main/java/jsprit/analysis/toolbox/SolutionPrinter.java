@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.analysis.toolbox;
 
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 
 /**
@@ -48,6 +49,42 @@ public class SolutionPrinter {
 		System.out.println("[costs="+solution.getCost() + "]");
 		System.out.println("[#vehicles="+solution.getRoutes().size() + "]");
 		
+	}
+	
+	private static class Jobs {
+		int nServices;
+		int nShipments;
+		public Jobs(int nServices, int nShipments) {
+			super();
+			this.nServices = nServices;
+			this.nShipments = nShipments;
+		}
+	}
+	
+	public static void print(VehicleRoutingProblemSolution solution, VehicleRoutingProblem problem){
+		System.out.println("##########");
+		System.out.println("Problem:");
+		System.out.println("nJobs: "+problem.getJobs().values().size());
+		Jobs jobs = getNuOfJobs(problem);
+		System.out.println("nServices: "+ getNuOfServices(problem));
+		System.out.println("nShipments: "+ getNuOfShipments(problem));
+		System.out.println("fleetsize: "+problem.getFleetSize().toString());
+		System.out.println("##########");
+	}
+
+	private static Jobs getNuOfJobs(VehicleRoutingProblem problem) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String getNuOfShipments(VehicleRoutingProblem problem) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String getNuOfServices(VehicleRoutingProblem problem) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 //	/**
