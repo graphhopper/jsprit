@@ -66,7 +66,9 @@ import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.selector.SelectRandomly;
 import jsprit.core.algorithm.selector.SolutionSelector;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.algorithm.state.StateUpdater;
 import jsprit.core.algorithm.state.UpdateActivityTimes;
+import jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
@@ -78,6 +80,9 @@ import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.End;
+import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
@@ -439,7 +444,7 @@ public class VehicleRoutingAlgorithms {
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
 		xmlReader.read(configFileName);
-		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),nThreads, stateManager);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(), nThreads, stateManager);
 	}
 	
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(VehicleRoutingProblem vrp, int nThreads, String configFileName) {
@@ -449,7 +454,40 @@ public class VehicleRoutingAlgorithms {
 		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),nThreads, null);
 	}
 	
-	
+	private static class OpenRouteStateVerifier implements StateUpdater, ReverseActivityVisitor{
+
+		private End end;
+		
+		private boolean firstAct = true;
+		
+		private Vehicle vehicle;
+		
+		@Override
+		public void begin(VehicleRoute route) {
+			end = route.getEnd();
+			vehicle = route.getVehicle();
+		}
+
+		@Override
+		public void visit(TourActivity activity) {
+			if(firstAct){
+				firstAct=false;
+				if(!vehicle.isReturnToDepot()){
+					assert activity.getLocationId() == end.getLocationId() : "route end and last activity are not equal even route is open. this should not be.";
+				}
+			}
+			
+		}
+
+		@Override
+		public void finish() {
+			if(firstAct){
+				assert vehicle.getLocationId() == end.getLocationId() : "route end and last activity are not equal even route is open. this should not be.";
+			}
+			firstAct = true;
+		}
+		
+	}
 
 	private static VehicleRoutingAlgorithm createAlgo(final VehicleRoutingProblem vrp, XMLConfiguration config, int nuOfThreads, StateManager stateMan){
 		
@@ -509,6 +547,8 @@ public class VehicleRoutingAlgorithms {
 		}
 		stateManager.updateLoadStates();
 		stateManager.updateTimeWindowStates();
+		stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
+		stateManager.addStateUpdater(new OpenRouteStateVerifier());
 		
 		/*
 		 * define constraints
@@ -553,15 +593,9 @@ public class VehicleRoutingAlgorithms {
 		/*
 		 * define stateUpdates
 		 */
-//		UpdateLoads loadUpdater = new UpdateLoads(stateManager);
-//		stateManager.addListener(loadUpdater);
-//		stateManager.addActivityVisitor(loadUpdater);
 		stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts()));
 		stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
-		
-//		stateManager.addActivityVisitor(new UpdateOccuredDeliveries(stateManager));
-//		stateManager.addActivityVisitor(new TimeWindowUpdater(stateManager, vrp.getTransportCosts()));
-//		stateManager.addActivityVisitor(new UpdateFuturePickups(stateManager));
+
 		
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(stateManager);
 		metaAlgorithm.getAlgorithmListeners().addListener(stateManager);
