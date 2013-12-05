@@ -268,13 +268,13 @@ public class Plotter {
 		return plot;
 	}
 
-	private Range getRange(final XYSeriesCollection problem) {
-		if(this.boundingBox==null) return problem.getRangeBounds(false);
+	private Range getRange(final XYSeriesCollection seriesCol) {
+		if(this.boundingBox==null) return seriesCol.getRangeBounds(false);
 		else return new Range(boundingBox.minY, boundingBox.maxY);
 	}
 
-	private Range getDomainRange(final XYSeriesCollection problem) {
-		if(this.boundingBox == null) return problem.getDomainBounds(true);
+	private Range getDomainRange(final XYSeriesCollection seriesCol) {
+		if(this.boundingBox == null) return seriesCol.getDomainBounds(true);
 		else return new Range(boundingBox.minX, boundingBox.maxX);
 	}
 
@@ -297,10 +297,10 @@ public class Plotter {
 		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
 
 		NumberAxis xAxis = new NumberAxis();		
-		xAxis.setRangeWithMargins(getDomainRange(problem));
+		xAxis.setRangeWithMargins(getDomainRange(solutionColl));
 		
 		NumberAxis yAxis = new NumberAxis();
-		yAxis.setRangeWithMargins(getRange(problem));
+		yAxis.setRangeWithMargins(getRange(solutionColl));
 		
 		plot.setDataset(0, problem);
 		plot.setRenderer(0, problemRenderer);
