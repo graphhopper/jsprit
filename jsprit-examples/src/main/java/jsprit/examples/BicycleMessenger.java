@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -71,13 +70,13 @@ public class BicycleMessenger {
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts,TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 			double arrivalTime_at_newAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 			//local impact
-			if(newAct instanceof DeliverShipment){
-				double directTimeOfNearestMessenger = bestMessengers.get(((DeliverShipment) newAct).getJob().getId());
-				if(arrivalTime_at_newAct > 3 * directTimeOfNearestMessenger){
-					//not fulfilled AND it can never be fulfilled anymore by going forward in route, thus NOT_FULFILLED_BREAK
-					return ConstraintsStatus.NOT_FULFILLED_BREAK;
-				}
+			//no matter whether it is a pickupShipment or deliverShipment activities. both arrivalTimes must be < 3*best. 
+			double directTimeOfNearestMessenger = bestMessengers.get(((JobActivity) newAct).getJob().getId());
+			if(arrivalTime_at_newAct > 3 * directTimeOfNearestMessenger){
+				//not fulfilled AND it can never be fulfilled anymore by going forward in route, thus NOT_FULFILLED_BREAK
+				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
+
 			//impact on whole route, since insertion of newAct shifts all subsequent activities forward in time
 			double departureTime_at_newAct = arrivalTime_at_newAct + newAct.getOperationTime();
 			double deliverTimeAtNextAct = departureTime_at_newAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), departureTime_at_newAct, iFacts.getNewDriver(), iFacts.getNewVehicle());;
@@ -217,6 +216,7 @@ public class BicycleMessenger {
 		validateSolution(Solutions.bestOf(solutions), bicycleMessengerProblem, nearestMessengers);
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
+		SolutionPrinter.print(Solutions.bestOf(solutions), bicycleMessengerProblem);
 		
 		//you may want to plot the problem
 		Plotter plotter = new Plotter(bicycleMessengerProblem);
@@ -241,7 +241,7 @@ public class BicycleMessenger {
 	private static void validateSolution(VehicleRoutingProblemSolution bestOf, VehicleRoutingProblem bicycleMessengerProblem, Map<String, Double> nearestMessengers) {
 		for(VehicleRoute route : bestOf.getRoutes()){
 			assert !(route.getVehicle().getType() instanceof PenaltyVehicleType) : "penaltyVehicle in solution. if there is a valid solution, this should not be";
-			for(TourActivity act : route.getTourActivities().getActivities()){ //getTourActivities().getActivities() is strange and thus may be replaced sooner or later by another name
+			for(TourActivity act : route.getActivities()){ 
 				assert act.getArrTime() < 3*nearestMessengers.get(((JobActivity)act).getJob().getId()) : "three times less than ... constraint broken. this must not be"; 
 			}
 		}
