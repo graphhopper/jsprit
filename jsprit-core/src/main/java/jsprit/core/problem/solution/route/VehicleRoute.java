@@ -16,7 +16,9 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jsprit.core.problem.driver.Driver;
@@ -251,6 +253,15 @@ public class VehicleRoute {
 		}
 	}
 
+	/**
+	 * Returns an unmodifiable list of activities on this route (without start/end).
+	 * 
+	 * @return
+	 */
+	public List<TourActivity> getActivities(){
+		return Collections.unmodifiableList(tourActivities.getActivities());
+	}
+	
 	public TourActivities getTourActivities() {
 		return tourActivities;
 	}
