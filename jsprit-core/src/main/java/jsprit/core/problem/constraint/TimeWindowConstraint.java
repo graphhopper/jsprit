@@ -51,6 +51,11 @@ import org.apache.log4j.Logger;
 			if(arrTimeAtNextAct > latestArrTimeAtNextAct){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
+			double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + routingCosts.getTransportCost(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle()); 
+			//if vehicle cannot even manage direct-route - break
+			if(arrTimeAtNextOnDirectRouteWithNewVehicle > latestArrTimeAtNextAct){
+				return ConstraintsStatus.NOT_FULFILLED_BREAK;
+			}
 			return ConstraintsStatus.FULFILLED;
 		}
 	}
