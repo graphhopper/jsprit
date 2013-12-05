@@ -435,6 +435,13 @@ public class VehicleRoutingAlgorithms {
 		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, stateManager);
 	}
 	
+	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final String configFileName, StateManager stateManager){
+		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
+		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
+		xmlReader.read(configFileName);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),nThreads, stateManager);
+	}
+	
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(VehicleRoutingProblem vrp, int nThreads, String configFileName) {
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
