@@ -280,16 +280,6 @@ public class VehicleRoute {
 		setStartAndEnd(vehicle, vehicleDepTime);
 	}
 	
-	public void setDepartureTime(double vehicleDepTime){
-		if(start == null) throw new IllegalStateException("cannot set departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
-		start.setEndTime(vehicleDepTime);
-	}
-	
-	public double getDepartureTime(){
-		if(start == null) throw new IllegalStateException("cannot get departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
-		return start.getEndTime();
-	}
-	
 	private void setStartAndEnd(Vehicle vehicle, double vehicleDepTime) {
 		if(!(vehicle instanceof NoVehicle)){
 			if(start == null && end == null){
@@ -307,7 +297,16 @@ public class VehicleRoute {
 		
 	}
 
-
+	public void setDepartureTime(double vehicleDepTime){
+		if(start == null) throw new IllegalStateException("cannot set departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
+		start.setEndTime(vehicleDepTime);
+	}
+	
+	public double getDepartureTime(){
+		if(start == null) throw new IllegalStateException("cannot get departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
+		return start.getEndTime();
+	}
+	
 	public boolean isEmpty() {
 		return tourActivities.isEmpty();
 	}

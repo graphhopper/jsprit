@@ -16,6 +16,8 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
+import org.apache.log4j.Logger;
+
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.problem.job.Job;
@@ -93,7 +95,7 @@ class Inserter {
 				TourActivity pickupShipment = this.activityFactory.createPickup((Shipment)job);
 				TourActivity deliverShipment = this.activityFactory.createDelivery((Shipment)job);
 				if(!iData.getSelectedVehicle().isReturnToDepot()){
-					if(iData.getDeliveryInsertionIndex()>=route.getTourActivities().getActivities().size()){
+					if(iData.getDeliveryInsertionIndex()>=route.getActivities().size()){
 						setEndLocation(route,(Shipment)job);
 					}
 				}
@@ -118,6 +120,8 @@ class Inserter {
 	
 	private JobInsertionHandler jobInsertionHandler;
 	
+	private static Logger log = Logger.getLogger(Inserter.class);
+	
 	public Inserter(InsertionListeners insertionListeners) {
 		this.insertionListeners = insertionListeners;
 		new DefaultTourActivityFactory();
@@ -132,6 +136,7 @@ class Inserter {
 		if(job == null) throw new IllegalStateException("cannot insert null-job");
 		if(!(vehicleRoute.getVehicle().getId().toString().equals(insertionData.getSelectedVehicle().getId().toString()))){
 			insertionListeners.informVehicleSwitched(vehicleRoute, vehicleRoute.getVehicle(), insertionData.getSelectedVehicle());
+//			log.debug("vehicle switched from " + vehicleRoute.getVehicle().getId() + " to " + insertionData.getSelectedVehicle().getId());
 			vehicleRoute.setVehicle(insertionData.getSelectedVehicle(), insertionData.getVehicleDepartureTime());
 		}
 		jobInsertionHandler.handleJobInsertion(job, insertionData, vehicleRoute);
