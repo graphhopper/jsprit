@@ -17,7 +17,13 @@
 package jsprit.analysis.toolbox;
 
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.job.Job;
+import jsprit.core.problem.job.Service;
+import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
 /**
  * Printer to print the details of a vehicle-routing-problem solution.
@@ -61,30 +67,77 @@ public class SolutionPrinter {
 		}
 	}
 	
-	public static void print(VehicleRoutingProblemSolution solution, VehicleRoutingProblem problem){
-		System.out.println("##########");
-		System.out.println("Problem:");
-		System.out.println("nJobs: "+problem.getJobs().values().size());
+	public static void print(VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution, Print print){
+		String leftAlign = "| %-13s | %-8s | %n";
+		
+		System.out.format("+--------------------------+%n");
+		System.out.printf("| problem                  |%n");
+		System.out.format("+---------------+----------+%n");
+		System.out.printf("| indicator     | value    |%n");
+		System.out.format("+---------------+----------+%n");
+		
+		System.out.format(leftAlign, "nJobs", problem.getJobs().values().size());
 		Jobs jobs = getNuOfJobs(problem);
-		System.out.println("nServices: "+ getNuOfServices(problem));
-		System.out.println("nShipments: "+ getNuOfShipments(problem));
-		System.out.println("fleetsize: "+problem.getFleetSize().toString());
-		System.out.println("##########");
+		System.out.format(leftAlign, "nServices",jobs.nServices);
+		System.out.format(leftAlign, "nShipments",jobs.nShipments);
+		System.out.format(leftAlign, "fleetsize",problem.getFleetSize().toString());
+		System.out.format("+--------------------------+%n");
+		
+		
+		String leftAlignSolution = "| %-13s | %-40s | %n";
+		System.out.format("+----------------------------------------------------------+%n");
+		System.out.printf("| solution                                                 |%n");
+		System.out.format("+---------------+------------------------------------------+%n");
+		System.out.printf("| indicator     | value                                    |%n");
+		System.out.format("+---------------+------------------------------------------+%n");
+		System.out.format(leftAlignSolution, "costs",solution.getCost());
+		System.out.format(leftAlignSolution, "nVehicles",solution.getRoutes().size());
+		System.out.format("+----------------------------------------------------------+%n");
+		
+		if(print.equals(Print.VERBOSE)){
+			printVerbose(problem,solution);
+		}
+	}
+
+	private static void printVerbose(VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
+		String leftAlgin = "| %-7s | %-20s | %-21s | %-15s | %-15s | %-15s | %-15s |%n";
+		System.out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
+		System.out.printf("| detailed solution                                                                                                              |%n");
+		System.out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
+		System.out.printf("| route   | vehicle              | activity              | job             | arrTime         | endTime         | costs           |%n");
+		int routeNu = 1;
+		for(VehicleRoute route : solution.getRoutes()){
+			System.out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
+			double costs = 0;
+			System.out.format(leftAlgin, routeNu, route.getVehicle().getId(), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),Math.round(costs));
+			TourActivity prevAct = route.getStart();
+			for(TourActivity act : route.getActivities()){
+				String jobId;
+				if(act instanceof JobActivity) jobId = ((JobActivity)act).getJob().getId();
+				else jobId = "-";
+				double c = problem.getTransportCosts().getTransportCost(prevAct.getLocationId(), act.getLocationId(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+				c+= problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
+				costs+=c;
+				System.out.format(leftAlgin, routeNu, route.getVehicle().getId(), act.getName(), jobId, Math.round(act.getArrTime()), Math.round(act.getEndTime()),Math.round(costs));
+				prevAct=act;
+			}
+			double c = problem.getTransportCosts().getTransportCost(prevAct.getLocationId(), route.getEnd().getLocationId(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+			c+= problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
+			costs+=c;
+			System.out.format(leftAlgin, routeNu, route.getVehicle().getId(), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef", Math.round(costs));
+			routeNu++;
+		}
+		System.out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
 	}
 
 	private static Jobs getNuOfJobs(VehicleRoutingProblem problem) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static String getNuOfShipments(VehicleRoutingProblem problem) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static String getNuOfServices(VehicleRoutingProblem problem) {
-		// TODO Auto-generated method stub
-		return null;
+		int nShipments = 0;
+		int nServices = 0;
+		for(Job j : problem.getJobs().values()){
+			if(j instanceof Shipment) nShipments++;
+			if(j instanceof Service) nServices++;
+		}
+		return new Jobs(nServices,nShipments);
 	}
 	
 //	/**
