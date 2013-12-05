@@ -10,6 +10,7 @@ import java.util.Map;
 
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.state.StateManager;
@@ -209,14 +210,14 @@ public class BicycleMessenger {
 		//if you want, terminate it after 1000 iterations with no change
 		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
 //		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-		algorithm.setNuOfIterations(500);
+//		algorithm.setNuOfIterations(50);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints
 		validateSolution(Solutions.bestOf(solutions), bicycleMessengerProblem, nearestMessengers);
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
-		SolutionPrinter.print(Solutions.bestOf(solutions), bicycleMessengerProblem);
+		SolutionPrinter.print(bicycleMessengerProblem, Solutions.bestOf(solutions), Print.VERBOSE);
 		
 		//you may want to plot the problem
 		Plotter plotter = new Plotter(bicycleMessengerProblem);

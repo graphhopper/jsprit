@@ -24,6 +24,7 @@ import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.StopWatch;
+import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
@@ -97,7 +98,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 			 * to mark the penalty-type as penalty-type, wrap it with PenaltyVehicleType(Wrapper)
 			 * this is to tell the fleetManager that this is not a regular but a penalty vehicle
 			 */
-			PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
+			PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType,3);
 			String vehicleId = depotCounter + "_vehicle#penalty";
 			VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
 			vehicleBuilder.setLocationCoord(depotCoord);
@@ -137,7 +138,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		SolutionPrinter.print(Solutions.bestOf(solutions));
+		SolutionPrinter.print(vrp,Solutions.bestOf(solutions),Print.VERBOSE);
 		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.bestOf(solutions), "output/p08_solution.png", "p08");
 
 	}

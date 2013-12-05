@@ -22,6 +22,7 @@ import java.util.Collection;
 
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -111,7 +112,7 @@ public class SimpleEnRoutePickupAndDeliveryOpenRoutesExample {
 		/*
 		 * print nRoutes and totalCosts of bestSolution
 		 */
-		SolutionPrinter.print(bestSolution);
+		SolutionPrinter.print(problem,bestSolution,Print.VERBOSE);
 		
 		/*
 		 * plot problem without solution

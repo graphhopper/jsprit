@@ -22,6 +22,7 @@ import java.util.Collection;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.selector.SelectBest;
@@ -87,7 +88,7 @@ public class SolomonExample {
 		/*
 		 * print solution
 		 */
-		SolutionPrinter.print(solution);
+		SolutionPrinter.print(vrp,solution,Print.VERBOSE);
 		
 		/*
 		 * Plot solution. 
