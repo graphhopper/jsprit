@@ -219,7 +219,7 @@ public class BicycleMessenger {
 		//create your algorithm
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
 		//if you want, terminate it after 1000 iterations with no change
-		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
+//		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
 		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		algorithm.setNuOfIterations(2000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
@@ -227,7 +227,6 @@ public class BicycleMessenger {
 		//this is just to ensure that solution meet the above constraints
 		validateSolution(Solutions.bestOf(solutions), bicycleMessengerProblem, nearestMessengers);
 		
-		SolutionPrinter.print(bicycleMessengerProblem, Solutions.bestOf(solutions), Print.VERBOSE);
 		
 		//you may want to plot the problem
 		Plotter plotter = new Plotter(bicycleMessengerProblem);
@@ -244,6 +243,8 @@ public class BicycleMessenger {
 		
 		//and write out your solution in xml
 		new VrpXMLWriter(bicycleMessengerProblem, solutions).write("output/bicycleMessenger.xml");
+		
+		SolutionPrinter.print(bicycleMessengerProblem, Solutions.bestOf(solutions), Print.VERBOSE);
 		
 
 	}
