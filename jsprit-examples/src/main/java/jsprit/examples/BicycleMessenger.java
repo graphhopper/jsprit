@@ -16,7 +16,6 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.StateUpdater;
-import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -47,6 +46,25 @@ import jsprit.core.util.Solutions;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+
+/**
+ * This class provides the/a solution to the following problem:
+ * 
+ * Statement of the problem (see Stackoverflow: http://stackoverflow.com/questions/19080537/bicycle-messenger-tsppd-with-optaplanner/20412598#20412598):
+ * 
+ * Optimize the routes for a bicycle messenger service! 
+ * Assume 5 messengers that have to pick up 30 envelopes distributed through the city. These 5 messengers are distributed through the city as well. Thus
+ * there is no single depot and they do not need to go back to their original starting location.
+ * 
+ * Additional hard constraints:
+ * 1) Every messenger can carry up to fifteen envelopes
+ * 2) The way an evelopes travels should be less than three times the direct route (so delivery does not take too long)
+ * 
+ * Thus this problem is basically a Capacitated VRP with Pickups and Deliveries, Multiple Depots, Open Routes and Time Windows/Restrictions.
+ * 
+ * @author stefan schroeder
+ *
+ */
 public class BicycleMessenger {
 
 	/**
