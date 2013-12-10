@@ -75,14 +75,14 @@ public class Plotter {
 		
 	}
 	
-	private static class NoLocationFoundException extends Exception{
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		
-	}
+//	private static class NoLocationFoundException extends Exception{
+//
+//		/**
+//		 * 
+//		 */
+//		private static final long serialVersionUID = 1L;
+//		
+//	}
 	
 	private static Logger log = Logger.getLogger(SolutionPlotter.class);
 	
@@ -504,7 +504,7 @@ public class Plotter {
 				}
 			}
 			else{
-				throw new IllegalStateException("job is not a service. this is not supported yet.");
+				throw new IllegalStateException("job is neither a service nor a shipment. this is not supported yet.");
 			}
 		}
 		return new Locations() {

@@ -19,6 +19,7 @@ package jsprit.examples;
 import java.io.File;
 import java.util.Collection;
 
+import jsprit.analysis.toolbox.GraphStream;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
@@ -71,7 +72,7 @@ public class SolomonExample {
 		 */
 //		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
-//		vra.setPrematureBreak(100);
+		vra.setPrematureBreak(10);
 //		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
@@ -98,7 +99,9 @@ public class SolomonExample {
 		plotter.plot("output/solomon_C101_solution.png", "C101");
 //		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_solution.png","C101");
 		
-	
+//		GraphStream.display(vrp,100);
+		
+		GraphStream.display(vrp,solution);
 		
 	}
 

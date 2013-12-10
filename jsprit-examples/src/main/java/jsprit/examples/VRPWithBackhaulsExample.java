@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Collection;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import jsprit.analysis.toolbox.GraphStream;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.Plotter.Label;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
@@ -99,11 +100,12 @@ public class VRPWithBackhaulsExample {
 		/*
 		 * Plot solution. 
 		 */
-		Plotter plotter = new Plotter(vrp, solution);
-		plotter.setLabel(Label.SIZE);
-		plotter.setShowFirstActivity(true);
-		plotter.plot("output/vrpwbh_solomon_r101_solution.png","vrpwbh_r101");
+//		Plotter plotter = new Plotter(vrp, solution);
+//		plotter.setLabel(Label.SIZE);
+//		plotter.setShowFirstActivity(true);
+//		plotter.plot("output/vrpwbh_solomon_r101_solution.png","vrpwbh_r101");
 		
+		GraphStream.display(vrp, solution, 100, true);
 		
 	}
 

@@ -43,6 +43,21 @@
   		<type>jar</type>
 		<scope>provided</scope>
   	</dependency>
+  	
+  	<dependency>
+         <artifactId>gs-core</artifactId>
+         <groupId>org.graphstream</groupId>
+         <version>1.2</version>
+         <optional>false</optional>
+      </dependency>
+      
+      <dependency>
+         <artifactId>gs-ui</artifactId>
+         <groupId>org.graphstream</groupId>
+         <version>1.2</version>
+         <optional>false</optional>
+      </dependency>
+      
   </dependencies>
   
 </project>
