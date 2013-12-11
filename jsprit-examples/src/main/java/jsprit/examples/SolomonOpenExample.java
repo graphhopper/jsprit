@@ -95,7 +95,7 @@ public class SolomonOpenExample {
 		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_open_solution.png","C101");
 		
 		
-		GraphStreamViewer.display(vrp, solution, 50, false);
+		new GraphStreamViewer(vrp, solution).setRenderDelay(50).setEnableAutoLayout(true).display();
 	
 		
 	}

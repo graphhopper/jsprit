@@ -107,7 +107,8 @@ public class PickupAndDeliveryExample2 {
 		plotter.setShowFirstActivity(true);
 		plotter.plot("output/pd_christophides_vrpnc1_solution.png","pd_vrpnc1");
 	
-		GraphStreamViewer.display(vrp, solution, 100);
+		
+		new GraphStreamViewer(vrp, solution).setRenderDelay(100).labelWith(jsprit.analysis.toolbox.GraphStreamViewer.Label.ID).display();
 		
 	}
 

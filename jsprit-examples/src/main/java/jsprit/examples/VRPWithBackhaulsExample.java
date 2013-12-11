@@ -102,7 +102,7 @@ public class VRPWithBackhaulsExample {
 //		plotter.setShowFirstActivity(true);
 //		plotter.plot("output/vrpwbh_solomon_r101_solution.png","vrpwbh_r101");
 		
-		GraphStreamViewer.display(vrp, solution, 100);
+		new GraphStreamViewer(vrp, solution).setRenderDelay(100).setEnableAutoLayout(false).display();
 		
 	}
 

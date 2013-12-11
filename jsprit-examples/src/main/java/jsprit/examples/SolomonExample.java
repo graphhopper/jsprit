@@ -101,7 +101,7 @@ public class SolomonExample {
 		
 //		GraphStream.display(vrp,100);
 		
-		GraphStreamViewer.display(vrp,solution);
+		new GraphStreamViewer(vrp,solution).display();
 		
 	}
 

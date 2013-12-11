@@ -240,25 +240,25 @@ public class BicycleMessenger {
 		//if you want, terminate it after 1000 iterations with no change
 //		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
 		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-		algorithm.setNuOfIterations(200);
+		algorithm.setNuOfIterations(2000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints
 		validateSolution(Solutions.bestOf(solutions), bicycleMessengerProblem, nearestMessengers);
 		
 		
-//		//you may want to plot the problem
-//		Plotter plotter = new Plotter(bicycleMessengerProblem);
-////		plotter.setBoundingBox(10000, 47500, 20000, 67500);
-//		plotter.plotShipments(true);
-//		plotter.plot("output/bicycleMessengerProblem.png", "bicycleMessenger");
-//		
-//		//and the problem as well as the solution
-//		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Solutions.bestOf(solutions));
-//		plotter1.plotShipments(true);
-//		plotter1.setShowFirstActivity(true);
-////		plotter1.setBoundingBox(5000, 45500, 25000, 66500);
-//		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
+		//you may want to plot the problem
+		Plotter plotter = new Plotter(bicycleMessengerProblem);
+//		plotter.setBoundingBox(10000, 47500, 20000, 67500);
+		plotter.plotShipments(true);
+		plotter.plot("output/bicycleMessengerProblem.png", "bicycleMessenger");
+		
+		//and the problem as well as the solution
+		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Solutions.bestOf(solutions));
+		plotter1.plotShipments(true);
+		plotter1.setShowFirstActivity(true);
+//		plotter1.setBoundingBox(5000, 45500, 25000, 66500);
+		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
 		
 		//and write out your solution in xml
 		new VrpXMLWriter(bicycleMessengerProblem, solutions).write("output/bicycleMessenger.xml");

@@ -129,7 +129,7 @@ public class SimpleEnRoutePickupAndDeliveryOpenRoutesExample {
 		solutionPlotter.plotShipments(true);
 		solutionPlotter.plot("output/simpleEnRoutePickupAndDeliveryExample_solution.png", "en-route pickup and delivery");
 		
-		GraphStreamViewer.display(problem, bestSolution, 100);
+		new GraphStreamViewer(problem, bestSolution).setRenderDelay(100).display();
 	}
 
 }
