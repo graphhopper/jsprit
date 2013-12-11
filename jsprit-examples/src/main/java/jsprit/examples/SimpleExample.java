@@ -106,7 +106,7 @@ public class SimpleExample {
 		 */
 //		SolutionPlotter.plotSolutionAsPNG(problem, bestSolution, "output/solution.png", "solution");
 		
-		new GraphStreamViewer(problem, bestSolution).display();
+		new GraphStreamViewer(problem, bestSolution).setRenderDelay(100).display();
 	}
 
 }
