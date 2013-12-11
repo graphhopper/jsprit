@@ -72,7 +72,7 @@ public class SolomonExample {
 		 */
 //		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
-		vra.setPrematureBreak(10);
+		
 //		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
@@ -101,7 +101,7 @@ public class SolomonExample {
 		
 //		GraphStream.display(vrp,100);
 		
-		new GraphStreamViewer(vrp,solution).display();
+		new GraphStreamViewer(vrp,solution).setRenderDelay(100).display();
 		
 	}
 
