@@ -19,7 +19,7 @@ package jsprit.examples;
 import java.io.File;
 import java.util.Collection;
 
-import jsprit.analysis.toolbox.GraphStream;
+import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -95,7 +95,7 @@ public class SolomonOpenExample {
 		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_open_solution.png","C101");
 		
 		
-		GraphStream.display(vrp, solution, 50, false);
+		GraphStreamViewer.display(vrp, solution, 50, false);
 	
 		
 	}

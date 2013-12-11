@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.StopWatch;
@@ -141,6 +142,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		SolutionPrinter.print(vrp,Solutions.bestOf(solutions),Print.VERBOSE);
 		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.bestOf(solutions), "output/p08_solution.png", "p08");
 
+		new GraphStreamViewer(vrp,Solutions.bestOf(solutions)).setRenderDelay(50).display();
 	}
 
 }

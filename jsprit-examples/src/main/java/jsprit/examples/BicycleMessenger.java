@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
@@ -264,6 +265,7 @@ public class BicycleMessenger {
 		
 		SolutionPrinter.print(bicycleMessengerProblem, Solutions.bestOf(solutions), Print.VERBOSE);
 		
+		GraphStreamViewer.display(bicycleMessengerProblem, Solutions.bestOf(solutions), 100);
 
 	}
 

@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Collection;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.Plotter.Label;
 import jsprit.analysis.toolbox.SolutionPlotter;
@@ -106,7 +107,7 @@ public class PickupAndDeliveryExample2 {
 		plotter.setShowFirstActivity(true);
 		plotter.plot("output/pd_christophides_vrpnc1_solution.png","pd_vrpnc1");
 	
-		
+		GraphStreamViewer.display(vrp, solution, 100);
 		
 	}
 

@@ -19,7 +19,7 @@ package jsprit.examples;
 import java.io.File;
 import java.util.Collection;
 
-import jsprit.analysis.toolbox.GraphStream;
+import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
@@ -101,7 +101,7 @@ public class SolomonExample {
 		
 //		GraphStream.display(vrp,100);
 		
-		GraphStream.display(vrp,solution);
+		GraphStreamViewer.display(vrp,solution);
 		
 	}
 

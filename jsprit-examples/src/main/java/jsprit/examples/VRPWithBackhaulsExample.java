@@ -20,16 +20,13 @@ import java.io.File;
 import java.util.Collection;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
-import jsprit.analysis.toolbox.GraphStream;
-import jsprit.analysis.toolbox.Plotter;
-import jsprit.analysis.toolbox.Plotter.Label;
-import jsprit.analysis.toolbox.SolutionPrinter.Print;
+import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.Constraint;
 import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -105,7 +102,7 @@ public class VRPWithBackhaulsExample {
 //		plotter.setShowFirstActivity(true);
 //		plotter.plot("output/vrpwbh_solomon_r101_solution.png","vrpwbh_r101");
 		
-		GraphStream.display(vrp, solution, 100, true);
+		GraphStreamViewer.display(vrp, solution, 100);
 		
 	}
 
