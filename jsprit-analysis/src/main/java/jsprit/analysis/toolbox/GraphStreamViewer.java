@@ -10,9 +10,10 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.DefaultGraph;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.swingViewer.Viewer;
 
 public class GraphStreamViewer {
@@ -41,7 +42,7 @@ public class GraphStreamViewer {
 		         "	arrow-size: 6px,3px;" +
 		         "}" +
 		         "edge.shipment {" +
-		         "	fill-color: blue;" +
+		         "	fill-color: grey;" +
 		         "	arrow-size: 6px,3px;" +
 		         "}" ;
 	
@@ -51,7 +52,15 @@ public class GraphStreamViewer {
 		private Label label = Label.NO_LABEL;
 		private boolean renderShipments = false;
 		private boolean enableAutoDisplay = false;
+		private BoundingBox boundingBox;
 		
+		/**
+		 * @param boundingBox the boundingBox to set
+		 */
+		public void setBoundingBox(BoundingBox boundingBox) {
+			this.boundingBox = boundingBox;
+		}
+
 		private VehicleRoutingProblem vrp;
 		private VehicleRoutingProblemSolution solution;
 		
@@ -86,13 +95,14 @@ public class GraphStreamViewer {
 	
 	private static void display(View view){
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-	    Graph g = new DefaultGraph("g");
+	    Graph g = new MultiGraph("g");
 	    g.addAttribute("ui.quality");
 	    g.addAttribute("ui.antialias");
 	    g.addAttribute("ui.stylesheet", styleSheet);
 		
 	    Viewer viewer = g.display();
 	    if(!view.enableAutoDisplay) viewer.disableAutoLayout();
+	    
 	    
 	    for(Vehicle vehicle : view.vrp.getVehicles()){
 	    	renderVehicle(g,vehicle,view.label);
@@ -116,6 +126,19 @@ public class GraphStreamViewer {
 	    		sleep(view.renderDelay);
 	    		routeId++;
 	    	}
+	    }
+	    
+	    if(view.boundingBox != null){
+////	    	viewer.getDefaultView().getCamera().setViewPercent(0.5);
+//	    	System.out.println("metric="+viewer.getDefaultView().getCamera().getMetrics());
+////	    	viewer.getDefaultView().getCamera().setViewCenter(15000, 50000, 0);
+////	    	viewer.getDefaultView().getCamera().setViewPercent(0.5);
+//	    	viewer.getDefaultView().getCamera().setBounds(10000,40000, 0, 20000, 60000, 0);
+//	    	System.out.println("metric="+viewer.getDefaultView().getCamera().getMetrics());
+////	    	viewer.getDefaultView().se
+//	    	viewer.getDefaultView().display(viewer.getGraphicGraph(), true);
+////	    	viewer.getDefaultView().getCamera().setViewPercent(0.5);
+//	    			
 	    }
 	
 	}
@@ -141,7 +164,9 @@ public class GraphStreamViewer {
 		n2.setAttribute("ui.class", "delivery");
 		
 		if(renderShipments){
-			
+			Edge s = g.addEdge(shipment.getId(), makeId(shipment.getId(),shipment.getPickupLocation()),
+					makeId(shipment.getId(),shipment.getDeliveryLocation()), true);
+			s.addAttribute("ui.class", "shipment");
 		}
 		
 	}
@@ -221,6 +246,22 @@ public class GraphStreamViewer {
 		NO_LABEL, ID
 	}
 	
+	private static class BoundingBox {
+		final double minX;
+		final double minY;
+		final double maxX;
+		final double maxY;
+		
+		public BoundingBox(double minX, double minY, double maxX, double maxY) {
+			super();
+			this.minX = minX;
+			this.minY = minY;
+			this.maxX = maxX;
+			this.maxY = maxY;
+		}
+		
+	}
+	
 	private Label label = Label.NO_LABEL;
 	
 	private long renderDelay_in_ms = 0;
@@ -228,6 +269,8 @@ public class GraphStreamViewer {
 	private boolean enableAutoLayout = false;
 	
 	private boolean renderShipments = false;
+	
+	private BoundingBox boundingBox;
 
 	private VehicleRoutingProblem vrp;
 	
@@ -263,6 +306,11 @@ public class GraphStreamViewer {
 		this.renderShipments = renderShipments;
 		return this;
 	}
+	
+//	public GraphStreamViewer setBoundingBox(double minX, double minY, double maxX, double maxY){
+//		boundingBox = new BoundingBox(minX,minY,maxX,maxY);
+//		return this;
+//	}
 
 	public void display(){
 		View view = new View(vrp,solution);
@@ -270,6 +318,7 @@ public class GraphStreamViewer {
 		view.setLabel(label);
 		view.setRenderDelay(renderDelay_in_ms);
 		view.setRenderShipments(renderShipments);
+		view.setBoundingBox(boundingBox);
 		display(view);
 	}
 	

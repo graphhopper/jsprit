@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
+import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -125,6 +126,8 @@ public class SimpleEnRoutePickupAndDeliveryExample {
 		Plotter solutionPlotter = new Plotter(problem,Arrays.asList(Solutions.bestOf(solutions).getRoutes().iterator().next()));
 		solutionPlotter.plotShipments(true);
 		solutionPlotter.plot("output/simpleEnRoutePickupAndDeliveryExample_solution.png", "en-route pickup and delivery");
+		
+		new GraphStreamViewer(problem).setRenderShipments(true).display();
 		
 	}
 
