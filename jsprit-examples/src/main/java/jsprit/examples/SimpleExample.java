@@ -19,6 +19,7 @@ package jsprit.examples;
 import java.io.File;
 import java.util.Collection;
 
+import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
@@ -103,7 +104,9 @@ public class SimpleExample {
 		/*
 		 * plot
 		 */
-		SolutionPlotter.plotSolutionAsPNG(problem, bestSolution, "output/solution.png", "solution");
+//		SolutionPlotter.plotSolutionAsPNG(problem, bestSolution, "output/solution.png", "solution");
+		
+		new GraphStreamViewer(problem, bestSolution).display();
 	}
 
 }
