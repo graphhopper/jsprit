@@ -158,7 +158,7 @@ public class GraphStreamViewer {
 	 * @param zoomFactor
 	 * @return
 	 */
-	public GraphStreamViewer setCamerView(double centerX, double centerY, double zoomFactor){
+	public GraphStreamViewer setCameraView(double centerX, double centerY, double zoomFactor){
 		center = new Center(centerX,centerY);
 		this.zoomFactor = zoomFactor; 
 		return this;

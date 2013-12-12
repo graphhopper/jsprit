@@ -102,7 +102,7 @@ public class SolomonExample {
 		
 //		GraphStream.display(vrp,100);
 		
-		new GraphStreamViewer(vrp,solution).labelWith(Label.ID).setRenderDelay(100).display();
+		new GraphStreamViewer(vrp,solution).setCameraView(30, 30, 0.25).labelWith(Label.ID).setRenderDelay(100).display();
 		
 	}
 

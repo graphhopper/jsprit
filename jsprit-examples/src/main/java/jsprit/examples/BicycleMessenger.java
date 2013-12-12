@@ -267,7 +267,7 @@ public class BicycleMessenger {
 		
 		new GraphStreamViewer(bicycleMessengerProblem).setRenderShipments(true).setRenderDelay(150).display();
 		
-		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setCamerView(12500, 55000, 0.3).setRenderDelay(150).display();
+		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setCameraView(12500, 55000, 0.3).setRenderDelay(150).display();
 
 	}
 
