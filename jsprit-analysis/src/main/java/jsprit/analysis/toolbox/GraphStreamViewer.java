@@ -1,17 +1,13 @@
 package jsprit.analysis.toolbox;
 
-import java.awt.Dimension;
-import java.text.MessageFormat;
-
-import javax.swing.JFormattedTextField;
-import javax.swing.JTextField;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import jsprit.core.problem.solution.route.activity.PickupActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -20,6 +16,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
 
 public class GraphStreamViewer {
@@ -39,11 +36,24 @@ public class GraphStreamViewer {
 					"node.delivery {" +
 					" 	fill-color: #f93;" +
 					"}" +
+					"node.pickupInRoute {" +
+					"	fill-color: #6CC644;" +
+					" 	stroke-mode: plain;" +
+					"	stroke-color: #333;" +
+					"   stroke-width: 2.0;" +
+					"}" +
+					"node.deliveryInRoute {" +
+					" 	fill-color: #f93;" +
+					" 	stroke-mode: plain;" +
+					"	stroke-color: #333;" +
+					"   stroke-width: 2.0;" +
+					"}" +
 					"node.depot {" +
 					" 	fill-color: #BD2C00;" +
 					"	size: 10px, 10px;"  +
 					" 	shape: box;" +
 					"}" +
+					
 					"edge {" +
 					"	fill-color: #333;" +
 					"	arrow-size: 6px,3px;" +
@@ -72,6 +82,18 @@ public class GraphStreamViewer {
 //		}
 //
 //	}
+	
+	private static class Center {
+		final double x;
+		final double y;
+		
+		public Center(double x, double y) {
+			super();
+			this.x = x;
+			this.y = y;
+		}
+		
+	}
 
 	private Label label = Label.NO_LABEL;
 
@@ -80,12 +102,16 @@ public class GraphStreamViewer {
 	private boolean enableAutoLayout = false;
 
 	private boolean renderShipments = false;
+	
+	private Center center;
 
 //	private BoundingBox boundingBox;
 
 	private VehicleRoutingProblem vrp;
 
 	private VehicleRoutingProblemSolution solution;
+
+	private double zoomFactor;
 
 	public GraphStreamViewer(VehicleRoutingProblem vrp) {
 		super();
@@ -118,24 +144,55 @@ public class GraphStreamViewer {
 		return this;
 	}
 
+	/**
+	 * Sets the camera-view. Center describes the center-focus of the camera and zoomFactor its 
+	 * zoomFactor.
+	 * 
+	 * <p>a zoomFactor < 1 zooms in and > 1 out.
+	 * 
+	 * @param centerX
+	 * @param centerY
+	 * @param zoomFactor
+	 * @return
+	 */
+	public GraphStreamViewer setCamerView(double centerX, double centerY, double zoomFactor){
+		center = new Center(centerX,centerY);
+		this.zoomFactor = zoomFactor; 
+		return this;
+	}
+	
 	public void display(){
+		
+//		JFrame jframe = new JFrame();
+		
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		Graph g = new MultiGraph("g");
 		g.addAttribute("ui.quality");
 		g.addAttribute("ui.antialias");
 		g.addAttribute("ui.stylesheet", styleSheet);
 
-		Viewer viewer = g.display();
-		
-//		MessageFormat format = new MessageFormat("{0,number,00}:{1,number,00}:{2,number,00}");
+		Viewer viewer; 
+//		viewer.getDefaultView().setLayout(new BorderLayout());
 //		
+//		MessageFormat format = new MessageFormat("{0,number,00}:{1,number,00}:{2,number,00}");
+////		
 //		JFormattedTextField textField = new JFormattedTextField(format);
 //		textField.setEditable(false);
 //		textField.setMaximumSize(new Dimension(100,30));
 //		textField.setMinimumSize(new Dimension(80,30));
-//		textField.setHorizontalAlignment(JTextField.CENTER);
+//		textField.setHorizontalAlignment(JTextField.LEFT);
 //		textField.setText("00:01:56");
-//		viewer.getDefaultView().add(textField);
+//		textField.s
+//		viewer.getDefaultView().add(textField,BorderLayout.NORTH,);
+		
+		if(center != null){
+			viewer = g.display(false);
+			View view = viewer.getDefaultView();
+			view.resizeFrame(800, 600);
+			view.getCamera().setViewCenter(center.x, center.y, 0);
+			view.getCamera().setViewPercent(zoomFactor);
+		}
+		else viewer = g.display();
 		
 		if(!enableAutoLayout) viewer.disableAutoLayout();
 		
@@ -224,12 +281,15 @@ public class GraphStreamViewer {
 		for(TourActivity act : route.getActivities()){
 			String currIdentifier = makeId(((JobActivity)act).getJob().getId(),act.getLocationId());
 			g.addEdge(makeEdgeId(routeId,vehicle_edgeId), prevIdentifier, currIdentifier, true);
+			if(act instanceof PickupActivity) g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
+			else if (act instanceof DeliveryActivity) g.getNode(currIdentifier).addAttribute("ui.class", "deliveryInRoute");
 			prevIdentifier = currIdentifier;
 			vehicle_edgeId++;
 			sleep(renderDelay_in_ms);
 		}
 		if(route.getVehicle().isReturnToDepot()){
-			g.addEdge(makeEdgeId(routeId,vehicle_edgeId), prevIdentifier, makeId(route.getVehicle().getId(),route.getVehicle().getLocationId()), true);
+			String lastIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getLocationId());
+			g.addEdge(makeEdgeId(routeId,vehicle_edgeId), prevIdentifier, lastIdentifier, true);
 		}
 	}
 
