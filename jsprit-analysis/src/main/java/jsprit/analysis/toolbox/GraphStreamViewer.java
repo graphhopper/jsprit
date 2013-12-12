@@ -29,6 +29,9 @@ public class GraphStreamViewer {
 					" 	stroke-mode: plain;" + 
 					"	stroke-color: #999;" +
 					"	stroke-width: 1.0;" +
+					"	text-font: couriernew;" +
+					" 	text-offset: 2,-5;" +
+					"	text-size: 8;" +
 					"}" +
 					"node.pickup {" +
 					" 	fill-color: #6CC644;" +

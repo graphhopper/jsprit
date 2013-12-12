@@ -23,6 +23,7 @@ import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -101,7 +102,7 @@ public class SolomonExample {
 		
 //		GraphStream.display(vrp,100);
 		
-		new GraphStreamViewer(vrp,solution).setRenderDelay(100).display();
+		new GraphStreamViewer(vrp,solution).labelWith(Label.ID).setRenderDelay(100).display();
 		
 	}
 

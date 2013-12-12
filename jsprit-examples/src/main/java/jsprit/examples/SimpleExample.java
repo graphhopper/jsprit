@@ -22,6 +22,7 @@ import java.util.Collection;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.SchrimpfFactory;
@@ -106,7 +107,7 @@ public class SimpleExample {
 		 */
 //		SolutionPlotter.plotSolutionAsPNG(problem, bestSolution, "output/solution.png", "solution");
 		
-		new GraphStreamViewer(problem, bestSolution).setRenderDelay(100).display();
+		new GraphStreamViewer(problem, bestSolution).labelWith(Label.ID).setRenderDelay(100).display();
 	}
 
 }
