@@ -265,7 +265,9 @@ public class BicycleMessenger {
 		
 		SolutionPrinter.print(bicycleMessengerProblem, Solutions.bestOf(solutions), Print.VERBOSE);
 		
-		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setCamerView(12500, 58000, 0.3).setRenderDelay(150).display();
+		new GraphStreamViewer(bicycleMessengerProblem).setRenderShipments(true).setRenderDelay(150).display();
+		
+		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setCamerView(12500, 55000, 0.3).setRenderDelay(150).display();
 
 	}
 
