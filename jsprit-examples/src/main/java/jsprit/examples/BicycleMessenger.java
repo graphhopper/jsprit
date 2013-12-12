@@ -12,6 +12,7 @@ import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -267,7 +268,7 @@ public class BicycleMessenger {
 		
 		new GraphStreamViewer(bicycleMessengerProblem).setRenderShipments(true).setRenderDelay(150).display();
 		
-		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setCameraView(12500, 55000, 0.3).setRenderDelay(150).display();
+		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setCameraView(12500, 55000, 0.3).labelWith(Label.ID).setRenderDelay(150).display();
 
 	}
 
