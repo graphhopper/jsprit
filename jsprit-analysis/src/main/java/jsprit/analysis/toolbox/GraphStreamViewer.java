@@ -1,5 +1,17 @@
 package jsprit.analysis.toolbox;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.text.MessageFormat;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -69,22 +81,6 @@ public class GraphStreamViewer {
 	public static enum Label {
 		NO_LABEL, ID
 	}
-
-//	private static class BoundingBox {
-//		final double minX;
-//		final double minY;
-//		final double maxX;
-//		final double maxY;
-//
-//		public BoundingBox(double minX, double minY, double maxX, double maxY) {
-//			super();
-//			this.minX = minX;
-//			this.minY = minY;
-//			this.maxX = maxX;
-//			this.maxY = maxY;
-//		}
-//
-//	}
 	
 	private static class Center {
 		final double x;
@@ -107,8 +103,6 @@ public class GraphStreamViewer {
 	private boolean renderShipments = false;
 	
 	private Center center;
-
-//	private BoundingBox boundingBox;
 
 	private VehicleRoutingProblem vrp;
 
@@ -166,36 +160,63 @@ public class GraphStreamViewer {
 	
 	public void display(){
 		
-//		JFrame jframe = new JFrame();
+		JFrame jframe = new JFrame();
 		
+		JPanel basic = new JPanel();
+		basic.setLayout(new BoxLayout(basic,BoxLayout.Y_AXIS));
+		
+		JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setMaximumSize(new Dimension(450, 0));
+		
+		MessageFormat format = new MessageFormat("{0,number,00}:{1,number,00}:{2,number,00}");
+		JFormattedTextField textField = new JFormattedTextField(format);
+		textField.setEditable(false);
+		textField.setMaximumSize(new Dimension(100,30));
+		textField.setMinimumSize(new Dimension(80,30));
+		textField.setHorizontalAlignment(JTextField.LEFT);
+		textField.setText("00:01:56");
+		
+		topPanel.add(textField, BorderLayout.WEST);
+		
+		
+		
+        basic.add(topPanel);
+        
+        
+        
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		Graph g = new MultiGraph("g");
 		g.addAttribute("ui.quality");
 		g.addAttribute("ui.antialias");
 		g.addAttribute("ui.stylesheet", styleSheet);
 
-		Viewer viewer; 
-//		viewer.getDefaultView().setLayout(new BorderLayout());
+		Viewer viewer = new Viewer(g,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD); 
+		View view = viewer.addDefaultView(false);
+		
+		basic.add(view);
+		
+		//		viewer.getDefaultView().setLayout(new BorderLayout());
 //		
-//		MessageFormat format = new MessageFormat("{0,number,00}:{1,number,00}:{2,number,00}");
+		jframe.add(basic);
 ////		
-//		JFormattedTextField textField = new JFormattedTextField(format);
-//		textField.setEditable(false);
-//		textField.setMaximumSize(new Dimension(100,30));
-//		textField.setMinimumSize(new Dimension(80,30));
-//		textField.setHorizontalAlignment(JTextField.LEFT);
-//		textField.setText("00:01:56");
-//		textField.s
-//		viewer.getDefaultView().add(textField,BorderLayout.NORTH,);
+		jframe.setVisible(true);
+		jframe.setSize(800,600);
+		jframe.setLocationRelativeTo(null);
+		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		if(center != null){
-			viewer = g.display(false);
-			View view = viewer.getDefaultView();
+//			viewer = g.display(false);
+//			View view = viewer.getDefaultView();
 			view.resizeFrame(800, 600);
 			view.getCamera().setViewCenter(center.x, center.y, 0);
 			view.getCamera().setViewPercent(zoomFactor);
 		}
-		else viewer = g.display();
+//		else viewer = g.display();
+		
+		
+		
+//		viewer.getDefaultView().add(textField,BorderLayout.NORTH);
+//		viewer.getDefaultView().;
 		
 		if(!enableAutoLayout) viewer.disableAutoLayout();
 		
