@@ -45,7 +45,7 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 The following documentation is recommended:
 
-[GeoTools - Quickstart](http://docs.geotools.org/latest/userguide/tutorial/quickstart/index.html)
+<a href="http://docs.geotools.org/latest/userguide/tutorial/quickstart/index.html" target="blank_">GeoTools - Quickstart</a>
 
 Here you learn to setup the Java environment and an Integrated Development Environment (IDE) as well as to use Maven to easily integrate external libraries in your project. After installing the Java Developmnet Kit and your IDE, you find there a subsection called 'Adding Jars to your Project'. Just copy/paste the above jsprit releases/snapshots to your pom.xml instead of the GeoTools-artifacts.
 
