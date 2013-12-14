@@ -33,11 +33,17 @@ Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 ##License
 This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
-##Getting started in 2 seconds
+##Getting started
+
+####You know Java, Maven and have an IDE
 
 [Add the latest snapshot (i.e. head development) to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
 
 [Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
+
+####If not
+
+
 
 ##About
 The jsprit-project is created and maintained by Stefan Schröder. It is motivated by two issues. 
