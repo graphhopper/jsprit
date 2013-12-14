@@ -43,7 +43,11 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 ####If not
 
+The following documentation are recommended:
 
+[GeoTools - Quickstart](http://docs.geotools.org/latest/userguide/tutorial/quickstart/index.html)
+
+Here you learn to setup the Java environment with your preferred IDE as well as to use Maven to get the latest external libraries. After installing Java, your IDE, you find there a subsection 'Adding Jars to your Project'. And this is where you can copy/paste the latest jsprit releases/snapshots to your pom.xml instead of the GeoTools-artifacts.
 
 ##About
 The jsprit-project is created and maintained by Stefan Schröder. It is motivated by two issues. 
