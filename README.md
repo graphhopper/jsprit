@@ -33,7 +33,7 @@ Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 ##License
 This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
-##Getting started
+##Get Started
 
 ####You know Maven and have an IDE
 
