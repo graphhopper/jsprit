@@ -47,7 +47,7 @@ The following documentation is recommended:
 
 <a href="http://docs.geotools.org/latest/userguide/tutorial/quickstart/index.html" target="blank_">GeoTools - Quickstart</a>
 
-Here you learn to setup the Java environment and an Integrated Development Environment (IDE) as well as to use Maven to easily integrate external libraries in your project. After installing the Java Development Kit and your IDE, you find there a subsection called <em>Adding Jars to your Project</em>. Just copy/paste the above jsprit releases/snapshots to your pom.xml instead of the GeoTools-artifacts.
+Here you learn to setup the Java environment and an Integrated Development Environment (IDE). In the subsection <em>Adding Jars to your Project</em> you learn to integrate external libraries in your project. Just copy/paste the above jsprit releases/snapshots to your pom.xml instead of the GeoTools-artifacts.
 
 ##About
 The jsprit-project is created and maintained by Stefan Schröder. It is motivated by two issues. 
