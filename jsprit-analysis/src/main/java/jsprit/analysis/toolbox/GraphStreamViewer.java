@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -30,8 +28,6 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.graphicGraph.GraphicGraph;
-import org.graphstream.ui.swingViewer.LayerRenderer;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
 
@@ -85,7 +81,7 @@ public class GraphStreamViewer {
 					"}" ;
 
 	public static enum Label {
-		NO_LABEL, ID
+		NO_LABEL, ID, ACTIVITY
 	}
 	
 	private static class Center {
@@ -115,6 +111,8 @@ public class GraphStreamViewer {
 	private VehicleRoutingProblemSolution solution;
 
 	private double zoomFactor;
+	
+	private double scaling = 1.0;
 
 	public GraphStreamViewer(VehicleRoutingProblem vrp) {
 		super();
@@ -144,6 +142,11 @@ public class GraphStreamViewer {
 
 	public GraphStreamViewer setRenderShipments(boolean renderShipments){
 		this.renderShipments = renderShipments;
+		return this;
+	}
+	
+	public GraphStreamViewer setGraphStreamFrameScalingFactor(double factor){
+		this.scaling=factor;
 		return this;
 	}
 
@@ -184,42 +187,31 @@ public class GraphStreamViewer {
 		g.addAttribute("ui.stylesheet", styleSheet);
 
 		JPanel graphStreamPanel = new JPanel();
-		graphStreamPanel.setPreferredSize(new Dimension(800,460));
+		graphStreamPanel.setPreferredSize(new Dimension((int)(800*scaling),(int)(460*scaling)));
 		graphStreamPanel.setBackground(Color.WHITE);
 		
 		JPanel graphStreamBackPanel = new JPanel();
-		graphStreamBackPanel.setPreferredSize(new Dimension(700,450));
+		graphStreamBackPanel.setPreferredSize(new Dimension((int)(700*scaling),(int)(450*scaling)));
 		graphStreamBackPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 		graphStreamBackPanel.setBackground(Color.WHITE);
 		
 		Viewer viewer = new Viewer(g,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD); 
 		View view = viewer.addDefaultView(false);
-		view.setPreferredSize(new Dimension(698,440));
-		view.setForeLayoutRenderer(new LayerRenderer() {
+		view.setPreferredSize(new Dimension((int)(698*scaling),(int)(440*scaling)));
 			
-			@Override
-			public void render(Graphics2D graphics, GraphicGraph graph, double px2Gu,
-					int widthPx, int heightPx, double minXGu, double minYGu,
-					double maxXGu, double maxYGu) {
-				legendPanel.repaint();
-				
-			}
-		});	
-		
-		graphStreamBackPanel.add(view);
-		
+		graphStreamBackPanel.add(view);	
 		graphStreamPanel.add(graphStreamBackPanel);
 		
 		//setup basicPanel
 		basicPanel.add(resultPanel);
 		basicPanel.add(graphStreamPanel);
-		basicPanel.add(legendPanel);
+//		basicPanel.add(legendPanel);
 		
 		//put it together
 		jframe.add(basicPanel);
 		
 		//conf jframe
-		jframe.setSize(800,580);
+		jframe.setSize((int)(800*scaling),(int)(580*scaling));
 		jframe.setLocationRelativeTo(null);
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jframe.setVisible(true);
@@ -256,7 +248,7 @@ public class GraphStreamViewer {
 		if(solution != null){
 			int routeId = 1;
 			for(VehicleRoute route : solution.getRoutes()){
-				renderRoute(g,route,routeId,renderDelay_in_ms);
+				renderRoute(g,route,routeId,renderDelay_in_ms,label);
 				sleep(renderDelay_in_ms);
 				routeId++;
 			}
@@ -269,12 +261,12 @@ public class GraphStreamViewer {
 		int height = 50;
 		
 		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(width,height));
+		panel.setPreferredSize(new Dimension((int)(width*scaling),(int)(height*scaling)));
 		panel.setBackground(Color.WHITE);
 
 		JPanel subpanel = new JPanel();
 		subpanel.setLayout(new FlowLayout());
-		subpanel.setPreferredSize(new Dimension(700,40));
+		subpanel.setPreferredSize(new Dimension((int)(700*scaling),(int)(40*scaling)));
 		subpanel.setBackground(Color.WHITE);
 		subpanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 
@@ -282,23 +274,11 @@ public class GraphStreamViewer {
 		
 		//graphic2d
 //		Graphics2D gr = new
-		
-		JLabel circleL = new JLabel(){
-			
-			public void paintComponent(Graphics g){
-				Color orig = g.getColor();
-				g.setColor(Color.RED);
-				g.fillOval(50,50,50,50);
-			}
-			
-		};
-//		circleL.paintComponents(circle);
-		
-		
+	
 		//label
 		JLabel depots = new JLabel(new String("depots"));
 		depots.setFont(font);
-		depots.setPreferredSize(new Dimension(40,25));
+		depots.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 		
 		
         //graphic2d
@@ -306,20 +286,20 @@ public class GraphStreamViewer {
         //label
         JLabel pickups = new JLabel(new String("pickups"));
         pickups.setFont(font);
-        pickups.setPreferredSize(new Dimension(40,25));
+        pickups.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
         
         //graphic2d
         
         //label
         JLabel deliveries = new JLabel(new String("deliveries"));
         deliveries.setFont(font);
-        deliveries.setPreferredSize(new Dimension(40,25));
+        deliveries.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
         
         //shipments
 //        if(renderShipments()){
 //        	
 //        }
-        subpanel.add(circleL);
+        
         subpanel.add(depots);
         
         JLabel emptyLabel1 = createEmptyLabel();
@@ -339,7 +319,7 @@ public class GraphStreamViewer {
 
 	private JLabel createEmptyLabel() {
 		JLabel emptyLabel1 = new JLabel();
-        emptyLabel1.setPreferredSize(new Dimension(40,25));
+        emptyLabel1.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 		return emptyLabel1;
 	}
 
@@ -348,12 +328,12 @@ public class GraphStreamViewer {
 		int height = 50;
 		
 		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(width,height));
+		panel.setPreferredSize(new Dimension((int)(width*scaling),(int)(height*scaling)));
         panel.setBackground(Color.WHITE);
         
         JPanel subpanel = new JPanel();
         subpanel.setLayout(new FlowLayout());
-        subpanel.setPreferredSize(new Dimension(700,40));
+        subpanel.setPreferredSize(new Dimension((int)(700*scaling),(int)(40*scaling)));
         subpanel.setBackground(Color.WHITE);
         subpanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,1));
         
@@ -361,7 +341,7 @@ public class GraphStreamViewer {
 
         JLabel jobs = new JLabel(new String("jobs"));
         jobs.setFont(font);
-        jobs.setPreferredSize(new Dimension(40,25));
+        jobs.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 
         JFormattedTextField nJobs = new JFormattedTextField(this.vrp.getJobs().values().size());
         nJobs.setFont(font);
@@ -371,7 +351,7 @@ public class GraphStreamViewer {
         
         JLabel costs = new JLabel(new String("costs"));
         costs.setFont(font);
-        costs.setPreferredSize(new Dimension(40,25));
+        costs.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 
         JFormattedTextField costsVal = new JFormattedTextField(new Double(getSolutionCosts()));
         costsVal.setFont(font);
@@ -381,7 +361,7 @@ public class GraphStreamViewer {
         
         JLabel vehicles = new JLabel(new String("routes"));
         vehicles.setFont(font);
-        vehicles.setPreferredSize(new Dimension(40,25));
+        vehicles.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 //        vehicles.setForeground(Color.DARK_GRAY);
         
         JFormattedTextField vehVal = new JFormattedTextField(getNuRoutes());
@@ -393,9 +373,9 @@ public class GraphStreamViewer {
         
         //platzhalter
         JLabel placeholder1 = new JLabel();
-        placeholder1.setPreferredSize(new Dimension(60,25));
+        placeholder1.setPreferredSize(new Dimension((int)(60*scaling),(int)(25*scaling)));
         
-JLabel emptyLabel1 = createEmptyLabel();
+        JLabel emptyLabel1 = createEmptyLabel();
         
         subpanel.add(jobs);
         subpanel.add(nJobs);
@@ -410,12 +390,6 @@ JLabel emptyLabel1 = createEmptyLabel();
         
         subpanel.add(vehicles);
         subpanel.add(vehVal);
-        
-//        subpanel.add(emptyLabel);
-//        subpanel.add(placeholder1);
-//        subpanel.add(placeholder1);
-//        subpanel.add(placeholder1);
-//        subpanel.add(placeholder1);
 
         panel.add(subpanel);
         
@@ -480,16 +454,25 @@ JLabel emptyLabel1 = createEmptyLabel();
 	private void renderVehicle(Graph g, Vehicle vehicle, Label label) {
 		Node n = g.addNode(makeId(vehicle.getId(),vehicle.getLocationId()));
 		if(label.equals(Label.ID)) n.addAttribute("ui.label", "depot");
+//		if(label.equals(Label.ACTIVITY)) n.addAttribute("ui.label", "start");
 		n.addAttribute("x", vehicle.getCoord().getX());
 		n.addAttribute("y", vehicle.getCoord().getY());
 		n.setAttribute("ui.class", "depot");
 	}
 
-	private void renderRoute(Graph g, VehicleRoute route, int routeId, long renderDelay_in_ms) {
+	private void renderRoute(Graph g, VehicleRoute route, int routeId, long renderDelay_in_ms, Label label) {
 		int vehicle_edgeId = 1;
 		String prevIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getLocationId());
+		if(label.equals(Label.ACTIVITY)){
+			Node n = g.getNode(prevIdentifier);
+			n.addAttribute("ui.label", "start");
+		}
 		for(TourActivity act : route.getActivities()){
 			String currIdentifier = makeId(((JobActivity)act).getJob().getId(),act.getLocationId());
+			if(label.equals(Label.ACTIVITY)){
+				Node actNode = g.getNode(currIdentifier);
+				actNode.addAttribute("ui.label", act.getName());
+			}
 			g.addEdge(makeEdgeId(routeId,vehicle_edgeId), prevIdentifier, currIdentifier, true);
 			if(act instanceof PickupActivity) g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
 			else if (act instanceof DeliveryActivity) g.getNode(currIdentifier).addAttribute("ui.class", "deliveryInRoute");
