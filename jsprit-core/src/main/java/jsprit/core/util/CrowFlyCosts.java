@@ -19,7 +19,7 @@
  */
 package jsprit.core.util;
 
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * @author stefan schroeder
  * 
  */
-public class CrowFlyCosts implements VehicleRoutingTransportCosts {
+public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts {
 
 	private static Logger logger = Logger.getLogger(CrowFlyCosts.class);
 
@@ -78,16 +78,6 @@ public class CrowFlyCosts implements VehicleRoutingTransportCosts {
 		}
 		double transportTime = distance / speed;
 		return transportTime;
-	}
-
-	@Override
-	public double getBackwardTransportCost(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
-		return getTransportCost(fromId, toId, arrivalTime, null, null);
-	}
-
-	@Override
-	public double getBackwardTransportTime(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
-		return getTransportTime(fromId, toId, arrivalTime, null, null);
 	}
 
 }

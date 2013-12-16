@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleTypeImpl.VehicleCostParams;
@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  * @author schroeder
  *
  */
-public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTransportCosts {
+public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRoutingTransportCosts {
 
 	static class RelationKey {
 		
@@ -239,24 +239,10 @@ public class VehicleRoutingTransportCostsMatrix implements VehicleRoutingTranspo
 	}
 
 	@Override
-	public double getBackwardTransportTime(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
-		return getTransportTime(fromId, toId, arrivalTime, driver, vehicle);
-	}
-
-
-	@Override
 	public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
 		if(vehicle == null) return getDistance(fromId, toId);
 		VehicleCostParams costParams = vehicle.getType().getVehicleCostParams();
 		return costParams.perDistanceUnit*getDistance(fromId, toId) + costParams.perTimeUnit*getTime(fromId, toId);
 	}
-
-
-	@Override
-	public double getBackwardTransportCost(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
-		return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-	}
-	
-	
 	
 }

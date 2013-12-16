@@ -18,7 +18,7 @@ package jsprit.core.util;
 
 
 
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 
@@ -28,7 +28,7 @@ import jsprit.core.problem.vehicle.Vehicle;
  * 
  */
 
-public class ManhattanCosts implements VehicleRoutingTransportCosts {
+public class ManhattanCosts extends AbstractForwardVehicleRoutingTransportCosts {
 
 	public double speed = 1;
 
@@ -56,18 +56,6 @@ public class ManhattanCosts implements VehicleRoutingTransportCosts {
 				+ Math.abs(locations.getCoord(fromId).getY()
 						- locations.getCoord(toId).getY());
 		return distance;
-	}
-
-	@Override
-	public double getBackwardTransportCost(String fromId, String toId,
-			double arrivalTime, Driver driver, Vehicle vehicle) {
-		return getTransportCost(fromId, toId, arrivalTime, null, null);
-	}
-
-	@Override
-	public double getBackwardTransportTime(String fromId, String toId,
-			double arrivalTime, Driver driver, Vehicle vehicle) {
-		return getTransportTime(fromId, toId, arrivalTime, null, null);
 	}
 
 }
