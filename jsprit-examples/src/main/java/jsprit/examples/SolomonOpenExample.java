@@ -22,6 +22,7 @@ import java.util.Collection;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.selector.SelectBest;
@@ -92,10 +93,10 @@ public class SolomonOpenExample {
 		/*
 		 * Plot solution. 
 		 */
-		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_open_solution.png","C101");
+//		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_open_solution.png","C101");
 		
 		
-		new GraphStreamViewer(vrp, solution).setRenderDelay(50).setEnableAutoLayout(true).display();
+		new GraphStreamViewer(vrp, solution).setRenderDelay(150).labelWith(Label.ID).setEnableAutoLayout(true).display();
 	
 		
 	}
