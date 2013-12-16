@@ -1,16 +1,18 @@
 package jsprit.analysis.toolbox;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.text.MessageFormat;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
 
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
@@ -28,8 +30,12 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.graphicGraph.GraphicGraph;
+import org.graphstream.ui.swingViewer.LayerRenderer;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
+
+
 
 public class GraphStreamViewer {
 
@@ -159,67 +165,78 @@ public class GraphStreamViewer {
 	}
 	
 	public void display(){
+		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		
 		JFrame jframe = new JFrame();
 		
-		JPanel basic = new JPanel();
-		basic.setLayout(new BoxLayout(basic,BoxLayout.Y_AXIS));
+		JPanel basicPanel = new JPanel();
+		basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
 		
-		JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setMaximumSize(new Dimension(450, 0));
+		//result-panel
+		JPanel resultPanel = createResultPanel();
+		//legend-panel 
+		final JPanel legendPanel = createLegendPanel();
 		
-		MessageFormat format = new MessageFormat("{0,number,00}:{1,number,00}:{2,number,00}");
-		JFormattedTextField textField = new JFormattedTextField(format);
-		textField.setEditable(false);
-		textField.setMaximumSize(new Dimension(100,30));
-		textField.setMinimumSize(new Dimension(80,30));
-		textField.setHorizontalAlignment(JTextField.LEFT);
-		textField.setText("00:01:56");
-		
-		topPanel.add(textField, BorderLayout.WEST);
-		
-		
-		
-        basic.add(topPanel);
-        
-        
-        
-		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+		//graphstream-panel
 		Graph g = new MultiGraph("g");
 		g.addAttribute("ui.quality");
 		g.addAttribute("ui.antialias");
 		g.addAttribute("ui.stylesheet", styleSheet);
 
+		JPanel graphStreamPanel = new JPanel();
+		graphStreamPanel.setPreferredSize(new Dimension(800,460));
+		graphStreamPanel.setBackground(Color.WHITE);
+		
+		JPanel graphStreamBackPanel = new JPanel();
+		graphStreamBackPanel.setPreferredSize(new Dimension(700,450));
+		graphStreamBackPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+		graphStreamBackPanel.setBackground(Color.WHITE);
+		
 		Viewer viewer = new Viewer(g,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD); 
 		View view = viewer.addDefaultView(false);
+		view.setPreferredSize(new Dimension(698,440));
+		view.setForeLayoutRenderer(new LayerRenderer() {
+			
+			@Override
+			public void render(Graphics2D graphics, GraphicGraph graph, double px2Gu,
+					int widthPx, int heightPx, double minXGu, double minYGu,
+					double maxXGu, double maxYGu) {
+				legendPanel.repaint();
+				
+			}
+		});	
 		
-		basic.add(view);
+		graphStreamBackPanel.add(view);
 		
-		//		viewer.getDefaultView().setLayout(new BorderLayout());
-//		
-		jframe.add(basic);
-////		
-		jframe.setVisible(true);
-		jframe.setSize(800,600);
+		graphStreamPanel.add(graphStreamBackPanel);
+		
+		//setup basicPanel
+		basicPanel.add(resultPanel);
+		basicPanel.add(graphStreamPanel);
+		basicPanel.add(legendPanel);
+		
+		//put it together
+		jframe.add(basicPanel);
+		
+		//conf jframe
+		jframe.setSize(800,580);
 		jframe.setLocationRelativeTo(null);
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jframe.setVisible(true);
+		jframe.pack();
+		jframe.setTitle("jsprit - GraphStream");
 		
+		//start rendering graph
+		render(g,view);
+
+	}
+
+	private void render(Graph g, View view) {
 		if(center != null){
-//			viewer = g.display(false);
-//			View view = viewer.getDefaultView();
-			view.resizeFrame(800, 600);
+			view.resizeFrame(view.getWidth(), view.getHeight());
 			view.getCamera().setViewCenter(center.x, center.y, 0);
 			view.getCamera().setViewPercent(zoomFactor);
 		}
-//		else viewer = g.display();
-		
-		
-		
-//		viewer.getDefaultView().add(textField,BorderLayout.NORTH);
-//		viewer.getDefaultView().;
-		
-		if(!enableAutoLayout) viewer.disableAutoLayout();
-		
 
 		for(Vehicle vehicle : vrp.getVehicles()){
 			renderVehicle(g,vehicle,label);
@@ -244,6 +261,175 @@ public class GraphStreamViewer {
 				routeId++;
 			}
 		}
+		
+	}
+
+	private JPanel createLegendPanel() {
+		int width = 800;
+		int height = 50;
+		
+		JPanel panel = new JPanel();
+		panel.setPreferredSize(new Dimension(width,height));
+		panel.setBackground(Color.WHITE);
+
+		JPanel subpanel = new JPanel();
+		subpanel.setLayout(new FlowLayout());
+		subpanel.setPreferredSize(new Dimension(700,40));
+		subpanel.setBackground(Color.WHITE);
+		subpanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+
+		Font font = Font.decode("couriernew");
+		
+		//graphic2d
+//		Graphics2D gr = new
+		
+		JLabel circleL = new JLabel(){
+			
+			public void paintComponent(Graphics g){
+				Color orig = g.getColor();
+				g.setColor(Color.RED);
+				g.fillOval(50,50,50,50);
+			}
+			
+		};
+//		circleL.paintComponents(circle);
+		
+		
+		//label
+		JLabel depots = new JLabel(new String("depots"));
+		depots.setFont(font);
+		depots.setPreferredSize(new Dimension(40,25));
+		
+		
+        //graphic2d
+        
+        //label
+        JLabel pickups = new JLabel(new String("pickups"));
+        pickups.setFont(font);
+        pickups.setPreferredSize(new Dimension(40,25));
+        
+        //graphic2d
+        
+        //label
+        JLabel deliveries = new JLabel(new String("deliveries"));
+        deliveries.setFont(font);
+        deliveries.setPreferredSize(new Dimension(40,25));
+        
+        //shipments
+//        if(renderShipments()){
+//        	
+//        }
+        subpanel.add(circleL);
+        subpanel.add(depots);
+        
+        JLabel emptyLabel1 = createEmptyLabel();
+        subpanel.add(emptyLabel1);
+        
+        subpanel.add(pickups);
+        subpanel.add(createEmptyLabel());
+        
+        subpanel.add(deliveries);
+        
+        
+        
+		panel.add(subpanel);
+		
+		return panel;
+	}
+
+	private JLabel createEmptyLabel() {
+		JLabel emptyLabel1 = new JLabel();
+        emptyLabel1.setPreferredSize(new Dimension(40,25));
+		return emptyLabel1;
+	}
+
+	private JPanel createResultPanel() {
+		int width = 800;
+		int height = 50;
+		
+		JPanel panel = new JPanel();
+		panel.setPreferredSize(new Dimension(width,height));
+        panel.setBackground(Color.WHITE);
+        
+        JPanel subpanel = new JPanel();
+        subpanel.setLayout(new FlowLayout());
+        subpanel.setPreferredSize(new Dimension(700,40));
+        subpanel.setBackground(Color.WHITE);
+        subpanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,1));
+        
+        Font font = Font.decode("couriernew");
+
+        JLabel jobs = new JLabel(new String("jobs"));
+        jobs.setFont(font);
+        jobs.setPreferredSize(new Dimension(40,25));
+
+        JFormattedTextField nJobs = new JFormattedTextField(this.vrp.getJobs().values().size());
+        nJobs.setFont(font);
+        nJobs.setEditable(false);
+        nJobs.setBorder(BorderFactory.createEmptyBorder());
+        nJobs.setBackground(new Color(230,230,230));
+        
+        JLabel costs = new JLabel(new String("costs"));
+        costs.setFont(font);
+        costs.setPreferredSize(new Dimension(40,25));
+
+        JFormattedTextField costsVal = new JFormattedTextField(new Double(getSolutionCosts()));
+        costsVal.setFont(font);
+        costsVal.setEditable(false);
+        costsVal.setBorder(BorderFactory.createEmptyBorder());
+        costsVal.setBackground(new Color(230,230,230));
+        
+        JLabel vehicles = new JLabel(new String("routes"));
+        vehicles.setFont(font);
+        vehicles.setPreferredSize(new Dimension(40,25));
+//        vehicles.setForeground(Color.DARK_GRAY);
+        
+        JFormattedTextField vehVal = new JFormattedTextField(getNuRoutes());
+        vehVal.setFont(font);
+        vehVal.setEditable(false);
+        vehVal.setBorder(BorderFactory.createEmptyBorder());
+//        vehVal.setForeground(Color.DARK_GRAY);
+        vehVal.setBackground(new Color(230,230,230));
+        
+        //platzhalter
+        JLabel placeholder1 = new JLabel();
+        placeholder1.setPreferredSize(new Dimension(60,25));
+        
+JLabel emptyLabel1 = createEmptyLabel();
+        
+        subpanel.add(jobs);
+        subpanel.add(nJobs);
+        
+        subpanel.add(emptyLabel1);
+        
+        subpanel.add(costs);
+        subpanel.add(costsVal);
+
+        JLabel emptyLabel2 = createEmptyLabel();
+        subpanel.add(emptyLabel2);
+        
+        subpanel.add(vehicles);
+        subpanel.add(vehVal);
+        
+//        subpanel.add(emptyLabel);
+//        subpanel.add(placeholder1);
+//        subpanel.add(placeholder1);
+//        subpanel.add(placeholder1);
+//        subpanel.add(placeholder1);
+
+        panel.add(subpanel);
+        
+		return panel;
+	}
+
+	private Integer getNuRoutes() {
+		if(solution!=null) return Integer.valueOf(solution.getRoutes().size());
+		return 0;
+	}
+
+	private Double getSolutionCosts() {
+		if(solution!=null) return Double.valueOf(solution.getCost());
+		return 0.0;
 	}
 
 	private void renderShipment(Graph g, Shipment shipment, Label label, boolean renderShipments) {
