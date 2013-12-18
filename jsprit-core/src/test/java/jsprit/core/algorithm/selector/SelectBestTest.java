@@ -53,7 +53,7 @@ public class SelectBestTest {
 	
 	@Test
 	public void whenHavingNoSolutions_returnNull(){
-		assertNull(new SelectBest().selectSolution(Collections.EMPTY_LIST));
+		assertNull(new SelectBest().selectSolution(Collections.<VehicleRoutingProblemSolution> emptyList()));
 	}
 
 }

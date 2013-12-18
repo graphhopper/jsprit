@@ -34,8 +34,6 @@ public class VrpVerifier implements AlgorithmStartsListener{
 
 	private static Logger log = Logger.getLogger(VrpVerifier.class);
 	
-	private boolean hardTimeWindows = true;
-	
 	@Override
 	public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
 		//check capacity
@@ -54,7 +52,6 @@ public class VrpVerifier implements AlgorithmStartsListener{
 			Service s = (Service)j;
 			boolean jobCanBeRoutedWithinTimeWindow = false;
 			for(Vehicle v : problem.getVehicles()){
-				double transportCost = problem.getTransportCosts().getTransportCost(v.getLocationId(), s.getLocationId(), v.getEarliestDeparture(), DriverImpl.noDriver(), v);
 				double transportTime = problem.getTransportCosts().getTransportTime(v.getLocationId(), s.getLocationId(), v.getEarliestDeparture(), DriverImpl.noDriver(), v);
 				if(transportTime+v.getEarliestDeparture() < s.getTimeWindow().getEnd()){
 					jobCanBeRoutedWithinTimeWindow = true;

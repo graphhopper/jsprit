@@ -128,7 +128,7 @@ public class VariationCoefficientTermination implements PrematureAlgorithmTermin
 
 	@Override
 	public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-		if(lastAccepted == null) lastAccepted = Solutions.getBest(solutions);
+		if(lastAccepted == null) lastAccepted = Solutions.bestOf(solutions);
 	}
 
 	

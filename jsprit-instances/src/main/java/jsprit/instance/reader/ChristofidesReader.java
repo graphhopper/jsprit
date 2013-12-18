@@ -96,7 +96,7 @@ public class ChristofidesReader {
 				int demand = Integer.parseInt(tokens[2].trim());
 				String customer = Integer.valueOf(counter-1).toString();
 				Service service = Service.Builder.newInstance(customer, demand).setServiceTime(serviceTime).setCoord(customerCoord).build();
-				vrpBuilder.addService(service);
+				vrpBuilder.addJob(service);
 			}
 			counter++;
 		}

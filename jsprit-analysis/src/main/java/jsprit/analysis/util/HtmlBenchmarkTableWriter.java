@@ -24,8 +24,6 @@ import java.util.Collection;
 
 import jsprit.core.util.BenchmarkResult;
 
-import org.jfree.chart.renderer.xy.DeviationRenderer;
-
 public class HtmlBenchmarkTableWriter implements BenchmarkWriter{
 
 	private String filename;

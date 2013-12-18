@@ -9,8 +9,6 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 
-import org.apache.log4j.Logger;
-
 
 /**
  * Ensures load constraint for inserting ServiceActivity.
@@ -22,8 +20,6 @@ import org.apache.log4j.Logger;
  *
  */
 class ServiceLoadActivityLevelConstraint implements HardActivityStateLevelConstraint {
-	
-	private static Logger log = Logger.getLogger(ServiceLoadActivityLevelConstraint.class);
 	
 	private RouteAndActivityStateGetter stateManager;
 	

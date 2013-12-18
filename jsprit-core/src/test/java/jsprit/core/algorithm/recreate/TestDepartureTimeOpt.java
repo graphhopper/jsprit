@@ -17,7 +17,6 @@
 package jsprit.core.algorithm.recreate;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 
@@ -33,7 +32,6 @@ import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
-import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
@@ -47,7 +45,6 @@ public class TestDepartureTimeOpt {
 	public void whenSettingOneCustWithTWAnd_NO_DepTimeChoice_totalCostsShouldBe50(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
 		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
-		VehicleType type = mock(VehicleTypeImpl.class);
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
 				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
 		
@@ -62,12 +59,12 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
-		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addVehicle(vehicle).build();
+		VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addVehicle(vehicle).build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		assertEquals(20.0+30.0,Solutions.getBest(solutions).getCost(),0.1);
+		assertEquals(20.0+30.0,Solutions.bestOf(solutions).getCost(),0.1);
 		
 	}
 	
@@ -75,7 +72,6 @@ public class TestDepartureTimeOpt {
 	public void whenSettingOneCustWithTWAnd_NO_DepTimeChoice_depTimeShouldBe0(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
 		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
-		VehicleType type = mock(VehicleTypeImpl.class);
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("vehLoc").setLocationCoord(Coordinate.newInstance(0, 0))
 				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
 		
@@ -90,12 +86,12 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
-		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addVehicle(vehicle).build();
+		VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addVehicle(vehicle).build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		assertEquals(0.0,Solutions.getBest(solutions).getRoutes().iterator().next().getStart().getEndTime(),0.1);
+		assertEquals(0.0,Solutions.bestOf(solutions).getRoutes().iterator().next().getStart().getEndTime(),0.1);
 		
 	}
 	
@@ -117,13 +113,13 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
-		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addVehicle(vehicle).build();
+		VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addVehicle(vehicle).build();
 		
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigWithDepartureTimeChoice.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		assertEquals(20.0,Solutions.getBest(solutions).getCost(),0.1);
+		assertEquals(20.0,Solutions.bestOf(solutions).getCost(),0.1);
 		
 	}
 	
@@ -145,13 +141,13 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
-		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addVehicle(vehicle).build();
+		VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addVehicle(vehicle).build();
 		
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigWithDepartureTimeChoice.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		assertEquals(30.0,Solutions.getBest(solutions).getRoutes().iterator().next().getStart().getEndTime(),0.1);
+		assertEquals(30.0,Solutions.bestOf(solutions).getRoutes().iterator().next().getStart().getEndTime(),0.1);
 		
 	}
 	
@@ -177,13 +173,13 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
-		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addService(service2).addVehicle(vehicle).build();
+		VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addJob(service2).addVehicle(vehicle).build();
 		
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigWithDepartureTimeChoice.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		assertEquals(40.0,Solutions.getBest(solutions).getCost(),0.1);
+		assertEquals(40.0,Solutions.bestOf(solutions).getCost(),0.1);
 		
 	}
 	
@@ -209,13 +205,13 @@ public class TestDepartureTimeOpt {
 			}
 			
 		});
-		VehicleRoutingProblem vrp = vrpBuilder.addService(service).addService(service2).addVehicle(vehicle).build();
+		VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addJob(service2).addVehicle(vehicle).build();
 		
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigWithDepartureTimeChoice.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		assertEquals(10.0,Solutions.getBest(solutions).getRoutes().iterator().next().getStart().getEndTime(),0.1);
+		assertEquals(10.0,Solutions.bestOf(solutions).getRoutes().iterator().next().getStart().getEndTime(),0.1);
 		
 	}	
 

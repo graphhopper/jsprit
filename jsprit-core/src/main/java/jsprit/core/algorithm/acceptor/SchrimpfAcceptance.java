@@ -122,7 +122,7 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 			
 			@Override
 			public void informIterationEnds(int iteration, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-				double result = Solutions.getBest(solutions).getCost();
+				double result = Solutions.bestOf(solutions).getCost();
 //				logger.info("result="+result);
 				results[iteration-1] = result;
 			}

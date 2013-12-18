@@ -52,16 +52,14 @@ public class TestVehicleRoute {
 	
 	@Test
 	public void whenBuildingEmptyRouteCorrectly_go(){
-		
 		VehicleRoute route = VehicleRoute.newInstance(TourActivities.emptyTour(),DriverImpl.noDriver(),VehicleImpl.noVehicle());
-		assertTrue(true);
+		assertTrue(route!=null);
 	}
 	
 	@Test
 	public void whenBuildingEmptyRouteCorrectlyV2_go(){
-		
 		VehicleRoute route = VehicleRoute.emptyRoute();
-		assertTrue(true);
+		assertTrue(route!=null);
 	}
 	
 	@Test
@@ -78,17 +76,16 @@ public class TestVehicleRoute {
 	
 	@Test(expected=IllegalStateException.class)
 	public void whenBuildingEmptyRoute_(){
-		
+		@SuppressWarnings("unused")
 		VehicleRoute route = VehicleRoute.newInstance(null,null,null);
-		
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void whenBuildingRouteWithNonEmptyTour_throwException(){
 		TourActivities tour = new TourActivities();
 		tour.addActivity(ServiceActivity.newInstance(Service.Builder.newInstance("jo", 10).build()));
+		@SuppressWarnings("unused")
 		VehicleRoute route = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),VehicleImpl.noVehicle());
-		
 	}
 	
 	@Test
@@ -99,6 +96,7 @@ public class TestVehicleRoute {
 		Iterator<TourActivity> iter = route.getTourActivities().iterator();
 		int count = 0;
 		while(iter.hasNext()){
+			@SuppressWarnings("unused")
 			TourActivity act = iter.next();
 			count++;
 		}
@@ -113,6 +111,7 @@ public class TestVehicleRoute {
 		Iterator<TourActivity> iter = route.getTourActivities().iterator();
 		int count = 0;
 		while(iter.hasNext()){
+			@SuppressWarnings("unused")
 			TourActivity act = iter.next();
 			count++;
 		}
@@ -130,6 +129,7 @@ public class TestVehicleRoute {
 			Iterator<TourActivity> iter = route.getTourActivities().iterator();
 			int count = 0;
 			while(iter.hasNext()){
+				@SuppressWarnings("unused")
 				TourActivity act = iter.next();
 				count++;
 			}
@@ -140,6 +140,7 @@ public class TestVehicleRoute {
 			Iterator<TourActivity> iter = route.getTourActivities().iterator();
 			int count = 0;
 			while(iter.hasNext()){
+				@SuppressWarnings("unused")
 				TourActivity act = iter.next();
 				count++;
 			}
@@ -154,6 +155,7 @@ public class TestVehicleRoute {
 		Iterator<TourActivity> iter = route.getTourActivities().reverseActivityIterator();
 		int count = 0;
 		while(iter.hasNext()){
+			@SuppressWarnings("unused")
 			TourActivity act = iter.next();
 			count++;
 		}
@@ -168,6 +170,7 @@ public class TestVehicleRoute {
 		Iterator<TourActivity> iter = route.getTourActivities().reverseActivityIterator();
 		int count = 0;
 		while(iter.hasNext()){
+			@SuppressWarnings("unused")
 			TourActivity act = iter.next();
 			count++;
 		}

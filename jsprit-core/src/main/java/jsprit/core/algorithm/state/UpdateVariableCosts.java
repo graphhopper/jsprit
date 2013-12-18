@@ -9,8 +9,6 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.util.ActivityTimeTracker;
 
-import org.apache.log4j.Logger;
-
 
 /**
  * Updates total costs (i.e. transport and activity costs) at route and activity level.
@@ -25,8 +23,6 @@ import org.apache.log4j.Logger;
  */
 public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 
-	private static Logger log = Logger.getLogger(UpdateVariableCosts.class);
-	
 	private VehicleRoutingActivityCosts activityCost;
 
 	private ForwardTransportCost transportCost;

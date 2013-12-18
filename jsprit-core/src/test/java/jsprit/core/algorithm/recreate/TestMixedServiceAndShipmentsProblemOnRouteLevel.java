@@ -1,9 +1,6 @@
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.*;
-import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.recreate.BestInsertionBuilder;
-import jsprit.core.algorithm.recreate.InsertionStrategy;
+import static org.junit.Assert.assertTrue;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
@@ -13,12 +10,11 @@ import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
-import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.util.Coordinate;
 
-import org.junit.Before;
 import org.junit.Test;
 
 
@@ -78,8 +74,6 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		VehicleRoutingAlgorithm vra;
-		
 		final StateManager stateManager = new StateManager(vrp);
 		
 
@@ -91,6 +85,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 
 		BestInsertionBuilder bestIBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager,constraintManager);
 		bestIBuilder.setRouteLevel(2, 2);
+		@SuppressWarnings("unused")
 		InsertionStrategy bestInsertion = bestIBuilder.build();
 		
 	}
@@ -144,8 +139,6 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		VehicleRoutingAlgorithm vra;
-		
 		final StateManager stateManager = new StateManager(vrp);
 
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
@@ -156,6 +149,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 
 		BestInsertionBuilder bestIBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager,constraintManager);
 		bestIBuilder.setRouteLevel(2, 2);
+		@SuppressWarnings("unused")
 		InsertionStrategy bestInsertion = bestIBuilder.build();
 		
 		assertTrue(true);

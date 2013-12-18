@@ -42,7 +42,7 @@ public class TestRefs {
 
 	private void doSmth(List<Start> starts) {
 		int count = 0;
-		for(Start s : starts){
+		for(@SuppressWarnings("unused") Start s : starts){
 			s = Start.newInstance("yo_"+count,0.0,0.0);
 			count++;
 		}

@@ -56,6 +56,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
+@SuppressWarnings("deprecation")
 public class VrpXMLReader{
 	
 	public interface ServiceBuilderFactory {
@@ -223,7 +224,6 @@ public class VrpXMLReader{
 			List<HierarchicalConfiguration> routeConfigs = solutionConfig.configurationsAt("routes.route");
 			List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 			for(HierarchicalConfiguration routeConfig : routeConfigs){
-				String driverId = routeConfig.getString("driverId");
 				//! here, driverId is set to noDriver, no matter whats in driverId.
 				Driver driver = DriverImpl.noDriver();
 				String vehicleId = routeConfig.getString("vehicleId");

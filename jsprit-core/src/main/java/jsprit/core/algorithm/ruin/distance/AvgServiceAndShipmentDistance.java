@@ -23,8 +23,6 @@ import jsprit.core.problem.job.Shipment;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.EuclideanDistanceCalculator;
 
-import org.apache.log4j.Logger;
-
 
 
 /**
@@ -37,8 +35,6 @@ import org.apache.log4j.Logger;
  */
 public class AvgServiceAndShipmentDistance implements JobDistance {
 
-	private static Logger log = Logger.getLogger(AvgServiceAndShipmentDistance.class);
-	
 	private VehicleRoutingTransportCosts costs;
 
 	public AvgServiceAndShipmentDistance(VehicleRoutingTransportCosts costs) {

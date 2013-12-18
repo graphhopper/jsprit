@@ -25,7 +25,7 @@ import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.Constraint;
+import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Pickup;
@@ -83,7 +83,7 @@ public class SimpleVRPWithBackhaulsExample {
 		vrpBuilder.addJob(pickup1).addJob(pickup2).addJob(delivery1).addJob(delivery2);
 		
 		//
-		vrpBuilder.addProblemConstraint(Constraint.DELIVERIES_FIRST);
+		vrpBuilder.addConstraint(new ServiceDeliveriesFirstConstraint());
 		
 		VehicleRoutingProblem problem = vrpBuilder.build();
 		

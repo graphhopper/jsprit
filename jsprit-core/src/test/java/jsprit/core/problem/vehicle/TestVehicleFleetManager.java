@@ -64,6 +64,7 @@ public class TestVehicleFleetManager extends TestCase{
 		assertEquals(1, vehicles.size());
 		try{
 			fleetManager.lock(v1);
+			@SuppressWarnings("unused")
 			Collection<Vehicle> vehicles_ = fleetManager.getAvailableVehicles();
 			assertFalse(true);
 		}

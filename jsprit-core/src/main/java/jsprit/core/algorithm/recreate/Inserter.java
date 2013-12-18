@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import org.apache.log4j.Logger;
-
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.problem.job.Job;
@@ -119,8 +117,6 @@ class Inserter {
 	private InsertionListeners insertionListeners;
 	
 	private JobInsertionHandler jobInsertionHandler;
-	
-	private static Logger log = Logger.getLogger(Inserter.class);
 	
 	public Inserter(InsertionListeners insertionListeners) {
 		this.insertionListeners = insertionListeners;

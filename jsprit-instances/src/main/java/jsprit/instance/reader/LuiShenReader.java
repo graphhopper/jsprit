@@ -23,7 +23,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.FleetComposition;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -47,7 +46,7 @@ public class LuiShenReader {
 	public LuiShenReader(VehicleRoutingProblem.Builder vrpBuilder) {
 		super();
 		this.vrpBuilder = vrpBuilder;
-		this.vrpBuilder.setFleetComposition(FleetComposition.HETEROGENEOUS);
+//		this.vrpBuilder.setFleetComposition(FleetComposition.HETEROGENEOUS);
 	}
 	
 	/**
@@ -90,7 +89,7 @@ public class LuiShenReader {
 				else{
 					Service service = Service.Builder.newInstance("" + counter, demand).setCoord(coord).setLocationId(customerId).setServiceTime(serviceTime)
 							.setTimeWindow(TimeWindow.newInstance(start, end)).build();
-					vrpBuilder.addService(service);
+					vrpBuilder.addJob(service);
 				}
 			}
 		}

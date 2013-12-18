@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
+import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -184,7 +185,7 @@ public class RefuseCollection_IT {
 		vrpBuilder.setRoutingCost(matrixBuilder.build());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
-		vra.setPrematureBreak(100);
+		vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		assertEquals(397.0,Solutions.bestOf(solutions).getCost(),0.01);
@@ -209,7 +210,7 @@ public class RefuseCollection_IT {
 			/*
 			 * and add it to problem
 			 */
-			vrpBuilder.addService(service);
+			vrpBuilder.addJob(service);
 		}
 		reader.close();
 	}

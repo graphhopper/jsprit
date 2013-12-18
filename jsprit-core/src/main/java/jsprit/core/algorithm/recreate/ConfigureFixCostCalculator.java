@@ -25,17 +25,9 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 
-import org.apache.log4j.Logger;
-
-
-
-
-
 
 final class ConfigureFixCostCalculator implements InsertionStartsListener, JobInsertedListener{
 
-	private static Logger log = Logger.getLogger(ConfigureFixCostCalculator.class);
-	
 	VehicleRoutingProblem vrp;
 	
 	JobInsertionConsideringFixCostsCalculator calcConsideringFix;

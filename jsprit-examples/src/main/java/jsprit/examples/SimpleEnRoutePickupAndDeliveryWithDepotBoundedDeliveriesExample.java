@@ -24,7 +24,7 @@ import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.Constraint;
+import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Shipment;
@@ -98,7 +98,7 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
 		vrpBuilder.addJob(shipment1).addJob(shipment2).addJob(shipment3).addJob(shipment4)
 			.addJob(delivery1).addJob(delivery2).addJob(delivery3).addJob(delivery4).build();
 		
-		vrpBuilder.addProblemConstraint(Constraint.DELIVERIES_FIRST);
+		vrpBuilder.addConstraint(new ServiceDeliveriesFirstConstraint());
 		
 		VehicleRoutingProblem problem = vrpBuilder.build();
 		

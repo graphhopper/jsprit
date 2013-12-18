@@ -47,6 +47,11 @@ public class VrpXMLWriter {
 	static class XMLConf extends XMLConfiguration {
 		
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public Document createDoc() throws ConfigurationException{
 			Document doc = createDocument();
 			return doc;

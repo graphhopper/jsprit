@@ -13,6 +13,7 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
 import org.apache.log4j.Logger;
 
+@SuppressWarnings("deprecation")
 public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint{
 
 	public static enum Priority {

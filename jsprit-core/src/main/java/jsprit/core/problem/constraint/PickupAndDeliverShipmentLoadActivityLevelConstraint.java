@@ -8,8 +8,6 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 
-import org.apache.log4j.Logger;
-
 
 /**
  * Constraint that ensures capacity constraint at each activity.
@@ -21,8 +19,6 @@ import org.apache.log4j.Logger;
  *
  */
 public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements HardActivityStateLevelConstraint {
-	
-	private static Logger logger = Logger.getLogger(PickupAndDeliverShipmentLoadActivityLevelConstraint.class);
 	
 	private RouteAndActivityStateGetter stateManager;
 	

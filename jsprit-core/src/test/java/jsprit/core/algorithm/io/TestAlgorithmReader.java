@@ -148,9 +148,6 @@ public class TestAlgorithmReader {
 		String acceptorName = "acceptor";
 		String acceptorId = "acceptorId";
 		
-		String moduleName = "acceptor";
-		String moduleId = "acceptorId";
-		
 		ModKey key = new ModKey(acceptorName,acceptorId);
 		RuinStrategyKey accKey = new RuinStrategyKey(key);
 		RuinStrategy acceptor = new RuinStrategy(){
@@ -221,6 +218,7 @@ public class TestAlgorithmReader {
 	
 
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void initialiseConstructionAlgoCorrectly(){
 		VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
@@ -229,18 +227,21 @@ public class TestAlgorithmReader {
 	
 	@Test
 	public void whenCreatingAlgorithm_nOfStrategiesIsCorrect(){
+		@SuppressWarnings("deprecation")
 		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
 		assertEquals(3, algo.getSearchStrategyManager().getStrategies().size());
 	}
 
 	@Test
 	public void whenCreatingAlgorithm_nOfIterationsIsReadCorrectly(){
+		@SuppressWarnings("deprecation")
 		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
 		assertEquals(10, algo.getNuOfIterations());
 	}
 	
 	@Test
 	public void whenCreatingAlgorithm_nOfStrategyModulesIsCorrect(){
+		@SuppressWarnings("deprecation")
 		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
 		int nOfModules = 0;
 		for(SearchStrategy strat : algo.getSearchStrategyManager().getStrategies()){
@@ -248,22 +249,5 @@ public class TestAlgorithmReader {
 		}
 		assertEquals(3, nOfModules);
 	}
-
-//	@Test
-//	public void whenCreatingAlgorithm_regretInsertionIsReadCorrectly(){
-//		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/configWithRegretInsertion.xml");
-//		int nOfModules = 0;
-//		for(SearchStrategy strat : algo.getSearchStrategyManager().getStrategies()){
-//			for(SearchStrategyModule module : strat.getSearchStrategyModules()){
-//				if(module.getName().contains("ruin_and_recreate")){
-//					nOfModules++;
-//				}
-//			}
-//			
-//		}
-//		assertEquals(3, nOfModules);
-//		
-//	}
-//	
 	
 }

@@ -37,6 +37,7 @@ class InsertionFactory {
 	
 	private static Logger log = Logger.getLogger(InsertionFactory.class);
 	
+	@SuppressWarnings("deprecation")
 	public static InsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
 			VehicleFleetManager vehicleFleetManager, StateManager routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager){
 

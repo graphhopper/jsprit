@@ -23,8 +23,6 @@ import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 
-import org.apache.log4j.Logger;
-
 
 
 /**
@@ -32,8 +30,6 @@ import org.apache.log4j.Logger;
  * 
  */
 public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts {
-
-	private static Logger logger = Logger.getLogger(CrowFlyCosts.class);
 
 	public int speed = 1;
 

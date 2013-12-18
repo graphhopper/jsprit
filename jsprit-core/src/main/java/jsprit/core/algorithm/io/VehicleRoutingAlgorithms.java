@@ -856,7 +856,6 @@ public class VehicleRoutingAlgorithms {
 				ruin = getRandomRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin);
 			}
 			else if(ruin_name.equals("radialRuin")){
-				String ruin_distance = moduleConfig.getString("ruin.distance");
 				JobDistance jobDistance = new AvgServiceAndShipmentDistance(vrp.getTransportCosts());
 //				if(ruin_distance == null) jobDistance 
 //				else {

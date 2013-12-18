@@ -46,6 +46,7 @@ public class TestJobDistanceAvgCosts {
 			@Override
 			public double getTransportCost(String fromId, String toId,
 					double departureTime, Driver driver, Vehicle vehicle) {
+				@SuppressWarnings("unused")
 				String vehicleId = vehicle.getId();
 				return 0;
 			}
@@ -82,6 +83,7 @@ public class TestJobDistanceAvgCosts {
 			@Override
 			public double getTransportCost(String fromId, String toId,
 					double departureTime, Driver driver, Vehicle vehicle) {
+				@SuppressWarnings("unused")
 				String vehicleId = vehicle.getId();
 				return 0;
 			}

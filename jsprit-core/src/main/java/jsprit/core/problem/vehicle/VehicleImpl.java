@@ -35,6 +35,7 @@ public class VehicleImpl implements Vehicle {
 	
 	public static class NoVehicle extends VehicleImpl {
 
+		@SuppressWarnings("deprecation")
 		public NoVehicle() {
 			super(Builder.newInstance("noVehicle").setType(VehicleTypeImpl.newInstance(null, 0, null)));
 		}
