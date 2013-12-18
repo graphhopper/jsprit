@@ -46,7 +46,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	public static class DefaultFleetManager extends VehicleFleetManagerImpl {
 
 		public DefaultFleetManager() {
-			super(Collections.EMPTY_LIST);
+			super(Collections.<Vehicle> emptyList());
 			
 		}
 		
@@ -54,13 +54,10 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	
 	static class TypeContainer {
 		
-		private VehicleTypeKey type;
-
 		private ArrayList<Vehicle> vehicleList;
 		
 		public TypeContainer(VehicleTypeKey type) {
 			super();
-			this.type = type;
 			vehicleList = new ArrayList<Vehicle>();
 		}
 		

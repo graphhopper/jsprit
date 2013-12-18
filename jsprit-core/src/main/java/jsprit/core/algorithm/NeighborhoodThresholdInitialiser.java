@@ -95,7 +95,7 @@ class NeighborhoodThresholdInitialiser implements AlgorithmStartsListener{
 	}
 
 	private double determineThreshold(VehicleRoutingProblem pblm, Locations locations, Collection<VehicleRoutingProblemSolution> mySolutions) {
-		VehicleRoutingProblemSolution bestSolution = Solutions.getBest(mySolutions);
+		VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(mySolutions);
 		double[] distances = new double[bestSolution.getRoutes().size()+pblm.getJobs().size()];
 		getDistances(distances,bestSolution,locations);
 		Mean mean = new Mean();

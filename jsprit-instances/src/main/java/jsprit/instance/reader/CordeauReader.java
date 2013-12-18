@@ -113,7 +113,7 @@ public class CordeauReader {
 				double serviceTime = Double.parseDouble(tokens[3].trim());
 				int demand = Integer.parseInt(tokens[4].trim());
 				Service service = Service.Builder.newInstance(id, demand).setServiceTime(serviceTime).setLocationId(id).setCoord(customerCoord).build();
-				vrpBuilder.addService(service);				
+				vrpBuilder.addJob(service);				
 			}
 			else if(counter <= (nOfCustomers+nOfDepots+nOfDepots)){
 				Coordinate depotCoord = makeCoord(tokens[1].trim(),tokens[2].trim());

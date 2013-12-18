@@ -22,7 +22,6 @@ import jsprit.core.problem.driver.DriverImpl;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
-import jsprit.core.problem.solution.route.RouteActivityVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -212,8 +211,6 @@ public class ShipmentInsertionCalculatorTest {
 	public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnNoInsertionData(){
 		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("0,0").build();
 		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
-		Shipment shipment3 = Shipment.Builder.newInstance("s3", 1).setPickupLocation("10,10").setDeliveryLocation("0,").build();
-		
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		route.setVehicle(vehicle, 0.0);
 		

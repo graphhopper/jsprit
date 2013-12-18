@@ -1,13 +1,12 @@
 package jsprit.core.algorithm.ruin;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import jsprit.core.algorithm.ruin.RuinRadial.JobNeighborhoodsImpl;
 import jsprit.core.algorithm.ruin.RuinRadial.JobNeighborhoodsImplWithCapRestriction;
 import jsprit.core.algorithm.ruin.distance.EuclideanServiceDistance;
 import jsprit.core.algorithm.ruin.distance.JobDistance;

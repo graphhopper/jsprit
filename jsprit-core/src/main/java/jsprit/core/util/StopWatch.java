@@ -16,11 +16,8 @@
  ******************************************************************************/
 package jsprit.core.util;
 
-import org.apache.log4j.Logger;
 
 public class StopWatch {
-	
-	private static Logger log = Logger.getLogger(StopWatch.class);
 	
 	private double ran;
 	

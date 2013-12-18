@@ -115,7 +115,7 @@ public class SolomonReader {
 				else{
 					Service service = Service.Builder.newInstance(customerId, demand).setCoord(coord).setLocationId(customerId).setServiceTime(serviceTime)
 							.setTimeWindow(TimeWindow.newInstance(start, end)).build();
-					vrpBuilder.addService(service);
+					vrpBuilder.addJob(service);
 				}
 			}
 		}

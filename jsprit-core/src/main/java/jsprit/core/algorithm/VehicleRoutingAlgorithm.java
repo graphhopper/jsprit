@@ -27,7 +27,6 @@ import jsprit.core.algorithm.listener.IterationEndsListener;
 import jsprit.core.algorithm.listener.IterationStartsListener;
 import jsprit.core.algorithm.listener.SearchStrategyListener;
 import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
-import jsprit.core.algorithm.listener.StrategySelectedListener;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
@@ -65,10 +64,6 @@ public class VehicleRoutingAlgorithm {
 					log.info(this.name + n);
 				}
 			}
-		}
-
-		public void print() {
-			log.info(this.name + counter);
 		}
 
 		public void reset() {

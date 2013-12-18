@@ -16,10 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.box;
 
-import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.box.SchrimpfFactory;
-import jsprit.core.problem.VehicleRoutingProblem;
-
 import org.junit.Test;
 
 
@@ -27,8 +23,6 @@ public class TestSchrimpf {
 	
 	@Test
 	public void whenUsingSchrimpfFactory_itFindsTheConfig(){
-		
-		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(VehicleRoutingProblem.Builder.newInstance().build());
 		
 	}
 

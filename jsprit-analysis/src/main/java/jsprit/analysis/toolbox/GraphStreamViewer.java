@@ -100,8 +100,6 @@ public class GraphStreamViewer {
 
 	private long renderDelay_in_ms = 0;
 
-	private boolean enableAutoLayout = false;
-
 	private boolean renderShipments = false;
 	
 	private Center center;
@@ -136,7 +134,6 @@ public class GraphStreamViewer {
 	}
 
 	public GraphStreamViewer setEnableAutoLayout(boolean enableAutoLayout) {
-		this.enableAutoLayout = enableAutoLayout;
 		return this;
 	}
 
@@ -177,9 +174,6 @@ public class GraphStreamViewer {
 		
 		//result-panel
 		JPanel resultPanel = createResultPanel();
-		//legend-panel 
-		final JPanel legendPanel = createLegendPanel();
-		
 		//graphstream-panel
 		Graph g = new MultiGraph("g");
 		g.addAttribute("ui.quality");
@@ -254,67 +248,6 @@ public class GraphStreamViewer {
 			}
 		}
 		
-	}
-
-	private JPanel createLegendPanel() {
-		int width = 800;
-		int height = 50;
-		
-		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension((int)(width*scaling),(int)(height*scaling)));
-		panel.setBackground(Color.WHITE);
-
-		JPanel subpanel = new JPanel();
-		subpanel.setLayout(new FlowLayout());
-		subpanel.setPreferredSize(new Dimension((int)(700*scaling),(int)(40*scaling)));
-		subpanel.setBackground(Color.WHITE);
-		subpanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-
-		Font font = Font.decode("couriernew");
-		
-		//graphic2d
-//		Graphics2D gr = new
-	
-		//label
-		JLabel depots = new JLabel(new String("depots"));
-		depots.setFont(font);
-		depots.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
-		
-		
-        //graphic2d
-        
-        //label
-        JLabel pickups = new JLabel(new String("pickups"));
-        pickups.setFont(font);
-        pickups.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
-        
-        //graphic2d
-        
-        //label
-        JLabel deliveries = new JLabel(new String("deliveries"));
-        deliveries.setFont(font);
-        deliveries.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
-        
-        //shipments
-//        if(renderShipments()){
-//        	
-//        }
-        
-        subpanel.add(depots);
-        
-        JLabel emptyLabel1 = createEmptyLabel();
-        subpanel.add(emptyLabel1);
-        
-        subpanel.add(pickups);
-        subpanel.add(createEmptyLabel());
-        
-        subpanel.add(deliveries);
-        
-        
-        
-		panel.add(subpanel);
-		
-		return panel;
 	}
 
 	private JLabel createEmptyLabel() {

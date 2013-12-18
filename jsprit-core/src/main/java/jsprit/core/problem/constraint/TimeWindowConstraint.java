@@ -7,8 +7,6 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.util.CalculationUtils;
 
-import org.apache.log4j.Logger;
-
 
 /**
 	 * ljsljslfjs
@@ -17,8 +15,6 @@ import org.apache.log4j.Logger;
 	 */
 	class TimeWindowConstraint implements HardActivityStateLevelConstraint {
 
-		private static Logger log = Logger.getLogger(TimeWindowConstraint.class);
-		
 		private RouteAndActivityStateGetter states;
 		
 		private VehicleRoutingTransportCosts routingCosts;

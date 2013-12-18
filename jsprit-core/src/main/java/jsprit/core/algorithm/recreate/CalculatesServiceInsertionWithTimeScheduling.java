@@ -18,7 +18,6 @@ package jsprit.core.algorithm.recreate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
@@ -36,7 +35,7 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsC
 	
 	private JobInsertionCostsCalculator jic;
 	
-	private Random random = new Random();
+//	private Random random = new Random();
 	
 	private int nOfDepartureTimes = 3;
 	
@@ -65,8 +64,8 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsC
 		else currentStart = currentRoute.getStart().getEndTime();
 		
 		vehicleDepartureTimes.add(currentStart);
-		double earliestDeparture = newVehicle.getEarliestDeparture();
-		double latestEnd = newVehicle.getLatestArrival();
+//		double earliestDeparture = newVehicle.getEarliestDeparture();
+//		double latestEnd = newVehicle.getLatestArrival();
 		
 		for(int i=0;i<nOfDepartureTimes;i++){
 			double neighborStartTime_earlier = currentStart - (i+1)*timeSlice;

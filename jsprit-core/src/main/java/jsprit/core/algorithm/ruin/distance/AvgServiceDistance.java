@@ -20,8 +20,6 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 
-import org.apache.log4j.Logger;
-
 
 
 /**
@@ -34,8 +32,6 @@ import org.apache.log4j.Logger;
  */
 public class AvgServiceDistance implements JobDistance {
 
-	private static Logger log = Logger.getLogger(AvgServiceDistance.class);
-	
 	private VehicleRoutingTransportCosts costs;
 
 	public AvgServiceDistance(VehicleRoutingTransportCosts costs) {

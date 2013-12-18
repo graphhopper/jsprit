@@ -46,7 +46,7 @@ public class CalcWithTimeSchedulingTest {
 				setLocationCoord(Coordinate.newInstance(0, 0)).setLocationId("0,0")
 				.setType(VehicleTypeImpl.Builder.newInstance("myType", 20).setCostPerDistance(1.0).build()).build();
 		vrpBuilder.addVehicle(vehicle);
-		vrpBuilder.addService(Service.Builder.newInstance("myService", 2).setLocationId("0,20").setCoord(Coordinate.newInstance(0, 20)).build());
+		vrpBuilder.addJob(Service.Builder.newInstance("myService", 2).setLocationId("0,20").setCoord(Coordinate.newInstance(0, 20)).build());
 		vrpBuilder.setFleetSize(FleetSize.INFINITE);
 		vrpBuilder.setRoutingCost(getTpCosts(new CrowFlyCosts(vrpBuilder.getLocations())));
 		VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -54,7 +54,7 @@ public class CalcWithTimeSchedulingTest {
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/testConfig.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		VehicleRoutingProblemSolution sol = Solutions.getBest(solutions);
+		VehicleRoutingProblemSolution sol = Solutions.bestOf(solutions);
 		assertEquals(40.0,sol.getCost(),0.01);
 		assertEquals(1, sol.getRoutes().size());
 		VehicleRoute route = sol.getRoutes().iterator().next();

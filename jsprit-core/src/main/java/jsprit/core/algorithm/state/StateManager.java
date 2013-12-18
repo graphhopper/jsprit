@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import jsprit.core.algorithm.listener.IterationStartsListener;
 import jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
 import jsprit.core.algorithm.recreate.listener.InsertionListener;
@@ -51,8 +49,6 @@ import jsprit.core.problem.solution.route.state.StateFactory.States;
 
 
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
-	
-	private static Logger log = Logger.getLogger(StateManager.class);
 	
 	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, States>();
 	

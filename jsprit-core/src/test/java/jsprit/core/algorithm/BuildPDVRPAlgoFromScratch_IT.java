@@ -28,6 +28,7 @@ import jsprit.core.algorithm.ruin.RuinStrategy;
 import jsprit.core.algorithm.ruin.distance.AvgServiceDistance;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.io.VrpXMLReader;
@@ -106,7 +107,7 @@ public class BuildPDVRPAlgoFromScratch_IT {
 
 			vra.addInitialSolution(iniSolution);
 			vra.setNuOfIterations(1000);
-			vra.setPrematureBreak(100);
+			vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 			
 	}
 	

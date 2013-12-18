@@ -17,23 +17,10 @@
 package jsprit.core.problem.io;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
-import jsprit.core.problem.VehicleRoutingProblem.FleetComposition;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import jsprit.core.problem.io.VrpXMLReader;
-import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Service;
-import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.End;
-import jsprit.core.problem.solution.route.activity.ServiceActivity;
-import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -55,7 +42,6 @@ public class VrpWriterV2Test {
 	@Test
 	public void whenWritingInfiniteVrp_itWritesCorrectly(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		builder.setFleetComposition(FleetComposition.HETEROGENEOUS);
 		builder.setFleetSize(FleetSize.INFINITE);
 //		Depot depot = new Depot("depotLoc",Coordinate.newInstance(0, 0));
 //		Depot depot2 = new Depot("depotLoc2",Coordinate.newInstance(100, 100));
@@ -72,7 +58,6 @@ public class VrpWriterV2Test {
 	@Test
 	public void whenWritingFiniteVrp_itWritesCorrectly(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		builder.setFleetComposition(FleetComposition.HETEROGENEOUS);
 		builder.setFleetSize(FleetSize.FINITE);
 //		Depot depot = new Depot("depotLoc",Coordinate.newInstance(0, 0));
 //		Depot depot2 = new Depot("depotLoc2",Coordinate.newInstance(100, 100));
@@ -81,8 +66,6 @@ public class VrpWriterV2Test {
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
 		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
 		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
-		builder.addVehicleType(type1);
-		builder.addVehicleType(type2);
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
 		VehicleRoutingProblem vrp = builder.build();
@@ -92,7 +75,6 @@ public class VrpWriterV2Test {
 	@Test
 	public void t(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		builder.setFleetComposition(FleetComposition.HETEROGENEOUS);
 		builder.setFleetSize(FleetSize.FINITE);
 //		Depot depot = new Depot("depotLoc",Coordinate.newInstance(0, 0));
 //		Depot depot2 = new Depot("depotLoc2",Coordinate.newInstance(100, 100));
@@ -101,8 +83,6 @@ public class VrpWriterV2Test {
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
 		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
 		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
-		builder.addVehicleType(type1);
-		builder.addVehicleType(type2);
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
 		VehicleRoutingProblem vrp = builder.build();
@@ -121,15 +101,13 @@ public class VrpWriterV2Test {
 		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
 		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
 		
-		builder.addVehicleType(type1);
-		builder.addVehicleType(type2);
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
 		
 		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("loc").setServiceTime(2.0).build();
 		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setServiceTime(4.0).build();
 		
-		VehicleRoutingProblem vrp = builder.addService(s1).addService(s2).build();
+		VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
 		new VrpXMLWriter(vrp, null).write(infileName);
 		
 		VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();

@@ -18,15 +18,11 @@ package jsprit.instance.reader;
 
 import java.util.List;
 
-import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Locations;
-
-import org.apache.log4j.Logger;
 
 
 public class FigliozziReader {
@@ -127,17 +123,17 @@ public class FigliozziReader {
 
 	}
 	
-	private VehicleRoutingProblem.Builder builder;
-
-	public FigliozziReader(Builder builder) {
-		super();
-		this.builder = builder;
-	}
-	
-	public void read(String instanceFile, String speedScenarioFile, String speedScenario){
-		
-		
-	}
-	
+//	private VehicleRoutingProblem.Builder builder;
+//
+//	public FigliozziReader(Builder builder) {
+//		super();
+//		this.builder = builder;
+//	}
+//	
+//	public void read(String instanceFile, String speedScenarioFile, String speedScenario){
+//		
+//		
+//	}
+//	
 
 }

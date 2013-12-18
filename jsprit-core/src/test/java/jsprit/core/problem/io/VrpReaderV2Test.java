@@ -26,9 +26,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.FleetComposition;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
@@ -53,7 +51,6 @@ public class VrpReaderV2Test {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		assertEquals(FleetSize.FINITE,vrp.getFleetSize());
-		assertEquals(FleetComposition.HETEROGENEOUS,vrp.getFleetComposition());
 	}
 	
 	@Test 

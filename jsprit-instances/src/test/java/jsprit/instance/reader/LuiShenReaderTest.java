@@ -18,9 +18,7 @@ package jsprit.instance.reader;
 
 import static org.junit.Assert.assertEquals;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.FleetComposition;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import jsprit.instance.reader.LuiShenReader;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,11 +35,6 @@ public class LuiShenReaderTest {
 		new LuiShenReader(builder).read(this.getClass().getClassLoader().getResource("C101_solomon.txt").getPath(), 
 				this.getClass().getClassLoader().getResource("C1_LuiShenVehicles.txt").getPath(), "a");
 		vrp = builder.build();
-	}
-	
-	@Test
-	public void testFleetCompostion(){	
-		assertEquals(FleetComposition.HETEROGENEOUS,vrp.getFleetComposition());
 	}
 
 	@Test

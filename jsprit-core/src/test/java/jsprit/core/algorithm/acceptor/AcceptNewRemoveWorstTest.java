@@ -25,8 +25,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import jsprit.core.algorithm.acceptor.GreedyAcceptance;
-import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 
 import org.junit.Test;
@@ -39,7 +37,6 @@ public class AcceptNewRemoveWorstTest {
 	@Test
 	public void whenHavingNewSolAndLimitedMemory_removeWorstAndAddNew(){
 		
-		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		VehicleRoutingProblemSolution sol1 = mock(VehicleRoutingProblemSolution.class);
 		VehicleRoutingProblemSolution sol2 = mock(VehicleRoutingProblemSolution.class);
 		when(sol1.getCost()).thenReturn(1.0);

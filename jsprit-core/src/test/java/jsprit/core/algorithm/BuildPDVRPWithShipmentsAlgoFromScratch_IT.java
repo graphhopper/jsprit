@@ -16,6 +16,8 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 
 import jsprit.core.algorithm.acceptor.GreedyAcceptance;
@@ -38,7 +40,6 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
-import jsprit.core.util.Solutions;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -119,7 +120,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
 	@Test
 	public void test(){
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-		VehicleRoutingProblemSolution best = Solutions.bestOf(solutions);		
+		assertTrue(!solutions.isEmpty());
 	}
 
 }
