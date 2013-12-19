@@ -32,7 +32,6 @@
   </prerequisites>
   
   <scm>
-  
   	<connection>scm:git:git@github.com:jsprit/jsprit.git</connection>
   	<developerConnection>scm:git:https://github.com/jsprit/jsprit.git</developerConnection>
   	<url>http://github.com/jsprit/jsprit/tree/master</url>
@@ -55,8 +54,7 @@
            <url>https://github.com/jsprit/mvn-rep/raw/master/releases</url>
      </repository>
   </distributionManagement>
-  
-  
+
   <modules> 
    	<module>jsprit-core</module> 
    	<module>jsprit-analysis</module>
@@ -89,59 +87,87 @@
         <directory>src/test/resources</directory>
       </testResource>
     </testResources>
+    
+    <pluginManagement>	
     	<plugins>
-    		<plugin>
-        <groupId>org.eclipse.m2e</groupId>
-        <artifactId>lifecycle-mapping</artifactId>
-        <version>1.0.0</version>
-        <configuration>
-          <lifecycleMappingMetadata>
-            <pluginExecutions>
-              <pluginExecution>
-                <pluginExecutionFilter>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-enforcer-plugin</artifactId>
-                  <versionRange>[1.0.0,)</versionRange>
-                  <goals>
-                    <goal>enforce</goal>
-                  </goals>
-                </pluginExecutionFilter>
-                <action>
-                  <ignore />
-                </action>
-              </pluginExecution>
-            </pluginExecutions>
-          </lifecycleMappingMetadata>
-        </configuration>
-      </plugin>
-   			 <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.1.1</version>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <fail>true</fail>
-                            <rules>
-                                <requireMavenVersion>
+    	<plugin>
+        	<groupId>org.eclipse.m2e</groupId>
+        	<artifactId>lifecycle-mapping</artifactId>
+        	<version>1.0.0</version>
+        	<configuration>
+          		<lifecycleMappingMetadata>
+            		<pluginExecutions>
+              			<pluginExecution>
+                			<pluginExecutionFilter>
+                  				<groupId>org.apache.maven.plugins</groupId>
+                  				<artifactId>maven-enforcer-plugin</artifactId>
+                  				<versionRange>[1.0.0,)</versionRange>
+                  				<goals>
+                    				<goal>enforce</goal>
+                  				</goals>
+                			</pluginExecutionFilter>
+                			<action>
+                  				<ignore />
+                			</action>
+              			</pluginExecution>
+            		</pluginExecutions>
+          		</lifecycleMappingMetadata>
+        	</configuration>
+      	</plugin>
+  		</plugins>
+    </pluginManagement>
+    <plugins>
+<!--     	<plugin> -->
+<!--         	<groupId>org.eclipse.m2e</groupId> -->
+<!--         	<artifactId>lifecycle-mapping</artifactId> -->
+<!--         	<version>1.0.0</version> -->
+<!--         	<configuration> -->
+<!--           		<lifecycleMappingMetadata> -->
+<!--             		<pluginExecutions> -->
+<!--               			<pluginExecution> -->
+<!--                 			<pluginExecutionFilter> -->
+<!--                   				<groupId>org.apache.maven.plugins</groupId> -->
+<!--                   				<artifactId>maven-enforcer-plugin</artifactId> -->
+<!--                   				<versionRange>[1.0.0,)</versionRange> -->
+<!--                   				<goals> -->
+<!--                     				<goal>enforce</goal> -->
+<!--                   				</goals> -->
+<!--                 			</pluginExecutionFilter> -->
+<!--                 			<action> -->
+<!--                   				<ignore /> -->
+<!--                 			</action> -->
+<!--               			</pluginExecution> -->
+<!--             		</pluginExecutions> -->
+<!--           		</lifecycleMappingMetadata> -->
+<!--         	</configuration> -->
+<!--       	</plugin> -->
+   		<plugin>
+        	<artifactId>maven-enforcer-plugin</artifactId>
+            <version>1.1.1</version>
+             <executions>
+             	<execution>
+                	<id>enforce-versions</id>
+                    <phase>initialize</phase>
+                    <goals>
+                    	<goal>enforce</goal>
+                    </goals>
+                     <configuration>
+                     	<fail>true</fail>
+                        <rules>
+                        	<requireMavenVersion>
                                     Some plugin features require a recent Maven runtime to work properly
-                                    <message>Current version of Maven ${maven.version} required to build the project should be ${project.prerequisites.maven}, or higher!</message>
-                                    <version>[${project.prerequisites.maven},)</version>
-                                </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <message>Current JDK version ${java.version} should be ${jdkVersion}, or higher!</message>
-                                    <version>${jdkVersion}</version>
-                                </requireJavaVersion>
-
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+                             	<message>Current version of Maven ${maven.version} required to build the project should be ${project.prerequisites.maven}, or higher!</message>
+                                <version>[${project.prerequisites.maven},)</version>
+                            </requireMavenVersion>
+                            <requireJavaVersion>
+                                <message>Current JDK version ${java.version} should be ${jdkVersion}, or higher!</message>
+                                <version>${jdkVersion}</version>
+                            </requireJavaVersion>
+                        </rules>
+                     </configuration>
+                </execution>
+            </executions>
+        </plugin>
         <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-compiler-plugin</artifactId>
@@ -212,6 +238,7 @@
       </plugin>
       
     </plugins>
+    
     
   </build>
   
