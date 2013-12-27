@@ -494,7 +494,7 @@ public class VehicleRoutingProblem {
 	
 	@Override
 	public String toString() {
-		return "[fleetSize="+fleetSize+"][fleetComposition="+fleetComposition+"][#jobs="+jobs.size()+"][#vehicles="+vehicles.size()+"][#vehicleTypes="+vehicleTypes.size()+"]["+
+		return "[fleetSize="+fleetSize+"][#jobs="+jobs.size()+"][#vehicles="+vehicles.size()+"][#vehicleTypes="+vehicleTypes.size()+"]["+
 						"transportCost="+transportCosts+"][activityCosts="+activityCosts+"]";
 	}
 
@@ -502,7 +502,9 @@ public class VehicleRoutingProblem {
 	 * Returns fleet-composition.
 	 * 
 	 * @return fleetComposition which is either FleetComposition.HETEROGENEOUS or FleetComposition.HOMOGENEOUS
+         * @deprecated it is not used and thus has no effect
 	 */
+        @Deprecated
 	public FleetComposition getFleetComposition() {
 		return fleetComposition;
 	}
