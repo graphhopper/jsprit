@@ -487,6 +487,7 @@ public class VehicleRoutingProblem {
 	
 	/**
 	 * An enum that indicates fleetSizeComposition. By default, it is HOMOGENOUS.
+         * @deprecated
 	 */
 	private FleetComposition fleetComposition;
 	
