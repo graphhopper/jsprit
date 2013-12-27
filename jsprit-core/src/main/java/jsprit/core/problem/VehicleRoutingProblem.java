@@ -343,11 +343,18 @@ public class VehicleRoutingProblem {
 		 * Gets an unmodifiable collection of already added services.
 		 * 
 		 * @return collection of services
+                 * @deprecated use .getAddedJobs() instead
 		 */
+                @Deprecated
 		public Collection<Service> getAddedServices(){
 			return Collections.unmodifiableCollection(services);
 		}
 		
+                /**
+                 * Returns an unmodifiable collection of already added jobs.
+                 *
+                 * @return collection of jobs
+                 */
 		public Collection<Job> getAddedJobs(){
 			return Collections.unmodifiableCollection(jobs.values());
 		}
