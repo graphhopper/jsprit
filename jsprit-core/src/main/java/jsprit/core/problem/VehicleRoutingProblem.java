@@ -259,13 +259,13 @@ public class VehicleRoutingProblem {
 		}
 		
 		/**
-		 * Sets the activityCostFunction that considers also activities on a vehicle-route.
+		 * Sets the activity-costs.
 		 * 
-		 * <p>Here you can consider missed time-windows for example. By default, this is set to a DefaultVehicleActivityCostFunction.
+		 * <p>By default it is set to zero.
 		 * 
 		 * @param activityCosts
 		 * @return
-		 * @see VehicleRoutingTransportCosts, DefaultVehicleRouteCostFunction
+		 * @see VehicleRoutingActivityCosts
 		 */
 		public Builder setActivityCosts(VehicleRoutingActivityCosts activityCosts){
 			this.activityCosts = activityCosts;
