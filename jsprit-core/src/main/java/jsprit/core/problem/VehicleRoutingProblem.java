@@ -463,6 +463,9 @@ public class VehicleRoutingProblem {
 	
 	private VehicleRoutingActivityCosts activityCosts;
 	
+        /**
+         * @deprecated not used anymore
+         */
 	private Neighborhood neighborhood;
 	
 	private final Map<String, Job> jobs;
@@ -487,7 +490,9 @@ public class VehicleRoutingProblem {
 	 */
 	private FleetComposition fleetComposition;
 	
-
+        /**
+         * deprecated
+         */
 	private Collection<Constraint> problemConstraints;
 	
 	private Collection<jsprit.core.problem.constraint.Constraint> constraints;
