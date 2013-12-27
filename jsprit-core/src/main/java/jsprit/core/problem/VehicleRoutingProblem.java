@@ -219,7 +219,7 @@ public class VehicleRoutingProblem {
 		 * 
 		 * @param job
 		 * @return
-		 * @throws IllegalStateException if job is neither a shipment or a service, or jobId has already been added.
+		 * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
 		 */
 		public Builder addJob(Job job) {
 			if(jobs.containsKey(job.getId())) throw new IllegalStateException("jobList already contains a job with id " + job.getId() + ". make sure you use unique ids for your jobs (i.e. service and shipments)");
