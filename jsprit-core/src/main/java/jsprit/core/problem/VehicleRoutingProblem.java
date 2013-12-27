@@ -112,16 +112,23 @@ public class VehicleRoutingProblem {
 
 		private FleetSize fleetSize = FleetSize.INFINITE;
 
+                /*
+                 * @deprecated 
+                 */
 		private FleetComposition fleetComposition = FleetComposition.HOMOGENEOUS;
 		
 		private Collection<VehicleType> vehicleTypes;
 		
+                /**
+                 * @deprecated is not going to be used anymore
+                 */
 		private Collection<Constraint> problemConstraints;
 		
 		private Collection<jsprit.core.problem.constraint.Constraint> constraints;
 
 		/**
 		 * by default all locations are neighbors
+                 * @deprecated is not going to be used anymore
 		 */
 		private Neighborhood neighborhood = new Neighborhood() {
 			
