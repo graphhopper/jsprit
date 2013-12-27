@@ -37,7 +37,7 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 ####You know Maven and have an IDE
 
-[Add the latest snapshot (i.e. head development) to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
+[Add the latest snapshot (i.e. head of development) to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
 
 [Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
 
