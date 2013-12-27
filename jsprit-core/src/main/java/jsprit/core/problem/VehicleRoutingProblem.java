@@ -113,7 +113,7 @@ public class VehicleRoutingProblem {
 		private FleetSize fleetSize = FleetSize.INFINITE;
 
                 /*
-                 * @deprecated 
+                 * @deprecated is not going to be used anymore
                  */
 		private FleetComposition fleetComposition = FleetComposition.HOMOGENEOUS;
 		
