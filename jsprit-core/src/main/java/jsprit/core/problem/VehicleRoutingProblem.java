@@ -436,7 +436,7 @@ public class VehicleRoutingProblem {
 	 * Enum that characterizes fleet-compostion.
 	 * 
 	 * @author sschroeder
-	 *
+	 * @deprecated FleetComposition is not used
 	 */
 	@Deprecated
 	public static enum FleetComposition {
