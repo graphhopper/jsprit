@@ -41,14 +41,14 @@ import org.apache.log4j.Logger;
 
 
 /**
- * Contains and describes the vehicle routing problem.
+ * Contains and defines the vehicle routing problem.
  * 
  * <p>A routing problem is defined as jobs, vehicles and costs. 
  * 
- * <p> To construct the problem, use VehicleRoutingProblem.Builder (VehicleRoutingProblem.Builder.newInstance()). 
+ * <p> To construct the problem, use VehicleRoutingProblem.Builder. Get an instance of this by using the static method VehicleRoutingProblem.Builder.newInstance(). 
  * 
- * <p>By default, fleetSize is INFINITE and fleetComposition is HOMOGENEOUS, transport-costs are calculated as euclidean-distance (CrowFlyCosts),
- * and activity-costs are set to DefaultVehicleRoutingActivityCosts which represent hard time-windows (missed time-windows are penalyzed with Double.MAX_VALUE).
+ * <p>By default, fleetSize is INFINITE, transport-costs are calculated as euclidean-distance (CrowFlyCosts),
+ * and activity-costs are set to zero.
  * 
  *  
  * 
