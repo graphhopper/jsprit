@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 /**
  * Contains and defines the vehicle routing problem.
  * 
- * <p>A routing problem is defined as jobs, vehicles and costs. 
+ * <p>A routing problem is defined as jobs, vehicles, costs and constraints.
  * 
  * <p> To construct the problem, use VehicleRoutingProblem.Builder. Get an instance of this by using the static method VehicleRoutingProblem.Builder.newInstance(). 
  * 
