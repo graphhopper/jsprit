@@ -62,7 +62,7 @@ public class VehicleRoutingProblem {
 	 * 
 	 * <p>DELIVERIES_FIRST corresponds to the vehicle routing problem with back hauls, i.e. before a vehicle is not entirely unloaded, no pickup can be made. 
 	 * 
-	 * @deprecated define constraint directly - since constraints are too diverse to put them in an enum
+	 * @deprecated define and add constraint directly with .addConstraint(...) - since constraints are too diverse to put them in an enum
 	 * @author stefan
 	 *
 	 */
