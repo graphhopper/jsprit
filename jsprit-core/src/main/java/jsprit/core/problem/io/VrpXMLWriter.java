@@ -218,6 +218,7 @@ public class VrpXMLWriter {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void writeProblemType(XMLConfiguration xmlConfig){
 		xmlConfig.setProperty("problemType.fleetSize", vrp.getFleetSize());
 		xmlConfig.setProperty("problemType.fleetComposition", vrp.getFleetComposition());

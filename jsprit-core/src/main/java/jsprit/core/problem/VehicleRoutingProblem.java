@@ -112,23 +112,23 @@ public class VehicleRoutingProblem {
 
 		private FleetSize fleetSize = FleetSize.INFINITE;
 
-                /*
-                 * @deprecated is not going to be used anymore
-                 */
+		/**
+		 * @deprecated is not going to be used anymore
+		 */
 		private FleetComposition fleetComposition = FleetComposition.HOMOGENEOUS;
 		
 		private Collection<VehicleType> vehicleTypes;
 		
-                /**
-                 * @deprecated is not going to be used anymore
-                 */
+		/**
+		 * @deprecated is not going to be used anymore
+		 */
 		private Collection<Constraint> problemConstraints;
 		
 		private Collection<jsprit.core.problem.constraint.Constraint> constraints;
 
 		/**
 		 * by default all locations are neighbors
-                 * @deprecated is not going to be used anymore
+		 * @deprecated is not going to be used anymore
 		 */
 		private Neighborhood neighborhood = new Neighborhood() {
 			
@@ -347,23 +347,23 @@ public class VehicleRoutingProblem {
 		}
 		
 		/**
+         * Returns an unmodifiable collection of already added jobs.
+         *
+         * @return collection of jobs
+         */
+		public Collection<Job> getAddedJobs(){
+			return Collections.unmodifiableCollection(jobs.values());
+		}
+
+		/**
 		 * Gets an unmodifiable collection of already added services.
 		 * 
 		 * @return collection of services
-                 * @deprecated use .getAddedJobs() instead
+		         * @deprecated use .getAddedJobs() instead
 		 */
-                @Deprecated
+		        @Deprecated
 		public Collection<Service> getAddedServices(){
 			return Collections.unmodifiableCollection(services);
-		}
-		
-                /**
-                 * Returns an unmodifiable collection of already added jobs.
-                 *
-                 * @return collection of jobs
-                 */
-		public Collection<Job> getAddedJobs(){
-			return Collections.unmodifiableCollection(jobs.values());
 		}
 
 		/**
@@ -457,17 +457,24 @@ public class VehicleRoutingProblem {
 		HETEROGENEOUS, HOMOGENEOUS;
 	}
 	
-	private static Logger logger = Logger.getLogger(VehicleRoutingProblem.class);
+	/**
+	 * logger logging for this class
+	 */
+	private final static Logger logger = Logger.getLogger(VehicleRoutingProblem.class);
 
-	private VehicleRoutingTransportCosts transportCosts;
+	/**
+	 * contains transportation costs, i.e. the costs traveling from location A to B
+	 */
+	private final VehicleRoutingTransportCosts transportCosts;
 	
-	private VehicleRoutingActivityCosts activityCosts;
+	/**
+	 * contains activity costs, i.e. the costs imposed by an activity
+	 */
+	private final VehicleRoutingActivityCosts activityCosts;
 	
-        /**
-         * @deprecated not used anymore
-         */
-	private Neighborhood neighborhood;
-	
+	/**
+	 * map of jobs, stored by jobId 
+	 */
 	private final Map<String, Job> jobs;
 
 	/**
@@ -478,26 +485,34 @@ public class VehicleRoutingProblem {
 	/**
 	 * Collection that contains all available types.
 	 */
-	private Collection<VehicleType> vehicleTypes;
+	private final Collection<VehicleType> vehicleTypes;
 	
 	/**
 	 * An enum that indicates type of fleetSize. By default, it is INFINTE
 	 */
-	private FleetSize fleetSize = FleetSize.INFINITE;
+	private final FleetSize fleetSize;
 	
 	/**
+	 * contains all constraints
+	 */
+	private final Collection<jsprit.core.problem.constraint.Constraint> constraints;
+	
+	/**
+	 * @deprecated not used anymore
+	 */
+	private Neighborhood neighborhood;
+
+	/**
 	 * An enum that indicates fleetSizeComposition. By default, it is HOMOGENOUS.
-         * @deprecated
+	     * @deprecated
 	 */
 	private FleetComposition fleetComposition;
-	
-        /**
-         * deprecated
-         */
+
+	/**
+	 * @deprecated
+	 */
 	private Collection<Constraint> problemConstraints;
-	
-	private Collection<jsprit.core.problem.constraint.Constraint> constraints;
-	
+
 	private VehicleRoutingProblem(Builder builder) {
 		this.jobs = builder.jobs;
 		this.fleetComposition = builder.fleetComposition;
@@ -516,17 +531,6 @@ public class VehicleRoutingProblem {
 	public String toString() {
 		return "[fleetSize="+fleetSize+"][#jobs="+jobs.size()+"][#vehicles="+vehicles.size()+"][#vehicleTypes="+vehicleTypes.size()+"]["+
 						"transportCost="+transportCosts+"][activityCosts="+activityCosts+"]";
-	}
-
-	/**
-	 * Returns fleet-composition.
-	 * 
-	 * @return fleetComposition which is either FleetComposition.HETEROGENEOUS or FleetComposition.HOMOGENEOUS
-         * @deprecated it is not used and thus has no effect
-	 */
-        @Deprecated
-	public FleetComposition getFleetComposition() {
-		return fleetComposition;
 	}
 
 	/**
@@ -594,6 +598,17 @@ public class VehicleRoutingProblem {
 	 */
 	public Collection<jsprit.core.problem.constraint.Constraint> getConstraints(){
 		return Collections.unmodifiableCollection(constraints);
+	}
+
+	/**
+	 * Returns fleet-composition.
+	 * 
+	 * @return fleetComposition which is either FleetComposition.HETEROGENEOUS or FleetComposition.HOMOGENEOUS
+	     * @deprecated it is not used and thus has no effect
+	 */
+	@Deprecated
+	public FleetComposition getFleetComposition() {
+		return fleetComposition;
 	}
 
 	/**
