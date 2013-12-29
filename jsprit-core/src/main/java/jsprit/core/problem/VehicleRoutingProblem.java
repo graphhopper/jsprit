@@ -303,10 +303,10 @@ public class VehicleRoutingProblem {
 		/**
 		 * Adds a collection of jobs.
 		 * 
-		 * @param jobs
+		 * @param jobs which is a collection of jobs that subclasses Job
 		 * @return
 		 */
-		public Builder addAllJobs(Collection<Job> jobs) {
+		public Builder addAllJobs(Collection<? extends Job> jobs) {
 			for(Job j : jobs){
 				addJob(j);
 			}
