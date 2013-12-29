@@ -6,7 +6,6 @@ import java.util.Collection;
  * Factory that creates a finite fleetmanager.
  *
  */
-
 public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 
 	private Collection<Vehicle> vehicles;
