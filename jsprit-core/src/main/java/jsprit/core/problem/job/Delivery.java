@@ -17,7 +17,7 @@
 package jsprit.core.problem.job;
 
 
-public final class Delivery extends Service{
+public class Delivery extends Service{
 	
 	public static class Builder extends Service.Builder {
 

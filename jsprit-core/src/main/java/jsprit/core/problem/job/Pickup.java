@@ -16,7 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
-public final class Pickup extends Service {
+public class Pickup extends Service {
 
 	public static class Builder extends Service.Builder {
 
