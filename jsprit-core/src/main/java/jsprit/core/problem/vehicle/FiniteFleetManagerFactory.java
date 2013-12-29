@@ -21,6 +21,7 @@ import java.util.Collection;
 /**
  * Factory that creates a finite fleetmanager.
  *
+ * @author schroeder
  */
 public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 
@@ -28,6 +29,8 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 	
         /**
          * Constucts the factory.
+         *
+         * @param vehicles
          */
 	public FiniteFleetManagerFactory(Collection<Vehicle> vehicles) {
 		super();
