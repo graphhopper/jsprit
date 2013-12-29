@@ -16,14 +16,21 @@
  ******************************************************************************/
 package jsprit.core.problem.solution;
 
-
+/**
+ * Interface for all solutionCostCalculators which should be the objective-functions of the problem.
+ * 
+ * <p>It evaluates VehicleRoutingProblemSolution and returns its costs.
+ * 
+ * @author schroeder
+ *
+ */
 public interface SolutionCostCalculator {
 	
 	/**
 	 * Returns costs of solution.
 	 * 
 	 * @param solution
-	 * @return TODO
+	 * @return costs
 	 */
 	public double getCosts(VehicleRoutingProblemSolution solution);
 

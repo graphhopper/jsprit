@@ -18,10 +18,20 @@ package jsprit.core.problem.solution;
 
 import jsprit.core.problem.VehicleRoutingProblem;
 
-
-
+/**
+ * Interface for all factories that create initial solutions for the specified {@link VehicleRoutingProblem}.
+ * 
+ * @author schroeder
+ *
+ */
 public interface InitialSolutionFactory {
 
+	/**
+	 * Creates an initial solution for the specified {@link VehicleRoutingProblem}.
+	 * 
+	 * @param vrp
+	 * @return
+	 */
 	public VehicleRoutingProblemSolution createSolution(VehicleRoutingProblem vrp);
 
 }

@@ -25,7 +25,7 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 /**
  * Contains the solution of a vehicle routing problem and its corresponding costs.
  * 
- * @author stefan schröder
+ * @author stefan schroeder
  *
  */
 public class VehicleRoutingProblemSolution {
@@ -67,16 +67,29 @@ public class VehicleRoutingProblemSolution {
 		this.cost = cost;
 	}
 
-	
+	/**
+	 * Returns a collection of vehicle-routes.
+	 * 
+	 * @return collection of vehicle-routes
+	 */
 	public Collection<VehicleRoute> getRoutes() {
 		return routes;
 	}
 
-
+	/**
+	 * Returns cost of this solution.
+	 * 
+	 * @return costs
+	 */
 	public double getCost() {
 		return cost;
 	}
 	
+	/**
+	 * Sets the costs of this solution.
+	 * 
+	 * @param cost
+	 */
 	public void setCost(double cost){
 		this.cost = cost;
 	}
