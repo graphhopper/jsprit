@@ -20,6 +20,8 @@ import java.util.Collection;
 
 /**
  * Factory that creates an infinite fleetmanager.
+ *
+ * @author schroeder
  */
 public class InfiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 
@@ -27,6 +29,8 @@ public class InfiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 	
         /**
          * Constructs the factory.
+         *
+         * @param vehicles
          */
 	public InfiniteFleetManagerFactory(Collection<Vehicle> vehicles) {
 		super();
