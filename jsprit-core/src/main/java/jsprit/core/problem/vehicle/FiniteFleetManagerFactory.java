@@ -2,6 +2,10 @@ package jsprit.core.problem.vehicle;
 
 import java.util.Collection;
 
+/**
+ * Factory that constructs a finite fleet manager.
+ *
+ */
 
 public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 
