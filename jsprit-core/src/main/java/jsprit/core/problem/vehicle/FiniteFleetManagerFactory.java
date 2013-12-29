@@ -3,7 +3,7 @@ package jsprit.core.problem.vehicle;
 import java.util.Collection;
 
 /**
- * Factory that constructs a finite fleetmanager.
+ * Factory that creates a finite fleetmanager.
  *
  */
 
@@ -19,6 +19,9 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 		this.vehicles = vehicles;
 	}
 
+        /**
+         * Creates the finite fleetmanager.
+         */
 	@Override
 	public VehicleFleetManager createFleetManager() {
 		return new VehicleFleetManagerImpl(vehicles);
