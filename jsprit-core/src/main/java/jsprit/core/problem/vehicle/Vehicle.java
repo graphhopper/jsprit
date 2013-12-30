@@ -18,24 +18,73 @@ package jsprit.core.problem.vehicle;
 
 import jsprit.core.util.Coordinate;
 
-
-
+/**
+ * Basic interface for vehicle-data.
+ * 
+ * @author schroeder
+ *
+ */
 public interface Vehicle {
 
+	/**
+	 * Returns the earliest departure of vehicle which should be the lower bound of this vehicle's departure times. 
+	 * 
+	 * @return earliest departure time
+	 */
 	public abstract double getEarliestDeparture();
 
+	/**
+	 * Returns the latest arrival time at this vehicle's end-location which should be the upper bound of this vehicle's arrival times at end-location.
+	 * 
+	 * @return latest arrival time of this vehicle
+	 * 
+	 */
 	public abstract double getLatestArrival();
 
+	/**
+	 * Returns the location-id of the this vehicle which should be the start-location of this vehicle.
+	 * 
+	 * <p> Consequently, it should be the end-location of this vehicle, if returnToDepot is true.
+	 * 
+	 * @return location-id of this vehicle
+	 */
 	public abstract String getLocationId();
 	
+	/**
+	 * Returns the coordinate of this vehicle which should be the coordinate of the start-location of this vehicle.
+	 * 
+	 * <p> Consequently, it should be the coordinate of the end-location, if returnToDepot is true.
+	 * 
+	 * @return coordinate of this vehicle
+	 */
 	public abstract Coordinate getCoord();
 
+	/**
+	 * Returns the {@link VehicleType} of this vehicle.
+	 * 
+	 * @return {@link VehicleType} of this vehicle
+	 */
 	public abstract VehicleType getType();
 
+	/**
+	 * Returns the id of this vehicle.
+	 * 
+	 * @return id
+	 */
 	public abstract String getId();
 
+	/**
+	 * Returns the capacity of this vehicle.
+	 * 
+	 * @return capacity
+	 */
 	public abstract int getCapacity();
 	
+	/**
+	 * Returns true if vehicle returns to depot, false otherwise.
+	 * 
+	 * @return true if isReturnToDepot
+	 */
 	public abstract boolean isReturnToDepot();
 
 }

@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 
 
 /**
+ * Implementation of {@link Vehicle}.
  * 
  * @author stefan schroeder
  * 
@@ -29,10 +30,23 @@ import org.apache.log4j.Logger;
 
 public class VehicleImpl implements Vehicle {
 
+	/**
+	 * @deprecated use createNoVehicle() instead.
+	 * 
+	 * @return
+	 */
+	@Deprecated
 	public static NoVehicle noVehicle(){
 		return createNoVehicle();
 	}
 	
+	/**
+	 * Extension of {@link VehicleImpl} representing an unspecified vehicle with the id 'noVehicle'
+	 * (to avoid null).
+	 * 
+	 * @author schroeder
+	 *
+	 */
 	public static class NoVehicle extends VehicleImpl {
 
 		@SuppressWarnings("deprecation")
@@ -47,9 +61,11 @@ public class VehicleImpl implements Vehicle {
 	}
 	
 	/**
-	 * builds the vehicle.
+	 * Builder that builds the vehicle.
 	 * 
-	 * <p>by default, it returns to the depot.
+	 * <p>By default, earliestDepartureTime is 0.0, latestDepartureTime is Double.MAX_VALUE,
+	 * it returns to the depot and its {@link VehicleType} is the DefaultType with typeId equal to 'default'
+	 * and a capacity of 0.
 	 * 
 	 * @author stefan
 	 *
@@ -67,41 +83,92 @@ public class VehicleImpl implements Vehicle {
 		
 		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default", 0).build();
 		
+		/**
+		 * Constructs the builder with the vehicleId.
+		 * 
+		 * @param id
+		 */
 		private Builder(String id) {
 			super();
 			this.id = id;
 		}
 		
+		/**
+		 * Sets the {@link VehicleType}.
+		 * 
+		 * @param type
+		 * @return this builder
+		 */
 		public Builder setType(VehicleType type){
 			this.type = type;
 			return this;
 		}
 		
+		/**
+		 * Sets the flag whether the vehicle must return to depot or not.
+		 * 
+		 * @param returnToDepot
+		 * @return this builder
+		 */
 		public Builder setReturnToDepot(boolean returnToDepot){
 			this.returnToDepot = returnToDepot;
 			return this;
 		}
 		
+		/**
+		 * Sets location-id of the vehicle which should be its start-location.
+		 * 
+		 * <p>If returnToDepot is true, it is also its end-location.
+		 * 
+		 * @param id
+		 * @return this builder
+		 */
 		public Builder setLocationId(String id){
 			this.locationId = id;
 			return this;
 		}
 		
+		/**
+		 * Sets coordinate of the vehicle which should be the coordinate of start-location.
+		 * 
+		 * <p>If returnToDepot is true, it is also the coordinate of the end-location.
+		 * 
+		 * @param coord
+		 * @return this builder
+		 */
 		public Builder setLocationCoord(Coordinate coord){
 			this.locationCoord = coord;
 			return this;
 		}
 		
+		/**
+		 * Sets earliest-start of vehicle which should be the lower bound of the vehicle's departure times.
+		 * 
+		 * @param start
+		 * @return this builder
+		 */
 		public Builder setEarliestStart(double start){
 			this.earliestStart = start;
 			return this;
 		}
 		
+		/**
+		 * Sets the latest arrival at vehicle's end-location which is the upper bound of the vehicle's arrival times.
+		 * 
+		 * @param arr
+		 * @return this builder
+		 */
 		public Builder setLatestArrival(double arr){
 			this.latestArrival = arr;
 			return this;
 		}
 		
+		/**
+		 * Builds and returns the vehicle.
+		 * 
+		 * @return vehicle
+		 * @throw IllegalStateException if both locationId and locationCoord is not set
+		 */
 		public VehicleImpl build(){
 			if(locationId == null && locationCoord != null) locationId = locationCoord.toString();
 			if(locationId == null && locationCoord == null) throw new IllegalStateException("locationId and locationCoord is missing.");
@@ -109,11 +176,21 @@ public class VehicleImpl implements Vehicle {
 			return new VehicleImpl(this);
 		}
 		
+		/**
+		 * Returns new instance of vehicle builder.
+		 * 
+		 * @param vehicleId
+		 * @return vehicle builder
+		 */
 		public static Builder newInstance(String vehicleId){ return new Builder(vehicleId); }
 		
 	}
 
-	
+	/**
+	 * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
+	 * 
+	 * @return emptyVehicle
+	 */
 	public static NoVehicle createNoVehicle(){
 		return new NoVehicle();
 	}
@@ -130,7 +207,7 @@ public class VehicleImpl implements Vehicle {
 
 	private final double latestArrival;
 	
-	private boolean returnToDepot;
+	private final boolean returnToDepot;
 
 	private VehicleImpl(Builder builder){
 		id = builder.id;
@@ -142,8 +219,6 @@ public class VehicleImpl implements Vehicle {
 		returnToDepot = builder.returnToDepot;
 	}
 	
-	
-	
 	@Override
 	public String toString() {
 		return "[id="+id+"][type="+type+"][locationId="+locationId+"][coord=" + coord + "]";
@@ -153,75 +228,38 @@ public class VehicleImpl implements Vehicle {
 		return coord;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.matsim.contrib.freight.vrp.basics.Vehicle#getEarliestDeparture()
-	 */
 	@Override
 	public double getEarliestDeparture() {
 		return earliestDeparture;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.matsim.contrib.freight.vrp.basics.Vehicle#getLatestArrival()
-	 */
 	@Override
 	public double getLatestArrival() {
 		return latestArrival;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.matsim.contrib.freight.vrp.basics.Vehicle#getLocationId()
-	 */
 	@Override
 	public String getLocationId() {
 		return locationId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.matsim.contrib.freight.vrp.basics.Vehicle#getType()
-	 */
 	@Override
 	public VehicleType getType() {
 		return type;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.matsim.contrib.freight.vrp.basics.Vehicle#getId()
-	 */
 	@Override
 	public String getId() {
 		return id;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.matsim.contrib.freight.vrp.basics.Vehicle#getCapacity()
-	 */
 	@Override
 	public int getCapacity() {
 		return type.getCapacity();
 	}
 
-
-
-	/**
-	 * @return the returnToDepot
-	 */
 	public boolean isReturnToDepot() {
 		return returnToDepot;
 	}
-	
-	
 	
 }

@@ -42,6 +42,7 @@ public class TestVehicleFleetManager extends TestCase{
 		v1 = VehicleImpl.Builder.newInstance("standard").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
 		v2 = VehicleImpl.Builder.newInstance("foo").setLocationId("fooLoc").setType(VehicleTypeImpl.Builder.newInstance("foo", 0).build()).build();
 
+//		v1.
 		vehicles.add(v1);
 		vehicles.add(v2);
 		fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();	
