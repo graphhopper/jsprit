@@ -13,7 +13,7 @@ It is lightweight, flexible and easy-to-use, and based on heuristics currently s
 - Dial-a-Ride Problem
 - Various combination of these types
 
-Setting up the problem, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
+Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
 reading classical VRP instances to benchmark your algorithm.
 
 Additionally, jsprit can be used along with <a href="http://www.matsim.org" target="blank_">MATSim</a> 
