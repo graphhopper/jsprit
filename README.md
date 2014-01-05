@@ -14,7 +14,7 @@ It is lightweight, flexible and easy-to-use, and based on heuristics currently s
 - Various combination of these types
 
 Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
-reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular approach and a comprehensive set of unit-tests.
+reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit-tests.
 
 Additionally, jsprit can be used along with <a href="http://www.matsim.org" target="blank_">MATSim</a> 
 to solve the above problem-types in real networks (i.e. without preprocessing transport times and costs). A variety of least cost path algorithms such as Dijkstra and A*
