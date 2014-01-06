@@ -27,6 +27,7 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 
 	private Collection<Vehicle> vehicles;
 	
+
 	/**
 	 * Constucts the factory.
 	 *
