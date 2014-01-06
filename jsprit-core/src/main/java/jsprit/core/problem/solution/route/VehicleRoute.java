@@ -48,7 +48,7 @@ public class VehicleRoute {
 	}
 
 	public static VehicleRoute emptyRoute() {
-		return new VehicleRoute(TourActivities.emptyTour(), DriverImpl.noDriver(), VehicleImpl.noVehicle());
+		return new VehicleRoute(TourActivities.emptyTour(), DriverImpl.noDriver(), VehicleImpl.createNoVehicle());
 	}
 	
 	public static class Builder {

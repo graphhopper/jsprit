@@ -52,7 +52,7 @@ public class TestVehicleRoute {
 	
 	@Test
 	public void whenBuildingEmptyRouteCorrectly_go(){
-		VehicleRoute route = VehicleRoute.newInstance(TourActivities.emptyTour(),DriverImpl.noDriver(),VehicleImpl.noVehicle());
+		VehicleRoute route = VehicleRoute.newInstance(TourActivities.emptyTour(),DriverImpl.noDriver(),VehicleImpl.createNoVehicle());
 		assertTrue(route!=null);
 	}
 	
@@ -85,7 +85,7 @@ public class TestVehicleRoute {
 		TourActivities tour = new TourActivities();
 		tour.addActivity(ServiceActivity.newInstance(Service.Builder.newInstance("jo", 10).build()));
 		@SuppressWarnings("unused")
-		VehicleRoute route = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),VehicleImpl.noVehicle());
+		VehicleRoute route = VehicleRoute.newInstance(tour,DriverImpl.noDriver(),VehicleImpl.createNoVehicle());
 	}
 	
 	@Test
