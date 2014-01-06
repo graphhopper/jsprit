@@ -1,7 +1,7 @@
 jsprit
 ======
-jsprit is a java based, open source toolkit for solving a set of well-known <a href="http://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">traveling salesman</a> (TSP) and <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP). 
-It is lightweight and easy-to-use, and based on heuristics currently solving 
+jsprit is a java based, open source toolkit for solving rich <a href="http://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">traveling salesman</a> (TSP) and <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP). 
+It is lightweight, flexible and easy-to-use, and based on heuristics currently solving 
 - Capacitated VRP
 - Multiple Depot VRP
 - VRP with Time Windows
@@ -13,8 +13,8 @@ It is lightweight and easy-to-use, and based on heuristics currently solving
 - Dial-a-Ride Problem
 - Various combination of these types
 
-Setting up the problem, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
-reading classical VRP instances to benchmark your algorithm.
+Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
+reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit-tests.
 
 Additionally, jsprit can be used along with <a href="http://www.matsim.org" target="blank_">MATSim</a> 
 to solve the above problem-types in real networks (i.e. without preprocessing transport times and costs). A variety of least cost path algorithms such as Dijkstra and A*
