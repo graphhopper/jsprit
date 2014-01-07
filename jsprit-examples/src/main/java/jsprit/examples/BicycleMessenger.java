@@ -9,10 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
-import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
-import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -25,7 +23,6 @@ import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.DriverImpl;
-import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
