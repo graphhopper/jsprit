@@ -241,7 +241,7 @@ public class BicycleMessenger {
 		//if you want, terminate it after 1000 iterations with no change
 //		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
 		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-		algorithm.setNuOfIterations(2000);
+		algorithm.setNuOfIterations(1000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints
@@ -256,19 +256,19 @@ public class BicycleMessenger {
 		
 		//and the problem as well as the solution
 		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Solutions.bestOf(solutions));
-		plotter1.plotShipments(true);
+		plotter1.plotShipments(false);
 		plotter1.setShowFirstActivity(true);
 //		plotter1.setBoundingBox(5000, 45500, 25000, 66500);
 		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
 		
 		//and write out your solution in xml
-		new VrpXMLWriter(bicycleMessengerProblem, solutions).write("output/bicycleMessenger.xml");
+//		new VrpXMLWriter(bicycleMessengerProblem, solutions).write("output/bicycleMessenger.xml");
 		
 		SolutionPrinter.print(bicycleMessengerProblem, Solutions.bestOf(solutions), Print.VERBOSE);
 		
-		new GraphStreamViewer(bicycleMessengerProblem).labelWith(Label.ID).setRenderShipments(true).setRenderDelay(150).display();
-		
-		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setGraphStreamFrameScalingFactor(1.5).setCameraView(12500, 55000, 0.25).labelWith(Label.ACTIVITY).setRenderShipments(true).setRenderDelay(150).display();
+//		new GraphStreamViewer(bicycleMessengerProblem).labelWith(Label.ID).setRenderShipments(true).setRenderDelay(150).display();
+//		
+//		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setGraphStreamFrameScalingFactor(1.5).setCameraView(12500, 55000, 0.25).labelWith(Label.ACTIVITY).setRenderShipments(true).setRenderDelay(150).display();
 
 	}
 

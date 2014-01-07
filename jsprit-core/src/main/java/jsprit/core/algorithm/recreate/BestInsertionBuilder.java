@@ -53,7 +53,6 @@ public class BestInsertionBuilder {
 	}
 		
 	public BestInsertionBuilder setRouteLevel(int forwardLooking, int memory){
-
 		local = false;
 		this.forwaredLooking = forwardLooking;
 		this.memory = memory;

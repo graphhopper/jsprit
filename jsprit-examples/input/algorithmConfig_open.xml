@@ -42,7 +42,7 @@
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="randomRuin">
-							<share>0.5</share>
+							<share>0.4</share>
 						</ruin>
 						<insertion name="bestInsertion"/>					
 					</module>

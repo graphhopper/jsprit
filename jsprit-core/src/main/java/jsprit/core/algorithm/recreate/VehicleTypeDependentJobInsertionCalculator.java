@@ -30,8 +30,6 @@ import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import org.apache.log4j.Logger;
 
 
-
-
 final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCostsCalculator{
 
 	private Logger logger = Logger.getLogger(VehicleTypeDependentJobInsertionCalculator.class);
@@ -39,6 +37,16 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 	private final VehicleFleetManager fleetManager;
 	
 	private final JobInsertionCostsCalculator insertionCalculator;
+	
+	/**
+	 * true if a vehicle(-type) is allowed to take over the whole route that was previously served by another vehicle
+	 * 
+	 * <p>vehicleSwitch allowed makes sense if fleet consists of vehicles with different capacities such that one
+	 * can start with a small vehicle, but as the number of customers grows bigger vehicles can be operated, i.e. 
+	 * bigger vehicles can take over the route that was previously served by a small vehicle.
+	 * 
+	 */
+	private boolean vehicleSwitchAllowed = false;
 
 	public VehicleTypeDependentJobInsertionCalculator(final VehicleFleetManager fleetManager, final JobInsertionCostsCalculator jobInsertionCalc) {
 		this.fleetManager = fleetManager;
@@ -51,6 +59,22 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 		return "[name=vehicleTypeDependentServiceInsertion]";
 	}
 	
+	/**
+	 * @return the vehicleSwitchAllowed
+	 */
+	public boolean isVehicleSwitchAllowed() {
+		return vehicleSwitchAllowed;
+	}
+
+	/**
+	 * default is true
+	 * 
+	 * @param vehicleSwitchAllowed the vehicleSwitchAllowed to set
+	 */
+	public void setVehicleSwitchAllowed(boolean vehicleSwitchAllowed) {
+		this.vehicleSwitchAllowed = vehicleSwitchAllowed;
+	}
+
 	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle vehicle, double newVehicleDepartureTime, final Driver driver, final double bestKnownCost) {
 		Vehicle selectedVehicle = currentRoute.getVehicle();
 		Driver selectedDriver = currentRoute.getDriver();
@@ -59,12 +83,14 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 		Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
 		if(!(selectedVehicle instanceof NoVehicle)) {
 			relevantVehicles.add(selectedVehicle);
-			relevantVehicles.addAll(fleetManager.getAvailableVehicles(selectedVehicle.getType().getTypeId(),selectedVehicle.getLocationId()));
+			if(vehicleSwitchAllowed){
+				relevantVehicles.addAll(fleetManager.getAvailableVehicles(selectedVehicle.getType().getTypeId(),selectedVehicle.getLocationId()));
+			}
 		}
 		else{
 			relevantVehicles.addAll(fleetManager.getAvailableVehicles());		
 		}
-
+		
 		for(Vehicle v : relevantVehicles){
 			double depTime = v.getEarliestDeparture();
 			InsertionData iData = insertionCalculator.getInsertionData(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);
