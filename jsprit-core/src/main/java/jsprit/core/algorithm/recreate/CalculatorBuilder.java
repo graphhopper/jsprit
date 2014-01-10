@@ -91,6 +91,8 @@ class CalculatorBuilder {
 	
 	private ActivityInsertionCostsCalculator activityInsertionCostCalculator = null;
 
+	private boolean allowVehicleSwitch = true;
+
 	/**
 	 * Constructs the builder.
 	 * 
@@ -297,11 +299,17 @@ class CalculatorBuilder {
 	}
 
 	private JobInsertionCostsCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCostsCalculator baseCalc, RouteAndActivityStateGetter activityStates2){
-		return new VehicleTypeDependentJobInsertionCalculator(fleetManager, baseCalc);
+		VehicleTypeDependentJobInsertionCalculator vehicleTypeDependentJobInsertionCalculator = new VehicleTypeDependentJobInsertionCalculator(fleetManager, baseCalc);
+		vehicleTypeDependentJobInsertionCalculator.setVehicleSwitchAllowed(allowVehicleSwitch);
+		return vehicleTypeDependentJobInsertionCalculator;
 	}
 
 	public void setConstraintManager(ConstraintManager constraintManager) {
 		this.constraintManager = constraintManager;
+	}
+
+	public void setAllowVehicleSwitch(boolean allowVehicleSwitch) {
+		this.allowVehicleSwitch = allowVehicleSwitch;
 	}
 
 }

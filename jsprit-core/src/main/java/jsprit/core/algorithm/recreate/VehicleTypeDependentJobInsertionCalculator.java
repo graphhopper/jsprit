@@ -72,6 +72,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 	 * @param vehicleSwitchAllowed the vehicleSwitchAllowed to set
 	 */
 	public void setVehicleSwitchAllowed(boolean vehicleSwitchAllowed) {
+		logger.info("set vehicleSwitchAllowed to " + vehicleSwitchAllowed);
 		this.vehicleSwitchAllowed = vehicleSwitchAllowed;
 	}
 
@@ -87,10 +88,9 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 				relevantVehicles.addAll(fleetManager.getAvailableVehicles(selectedVehicle.getType().getTypeId(),selectedVehicle.getLocationId()));
 			}
 		}
-		else{
+		else{ //if no vehicle has been assigned, i.e. it is an empty route
 			relevantVehicles.addAll(fleetManager.getAvailableVehicles());		
 		}
-		
 		for(Vehicle v : relevantVehicles){
 			double depTime = v.getEarliestDeparture();
 			InsertionData iData = insertionCalculator.getInsertionData(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);

@@ -95,11 +95,15 @@ class InsertionFactory {
 			if(timeSliceString != null && neighbors != null){
 				iBuilder.experimentalTimeScheduler(Double.parseDouble(timeSliceString),Integer.parseInt(neighbors));
 			}
-			
+			String allowVehicleSwitch = config.getString("allowVehicleSwitch");
+			if(allowVehicleSwitch != null){
+				iBuilder.setAllowVehicleSwitch(Boolean.parseBoolean(allowVehicleSwitch));
+			}
 			if(insertionName.equals("bestInsertion")){		
 				insertionStrategy = iBuilder.build();
 			}
 			else throw new IllegalStateException("currently only 'bestInsertion' is supported");
+			
 			for(InsertionListener l : insertionListeners) insertionStrategy.addListener(l);
 
 			algorithmListeners.addAll(algoListeners);

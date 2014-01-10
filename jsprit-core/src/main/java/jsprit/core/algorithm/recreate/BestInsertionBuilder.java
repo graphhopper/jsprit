@@ -43,6 +43,8 @@ public class BestInsertionBuilder {
 	private int nNeighbors;
 
 	private boolean timeScheduling=false;
+
+	private boolean allowVehicleSwitch=true;
 	
 	public BestInsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
 		super();
@@ -103,6 +105,7 @@ public class BestInsertionBuilder {
 		if(timeScheduling){
 			calcBuilder.experimentalTimeScheduler(timeSlice, nNeighbors);
 		}
+		calcBuilder.setAllowVehicleSwitch(allowVehicleSwitch);
 		JobInsertionCostsCalculator jobInsertions = calcBuilder.build();
 		InsertionStrategy bestInsertion;
 		if(executor == null){
@@ -128,6 +131,10 @@ public class BestInsertionBuilder {
 		this.timeSlice=timeSlice;
 		this.nNeighbors=nNeighbors;
 		timeScheduling=true;
+	}
+
+	public void setAllowVehicleSwitch(boolean allowVehicleSwitch) {
+		this.allowVehicleSwitch = allowVehicleSwitch;
 	}
 
 	
