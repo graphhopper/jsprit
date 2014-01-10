@@ -8,7 +8,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import jsprit.analysis.toolbox.GraphStreamViewer;
+import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
@@ -237,8 +238,8 @@ public class BicycleMessenger {
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
 		//if you want, terminate it after 1000 iterations with no change
 //		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
-		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-		algorithm.setNuOfIterations(1000);
+//		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+		algorithm.setNuOfIterations(200);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints
@@ -265,7 +266,7 @@ public class BicycleMessenger {
 		
 //		new GraphStreamViewer(bicycleMessengerProblem).labelWith(Label.ID).setRenderShipments(true).setRenderDelay(150).display();
 //		
-//		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setGraphStreamFrameScalingFactor(1.5).setCameraView(12500, 55000, 0.25).labelWith(Label.ACTIVITY).setRenderShipments(true).setRenderDelay(150).display();
+		new GraphStreamViewer(bicycleMessengerProblem, Solutions.bestOf(solutions)).setGraphStreamFrameScalingFactor(1.5).setCameraView(12500, 55000, 0.25).labelWith(Label.ACTIVITY).setRenderShipments(true).setRenderDelay(150).display();
 
 	}
 

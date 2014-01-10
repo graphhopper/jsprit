@@ -99,6 +99,13 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	}
 
 
+	/**
+	 * @param initialThreshold the initialThreshold to set
+	 */
+	public void setInitialThreshold(double initialThreshold) {
+		this.initialThreshold = initialThreshold;
+	}
+
 	@Override
 	public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
 		reset();

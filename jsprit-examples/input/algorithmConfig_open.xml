@@ -22,11 +22,11 @@
 <algorithm xmlns="http://www.w3schools.com"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3schools.com algorithm_schema.xsd">
 	
-	<iterations>10000</iterations>
+	<iterations>1000</iterations>
 
 	<construction>
 		<insertion name="bestInsertion">
-		 	
+		 	<allowVehicleSwitch>false</allowVehicleSwitch>
 		</insertion>	
 	</construction>
 	
@@ -42,7 +42,7 @@
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="randomRuin">
-							<share>0.4</share>
+							<share>0.5</share>
 						</ruin>
 						<insertion name="bestInsertion"/>					
 					</module>
