@@ -16,12 +16,11 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import jsprit.core.problem.job.Service;
 
 import org.junit.Test;
 
@@ -53,6 +52,38 @@ public class ServiceTest {
 //		assertTrue(serviceSet.contains(two));
 		serviceSet.remove(two);
 		assertTrue(serviceSet.isEmpty());
-		
 	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void whenCapacityDimValueIsNegative_throwIllegalStateExpception(){
+		@SuppressWarnings("unused")
+		Service s = Service.Builder.newInstance("s").setLocationId("foo").addCapacityDimension(0, -10).build();
+	}
+	
+	@Test
+	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
+		Service one = Service.Builder.newInstance("s").setLocationId("foofoo")
+				.addCapacityDimension(0,2)
+				.addCapacityDimension(1,4)
+				.build();
+		assertEquals(2,one.getCapacity().getNuOfDimensions());
+	}
+	
+	@Test
+	public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
+		Service one = Service.Builder.newInstance("s").setLocationId("foofoo")
+				.build();
+		assertEquals(1,one.getCapacity().getNuOfDimensions());
+		assertEquals(0,one.getCapacity().get(0));
+	}
+	
+	@Test
+	public void whenShipmentIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
+		Service one = Service.Builder.newInstance("s",1).setLocationId("foofoo")
+				.build();
+		assertEquals(1,one.getCapacityDemand());
+		assertEquals(1,one.getCapacity().getNuOfDimensions());
+		assertEquals(1,one.getCapacity().get(0));
+	}
+
 }

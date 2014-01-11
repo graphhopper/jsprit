@@ -1,5 +1,6 @@
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
@@ -25,16 +26,30 @@ public class Shipment implements Job{
 
 		private TimeWindow deliveryTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 
-		private TimeWindow pickupTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);;
+		private TimeWindow pickupTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
+		
+		private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+		
+		private Capacity capacity;
 		
 		public static Builder newInstance(String id, int size){
-			return new Builder(id,size);
+			Builder builder = new Builder(id,size);
+			builder.addCapacityDimension(0, size);
+			return builder;
+		}
+		
+		public static Builder newInstance(String id){
+			return new Builder(id);
 		}
 		
 		Builder(String id, int size) {
 			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 			this.id = id;
 			this.demand = size;
+		}
+		
+		Builder(String id){
+			this.id = id;
 		}
 		
 		public Builder setPickupLocation(String pickupLocation){
@@ -77,6 +92,11 @@ public class Shipment implements Job{
 			return this;
 		}
 		
+		public Builder addCapacityDimension(int dimIndex, int dimVal) {
+			capacityBuilder.addDimension(dimIndex, dimVal);
+			return this;
+		}
+		
 		public Shipment build(){
 			if(pickupLocation == null) { 
 				if(pickupCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
@@ -86,29 +106,34 @@ public class Shipment implements Job{
 				if(deliveryCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
 				deliveryLocation = deliveryCoord.toString();
 			}
+			capacity = capacityBuilder.build();
 			return new Shipment(this);
 		}
+
+		
 	}
 	
-	private int demand;
+	private final int demand;
 	
-	private String id;
+	private final String id;
 	
-	private String pickupLocation;
+	private final String pickupLocation;
 	
-	private Coordinate pickupCoord;
+	private final Coordinate pickupCoord;
 	
-	private double pickupServiceTime;
+	private final double pickupServiceTime;
 	
-	private String deliveryLocation;
+	private final String deliveryLocation;
 	
-	private Coordinate deliveryCoord;
+	private final Coordinate deliveryCoord;
 
-	private double deliveryServiceTime;
+	private final double deliveryServiceTime;
 
-	private TimeWindow deliveryTimeWindow;
+	private final TimeWindow deliveryTimeWindow;
 
-	private TimeWindow pickupTimeWindow;
+	private final TimeWindow pickupTimeWindow;
+	
+	private final Capacity capacity;
 	
 	Shipment(Builder builder){
 		this.id = builder.id;
@@ -121,6 +146,7 @@ public class Shipment implements Job{
 		this.deliveryCoord = builder.deliveryCoord;
 		this.deliveryServiceTime = builder.deliveryServiceTime;
 		this.deliveryTimeWindow = builder.deliveryTimeWindow;
+		this.capacity = builder.capacity;
 	}
 	
 	@Override
@@ -188,6 +214,11 @@ public class Shipment implements Job{
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Capacity getCapacity() {
+		return capacity;
 	}
 
 	

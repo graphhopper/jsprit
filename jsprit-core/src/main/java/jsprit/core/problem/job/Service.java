@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
@@ -25,7 +26,13 @@ public class Service implements Job {
 	public static class Builder {
 		
 		public static Builder newInstance(String id, int size){
-			return new Builder(id,size);
+			Builder builder = new Builder(id,size);
+			builder.addCapacityDimension(0, size);
+			return builder;
+		}
+		
+		public static Builder newInstance(String id){
+			return new Builder(id);
 		}
 		
 		private String id;
@@ -35,11 +42,17 @@ public class Service implements Job {
 		protected double serviceTime;
 		protected TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 		protected int demand;
+		protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+		protected Capacity capacity;
 		
 		Builder(String id, int size) {
 			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 			this.id = id;
 			this.demand = size;
+		}
+		
+		Builder(String id){
+			this.id = id;
 		}
 		
 		protected Builder setType(String name){
@@ -63,6 +76,11 @@ public class Service implements Job {
 			return this;
 		}
 		
+		public Builder addCapacityDimension(int dimensionIndex, int dimensionValue){
+			capacityBuilder.addDimension(dimensionIndex, dimensionValue);
+			return this;
+		}
+		
 		public Builder setTimeWindow(TimeWindow tw){
 			this.timeWindow = tw;
 			return this;
@@ -74,6 +92,7 @@ public class Service implements Job {
 				locationId = coord.toString();
 			}
 			this.setType("service");
+			capacity = capacityBuilder.build();
 			return new Service(this);
 		}
 		
@@ -93,6 +112,8 @@ public class Service implements Job {
 	private final TimeWindow timeWindow;
 
 	private final int demand;
+	
+	private final Capacity capacity;
 
 	Service(Builder builder){
 		id = builder.id;
@@ -102,6 +123,7 @@ public class Service implements Job {
 		timeWindow = builder.timeWindow;
 		demand = builder.demand;
 		type = builder.type;
+		capacity = builder.capacity;
 	}
 
 	@Override
@@ -173,6 +195,9 @@ public class Service implements Job {
 		return true;
 	}
 
-	
+	@Override
+	public Capacity getCapacity() {
+		return capacity;
+	}
 	
 }

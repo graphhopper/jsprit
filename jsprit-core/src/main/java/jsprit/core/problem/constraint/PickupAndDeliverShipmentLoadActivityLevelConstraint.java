@@ -36,6 +36,10 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 		this.stateManager = stateManager;
 	}
 	
+	/**
+	 * Checks whether there is enough capacity to insert newAct between prevAct and nextAct.
+	 * 
+	 */
 	@Override
 	public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 		if(!(newAct instanceof PickupShipment) && !(newAct instanceof DeliverShipment)){

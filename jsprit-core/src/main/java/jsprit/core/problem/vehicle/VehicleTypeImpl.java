@@ -16,6 +16,8 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+import jsprit.core.problem.Capacity;
+
 
 public class VehicleTypeImpl implements VehicleType {
 	
@@ -46,11 +48,18 @@ public class VehicleTypeImpl implements VehicleType {
 	public static class Builder{
 		
 		public static VehicleTypeImpl.Builder newInstance(String id, int capacity){
-			return new Builder(id,capacity);
+			Builder builder = new Builder(id,capacity);
+			builder.addCapacityDimension(0, capacity);
+			return builder;
 		}
 		
+		public static VehicleTypeImpl.Builder newInstance(String id) {
+			return new Builder(id);
+		}
+
+		
 		private String id;
-		private int capacity;
+		private int capacity = 0;
 		private double maxVelo = Double.MAX_VALUE;
 		/**
 		 * default cost values for default vehicle type
@@ -58,11 +67,19 @@ public class VehicleTypeImpl implements VehicleType {
 		private double fixedCost = 0.0;
 		private double perDistance = 1.0;
 		private double perTime = 0.0;
+		
+		private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+		
+		private Capacity capacityDimensions;
 
 		public Builder(String id, int capacity) {
 			super();
 			this.id = id;
 			this.capacity = capacity;
+		}
+
+		public Builder(String id) {
+			this.id = id;
 		}
 
 		public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds){ this.maxVelo = inMeterPerSeconds; return this; }
@@ -74,9 +91,16 @@ public class VehicleTypeImpl implements VehicleType {
 		public VehicleTypeImpl.Builder setCostPerTime(double perTime){ this.perTime = perTime; return this; }
 		
 		public VehicleTypeImpl build(){
+			capacityDimensions = capacityBuilder.build();
 			return new VehicleTypeImpl(this);
 		}
 
+		public Builder addCapacityDimension(int dimIndex, int dimVal) {
+			capacityBuilder.addDimension(dimIndex,dimVal);
+			return this;
+		}
+
+		
 	}
 	
 	@Override
@@ -112,6 +136,8 @@ public class VehicleTypeImpl implements VehicleType {
 	private final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
 	
 	private double maxVelocity;
+	
+	private Capacity capacityDimensions;
 
 	/**
 	 * @deprecated use builder instead
@@ -126,6 +152,7 @@ public class VehicleTypeImpl implements VehicleType {
 		capacity = builder.capacity;
 		maxVelocity = builder.maxVelo;
 		vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance);
+		capacityDimensions = builder.capacityDimensions;
 	}
 
 	public VehicleTypeImpl(String typeId, int capacity,VehicleTypeImpl.VehicleCostParams vehicleCostParams) {
@@ -133,6 +160,8 @@ public class VehicleTypeImpl implements VehicleType {
 		this.typeId = typeId;
 		this.capacity = capacity;
 		this.vehicleCostParams = vehicleCostParams;
+		capacityDimensions = Capacity.Builder.newInstance().addDimension(0, capacity).build();
+		
 	}
 
 	/* (non-Javadoc)
@@ -167,5 +196,10 @@ public class VehicleTypeImpl implements VehicleType {
 	@Override
 	public double getMaxVelocity() {
 		return maxVelocity;
+	}
+
+	@Override
+	public Capacity getCapacityDimensions() {
+		return capacityDimensions;
 	}
 }

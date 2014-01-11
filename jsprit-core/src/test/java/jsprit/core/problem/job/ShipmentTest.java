@@ -54,4 +54,38 @@ public class ShipmentTest {
 		assertEquals(1.0,one.getDeliveryCoord().getX(),0.01);
 		assertEquals(1.0,one.getDeliveryTimeWindow().getStart(),0.01);
 	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void whenShipmentHasNegativeCapacityVal_throwIllegalStateExpception(){
+		@SuppressWarnings("unused")
+		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setDeliveryLocation("foofoo")
+		.addCapacityDimension(0, -2)
+		.build();
+	}
+	
+	@Test
+	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
+		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setDeliveryLocation("foofoo")
+				.addCapacityDimension(0,2)
+				.addCapacityDimension(1,4)
+				.build();
+		assertEquals(2,one.getCapacity().getNuOfDimensions());
+	}
+	
+	@Test
+	public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
+		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setPickupCoord(Coordinate.newInstance(0, 0))
+				.setDeliveryLocation("foofoo").build();
+		assertEquals(1,one.getCapacity().getNuOfDimensions());
+		assertEquals(0,one.getCapacity().get(0));
+	}
+	
+	@Test
+	public void whenShipmentIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
+		Shipment one = Shipment.Builder.newInstance("s",1).setPickupLocation("foo").setPickupCoord(Coordinate.newInstance(0, 0))
+				.setDeliveryLocation("foofoo").build();
+		assertEquals(1,one.getCapacityDemand());
+		assertEquals(1,one.getCapacity().getNuOfDimensions());
+		assertEquals(1,one.getCapacity().get(0));
+	}
 }

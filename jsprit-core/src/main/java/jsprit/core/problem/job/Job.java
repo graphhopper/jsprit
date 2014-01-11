@@ -16,11 +16,15 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.Capacity;
+
 public interface Job {
 
 	public String getId();
 
+	@Deprecated
 	public int getCapacityDemand();
 	
+	public Capacity getCapacity();
 	
 }
