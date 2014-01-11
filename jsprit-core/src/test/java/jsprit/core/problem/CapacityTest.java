@@ -1,11 +1,10 @@
 
-package jsprit.core.problem.job;
+package jsprit.core.problem;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
-
-import jsprit.core.problem.Capacity;
 
 import org.junit.Test;
 
@@ -62,5 +61,33 @@ public class CapacityTest {
 		assertEquals(0, cap.get(0));
 	}
 	
+	@Test
+	public void whenCopyingCapacityWithTwoCapDim_copiedObjShouldHvSameNuOfDims(){
+		Capacity.Builder capBuilder = Capacity.Builder.newInstance();
+		capBuilder.addDimension(0, 4);
+		capBuilder.addDimension(1,10);
+		Capacity cap = capBuilder.build();
+		
+		Capacity copiedCapacity = Capacity.copyOf(cap);
+		assertEquals(2,copiedCapacity.getNuOfDimensions());
+	}
+	
+	@Test
+	public void whenCopyingCapacityWithTwoCapDim_copiedObjShouldHvSameValues(){
+		Capacity.Builder capBuilder = Capacity.Builder.newInstance();
+		capBuilder.addDimension(0, 4);
+		capBuilder.addDimension(1,10);
+		Capacity cap = capBuilder.build();
+		
+		Capacity copiedCapacity = Capacity.copyOf(cap);
+		assertEquals(4,copiedCapacity.get(0));
+		assertEquals(10,copiedCapacity.get(1));
+	}
+	
+	@Test
+	public void whenCopyingNull_itShouldReturnNull(){
+		Capacity nullCap = Capacity.copyOf(null);
+		assertTrue(nullCap==null);
+	}
 
 }

@@ -3,6 +3,11 @@ package jsprit.core.problem;
 
 public class Capacity {
 	
+	public static Capacity copyOf(Capacity capacity){
+		if(capacity == null) return null;
+		return new Capacity(capacity);
+	}
+	
 	public static class Builder {
 		
 		/**
@@ -55,6 +60,18 @@ public class Capacity {
 	}
 	
 	private int[] dimensions;
+	
+	/**
+	 * copy constructor
+	 * 
+	 * @param capacity
+	 */
+	Capacity(Capacity capacity){
+		this.dimensions = new int[capacity.getNuOfDimensions()];
+		for(int i=0;i<capacity.getNuOfDimensions();i++){
+			this.dimensions[i]=capacity.get(i);
+		}
+	}
 	
 	Capacity(Builder builder) {
 		dimensions = builder.dimensions;
