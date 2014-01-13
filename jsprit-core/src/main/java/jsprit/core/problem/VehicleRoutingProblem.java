@@ -138,6 +138,10 @@ public class VehicleRoutingProblem {
 			}
 		};
 
+		/**
+		 * @deprecated use static method .newInstance() instead
+		 */
+		@Deprecated
 		public Builder() {
 			jobs = new HashMap<String, Job>();
 			vehicles = new ArrayList<Vehicle>();
@@ -169,7 +173,7 @@ public class VehicleRoutingProblem {
 		/**
 		 * Returns the unmodifiable map of locations (mapped by their id).
 		 * 
-		 * @return
+		 * @return map with locations
 		 */
 		public Map<String,Coordinate> getLocationMap(){
 			return Collections.unmodifiableMap(coordinates);
@@ -209,10 +213,10 @@ public class VehicleRoutingProblem {
 		/**
 		 * Sets the type of fleetSize.
 		 * 
-		 * <p>FleetSize is either FleetSize.INFINITE or FleetSize.FINITE
+		 * <p>FleetSize is either FleetSize.INFINITE or FleetSize.FINITE. By default it is FleetSize.INFINITE.
 		 * 
 		 * @param fleetSize
-		 * @return
+		 * @return this builder
 		 */
 		public Builder setFleetSize(FleetSize fleetSize){
 			this.fleetSize = fleetSize;
@@ -225,7 +229,7 @@ public class VehicleRoutingProblem {
 		 * <p>Note that job.getId() must be unique, i.e. no job (either it is a shipment or a service) is allowed to have an already allocated id.
 		 * 
 		 * @param job
-		 * @return
+		 * @return this builder
 		 * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
 		 */
 		public Builder addJob(Job job) {
@@ -254,7 +258,7 @@ public class VehicleRoutingProblem {
 		 * 
 		 * 
 		 * @param vehicle
-		 * @return
+		 * @return this builder
 		 */
 		public Builder addVehicle(Vehicle vehicle) {
 			vehicles.add(vehicle);
@@ -271,7 +275,7 @@ public class VehicleRoutingProblem {
 		 * <p>By default it is set to zero.
 		 * 
 		 * @param activityCosts
-		 * @return
+		 * @return this builder
 		 * @see VehicleRoutingActivityCosts
 		 */
 		public Builder setActivityCosts(VehicleRoutingActivityCosts activityCosts){
@@ -304,7 +308,7 @@ public class VehicleRoutingProblem {
 		 * Adds a collection of jobs.
 		 * 
 		 * @param jobs which is a collection of jobs that subclasses Job
-		 * @return
+		 * @return this builder
 		 */
 		public Builder addAllJobs(Collection<? extends Job> jobs) {
 			for(Job j : jobs){
@@ -317,7 +321,7 @@ public class VehicleRoutingProblem {
 		 * Adds a collection of vehicles.
 		 * 
 		 * @param vehicles
-		 * @return
+		 * @return this builder
 		 */
 		public Builder addAllVehicles(Collection<Vehicle> vehicles) {
 			for(Vehicle v : vehicles){
@@ -339,7 +343,7 @@ public class VehicleRoutingProblem {
 		 * Adds constraint to problem.
 		 * 
 		 * @param constraint
-		 * @return
+		 * @return this builder
 		 */
 		public Builder addConstraint(jsprit.core.problem.constraint.Constraint constraint){
 			constraints.add(constraint);
