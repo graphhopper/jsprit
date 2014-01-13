@@ -51,7 +51,10 @@ public class Vrph2jsprit {
 					typeBuilder.setFixedCost(Double.parseDouble(tokens[3]));
 					typeBuilder.setCostPerDistance(1.0);
 					VehicleTypeImpl type = typeBuilder.build();
-					Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle_"+tokens[1]).setType(type).build();
+					Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle_"+tokens[1])
+							.setLocationCoord(depotCoord).setType(type).build();
+					vrpBuilder.addVehicle(vehicle);
+//					vrpBuilder.s
 				}
 				
 			}
