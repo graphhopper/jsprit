@@ -16,9 +16,22 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
-
+/**
+ * Implementation of {@link VehicleType}.
+ * 
+ * <p>Two vehicle-types are equal if they have the same typeId.
+ * 
+ * @author schroeder
+ *
+ */
 public class VehicleTypeImpl implements VehicleType {
 	
+	/**
+	 * CostParameter consisting of fixed cost parameter, time-based cost parameter and distance-based cost parameter.
+	 * 
+	 * @author schroeder
+	 *
+	 */
 	public static class VehicleCostParams {
 		
 		public static VehicleTypeImpl.VehicleCostParams newInstance(double fix, double perTimeUnit,double perDistanceUnit){
@@ -42,9 +55,24 @@ public class VehicleTypeImpl implements VehicleType {
 		}
 	}
 
-	
+	/**
+	 * Builder that builds the vehicle-type.
+	 * 
+	 * @author schroeder
+	 *
+	 */
 	public static class Builder{
 		
+		/**
+		 * Returns a new instance.
+		 * 
+		 * <p>Input parameters are id and capacity. Note that two vehicle-types are equal
+		 * if they have the same vehicleId.
+		 * 
+		 * @param id
+		 * @param capacity
+		 * @return
+		 */
 		public static VehicleTypeImpl.Builder newInstance(String id, int capacity){
 			return new Builder(id,capacity);
 		}
@@ -59,20 +87,61 @@ public class VehicleTypeImpl implements VehicleType {
 		private double perDistance = 1.0;
 		private double perTime = 0.0;
 
-		public Builder(String id, int capacity) {
+		/**
+		 * Constructs the builder.
+		 * 
+		 * @param id
+		 * @param capacity
+		 */
+		private Builder(String id, int capacity) {
 			super();
 			this.id = id;
 			this.capacity = capacity;
 		}
 
+		/**
+		 * Sets the maximum velocity this vehicle-type can go [in meter per seconds].
+		 * 
+		 * @param inMeterPerSeconds
+		 * @return this builder
+		 */
 		public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds){ this.maxVelo = inMeterPerSeconds; return this; }
 		
+		/**
+		 * Sets the fixed costs of the vehicle-type.
+		 * 
+		 * <p>by default it is 0.
+		 * 
+		 * @param fixedCost
+		 * @return this builder
+		 */
 		public VehicleTypeImpl.Builder setFixedCost(double fixedCost) { this.fixedCost = fixedCost; return this; }
 
+		/**
+		 * Sets the cost per distance unit, for instance € per meter.
+		 * 
+		 * <p>by default it is 1.0
+		 * 
+		 * @param perDistance
+		 * @return this builder
+		 */
 		public VehicleTypeImpl.Builder setCostPerDistance(double perDistance){ this.perDistance = perDistance; return this; }
 
+		/**
+		 * Sets cost per time unit, for instance € per second.
+		 * 
+		 * <p>by default it is 0.0 
+		 * 
+		 * @param perTime
+		 * @return
+		 */
 		public VehicleTypeImpl.Builder setCostPerTime(double perTime){ this.perTime = perTime; return this; }
 		
+		/**
+		 * Builds the vehicle-type.
+		 * 
+		 * @return
+		 */
 		public VehicleTypeImpl build(){
 			return new VehicleTypeImpl(this);
 		}
@@ -88,6 +157,9 @@ public class VehicleTypeImpl implements VehicleType {
 		return result;
 	}
 
+	/**
+	 * Two vehicle-types are equal if they have the same vehicleId.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -121,6 +193,11 @@ public class VehicleTypeImpl implements VehicleType {
 		return new VehicleTypeImpl(typeId, capacity, para);
 	}
 	
+	/**
+	 * priv constructor constructing vehicle-type
+	 * 
+	 * @param builder
+	 */
 	private VehicleTypeImpl(VehicleTypeImpl.Builder builder){
 		typeId = builder.id;
 		capacity = builder.capacity;

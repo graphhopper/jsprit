@@ -18,15 +18,42 @@ package jsprit.core.problem.vehicle;
 
 import jsprit.core.problem.vehicle.VehicleTypeImpl.VehicleCostParams;
 
-
+/**
+ * Basic interface for vehicle-type-data.
+ * 
+ * @author schroeder
+ *
+ */
 public interface VehicleType {
 
+	/**
+	 * Returns typeId.
+	 * 
+	 * @return typeId
+	 */
 	public String getTypeId();
 
+	/**
+	 * Returns capacity.
+	 * 
+	 * <p>In future versions there will be a capacity-object with an arbitrary number of capacity dimensions. (stefan,11.01.14)
+	 * 
+	 * @return cap
+	 */
 	public int getCapacity();
 	
+	/**
+	 * Returns maximum velocity of this vehicle-type.
+	 * 
+	 * @return max velocity
+	 */
 	public double getMaxVelocity();
 
+	/**
+	 * Return the cost-parameter of this vehicle-type.
+	 * 
+	 * @return parameter
+	 */
 	public VehicleCostParams getVehicleCostParams();
 
 }
