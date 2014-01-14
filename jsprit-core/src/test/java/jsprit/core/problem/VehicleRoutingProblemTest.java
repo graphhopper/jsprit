@@ -17,6 +17,8 @@
 package jsprit.core.problem;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -320,5 +322,127 @@ public class VehicleRoutingProblemTest {
 		
 		assertEquals(2,builder.getAddedVehicleTypes().size());
 
+	}
+	
+	@Test
+	public void whenSettingAddPenaltyVehicleOptions_itShouldAddPenaltyVehicle(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		
+		builder.addVehicle(vehicle);
+		builder.setFleetSize(FleetSize.FINITE);
+		builder.addPenaltyVehicles(3.0);
+		
+		VehicleRoutingProblem vrp = builder.build();
+		
+		assertEquals(2,vrp.getVehicles().size());
+		
+		boolean penaltyVehicleInCollection = false;
+		for(Vehicle v : vrp.getVehicles()){
+			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
+		}
+		assertTrue(penaltyVehicleInCollection);
+		
+	}
+	
+	@Test
+	public void whenSettingAddPenaltyVehicleOptionsAndFleetSizeIsInfinite_noPenaltyVehicleIsAdded(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		
+		builder.addVehicle(vehicle);
+		builder.addPenaltyVehicles(3.0);
+		
+		VehicleRoutingProblem vrp = builder.build();
+		
+		assertEquals(1,vrp.getVehicles().size());
+		
+		boolean penaltyVehicleInCollection = false;
+		for(Vehicle v : vrp.getVehicles()){
+			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
+		}
+		assertFalse(penaltyVehicleInCollection);
+		
+	}
+	
+	@Test
+	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithSameLocationAndType_onlyOnePenaltyVehicleIsAdded(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type).build();
+		
+		builder.addVehicle(vehicle);
+		builder.addVehicle(vehicle2);
+		builder.setFleetSize(FleetSize.FINITE);
+		builder.addPenaltyVehicles(3.0);
+		
+		VehicleRoutingProblem vrp = builder.build();
+		
+		assertEquals(3,vrp.getVehicles().size());
+		
+		boolean penaltyVehicleInCollection = false;
+		for(Vehicle v : vrp.getVehicles()){
+			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
+		}
+		assertTrue(penaltyVehicleInCollection);
+		
+	}
+	
+	@Test
+	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithDiffLocationAndType_twoPenaltyVehicleIsAdded(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc2").setType(type).build();
+		
+		builder.addVehicle(vehicle);
+		builder.addVehicle(vehicle2);
+		builder.setFleetSize(FleetSize.FINITE);
+		builder.addPenaltyVehicles(3.0);
+		
+		VehicleRoutingProblem vrp = builder.build();
+		
+		assertEquals(4,vrp.getVehicles().size());
+		
+		boolean penaltyVehicleInCollection = false;
+		boolean anotherPenVehInCollection = false;
+		for(Vehicle v : vrp.getVehicles()){
+			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
+			if(v.getId().equals("penaltyVehicle_loc2_type")) anotherPenVehInCollection = true;
+		}
+		assertTrue(penaltyVehicleInCollection);
+		assertTrue(anotherPenVehInCollection);
+		
+	}
+	
+	@Test
+	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithSameLocationButDiffType_twoPenaltyVehicleIsAdded(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type2", 0).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		
+		builder.addVehicle(vehicle);
+		builder.addVehicle(vehicle2);
+		builder.setFleetSize(FleetSize.FINITE);
+		builder.addPenaltyVehicles(3.0);
+		
+		VehicleRoutingProblem vrp = builder.build();
+		
+		assertEquals(4,vrp.getVehicles().size());
+		
+		boolean penaltyVehicleInCollection = false;
+		boolean anotherPenVehInCollection = false;
+		for(Vehicle v : vrp.getVehicles()){
+			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
+			if(v.getId().equals("penaltyVehicle_loc_type2")) anotherPenVehInCollection = true;
+		}
+		assertTrue(penaltyVehicleInCollection);
+		assertTrue(anotherPenVehInCollection);
+		
 	}
 }
