@@ -17,17 +17,32 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 
 /**
- * diff. options yields to different problem types for
+ * Reads modified files from Taillard's website 
+ * http://mistic.heig-vd.ch/taillard/problemes.dir/vrp.dir/vrp.html
+ * 
+ * <p>diff. options of VrphType yields to different problem types for
  * - vrphe with infinite fleet, i.e. different types with different variable costs and infinite number of vehicles of each type
  * - vrphe with finite fleet, i.e. different types with different variable costs and finite number of vehicles of each type
- * - vfm, different types with different fixed costs 
+ * - vfm, different types with different fixed costs
+ * - vfmvrc different types with different fixed costs and variable costs
  * 
+ * <p>cxxx3-cxxx6 do not have variable costs and nuVehicle, thus they can only be used for vfm.
  * 
  * @author schroeder
  *
  */
 public class VrphGoldenReader {
 	
+	/**
+	 *
+	 * VRPHE_INFINITE - different types with different variable costs and infinite number of vehicles of each type
+	 * <p>VRPHE_FINITE - different types with different variable costs and finite number of vehicles of each type
+	 * <p>VFM - different types with different fixed costs
+	 * <p>VFMVRC - different types with different fixed costs and variable costs
+	 *  
+	 * @author schroeder
+	 *
+	 */
 	public enum VrphType {
 		VRPH_INFINITE, VRPH_FINITE, VFM, VFMVRC
 	}
