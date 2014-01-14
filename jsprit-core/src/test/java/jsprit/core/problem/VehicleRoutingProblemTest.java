@@ -392,6 +392,32 @@ public class VehicleRoutingProblemTest {
 	}
 	
 	@Test
+	public void whenSettingAddPenaltyVehicleOptionsWithAbsoluteFixedCostsAndTwoVehiclesWithSameLocationAndType_onePenaltyVehicleIsAddedWithTheCorrectPenaltyFixedCosts(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type).build();
+		
+		builder.addVehicle(vehicle);
+		builder.addVehicle(vehicle2);
+		builder.setFleetSize(FleetSize.FINITE);
+		builder.addPenaltyVehicles(3.0,10000);
+		
+		VehicleRoutingProblem vrp = builder.build();
+		
+		assertEquals(3,vrp.getVehicles().size());
+		
+		double fix = 0.0;
+		for(Vehicle v : vrp.getVehicles()){
+			if(v.getId().equals("penaltyVehicle_loc_type")) {
+				fix = v.getType().getVehicleCostParams().fix;
+			}
+		}
+		assertEquals(10000,fix,0.01);
+		
+	}
+	
+	@Test
 	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithDiffLocationAndType_twoPenaltyVehicleIsAdded(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();

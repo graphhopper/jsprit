@@ -198,6 +198,8 @@ public class VehicleRoutingProblem {
 
 		private double penaltyFactor = 1.0;
 
+		private Double penaltyFixedCosts = null;
+
 		/**
 		 * @deprecated use static method .newInstance() instead
 		 */
@@ -378,10 +380,14 @@ public class VehicleRoutingProblem {
 				}
 			}
 			for(Vehicle v : uniqueVehicles){
+				double fixed = v.getType().getVehicleCostParams().fix * penaltyFactor;
+				if(penaltyFixedCosts!=null){
+					fixed = penaltyFixedCosts;
+				}
 				VehicleTypeImpl t = VehicleTypeImpl.Builder.newInstance(v.getType().getTypeId(), v.getCapacity())
 						.setCostPerDistance(penaltyFactor*v.getType().getVehicleCostParams().perDistanceUnit)
 						.setCostPerTime(penaltyFactor*v.getType().getVehicleCostParams().perTimeUnit)
-						.setFixedCost(penaltyFactor*v.getType().getVehicleCostParams().fix)
+						.setFixedCost(fixed)
 						.build();
 				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
 				String vehicleId = "penaltyVehicle_" + v.getLocationId() + "_" + t.getTypeId();
@@ -453,7 +459,8 @@ public class VehicleRoutingProblem {
 		}
 		
 		/**
-		 * Adds penaltyVehicles, i.e. for every unique vehicle-location and type combination a penalty-vehicle is constructed having penaltyFactor times higher fixed and variable costs. 
+		 * Adds penaltyVehicles, i.e. for every unique vehicle-location and type combination a penalty-vehicle is constructed having penaltyFactor times higher fixed and variable costs 
+		 * (see .addPenaltyVehicles(double penaltyFactor, double penaltyFixedCosts) if fixed costs = 0.0). 
 		 * 
 		 * <p>This only makes sense for FleetSize.FINITE. Thus, penaltyVehicles are only added if is FleetSize.FINITE.
 		 * <p>The id of penaltyVehicles is constructed as follows vehicleId = "penaltyVehicle" + "_" + {locationId} + "_" + {typeId}. 
@@ -465,6 +472,24 @@ public class VehicleRoutingProblem {
 		public Builder addPenaltyVehicles(double penaltyFactor){
 			this.addPenaltyVehicles = true;
 			this.penaltyFactor = penaltyFactor;
+			return this;
+		}
+		
+		/**
+		 * Adds penaltyVehicles, i.e. for every unique vehicle-location and type combination a penalty-vehicle is constructed having penaltyFactor times higher fixed and variable costs. 
+		 * <p>This method takes penaltyFixedCosts as absolute value in contrary to the method without penaltyFixedCosts where fixedCosts is the product of penaltyFactor and typeFixedCosts.
+		 * <p>This only makes sense for FleetSize.FINITE. Thus, penaltyVehicles are only added if is FleetSize.FINITE.
+		 * <p>The id of penaltyVehicles is constructed as follows vehicleId = "penaltyVehicle" + "_" + {locationId} + "_" + {typeId}. 
+		 * <p>By default: no penalty-vehicles are added
+		 * 
+		 * @param penaltyFactor
+		 * @param penaltyFixedCosts which is an absolute penaltyValue (in contrary to penaltyFactor)
+		 * @return this builder
+		 */
+		public Builder addPenaltyVehicles(double penaltyFactor, double penaltyFixedCosts){
+			this.addPenaltyVehicles = true;
+			this.penaltyFactor = penaltyFactor;
+			this.penaltyFixedCosts  = penaltyFixedCosts;
 			return this;
 		}
 		
