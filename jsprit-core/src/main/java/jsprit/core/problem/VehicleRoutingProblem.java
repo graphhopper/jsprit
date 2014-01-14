@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -29,7 +32,9 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
@@ -79,6 +84,57 @@ public class VehicleRoutingProblem {
 	 */
 	public static class Builder {
 
+		/**
+		 * Two locTypeKeys are equal if they have the same locationId and typeId
+		 * 
+		 * @author schroeder
+		 *
+		 */
+		private static class LocTypeKey {
+			String locationId;
+			String typeId;
+			
+			public LocTypeKey(String locationId, String typeId) {
+				super();
+				this.locationId = locationId;
+				this.typeId = typeId;
+			}
+
+			@Override
+			public int hashCode() {
+				final int prime = 31;
+				int result = 1;
+				result = prime * result
+						+ ((locationId == null) ? 0 : locationId.hashCode());
+				result = prime * result
+						+ ((typeId == null) ? 0 : typeId.hashCode());
+				return result;
+			}
+
+			@Override
+			public boolean equals(Object obj) {
+				if (this == obj)
+					return true;
+				if (obj == null)
+					return false;
+				if (getClass() != obj.getClass())
+					return false;
+				LocTypeKey other = (LocTypeKey) obj;
+				if (locationId == null) {
+					if (other.locationId != null)
+						return false;
+				} else if (!locationId.equals(other.locationId))
+					return false;
+				if (typeId == null) {
+					if (other.typeId != null)
+						return false;
+				} else if (!typeId.equals(other.typeId))
+					return false;
+				return true;
+			}
+			
+		}
+		
 		/**
 		 * Returns a new instance of this builder.
 		 * 
@@ -137,6 +193,10 @@ public class VehicleRoutingProblem {
 				return true;
 			}
 		};
+
+		private boolean addPenaltyVehicles = false;
+
+		private double penaltyFactor = 1.0;
 
 		/**
 		 * @deprecated use static method .newInstance() instead
@@ -296,7 +356,40 @@ public class VehicleRoutingProblem {
 				logger.warn("set routing costs crowFlyDistance.");
 				transportCosts = new CrowFlyCosts(getLocations());
 			}
+			if(addPenaltyVehicles){
+				if(fleetSize.equals(FleetSize.INFINITE)){
+					logger.warn("penaltyType and FleetSize.INFINITE does not make sense. thus no penalty-types are added.");
+				}
+				else{
+					addPenaltyVehicles();
+				}
+			}
 			return new VehicleRoutingProblem(this);
+		}
+
+		private void addPenaltyVehicles() {
+			Set<LocTypeKey> locTypeKeys = new HashSet<LocTypeKey>();
+			List<Vehicle> uniqueVehicles = new ArrayList<Vehicle>();
+			for(Vehicle v : vehicles){
+				LocTypeKey key = new LocTypeKey(v.getLocationId(),v.getType().getTypeId());
+				if(!locTypeKeys.contains(key)){
+					uniqueVehicles.add(v);
+					locTypeKeys.add(key);
+				}
+			}
+			for(Vehicle v : uniqueVehicles){
+				VehicleTypeImpl t = VehicleTypeImpl.Builder.newInstance(v.getType().getTypeId(), v.getCapacity())
+						.setCostPerDistance(penaltyFactor*v.getType().getVehicleCostParams().perDistanceUnit)
+						.setCostPerTime(penaltyFactor*v.getType().getVehicleCostParams().perTimeUnit)
+						.setFixedCost(penaltyFactor*v.getType().getVehicleCostParams().fix)
+						.build();
+				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
+				String vehicleId = "penaltyVehicle_" + v.getLocationId() + "_" + t.getTypeId();
+				Vehicle penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
+						.setLatestArrival(v.getLatestArrival()).setLocationCoord(v.getCoord()).setLocationId(v.getLocationId())
+						.setReturnToDepot(v.isReturnToDepot()).setType(penType).build();
+				vehicles.add(penVehicle);
+			}
 		}
 
 		public Builder addLocation(String id, Coordinate coord) {
@@ -356,6 +449,22 @@ public class VehicleRoutingProblem {
 		 */
 		public Builder addConstraint(jsprit.core.problem.constraint.Constraint constraint){
 			constraints.add(constraint);
+			return this;
+		}
+		
+		/**
+		 * Adds penaltyVehicles, i.e. for every unique vehicle-location and type combination a penalty-vehicle is constructed having penaltyFactor times higher fixed and variable costs. 
+		 * 
+		 * <p>This only makes sense for FleetSize.FINITE. Thus, penaltyVehicles are only added if is FleetSize.FINITE.
+		 * <p>The id of penaltyVehicles is constructed as follows vehicleId = "penaltyVehicle" + "_" + {locationId} + "_" + {typeId}. 
+		 * <p>By default: no penalty-vehicles are added
+		 * 
+		 * @param penaltyFactor
+		 * @return this builder
+		 */
+		public Builder addPenaltyVehicles(double penaltyFactor){
+			this.addPenaltyVehicles = true;
+			this.penaltyFactor = penaltyFactor;
 			return this;
 		}
 		
