@@ -340,6 +340,15 @@ public class VehicleRoutingProblem {
 		}
 		
 		/**
+		 * Gets an unmodifiable collection of already added vehicle-types.
+		 * 
+		 * @returns collection of vehicle-types
+		 */
+		public Collection<VehicleType> getAddedVehicleTypes(){
+			return Collections.unmodifiableCollection(vehicleTypes);
+		}
+		
+		/**
 		 * Adds constraint to problem.
 		 * 
 		 * @param constraint

@@ -36,6 +36,7 @@ import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 
 import org.junit.Test;
@@ -278,5 +279,46 @@ public class VehicleRoutingProblemTest {
 		VehicleRoutingProblem problem = builder.build();
 		assertEquals(4.0,problem.getTransportCosts().getTransportCost("", "", 0.0, null, null),0.01);
 	}
+	
+	@Test
+	public void whenAddingAVehicle_getAddedVehicleTypesShouldReturnItsType(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		builder.addVehicle(vehicle);
+		
+		assertEquals(1,builder.getAddedVehicleTypes().size());
+		assertEquals(type,builder.getAddedVehicleTypes().iterator().next());
+		
+	}
+	
+	@Test
+	public void whenAddingTwoVehicleWithSameType_getAddedVehicleTypesShouldReturnOnlyOneType(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		
+		builder.addVehicle(vehicle);
+		builder.addVehicle(vehicle2);
+		
+		assertEquals(1,builder.getAddedVehicleTypes().size());
+		assertEquals(type,builder.getAddedVehicleTypes().iterator().next());
+	}
 
+	@Test
+	public void whenAddingTwoVehicleWithDiffType_getAddedVehicleTypesShouldReturnTheseType(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
+		VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type2", 0).build();
+		
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type2).build();
+		
+		builder.addVehicle(vehicle);
+		builder.addVehicle(vehicle2);
+		
+		assertEquals(2,builder.getAddedVehicleTypes().size());
+
+	}
 }
