@@ -228,6 +228,8 @@ public class BicycleMessenger {
 		problemBuilder.addConstraint(new ThreeTimesLessThanBestDirectRouteConstraint(nearestMessengers, routingCosts, stateManager));
 		problemBuilder.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
 		
+		problemBuilder.addPenaltyVehicles(10.0);
+		
 		//finally build the problem
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
 		
@@ -239,7 +241,7 @@ public class BicycleMessenger {
 		//if you want, terminate it after 1000 iterations with no change
 //		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
 //		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-		algorithm.setNuOfIterations(200);
+		algorithm.setNuOfIterations(1000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints
@@ -347,8 +349,8 @@ public class BicycleMessenger {
 		 * 
 		 * it is important to give it the same typeId as the type you want to shadow
 		 */
-		VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setFixedCost(50000).setCostPerDistance(4).build();
-		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType,4);
+//		VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setFixedCost(50000).setCostPerDistance(4).build();
+//		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType,4);
 		
 		while((line = reader.readLine()) != null){
 			if(firstLine) { firstLine = false; continue; }
@@ -358,9 +360,9 @@ public class BicycleMessenger {
 					.setReturnToDepot(false).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
 			//build the penalty vehicle
-			Vehicle penaltyVehicle = VehicleImpl.Builder.newInstance(tokens[1]+"_penalty").setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
-					.setReturnToDepot(false).setType(penaltyVehicleType).build();
-			problemBuilder.addVehicle(penaltyVehicle);
+//			Vehicle penaltyVehicle = VehicleImpl.Builder.newInstance(tokens[1]+"_penalty").setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
+//					.setReturnToDepot(false).setType(penaltyVehicleType).build();
+//			problemBuilder.addVehicle(penaltyVehicle);
 		}
 		reader.close();
 	}
