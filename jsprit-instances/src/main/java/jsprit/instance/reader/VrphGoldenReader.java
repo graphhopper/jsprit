@@ -78,7 +78,7 @@ public class VrphGoldenReader {
 					depotCoord = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
 				}
 				else{
-					Service.Builder serviceBuilder = Service.Builder.newInstance(tokens[0], Integer.parseInt(tokens[0]));
+					Service.Builder serviceBuilder = Service.Builder.newInstance(tokens[0], Integer.parseInt(tokens[3]));
 					serviceBuilder.setCoord(Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])));
 					vrpBuilder.addJob(serviceBuilder.build());
 				}
@@ -126,8 +126,8 @@ public class VrphGoldenReader {
 		try {
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -136,8 +136,8 @@ public class VrphGoldenReader {
 		try {
 			readLine = reader.readLine();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 		return readLine;
 	}
@@ -148,8 +148,8 @@ public class VrphGoldenReader {
 			bufferedReader = new BufferedReader(new FileReader(new File(filename)));
 			return bufferedReader;
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 		return bufferedReader;
 	}
