@@ -388,7 +388,7 @@ public class VehicleRoutingProblem {
 				Vehicle penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
 						.setLatestArrival(v.getLatestArrival()).setLocationCoord(v.getCoord()).setLocationId(v.getLocationId())
 						.setReturnToDepot(v.isReturnToDepot()).setType(penType).build();
-				vehicles.add(penVehicle);
+				addVehicle(penVehicle);
 			}
 		}
 
