@@ -14,11 +14,13 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.util.Solutions;
 import jsprit.instance.reader.VrphGoldenReader;
 import jsprit.instance.reader.VrphGoldenReader.VrphType;
+import jsprit.util.Examples;
 
 /**
  * Shows how to benchmark the algorithm on different classical HVRP and FSM instances.
  * 
- * <p>These instances are from Golden and Taillard and copied from http://mistic.heig-vd.ch/taillard/problemes.dir/vrp.dir/vrp.html.
+ * <p>These instances are from Golden and Taillard and copied from 
+ * <a href=http://mistic.heig-vd.ch/taillard/problemes.dir/vrp.dir/vrp.html>.
  * 
  * <p>You can find best results of different problems, instances and authors here:
  * <br><a href="http://www2.ic.uff.br/~satoru/conteudo/artigos/PAPER%20PUCA-JHeuristics-2011.pdf">http://www2.ic.uff.br/~satoru/conteudo/artigos/PAPER%20PUCA-JHeuristics-2011.pdf</a>
@@ -30,6 +32,7 @@ import jsprit.instance.reader.VrphGoldenReader.VrphType;
 public class HVRPBenchmarkExample {
 	
 	public static void main(String[] args) {
+		Examples.createOutputFolder();
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		//read modified Golden-instance, you can find all relevant instances in jsprit-instances/instances/vrph
 		//you can build various problems, see VrphType doc for more details
@@ -56,6 +59,5 @@ public class HVRPBenchmarkExample {
 		
 		new GraphStreamViewer(vrp, best).setRenderDelay(100).display();
 	}
-
 
 }
