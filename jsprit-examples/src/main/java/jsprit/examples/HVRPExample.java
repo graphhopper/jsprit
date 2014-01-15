@@ -48,7 +48,7 @@ import jsprit.core.util.Solutions;
  * @author schroeder
  *
  */
-public class VRPHEExample {
+public class HVRPExample {
 	
 	
 	public static void main(String[] args) {
