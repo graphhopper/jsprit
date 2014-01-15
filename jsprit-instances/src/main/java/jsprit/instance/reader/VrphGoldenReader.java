@@ -18,15 +18,12 @@ import jsprit.core.util.Coordinate;
 
 /**
  * Reads modified files from Taillard's website 
- * http://mistic.heig-vd.ch/taillard/problemes.dir/vrp.dir/vrp.html
+ * http://mistic.heig-vd.ch/taillard/problemes.dir/vrp.dir/vrp.html. You can find the modified version here: 
+ * jsprit-instances/instances/vrph.
  * 
- * <p>diff. options of VrphType yields to different problem types for
- * - vrphe with infinite fleet, i.e. different types with different variable costs and infinite number of vehicles of each type
- * - vrphe with finite fleet, i.e. different types with different variable costs and finite number of vehicles of each type
- * - vfm, different types with different fixed costs
- * - vfmvrc different types with different fixed costs and variable costs
+ * <p>See {@link VrphType} what kind of problems can be generated
  * 
- * <p>cxxx3-cxxx6 do not have variable costs and nuVehicle, thus they can only be used for vfm.
+ * <p>Note that c20_3-c20_6 do not have variable costs and a limited nuVehicle, thus they can only be used for FSMF.
  * 
  * @author schroeder
  *
@@ -35,16 +32,21 @@ public class VrphGoldenReader {
 	
 	/**
 	 *
-	 * VRPHE_INFINITE - different types with different variable costs and infinite number of vehicles of each type
-	 * <p>VRPHE_FINITE - different types with different variable costs and finite number of vehicles of each type
-	 * <p>VFM - different types with different fixed costs
-	 * <p>VFMVRC - different types with different fixed costs and variable costs
-	 *  
+	 * <b>FSMD</b> - Fleet Size and Mix with Dependent costs
+	 * <p><b>FSMF</b> - Fleet Size and Mix with Fixed costs
+	 * <p><b>FSMFD</b> - Fleet Size and Mix with Fixed and Dependent costs
+	 * <p><b>HVRPD</b> - Heterogeneous Vehicle Routing Problem with Dependent costs and finite (limited) fleet
+	 * <p><b>HVRPFD</b> - Heterogeneous Vehicle Routing Problem with Fixed and Dependent costs and finite (limited) fleet
+	 * 
 	 * @author schroeder
 	 *
 	 */
 	public enum VrphType {
-		VRPH_INFINITE, VRPH_FINITE, VFM, VFMVRC
+		FSMD, 
+		HVRPD, 
+		FSMF, 
+		FSMFD, 
+		HVRPFD
 	}
 	
 	private final VehicleRoutingProblem.Builder vrpBuilder;
@@ -87,24 +89,33 @@ public class VrphGoldenReader {
 			else if(trimedLine.startsWith("v")){
 				VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("type_"+tokens[1], Integer.parseInt(tokens[2]));
 				int nuOfVehicles = 1;
-				if(vrphType.equals(VrphType.VFM)){
+				if(vrphType.equals(VrphType.FSMF)){
 					typeBuilder.setFixedCost(Double.parseDouble(tokens[3]));
 				}
-				else if(vrphType.equals(VrphType.VFMVRC)){
+				else if(vrphType.equals(VrphType.FSMFD)){
 					typeBuilder.setFixedCost(Double.parseDouble(tokens[3]));
 					if(tokens.length > 4){
 						typeBuilder.setCostPerDistance(Double.parseDouble(tokens[4]));
 					}
 					else throw new IllegalStateException("option " + vrphType + " cannot be applied with this instance");
 				}
-				else if(vrphType.equals(VrphType.VRPH_INFINITE)){
+				else if(vrphType.equals(VrphType.FSMD)){
 					if(tokens.length > 4){
 						typeBuilder.setCostPerDistance(Double.parseDouble(tokens[4]));
 					}
 					else throw new IllegalStateException("option " + vrphType + " cannot be applied with this instance");
 				}
-				else { //VrphType.VRPH_FINITE
+				else if(vrphType.equals(VrphType.HVRPD)){
 					if(tokens.length > 4){
+						typeBuilder.setCostPerDistance(Double.parseDouble(tokens[4]));
+						nuOfVehicles = Integer.parseInt(tokens[5]);
+						vrpBuilder.setFleetSize(FleetSize.FINITE);
+					}
+					else throw new IllegalStateException("option " + vrphType + " cannot be applied with this instance");
+				}
+				else if (vrphType.equals(VrphType.HVRPFD)){
+					if(tokens.length > 4){
+						typeBuilder.setFixedCost(Double.parseDouble(tokens[3]));
 						typeBuilder.setCostPerDistance(Double.parseDouble(tokens[4]));
 						nuOfVehicles = Integer.parseInt(tokens[5]);
 						vrpBuilder.setFleetSize(FleetSize.FINITE);
@@ -156,7 +167,7 @@ public class VrphGoldenReader {
 	
 	public static void main(String[] args) {
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		VrphGoldenReader goldenReader = new VrphGoldenReader(vrpBuilder, VrphType.VRPH_INFINITE);
+		VrphGoldenReader goldenReader = new VrphGoldenReader(vrpBuilder, VrphType.FSMD);
 		goldenReader.read("instances/vrph/orig/cn_13mix.txt");
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		new VrpXMLWriter(vrp).write("instances/vrph/cn_13mix_VRPH_INFINITE.xml");

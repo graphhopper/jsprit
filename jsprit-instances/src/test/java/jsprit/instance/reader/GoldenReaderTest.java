@@ -17,7 +17,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_itShouldReadCorrectNuOfVehicles(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		assertEquals(17,vrp.getVehicles().size());
@@ -26,7 +26,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_itShouldReadCorrectNuOfType1Vehicles(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
@@ -41,7 +41,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_theSumOfType1VehicleShouldHvTheCorrectCapacity(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
@@ -56,7 +56,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_itShouldReadCorrectNuOfType2Vehicles(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
@@ -71,7 +71,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_theSumOfType2VehicleShouldHvTheCorrectCapacity(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
@@ -86,7 +86,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_itShouldReadCorrectNuOfType3Vehicles(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
@@ -101,7 +101,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_theSumOfType3VehicleShouldHvTheCorrectCapacity(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
@@ -116,7 +116,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_itShouldReadCorrectNuOfType4Vehicles(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
@@ -131,7 +131,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_theSumOfType4VehicleShouldHvTheCorrectCapacity(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
@@ -146,7 +146,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_itShouldReadCorrectNuOfType5Vehicles(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
@@ -161,7 +161,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_theSumOfType5VehicleShouldHvTheCorrectCapacity(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
@@ -176,7 +176,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_itShouldReadCorrectNuOfType6Vehicles(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
@@ -191,7 +191,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_theSumOfType6VehicleShouldHvTheCorrectCapacity(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
@@ -206,7 +206,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_vehicleShouldHvTheCorrectCoord(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		for(Vehicle v : vrp.getVehicles()){
@@ -223,7 +223,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_service1MustHaveCorrectDemand(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Job job = getJob("1",vrp);
@@ -233,7 +233,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_service1MustHaveCorrectCoordinate(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Coordinate coord = getCoord("1",vrp);
@@ -244,7 +244,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_service15MustHaveCorrectCoordinate(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Coordinate coord = getCoord("15",vrp);
@@ -257,7 +257,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_service50MustHaveCorrectCoordinate(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Coordinate coord = getCoord("50",vrp);
@@ -273,7 +273,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_service4MustHaveCorrectDemand(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Job job = getJob("4",vrp);
@@ -283,7 +283,7 @@ public class GoldenReaderTest {
 	@Test
 	public void whenReadingInstance_service50MustHaveCorrectDemand(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrphGoldenReader(vrpBuilder, VrphType.VRPH_FINITE)
+		new VrphGoldenReader(vrpBuilder, VrphType.HVRPD)
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Job job = getJob("50",vrp);
