@@ -38,6 +38,9 @@ public class HVRPBenchmarkExample {
 		vrpBuilder.addPenaltyVehicles(10.0);
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
+		//try also input//jsprit-examples/input/algorithmConfig_considerFixedCosts_routeLevel.xml
+		//results might even be a bit better, but it is slower, since it checks insertion on routeLevel
+		//rather than on local level
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_considerFixedCosts.xml");
 		vra.setNuOfIterations(10000);
 //		vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(500));
