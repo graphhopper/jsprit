@@ -11,7 +11,6 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.util.Solutions;
 import jsprit.instance.reader.VrphGoldenReader;
 import jsprit.instance.reader.VrphGoldenReader.VrphType;
