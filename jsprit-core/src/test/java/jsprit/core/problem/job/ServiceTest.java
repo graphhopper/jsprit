@@ -28,7 +28,7 @@ import org.junit.Test;
 public class ServiceTest {
 	
 	@Test
-	public void whenTwoServicesHaveTheSameId_theyReferencesShouldBeUnEqual(){
+	public void whenTwoServicesHaveTheSameId_theirReferencesShouldBeUnEqual(){
 		Service one = Service.Builder.newInstance("service", 10).setLocationId("foo").build();
 		Service two = Service.Builder.newInstance("service", 10).setLocationId("fo").build();
 		
