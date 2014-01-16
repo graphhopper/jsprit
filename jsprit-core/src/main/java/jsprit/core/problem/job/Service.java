@@ -22,7 +22,7 @@ import jsprit.core.util.Coordinate;
 /**
  * Service implementation of a job.
  * 
- * <p>A service distinguishes itself from a shipment such that it has only one locations. Thus a service
+ * <p>A service distinguishes itself from a shipment such that it has only one location. Thus a service
  * is a single point in space (where a service-activity occurs).
  * 
  * <p>Note that two services are equal if they have the same id.
@@ -120,9 +120,10 @@ public class Service implements Job {
 		 * 
 		 * @param serviceTime
 		 * @return builder
+		 * @throws IllegalArgumentException if serviceTime < 0
 		 */
 		public Builder setServiceTime(double serviceTime){
-			if(serviceTime < 0) throw new IllegalArgumentException("serviceTime must be greate than or equal to zero");
+			if(serviceTime < 0) throw new IllegalArgumentException("serviceTime must be greater than or equal to zero");
 			this.serviceTime = serviceTime;
 			return this;
 		}
@@ -134,8 +135,10 @@ public class Service implements Job {
 		 * 
 		 * @param tw
 		 * @return builder
+		 * @throw IllegalArgumentException if timeWindow is null
 		 */
 		public Builder setTimeWindow(TimeWindow tw){
+			if(tw == null) throw new IllegalArgumentException("time-window arg must not be null");
 			this.timeWindow = tw;
 			return this;
 		}
