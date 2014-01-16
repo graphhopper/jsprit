@@ -17,6 +17,7 @@
 package jsprit.core.problem.solution.route.activity;
 
 /**
+ * TimeWindow consists of a startTime and endTime.
  * 
  * @author stefan schroeder
  * 
@@ -24,6 +25,14 @@ package jsprit.core.problem.solution.route.activity;
 
 public class TimeWindow {
 	
+	/**
+	 * Returns new instance of TimeWindow.
+	 * 
+	 * @param start
+	 * @param end
+	 * @return TimeWindow
+	 * @throw IllegalArgumentException either if start or end < 0.0 or end < start
+	 */
 	public static TimeWindow newInstance(double start, double end){
 		return new TimeWindow(start,end);
 	}
@@ -31,16 +40,35 @@ public class TimeWindow {
 	private final double start;
 	private final double end;
 
+	/**
+	 * Constructs the timeWindow
+	 * 
+	 * @param start
+	 * @param end
+	 * @throw IllegalArgumentException either if start or end < 0.0 or end < start
+	 */
 	public TimeWindow(double start, double end) {
 		super();
+		if(start < 0.0 || end < 0.0) throw new IllegalArgumentException("neither start nor end must be < 0.0");
+		if(end < start) throw new IllegalArgumentException("end cannot be smaller than start");
 		this.start = start;
 		this.end = end;
 	}
 
+	/**
+	 * Returns startTime of TimeWindow.
+	 * 
+	 * @return startTime
+	 */
 	public double getStart() {
 		return start;
 	}
 
+	/**
+	 * Returns endTime of TimeWindow.
+	 * 
+	 * @return endTime
+	 */
 	public double getEnd() {
 		return end;
 	}
@@ -62,6 +90,9 @@ public class TimeWindow {
 		return result;
 	}
 
+	/**
+	 * Two timeWindows are equal if they have the same start AND endTime.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
