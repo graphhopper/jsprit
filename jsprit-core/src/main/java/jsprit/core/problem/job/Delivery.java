@@ -16,19 +16,42 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
-
+/**
+ * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
+ * 
+ * @author schroeder
+ *
+ */
 public class Delivery extends Service{
 	
 	public static class Builder extends Service.Builder {
 
+		/**
+		 * Returns a new instance of Delivery.Builder
+		 * 
+		 * @param id
+		 * @param size
+		 * @return builder
+		 */
 		public static Builder newInstance(String id, int size){
 			return new Builder(id,size);
 		}
 		
+		/**
+		 * Constructs the builder
+		 * 
+		 * @param id
+		 * @param size
+		 */
 		Builder(String id, int size) {
 			super(id, size);
 		}
-		
+		/**
+		 * Builds Delivery.
+		 * 
+		 * @return delivery
+		 * @throw {@link IllegalStateException} if neither locationId nor coord is set
+		 */
 		public Delivery build(){
 			if(locationId == null) { 
 				if(coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
@@ -40,6 +63,11 @@ public class Delivery extends Service{
 		
 	}
 	
+	/**
+	 * Constructs Delivery.
+	 * 
+	 * @param builder
+	 */
 	Delivery(Builder builder) {
 		super(builder);
 		

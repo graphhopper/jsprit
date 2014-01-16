@@ -16,18 +16,45 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+/**
+ * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
+ * 
+ * @author schroeder
+ *
+ */
 public class Pickup extends Service {
 
 	public static class Builder extends Service.Builder {
-
+		
+		/**
+		 * Returns a new instance of Pickup.Builder
+		 * 
+		 * @param id
+		 * @param size
+		 * @return builder
+		 */
 		public static Builder newInstance(String id, int size){
 			return new Builder(id,size);
 		}
 		
+		/**
+		 * Constructs the builder.
+		 * 
+		 * @param id
+		 * @param size
+		 */
 		Builder(String id, int size) {
 			super(id, size);
 		}
 		
+		/**
+		 * Builds Pickup.
+		 * 
+		 *<p>Pickup type is "pickup"
+		 *
+		 * @return pickup
+		 * @throw {@link IllegalStateException} if neither locationId nor coordinate has been set
+		 */
 		public Pickup build(){
 			if(locationId == null) { 
 				if(coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
@@ -39,6 +66,11 @@ public class Pickup extends Service {
 		
 	}
 	
+	/**
+	 * Constructs the Pickup
+	 * 
+	 * @param builder
+	 */
 	Pickup(Builder builder) {
 		super(builder);
 	}
