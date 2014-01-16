@@ -37,7 +37,7 @@ public class VehicleTypeImpl implements VehicleType {
 		public static VehicleTypeImpl.VehicleCostParams newInstance(double fix, double perTimeUnit,double perDistanceUnit){
 			return new VehicleCostParams(fix, perTimeUnit, perDistanceUnit);
 		}
-		
+	
 		public final double fix;
 		public final double perTimeUnit;
 		public final double perDistanceUnit;
@@ -71,9 +71,12 @@ public class VehicleTypeImpl implements VehicleType {
 		 * 
 		 * @param id
 		 * @param capacity
-		 * @return
+		 * @return the vehicleType builder
+		 * @throws IllegalStateException if capacity is smaller than zero or id is null
 		 */
 		public static VehicleTypeImpl.Builder newInstance(String id, int capacity){
+			if(capacity < 0) throw new IllegalStateException("capacity cannot be smaller than zero");
+			if(id == null) throw new IllegalStateException("typeId must be null");
 			return new Builder(id,capacity);
 		}
 		
@@ -104,8 +107,12 @@ public class VehicleTypeImpl implements VehicleType {
 		 * 
 		 * @param inMeterPerSeconds
 		 * @return this builder
+		 * @throws IllegalStateException if velocity is smaller than zero
 		 */
-		public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds){ this.maxVelo = inMeterPerSeconds; return this; }
+		public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds){ 
+			if(inMeterPerSeconds < 0.0) throw new IllegalStateException("velocity cannot be smaller than zero");
+			this.maxVelo = inMeterPerSeconds; return this; 
+		}
 		
 		/**
 		 * Sets the fixed costs of the vehicle-type.
@@ -114,8 +121,13 @@ public class VehicleTypeImpl implements VehicleType {
 		 * 
 		 * @param fixedCost
 		 * @return this builder
+		 * @throws IllegalStateException if fixedCost is smaller than zero
 		 */
-		public VehicleTypeImpl.Builder setFixedCost(double fixedCost) { this.fixedCost = fixedCost; return this; }
+		public VehicleTypeImpl.Builder setFixedCost(double fixedCost) { 
+			if(fixedCost < 0.0) throw new IllegalStateException("fixed costs cannot be smaller than zero");
+			this.fixedCost = fixedCost; 
+			return this; 
+		}
 
 		/**
 		 * Sets the cost per distance unit, for instance € per meter.
@@ -124,8 +136,13 @@ public class VehicleTypeImpl implements VehicleType {
 		 * 
 		 * @param perDistance
 		 * @return this builder
+		 * @throws IllegalStateException if perDistance is smaller than zero
 		 */
-		public VehicleTypeImpl.Builder setCostPerDistance(double perDistance){ this.perDistance = perDistance; return this; }
+		public VehicleTypeImpl.Builder setCostPerDistance(double perDistance){ 
+			if(perDistance < 0.0) throw new IllegalStateException("cost per distance must not be smaller than zero");
+			this.perDistance = perDistance; 
+			return this; 
+		}
 
 		/**
 		 * Sets cost per time unit, for instance € per second.
@@ -133,14 +150,19 @@ public class VehicleTypeImpl implements VehicleType {
 		 * <p>by default it is 0.0 
 		 * 
 		 * @param perTime
-		 * @return
+		 * @return this builder
+		 * @throws IllegalStateException if costPerTime is smaller than zero
 		 */
-		public VehicleTypeImpl.Builder setCostPerTime(double perTime){ this.perTime = perTime; return this; }
+		public VehicleTypeImpl.Builder setCostPerTime(double perTime){ 
+			if(perTime < 0.0) throw new IllegalStateException();
+			this.perTime = perTime; 
+			return this; 
+		}
 		
 		/**
 		 * Builds the vehicle-type.
 		 * 
-		 * @return
+		 * @return VehicleTypeImpl
 		 */
 		public VehicleTypeImpl build(){
 			return new VehicleTypeImpl(this);
@@ -183,7 +205,7 @@ public class VehicleTypeImpl implements VehicleType {
 	
 	private final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
 	
-	private double maxVelocity;
+	private final double maxVelocity;
 
 	/**
 	 * @deprecated use builder instead
@@ -205,11 +227,20 @@ public class VehicleTypeImpl implements VehicleType {
 		vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance);
 	}
 
+	/**
+	 * @deprecated use Builder.newInstance(...) instead.
+	 * 
+	 * @param typeId
+	 * @param capacity
+	 * @param vehicleCostParams
+	 */
+	@Deprecated
 	public VehicleTypeImpl(String typeId, int capacity,VehicleTypeImpl.VehicleCostParams vehicleCostParams) {
 		super();
 		this.typeId = typeId;
 		this.capacity = capacity;
 		this.vehicleCostParams = vehicleCostParams;
+		this.maxVelocity = Double.MAX_VALUE;
 	}
 
 	/* (non-Javadoc)
