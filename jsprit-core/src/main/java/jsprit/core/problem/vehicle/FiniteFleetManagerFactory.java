@@ -27,7 +27,6 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 
 	private Collection<Vehicle> vehicles;
 	
-
 	/**
 	 * Constucts the factory.
 	 *
@@ -40,9 +39,14 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 
 	/**
 	 * Creates the finite fleetmanager.
+	 * 
+	 * @return VehicleFleetManager
+	 * @throws IllegalStateManager if vehicles == null or vehicles.isEmpty()
 	 */
 	@Override
 	public VehicleFleetManager createFleetManager() {
+		if(vehicles == null) throw new IllegalStateException("vehicles is null. this must not be.");
+		if(vehicles.isEmpty()) throw new IllegalStateException("vehicle-collection is empty. this must not be");
 		return new VehicleFleetManagerImpl(vehicles);
 	}
 

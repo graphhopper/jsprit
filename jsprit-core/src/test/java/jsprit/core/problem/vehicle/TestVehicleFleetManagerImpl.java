@@ -28,7 +28,7 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import junit.framework.TestCase;
 
-public class TestVehicleFleetManager extends TestCase{
+public class TestVehicleFleetManagerImpl extends TestCase{
 	
 	VehicleFleetManager fleetManager;
 	

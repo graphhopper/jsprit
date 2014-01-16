@@ -16,17 +16,31 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+
 import jsprit.core.problem.Capacity;
 
-
+/**
+ * Implementation of {@link VehicleType}.
+ * 
+ * <p>Two vehicle-types are equal if they have the same typeId.
+ * 
+ * @author schroeder
+ *
+ */
 public class VehicleTypeImpl implements VehicleType {
 	
+	/**
+	 * CostParameter consisting of fixed cost parameter, time-based cost parameter and distance-based cost parameter.
+	 * 
+	 * @author schroeder
+	 *
+	 */
 	public static class VehicleCostParams {
 		
 		public static VehicleTypeImpl.VehicleCostParams newInstance(double fix, double perTimeUnit,double perDistanceUnit){
 			return new VehicleCostParams(fix, perTimeUnit, perDistanceUnit);
 		}
-		
+	
 		public final double fix;
 		public final double perTimeUnit;
 		public final double perDistanceUnit;
@@ -44,10 +58,28 @@ public class VehicleTypeImpl implements VehicleType {
 		}
 	}
 
-	
+	/**
+	 * Builder that builds the vehicle-type.
+	 * 
+	 * @author schroeder
+	 *
+	 */
 	public static class Builder{
 		
+		/**
+		 * Returns a new instance.
+		 * 
+		 * <p>Input parameters are id and capacity. Note that two vehicle-types are equal
+		 * if they have the same vehicleId.
+		 * 
+		 * @param id
+		 * @param capacity
+		 * @return the vehicleType builder
+		 * @throws IllegalStateException if capacity is smaller than zero or id is null
+		 */
 		public static VehicleTypeImpl.Builder newInstance(String id, int capacity){
+			if(capacity < 0) throw new IllegalStateException("capacity cannot be smaller than zero");
+			if(id == null) throw new IllegalStateException("typeId must be null");
 			Builder builder = new Builder(id,capacity);
 			builder.addCapacityDimension(0, capacity);
 			return builder;
@@ -72,7 +104,13 @@ public class VehicleTypeImpl implements VehicleType {
 		
 		private Capacity capacityDimensions;
 
-		public Builder(String id, int capacity) {
+		/**
+		 * Constructs the builder.
+		 * 
+		 * @param id
+		 * @param capacity
+		 */
+		private Builder(String id, int capacity) {
 			super();
 			this.id = id;
 			this.capacity = capacity;
@@ -82,14 +120,68 @@ public class VehicleTypeImpl implements VehicleType {
 			this.id = id;
 		}
 
-		public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds){ this.maxVelo = inMeterPerSeconds; return this; }
+		/**
+		 * Sets the maximum velocity this vehicle-type can go [in meter per seconds].
+		 * 
+		 * @param inMeterPerSeconds
+		 * @return this builder
+		 * @throws IllegalStateException if velocity is smaller than zero
+		 */
+		public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds){ 
+			if(inMeterPerSeconds < 0.0) throw new IllegalStateException("velocity cannot be smaller than zero");
+			this.maxVelo = inMeterPerSeconds; return this; 
+		}
 		
-		public VehicleTypeImpl.Builder setFixedCost(double fixedCost) { this.fixedCost = fixedCost; return this; }
+		/**
+		 * Sets the fixed costs of the vehicle-type.
+		 * 
+		 * <p>by default it is 0.
+		 * 
+		 * @param fixedCost
+		 * @return this builder
+		 * @throws IllegalStateException if fixedCost is smaller than zero
+		 */
+		public VehicleTypeImpl.Builder setFixedCost(double fixedCost) { 
+			if(fixedCost < 0.0) throw new IllegalStateException("fixed costs cannot be smaller than zero");
+			this.fixedCost = fixedCost; 
+			return this; 
+		}
 
-		public VehicleTypeImpl.Builder setCostPerDistance(double perDistance){ this.perDistance = perDistance; return this; }
+		/**
+		 * Sets the cost per distance unit, for instance € per meter.
+		 * 
+		 * <p>by default it is 1.0
+		 * 
+		 * @param perDistance
+		 * @return this builder
+		 * @throws IllegalStateException if perDistance is smaller than zero
+		 */
+		public VehicleTypeImpl.Builder setCostPerDistance(double perDistance){ 
+			if(perDistance < 0.0) throw new IllegalStateException("cost per distance must not be smaller than zero");
+			this.perDistance = perDistance; 
+			return this; 
+		}
 
-		public VehicleTypeImpl.Builder setCostPerTime(double perTime){ this.perTime = perTime; return this; }
+		/**
+		 * Sets cost per time unit, for instance € per second.
+		 * 
+		 * <p>by default it is 0.0 
+		 * 
+		 * @param perTime
+		 * @return this builder
+		 * @throws IllegalStateException if costPerTime is smaller than zero
+		 */
+		public VehicleTypeImpl.Builder setCostPerTime(double perTime){ 
+			if(perTime < 0.0) throw new IllegalStateException();
+			this.perTime = perTime; 
+			return this; 
+		}
 		
+		/**
+		 * Builds the vehicle-type.
+		 * 
+		 * @return VehicleTypeImpl
+		 */
 		public VehicleTypeImpl build(){
 			capacityDimensions = capacityBuilder.build();
 			return new VehicleTypeImpl(this);
@@ -112,6 +204,9 @@ public class VehicleTypeImpl implements VehicleType {
 		return result;
 	}
 
+	/**
+	 * Two vehicle-types are equal if they have the same vehicleId.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -135,9 +230,10 @@ public class VehicleTypeImpl implements VehicleType {
 	
 	private final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
 	
-	private double maxVelocity;
-	
-	private Capacity capacityDimensions;
+	private final Capacity capacityDimensions;
+
+	private final double maxVelocity;
+
 
 	/**
 	 * @deprecated use builder instead
@@ -147,6 +243,11 @@ public class VehicleTypeImpl implements VehicleType {
 		return new VehicleTypeImpl(typeId, capacity, para);
 	}
 	
+	/**
+	 * priv constructor constructing vehicle-type
+	 * 
+	 * @param builder
+	 */
 	private VehicleTypeImpl(VehicleTypeImpl.Builder builder){
 		typeId = builder.id;
 		capacity = builder.capacity;
@@ -155,13 +256,21 @@ public class VehicleTypeImpl implements VehicleType {
 		capacityDimensions = builder.capacityDimensions;
 	}
 
+	/**
+	 * @deprecated use Builder.newInstance(...) instead.
+	 * 
+	 * @param typeId
+	 * @param capacity
+	 * @param vehicleCostParams
+	 */
+	@Deprecated
 	public VehicleTypeImpl(String typeId, int capacity,VehicleTypeImpl.VehicleCostParams vehicleCostParams) {
 		super();
 		this.typeId = typeId;
 		this.capacity = capacity;
 		this.vehicleCostParams = vehicleCostParams;
-		capacityDimensions = Capacity.Builder.newInstance().addDimension(0, capacity).build();
-		
+		this.capacityDimensions = Capacity.Builder.newInstance().addDimension(0, capacity).build();
+		this.maxVelocity = Double.MAX_VALUE;
 	}
 
 	/* (non-Javadoc)

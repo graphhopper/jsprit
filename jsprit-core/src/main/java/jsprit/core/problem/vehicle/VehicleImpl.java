@@ -94,12 +94,14 @@ public class VehicleImpl implements Vehicle {
 		}
 		
 		/**
-		 * Sets the {@link VehicleType}.
+		 * Sets the {@link VehicleType}.<br>
 		 * 
 		 * @param type
+		 * @throws IllegalStateException if type is null
 		 * @return this builder
 		 */
 		public Builder setType(VehicleType type){
+			if(type==null) throw new IllegalStateException("type cannot be null.");
 			this.type = type;
 			return this;
 		}
@@ -166,6 +168,9 @@ public class VehicleImpl implements Vehicle {
 		/**
 		 * Builds and returns the vehicle.
 		 * 
+		 * <p>if {@link VehicleType} is not set, default vehicle-type is set with id="default" and 
+		 * capacity=0
+		 * 
 		 * @return vehicle
 		 * @throw IllegalStateException if both locationId and locationCoord is not set
 		 */
@@ -188,6 +193,8 @@ public class VehicleImpl implements Vehicle {
 
 	/**
 	 * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
+	 * 
+	 * <p>NoVehicle has id="noVehicle" and extends {@link VehicleImpl}
 	 * 
 	 * @return emptyVehicle
 	 */
@@ -219,9 +226,14 @@ public class VehicleImpl implements Vehicle {
 		returnToDepot = builder.returnToDepot;
 	}
 	
+	/**
+	 * Returns String with attributes of this vehicle
+	 * 
+	 * <p>String has the following format [attr1=val1][attr2=val2]...[attrn=valn]
+	 */
 	@Override
 	public String toString() {
-		return "[id="+id+"][type="+type+"][locationId="+locationId+"][coord=" + coord + "]";
+		return "[id="+id+"][type="+type+"][locationId="+locationId+"][coord=" + coord + "][isReturnToDepot=" + isReturnToDepot() + "]";
 	}
 
 	public Coordinate getCoord() {
