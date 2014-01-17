@@ -32,6 +32,7 @@ public class Delivery extends Service{
 		 * @param id
 		 * @param size
 		 * @return builder
+		 * @throws IllegalArgumentException if size < 0 or id is null
 		 */
 		public static Builder newInstance(String id, int size){
 			return new Builder(id,size);
@@ -42,6 +43,7 @@ public class Delivery extends Service{
 		 * 
 		 * @param id
 		 * @param size
+		 * @throws IllegalArgumentException if size < 0 or id is null
 		 */
 		Builder(String id, int size) {
 			super(id, size);
@@ -50,7 +52,7 @@ public class Delivery extends Service{
 		 * Builds Delivery.
 		 * 
 		 * @return delivery
-		 * @throw {@link IllegalStateException} if neither locationId nor coord is set
+		 * @throw IllegalStateException if neither locationId nor coord is set
 		 */
 		public Delivery build(){
 			if(locationId == null) { 

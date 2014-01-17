@@ -46,6 +46,7 @@ public class Service implements Job {
 		 * @param id of service
 		 * @param size of capacity-demand
 		 * @return builder
+		 * @throws IllegalArgumentException if size < 0 or id is null
 		 */
 		public static Builder newInstance(String id, int size){
 			return new Builder(id,size);
@@ -70,9 +71,11 @@ public class Service implements Job {
 		 * 
 		 * @param id
 		 * @param size
+		 * @throws IllegalArgumentException if size < 0 or id is null
 		 */
 		Builder(String id, int size) {
 			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
+			if(id == null) throw new IllegalArgumentException("id must not be null");
 			this.id = id;
 			this.demand = size;
 		}

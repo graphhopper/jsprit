@@ -32,6 +32,7 @@ public class Pickup extends Service {
 		 * @param id
 		 * @param size
 		 * @return builder
+		 * @throws IllegalArgumentException if size < 0 or id is null
 		 */
 		public static Builder newInstance(String id, int size){
 			return new Builder(id,size);
@@ -42,6 +43,7 @@ public class Pickup extends Service {
 		 * 
 		 * @param id
 		 * @param size
+		 * @throws IllegalArgumentException if size < 0 or id is null
 		 */
 		Builder(String id, int size) {
 			super(id, size);
@@ -53,7 +55,7 @@ public class Pickup extends Service {
 		 *<p>Pickup type is "pickup"
 		 *
 		 * @return pickup
-		 * @throw {@link IllegalStateException} if neither locationId nor coordinate has been set
+		 * @throw IllegalStateException if neither locationId nor coordinate has been set
 		 */
 		public Pickup build(){
 			if(locationId == null) { 
