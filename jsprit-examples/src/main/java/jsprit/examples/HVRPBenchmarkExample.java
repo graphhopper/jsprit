@@ -23,6 +23,7 @@ import jsprit.util.Examples;
  * <a href=http://mistic.heig-vd.ch/taillard/problemes.dir/vrp.dir/vrp.html>.
  * 
  * <p>You can find best results of different problems, instances and authors here:
+ * <br><a href="http://link.springer.com/article/10.1007%2Fs10732-011-9186-y">http://link.springer.com/article/10.1007%2Fs10732-011-9186-y</a>
  * <br><a href="http://www2.ic.uff.br/~satoru/conteudo/artigos/PAPER%20PUCA-JHeuristics-2011.pdf">http://www2.ic.uff.br/~satoru/conteudo/artigos/PAPER%20PUCA-JHeuristics-2011.pdf</a>
  * <br><a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.100.2331&rep=rep1&type=pdf">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.100.2331&rep=rep1&type=pdf</a>
  * 
