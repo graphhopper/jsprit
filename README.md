@@ -41,7 +41,7 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 [Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
 
-If you do not want Maven to manage your dependencies, go to [snapshot-jar-download](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) or [realease-jar-download](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) to download jsprit-jars. Just click on the jar-file you want to download and use 'Raw' to actually download it. 
+If you do not want Maven to manage your dependencies, go to [snapshot-jar-download](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) or [realease-jar-download](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) to download jsprit-jars. Just click on the jar-file you want to download and use 'Raw'-button to actually download it. 
 
 ####If not
 
