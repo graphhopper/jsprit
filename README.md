@@ -41,6 +41,8 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 [Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
 
+If you do not want Maven to manager your dependencies, go to snapshot-jar-download or realease-download-download to download jsprit-jars.
+
 ####If not
 
 The following documentation is recommended:
