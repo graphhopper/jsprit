@@ -23,8 +23,6 @@ import jsprit.core.util.Coordinate;
  * 
  * <p>See {@link VrphType} what kind of problems can be generated
  * 
- * <p>Note that c20_3-c20_6 do not have variable costs and a limited nuVehicle, thus they can only be used for FSMF.
- * 
  * @author schroeder
  *
  */
@@ -110,6 +108,7 @@ public class VrphGoldenReader {
 						typeBuilder.setCostPerDistance(Double.parseDouble(tokens[4]));
 						nuOfVehicles = Integer.parseInt(tokens[5]);
 						vrpBuilder.setFleetSize(FleetSize.FINITE);
+						vrpBuilder.addPenaltyVehicles(5.0, 5000);
 					}
 					else throw new IllegalStateException("option " + vrphType + " cannot be applied with this instance");
 				}
@@ -119,6 +118,7 @@ public class VrphGoldenReader {
 						typeBuilder.setCostPerDistance(Double.parseDouble(tokens[4]));
 						nuOfVehicles = Integer.parseInt(tokens[5]);
 						vrpBuilder.setFleetSize(FleetSize.FINITE);
+						vrpBuilder.addPenaltyVehicles(5.0, 5000);
 					}
 					else throw new IllegalStateException("option " + vrphType + " cannot be applied with this instance");
 				}

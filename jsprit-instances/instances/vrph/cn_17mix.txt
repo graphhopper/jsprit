@@ -78,10 +78,11 @@
 //Vehicles characteristics: volume, fixed cost, variable cost, number available
 //See E. D. Taillard, "A heuristic column generation method for the heterogeneous fleet vrp"
 //RAIRO Rech. Op�r. 33 (1) 1999, pp 1-14)
-//see http://ina2.eivd.ch/collaborateurs/etd/articles.dir/vrphen.pdf50 25 1.0 4
-v 1 120 80 1.2 4
-v 2 200 150 1.5 2
-v 3 350 320 1.8 1
+//see http://ina2.eivd.ch/collaborateurs/etd/articles.dir/vrphen.pdf
+v 1 50 25 1.0 4
+v 2 120 80 1.2 4
+v 3 200 150 1.5 2
+v 4 350 320 1.8 1
 
 7 350 0 1000000 703.124497 + 7 * 150 = 1753.12
   14  27  57  15  37  20  70  60  71  69  36  47   5  29  45   2685412
