@@ -98,5 +98,107 @@ public class VehicleImplTest {
 		assertEquals("noVehicle",v.getId());
 	}
 	
+	@Test
+	public void whenStartLocationIsSet_itIsDoneCorrectly(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").build();
+		assertEquals("startLoc", v.getLocationId());
+		assertEquals("startLoc", v.getStartLocationId());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void whenStartLocationIsNull_itThrowsException(){
+		@SuppressWarnings("unused")
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId(null).build();
+	}
+	
+	@Test
+	public void whenStartLocationCoordIsSet_itIsDoneCorrectly(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(1, 2)).build();
+		assertEquals(1.0, v.getStartLocationCoordinate().getX(),0.01);
+		assertEquals(2.0, v.getStartLocationCoordinate().getY(),0.01);
+		
+		assertEquals(1.0, v.getCoord().getX(),0.01);
+		assertEquals(2.0, v.getCoord().getY(),0.01);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void whenStartLocationCoordIsNull_itThrowsException(){
+		@SuppressWarnings("unused")
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(null).build();
+	}
+	
+	@Test
+	public void whenEndLocationIsSet_itIsDoneCorrectly(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").setEndLocationId("endLoc").build();
+		assertEquals("startLoc", v.getStartLocationId());
+		assertEquals("endLoc", v.getEndLocationId());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void whenEndLocationIsNull_itThrowsException(){
+		@SuppressWarnings("unused")
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setEndLocationId(null).build();
+	}
+	
+	@Test
+	public void whenEndLocationCoordIsSet_itIsDoneCorrectly(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").setEndLocationCoordinate(Coordinate.newInstance(1, 2)).build();
+		assertEquals(1.0, v.getEndLocationCoordinate().getX(),0.01);
+		assertEquals(2.0, v.getEndLocationCoordinate().getY(),0.01);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void whenEndLocationCoordIsNull_itThrowsException(){
+		@SuppressWarnings("unused")
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setEndLocationCoordinate(null).build();
+	}
+	
+	@Test
+	public void whenNeitherEndLocationIdNorEndLocationCoordAreSet_endLocationIdMustBeEqualToStartLocationId(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").build();
+		assertEquals("startLoc", v.getEndLocationId());
+	}
+	
+	@Test
+	public void whenNeitherEndLocationIdNorEndLocationCoordAreSet_endLocationCoordMustBeEqualToStartLocationCoord(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").build();
+		assertEquals(v.getEndLocationCoordinate(), v.getStartLocationCoordinate());
+	}
+	
+	@Test
+	public void whenNeitherEndLocationIdNorEndLocationCoordAreSet_endLocationCoordMustBeEqualToStartLocationCoordV2(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(1.0, 2.0)).build();
+		assertEquals(v.getEndLocationCoordinate(), v.getStartLocationCoordinate());
+	}
+	
+	@Test
+	public void whenEndLocationCoordinateIsSetButNoId_idMustBeCoordToString(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(1.0, 2.0)).setEndLocationCoordinate(Coordinate.newInstance(3.0, 4.0)).build();
+		assertEquals(v.getEndLocationCoordinate().toString(), v.getEndLocationId());
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void whenEndLocationIdIsSpecifiedANDReturnToDepotIsFalse_itShouldThrowException(){
+		@SuppressWarnings("unused")
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(1.0, 2.0)).setEndLocationId("endLoc").setReturnToDepot(false).build();
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void whenEndLocationCoordIsSpecifiedANDReturnToDepotIsFalse_itShouldThrowException(){
+		@SuppressWarnings("unused")
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(1.0, 2.0)).setEndLocationCoordinate(Coordinate.newInstance(3, 4)).setReturnToDepot(false).build();
+	}
+	
+	@Test
+	public void whenEndLocationCoordIsNotSpecifiedANDReturnToDepotIsFalse_endLocationCoordMustBeStartLocationCoord(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(1.0, 2.0)).setReturnToDepot(false).build();
+		assertEquals(v.getStartLocationCoordinate(),v.getEndLocationCoordinate());
+	}
+	
+	@Test
+	public void whenEndLocationIdIsNotSpecifiedANDReturnToDepotIsFalse_endLocationIdMustBeStartLocationId(){
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(1.0, 2.0)).setReturnToDepot(false).build();
+		assertEquals(v.getStartLocationCoordinate().toString(),v.getEndLocationId());
+	}
 
 }

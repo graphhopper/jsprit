@@ -86,5 +86,24 @@ public interface Vehicle {
 	 * @return true if isReturnToDepot
 	 */
 	public abstract boolean isReturnToDepot();
-
+	
+	/**
+	 * Returns the start-locationId of this vehicle.
+	 */
+	public abstract String getStartLocationId();
+	
+	/**
+	 * Returns the start-locationCoord of this vehicle.
+	 */
+	public abstract Coordinate getStartLocationCoordinate();
+	
+	/**
+	 * Returns the end-locationId of this vehicle.
+	 */
+	public abstract String getEndLocationId();
+	
+	/**
+	 * Returns the end-locationCoord of this vehicle.
+	 */
+	public abstract Coordinate getEndLocationCoordinate();
 }

@@ -79,6 +79,12 @@ public class VehicleImpl implements Vehicle {
 		private double earliestStart = 0.0;
 		private double latestArrival = Double.MAX_VALUE;
 		
+		private String startLocationId;
+		private Coordinate startLocationCoord;
+		
+		private String endLocationId;
+		private Coordinate endLocationCoord;
+		
 		private boolean returnToDepot = true;
 		
 		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default", 0).build();
@@ -109,6 +115,12 @@ public class VehicleImpl implements Vehicle {
 		/**
 		 * Sets the flag whether the vehicle must return to depot or not.
 		 * 
+		 * <p>If returnToDepot is true, the vehicle must return to specified end-location. If you
+		 * omit specifying the end-location, vehicle returns to start-location (that must to be set). If
+		 * you specify it, it returns to specified end-location.
+		 * 
+		 * <p>If returnToDepot is false, the end-location of the vehicle is endogenous.
+		 * 
 		 * @param returnToDepot
 		 * @return this builder
 		 */
@@ -127,6 +139,7 @@ public class VehicleImpl implements Vehicle {
 		 */
 		public Builder setLocationId(String id){
 			this.locationId = id;
+			this.startLocationId = id;
 			return this;
 		}
 		
@@ -140,6 +153,61 @@ public class VehicleImpl implements Vehicle {
 		 */
 		public Builder setLocationCoord(Coordinate coord){
 			this.locationCoord = coord;
+			this.startLocationCoord = coord;
+			return this;
+		}
+		
+		/**
+		 * Sets the start-location of this vehicle.
+		 * 
+		 * @param startLocationId
+		 * @return this builder
+		 * @throws IllegalArgumentException if startLocationId is null
+		 */
+		public Builder setStartLocationId(String startLocationId){
+			if(startLocationId == null) throw new IllegalArgumentException("startLocationId cannot be null");
+			this.startLocationId = startLocationId;
+			this.locationId = startLocationId;
+			return this;
+		}
+		
+		/**
+		 * Sets the start-coordinate of this vehicle.
+		 * 
+		 * @param coord
+		 * @return this builder
+		 * @throws IllegalArgumentException if start-coordinate is null
+		 */
+		public Builder setStartLocationCoordinate(Coordinate coord){
+			if(coord == null) throw new IllegalArgumentException("start-coordinate must not be null");
+			this.startLocationCoord = coord;
+			this.locationCoord = coord;
+			return this;
+		}
+		
+		/**
+		 * Sets the end-locationId of this vehicle.
+		 * 
+		 * @param endLocationId
+		 * @return this builder
+		 * @throws IllegalArgumentException if endLocation is null
+		 */
+		public Builder setEndLocationId(String endLocationId){
+			if(endLocationId == null) throw new IllegalArgumentException("end-locationId must not be null");
+			this.endLocationId = endLocationId;
+			return this;
+		}
+		
+		/**
+		 * Sets the end-coordinate of this vehicle.
+		 * 
+		 * @param coord
+		 * @return this builder
+		 * @throws IllegalArgumentException if coord is null
+		 */
+		public Builder setEndLocationCoordinate(Coordinate coord){
+			if(coord == null) throw new IllegalArgumentException("end-coordinate must not be null");
+			this.endLocationCoord = coord;
 			return this;
 		}
 		
@@ -175,9 +243,21 @@ public class VehicleImpl implements Vehicle {
 		 * @throw IllegalStateException if both locationId and locationCoord is not set
 		 */
 		public VehicleImpl build(){
-			if(locationId == null && locationCoord != null) locationId = locationCoord.toString();
+			if(locationId == null && locationCoord != null) {
+				locationId = locationCoord.toString();
+				startLocationId = locationCoord.toString();
+			}
 			if(locationId == null && locationCoord == null) throw new IllegalStateException("locationId and locationCoord is missing.");
 			if(locationCoord == null) log.warn("locationCoord for vehicle " + id + " is missing.");
+			if(endLocationCoord != null && returnToDepot == false) throw new IllegalStateException("this must not be. you specified both endLocationCoord and open-routes. this is contradictory. <br>" +
+					"if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
+			if(endLocationId != null && returnToDepot == false) throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
+					"if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
+			if(endLocationId == null && endLocationCoord != null) endLocationId = endLocationCoord.toString();
+			if(endLocationId == null && endLocationCoord == null) {
+				endLocationId = startLocationId;
+				endLocationCoord = startLocationCoord;
+			}
 			return new VehicleImpl(this);
 		}
 		
@@ -216,6 +296,14 @@ public class VehicleImpl implements Vehicle {
 	
 	private final boolean returnToDepot;
 
+	private final Coordinate endLocationCoord;
+
+	private final String endLocationId;
+
+	private final Coordinate startLocationCoord;
+
+	private final String startLocationId;
+
 	private VehicleImpl(Builder builder){
 		id = builder.id;
 		type = builder.type;
@@ -224,6 +312,10 @@ public class VehicleImpl implements Vehicle {
 		earliestDeparture = builder.earliestStart;
 		latestArrival = builder.latestArrival;
 		returnToDepot = builder.returnToDepot;
+		startLocationId = builder.startLocationId;
+		startLocationCoord = builder.startLocationCoord;
+		endLocationId = builder.endLocationId;
+		endLocationCoord = builder.endLocationCoord;
 	}
 	
 	/**
@@ -272,6 +364,26 @@ public class VehicleImpl implements Vehicle {
 
 	public boolean isReturnToDepot() {
 		return returnToDepot;
+	}
+
+	@Override
+	public String getStartLocationId() {
+		return this.startLocationId;
+	}
+
+	@Override
+	public Coordinate getStartLocationCoordinate() {
+		return this.startLocationCoord;
+	}
+
+	@Override
+	public String getEndLocationId() {
+		return this.endLocationId;
+	}
+
+	@Override
+	public Coordinate getEndLocationCoordinate() {
+		return this.endLocationCoord;
 	}
 	
 }
