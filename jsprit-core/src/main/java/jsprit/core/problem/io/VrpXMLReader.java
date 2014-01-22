@@ -472,20 +472,44 @@ public class VrpXMLReader{
 			if(type == null) throw new IllegalStateException("vehicleType with typeId " + typeId + " is missing.");
 			builder.setType(type);
 			String locationId = vehicleConfig.getString("location.id");
+			if(locationId == null) {
+				locationId = vehicleConfig.getString("startLocation.id");
+			}
 			if(locationId == null) throw new IllegalStateException("location.id is missing.");
-			builder.setLocationId(locationId);
+			builder.setStartLocationId(locationId);
 			String coordX = vehicleConfig.getString("location.coord[@x]");
 			String coordY = vehicleConfig.getString("location.coord[@y]");
 			if(coordX == null || coordY == null) {
+				coordX = vehicleConfig.getString("startLocation.coord[@x]");
+				coordY = vehicleConfig.getString("startLocation.coord[@y]");
+			}
+			if(coordX == null || coordY == null) {
+					if(!doNotWarnAgain) {
+						logger.warn("location.coord is missing. will not warn you again.");
+						doNotWarnAgain = true;
+					}
+			}
+			else{
+				Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(coordX), Double.parseDouble(coordY));
+				builder.setStartLocationCoordinate(coordinate);
+			}
+			
+			String endLocationId = vehicleConfig.getString("endLocation.id");
+			if(endLocationId != null) builder.setEndLocationId(endLocationId);
+			String endCoordX = vehicleConfig.getString("endLocation.coord[@x]");
+			String endCoordY = vehicleConfig.getString("endLocation.coord[@y]");
+			if(endCoordX == null || endCoordY == null) {
 				if(!doNotWarnAgain) {
-					logger.warn("location.coord is missing. do not warn you again.");
+					logger.warn("endLocation.coord is missing. will not warn you again.");
 					doNotWarnAgain = true;
 				}
 			}
 			else{
-				Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(coordX), Double.parseDouble(coordY));
-				builder.setLocationCoord(coordinate);
+				Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(endCoordX), Double.parseDouble(endCoordY));
+				builder.setEndLocationCoordinate(coordinate);
 			}
+			
+			
 			String start = vehicleConfig.getString("timeSchedule.start");
 			String end = vehicleConfig.getString("timeSchedule.end");
 			if(start != null) builder.setEarliestStart(Double.parseDouble(start));

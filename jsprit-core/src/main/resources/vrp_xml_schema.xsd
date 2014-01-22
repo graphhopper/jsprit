@@ -37,18 +37,28 @@
 							<xs:complexType>
 								<xs:all>
 									<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
-									<xs:element name="location">
+									<xs:element name="location" minOccurs="0" maxOccurs="1">
 										<xs:complexType>
 											<xs:all>
 												<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
-												<xs:element name="coord" minOccurs="0" maxOccurs="1">
-												 	<xs:complexType>
-												 		<xs:attribute name="x" type="xs:decimal" use="required"/>
-												 		<xs:attribute name="y" type="xs:decimal" use="required"/>
-												 	</xs:complexType>
-												</xs:element>
+												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
 											</xs:all>
-										
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="startLocation" minOccurs="0" maxOccurs="1">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
+											</xs:all>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="endLocation" minOccurs="0" maxOccurs="1">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
+											</xs:all>
 										</xs:complexType>
 									</xs:element>
 									<xs:element name="typeId" type="xs:string" minOccurs="1" maxOccurs="1"/>

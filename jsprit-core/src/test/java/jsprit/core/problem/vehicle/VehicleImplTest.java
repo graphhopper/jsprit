@@ -200,5 +200,18 @@ public class VehicleImplTest {
 		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(1.0, 2.0)).setReturnToDepot(false).build();
 		assertEquals(v.getStartLocationCoordinate().toString(),v.getEndLocationId());
 	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void whenStartAndEndAreUnequalANDReturnToDepotIsFalse_itShouldThrowException(){
+		@SuppressWarnings("unused")
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").setReturnToDepot(false).build();
+	}
+	
+	@Test
+	public void whenStartAndEndAreEqualANDReturnToDepotIsFalse_itShouldThrowException(){
+		@SuppressWarnings("unused")
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("start").setReturnToDepot(false).build();
+		assertTrue(true);
+	}
 
 }

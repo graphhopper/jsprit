@@ -99,6 +99,7 @@ public interface Vehicle {
 	
 	/**
 	 * Returns the end-locationId of this vehicle.
+	 * 
 	 */
 	public abstract String getEndLocationId();
 	

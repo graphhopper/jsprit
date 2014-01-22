@@ -239,8 +239,15 @@ public class VehicleImpl implements Vehicle {
 		 * <p>if {@link VehicleType} is not set, default vehicle-type is set with id="default" and 
 		 * capacity=0
 		 * 
+		 * <p>if startLocationId || locationId is null (=> startLocationCoordinate || locationCoordinate must be set) then startLocationId=startLocationCoordinate.toString() 
+		 * and locationId=locationCoordinate.toString() [coord.toString() --> [x=x_val][y=y_val])
+		 * <p>if endLocationId is null and endLocationCoordinate is set then endLocationId=endLocationCoordinate.toString()
+		 * <p>if endLocationId==null AND endLocationCoordinate==null then endLocationId=startLocationId AND endLocationCoord=startLocationCoord
+		 * Thus endLocationId can never be null even returnToDepot is false.
+		 * 
 		 * @return vehicle
-		 * @throw IllegalStateException if both locationId and locationCoord is not set
+		 * @throws IllegalStateException if both locationId and locationCoord is not set or (endLocationCoord!=null AND returnToDepot=false) 
+		 * or (endLocationId!=null AND returnToDepot=false)  
 		 */
 		public VehicleImpl build(){
 			if(locationId == null && locationCoord != null) {
@@ -249,15 +256,13 @@ public class VehicleImpl implements Vehicle {
 			}
 			if(locationId == null && locationCoord == null) throw new IllegalStateException("locationId and locationCoord is missing.");
 			if(locationCoord == null) log.warn("locationCoord for vehicle " + id + " is missing.");
-			if(endLocationCoord != null && returnToDepot == false) throw new IllegalStateException("this must not be. you specified both endLocationCoord and open-routes. this is contradictory. <br>" +
-					"if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
-			if(endLocationId != null && returnToDepot == false) throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
-					"if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
 			if(endLocationId == null && endLocationCoord != null) endLocationId = endLocationCoord.toString();
 			if(endLocationId == null && endLocationCoord == null) {
 				endLocationId = startLocationId;
 				endLocationCoord = startLocationCoord;
 			}
+			if( !startLocationId.equals(endLocationId) && returnToDepot == false) throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
+					"if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
 			return new VehicleImpl(this);
 		}
 		
