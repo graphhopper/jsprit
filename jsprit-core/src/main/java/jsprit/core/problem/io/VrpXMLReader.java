@@ -316,11 +316,14 @@ public class VrpXMLReader{
 			int cap = getCap(shipmentConfig);
 			Shipment.Builder builder = Shipment.Builder.newInstance(id, cap);
 			
+			//pickup-locationId
 			String pickupLocationId = shipmentConfig.getString("pickup.locationId");
-			builder.setPickupLocation(pickupLocationId);
+			if(pickupLocationId != null){
+				builder.setPickupLocation(pickupLocationId);
+			}
 			
+			//pickup-coord
 			Coordinate pickupCoord = getCoord(shipmentConfig,"pickup.");
-
 			if(pickupCoord != null){
 				builder.setPickupCoord(pickupCoord);
 				if(pickupLocationId != null){
@@ -331,17 +334,27 @@ public class VrpXMLReader{
 					builder.setPickupLocation(pickupCoord.toString());
 				}
 			}
+			//pickup-serviceTime
+			String pickupServiceTime = shipmentConfig.getString("pickup.duration");
+			if(pickupServiceTime != null) builder.setPickupServiceTime(Double.parseDouble(pickupServiceTime));
 			
+			//pickup-tw
 			String pickupTWStart = shipmentConfig.getString("pickup.timeWindows.timeWindow(0).start");
 			String pickupTWEnd = shipmentConfig.getString("pickup.timeWindows.timeWindow(0).end");
-			TimeWindow pickupTW = TimeWindow.newInstance(Double.parseDouble(pickupTWStart), Double.parseDouble(pickupTWEnd));
-			builder.setPickupTimeWindow(pickupTW);
+			if(pickupTWStart != null && pickupTWEnd != null){
+				TimeWindow pickupTW = TimeWindow.newInstance(Double.parseDouble(pickupTWStart), Double.parseDouble(pickupTWEnd));
+				builder.setPickupTimeWindow(pickupTW);
+			}
 			
+			
+			//delivery-locationId
 			String deliveryLocationId = shipmentConfig.getString("delivery.locationId");
-			builder.setDeliveryLocation(deliveryLocationId);
+			if(deliveryLocationId != null){
+				builder.setDeliveryLocation(deliveryLocationId);
+			}
 			
+			//delivery-coord
 			Coordinate deliveryCoord = getCoord(shipmentConfig,"delivery.");
-			
 			if(deliveryCoord != null){
 				builder.setDeliveryCoord(deliveryCoord);
 				if(deliveryLocationId != null){
@@ -349,14 +362,21 @@ public class VrpXMLReader{
 				}
 				else{
 					vrpBuilder.addLocation(deliveryCoord.toString(),deliveryCoord);
-					builder.setPickupLocation(deliveryCoord.toString());
+					builder.setDeliveryLocation(deliveryCoord.toString());
 				}
 			}
+			//delivery-serviceTime
+			String deliveryServiceTime = shipmentConfig.getString("delivery.duration");
+			if(deliveryServiceTime != null) builder.setDeliveryServiceTime(Double.parseDouble(deliveryServiceTime));
 			
+			//delivery-tw
 			String delTWStart = shipmentConfig.getString("delivery.timeWindows.timeWindow(0).start");
 			String delTWEnd = shipmentConfig.getString("delivery.timeWindows.timeWindow(0).end");
-			TimeWindow delTW = TimeWindow.newInstance(Double.parseDouble(delTWStart), Double.parseDouble(delTWEnd));
-			builder.setDeliveryTimeWindow(delTW);
+			if(delTWStart != null && delTWEnd != null){
+				TimeWindow delTW = TimeWindow.newInstance(Double.parseDouble(delTWStart), Double.parseDouble(delTWEnd));
+				builder.setDeliveryTimeWindow(delTW);
+			}
+			
 			
 			Shipment shipment = builder.build();
 			vrpBuilder.addJob(shipment);
@@ -391,7 +411,7 @@ public class VrpXMLReader{
 			int cap = getCap(serviceConfig);
 			Service.Builder builder = serviceBuilderFactory.createBuilder(type, id, cap);
 			String serviceLocationId = serviceConfig.getString("locationId");
-			builder.setLocationId(serviceLocationId);
+			if(serviceLocationId != null) builder.setLocationId(serviceLocationId);
 			Coordinate serviceCoord = getCoord(serviceConfig,"");
 			if(serviceCoord != null){
 				builder.setCoord(serviceCoord);
