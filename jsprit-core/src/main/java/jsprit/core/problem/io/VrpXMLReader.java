@@ -393,8 +393,8 @@ public class VrpXMLReader{
 			String serviceLocationId = serviceConfig.getString("locationId");
 			builder.setLocationId(serviceLocationId);
 			Coordinate serviceCoord = getCoord(serviceConfig,"");
-			builder.setCoord(serviceCoord);
 			if(serviceCoord != null){
+				builder.setCoord(serviceCoord);
 				if(serviceLocationId != null){
 					vrpBuilder.addLocation(serviceLocationId,serviceCoord);
 				}
