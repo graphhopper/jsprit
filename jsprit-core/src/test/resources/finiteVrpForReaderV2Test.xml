@@ -133,7 +133,6 @@
      	<shipment id="4">
      		<pickup>
                	<coord x="10.0" y="10.0"/>
-               	<duration>10.0</duration>
                	<timeWindows>
                     <timeWindow>
                          <start>1000.0</start>

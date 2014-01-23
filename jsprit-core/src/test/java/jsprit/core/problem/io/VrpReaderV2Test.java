@@ -221,7 +221,7 @@ public class VrpReaderV2Test {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
-		assertEquals(100.0,s.getPickupServiceTime(),0.01);
+		assertEquals(100.0,s.getDeliveryServiceTime(),0.01);
 	}
 	
 	@Test
@@ -278,6 +278,24 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("4");
 		assertEquals("[x=10.0][y=0.0]",s.getDeliveryLocation());
+	}
+	
+	@Test
+	public void whenReadingJobs_pickupServiceTimeOfShipment4IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("4");
+		assertEquals(0.0,s.getPickupServiceTime(),0.01);
+	}
+	
+	@Test
+	public void whenReadingJobs_deliveryServiceTimeOfShipment4IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("4");
+		assertEquals(100.0,s.getDeliveryServiceTime(),0.01);
 	}
 
 }
