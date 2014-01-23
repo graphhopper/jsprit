@@ -107,11 +107,18 @@ public class VrpReaderV2Test {
 	}
 	
 	@Test
+	public void whenReadingJobs_nuOfJobsIsReadThemCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(4, vrp.getJobs().size());
+	}
+	
+	@Test
 	public void whenReadingServices_itReadsThemCorrectly(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(3, vrp.getJobs().size());
 		int servCounter = 0;
 		for(Job j : vrp.getJobs().values()){
 			if(j instanceof Service) servCounter++;
@@ -124,23 +131,153 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(3, vrp.getJobs().size());
 		int shipCounter = 0;
 		for(Job j : vrp.getJobs().values()){
 			if(j instanceof Shipment) shipCounter++;
 		}
-		assertEquals(1,shipCounter);
+		assertEquals(2,shipCounter);
 	}
 	
 	@Test
-	public void whenReadingServices_servicesAreBuiltCorrectly(){
+	public void whenReadingServices_capOfService1IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Service s1 = (Service) vrp.getJobs().get("1");
+		assertEquals(1,s1.getCapacityDemand());
+	}
+	
+	@Test
+	public void whenReadingServices_durationOfService1IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Service s1 = (Service) vrp.getJobs().get("1");
+		assertEquals(10.0,s1.getServiceDuration(),0.01);
+	}
+	
+	@Test
+	public void whenReadingServices_twOfService1IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Service s1 = (Service) vrp.getJobs().get("1");
+		assertEquals(0.0,s1.getTimeWindow().getStart(),0.01);
+		assertEquals(4000.0,s1.getTimeWindow().getEnd(),0.01);
+	}
+	
+	@Test
+	public void whenReadingServices_typeOfService1IsReadCorrectly(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Service s1 = (Service) vrp.getJobs().get("1");
 		assertEquals("service",s1.getType());
-		assertEquals(1,s1.getCapacityDemand());
-		assertEquals(0.0,s1.getServiceDuration(),0.01);
-		assertEquals(3, vrp.getJobs().size());
 	}
+	
+	
+	
+	@Test
+	public void whenReadingJobs_capOfShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals(10,s.getCapacityDemand());
+	}
+	
+	@Test
+	public void whenReadingJobs_pickupServiceTimeOfShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals(10.0,s.getPickupServiceTime(),0.01);
+	}
+	
+	@Test
+	public void whenReadingJobs_pickupTimeWindowOfShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals(1000.0,s.getPickupTimeWindow().getStart(),0.01);
+		assertEquals(4000.0,s.getPickupTimeWindow().getEnd(),0.01);
+	}
+	
+	@Test
+	public void whenReadingJobs_deliveryTimeWindowOfShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals(6000.0,s.getDeliveryTimeWindow().getStart(),0.01);
+		assertEquals(10000.0,s.getDeliveryTimeWindow().getEnd(),0.01);
+	}
+	
+	@Test
+	public void whenReadingJobs_deliveryServiceTimeOfShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals(100.0,s.getPickupServiceTime(),0.01);
+	}
+	
+	@Test
+	public void whenReadingJobs_deliveryCoordShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals(10.0,s.getDeliveryCoord().getX(),0.01);
+		assertEquals(0.0,s.getDeliveryCoord().getY(),0.01);
+	}
+	
+	@Test
+	public void whenReadingJobs_pickupCoordShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals(10.0,s.getPickupCoord().getX(),0.01);
+		assertEquals(10.0,s.getPickupCoord().getY(),0.01);
+	}
+	
+	@Test
+	public void whenReadingJobs_deliveryIdShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals("i(9,9)",s.getDeliveryLocation());
+	}
+	
+	@Test
+	public void whenReadingJobs_pickupIdShipment3IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("3");
+		assertEquals("i(3,9)",s.getPickupLocation());
+	}
+	
+	@Test
+	public void whenReadingJobs_pickupLocationIdShipment4IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("4");
+		assertEquals("[x=10.0][y=10.0]",s.getPickupLocation());
+	}
+	
+	@Test
+	public void whenReadingJobs_deliveryLocationIdShipment4IsReadCorrectly(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Shipment s = (Shipment) vrp.getJobs().get("4");
+		assertEquals("[x=10.0][y=0.0]",s.getDeliveryLocation());
+	}
+
 }

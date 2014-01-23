@@ -79,7 +79,7 @@
                <locationId>j(1,5)</locationId>
                 <coord x="10.0" y="10.0"/>
                <capacity-demand>1</capacity-demand>
-               <duration>0.0</duration>
+               <duration>10.0</duration>
                <timeWindows>
                     <timeWindow>
                          <start>0.0</start>
@@ -108,10 +108,10 @@
      		<pickup>
      			<locationId>i(3,9)</locationId>
                	<coord x="10.0" y="10.0"/>
-               	<duration>0.0</duration>
+               	<duration>10.0</duration>
                	<timeWindows>
                     <timeWindow>
-                         <start>0.0</start>
+                         <start>1000.0</start>
                          <end>4000.0</end>
                     </timeWindow>
                	</timeWindows>
@@ -119,16 +119,41 @@
      		<delivery>
      			<locationId>i(9,9)</locationId>
                	<coord x="10.0" y="0.0"/>
-               	<duration>0.0</duration>
+               	<duration>100.0</duration>
                	<timeWindows>
                     <timeWindow>
-                         <start>0.0</start>
-                         <end>4000.0</end>
+                         <start>6000.0</start>
+                         <end>10000.0</end>
                     </timeWindow>
                	</timeWindows>
      		</delivery>
-     		<capacity-demand>1</capacity-demand>
+     		<capacity-demand>10</capacity-demand>
      	</shipment>
+     	
+     	<shipment id="4">
+     		<pickup>
+               	<coord x="10.0" y="10.0"/>
+               	<duration>10.0</duration>
+               	<timeWindows>
+                    <timeWindow>
+                         <start>1000.0</start>
+                         <end>4000.0</end>
+                    </timeWindow>
+               	</timeWindows>
+     		</pickup>
+     		<delivery>
+               	<coord x="10.0" y="0.0"/>
+               	<duration>100.0</duration>
+               	<timeWindows>
+                    <timeWindow>
+                         <start>6000.0</start>
+                         <end>10000.0</end>
+                    </timeWindow>
+               	</timeWindows>
+     		</delivery>
+     		<capacity-demand>10</capacity-demand>
+     	</shipment>
+     	
      </shipments>
     
 </problem>
