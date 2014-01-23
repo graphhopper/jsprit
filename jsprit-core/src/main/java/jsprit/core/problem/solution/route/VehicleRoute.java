@@ -37,22 +37,65 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 
+/**
+ * Contains the tour, i.e. a number of activities, a vehicle servicing the tour and a driver.
+ * 
+ * 
+ * @author stefan
+ *
+ */
 public class VehicleRoute {
-			
+		
+	/**
+	 * Returns a deep copy of this vehicleRoute.
+	 * 
+	 * @param route
+	 * @return copied route
+	 * @throws IllegalArgumentException if route is null
+	 */
 	public static VehicleRoute copyOf(VehicleRoute route) {
+		if(route == null) throw new IllegalArgumentException("route must not be null");
 		return new VehicleRoute(route);
 	}
 	
+	/**
+	 * Returns a newInstance of {@link VehicleRoute}.
+	 * 
+	 * @param tour
+	 * @param driver
+	 * @param vehicle
+	 * @return
+	 */
 	public static VehicleRoute newInstance(TourActivities tour, Driver driver, Vehicle vehicle) {
 		return new VehicleRoute(tour,driver,vehicle);
 	}
 
+	/**
+	 * Returns an empty route.
+	 * 
+	 * <p>An empty route has an empty list of tour-activities, no driver (DriverImpl.noDriver()) and no vehicle (VehicleImpl.createNoVehicle()).
+	 * 
+	 * @return
+	 */
 	public static VehicleRoute emptyRoute() {
 		return new VehicleRoute(TourActivities.emptyTour(), DriverImpl.noDriver(), VehicleImpl.createNoVehicle());
 	}
 	
+	/**
+	 * Builder that builds the vehicle route.
+	 * 
+	 * @author stefan
+	 *
+	 */
 	public static class Builder {
 		
+		/**
+		 * Returns new instance of this builder.
+		 * 
+		 * @param vehicle
+		 * @param driver
+		 * @return this builder
+		 */
 		public static Builder newInstance(Vehicle vehicle, Driver driver){
 			return new Builder(vehicle,driver);
 		}
@@ -73,10 +116,24 @@ public class VehicleRoute {
 		
 		private Set<Shipment> openShipments = new HashSet<Shipment>();
 		
+		/**
+		 * Sets the serviceActivityFactory to create serviceActivities.
+		 * 
+		 * <p>By default {@link DefaultTourActivityFactory} is used.
+		 * 
+		 * @param serviceActivityFactory
+		 */
 		public void setServiceActivityFactory(TourActivityFactory serviceActivityFactory) {
 			this.serviceActivityFactory = serviceActivityFactory;
 		}
 
+		/**
+		 * Sets the shipmentActivityFactory to create shipmentActivities.
+		 * 
+		 * <p>By default {@link DefaultShipmentActivityFactory} is used.
+		 * 
+		 * @param shipmentActivityFactory
+		 */
 		public void setShipmentActivityFactory(TourShipmentActivityFactory shipmentActivityFactory) {
 			this.shipmentActivityFactory = shipmentActivityFactory;
 		}
@@ -100,7 +157,7 @@ public class VehicleRoute {
 		}
 
 		/**
-		 * Sets the departure-time of the route.
+		 * Sets the departure-time of the route, i.e. which is the time the vehicle departs from start-location.
 		 * 
 		 * @param departureTime
 		 * @return
@@ -110,16 +167,46 @@ public class VehicleRoute {
 			return this;
 		}
 		
+		/**
+		 * Sets the end-time of the route, i.e. which is the time the vehicle has to be at its end-location at latest.
+		 * 
+		 * @param endTime
+		 * @return this builder
+		 */
 		public Builder setRouteEndArrivalTime(double endTime){
 			end.setArrTime(endTime);
 			return this;
 		}
 		
+		/**
+		 * Adds a service to this route.
+		 * 
+		 * <p>This implies that for this service a serviceActivity is created with {@link TourActivityFactory} and added to the sequence of tourActivities.
+		 * 
+		 * <p>The resulting activity occurs in the activity-sequence in the order adding/inserting.
+		 * 
+		 * @param service
+		 * @return this builder
+		 * @throws IllegalArgumentException if service is null
+		 */
 		public Builder addService(Service service){
+			if(service == null) throw new IllegalArgumentException("service must not be null");
 			addService(service,0.0,0.0);
 			return this;
 		}
 		
+		/**
+		 * Adds a service with specified activity arrival- and endTime.  
+		 * 
+		 * <p>This implies that for this service a serviceActivity is created with {@link TourActivityFactory} and added to the sequence of tourActivities.
+		 * 
+		 * <p>Basically this activity is then scheduled with an activity arrival and activity endTime.
+		 * 
+		 * @param service
+		 * @param arrTime
+		 * @param endTime
+		 * @return builder
+		 */
 		public Builder addService(Service service, double arrTime, double endTime){
 			TourActivity act = serviceActivityFactory.createActivity(service);
 			act.setArrTime(arrTime);
@@ -266,15 +353,38 @@ public class VehicleRoute {
 		return tourActivities;
 	}
 	
-
+	/**
+	 * Returns the vehicle operating this route.
+	 * 
+	 * @return Vehicle
+	 */
 	public Vehicle getVehicle() {
 		return vehicle;
 	}
 
+	/**
+	 * Returns the driver operating this route.
+	 * 
+	 * @return Driver
+	 */
 	public Driver getDriver() {
 		return driver;
 	}
 
+	/**
+	 * Sets the vehicle and its departureTime.
+	 * 
+	 * <p>This implies the following:<br>
+	 * if start and end are null, new start and end activities are created.<br>
+	 * <p>startActivity is initialized with the location of the specified vehicle. the time-window of this activity is initialized 
+	 * as follows: [time-window.start = vehicle.getEarliestDeparture()][time-window.end = vehicle.getLatestArrival()]
+	 * <p>endActivity is initialized with the location of the specified vehicle as well. time-window of this activity:[time-window.start = vehicle.getEarliestDeparture()][time-window.end = vehicle.getLatestArrival()]
+	 * <p>start.endTime is set to the specified departureTime
+	 * <p>Note that start end end-locations are always initialized with the location of the specified vehicle. (this will change soon, then there will be start and end location of vehicle which can be different, 23.01.14)    
+	 * 
+	 * @param vehicle
+	 * @param vehicleDepTime
+	 */
 	public void setVehicle(Vehicle vehicle, double vehicleDepTime){
 		this.vehicle = vehicle;
 		setStartAndEnd(vehicle, vehicleDepTime);
@@ -297,24 +407,50 @@ public class VehicleRoute {
 		
 	}
 
+	/**
+	 * Sets departureTime of this route, i.e. the time the vehicle departs from its start-location.
+	 * 
+	 * @param vehicleDepTime
+	 */
 	public void setDepartureTime(double vehicleDepTime){
 		if(start == null) throw new IllegalStateException("cannot set departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
 		start.setEndTime(vehicleDepTime);
 	}
 	
+	/**
+	 * Returns the departureTime of this vehicle.
+	 * 
+	 * @return departureTime
+	 * @throws IllegalStateException if start is null
+	 */
 	public double getDepartureTime(){
 		if(start == null) throw new IllegalStateException("cannot get departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
 		return start.getEndTime();
 	}
 	
+	/**
+	 * Returns tour if tour-activity-sequence is empty, i.e. to activity on the tour yet.
+	 * 
+	 * @return
+	 */
 	public boolean isEmpty() {
 		return tourActivities.isEmpty();
 	}
 
+	/**
+	 * Returns start-activity of this route.
+	 * 
+	 * @return start
+	 */
 	public Start getStart() {
 		return start;
 	}
 
+	/**
+	 * Returns end-activity of this route.
+	 * 
+	 * @return end
+	 */
 	public End getEnd() {
 		return end;
 	}
