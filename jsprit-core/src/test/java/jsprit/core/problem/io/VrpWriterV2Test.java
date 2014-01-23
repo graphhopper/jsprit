@@ -119,7 +119,7 @@ public class VrpWriterV2Test {
 	}
 	
 	@Test
-	public void whenWritingShipments_readingThemAgainMustReturnTheWrittenS1(){
+	public void whenWritingShipments_readingThemAgainMustReturnTheWrittenLocationIdsOfS1(){
 		Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
@@ -146,6 +146,70 @@ public class VrpWriterV2Test {
 		
 		assertEquals("pickLoc",((Shipment)readVrp.getJobs().get("1")).getPickupLocation());
 		assertEquals("delLoc",((Shipment)readVrp.getJobs().get("1")).getDeliveryLocation());
+		
+	}
+	
+	@Test
+	public void whenWritingShipments_readingThemAgainMustReturnTheWrittenPickupTimeWindowsOfS1(){
+		Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		
+		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		
+		builder.addVehicle(v1);
+		builder.addVehicle(v2);
+		
+		Shipment s1 = Shipment.Builder.newInstance("1", 10).setPickupLocation("pickLoc").setDeliveryLocation("delLoc").setPickupTimeWindow(TimeWindow.newInstance(1, 2))
+				.setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).build();
+		Shipment s2 = Shipment.Builder.newInstance("2", 20).setPickupLocation("pickLocation").setDeliveryLocation("delLocation").setPickupTimeWindow(TimeWindow.newInstance(5, 6))
+				.setDeliveryTimeWindow(TimeWindow.newInstance(7, 8)).build();
+		
+		
+		VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+		new VrpXMLWriter(vrp, null).write(infileName);
+		
+		VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+		VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+		assertEquals(2,readVrp.getJobs().size());
+		
+		assertEquals(1.0,((Shipment)readVrp.getJobs().get("1")).getPickupTimeWindow().getStart(),0.01);
+		assertEquals(2.0,((Shipment)readVrp.getJobs().get("1")).getPickupTimeWindow().getEnd(),0.01);
+		
+		
+	}
+	
+	@Test
+	public void whenWritingShipments_readingThemAgainMustReturnTheWrittenDeliveryTimeWindowsOfS1(){
+		Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		
+		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		
+		builder.addVehicle(v1);
+		builder.addVehicle(v2);
+		
+		Shipment s1 = Shipment.Builder.newInstance("1", 10).setPickupLocation("pickLoc").setDeliveryLocation("delLoc").setPickupTimeWindow(TimeWindow.newInstance(1, 2))
+				.setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).build();
+		Shipment s2 = Shipment.Builder.newInstance("2", 20).setPickupLocation("pickLocation").setDeliveryLocation("delLocation").setPickupTimeWindow(TimeWindow.newInstance(5, 6))
+				.setDeliveryTimeWindow(TimeWindow.newInstance(7, 8)).build();
+		
+		
+		VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+		new VrpXMLWriter(vrp, null).write(infileName);
+		
+		VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+		VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+		assertEquals(2,readVrp.getJobs().size());
+		
+		assertEquals(3.0,((Shipment)readVrp.getJobs().get("1")).getDeliveryTimeWindow().getStart(),0.01);
+		assertEquals(4.0,((Shipment)readVrp.getJobs().get("1")).getDeliveryTimeWindow().getEnd(),0.01);
+		
 	}
 	
 	@Test
