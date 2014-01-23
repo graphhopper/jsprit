@@ -320,9 +320,9 @@ public class VrpXMLReader{
 			builder.setPickupLocation(pickupLocationId);
 			
 			Coordinate pickupCoord = getCoord(shipmentConfig,"pickup.");
-			builder.setPickupCoord(pickupCoord);
-			
+
 			if(pickupCoord != null){
+				builder.setPickupCoord(pickupCoord);
 				if(pickupLocationId != null){
 					vrpBuilder.addLocation(pickupLocationId,pickupCoord);
 				}
@@ -341,9 +341,9 @@ public class VrpXMLReader{
 			builder.setDeliveryLocation(deliveryLocationId);
 			
 			Coordinate deliveryCoord = getCoord(shipmentConfig,"delivery.");
-			builder.setDeliveryCoord(deliveryCoord);
 			
 			if(deliveryCoord != null){
+				builder.setDeliveryCoord(deliveryCoord);
 				if(deliveryLocationId != null){
 					vrpBuilder.addLocation(deliveryLocationId,deliveryCoord);
 				}
