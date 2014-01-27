@@ -1,7 +1,8 @@
 Change-log
 ==========
 **v1.1.0** @ 2014-01-27
-jsprit-core:
+
+<em>jsprit-core</em>:
 - added javadocs (VehicleRoutingProblem and classes in package vehicle. and job.)
 - added unit-tests (for classes in package vehicle. and job.)
 - deprecated methods in VehicleRoutingProblem, VehicleTypeImpl, VehicleImpl
