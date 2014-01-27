@@ -1,5 +1,30 @@
 Change-log
 ==========
+**v1.1.0** @ 2014-01-27
+jsprit-core:
+- added javadocs (VehicleRoutingProblem and classes in package vehicle. and job.)
+- added unit-tests (for classes in package vehicle. and job.)
+- deprecated methods in VehicleRoutingProblem, VehicleTypeImpl, VehicleImpl
+- added func in VehicleRoutingProblem.Builder (.addPenaltyVehicle(...) methods)
+- added feature: open-routes (#54)
+- added func in VehicleImpl and VehicleImpl.Builder (.setReturnToDepot(...), isReturnToDepot())
+- added feature: prohibit vehicles to take over entire route (#70)
+- fixed bug: #58,#76-#79
+- inspected and removed all warnings
+
+jsprit-analysis:
+- added GraphStreamViewer
+- inspected and removed all warnings
+
+jsprit-example:
+- added BicycleMessenger
+- enriched examples with GraphStreamViewer
+- inspected and removed all warnings
+
+jsprit-instance:
+- added VrphGoldenReader (plus instances to bechmark VRPH)
+- inspected and removed all warnings
+
 **v1.0.0** @ 2013-11-26 (break change)
 
 - re-organized API
