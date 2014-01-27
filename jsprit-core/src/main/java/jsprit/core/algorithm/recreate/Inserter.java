@@ -133,7 +133,7 @@ class Inserter {
 		if(!(vehicleRoute.getVehicle().getId().toString().equals(insertionData.getSelectedVehicle().getId().toString()))){
 			insertionListeners.informVehicleSwitched(vehicleRoute, vehicleRoute.getVehicle(), insertionData.getSelectedVehicle());
 //			log.debug("vehicle switched from " + vehicleRoute.getVehicle().getId() + " to " + insertionData.getSelectedVehicle().getId());
-			vehicleRoute.setVehicle(insertionData.getSelectedVehicle(), insertionData.getVehicleDepartureTime());
+			vehicleRoute.setVehicleAndDepartureTime(insertionData.getSelectedVehicle(), insertionData.getVehicleDepartureTime());
 		}
 		jobInsertionHandler.handleJobInsertion(job, insertionData, vehicleRoute);
 		insertionListeners.informJobInserted(job, vehicleRoute, insertionData.getInsertionCost(), insertionData.getAdditionalTime());

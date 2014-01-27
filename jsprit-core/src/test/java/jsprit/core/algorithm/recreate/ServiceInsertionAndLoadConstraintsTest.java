@@ -109,7 +109,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
 		
 		VehicleRoute route = VehicleRoute.emptyRoute();
-		route.setVehicle(vehicle, 0.0);
+		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
 		Inserter inserter = new Inserter(new InsertionListeners());
 		
