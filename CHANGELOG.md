@@ -12,10 +12,10 @@ Change-log
 - added feature: prohibit vehicles to take over entire route ([#70](https://github.com/jsprit/jsprit/issues/70))
 - fixed bug: [#58](https://github.com/jsprit/jsprit/issues/58),[#76](https://github.com/jsprit/jsprit/issues/76)-[#79](https://github.com/jsprit/jsprit/issues/79)
 - inspected and removed all warnings
-- visibility of methods activity.Start.get/setCoordinate(...) decreased from public to private [potential Break Change]
-- visibility of methods activity.End.get/setCoordinate(...) decreased from public to private [potential Break Change]
-- method isReturnToDepot() has added to interface Vehicle [potential Break Change]
-- visibility of constructor VehicleImpl.Builder decreased from public to private [potential Break Change]
+- visibility of methods activity.Start.get/setCoordinate(...) decreased from public to private <b>[potential Break Change]</b>
+- visibility of methods activity.End.get/setCoordinate(...) decreased from public to private <b>[potential Break Change]</b>
+- method isReturnToDepot() has added to interface Vehicle <b>[potential Break Change]</b>
+- visibility of constructor VehicleImpl.Builder decreased from public to private <b>[potential Break Change]</b>
 
 <em>jsprit-analysis:</em>
 - added GraphStreamViewer
