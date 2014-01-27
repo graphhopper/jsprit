@@ -2,6 +2,8 @@ Change-log
 ==========
 **v1.1.0** @ 2014-01-27
 
+- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.0_to_1.1.0.txt)
+
 <em>jsprit-core:</em>
 - added javadocs (VehicleRoutingProblem and classes in package vehicle. and job.)
 - added unit-tests (for classes in package vehicle., job. and io.)
