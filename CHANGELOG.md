@@ -4,7 +4,7 @@ Change-log
 
 <em>jsprit-core:</em>
 - added javadocs (VehicleRoutingProblem and classes in package vehicle. and job.)
-- added unit-tests (for classes in package vehicle. and job.)
+- added unit-tests (for classes in package vehicle., job. and io.)
 - deprecated methods in VehicleRoutingProblem, VehicleTypeImpl, VehicleImpl
 - added func in VehicleRoutingProblem.Builder (.addPenaltyVehicle(...) methods)
 - added feature: open-routes (#54)
