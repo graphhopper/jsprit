@@ -2,7 +2,7 @@ Change-log
 ==========
 **v1.1.0** @ 2014-01-27
 
-<em>jsprit-core</em>:
+<em>jsprit-core:</em>
 - added javadocs (VehicleRoutingProblem and classes in package vehicle. and job.)
 - added unit-tests (for classes in package vehicle. and job.)
 - deprecated methods in VehicleRoutingProblem, VehicleTypeImpl, VehicleImpl
@@ -13,16 +13,16 @@ Change-log
 - fixed bug: #58,#76-#79
 - inspected and removed all warnings
 
-jsprit-analysis:
+<em>jsprit-analysis:</em>
 - added GraphStreamViewer
 - inspected and removed all warnings
 
-jsprit-example:
+<em>jsprit-example:</em>
 - added BicycleMessenger
 - enriched examples with GraphStreamViewer
 - inspected and removed all warnings
 
-jsprit-instance:
+<em>jsprit-instance:</em>
 - added VrphGoldenReader (plus instances to bechmark VRPH)
 - inspected and removed all warnings
 
