@@ -7,7 +7,7 @@ Change-log
 - added unit-tests (for classes in package vehicle., job. and io.)
 - deprecated methods in VehicleRoutingProblem, VehicleTypeImpl, VehicleImpl
 - added func in VehicleRoutingProblem.Builder (.addPenaltyVehicle(...) methods)
-- added feature: open-routes (#54)
+- added feature: open-routes ([#54](https://github.com/jsprit/jsprit/issues/54))
 - added func in VehicleImpl and VehicleImpl.Builder (.setReturnToDepot(...), isReturnToDepot())
 - added feature: prohibit vehicles to take over entire route (#70)
 - fixed bug: #58,#76-#79
