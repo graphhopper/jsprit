@@ -372,19 +372,52 @@ public class VehicleRoute {
 	}
 
 	/**
-	 * Sets the vehicle and its departureTime.
+	 * Sets the vehicle and its departureTime from <code>vehicle.getStartLocationId()</code>.
 	 * 
 	 * <p>This implies the following:<br>
 	 * if start and end are null, new start and end activities are created.<br>
-	 * <p>startActivity is initialized with the location of the specified vehicle. the time-window of this activity is initialized 
-	 * as follows: [time-window.start = vehicle.getEarliestDeparture()][time-window.end = vehicle.getLatestArrival()]
-	 * <p>endActivity is initialized with the location of the specified vehicle as well. time-window of this activity:[time-window.start = vehicle.getEarliestDeparture()][time-window.end = vehicle.getLatestArrival()]
-	 * <p>start.endTime is set to the specified departureTime
-	 * <p>Note that start end end-locations are always initialized with the location of the specified vehicle. (this will change soon, then there will be start and end location of vehicle which can be different, 23.01.14)    
+	 * <p>startActivity is initialized with the start-location of the specified vehicle (<code>vehicle.getStartLocationId()</code>). the time-window of this activity is initialized 
+	 * such that [<code>startActivity.getTheoreticalEarliestOperationStartTime()</code> = <code>vehicle.getEarliestDeparture()</code>][<code>startActivity.getTheoreticalLatestOperationStartTime()</code> = <code>vehicle.getLatestArrival()</code>]
+	 * <p>endActivity is initialized with the end-location of the specified vehicle (<code>vehicle.getEndLocationId()</code>). The time-window of the 
+	 * endActivity is initialized such that [<code>endActivity.getTheoreticalEarliestOperationStartTime()</code> = <code>vehicle.getEarliestDeparture()</code>][<code>endActivity.getTheoreticalLatestOperationStartTime()</code> = <code>vehicle.getLatestArrival()</code>]
+	 * <p>startActivity.endTime (<code>startActivity.getEndTime()</code>) is set to max{<code>vehicle.getEarliestDeparture()</code>, <code>vehicleDepTime</code>}. 
+	 * thus, <code>vehicle.getEarliestDeparture()</code> is a physical constraint that has to be met.
 	 * 
 	 * @param vehicle
 	 * @param vehicleDepTime
 	 */
+	public void setVehicleAndDepartureTime(Vehicle vehicle, double vehicleDepTime){
+		this.vehicle = vehicle;
+		if(start == null && end == null){
+			start = Start.newInstance(vehicle.getStartLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+			end = End.newInstance(vehicle.getEndLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+		}
+		start.setEndTime(Math.max(vehicleDepTime, vehicle.getEarliestDeparture()));
+		start.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
+		start.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
+		start.setLocationId(vehicle.getLocationId());
+		end.setLocationId(vehicle.getLocationId());
+		end.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
+		end.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
+	}
+	
+	/**
+	 *  Sets the vehicle and its departureTime from <code>vehicle.getStartLocationId()</code>.
+	 * 
+	 * <p>This implies the following:<br>
+	 * if start and end are null, new start and end activities are created.<br>
+	 * <p>startActivity is initialized with the start-location of the specified vehicle (<code>vehicle.getStartLocationId()</code>). the time-window of this activity is initialized 
+	 * such that [<code>startActivity.getTheoreticalEarliestOperationStartTime()</code> = <code>vehicle.getEarliestDeparture()</code>][<code>startActivity.getTheoreticalLatestOperationStartTime()</code> = <code>vehicle.getLatestArrival()</code>]
+	 * <p>endActivity is initialized with the end-location of the specified vehicle (<code>vehicle.getEndLocationId()</code>). The time-window of the 
+	 * endActivity is initialized such that [<code>endActivity.getTheoreticalEarliestOperationStartTime()</code> = <code>vehicle.getEarliestDeparture()</code>][<code>endActivity.getTheoreticalLatestOperationStartTime()</code> = <code>vehicle.getLatestArrival()</code>]
+	 * <p>startActivity.endTime (<code>startActivity.getEndTime()</code>) is set to max{<code>vehicle.getEarliestDeparture()</code>, <code>vehicleDepTime</code>}. 
+	 * thus, <code>vehicle.getEarliestDeparture()</code> is a physical constraint that has to be met.
+	 * 
+	 * @param vehicle
+	 * @param vehicleDepTime
+	 * @deprecated use .setVehicleAndDepartureTime(Vehicle vehicle, double vehicleDepTime) instead
+	 */
+	@Deprecated
 	public void setVehicle(Vehicle vehicle, double vehicleDepTime){
 		this.vehicle = vehicle;
 		setStartAndEnd(vehicle, vehicleDepTime);
@@ -393,14 +426,14 @@ public class VehicleRoute {
 	private void setStartAndEnd(Vehicle vehicle, double vehicleDepTime) {
 		if(!(vehicle instanceof NoVehicle)){
 			if(start == null && end == null){
-				start = Start.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-				end = End.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+				start = Start.newInstance(vehicle.getStartLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+				end = End.newInstance(vehicle.getEndLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
 			}
-			start.setEndTime(vehicleDepTime);
+			start.setEndTime(Math.max(vehicleDepTime, vehicle.getEarliestDeparture()));
 			start.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
 			start.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
-			start.setLocationId(vehicle.getLocationId());
-			end.setLocationId(vehicle.getLocationId());
+			start.setLocationId(vehicle.getStartLocationId());
+			end.setLocationId(vehicle.getEndLocationId());
 			end.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
 			end.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
 		}

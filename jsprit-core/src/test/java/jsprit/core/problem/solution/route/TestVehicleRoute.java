@@ -246,5 +246,9 @@ public class TestVehicleRoute {
 			assertEquals(2,count);
 		}
 	}
+	
+	public void whenBuildingRouteWithVehicleThatHasDifferentStartAndEndLocation_routeMustBeBuiltCorrectly(){
+		
+	}
 
 }
