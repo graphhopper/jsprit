@@ -14,7 +14,7 @@ Change-log
 - inspected and removed all warnings
 - visibility of methods activity.Start.get/setCoordinate(...) decreased from public to private <b>[potential Break Change]</b>
 - visibility of methods activity.End.get/setCoordinate(...) decreased from public to private <b>[potential Break Change]</b>
-- method isReturnToDepot() has added to interface Vehicle <b>[potential Break Change]</b>
+- method isReturnToDepot() has been added to interface Vehicle <b>[potential Break Change]</b>
 - visibility of constructor VehicleImpl.Builder decreased from public to private <b>[potential Break Change]</b>
 
 <em>jsprit-analysis:</em>
