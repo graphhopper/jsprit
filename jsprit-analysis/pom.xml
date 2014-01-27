@@ -22,7 +22,7 @@
   <parent>
   	<groupId>jsprit</groupId>
   	<artifactId>jsprit</artifactId>
-  	<version>v1.1.0</version>
+  	<version>1.0.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jsprit-analysis</artifactId>
