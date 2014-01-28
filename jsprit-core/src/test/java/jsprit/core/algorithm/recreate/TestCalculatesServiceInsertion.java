@@ -34,9 +34,7 @@ import jsprit.core.problem.driver.DriverImpl.NoDriver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.ServiceActivity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.problem.solution.route.activity.TourActivities;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 
@@ -184,12 +182,9 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingTheFirstJobInAnEmptyTourWithVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
-//		stateUpdater.update(route);
-		
+
 		InsertionData iData = serviceInsertion.getInsertionData(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(0, iData.getDeliveryInsertionIndex());
@@ -197,10 +192,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingTheSecondJobInAnNonEmptyTourWithVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -210,11 +202,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingThirdJobWithVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		tour.addActivity(ServiceActivity.newInstance(second));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(second).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -224,11 +212,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingThirdJobWithNewVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		tour.addActivity(ServiceActivity.newInstance(second));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(second).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -238,11 +222,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingASecondJobWithAVehicle_itCalculatesLocalMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		tour.addActivity(ServiceActivity.newInstance(third));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(third).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -252,13 +232,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingASecondJobWithANewVehicle_itCalculatesLocalMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		tour.addActivity(ServiceActivity.newInstance(third));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
-//		route.addActivity(states.getActivity(first,true));
-//		route.addActivity(states.getActivity(third,true));
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(third).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);

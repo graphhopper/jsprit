@@ -64,8 +64,10 @@ public class VehicleRoute {
 	 * @param tour
 	 * @param driver
 	 * @param vehicle
-	 * @return
+	 * @return VehicleRoute
+	 * @deprecated use VehicleRoute.Builder instead
 	 */
+	@Deprecated
 	public static VehicleRoute newInstance(TourActivities tour, Driver driver, Vehicle vehicle) {
 		return new VehicleRoute(tour,driver,vehicle);
 	}
@@ -78,7 +80,7 @@ public class VehicleRoute {
 	 * @return
 	 */
 	public static VehicleRoute emptyRoute() {
-		return new VehicleRoute(TourActivities.emptyTour(), DriverImpl.noDriver(), VehicleImpl.createNoVehicle());
+		return Builder.newInstance(VehicleImpl.createNoVehicle(), DriverImpl.noDriver()).build();
 	}
 	
 	/**
@@ -92,11 +94,19 @@ public class VehicleRoute {
 		/**
 		 * Returns new instance of this builder.
 		 * 
+		 * <p><b>Construction-settings of vehicleRoute:</b>
+		 * <p>startLocation == vehicle.getStartLocationId()
+		 * <p>endLocation == vehicle.getEndLocationId()
+		 * <p>departureTime == vehicle.getEarliestDepartureTime()
+		 * <p>latestStart == Double.MAX_VALUE
+		 * <p>earliestEnd == 0.0
+		 * 
 		 * @param vehicle
 		 * @param driver
 		 * @return this builder
 		 */
 		public static Builder newInstance(Vehicle vehicle, Driver driver){
+			if(vehicle == null || driver == null) throw new IllegalArgumentException("null arguments not accepted. ini emptyRoute with VehicleImpl.createNoVehicle() and DriverImpl.noDriver()");
 			return new Builder(vehicle,driver);
 		}
 		
@@ -141,9 +151,11 @@ public class VehicleRoute {
 		/**
 		 * Constructs the route-builder.
 		 * 
-		 * <p>Default startLocation is vehicle.getLocationId()<br>
-		 * Default departureTime is vehicle.getEarliestDeparture()<br>
-		 * Default endLocation is either vehicle.getLocationId() or (if !vehicle.isReturnToDepot()) last specified activityLocation
+		 * <p>startLocation == vehicle.getStartLocationId()
+		 * <p>endLocation == vehicle.getEndLocationId()
+		 * <p>departureTime == vehicle.getEarliestDepartureTime()
+		 * <p>latestStart == Double.MAX_VALUE
+		 * <p>earliestEnd == 0.0
 		 * @param vehicle
 		 * @param driver
 		 */
@@ -151,18 +163,22 @@ public class VehicleRoute {
 			super();
 			this.vehicle = vehicle;
 			this.driver = driver;
-			start = Start.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+			start = Start.newInstance(vehicle.getStartLocationId(), vehicle.getEarliestDeparture(), Double.MAX_VALUE);
 			start.setEndTime(vehicle.getEarliestDeparture());
-			end = End.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+			end = End.newInstance(vehicle.getLocationId(), 0.0, vehicle.getLatestArrival());
 		}
 
 		/**
 		 * Sets the departure-time of the route, i.e. which is the time the vehicle departs from start-location.
 		 * 
+		 * <p><b>Note</b> that departureTime cannot be lower than earliestDepartureTime of vehicle.
+		 * 
 		 * @param departureTime
-		 * @return
+		 * @return builder
+		 * @throws IllegalArgumentException if departureTime < vehicle.getEarliestDeparture()
 		 */
 		public Builder setDepartureTime(double departureTime){
+			if(departureTime < start.getEndTime()) throw new IllegalArgumentException("departureTime < vehicle.getEarliestDepartureTime(). this must not be.");
 			start.setEndTime(departureTime);
 			return this;
 		}
@@ -172,8 +188,10 @@ public class VehicleRoute {
 		 * 
 		 * @param endTime
 		 * @return this builder
+		 * @throws IllegalArgumentException if endTime > vehicle.getLatestArrival()
 		 */
 		public Builder setRouteEndArrivalTime(double endTime){
+			if(endTime > vehicle.getLatestArrival()) throw new IllegalArgumentException("endTime > vehicle.getLatestArrival(). this must not be.");
 			end.setArrTime(endTime);
 			return this;
 		}
@@ -306,6 +324,11 @@ public class VehicleRoute {
 	
 	private End end;
 	
+	/**
+	 * Copy constructor copying a route.
+	 * 
+	 * @param route
+	 */
 	private VehicleRoute(VehicleRoute route){
 		this.start = Start.copyOf(route.getStart());
 		this.end = End.copyOf(route.getEnd());
@@ -314,6 +337,7 @@ public class VehicleRoute {
 		this.driver = route.getDriver();
 	}
 	
+	@Deprecated
 	private VehicleRoute(TourActivities tour, Driver driver, Vehicle vehicle) {
 		super();
 		verify(tour, driver, vehicle);
@@ -323,7 +347,11 @@ public class VehicleRoute {
 		setStartAndEnd(vehicle, vehicle.getEarliestDeparture());
 	}
 	
-	
+	/**
+	 * Constructs route.
+	 * 
+	 * @param builder
+	 */
 	private VehicleRoute(Builder builder){
 		this.tourActivities = builder.tourActivities;
 		this.vehicle = builder.vehicle;
@@ -332,6 +360,14 @@ public class VehicleRoute {
 		this.end = builder.end;
 	}
 
+	/**
+	 * 
+	 * @param tour
+	 * @param driver
+	 * @param vehicle
+	 * @deprecated verification is a task of VehicleRoute.Builder
+	 */
+	@Deprecated
 	private void verify(TourActivities tour, Driver driver, Vehicle vehicle) {
 		if(tour == null || driver == null || vehicle == null) throw new IllegalStateException("null is not allowed for tour, driver or vehicle. use emptyRoute. use Tour.emptyTour, DriverImpl.noDriver() and VehicleImpl.noVehicle() instead." +
 				"\n\tor make it easier and use VehicleRoute.emptyRoute()");
@@ -349,6 +385,11 @@ public class VehicleRoute {
 		return Collections.unmodifiableList(tourActivities.getActivities());
 	}
 	
+	/**
+	 * Returns TourActivities.
+	 * 
+	 * @return {@link TourActivities}
+	 */
 	public TourActivities getTourActivities() {
 		return tourActivities;
 	}
@@ -388,17 +429,7 @@ public class VehicleRoute {
 	 */
 	public void setVehicleAndDepartureTime(Vehicle vehicle, double vehicleDepTime){
 		this.vehicle = vehicle;
-		if(start == null && end == null){
-			start = Start.newInstance(vehicle.getStartLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-			end = End.newInstance(vehicle.getEndLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-		}
-		start.setEndTime(Math.max(vehicleDepTime, vehicle.getEarliestDeparture()));
-		start.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
-		start.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
-		start.setLocationId(vehicle.getLocationId());
-		end.setLocationId(vehicle.getLocationId());
-		end.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
-		end.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
+		setStartAndEnd(vehicle, vehicleDepTime);
 	}
 	
 	/**
@@ -444,14 +475,17 @@ public class VehicleRoute {
 	 * Sets departureTime of this route, i.e. the time the vehicle departs from its start-location.
 	 * 
 	 * @param vehicleDepTime
+	 * @deprecated use .setVehicleAndDepartureTime(...) instead (vehicle requires departureTime and the other way around, and earliestDepartureTime
+	 * of a vehicle is a physical constraint of the vehicle and cannot be broken. Using this method might break this constraint.)
 	 */
+	@Deprecated
 	public void setDepartureTime(double vehicleDepTime){
 		if(start == null) throw new IllegalStateException("cannot set departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
 		start.setEndTime(vehicleDepTime);
 	}
 	
 	/**
-	 * Returns the departureTime of this vehicle.
+	 * Returns the departureTime of this vehicle in this route.
 	 * 
 	 * @return departureTime
 	 * @throws IllegalStateException if start is null
@@ -464,7 +498,7 @@ public class VehicleRoute {
 	/**
 	 * Returns tour if tour-activity-sequence is empty, i.e. to activity on the tour yet.
 	 * 
-	 * @return
+	 * @return true if route is empty
 	 */
 	public boolean isEmpty() {
 		return tourActivities.isEmpty();

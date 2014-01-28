@@ -23,6 +23,8 @@ public class TestInserter {
 		Service service = mock(Service.class);
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.getLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
+		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		when(vehicle.getId()).thenReturn("vehId");
 		
@@ -48,6 +50,8 @@ public class TestInserter {
 		Service service = mock(Service.class);
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.getLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
+		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		when(vehicle.getId()).thenReturn("vehId");
 		
@@ -73,6 +77,8 @@ public class TestInserter {
 		Shipment shipment = mock(Shipment.class);
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.getLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
+		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		when(vehicle.getId()).thenReturn("vehId");
 		

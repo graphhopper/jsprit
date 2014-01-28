@@ -250,6 +250,9 @@ public class VehicleImpl implements Vehicle {
 		 * or (endLocationId!=null AND returnToDepot=false)  
 		 */
 		public VehicleImpl build(){
+			if((locationId == null && locationCoord == null) && (startLocationId == null && startLocationCoord == null)){
+				throw new IllegalStateException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
+			}
 			if(locationId == null && locationCoord != null) {
 				locationId = locationCoord.toString();
 				startLocationId = locationCoord.toString();

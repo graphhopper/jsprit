@@ -120,6 +120,7 @@ public class VehicleRouteBuilderTest {
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		when(vehicle.getLocationId()).thenReturn("vehLoc");
+		when(vehicle.getLatestArrival()).thenReturn(200.0);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(s2);

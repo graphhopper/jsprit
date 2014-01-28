@@ -80,6 +80,8 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		vehicle = mock(Vehicle.class);
 		when(vehicle.getCapacity()).thenReturn(1000);
 		when(vehicle.getLocationId()).thenReturn("0,0");
+		when(vehicle.getStartLocationId()).thenReturn("0,0");
+		when(vehicle.getEndLocationId()).thenReturn("0,0");
 		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(vehicle.getLatestArrival()).thenReturn(100.0);
 		when(vehicle.isReturnToDepot()).thenReturn(true);
@@ -87,6 +89,8 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		newVehicle = mock(Vehicle.class);
 		when(newVehicle.getCapacity()).thenReturn(1000);
 		when(newVehicle.getLocationId()).thenReturn("0,0");
+		when(newVehicle.getStartLocationId()).thenReturn("0,0");
+		when(newVehicle.getEndLocationId()).thenReturn("0,0");
 		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(newVehicle.getLatestArrival()).thenReturn(100.0);
 		when(newVehicle.isReturnToDepot()).thenReturn(true);
@@ -175,9 +179,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 	
 	@Test
 	public void whenInsertingTheFirstJobInAnEmptyTourWithVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -191,7 +193,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		tour.addActivity(ServiceActivity.newInstance(first));
 		tour.addActivity(ServiceActivity.newInstance(second));
 		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(second).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -205,7 +207,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		tour.addActivity(ServiceActivity.newInstance(first));
 		tour.addActivity(ServiceActivity.newInstance(second));
 		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(second).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, third, newVehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -219,7 +221,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		tour.addActivity(ServiceActivity.newInstance(first));
 		tour.addActivity(ServiceActivity.newInstance(third));
 		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(third).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -233,7 +235,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		tour.addActivity(ServiceActivity.newInstance(first));
 		tour.addActivity(ServiceActivity.newInstance(third));
 		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(third).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
