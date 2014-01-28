@@ -512,6 +512,7 @@ public class VrpXMLReader{
 			else{
 				Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(coordX), Double.parseDouble(coordY));
 				builder.setStartLocationCoordinate(coordinate);
+				
 			}
 			
 			String endLocationId = vehicleConfig.getString("endLocation.id");
