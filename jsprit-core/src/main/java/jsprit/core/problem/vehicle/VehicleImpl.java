@@ -176,10 +176,8 @@ public class VehicleImpl implements Vehicle {
 		 * 
 		 * @param coord
 		 * @return this builder
-		 * @throws IllegalArgumentException if start-coordinate is null
 		 */
 		public Builder setStartLocationCoordinate(Coordinate coord){
-			if(coord == null) throw new IllegalArgumentException("start-coordinate must not be null");
 			this.startLocationCoord = coord;
 			this.locationCoord = coord;
 			return this;
@@ -190,10 +188,8 @@ public class VehicleImpl implements Vehicle {
 		 * 
 		 * @param endLocationId
 		 * @return this builder
-		 * @throws IllegalArgumentException if endLocation is null
 		 */
 		public Builder setEndLocationId(String endLocationId){
-			if(endLocationId == null) throw new IllegalArgumentException("end-locationId must not be null");
 			this.endLocationId = endLocationId;
 			return this;
 		}
@@ -203,10 +199,8 @@ public class VehicleImpl implements Vehicle {
 		 * 
 		 * @param coord
 		 * @return this builder
-		 * @throws IllegalArgumentException if coord is null
 		 */
 		public Builder setEndLocationCoordinate(Coordinate coord){
-			if(coord == null) throw new IllegalArgumentException("end-coordinate must not be null");
 			this.endLocationCoord = coord;
 			return this;
 		}
@@ -336,6 +330,10 @@ public class VehicleImpl implements Vehicle {
 		return "[id="+id+"][type="+type+"][locationId="+locationId+"][coord=" + coord + "][isReturnToDepot=" + isReturnToDepot() + "]";
 	}
 
+	/**
+	 * @deprecated use getStartLocationCoordinate() instead
+	 */
+	@Deprecated
 	public Coordinate getCoord() {
 		return coord;
 	}
@@ -350,6 +348,10 @@ public class VehicleImpl implements Vehicle {
 		return latestArrival;
 	}
 
+	/**
+	 * @deprecated use getStartLocationId() instead
+	 */
+	@Deprecated
 	@Override
 	public String getLocationId() {
 		return locationId;

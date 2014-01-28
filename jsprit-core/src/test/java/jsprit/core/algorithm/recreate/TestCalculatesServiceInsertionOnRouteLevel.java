@@ -79,7 +79,6 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		costs = mock(VehicleRoutingTransportCosts.class);
 		vehicle = mock(Vehicle.class);
 		when(vehicle.getCapacity()).thenReturn(1000);
-		when(vehicle.getLocationId()).thenReturn("0,0");
 		when(vehicle.getStartLocationId()).thenReturn("0,0");
 		when(vehicle.getEndLocationId()).thenReturn("0,0");
 		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
@@ -88,7 +87,6 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		
 		newVehicle = mock(Vehicle.class);
 		when(newVehicle.getCapacity()).thenReturn(1000);
-		when(newVehicle.getLocationId()).thenReturn("0,0");
 		when(newVehicle.getStartLocationId()).thenReturn("0,0");
 		when(newVehicle.getEndLocationId()).thenReturn("0,0");
 		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);

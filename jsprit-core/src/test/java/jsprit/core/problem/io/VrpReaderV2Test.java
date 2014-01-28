@@ -70,9 +70,9 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Vehicle v1 = getVehicle("v1",vrp.getVehicles());
 		assertEquals(20,v1.getCapacity());
-		assertEquals(100.0,v1.getCoord().getX(),0.01);
+		assertEquals(100.0,v1.getStartLocationCoordinate().getX(),0.01);
 		assertEquals(0.0,v1.getEarliestDeparture(),0.01);
-		assertEquals("depotLoc2",v1.getLocationId());
+		assertEquals("depotLoc2",v1.getStartLocationId());
 		assertNotNull(v1.getType());
 		assertEquals("vehType", v1.getType().getTypeId());
 		assertEquals(1000.0,v1.getLatestArrival(),0.01);
@@ -229,8 +229,8 @@ public class VrpReaderV2Test {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Vehicle v3 = getVehicle("v3",vrp.getVehicles());
-		assertEquals(10.0,v3.getCoord().getX(),0.01);
-		assertEquals(100.0,v3.getCoord().getY(),0.01);
+		assertEquals(10.0,v3.getStartLocationCoordinate().getX(),0.01);
+		assertEquals(100.0,v3.getStartLocationCoordinate().getY(),0.01);
 	}
 	
 	@Test
@@ -239,7 +239,7 @@ public class VrpReaderV2Test {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Vehicle v3 = getVehicle("v3",vrp.getVehicles());
-		assertEquals("startLoc",v3.getLocationId());
+		assertEquals("startLoc",v3.getStartLocationId());
 	}
 	
 	@Test
@@ -286,8 +286,8 @@ public class VrpReaderV2Test {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Vehicle v = getVehicle("v4",vrp.getVehicles());
-		assertEquals(10.0,v.getCoord().getX(),0.01);
-		assertEquals(100.0,v.getCoord().getY(),0.01);
+		assertEquals(10.0,v.getStartLocationCoordinate().getX(),0.01);
+		assertEquals(100.0,v.getStartLocationCoordinate().getY(),0.01);
 	}
 	
 	@Test

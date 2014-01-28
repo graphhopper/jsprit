@@ -19,7 +19,7 @@ package jsprit.examples;
 import java.io.File;
 import java.util.Collection;
 
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -110,9 +110,9 @@ public class CostMatrixExample {
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
-				
-		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.bestOf(solutions), "output/yo.png", "po");
-
+		
+		new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/yo.png", "po");
+		
 	}
 
 }

@@ -19,7 +19,7 @@ package jsprit.examples;
 import java.io.File;
 import java.util.Collection;
 
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -105,7 +105,9 @@ public class SimpleExampleOpenRoutes {
 		/*
 		 * plot
 		 */
-		SolutionPlotter.plotSolutionAsPNG(problem, bestSolution, "output/solution.png", "solution");
+	
+		new Plotter(problem, bestSolution).plot("output/solution.png", "solution");
+		
 	}
 
 }

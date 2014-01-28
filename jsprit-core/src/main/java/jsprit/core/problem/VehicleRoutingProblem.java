@@ -327,7 +327,11 @@ public class VehicleRoutingProblem {
 			if(!vehicleTypes.contains(vehicle.getType())){
 				vehicleTypes.add(vehicle.getType());
 			}
-			coordinates.put(vehicle.getLocationId(), vehicle.getCoord());
+			String startLocationId = vehicle.getStartLocationId();
+			coordinates.put(startLocationId, vehicle.getStartLocationCoordinate());
+			if(!vehicle.getEndLocationId().equals(startLocationId)){
+				coordinates.put(vehicle.getEndLocationId(), vehicle.getEndLocationCoordinate());
+			}
 			return this;
 		}
 		
@@ -373,7 +377,7 @@ public class VehicleRoutingProblem {
 			Set<LocTypeKey> locTypeKeys = new HashSet<LocTypeKey>();
 			List<Vehicle> uniqueVehicles = new ArrayList<Vehicle>();
 			for(Vehicle v : vehicles){
-				LocTypeKey key = new LocTypeKey(v.getLocationId(),v.getType().getTypeId());
+				LocTypeKey key = new LocTypeKey(v.getStartLocationId(),v.getType().getTypeId());
 				if(!locTypeKeys.contains(key)){
 					uniqueVehicles.add(v);
 					locTypeKeys.add(key);
@@ -390,9 +394,10 @@ public class VehicleRoutingProblem {
 						.setFixedCost(fixed)
 						.build();
 				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
-				String vehicleId = "penaltyVehicle_" + v.getLocationId() + "_" + t.getTypeId();
+				String vehicleId = "penaltyVehicle_" + v.getStartLocationId() + "_" + t.getTypeId();
 				Vehicle penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
-						.setLatestArrival(v.getLatestArrival()).setLocationCoord(v.getCoord()).setLocationId(v.getLocationId())
+						.setLatestArrival(v.getLatestArrival()).setStartLocationCoordinate(v.getStartLocationCoordinate()).setLocationId(v.getStartLocationId())
+						.setEndLocationId(v.getEndLocationId()).setEndLocationCoordinate(v.getEndLocationCoordinate())
 						.setReturnToDepot(v.isReturnToDepot()).setType(penType).build();
 				addVehicle(penVehicle);
 			}

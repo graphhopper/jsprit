@@ -22,7 +22,6 @@ public class TestInserter {
 	public void whenInsertingServiceAndRouteIsClosed_itInsertsCorrectly(){
 		Service service = mock(Service.class);
 		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getLocationId()).thenReturn("vehLoc");
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
 		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
 		when(vehicle.isReturnToDepot()).thenReturn(true);
@@ -42,14 +41,13 @@ public class TestInserter {
 		
 		assertEquals(2,route.getTourActivities().getActivities().size());
 		assertEquals(route.getTourActivities().getActivities().get(1).getLocationId(),serviceToInsert.getLocationId());
-		assertEquals(route.getEnd().getLocationId(),vehicle.getLocationId());
+		assertEquals(route.getEnd().getLocationId(),vehicle.getEndLocationId());
 	}
 	
 	@Test
 	public void whenInsertingServiceAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation(){
 		Service service = mock(Service.class);
 		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getLocationId()).thenReturn("vehLoc");
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
 		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
 		when(vehicle.isReturnToDepot()).thenReturn(false);
@@ -76,7 +74,6 @@ public class TestInserter {
 	public void whenInsertingShipmentAndRouteIsClosed_itInsertsCorrectly(){
 		Shipment shipment = mock(Shipment.class);
 		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getLocationId()).thenReturn("vehLoc");
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
 		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
 		when(vehicle.isReturnToDepot()).thenReturn(true);
@@ -98,14 +95,13 @@ public class TestInserter {
 		assertEquals(4,route.getTourActivities().getActivities().size());
 		assertEquals(route.getTourActivities().getActivities().get(2).getLocationId(),shipmentToInsert.getPickupLocation());
 		assertEquals(route.getTourActivities().getActivities().get(3).getLocationId(),shipmentToInsert.getDeliveryLocation());
-		assertEquals(route.getEnd().getLocationId(),vehicle.getLocationId());
+		assertEquals(route.getEnd().getLocationId(),vehicle.getEndLocationId());
 	}
 	
 	@Test
 	public void whenInsertingShipmentAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation(){
 		Shipment shipment = mock(Shipment.class);
 		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getLocationId()).thenReturn("vehLoc");
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		when(vehicle.getId()).thenReturn("vehId");
 		
@@ -148,7 +144,7 @@ public class TestInserter {
 		Inserter inserter = new Inserter(mock(InsertionListeners.class));
 		inserter.insertJob(shipmentToInsert, iData, route);
 		
-		assertEquals(newVehicle.getLocationId(),route.getEnd().getLocationId());
+		assertEquals(route.getEnd().getLocationId(),newVehicle.getEndLocationId());
 	}
 	
 	@Test

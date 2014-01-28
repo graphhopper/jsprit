@@ -385,17 +385,27 @@ public class GraphStreamViewer {
 	}
 
 	private void renderVehicle(Graph g, Vehicle vehicle, Label label) {
-		Node n = g.addNode(makeId(vehicle.getId(),vehicle.getLocationId()));
-		if(label.equals(Label.ID)) n.addAttribute("ui.label", "depot");
+		Node vehicleStart = g.addNode(makeId(vehicle.getId(),vehicle.getStartLocationId()));
+		if(label.equals(Label.ID)) vehicleStart.addAttribute("ui.label", "depot");
 //		if(label.equals(Label.ACTIVITY)) n.addAttribute("ui.label", "start");
-		n.addAttribute("x", vehicle.getCoord().getX());
-		n.addAttribute("y", vehicle.getCoord().getY());
-		n.setAttribute("ui.class", "depot");
+		vehicleStart.addAttribute("x", vehicle.getStartLocationCoordinate().getX());
+		vehicleStart.addAttribute("y", vehicle.getStartLocationCoordinate().getY());
+		vehicleStart.setAttribute("ui.class", "depot");
+		
+		if(!vehicle.getStartLocationId().equals(vehicle.getEndLocationId())){
+			Node vehicleEnd = g.addNode(makeId(vehicle.getId(),vehicle.getEndLocationId()));
+			if(label.equals(Label.ID)) vehicleEnd.addAttribute("ui.label", "depot");
+//			if(label.equals(Label.ACTIVITY)) n.addAttribute("ui.label", "start");
+			vehicleEnd.addAttribute("x", vehicle.getEndLocationCoordinate().getX());
+			vehicleEnd.addAttribute("y", vehicle.getEndLocationCoordinate().getY());
+			vehicleEnd.setAttribute("ui.class", "depot");
+			
+		}
 	}
 
 	private void renderRoute(Graph g, VehicleRoute route, int routeId, long renderDelay_in_ms, Label label) {
 		int vehicle_edgeId = 1;
-		String prevIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getLocationId());
+		String prevIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getStartLocationId());
 		if(label.equals(Label.ACTIVITY)){
 			Node n = g.getNode(prevIdentifier);
 			n.addAttribute("ui.label", "start");
@@ -414,7 +424,7 @@ public class GraphStreamViewer {
 			sleep(renderDelay_in_ms);
 		}
 		if(route.getVehicle().isReturnToDepot()){
-			String lastIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getLocationId());
+			String lastIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getEndLocationId());
 			g.addEdge(makeEdgeId(routeId,vehicle_edgeId), prevIdentifier, lastIdentifier, true);
 		}
 	}

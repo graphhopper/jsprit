@@ -22,10 +22,10 @@ import java.util.Collection;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
-import jsprit.analysis.toolbox.StopWatch;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
+import jsprit.analysis.toolbox.StopWatch;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
@@ -140,8 +140,9 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(vrp,Solutions.bestOf(solutions),Print.VERBOSE);
-		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.bestOf(solutions), "output/p08_solution.png", "p08");
 
+		new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/p08_solution.png", "p08");
+		
 		new GraphStreamViewer(vrp,Solutions.bestOf(solutions)).setRenderDelay(50).display();
 	}
 

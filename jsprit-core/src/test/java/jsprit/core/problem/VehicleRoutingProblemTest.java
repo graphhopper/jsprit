@@ -66,10 +66,10 @@ public class VehicleRoutingProblemTest {
 	public void whenBuildingWithFourVehicles_vrpShouldContainTheCorrectNuOfVehicles(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
-		Vehicle v1 = mock(VehicleImpl.class);
-		Vehicle v2 = mock(VehicleImpl.class);
-		Vehicle v3 = mock(VehicleImpl.class);
-		Vehicle v4 = mock(VehicleImpl.class);
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").build();
+		Vehicle v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("start").build();
+		Vehicle v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("start").build();
 		
 		builder.addVehicle(v1).addVehicle(v2).addVehicle(v3).addVehicle(v4);
 		
@@ -82,10 +82,10 @@ public class VehicleRoutingProblemTest {
 	public void whenAddingFourVehiclesAllAtOnce_vrpShouldContainTheCorrectNuOfVehicles(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
-		Vehicle v1 = mock(VehicleImpl.class);
-		Vehicle v2 = mock(VehicleImpl.class);
-		Vehicle v3 = mock(VehicleImpl.class);
-		Vehicle v4 = mock(VehicleImpl.class);
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").build();
+		Vehicle v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("start").build();
+		Vehicle v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("start").build();
 		
 		builder.addAllVehicles(Arrays.asList(v1,v2,v3,v4));
 		
@@ -470,5 +470,23 @@ public class VehicleRoutingProblemTest {
 		assertTrue(penaltyVehicleInCollection);
 		assertTrue(anotherPenVehInCollection);
 		
+	}
+	
+	@Test
+	public void whenAddingVehicleWithDiffStartAndEnd_startLocationMustBeRegisteredInLocationMap(){
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.addVehicle(vehicle);
+		assertTrue(vrpBuilder.getLocationMap().containsKey("start"));
+	}
+	
+	@Test
+	public void whenAddingVehicleWithDiffStartAndEnd_endLocationMustBeRegisteredInLocationMap(){
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.addVehicle(vehicle);
+		assertTrue(vrpBuilder.getLocationMap().containsKey("end"));
 	}
 }

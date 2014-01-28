@@ -121,23 +121,11 @@ public class VehicleImplTest {
 		assertEquals(2.0, v.getCoord().getY(),0.01);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void whenStartLocationCoordIsNull_itThrowsException(){
-		@SuppressWarnings("unused")
-		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(null).build();
-	}
-	
 	@Test
 	public void whenEndLocationIsSet_itIsDoneCorrectly(){
 		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").setEndLocationId("endLoc").build();
 		assertEquals("startLoc", v.getStartLocationId());
 		assertEquals("endLoc", v.getEndLocationId());
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void whenEndLocationIsNull_itThrowsException(){
-		@SuppressWarnings("unused")
-		Vehicle v = VehicleImpl.Builder.newInstance("v").setEndLocationId(null).build();
 	}
 	
 	@Test
@@ -147,12 +135,7 @@ public class VehicleImplTest {
 		assertEquals(2.0, v.getEndLocationCoordinate().getY(),0.01);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void whenEndLocationCoordIsNull_itThrowsException(){
-		@SuppressWarnings("unused")
-		Vehicle v = VehicleImpl.Builder.newInstance("v").setEndLocationCoordinate(null).build();
-	}
-	
+
 	@Test
 	public void whenNeitherEndLocationIdNorEndLocationCoordAreSet_endLocationIdMustBeEqualToStartLocationId(){
 		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").build();

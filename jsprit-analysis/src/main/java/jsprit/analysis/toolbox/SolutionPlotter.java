@@ -75,8 +75,10 @@ public class SolutionPlotter {
 
 	 * @param vrp
 	 * @param pngFile target path with filename.
-	 * @see VehicleRoutingProblem, VehicleRoutingProblemSolution 
+	 * @see VehicleRoutingProblem, VehicleRoutingProblemSolution
+	 * @deprecated use Plotter.java instead (this plotter is not maintained anymore and might plot incorrectly)
 	 */
+	@Deprecated
 	public static void plotVrpAsPNG(VehicleRoutingProblem vrp, String pngFile, String title){
 		String filename = pngFile;
 		if(!pngFile.endsWith(".png")) filename += ".png";
@@ -102,7 +104,9 @@ public class SolutionPlotter {
 	 * @param pngFile target path with filename.
 	 * @param plotTitle 
 	 * @see VehicleRoute
+	 * @deprecated use Plotter.java instead (this plotter is not maintained anymore and might plot incorrectly)
 	 */
+	@Deprecated
 	public static void plotRoutesAsPNG(Collection<VehicleRoute> routes, Locations locations, String pngFile, String title) {
 		String filename = pngFile;
 		if(!pngFile.endsWith(".png")) filename += ".png";
@@ -130,8 +134,10 @@ public class SolutionPlotter {
 	 * @param vrp
 	 * @param solution
 	 * @param pngFile target path with filename.
-	 * @see VehicleRoutingProblem, VehicleRoutingProblemSolution 
+	 * @see VehicleRoutingProblem, VehicleRoutingProblemSolution
+	 * @deprecated use Plotter.java instead (this plotter is not maintained anymore and might plot incorrectly)
 	 */
+	@Deprecated
 	public static void plotSolutionAsPNG(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, String pngFile, String title){
 		String filename = pngFile;
 		if(!pngFile.endsWith(".png")) filename += ".png";
@@ -294,7 +300,7 @@ public class SolutionPlotter {
 		XYSeriesCollection coll = new XYSeriesCollection();
 		XYSeries vehicleSeries = new XYSeries("depot", false, true);
 		for(Vehicle v : vehicles){
-			Coordinate coord = v.getCoord();
+			Coordinate coord = v.getStartLocationCoordinate();
 			if(coord == null) throw new NoLocationFoundException();
 			vehicleSeries.add(coord.getX(),coord.getY());	
 		}
@@ -353,11 +359,11 @@ public class SolutionPlotter {
 	private static Locations retrieveLocations(VehicleRoutingProblem vrp) throws NoLocationFoundException {
 		final Map<String, Coordinate> locs = new HashMap<String, Coordinate>();
 		for(Vehicle v : vrp.getVehicles()){
-			String locationId = v.getLocationId();
-			if(locationId == null) throw new NoLocationFoundException();
-			Coordinate coord = v.getCoord();
+			String startLocationId = v.getStartLocationId();
+			if(startLocationId == null) throw new NoLocationFoundException();
+			Coordinate coord = v.getStartLocationCoordinate();
 			if(coord == null) throw new NoLocationFoundException();
-			locs.put(locationId, coord);
+			locs.put(startLocationId, coord);
 		}
 		for(Job j : vrp.getJobs().values()){
 			if(j instanceof Service){

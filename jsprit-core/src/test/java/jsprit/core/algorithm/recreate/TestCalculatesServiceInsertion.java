@@ -75,14 +75,16 @@ public class TestCalculatesServiceInsertion {
 		costs = mock(VehicleRoutingTransportCosts.class);
 		vehicle = mock(Vehicle.class);
 		when(vehicle.getCapacity()).thenReturn(1000);
-		when(vehicle.getLocationId()).thenReturn("depot");
+		when(vehicle.getStartLocationId()).thenReturn("depot");
+		when(vehicle.getEndLocationId()).thenReturn("depot");
 		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(vehicle.getLatestArrival()).thenReturn(100.0);
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
 		newVehicle = mock(Vehicle.class);
 		when(newVehicle.getCapacity()).thenReturn(1000);
-		when(newVehicle.getLocationId()).thenReturn("depot");
+		when(newVehicle.getStartLocationId()).thenReturn("depot");
+		when(newVehicle.getEndLocationId()).thenReturn("depot");
 		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(newVehicle.getLatestArrival()).thenReturn(100.0);
 		when(newVehicle.isReturnToDepot()).thenReturn(true);

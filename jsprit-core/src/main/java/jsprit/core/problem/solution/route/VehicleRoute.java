@@ -165,7 +165,7 @@ public class VehicleRoute {
 			this.driver = driver;
 			start = Start.newInstance(vehicle.getStartLocationId(), vehicle.getEarliestDeparture(), Double.MAX_VALUE);
 			start.setEndTime(vehicle.getEarliestDeparture());
-			end = End.newInstance(vehicle.getLocationId(), 0.0, vehicle.getLatestArrival());
+			end = End.newInstance(vehicle.getEndLocationId(), 0.0, vehicle.getLatestArrival());
 		}
 
 		/**

@@ -22,7 +22,6 @@ import java.util.Collection;
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.Plotter.Label;
-import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -65,7 +64,8 @@ public class PickupAndDeliveryExample {
 		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/pd_solomon_r101.png", "pd_r101");
+		new Plotter(vrp).plot("output/pd_solomon_r101.png", "pd_r101");
+		
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.

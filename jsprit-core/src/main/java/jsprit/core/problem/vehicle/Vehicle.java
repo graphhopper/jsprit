@@ -47,7 +47,9 @@ public interface Vehicle {
 	 * <p> Consequently, it should be the end-location of this vehicle, if returnToDepot is true.
 	 * 
 	 * @return location-id of this vehicle
+	 * @deprecated use getStartLocationId() instead
 	 */
+	@Deprecated
 	public abstract String getLocationId();
 	
 	/**
@@ -56,7 +58,9 @@ public interface Vehicle {
 	 * <p> Consequently, it should be the coordinate of the end-location, if returnToDepot is true.
 	 * 
 	 * @return coordinate of this vehicle
+	 * @deprecated use getStartLocationCoordinate() instead
 	 */
+	@Deprecated 
 	public abstract Coordinate getCoord();
 
 	/**

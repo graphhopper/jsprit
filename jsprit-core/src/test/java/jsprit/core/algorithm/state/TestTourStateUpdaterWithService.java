@@ -138,7 +138,7 @@ public class TestTourStateUpdaterWithService {
 	public void testStatesOfAct0(){
 		states.informInsertionStarts(Arrays.asList(vehicleRoute), null);
 		assertEquals(0.0, vehicleRoute.getStart().getEndTime(),0.05);
-		assertEquals(vehicleRoute.getVehicle().getLocationId(), vehicleRoute.getStart().getLocationId());
+		assertEquals(vehicleRoute.getVehicle().getStartLocationId(), vehicleRoute.getStart().getLocationId());
 		assertEquals(vehicleRoute.getVehicle().getEarliestDeparture(), vehicleRoute.getStart().getTheoreticalEarliestOperationStartTime(),0.05);
 		assertEquals(Double.MAX_VALUE, vehicleRoute.getStart().getTheoreticalLatestOperationStartTime(),0.05);
 		

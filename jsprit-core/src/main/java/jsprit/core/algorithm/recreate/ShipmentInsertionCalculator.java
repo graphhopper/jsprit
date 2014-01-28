@@ -100,10 +100,10 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		int pickupInsertionIndex = InsertionData.NO_INDEX;
 		int deliveryInsertionIndex = InsertionData.NO_INDEX;
 		
-		Start start = Start.newInstance(newVehicle.getLocationId(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
+		Start start = Start.newInstance(newVehicle.getStartLocationId(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
 		start.setEndTime(newVehicleDepartureTime);
 		
-		End end = End.newInstance(newVehicle.getLocationId(), 0.0, newVehicle.getLatestArrival());
+		End end = End.newInstance(newVehicle.getEndLocationId(), 0.0, newVehicle.getLatestArrival());
 		
 		TourActivity prevAct = start;
 		double prevActEndTime = newVehicleDepartureTime;
