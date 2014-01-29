@@ -356,7 +356,7 @@ public class BicycleMessenger {
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			//build your vehicle
-			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
+			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setStartLocationCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setReturnToDepot(false).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
 			//build the penalty vehicle

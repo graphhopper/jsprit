@@ -51,7 +51,7 @@ public class VrpWriterV2Test {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		builder.setFleetSize(FleetSize.INFINITE);
 		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("myVehicle").setLocationId("loc").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("myVehicle").setStartLocationId("loc").setType(type).build();
 		builder.addVehicle(vehicle);
 		VehicleRoutingProblem vrp = builder.build();
 		new VrpXMLWriter(vrp, null).write(infileName);
@@ -63,8 +63,8 @@ public class VrpWriterV2Test {
 		builder.setFleetSize(FleetSize.FINITE);
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
 		VehicleRoutingProblem vrp = builder.build();
@@ -77,8 +77,8 @@ public class VrpWriterV2Test {
 		builder.setFleetSize(FleetSize.FINITE);
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
 		VehicleRoutingProblem vrp = builder.build();
@@ -94,8 +94,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -124,8 +124,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -155,8 +155,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -187,8 +187,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -218,8 +218,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -249,8 +249,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -278,8 +278,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -311,8 +311,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -339,8 +339,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -365,8 +365,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -391,8 +391,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
@@ -419,8 +419,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setLocationCoord(Coordinate.newInstance(1, 2))
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(1, 2))
 				.setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(4, 5)).setType(type2).build();
 		
 		builder.addVehicle(v1);
@@ -447,8 +447,8 @@ public class VrpWriterV2Test {
 		
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType", 20).build();
 		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2", 200).build();
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setLocationId("loc").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setLocationCoord(Coordinate.newInstance(1, 2))
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setReturnToDepot(false).setStartLocationId("loc").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(1, 2))
 				.setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(4, 5)).setType(type2).build();
 		
 		builder.addVehicle(v1);

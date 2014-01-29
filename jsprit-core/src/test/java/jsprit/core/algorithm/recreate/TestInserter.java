@@ -127,8 +127,8 @@ public class TestInserter {
 	@Test
 	public void whenSwitchingVehicleAndRouteIsClosed_newStartAndEndShouldBeTheLocationOfNewVehicle(){
 		Shipment shipment = mock(Shipment.class);
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
-		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
+		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
@@ -150,8 +150,8 @@ public class TestInserter {
 	@Test
 	public void whenSwitchingVehicleAndRouteIsOpen_endLocationShouldBeTheLocationOfTheLastActivity(){
 		Shipment shipment = mock(Shipment.class);
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
-		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
+		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
@@ -174,8 +174,8 @@ public class TestInserter {
 	public void whenInsertingShipmentAtBeginningAndSwitchingVehicleAndRouteIsOpen_endLocationShouldBeTheLocationOfTheLastActivity(){
 		Shipment shipment = mock(Shipment.class);
 		when(shipment.getDeliveryLocation()).thenReturn("oldShipmentDelLoc");
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
-		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
+		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end

@@ -59,7 +59,7 @@ public class CostMatrixExample {
 			if(result) System.out.println("./output created");  
 		}
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 2).setCostPerDistance(1).setCostPerTime(2).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setLocationId("0").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("0").setType(type).build();
 		
 		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("1").build();
 		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("2").build();

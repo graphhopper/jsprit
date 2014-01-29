@@ -41,7 +41,7 @@ public class TestVehicleRoute {
 
 	@Before
 	public void doBefore(){
-		vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
 		driver = DriverImpl.noDriver();
 	}
 
@@ -194,14 +194,14 @@ public class TestVehicleRoute {
 	
 	@Test
 	public void whenBuildingRouteWithVehicleThatHasSameStartAndEndLocation_routeMustHaveCorrectStartLocationV2(){
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("start").setEndLocationId("start").build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("start").build();
 		VehicleRoute vRoute = VehicleRoute.Builder.newInstance(vehicle, DriverImpl.noDriver()).build();
 		assertTrue(vRoute.getStart().getLocationId().equals("start"));
 	}
 	
 	@Test
 	public void whenBuildingRouteWithVehicleThatHasSameStartAndEndLocation_routeMustHaveCorrectEndLocationV2(){
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("start").setEndLocationId("start").build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("start").build();
 		VehicleRoute vRoute = VehicleRoute.Builder.newInstance(vehicle, DriverImpl.noDriver()).build();
 		assertTrue(vRoute.getEnd().getLocationId().equals("start"));
 	}

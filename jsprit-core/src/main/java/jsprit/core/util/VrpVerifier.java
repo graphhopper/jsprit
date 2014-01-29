@@ -21,15 +21,21 @@ import java.util.Collection;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.driver.DriverImpl;
 import jsprit.core.problem.job.Job;
-import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.vehicle.Vehicle;
 
 import org.apache.log4j.Logger;
 
-
+/**
+ * Verifies whether vrp can be solved.
+ * 
+ * <p>Checks<br>
+ * - capacities, i.e. whether all job at least fit into the biggest vehicle
+ * 
+ * @author stefan
+ *
+ */
 public class VrpVerifier implements AlgorithmStartsListener{
 
 	private static Logger log = Logger.getLogger(VrpVerifier.class);
@@ -47,26 +53,26 @@ public class VrpVerifier implements AlgorithmStartsListener{
 			}
 		}
 		log.info("ok");
-		log.info("check vehicles can manage shuttle tours ...");
-		for(Job j : problem.getJobs().values()){
-			Service s = (Service)j;
-			boolean jobCanBeRoutedWithinTimeWindow = false;
-			for(Vehicle v : problem.getVehicles()){
-				double transportTime = problem.getTransportCosts().getTransportTime(v.getLocationId(), s.getLocationId(), v.getEarliestDeparture(), DriverImpl.noDriver(), v);
-				if(transportTime+v.getEarliestDeparture() < s.getTimeWindow().getEnd()){
-					jobCanBeRoutedWithinTimeWindow = true;
-					break;
-				}
-				else{
-					log.warn("vehicle " + v + " needs " + transportTime + " time-units to get to " + s.getLocationId() + ". latestOperationStartTime however is " + s.getTimeWindow().getEnd());
-				}
-				
-			}
-			if(!jobCanBeRoutedWithinTimeWindow){
-				throw new IllegalStateException("no vehicle is able to cover the distance from depot to " + s.getLocationId() + " to meet the time-window " + s.getTimeWindow() + ".");
-			}
-		}
-		log.info("ok");
+//		log.info("check vehicles can manage shuttle tours ...");
+//		for(Job j : problem.getJobs().values()){
+//			Service s = (Service)j;
+//			boolean jobCanBeRoutedWithinTimeWindow = false;
+//			for(Vehicle v : problem.getVehicles()){
+//				double transportTime = problem.getTransportCosts().getTransportTime(v.getStartLocationId(), s.getLocationId(), v.getEarliestDeparture(), DriverImpl.noDriver(), v);
+//				if(transportTime+v.getEarliestDeparture() < s.getTimeWindow().getEnd()){
+//					jobCanBeRoutedWithinTimeWindow = true;
+//					break;
+//				}
+//				else{
+//					log.warn("vehicle " + v + " needs " + transportTime + " time-units to get to " + s.getLocationId() + ". latestOperationStartTime however is " + s.getTimeWindow().getEnd());
+//				}
+//				
+//			}
+//			if(!jobCanBeRoutedWithinTimeWindow){
+//				throw new IllegalStateException("no vehicle is able to cover the distance from depot to " + s.getLocationId() + " to meet the time-window " + s.getTimeWindow() + ".");
+//			}
+//		}
+//		log.info("ok");
 		log.info("verifying done");
 	}
 	

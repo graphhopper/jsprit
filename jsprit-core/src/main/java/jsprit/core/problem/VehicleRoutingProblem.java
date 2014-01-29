@@ -396,7 +396,7 @@ public class VehicleRoutingProblem {
 				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
 				String vehicleId = "penaltyVehicle_" + v.getStartLocationId() + "_" + t.getTypeId();
 				Vehicle penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
-						.setLatestArrival(v.getLatestArrival()).setStartLocationCoordinate(v.getStartLocationCoordinate()).setLocationId(v.getStartLocationId())
+						.setLatestArrival(v.getLatestArrival()).setStartLocationCoordinate(v.getStartLocationCoordinate()).setStartLocationId(v.getStartLocationId())
 						.setEndLocationId(v.getEndLocationId()).setEndLocationCoordinate(v.getEndLocationCoordinate())
 						.setReturnToDepot(v.isReturnToDepot()).setType(penType).build();
 				addVehicle(penVehicle);

@@ -101,10 +101,10 @@ public class VehicleRoutingProblemTest {
 		VehicleTypeImpl type1 = mock(VehicleTypeImpl.class);
 		VehicleTypeImpl type2 = mock(VehicleTypeImpl.class);
 		
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setLocationId("yo").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setLocationId("yo").setType(type1).build();
-		Vehicle v3 = VehicleImpl.Builder.newInstance("v3").setLocationId("yo").setType(type2).build();
-		Vehicle v4 = VehicleImpl.Builder.newInstance("v4").setLocationId("yo").setType(type2).build();
+		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("yo").setType(type1).build();
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("yo").setType(type1).build();
+		Vehicle v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("yo").setType(type2).build();
+		Vehicle v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("yo").setType(type2).build();
 		
 		builder.addVehicle(v1).addVehicle(v2).addVehicle(v3).addVehicle(v4);
 		
@@ -286,7 +286,7 @@ public class VehicleRoutingProblemTest {
 	public void whenAddingAVehicle_getAddedVehicleTypesShouldReturnItsType(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
 		builder.addVehicle(vehicle);
 		
 		assertEquals(1,builder.getAddedVehicleTypes().size());
@@ -298,8 +298,8 @@ public class VehicleRoutingProblemTest {
 	public void whenAddingTwoVehicleWithSameType_getAddedVehicleTypesShouldReturnOnlyOneType(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -314,8 +314,8 @@ public class VehicleRoutingProblemTest {
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
 		VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type2", 0).build();
 		
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type2).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -328,7 +328,7 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptions_itShouldAddPenaltyVehicle(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.setFleetSize(FleetSize.FINITE);
@@ -350,7 +350,7 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptionsAndFleetSizeIsInfinite_noPenaltyVehicleIsAdded(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addPenaltyVehicles(3.0);
@@ -371,8 +371,8 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithSameLocationAndType_onlyOnePenaltyVehicleIsAdded(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -395,8 +395,8 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptionsWithAbsoluteFixedCostsAndTwoVehiclesWithSameLocationAndType_onePenaltyVehicleIsAddedWithTheCorrectPenaltyFixedCosts(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -421,8 +421,8 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithDiffLocationAndType_twoPenaltyVehicleIsAdded(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc2").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc2").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -449,8 +449,8 @@ public class VehicleRoutingProblemTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 0).build();
 		VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type2", 0).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setLocationId("loc").setType(type2).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);

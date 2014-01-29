@@ -7,7 +7,7 @@ import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
 
-
+@SuppressWarnings("deprecation") // still tests whether deprecated methods work correctly - if deprecated methods are removed entirely, shift to setStartLocationId(..) and setStartLocationCoordinate()
 public class VehicleImplTest {
 	
 	@Test

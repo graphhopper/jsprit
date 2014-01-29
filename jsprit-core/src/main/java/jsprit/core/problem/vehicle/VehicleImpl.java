@@ -136,7 +136,9 @@ public class VehicleImpl implements Vehicle {
 		 * 
 		 * @param id
 		 * @return this builder
+		 * @deprecated use setStartLocationId(..) instead
 		 */
+		@Deprecated
 		public Builder setLocationId(String id){
 			this.locationId = id;
 			this.startLocationId = id;
@@ -150,7 +152,9 @@ public class VehicleImpl implements Vehicle {
 		 * 
 		 * @param coord
 		 * @return this builder
+		 * @deprecated use setStartLocationCoordinate(...) instead
 		 */
+		@Deprecated 
 		public Builder setLocationCoord(Coordinate coord){
 			this.locationCoord = coord;
 			this.startLocationCoord = coord;

@@ -61,7 +61,7 @@ public class SimpleExampleOpenRoutes {
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
 		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setLocationCoord(Coordinate.newInstance(10, 10));
+		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
 		vehicleBuilder.setReturnToDepot(false);
 		

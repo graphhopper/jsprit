@@ -87,7 +87,7 @@ public class ShipmentInsertionCalculatorTest {
 		};
 		routingCosts = new ManhattanCosts(locations);
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1).build();
-		vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
 	}

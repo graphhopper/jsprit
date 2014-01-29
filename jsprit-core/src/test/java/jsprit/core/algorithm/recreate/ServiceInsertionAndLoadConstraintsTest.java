@@ -91,7 +91,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		};
 		routingCosts = new ManhattanCosts(locations);
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1).build();
-		vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
 	}
@@ -106,7 +106,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick", 15).setLocationId("0,10").build();
 		
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 50).setCostPerDistance(1).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		route.setVehicleAndDepartureTime(vehicle, 0.0);

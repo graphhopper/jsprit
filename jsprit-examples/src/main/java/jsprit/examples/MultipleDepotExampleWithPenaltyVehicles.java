@@ -85,7 +85,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
-				vehicleBuilder.setLocationCoord(depotCoord);
+				vehicleBuilder.setStartLocationCoordinate(depotCoord);
 				vehicleBuilder.setType(vehicleType);
 				vehicleBuilder.setLatestArrival(maxDuration);
 				Vehicle vehicle = vehicleBuilder.build();
@@ -102,7 +102,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 			PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType,3);
 			String vehicleId = depotCounter + "_vehicle#penalty";
 			VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
-			vehicleBuilder.setLocationCoord(depotCoord);
+			vehicleBuilder.setStartLocationCoordinate(depotCoord);
 			/*
 			 * set PenaltyVehicleType
 			 */
