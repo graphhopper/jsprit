@@ -1,6 +1,7 @@
 Change-log
 ==========
 **v1.1.1** @ 2014-01-31
+
 <em>jsprit-core:</em>
 - fixed bug: [#80](https://github.com/jsprit/jsprit/issues/80)
 - added new package reporting with basic reporting
