@@ -37,6 +37,8 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.reporting.SolutionPrinter;
+import jsprit.core.reporting.SolutionPrinter.Print;
 import jsprit.core.util.Solutions;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix.Builder;
@@ -188,6 +190,8 @@ public class RefuseCollection_IT {
 		vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
+		SolutionPrinter.print(vrp, Solutions.bestOf(solutions), Print.VERBOSE);
+		
 		assertEquals(397.0,Solutions.bestOf(solutions).getCost(),0.01);
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
 	}
@@ -227,6 +231,7 @@ public class RefuseCollection_IT {
 			}
 			String[] lineTokens = line.split(",");
 			matrixBuilder.addTransportDistance(lineTokens[0],lineTokens[1], Integer.parseInt(lineTokens[2]));
+			matrixBuilder.addTransportTime(lineTokens[0],lineTokens[1], Integer.parseInt(lineTokens[2]));
 		}
 		reader.close();
 		
