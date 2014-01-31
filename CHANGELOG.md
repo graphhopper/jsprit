@@ -1,5 +1,10 @@
 Change-log
 ==========
+**v1.1.1** @ 2014-01-31
+<em>jsprit-core:</em>
+- fixed bug: [#80]()
+- added new package reporting with basic reporting
+
 **v1.1.0** @ 2014-01-27
 
 - [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.0.0_to_1.1.0.txt)
