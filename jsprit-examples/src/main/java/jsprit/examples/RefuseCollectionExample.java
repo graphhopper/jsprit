@@ -41,6 +41,7 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Solutions;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix.Builder;
+import jsprit.util.Examples;
 
 
 
@@ -154,13 +155,7 @@ public class RefuseCollectionExample {
 		/*
 		 * some preparation - create output folder
 		 */
-		File dir = new File("output");
-		// if the directory does not exist, create it
-		if (!dir.exists()){
-			System.out.println("creating directory ./output");
-			boolean result = dir.mkdir();  
-			if(result) System.out.println("./output created");  
-		}
+		Examples.createOutputFolder();
 		
 		/*
 		 * create vehicle-type and vehicle

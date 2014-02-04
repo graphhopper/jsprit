@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -24,8 +23,8 @@ import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
-import jsprit.analysis.toolbox.StopWatch;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
+import jsprit.analysis.toolbox.StopWatch;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
@@ -40,6 +39,7 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
+import jsprit.util.Examples;
 
 
 public class MultipleDepotExampleWithPenaltyVehicles {
@@ -51,13 +51,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		/*
 		 * some preparation - create output folder
 		 */
-		File dir = new File("output");
-		// if the directory does not exist, create it
-		if (!dir.exists()){
-			System.out.println("creating directory ./output");
-			boolean result = dir.mkdir();  
-			if(result) System.out.println("./output created");  
-		}
+		Examples.createOutputFolder();
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		/*

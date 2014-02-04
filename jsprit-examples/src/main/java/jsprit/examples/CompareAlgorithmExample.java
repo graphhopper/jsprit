@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.io.File;
-
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.StopWatch;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -27,6 +25,7 @@ import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.instance.reader.SolomonReader;
+import jsprit.util.Examples;
 
 
 public class CompareAlgorithmExample {
@@ -38,13 +37,7 @@ public class CompareAlgorithmExample {
 		/*
 		 * some preparation - create output folder
 		 */
-		File dir = new File("output");
-		// if the directory does not exist, create it
-		if (!dir.exists()){
-			System.out.println("creating directory ./output");
-			boolean result = dir.mkdir();  
-			if(result) System.out.println("./output created");  
-		}
+		Examples.createOutputFolder();
 		/*
 		 * Build the problem.
 		 * 
@@ -81,14 +74,10 @@ public class CompareAlgorithmExample {
 		 */
 		vra_withThreshold.searchSolutions();
 		
-		vra_greedy.searchSolutions();
-		
-		
+		vra_greedy.searchSolutions();	
 		vra_greedy.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(40));
 		vra_greedy.searchSolutions();
-		
-		
-		
+	
 		
 	}
 
