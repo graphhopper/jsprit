@@ -16,12 +16,32 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+
 import jsprit.core.problem.Capacity;
 
+/**
+ * Basic interface for all jobs.
+ * 
+ * @author schroeder
+ *
+ */
 public interface Job {
 
+	/**
+	 * Returns the unique identifier (id) of a job.
+	 * 
+	 * @return id
+	 */
 	public String getId();
 
+	/**
+	 * Returns capacity (demand) of job.
+	 * 
+	 * <p>It determines how much capacity this job consumes of vehicle/transport unit.
+	 * 
+	 * @deprecated use getCapacity() instead
+	 * @return
+	 */
 	@Deprecated
 	public int getCapacityDemand();
 	

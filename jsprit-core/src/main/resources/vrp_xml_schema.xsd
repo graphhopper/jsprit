@@ -40,7 +40,7 @@
 									<xs:element name="location">
 										<xs:complexType>
 											<xs:all>
-												<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+												<xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="coord" minOccurs="0" maxOccurs="1">
 												 	<xs:complexType>
 												 		<xs:attribute name="x" type="xs:decimal" use="required"/>
@@ -95,7 +95,7 @@
 						<xs:element name="service" minOccurs="0" maxOccurs="unbounded">
 							<xs:complexType>
 								<xs:all>
-									<xs:element name="locationId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									<xs:element name="locationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="capacity-demand" type="xs:integer" minOccurs="0" maxOccurs="1" default="0"/>
 									<xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
@@ -125,7 +125,7 @@
 									<xs:element name="pickup" minOccurs="1" maxOccurs="1">
 										<xs:complexType>
 											<xs:all>
-												<xs:element name="locationId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+												<xs:element name="locationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
 												<xs:element name="timeWindows" minOccurs="0" maxOccurs="1">
@@ -141,7 +141,7 @@
 									<xs:element name="delivery" minOccurs="1" maxOccurs="1">
 										<xs:complexType>
 											<xs:all>
-												<xs:element name="locationId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+												<xs:element name="locationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
 												<xs:element name="timeWindows" minOccurs="0" maxOccurs="1">

@@ -47,7 +47,7 @@ import jsprit.core.util.CalculationUtils;
 			if(arrTimeAtNextAct > latestArrTimeAtNextAct){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
-			double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + routingCosts.getTransportCost(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle()); 
+			double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle()); 
 			//if vehicle cannot even manage direct-route - break
 			if(arrTimeAtNextOnDirectRouteWithNewVehicle > latestArrTimeAtNextAct){
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;

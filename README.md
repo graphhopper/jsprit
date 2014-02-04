@@ -1,7 +1,7 @@
 jsprit
 ======
 jsprit is a java based, open source toolkit for solving rich <a href="http://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">traveling salesman</a> (TSP) and <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP). 
-It is lightweight, flexible and easy-to-use, and based on a single all-purpose <a href="http://www.sciencedirect.com/science/article/pii/S0021999199964136" target="_blank">meta-heuristic</a> currently solving 
+It is lightweight, flexible and easy-to-use, and based on a single all-purpose <a href="https://github.com/jsprit/jsprit/wiki/Meta-Heuristic-and-Configuration" target="_blank">meta-heuristic</a> currently solving 
 - Capacitated VRP
 - Multiple Depot VRP
 - VRP with Time Windows
@@ -15,10 +15,6 @@ It is lightweight, flexible and easy-to-use, and based on a single all-purpose <
 
 Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
 reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests.
-
-Additionally, jsprit can be used along with <a href="http://www.matsim.org" target="blank_">MATSim</a> 
-to solve the above problem-types in real networks (i.e. without preprocessing transport times and costs). A variety of least cost path algorithms such as Dijkstra and A*
-can be used, and a dynamic and interactive visualiser greatly enhances the analysis.
 
 ##In Development
 - continues improvement of code, handling and performance
@@ -40,6 +36,8 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 [Add the latest snapshot (i.e. head of development) to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
 
 [Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
+
+If you do not want Maven to manage your dependencies, go to [snapshot-jars](https://github.com/jsprit/mvn-rep/tree/master/snapshots/jsprit) or [realease-jars](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) to download jsprit-binaries directly. Just click on the jar-file you want to download and use the 'Raw'-button to actually download it. Put the jars into your classpath. Note that you then need to put all [dependencies](https://github.com/jsprit/jsprit/wiki/Modules-and-Dependencies) jsprit relies on manually to your classpath as well.
 
 ####If not
 

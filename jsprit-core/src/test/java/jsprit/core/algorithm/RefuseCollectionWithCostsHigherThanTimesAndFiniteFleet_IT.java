@@ -24,14 +24,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
 
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
-import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -47,7 +44,7 @@ import org.junit.Test;
 
 
 
-public class RefuseCollection_IT {
+public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
 	
 	static class RelationKey {
 		
@@ -109,38 +106,28 @@ public class RefuseCollection_IT {
 		}
 	}
 	
-	static class RoutingCosts implements VehicleRoutingTransportCosts {
-
-		private Map<RelationKey,Integer> distances;
-		
-		public RoutingCosts(Map<RelationKey, Integer> distances) {
-			super();
-			this.distances = distances;
-		}
-
-		@Override
-		public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, departureTime, driver, vehicle);
-		}
-
-		@Override
-		public double getBackwardTransportTime(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-		}
-
-		@Override
-		public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-			if(fromId.equals(toId)) return 0.0;
-			RelationKey key = RelationKey.newKey(fromId, toId);
-			return distances.get(key);
-		}
-
-		@Override
-		public double getBackwardTransportCost(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-		}
-		
-	}
+//	static class RoutingCosts extends AbstractForwardVehicleRoutingTransportCosts {
+//
+//		private Map<RelationKey,Integer> distances;
+//		
+//		public RoutingCosts(Map<RelationKey, Integer> distances) {
+//			super();
+//			this.distances = distances;
+//		}
+//
+//		@Override
+//		public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+//			return getTransportCost(fromId, toId, departureTime, driver, vehicle)/2.;
+//		}
+//
+//		@Override
+//		public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
+//			if(fromId.equals(toId)) return 0.0;
+//			RelationKey key = RelationKey.newKey(fromId, toId);
+//			return distances.get(key);
+//		}
+//		
+//	}
 	
 	
 	@Test
@@ -157,6 +144,7 @@ public class RefuseCollection_IT {
 		VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
 		vehicleBuilder.setLocationId("1");
 		vehicleBuilder.setType(bigType);
+		vehicleBuilder.setLatestArrival(220);
 		Vehicle bigVehicle = vehicleBuilder.build();
 		
 		/*
@@ -192,7 +180,7 @@ public class RefuseCollection_IT {
 		
 		SolutionPrinter.print(vrp, Solutions.bestOf(solutions), Print.VERBOSE);
 		
-		assertEquals(397.0,Solutions.bestOf(solutions).getCost(),0.01);
+		assertEquals(2.*397.,Solutions.bestOf(solutions).getCost(),0.01);
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
 	}
 
@@ -230,7 +218,7 @@ public class RefuseCollection_IT {
 				continue;
 			}
 			String[] lineTokens = line.split(",");
-			matrixBuilder.addTransportDistance(lineTokens[0],lineTokens[1], Integer.parseInt(lineTokens[2]));
+			matrixBuilder.addTransportDistance(lineTokens[0],lineTokens[1], 2.*Integer.parseInt(lineTokens[2]));
 			matrixBuilder.addTransportTime(lineTokens[0],lineTokens[1], Integer.parseInt(lineTokens[2]));
 		}
 		reader.close();
