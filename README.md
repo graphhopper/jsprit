@@ -18,7 +18,7 @@ reading classical VRP instances to benchmark your algorithm. It is fit for chang
 
 ##In Development
 - continues improvement of code, handling and performance
-- soft constraints
+- simplifying management of soft and hard constraints
 - various capacity dimensions and multiple time-windows
 - large scale instances
 
