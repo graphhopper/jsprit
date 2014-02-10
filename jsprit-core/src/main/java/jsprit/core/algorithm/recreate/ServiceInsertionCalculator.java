@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  *
  */
 final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
-
+	
 	private static final Logger logger = Logger.getLogger(ServiceInsertionCalculator.class);
 
 	private HardRouteStateLevelConstraint hardRouteLevelConstraint;
@@ -63,6 +63,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 	private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
 	
 	private TourActivityFactory activityFactory;
+	
+	private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
 	public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
 		super();
@@ -73,6 +75,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		softRouteConstraint = constraintManager;
 		this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
 		activityFactory = new DefaultTourActivityFactory();
+		additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
 		logger.info("initialise " + this);
 	}
 	
@@ -100,6 +103,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		
 		//from job2insert induced costs at route level
 		double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
+		additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
 		
 		Service service = (Service)jobToInsert;
 		int insertionIndex = InsertionData.NO_INDEX;

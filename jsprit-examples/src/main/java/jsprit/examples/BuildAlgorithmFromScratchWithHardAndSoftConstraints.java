@@ -40,7 +40,6 @@ import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.constraint.AdditionalTransportationCosts;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -135,7 +134,7 @@ public class BuildAlgorithmFromScratchWithHardAndSoftConstraints {
 		 * add an arbitrary number of hardConstraints by
 		 * constraintManager.addConstraint(...)
 		 */
-		constraintManager.addConstraint(new AdditionalTransportationCosts(vrp.getTransportCosts()));
+		
 		
 		/*
 		 * define a fleetManager, here infinite vehicles can be used 

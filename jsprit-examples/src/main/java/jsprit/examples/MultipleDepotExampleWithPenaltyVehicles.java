@@ -32,7 +32,6 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -85,30 +84,13 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				Vehicle vehicle = vehicleBuilder.build();
 				vrpBuilder.addVehicle(vehicle);
 			}
-			/*
-			 * define penalty-type with the same id, but other higher fixed and variable costs
-			 */
-			VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
-			/*
-			 * to mark the penalty-type as penalty-type, wrap it with PenaltyVehicleType(Wrapper)
-			 * this is to tell the fleetManager that this is not a regular but a penalty vehicle
-			 */
-			PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType,3);
-			String vehicleId = depotCounter + "_vehicle#penalty";
-			VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
-			vehicleBuilder.setLocationCoord(depotCoord);
-			/*
-			 * set PenaltyVehicleType
-			 */
-			vehicleBuilder.setType(penaltyVehicleType);
-			vehicleBuilder.setLatestArrival(maxDuration);
-			Vehicle penaltyVehicle = vehicleBuilder.build();
-			vrpBuilder.addVehicle(penaltyVehicle);
-
 			depotCounter++;
 		}
 		
-		
+		/*
+		 * define penalty-type with the same id, but other higher fixed and variable costs
+		 */
+		vrpBuilder.addPenaltyVehicles(3, 50);
 		
 		/*
 		 * define problem with finite fleet
