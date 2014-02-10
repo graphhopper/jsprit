@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
@@ -226,7 +227,7 @@ public class BicycleMessenger {
 		problemBuilder.addConstraint(new ThreeTimesLessThanBestDirectRouteConstraint(nearestMessengers, routingCosts, stateManager));
 		problemBuilder.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
 		
-		problemBuilder.addPenaltyVehicles(10.0,50000);
+		problemBuilder.addPenaltyVehicles(20.0,50000);
 		
 		//finally build the problem
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
@@ -238,8 +239,8 @@ public class BicycleMessenger {
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
 		//if you want, terminate it after 1000 iterations with no change
 //		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
-//		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-		algorithm.setNuOfIterations(2000);
+		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+//		algorithm.setNuOfIterations(2000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints
