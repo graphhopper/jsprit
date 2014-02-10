@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
+import jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
@@ -59,15 +60,18 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 	
 	private VehicleRoutingTransportCosts transportCosts;
 	
+	private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
+	
 	private TourActivityFactory activityFactory;
 
-	public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ConstraintManager constraintManager) {
+	public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
 		super();
 		this.transportCosts = routingCosts;
 		hardRouteLevelConstraint = constraintManager;
 		hardActivityLevelConstraint = constraintManager;
 		softActivityConstraint = constraintManager;
 		softRouteConstraint = constraintManager;
+		this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
 		activityFactory = new DefaultTourActivityFactory();
 		logger.info("initialise " + this);
 	}
@@ -95,7 +99,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		double bestCost = bestKnownCosts;
 		
 		//from job2insert induced costs at route level
-		double routeICosts = softRouteConstraint.getCosts(insertionContext);
+		double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
 		
 		Service service = (Service)jobToInsert;
 		int insertionIndex = InsertionData.NO_INDEX;
@@ -114,9 +118,10 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
 			if(status.equals(ConstraintsStatus.FULFILLED)){
 				//from job2insert induced costs at activity level
-				double activityICosts = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-				if(routeICosts + activityICosts < bestCost){
-					bestCost = routeICosts + activityICosts;
+				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+				ActivityInsertionCosts additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts() < bestCost){
+					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts();
 					insertionIndex = actIndex;
 				}
 			}
@@ -134,9 +139,10 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		if(!loopBroken){
 			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime); 
 			if(status.equals(ConstraintsStatus.FULFILLED)){
-				double activityICosts = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-				if(routeICosts + activityICosts < bestCost){
-					bestCost = routeICosts + activityICosts;
+				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+				ActivityInsertionCosts additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts() < bestCost){
+					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts();
 					insertionIndex = actIndex;
 				}
 			}

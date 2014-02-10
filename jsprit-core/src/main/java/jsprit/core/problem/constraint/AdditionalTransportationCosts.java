@@ -12,7 +12,7 @@ import jsprit.core.util.CalculationUtils;
  * @author schroeder
  *
  */
-public class AdditionalTransportationCosts implements SoftActivityConstraint{
+class AdditionalTransportationCosts implements SoftActivityConstraint{
 
 	private VehicleRoutingTransportCosts routingCosts;
 	

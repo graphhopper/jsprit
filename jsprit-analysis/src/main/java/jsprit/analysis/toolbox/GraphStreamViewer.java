@@ -214,7 +214,6 @@ public class GraphStreamViewer {
 		
 		//start rendering graph
 		render(g,view);
-
 	}
 
 	private void render(Graph g, View view) {

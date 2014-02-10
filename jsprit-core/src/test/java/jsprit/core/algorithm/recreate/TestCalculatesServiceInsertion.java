@@ -24,11 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import jsprit.core.algorithm.ExampleActivityCostFunction;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.constraint.AdditionalTransportationCosts;
 import jsprit.core.problem.constraint.ConstraintManager;
+import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.DriverImpl;
 import jsprit.core.problem.driver.DriverImpl.NoDriver;
@@ -166,12 +165,10 @@ public class TestCalculatesServiceInsertion {
 		ConstraintManager cManager = new ConstraintManager(vrp,states);
 		cManager.addLoadConstraint();
 		cManager.addTimeWindowConstraint();
-		cManager.addConstraint(new AdditionalTransportationCosts(costs));
 		
-		serviceInsertion = new ServiceInsertionCalculator(costs, cManager);
-
+		VehicleRoutingActivityCosts actCosts = mock(VehicleRoutingActivityCosts.class);
 		
-//		stateUpdater = new UpdateStates(states, costs, activityCosts);
+		serviceInsertion = new ServiceInsertionCalculator(costs, new LocalActivityInsertionCostsCalculator(costs, actCosts), cManager);
 		
 	}
 	

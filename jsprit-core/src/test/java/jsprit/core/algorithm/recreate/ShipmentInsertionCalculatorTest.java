@@ -240,7 +240,7 @@ public class ShipmentInsertionCalculatorTest {
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
 		
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
-		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, constraintManager);
+		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, constraintManager);
 		switcher.put(Pickup.class, serviceInsertionCalc);
 		switcher.put(Shipment.class, insertionCalculator);
