@@ -136,7 +136,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
 		
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
-		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, constraintManager);
+		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, constraintManager);
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, constraintManager);
 		switcher.put(Pickup.class, serviceInsertionCalc);
 		switcher.put(Delivery.class, serviceInsertionCalc);

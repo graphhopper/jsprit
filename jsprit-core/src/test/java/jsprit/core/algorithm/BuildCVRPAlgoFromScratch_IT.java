@@ -32,6 +32,7 @@ import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.constraint.AdditionalTransportationCosts;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.SolutionCostCalculator;
@@ -67,6 +68,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 		ConstraintManager cManager = new ConstraintManager(vrp, stateManager);
 		cManager.addLoadConstraint();
 		cManager.addTimeWindowConstraint();
+		cManager.addConstraint(new AdditionalTransportationCosts(vrp.getTransportCosts()));
 				
 		VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 		
@@ -102,11 +104,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 		vra = new VehicleRoutingAlgorithm(vrp, strategyManager);
 		vra.addListener(stateManager);
 		vra.addListener(new RemoveEmptyVehicles(fleetManager));
-		
-//		vra.getAlgorithmListeners().addListener(stateManager);
-//		vra.getSearchStrategyManager().addSearchStrategyModuleListener(stateManager);
-//		vra.getSearchStrategyManager().addSearchStrategyModuleListener(new RemoveEmptyVehicles(fleetManager));
-		
+	
 		VehicleRoutingProblemSolution iniSolution = new InsertionInitialSolutionFactory(bestInsertion, solutionCostCalculator).createSolution(vrp);
 
 		vra.addInitialSolution(iniSolution);

@@ -27,6 +27,7 @@ import java.util.Collection;
 import jsprit.core.algorithm.ExampleActivityCostFunction;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.constraint.AdditionalTransportationCosts;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.DriverImpl;
@@ -165,11 +166,9 @@ public class TestCalculatesServiceInsertion {
 		ConstraintManager cManager = new ConstraintManager(vrp,states);
 		cManager.addLoadConstraint();
 		cManager.addTimeWindowConstraint();
+		cManager.addConstraint(new AdditionalTransportationCosts(costs));
 		
-		ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
-
-
-		serviceInsertion = new ServiceInsertionCalculator(costs, new LocalActivityInsertionCostsCalculator(costs, activityCosts), cManager, cManager);
+		serviceInsertion = new ServiceInsertionCalculator(costs, cManager);
 
 		
 //		stateUpdater = new UpdateStates(states, costs, activityCosts);
