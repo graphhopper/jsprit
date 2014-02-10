@@ -252,7 +252,7 @@ class CalculatorBuilder {
 			actInsertionCalc = activityInsertionCostCalculator;
 		}
 
-		ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
+		ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
 		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
 		
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();

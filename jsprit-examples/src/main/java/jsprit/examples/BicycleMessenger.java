@@ -239,7 +239,7 @@ public class BicycleMessenger {
 		//if you want, terminate it after 1000 iterations with no change
 //		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
 //		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-		algorithm.setNuOfIterations(200);
+		algorithm.setNuOfIterations(2000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints

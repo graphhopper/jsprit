@@ -24,6 +24,7 @@ import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -93,7 +94,9 @@ public class ShipmentInsertionCalculatorTest {
 	}
 
 	private void createInsertionCalculator(HardRouteStateLevelConstraint hardRouteLevelConstraint) {
-		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, hardActivityLevelConstraint);
+		ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
+		constraintManager.addConstraint(hardRouteLevelConstraint);
+		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
 	}
 	
 	@Test
@@ -199,7 +202,7 @@ public class ShipmentInsertionCalculatorTest {
 		constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(),Priority.CRITICAL);
 				
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, 
-				hardRouteLevelConstraint, constraintManager);
+				constraintManager);
 		
 		
 		InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
@@ -241,7 +244,7 @@ public class ShipmentInsertionCalculatorTest {
 		
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
 		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
-		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, constraintManager);
+		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
 		switcher.put(Pickup.class, serviceInsertionCalc);
 		switcher.put(Shipment.class, insertionCalculator);
 		

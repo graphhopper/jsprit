@@ -26,9 +26,8 @@ import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.io.VrpXMLWriter;
-import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
@@ -40,7 +39,7 @@ import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 
 
-public class EnRoutePickupAndDeliveryWithMultipleDepotsExample {
+public class ServicePickupsWithMultipleDepotsExample {
 	
 	public static void main(String[] args) {
 		/*
@@ -51,7 +50,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsExample {
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 2);
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 8);
 		vehicleTypeBuilder.setCostPerDistance(1.0);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
@@ -63,20 +62,11 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsExample {
 		vehicleBuilder1.setType(vehicleType);
 		Vehicle vehicle1 = vehicleBuilder1.build();
 		
-		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("vehicles@[30,30]");
-		vehicleBuilder2.setLocationCoord(Coordinate.newInstance(30, 30));
+		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("vehicles@[50,50]");
+		vehicleBuilder2.setLocationCoord(Coordinate.newInstance(50, 50));
 		vehicleBuilder2.setType(vehicleType);
 		Vehicle vehicle2 = vehicleBuilder2.build();
 		
-		Builder vehicleBuilder3 = VehicleImpl.Builder.newInstance("vehicles@[10,30]");
-		vehicleBuilder3.setLocationCoord(Coordinate.newInstance(10, 30));
-		vehicleBuilder3.setType(vehicleType);
-		Vehicle vehicle3 = vehicleBuilder3.build();
-		
-		Builder vehicleBuilder4 = VehicleImpl.Builder.newInstance("vehicles@[30,10]");
-		vehicleBuilder4.setLocationCoord(Coordinate.newInstance(30, 10));
-		vehicleBuilder4.setType(vehicleType);
-		Vehicle vehicle4 = vehicleBuilder4.build();
 		
 		/*
 		 * build shipments at the required locations, each with a capacity-demand of 1.
@@ -87,46 +77,33 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsExample {
 		 * 4: (15,13)->(14,11)
 		 */
 		
-		Shipment shipment1 = Shipment.Builder.newInstance("1", 1).setPickupCoord(Coordinate.newInstance(5, 7)).setDeliveryCoord(Coordinate.newInstance(6, 9)).build();
-		Shipment shipment2 = Shipment.Builder.newInstance("2", 1).setPickupCoord(Coordinate.newInstance(5, 13)).setDeliveryCoord(Coordinate.newInstance(6, 11)).build();
+		Service shipment1 = Service.Builder.newInstance("1", 1).setCoord(Coordinate.newInstance(5, 7)).build();
+		Service shipment2 = Service.Builder.newInstance("2", 1).setCoord(Coordinate.newInstance(5, 13)).build();
 		
-		Shipment shipment3 = Shipment.Builder.newInstance("3", 1).setPickupCoord(Coordinate.newInstance(15, 7)).setDeliveryCoord(Coordinate.newInstance(14, 9)).build();
-		Shipment shipment4 = Shipment.Builder.newInstance("4", 1).setPickupCoord(Coordinate.newInstance(15, 13)).setDeliveryCoord(Coordinate.newInstance(14, 11)).build();
+		Service shipment3 = Service.Builder.newInstance("3", 1).setCoord(Coordinate.newInstance(15, 7)).build();
+		Service shipment4 = Service.Builder.newInstance("4", 1).setCoord(Coordinate.newInstance(15, 13)).build();
 		
-		Shipment shipment5 = Shipment.Builder.newInstance("5", 1).setPickupCoord(Coordinate.newInstance(25, 27)).setDeliveryCoord(Coordinate.newInstance(26, 29)).build();
-		Shipment shipment6 = Shipment.Builder.newInstance("6", 1).setPickupCoord(Coordinate.newInstance(25, 33)).setDeliveryCoord(Coordinate.newInstance(26, 31)).build();
+		Service shipment5 = Service.Builder.newInstance("5", 1).setCoord(Coordinate.newInstance(55, 57)).build();
+		Service shipment6 = Service.Builder.newInstance("6", 1).setCoord(Coordinate.newInstance(55, 63)).build();
 		
-		Shipment shipment7 = Shipment.Builder.newInstance("7", 1).setPickupCoord(Coordinate.newInstance(35, 27)).setDeliveryCoord(Coordinate.newInstance(34, 29)).build();
-		Shipment shipment8 = Shipment.Builder.newInstance("8", 1).setPickupCoord(Coordinate.newInstance(35, 33)).setDeliveryCoord(Coordinate.newInstance(34, 31)).build();
-		
-		Shipment shipment9 = Shipment.Builder.newInstance("9", 1).setPickupCoord(Coordinate.newInstance(5, 27)).setDeliveryCoord(Coordinate.newInstance(6, 29)).build();
-		Shipment shipment10 = Shipment.Builder.newInstance("10", 1).setPickupCoord(Coordinate.newInstance(5, 33)).setDeliveryCoord(Coordinate.newInstance(6, 31)).build();
-		
-		Shipment shipment11 = Shipment.Builder.newInstance("11", 1).setPickupCoord(Coordinate.newInstance(15, 27)).setDeliveryCoord(Coordinate.newInstance(14, 29)).build();
-		Shipment shipment12 = Shipment.Builder.newInstance("12", 1).setPickupCoord(Coordinate.newInstance(15, 33)).setDeliveryCoord(Coordinate.newInstance(14, 31)).build();
-		
-		Shipment shipment13 = Shipment.Builder.newInstance("13", 1).setPickupCoord(Coordinate.newInstance(25, 7)).setDeliveryCoord(Coordinate.newInstance(26, 9)).build();
-		Shipment shipment14 = Shipment.Builder.newInstance("14", 1).setPickupCoord(Coordinate.newInstance(25, 13)).setDeliveryCoord(Coordinate.newInstance(26, 11)).build();
-		
-		Shipment shipment15 = Shipment.Builder.newInstance("15", 1).setPickupCoord(Coordinate.newInstance(35, 7)).setDeliveryCoord(Coordinate.newInstance(34, 9)).build();
-		Shipment shipment16 = Shipment.Builder.newInstance("16", 1).setPickupCoord(Coordinate.newInstance(35, 13)).setDeliveryCoord(Coordinate.newInstance(34, 11)).build();
+		Service shipment7 = Service.Builder.newInstance("7", 1).setCoord(Coordinate.newInstance(65, 57)).build();
+		Service shipment8 = Service.Builder.newInstance("8", 1).setCoord(Coordinate.newInstance(65, 63)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		vrpBuilder.addVehicle(vehicle1).addVehicle(vehicle2).addVehicle(vehicle3).addVehicle(vehicle4);
+		vrpBuilder.addVehicle(vehicle1).addVehicle(vehicle2);
 		vrpBuilder.addJob(shipment1).addJob(shipment2).addJob(shipment3).addJob(shipment4);
 		vrpBuilder.addJob(shipment5).addJob(shipment6).addJob(shipment7).addJob(shipment8);
-		vrpBuilder.addJob(shipment9).addJob(shipment10).addJob(shipment11).addJob(shipment12);
-		vrpBuilder.addJob(shipment13).addJob(shipment14).addJob(shipment15).addJob(shipment16);
 		
-		vrpBuilder.setFleetSize(FleetSize.FINITE);
+//		vrpBuilder.setFleetSize(FleetSize.FINITE);
 		VehicleRoutingProblem problem = vrpBuilder.build();
 		
 		/*
 		 * get the algorithm out-of-the-box. 
 		 */
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig.xml");
-//		algorithm.setNuOfIterations(30000);
+		algorithm.setNuOfIterations(10);
+		
 		/*
 		 * and search a solution
 		 */
@@ -166,4 +143,3 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsExample {
 	}
 
 }
-

@@ -45,8 +45,12 @@ import jsprit.core.problem.solution.route.activity.TourActivities;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.EuclideanDistanceCalculator;
+import jsprit.core.util.Locations;
+import jsprit.core.util.ManhattanDistanceCalculator;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -85,80 +89,46 @@ public class TestCalculatesServiceInsertion {
 		costs = mock(VehicleRoutingTransportCosts.class);
 		vehicle = mock(Vehicle.class);
 		when(vehicle.getCapacity()).thenReturn(1000);
-		when(vehicle.getLocationId()).thenReturn("depot");
+		when(vehicle.getLocationId()).thenReturn("0,0");
 		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
 		when(vehicle.getLatestArrival()).thenReturn(100.0);
 		when(vehicle.isReturnToDepot()).thenReturn(true);
+		VehicleType t1 = VehicleTypeImpl.Builder.newInstance("t1", 1000).setCostPerDistance(1.0).build();
+		vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setLocationId("0,0").setType(t1).build();
 		
-		newVehicle = mock(Vehicle.class);
-		when(newVehicle.getCapacity()).thenReturn(1000);
-		when(newVehicle.getLocationId()).thenReturn("depot");
-		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);
-		when(newVehicle.getLatestArrival()).thenReturn(100.0);
-		when(newVehicle.isReturnToDepot()).thenReturn(true);
+		VehicleType t2 = VehicleTypeImpl.Builder.newInstance("t2", 1000).setCostPerDistance(2.0).build();
+		newVehicle = VehicleImpl.Builder.newInstance("newVehicle").setLatestArrival(100.0).setLocationId("0,0").setType(t2).build();
 		
 		driver = DriverImpl.noDriver();
 		
-		when(costs.getTransportCost("depot", "1", 0.0, driver, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("depot", "2", 0.0, driver, vehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("depot", "3", 0.0, driver, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("1", "2", 0.0, driver, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("1", "3", 0.0, driver, vehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("2", "3", 0.0, driver, vehicle)).thenReturn(10.0);
+		final Locations locations = new Locations(){
+
+			@Override
+			public Coordinate getCoord(String id) {
+				//assume: locationId="x,y"
+				String[] splitted = id.split(",");
+				return Coordinate.newInstance(Double.parseDouble(splitted[0]), 
+						Double.parseDouble(splitted[1]));
+			}
+			
+		};
+		costs = new AbstractForwardVehicleRoutingTransportCosts() {
+			
+			@Override
+			public double getTransportTime(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
+				return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId));
+			}
+			
+			@Override
+			public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+				return vehicle.getType().getVehicleCostParams().perDistanceUnit*ManhattanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId));
+			}
+		};
+
 		
-		when(costs.getTransportCost("1", "depot", 0.0, driver, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("2", "depot", 0.0, driver, vehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("3", "depot", 0.0, driver, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("2", "1", 0.0, driver, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("3", "1", 0.0, driver, vehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("3", "2", 0.0, driver, vehicle)).thenReturn(10.0);
-		
-		when(costs.getTransportCost("depot", "1", 0.0, driver, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("depot", "2", 0.0, driver, newVehicle)).thenReturn(40.0);
-		when(costs.getTransportCost("depot", "3", 0.0, driver, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("1", "2", 0.0, driver, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("1", "3", 0.0, driver, newVehicle)).thenReturn(40.0);
-		when(costs.getTransportCost("2", "3", 0.0, driver, newVehicle)).thenReturn(20.0);
-		
-		when(costs.getTransportCost("1", "depot", 0.0, driver, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("2", "depot", 0.0, driver, newVehicle)).thenReturn(40.0);
-		when(costs.getTransportCost("3", "depot", 0.0, driver, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("2", "1", 0.0, driver, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("3", "1", 0.0, driver, newVehicle)).thenReturn(40.0);
-		when(costs.getTransportCost("3", "2", 0.0, driver, newVehicle)).thenReturn(20.0);
-	
-		when(costs.getTransportCost("depot", "1", 0.0, null, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("depot", "2", 0.0, null, vehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("depot", "3", 0.0, null, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("1", "2", 0.0, null, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("1", "3", 0.0, null, vehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("2", "3", 0.0, null, vehicle)).thenReturn(10.0);
-		
-		when(costs.getTransportCost("1", "depot", 0.0, null, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("2", "depot", 0.0, null, vehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("3", "depot", 0.0, null, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("2", "1", 0.0, null, vehicle)).thenReturn(10.0);
-		when(costs.getTransportCost("3", "1", 0.0, null, vehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("3", "2", 0.0, null, vehicle)).thenReturn(10.0);
-		
-		when(costs.getTransportCost("depot", "1", 0.0, null, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("depot", "2", 0.0, null, newVehicle)).thenReturn(40.0);
-		when(costs.getTransportCost("depot", "3", 0.0, null, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("1", "2", 0.0, null, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("1", "3", 0.0, null, newVehicle)).thenReturn(40.0);
-		when(costs.getTransportCost("2", "3", 0.0, null, newVehicle)).thenReturn(20.0);
-		
-		when(costs.getTransportCost("1", "depot", 0.0, null, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("2", "depot", 0.0, null, newVehicle)).thenReturn(40.0);
-		when(costs.getTransportCost("3", "depot", 0.0, null, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("2", "1", 0.0, null, newVehicle)).thenReturn(20.0);
-		when(costs.getTransportCost("3", "1", 0.0, null, newVehicle)).thenReturn(40.0);
-		when(costs.getTransportCost("3", "2", 0.0, null, newVehicle)).thenReturn(20.0);
-	
-		
-		first = Service.Builder.newInstance("1", 0).setLocationId("1").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		second = Service.Builder.newInstance("3", 0).setLocationId("3").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		third = Service.Builder.newInstance("2", 0).setLocationId("2").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		first = Service.Builder.newInstance("1", 0).setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		second = Service.Builder.newInstance("3", 0).setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		third = Service.Builder.newInstance("2", 0).setLocationId("10,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
 		Collection<Job> jobs = new ArrayList<Job>();
 		jobs.add(first);
 		jobs.add(second);
@@ -279,12 +249,11 @@ public class TestCalculatesServiceInsertion {
 	@Test
 	public void whenInsertingJobAndCurrRouteAndVehicleHaveTheSameLocation_accessEggressCalcShouldReturnZero(){
 		VehicleRoute route = VehicleRoute.Builder.newInstance(newVehicle, DriverImpl.noDriver())
-				.addService(Service.Builder.newInstance("1", 0).setLocationId("1").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build())
+				.addService(first)
 				.build();
 		
 		AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
-		Job job = Service.Builder.newInstance("1", 0).setLocationId("1").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
+		JobInsertionContext iContex = new JobInsertionContext(route, first, newVehicle, mock(Driver.class), 0.0);
 		assertEquals(0.0, accessEgressCalc.getCosts(iContex),0.01);
 	}
 	
