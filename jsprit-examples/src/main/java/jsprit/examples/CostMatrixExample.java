@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.io.File;
 import java.util.Collection;
 
 import jsprit.analysis.toolbox.SolutionPlotter;
@@ -34,6 +33,7 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Solutions;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix;
+import jsprit.util.Examples;
 
 
 /**
@@ -51,13 +51,8 @@ public class CostMatrixExample {
 		/*
 		 * some preparation - create output folder
 		 */
-		File dir = new File("output");
-		// if the directory does not exist, create it
-		if (!dir.exists()){
-			System.out.println("creating directory ./output");
-			boolean result = dir.mkdir();  
-			if(result) System.out.println("./output created");  
-		}
+		Examples.createOutputFolder();
+		
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 2).setCostPerDistance(1).setCostPerTime(2).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setLocationId("0").setType(type).build();
 		

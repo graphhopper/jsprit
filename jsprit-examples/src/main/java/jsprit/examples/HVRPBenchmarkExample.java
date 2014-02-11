@@ -34,6 +34,7 @@ public class HVRPBenchmarkExample {
 	
 	public static void main(String[] args) {
 		Examples.createOutputFolder();
+		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		//read modified Golden-instance, you can find all relevant instances in jsprit-instances/instances/vrph
 		//you can build various problems, see VrphType doc for more details

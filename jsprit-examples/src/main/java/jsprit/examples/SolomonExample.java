@@ -16,14 +16,13 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.io.File;
 import java.util.Collection;
 
 import jsprit.analysis.toolbox.GraphStreamViewer;
+import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPlotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
-import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -31,6 +30,7 @@ import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.instance.reader.SolomonReader;
+import jsprit.util.Examples;
 
 
 public class SolomonExample {
@@ -39,13 +39,7 @@ public class SolomonExample {
 		/*
 		 * some preparation - create output folder
 		 */
-		File dir = new File("output");
-		// if the directory does not exist, create it
-		if (!dir.exists()){
-			System.out.println("creating directory ./output");
-			boolean result = dir.mkdir();  
-			if(result) System.out.println("./output created");  
-		}
+		Examples.createOutputFolder();
 		
 		/*
 		 * Build the problem.

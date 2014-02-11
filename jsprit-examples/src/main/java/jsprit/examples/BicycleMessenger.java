@@ -42,9 +42,7 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Solutions;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import jsprit.util.Examples;
 
 
 /**
@@ -207,8 +205,8 @@ public class BicycleMessenger {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		createOutputFolder();//for output generated below
-		Logger.getRootLogger().setLevel(Level.INFO);
+		Examples.createOutputFolder();
+		
 		//build the problem
 		VehicleRoutingProblem.Builder problemBuilder = VehicleRoutingProblem.Builder.newInstance();
 		problemBuilder.setFleetSize(FleetSize.FINITE);
@@ -285,19 +283,6 @@ public class BicycleMessenger {
 				SolutionPrinter.print(bicycleMessengerProblem, bestOf, Print.VERBOSE);
 				throw new IllegalStateException("penaltyVehicle in solution. if there is a valid solution, this should not be");
 			}
-		}
-	}
-
-	private static void createOutputFolder() {
-		/*
-		 * some preparation - create output folder
-		 */
-		File dir = new File("output");
-		// if the directory does not exist, create it
-		if (!dir.exists()){
-			System.out.println("creating directory ./output");
-			boolean result = dir.mkdir();  
-			if(result) System.out.println("./output created");  
 		}
 	}
 
