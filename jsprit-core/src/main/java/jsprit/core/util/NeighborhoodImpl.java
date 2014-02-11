@@ -62,7 +62,7 @@ public class NeighborhoodImpl implements Neighborhood{
 		for(Service i : services){
 			Set<String> neigh = new HashSet<String>();
 			for(Vehicle v : vehicles){
-				double dist2depot = EuclideanDistanceCalculator.calculateDistance(v.getCoord(), i.getCoord());
+				double dist2depot = EuclideanDistanceCalculator.calculateDistance(v.getStartLocationCoordinate(), i.getCoord());
 				if(dist2depot <= threshold){
 					neighborsToAll.add(((Service)i).getLocationId());
 				}
@@ -80,7 +80,7 @@ public class NeighborhoodImpl implements Neighborhood{
 
 	private void makeNeighborsToAll(Collection<Vehicle> vehicles) {
 		for(Vehicle v : vehicles){
-			neighborsToAll.add(v.getLocationId());
+			neighborsToAll.add(v.getStartLocationId());
 		}
 	}
 

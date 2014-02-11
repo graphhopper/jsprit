@@ -22,11 +22,11 @@
 <algorithm xmlns="http://www.w3schools.com"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3schools.com algorithm_schema.xsd">
 	
-	<iterations>1000</iterations>
+	<iterations>20000</iterations>
 
 	<construction>
 		<insertion name="bestInsertion">
-		 	<allowVehicleSwitch>false</allowVehicleSwitch>
+		 	<allowVehicleSwitch>true</allowVehicleSwitch>
 		</insertion>	
 	</construction>
 	
@@ -36,8 +36,8 @@
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
 				<acceptor name="schrimpfAcceptance">
-					<alpha>0.1</alpha>
-					<warmup>40</warmup>
+					<alpha>0.05</alpha>
+					<warmup>20</warmup>
 				</acceptor>
 				<modules>
 					<module name="ruin_and_recreate">
@@ -56,7 +56,7 @@
 				<acceptor name="schrimpfAcceptance"/>	
 				<modules>
 					<module name="ruin_and_recreate">
-						<ruin id="1" name="radialRuin">
+						<ruin name="radialRuin">
 							<share>0.3</share>
 						</ruin>
 						<insertion name="bestInsertion"/>					

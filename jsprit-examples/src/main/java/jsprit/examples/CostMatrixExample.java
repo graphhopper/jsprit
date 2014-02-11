@@ -18,7 +18,7 @@ package jsprit.examples;
 
 import java.util.Collection;
 
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -54,7 +54,7 @@ public class CostMatrixExample {
 		Examples.createOutputFolder();
 		
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 2).setCostPerDistance(1).setCostPerTime(2).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setLocationId("0").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("0").setType(type).build();
 		
 		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("1").build();
 		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("2").build();
@@ -105,9 +105,9 @@ public class CostMatrixExample {
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
-				
-		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.bestOf(solutions), "output/yo.png", "po");
-
+		
+		new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/yo.png", "po");
+		
 	}
 
 }

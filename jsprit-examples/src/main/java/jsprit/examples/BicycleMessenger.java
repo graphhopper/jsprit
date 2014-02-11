@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
@@ -226,7 +227,7 @@ public class BicycleMessenger {
 		problemBuilder.addConstraint(new ThreeTimesLessThanBestDirectRouteConstraint(nearestMessengers, routingCosts, stateManager));
 		problemBuilder.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
 		
-		problemBuilder.addPenaltyVehicles(10.0,50000);
+		problemBuilder.addPenaltyVehicles(20.0,50000);
 		
 		//finally build the problem
 		VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
@@ -238,8 +239,8 @@ public class BicycleMessenger {
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(bicycleMessengerProblem,"input/algorithmConfig_open.xml", stateManager);
 		//if you want, terminate it after 1000 iterations with no change
 //		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(1000));
-//		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
-		algorithm.setNuOfIterations(200);
+		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+//		algorithm.setNuOfIterations(2000);
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 		
 		//this is just to ensure that solution meet the above constraints
@@ -303,7 +304,7 @@ public class BicycleMessenger {
 	
 	static double getTimeOfDirectRoute(Job job, Vehicle v, VehicleRoutingTransportCosts routingCosts) {
 		Shipment envelope = (Shipment) job;
-		double direct = routingCosts.getTransportTime(v.getLocationId(), envelope.getPickupLocation(), 0.0, DriverImpl.noDriver(), v) + 
+		double direct = routingCosts.getTransportTime(v.getStartLocationId(), envelope.getPickupLocation(), 0.0, DriverImpl.noDriver(), v) + 
 				routingCosts.getTransportTime(envelope.getPickupLocation(), envelope.getDeliveryLocation(), 0.0, DriverImpl.noDriver(), v);
 		return direct;
 	}
@@ -341,7 +342,7 @@ public class BicycleMessenger {
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			//build your vehicle
-			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
+			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setStartLocationCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setReturnToDepot(false).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
 			//build the penalty vehicle

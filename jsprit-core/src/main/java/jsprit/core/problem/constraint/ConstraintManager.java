@@ -14,7 +14,7 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import org.apache.log4j.Logger;
 
 @SuppressWarnings("deprecation")
-public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint{
+public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint, SoftActivityConstraint, SoftRouteConstraint{
 
 	public static enum Priority {
 		CRITICAL, HIGH, LOW
@@ -25,6 +25,10 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 	private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
 	
 	private HardRouteLevelConstraintManager routeLevelConstraintManager = new HardRouteLevelConstraintManager();
+	
+	private SoftActivityConstraintManager softActivityConstraintManager = new SoftActivityConstraintManager();
+	
+	private SoftRouteConstraintManager softRouteConstraintManager = new SoftRouteConstraintManager();
 	
 	private VehicleRoutingProblem vrp;
 	
@@ -56,6 +60,14 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 				routeLevelConstraintManager.addConstraint((HardRouteStateLevelConstraint) c);
 				constraintTypeKnown = true;
 			}
+			if(c instanceof SoftRouteConstraint){
+				softRouteConstraintManager.addConstraint((SoftRouteConstraint)c);
+				constraintTypeKnown = true;
+			}
+			if(c instanceof SoftActivityConstraint){
+				softActivityConstraintManager.addConstraint((SoftActivityConstraint)c);
+				constraintTypeKnown = true;
+			}
 			if(!constraintTypeKnown){
 				log.warn("constraint " + c + " unknown thus ignores the constraint. currently, a constraint must implement either HardActivityStateLevelConstraint or HardRouteStateLevelConstraint");
 			}
@@ -82,12 +94,22 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 		}
 	}
 	
+//	public void add
+	
 	public void addConstraint(HardActivityStateLevelConstraint actLevelConstraint, Priority priority){
 		actLevelConstraintManager.addConstraint(actLevelConstraint,priority);
 	}
 	
 	public void addConstraint(HardRouteStateLevelConstraint routeLevelConstraint){
 		routeLevelConstraintManager.addConstraint(routeLevelConstraint);
+	}
+	
+	public void addConstraint(SoftActivityConstraint softActivityConstraint){
+		softActivityConstraintManager.addConstraint(softActivityConstraint);
+	}
+	
+	public void addConstraint(SoftRouteConstraint softRouteConstraint){
+		softRouteConstraintManager.addConstraint(softRouteConstraint);
 	}
 	
 	@Override
@@ -104,7 +126,19 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 		List<jsprit.core.problem.constraint.Constraint> constraints = new ArrayList<jsprit.core.problem.constraint.Constraint>();
 		constraints.addAll(actLevelConstraintManager.getAllConstraints());
 		constraints.addAll(routeLevelConstraintManager.getConstraints());
+		constraints.addAll(softActivityConstraintManager.getConstraints());
+		constraints.addAll(softRouteConstraintManager.getConstraints());
 		return Collections.unmodifiableCollection(constraints);
+	}
+
+	@Override
+	public double getCosts(JobInsertionContext insertionContext) {
+		return softRouteConstraintManager.getCosts(insertionContext);
+	}
+
+	@Override
+	public double getCosts(JobInsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+		return softActivityConstraintManager.getCosts(iFacts, prevAct, newAct, nextAct, prevActDepTime);
 	}
 	
 }

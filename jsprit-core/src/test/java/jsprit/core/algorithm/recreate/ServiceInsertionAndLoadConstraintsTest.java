@@ -28,6 +28,7 @@ import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -91,13 +92,15 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		};
 		routingCosts = new ManhattanCosts(locations);
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1).build();
-		vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
 	}
 
 	private void createInsertionCalculator(HardRouteStateLevelConstraint hardRouteLevelConstraint) {
-		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, hardActivityLevelConstraint);
+		ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
+		constraintManager.addConstraint(hardRouteLevelConstraint);
+		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
 	}
 	
 	@Test
@@ -106,10 +109,10 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick", 15).setLocationId("0,10").build();
 		
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 50).setCostPerDistance(1).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		
 		VehicleRoute route = VehicleRoute.emptyRoute();
-		route.setVehicle(vehicle, 0.0);
+		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
 		Inserter inserter = new Inserter(new InsertionListeners());
 		
@@ -136,8 +139,8 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
 		
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
-		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, constraintManager);
-		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, hardRouteLevelConstraint, constraintManager);
+		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
+		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
 		switcher.put(Pickup.class, serviceInsertionCalc);
 		switcher.put(Delivery.class, serviceInsertionCalc);
 		switcher.put(Shipment.class, insertionCalculator);

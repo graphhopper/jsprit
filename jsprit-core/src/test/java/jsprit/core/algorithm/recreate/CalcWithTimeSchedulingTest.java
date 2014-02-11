@@ -43,7 +43,7 @@ public class CalcWithTimeSchedulingTest {
 	public void timeScheduler(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("myVehicle").setEarliestStart(0.0).setLatestArrival(100.0).
-				setLocationCoord(Coordinate.newInstance(0, 0)).setLocationId("0,0")
+				setStartLocationCoordinate(Coordinate.newInstance(0, 0)).setStartLocationId("0,0")
 				.setType(VehicleTypeImpl.Builder.newInstance("myType", 20).setCostPerDistance(1.0).build()).build();
 		vrpBuilder.addVehicle(vehicle);
 		vrpBuilder.addJob(Service.Builder.newInstance("myService", 2).setLocationId("0,20").setCoord(Coordinate.newInstance(0, 20)).build());

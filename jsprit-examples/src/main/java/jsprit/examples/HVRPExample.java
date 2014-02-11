@@ -81,17 +81,17 @@ public class HVRPExample {
 		//add vehicle - finite fleet
 		//2xtype1
 		VehicleType type1 = VehicleTypeImpl.Builder.newInstance("type_1", 120).setCostPerDistance(1.0).build();
-		VehicleImpl vehicle1_1 = VehicleImpl.Builder.newInstance("1_1").setLocationCoord(Coordinate.newInstance(40, 40)).setType(type1).build();
+		VehicleImpl vehicle1_1 = VehicleImpl.Builder.newInstance("1_1").setStartLocationCoordinate(Coordinate.newInstance(40, 40)).setType(type1).build();
 		vrpBuilder.addVehicle(vehicle1_1);
-		VehicleImpl vehicle1_2 = VehicleImpl.Builder.newInstance("1_2").setLocationCoord(Coordinate.newInstance(40, 40)).setType(type1).build();
+		VehicleImpl vehicle1_2 = VehicleImpl.Builder.newInstance("1_2").setStartLocationCoordinate(Coordinate.newInstance(40, 40)).setType(type1).build();
 		vrpBuilder.addVehicle(vehicle1_2);
 		//1xtype2
 		VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type_2", 160).setCostPerDistance(1.1).build();
-		VehicleImpl vehicle2_1 = VehicleImpl.Builder.newInstance("2_1").setLocationCoord(Coordinate.newInstance(40, 40)).setType(type2).build();
+		VehicleImpl vehicle2_1 = VehicleImpl.Builder.newInstance("2_1").setStartLocationCoordinate(Coordinate.newInstance(40, 40)).setType(type2).build();
 		vrpBuilder.addVehicle(vehicle2_1);
 		//1xtype3
 		VehicleType type3 = VehicleTypeImpl.Builder.newInstance("type_3", 300).setCostPerDistance(1.3).build();
-		VehicleImpl vehicle3_1 = VehicleImpl.Builder.newInstance("3_1").setLocationCoord(Coordinate.newInstance(40, 40)).setType(type3).build();
+		VehicleImpl vehicle3_1 = VehicleImpl.Builder.newInstance("3_1").setStartLocationCoordinate(Coordinate.newInstance(40, 40)).setType(type3).build();
 		vrpBuilder.addVehicle(vehicle3_1);
 		
 		//add penaltyVehicles to allow invalid solutions temporarily

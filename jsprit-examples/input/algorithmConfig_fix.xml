@@ -7,7 +7,7 @@
 	
 	<construction>
 		<insertion name="bestInsertion">
-			<considerFixedCosts>1.0</considerFixedCosts>
+			<considerFixedCosts weight="1.0">true</considerFixedCosts>
 		</insertion>
 	</construction>
 	

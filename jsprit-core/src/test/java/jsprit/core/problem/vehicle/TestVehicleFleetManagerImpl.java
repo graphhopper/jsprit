@@ -39,8 +39,8 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 	public void setUp(){
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		
-		v1 = VehicleImpl.Builder.newInstance("standard").setLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
-		v2 = VehicleImpl.Builder.newInstance("foo").setLocationId("fooLoc").setType(VehicleTypeImpl.Builder.newInstance("foo", 0).build()).build();
+		v1 = VehicleImpl.Builder.newInstance("standard").setStartLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
+		v2 = VehicleImpl.Builder.newInstance("foo").setStartLocationId("fooLoc").setType(VehicleTypeImpl.Builder.newInstance("foo", 0).build()).build();
 
 //		v1.
 		vehicles.add(v1);
@@ -75,7 +75,7 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 	}
 	
 	public void testGetVehiclesWithout(){
-		Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles(v1.getType().getTypeId(),v1.getLocationId());
+		Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles(v1);
 		
 		assertEquals(v2, vehicles.iterator().next());
 		assertEquals(1, vehicles.size());
@@ -91,7 +91,7 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 	}
 	
 	public void testWithPenalty_whenHavingOneRegularVehicleAvailable_noPenaltyVehicleIsReturn(){
-		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setLocationId("loc").
+		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setStartLocationId("loc").
 					setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
 		
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
@@ -108,10 +108,10 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard", 0).build();
 		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
 		
-		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setLocationId("loc").
+		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setStartLocationId("loc").
 					setType(penaltyVehicleType).build();
 		
-		Vehicle v3 = VehicleImpl.Builder.newInstance("standard_v3").setLocationId("loc").
+		Vehicle v3 = VehicleImpl.Builder.newInstance("standard_v3").setStartLocationId("loc").
 				setType(penaltyType).build();
 		
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
@@ -130,7 +130,7 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 	public void testWithPenalty_whenHavingNoRegularVehicleAvailable_penaltyVehicleIsReturned(){
 		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard", 0).build();
 		
-		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setLocationId("loc").
+		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setStartLocationId("loc").
 					setType(penaltyType).build();
 		
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();

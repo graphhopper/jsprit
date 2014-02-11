@@ -85,7 +85,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 		if(!(selectedVehicle instanceof NoVehicle)) {
 			relevantVehicles.add(selectedVehicle);
 			if(vehicleSwitchAllowed){
-				relevantVehicles.addAll(fleetManager.getAvailableVehicles(selectedVehicle.getType().getTypeId(),selectedVehicle.getLocationId()));
+				relevantVehicles.addAll(fleetManager.getAvailableVehicles(selectedVehicle));
 			}
 		}
 		else{ //if no vehicle has been assigned, i.e. it is an empty route

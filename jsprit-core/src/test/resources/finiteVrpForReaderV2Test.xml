@@ -46,6 +46,39 @@
                		<id>depotLoc</id>
                		<coord x="10.0" y="100.0"/>
                </location>
+               <returnToDepot>false</returnToDepot>
+               <typeId>vehType2</typeId>
+               <timeSchedule>
+                    <start>0.0</start>
+                    <end>1000.0</end>
+               </timeSchedule>
+          </vehicle>
+          <vehicle>
+               <id>v3</id>
+               <startLocation>
+               		<id>startLoc</id>
+               		<coord x="10.0" y="100.0"/>
+               </startLocation>
+               <endLocation>
+               		<id>endLoc</id>
+               		<coord x="1000.0" y="2000.0"/>
+               </endLocation>
+               <typeId>vehType2</typeId>
+               <timeSchedule>
+                    <start>0.0</start>
+                    <end>1000.0</end>
+               </timeSchedule>
+          </vehicle>
+           <vehicle>
+               <id>v4</id>
+               <location>
+               		<id>startLoc</id>
+               		<coord x="10.0" y="100.0"/>
+               </location>
+               <endLocation>
+               		<id>endLoc</id>
+               		<coord x="1000.0" y="2000.0"/>
+               </endLocation>
                <typeId>vehType2</typeId>
                <timeSchedule>
                     <start>0.0</start>

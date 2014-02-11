@@ -18,7 +18,7 @@ package jsprit.examples;
 
 import java.util.Collection;
 
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -54,7 +54,7 @@ public class SolomonR101Example {
 		 */
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/solomon_R101.png", "R101");
+		new Plotter(vrp).plot("output/solomon_R101.png", "R101");
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.
@@ -85,9 +85,7 @@ public class SolomonR101Example {
 		/*
 		 * Plot solution. 
 		 */
-		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_R101_solution.png","R101");
-		
-	
+		new Plotter(vrp,solution).plot( "output/solomon_R101_solution.png","R101");
 		
 	}
 
