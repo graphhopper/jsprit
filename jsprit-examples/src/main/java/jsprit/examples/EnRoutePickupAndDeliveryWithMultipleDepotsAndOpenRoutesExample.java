@@ -40,7 +40,7 @@ import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 
 
-public class EnRoutePickupAndDeliveryWithMultipleDepotsExample {
+public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
 	
 	public static void main(String[] args) {
 		/*
@@ -56,35 +56,33 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsExample {
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
 		/*
-		 * define two depots, i.e. two vehicle locations ([10,10],[50,50]) and equip them with an infinite number of vehicles of type 'vehicleType' 
+		 * define two vehicles and their start-locations 
+		 * 
+		 * the first two do need to return to depot
 		 */
 		Builder vehicleBuilder1 = VehicleImpl.Builder.newInstance("vehicles@[10,10]");
-		vehicleBuilder1.setLocationCoord(Coordinate.newInstance(10, 10));
+		vehicleBuilder1.setStartLocationCoordinate(Coordinate.newInstance(10, 10)).setReturnToDepot(false);
 		vehicleBuilder1.setType(vehicleType);
 		Vehicle vehicle1 = vehicleBuilder1.build();
 		
 		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("vehicles@[30,30]");
-		vehicleBuilder2.setLocationCoord(Coordinate.newInstance(30, 30));
+		vehicleBuilder2.setStartLocationCoordinate(Coordinate.newInstance(30, 30)).setReturnToDepot(false);
 		vehicleBuilder2.setType(vehicleType);
 		Vehicle vehicle2 = vehicleBuilder2.build();
 		
 		Builder vehicleBuilder3 = VehicleImpl.Builder.newInstance("vehicles@[10,30]");
-		vehicleBuilder3.setLocationCoord(Coordinate.newInstance(10, 30));
+		vehicleBuilder3.setStartLocationCoordinate(Coordinate.newInstance(10, 30));
 		vehicleBuilder3.setType(vehicleType);
 		Vehicle vehicle3 = vehicleBuilder3.build();
 		
 		Builder vehicleBuilder4 = VehicleImpl.Builder.newInstance("vehicles@[30,10]");
-		vehicleBuilder4.setLocationCoord(Coordinate.newInstance(30, 10));
+		vehicleBuilder4.setStartLocationCoordinate(Coordinate.newInstance(30, 10));
 		vehicleBuilder4.setType(vehicleType);
 		Vehicle vehicle4 = vehicleBuilder4.build();
 		
 		/*
 		 * build shipments at the required locations, each with a capacity-demand of 1.
-		 * 4 shipments
-		 * 1: (5,7)->(6,9)
-		 * 2: (5,13)->(6,11)
-		 * 3: (15,7)->(14,9)
-		 * 4: (15,13)->(14,11)
+
 		 */
 		
 		Shipment shipment1 = Shipment.Builder.newInstance("1", 1).setPickupCoord(Coordinate.newInstance(5, 7)).setDeliveryCoord(Coordinate.newInstance(6, 9)).build();

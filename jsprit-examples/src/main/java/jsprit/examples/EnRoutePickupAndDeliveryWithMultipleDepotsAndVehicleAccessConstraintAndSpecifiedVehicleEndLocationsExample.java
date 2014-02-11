@@ -23,17 +23,13 @@ import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
-import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
-import jsprit.core.algorithm.state.StateManager;
-import jsprit.core.algorithm.state.StateUpdater;
+import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
-import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
@@ -44,24 +40,7 @@ import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 
 
-public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstraintExample {
-	
-	static class ClusterMem implements StateUpdater, JobInsertedListener {
-
-		private StateManager stateManager;
-		
-		public ClusterMem(StateManager stateManager) {
-			super();
-			this.stateManager = stateManager;
-		}
-
-		@Override
-		public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
-			
-		}
-
-		
-	}
+public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstraintAndSpecifiedVehicleEndLocationsExample {
 	
 	public static void main(String[] args) {
 		/*
@@ -77,37 +56,28 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
 		/*
-		 * define two depots, i.e. two vehicle locations ([10,10],[50,50]) and equip them with an infinite number of vehicles of type 'vehicleType' 
+		 * define two vehicles and their locations.
+		 * 
+		 * this example employs two vehicles. one that has to return to its start-location (vehicle1) and one that has a different
+		 * end-location.
+		 * 
+		 * play with these location to see which impact they have on customer-sequences.
 		 */
 		Builder vehicleBuilder1 = VehicleImpl.Builder.newInstance("v1");
-		vehicleBuilder1.setLocationCoord(Coordinate.newInstance(10, 10));
+		vehicleBuilder1.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder1.setType(vehicleType);
 		Vehicle vehicle1 = vehicleBuilder1.build();
 		
 		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("v2");
-		vehicleBuilder2.setLocationCoord(Coordinate.newInstance(30, 30));
+		vehicleBuilder2.setStartLocationCoordinate(Coordinate.newInstance(30, 30)).setEndLocationCoordinate(Coordinate.newInstance(30, 19));
 		vehicleBuilder2.setType(vehicleType);
 		Vehicle vehicle2 = vehicleBuilder2.build();
-		
-		Builder vehicleBuilder3 = VehicleImpl.Builder.newInstance("v3");
-		vehicleBuilder3.setLocationCoord(Coordinate.newInstance(10, 30));
-		vehicleBuilder3.setType(vehicleType);
-		Vehicle vehicle3 = vehicleBuilder3.build();
-		
-		Builder vehicleBuilder4 = VehicleImpl.Builder.newInstance("v4");
-		vehicleBuilder4.setLocationCoord(Coordinate.newInstance(30, 10));
-		vehicleBuilder4.setType(vehicleType);
-		Vehicle vehicle4 = vehicleBuilder4.build();
+	
 		
 		/*
 		 * build shipments at the required locations, each with a capacity-demand of 1.
-		 * 4 shipments
-		 * 1: (5,7)->(6,9)
-		 * 2: (5,13)->(6,11)
-		 * 3: (15,7)->(14,9)
-		 * 4: (15,13)->(14,11)
+		 * 
 		 */
-		
 		Shipment shipment1 = Shipment.Builder.newInstance("1", 1).setPickupCoord(Coordinate.newInstance(5, 7)).setDeliveryCoord(Coordinate.newInstance(6, 9)).build();
 		Shipment shipment2 = Shipment.Builder.newInstance("2", 1).setPickupCoord(Coordinate.newInstance(5, 13)).setDeliveryCoord(Coordinate.newInstance(6, 11)).build();
 		
@@ -140,30 +110,31 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle1).addVehicle(vehicle2);
-//		vrpBuilder.addVehicle(vehicle1).addVehicle(vehicle2).addVehicle(vehicle3).addVehicle(vehicle4);
 		vrpBuilder.addJob(shipment1).addJob(shipment2).addJob(shipment3).addJob(shipment4);
 		vrpBuilder.addJob(shipment5).addJob(shipment6).addJob(shipment7).addJob(shipment8);
 		vrpBuilder.addJob(shipment9).addJob(shipment10).addJob(shipment11).addJob(shipment12);
 		vrpBuilder.addJob(shipment13).addJob(shipment14).addJob(shipment15).addJob(shipment16);
 		vrpBuilder.addJob(shipment17).addJob(shipment18).addJob(shipment19).addJob(shipment20);
 		
+		//you only have two vehicles
 		vrpBuilder.setFleetSize(FleetSize.FINITE);
 		
-		//vehicle1 cannot go to x>15 and vehicle2 cannot go to x<15
 		/*
-		 * switch off the geoConstraints to show the effects without
+		 * add a geographic constraint determining that vehicle1 cannot go to x>15 and vehicle2 cannot go to x<15
+		 * 
+		 * switch off the geoConstraints to see the impact of this constraint on routes, or just exchange v1 and v2 to reverse the geo-constraint.
 		 */
 		HardRouteStateLevelConstraint geoClusterConstraint = new HardRouteStateLevelConstraint() {
 			
 			@Override
 			public boolean fulfilled(JobInsertionContext insertionContext) {
 				Shipment shipment2insert = ((Shipment)insertionContext.getJob()); 
-				if(insertionContext.getNewVehicle().getId().equals("v2")){
+				if(insertionContext.getNewVehicle().getId().equals("v1")){
 					if(shipment2insert.getPickupCoord().getX() > 15. || shipment2insert.getDeliveryCoord().getX() > 15.){
 						return false;
 					}
 				}
-				if(insertionContext.getNewVehicle().getId().equals("v1")){
+				if(insertionContext.getNewVehicle().getId().equals("v2")){
 					if(shipment2insert.getPickupCoord().getX() < 15. || shipment2insert.getDeliveryCoord().getX() < 15.){
 						return false;
 					}
@@ -171,17 +142,23 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
 				return true;
 			}
 		};
+		//add the constraint to the problem
 		vrpBuilder.addConstraint(geoClusterConstraint);
-		
+		//build the problem
 		VehicleRoutingProblem problem = vrpBuilder.build();
-		
-//		StateManager stateManager = new StateManager(problem);
-		
+
 		
 		/*
-		 * get the algorithm out-of-the-box. 
+		 * get a sample algorithm. 
+		 * 
+		 * Note that you need to make sure to prohibit vehicle-switching by adding the insertion-tag <vehicleSwitchAllowed>false</vehicleSwitchAllowed>.
+		 * This way you make sure that no vehicle can take over a route that is employed by another. Allowing this might make sense when dealing with
+		 * a heterogeneous fleet and you want to employ a bigger vehicle on a still existing route. However, allowing it makes constraint-checking 
+		 * bit more complicated and you cannot just add the above hard-constraint. Latter will be covered in another example.
+		 * 
 		 */
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig_noVehicleSwitch.xml");
+		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 //		algorithm.setNuOfIterations(30000);
 		/*
 		 * and search a solution
@@ -216,6 +193,8 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
 //		Plotter solutionPlotter = new Plotter(problem,Arrays.asList(Solutions.bestOf(solutions).getRoutes().iterator().next()));
 //		solutionPlotter.plotShipments(true);
 //		solutionPlotter.plot("output/enRoutePickupAndDeliveryWithMultipleLocationsExample_solution.png", "en-route pickup and delivery");
+		
+		new GraphStreamViewer(problem).labelWith(Label.ID).setRenderDelay(100).setRenderShipments(true).display();
 		
 		new GraphStreamViewer(problem,Solutions.bestOf(solutions)).labelWith(Label.ACTIVITY).setRenderDelay(100).setRenderShipments(true).display();
 		

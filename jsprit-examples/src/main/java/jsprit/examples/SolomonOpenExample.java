@@ -20,7 +20,9 @@ import java.util.Collection;
 
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
-import jsprit.analysis.toolbox.SolutionPlotter;
+
+import jsprit.analysis.toolbox.Plotter;
+
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -56,7 +58,7 @@ public class SolomonOpenExample {
 		 */
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		SolutionPlotter.plotVrpAsPNG(vrp, "output/solomon_C101_open.png", "C101");
+		new Plotter(vrp).plot("output/solomon_C101_open.png", "C101");
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.

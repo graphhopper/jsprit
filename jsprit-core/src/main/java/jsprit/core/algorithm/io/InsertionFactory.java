@@ -86,9 +86,15 @@ class InsertionFactory {
 					String weight = config.getString("considerFixedCosts[@weight]");
 					if(weight == null) weight = config.getString("considerFixedCost[@weight]");
 					if(weight != null) fixedCostWeight = Double.parseDouble(weight);
-					else log.warn("parameter considerFixedCosts[@weight] is missing. by default, it is 0.5.");
+					else throw new IllegalStateException("fixedCostsParameter 'weight' must be set, e.g. <considerFixedCosts weight=1.0>true</considerFixedCosts>.\n" +
+							"this has to be changed in algorithm-config-xml-file.");
 					iBuilder.considerFixedCosts(fixedCostWeight);
 				}
+				else if(val.equals("false")){
+					
+				}
+				else throw new IllegalStateException("considerFixedCosts must either be true or false, i.e. <considerFixedCosts weight=1.0>true</considerFixedCosts> or \n<considerFixedCosts weight=1.0>false</considerFixedCosts>. " +
+						"if latter, you can also omit the tag. this has to be changed in algorithm-config-xml-file");
 			}
 			String timeSliceString = config.getString("experimental[@timeSlice]");
 			String neighbors = config.getString("experimental[@neighboringSlices]");

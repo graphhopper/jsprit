@@ -16,26 +16,35 @@
  ******************************************************************************/
 package jsprit.examples;
 
+import java.io.File;
 import java.util.Collection;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import jsprit.analysis.toolbox.GraphStreamViewer;
+import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.instance.reader.SolomonReader;
-import jsprit.util.Examples;
 
 
-public class SolomonR101Example {
+public class SolomonExampleWithSpecifiedVehicleEndLocations {
 	
 	public static void main(String[] args) {
 		/*
 		 * some preparation - create output folder
 		 */
-		Examples.createOutputFolder();
+		File dir = new File("output");
+		// if the directory does not exist, create it
+		if (!dir.exists()){
+			System.out.println("creating directory ./output");
+			boolean result = dir.mkdir();  
+			if(result) System.out.println("./output created");  
+		}
 		
 		/*
 		 * Build the problem.
@@ -47,14 +56,15 @@ public class SolomonR101Example {
 		/*
 		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
-		new SolomonReader(vrpBuilder).read("input/R101.txt");
+		new VrpXMLReader(vrpBuilder).read("input/deliveries_solomon_specifiedVehicleEndLocations_c101.xml");
 		
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		new Plotter(vrp).plot("output/solomon_R101.png", "R101");
+		Plotter pblmPlotter = new Plotter(vrp);
+		pblmPlotter.plot("output/solomon_C101_specifiedVehicleEndLocations.png","C101");
 		
 		/*
 		 * Define the required vehicle-routing algorithms to solve the above problem.
@@ -62,9 +72,10 @@ public class SolomonR101Example {
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
 //		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_fix.xml");
+		vra.setNuOfIterations(20000);
 //		vra.setPrematureBreak(100);
-//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
 		 * 
@@ -85,7 +96,13 @@ public class SolomonR101Example {
 		/*
 		 * Plot solution. 
 		 */
-		new Plotter(vrp,solution).plot( "output/solomon_R101_solution.png","R101");
+//		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_specifiedVehicleEndLocations_solution.png","C101");
+		Plotter solPlotter = new Plotter(vrp, solution);
+		solPlotter.plot("output/solomon_C101_specifiedVehicleEndLocations_solution.png","C101");
+		
+		
+		new GraphStreamViewer(vrp, solution).setRenderDelay(50).labelWith(Label.ID).setEnableAutoLayout(true).display();
+	
 		
 	}
 

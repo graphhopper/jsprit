@@ -7,7 +7,7 @@
 	
 	<construction>
 		<insertion name="bestInsertion">
-			<considerFixedCosts weight="1.0">true</considerFixedCosts>
+			<considerFixedCosts weight="0.5">true</considerFixedCosts>
 		</insertion>
 	</construction>
 	
@@ -17,7 +17,10 @@
 
 			<searchStrategy name="randomRuinAndRecreate">
 				<selector name="selectBest"/>
-	  			<acceptor name="acceptNewRemoveWorst"/> 
+	  			<acceptor name="schrimpfAcceptance">
+					<alpha>0.05</alpha>
+					<warmup>20</warmup>
+				</acceptor> 
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="randomRuin">
@@ -31,7 +34,7 @@
 			
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="acceptNewRemoveWorst"/> 
+				<acceptor name="schrimpfAcceptance"/> 
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="radialRuin">

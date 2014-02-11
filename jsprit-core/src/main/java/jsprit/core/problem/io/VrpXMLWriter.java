@@ -236,10 +236,15 @@ public class VrpXMLWriter {
 			}
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").id", vehicle.getId());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").typeId", vehicle.getType().getTypeId());
-			xmlConfig.setProperty(vehiclePathString + "("+counter+").location.id", vehicle.getLocationId());
-			if(vehicle.getCoord() != null){
-				xmlConfig.setProperty(vehiclePathString + "("+counter+").location.coord[@x]", vehicle.getCoord().getX());
-				xmlConfig.setProperty(vehiclePathString + "("+counter+").location.coord[@y]", vehicle.getCoord().getY());
+			xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.id", vehicle.getStartLocationId());
+			if(vehicle.getStartLocationCoordinate() != null){
+				xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.coord[@x]", vehicle.getStartLocationCoordinate().getX());
+				xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.coord[@y]", vehicle.getStartLocationCoordinate().getY());
+			}
+			xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.id", vehicle.getEndLocationId());
+			if(vehicle.getEndLocationCoordinate() != null){
+				xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.coord[@x]", vehicle.getEndLocationCoordinate().getX());
+				xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.coord[@y]", vehicle.getEndLocationCoordinate().getY());
 			}
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.start", vehicle.getEarliestDeparture());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.end", vehicle.getLatestArrival());

@@ -404,9 +404,15 @@ public class Plotter {
 		XYSeriesCollection coll = new XYSeriesCollection();
 		XYSeries vehicleSeries = new XYSeries("depot", false, true);
 		for(Vehicle v : vehicles){
-			Coordinate coord = v.getCoord();
-			if(coord == null) throw new NoLocationFoundException();
-			vehicleSeries.add(coord.getX(),coord.getY());	
+			Coordinate startCoord = v.getStartLocationCoordinate();
+			if(startCoord == null) throw new NoLocationFoundException();
+			vehicleSeries.add(startCoord.getX(),startCoord.getY());
+			
+			if(!v.getStartLocationId().equals(v.getEndLocationId())){
+				Coordinate endCoord = v.getEndLocationCoordinate();
+				if(endCoord == null) throw new NoLocationFoundException();
+				vehicleSeries.add(endCoord.getX(),endCoord.getY());
+			}
 		}
 		coll.addSeries(vehicleSeries);
 		
@@ -473,11 +479,18 @@ public class Plotter {
 	private Locations retrieveLocations(VehicleRoutingProblem vrp) throws NoLocationFoundException {
 		final Map<String, Coordinate> locs = new HashMap<String, Coordinate>();
 		for(Vehicle v : vrp.getVehicles()){
-			String locationId = v.getLocationId();
-			if(locationId == null) throw new NoLocationFoundException();
-			Coordinate coord = v.getCoord();
-			if(coord == null) throw new NoLocationFoundException();
-			locs.put(locationId, coord);
+			String startLocationId = v.getStartLocationId();
+			if(startLocationId == null) throw new NoLocationFoundException();
+			Coordinate startCoord = v.getStartLocationCoordinate();
+			if(startCoord == null) throw new NoLocationFoundException();
+			locs.put(startLocationId, startCoord);
+			
+			String endLocationId = v.getEndLocationId();
+			if(!startLocationId.equals(endLocationId)){
+				Coordinate endCoord = v.getEndLocationCoordinate();
+				if(endCoord == null) throw new NoLocationFoundException();
+				locs.put(endLocationId, endCoord);
+			}
 		}
 		for(Job j : vrp.getJobs().values()){
 			if(j instanceof Service){

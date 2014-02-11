@@ -58,12 +58,12 @@ public class ServicePickupsWithMultipleDepotsExample {
 		 * define two depots, i.e. two vehicle locations ([10,10],[50,50]) and equip them with an infinite number of vehicles of type 'vehicleType' 
 		 */
 		Builder vehicleBuilder1 = VehicleImpl.Builder.newInstance("vehicles@[10,10]");
-		vehicleBuilder1.setLocationCoord(Coordinate.newInstance(10, 10));
+		vehicleBuilder1.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder1.setType(vehicleType);
 		Vehicle vehicle1 = vehicleBuilder1.build();
 		
 		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("vehicles@[50,50]");
-		vehicleBuilder2.setLocationCoord(Coordinate.newInstance(50, 50));
+		vehicleBuilder2.setStartLocationCoordinate(Coordinate.newInstance(50, 50));
 		vehicleBuilder2.setType(vehicleType);
 		Vehicle vehicle2 = vehicleBuilder2.build();
 		

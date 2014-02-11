@@ -88,7 +88,7 @@ public class ShipmentInsertionCalculatorTest {
 		};
 		routingCosts = new ManhattanCosts(locations);
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1).build();
-		vehicle = VehicleImpl.Builder.newInstance("v").setLocationId("0,0").setType(type).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
 	}
@@ -184,7 +184,7 @@ public class ShipmentInsertionCalculatorTest {
 		
 		
 		VehicleRoute route = VehicleRoute.emptyRoute();
-		route.setVehicle(vehicle, 0.0);
+		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
 		Inserter inserter = new Inserter(new InsertionListeners());
 		
@@ -215,7 +215,7 @@ public class ShipmentInsertionCalculatorTest {
 		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("0,0").build();
 		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
 		VehicleRoute route = VehicleRoute.emptyRoute();
-		route.setVehicle(vehicle, 0.0);
+		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
 		Inserter inserter = new Inserter(new InsertionListeners());
 		

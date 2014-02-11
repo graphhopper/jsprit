@@ -314,22 +314,22 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 	 */
 	private void initialiseStartAndEnd(final Vehicle newVehicle, double newVehicleDepartureTime) {
 		if(start == null){
-			start = Start.newInstance(newVehicle.getLocationId(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
+			start = Start.newInstance(newVehicle.getStartLocationId(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
 			start.setEndTime(newVehicleDepartureTime);
 		}
 		else{
-			start.setLocationId(newVehicle.getLocationId());
+			start.setLocationId(newVehicle.getStartLocationId());
 			start.setTheoreticalEarliestOperationStartTime(newVehicle.getEarliestDeparture());
-			start.setTheoreticalLatestOperationStartTime(newVehicle.getLatestArrival());
+			start.setTheoreticalLatestOperationStartTime(Double.MAX_VALUE);
 			start.setEndTime(newVehicleDepartureTime);
 		}
 		
 		if(end == null){
-			end = End.newInstance(newVehicle.getLocationId(), 0.0, newVehicle.getLatestArrival());
+			end = End.newInstance(newVehicle.getEndLocationId(), 0.0, newVehicle.getLatestArrival());
 		}
 		else{
-			end.setLocationId(newVehicle.getLocationId());
-			end.setTheoreticalEarliestOperationStartTime(newVehicleDepartureTime);
+			end.setLocationId(newVehicle.getEndLocationId());
+			end.setTheoreticalEarliestOperationStartTime(0.0);
 			end.setTheoreticalLatestOperationStartTime(newVehicle.getLatestArrival());
 		}
 	}

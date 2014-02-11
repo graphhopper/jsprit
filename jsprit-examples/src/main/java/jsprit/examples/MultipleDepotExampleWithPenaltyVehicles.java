@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.analysis.toolbox.StopWatch;
@@ -78,7 +78,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
-				vehicleBuilder.setLocationCoord(depotCoord);
+				vehicleBuilder.setStartLocationCoordinate(depotCoord);
 				vehicleBuilder.setType(vehicleType);
 				vehicleBuilder.setLatestArrival(maxDuration);
 				Vehicle vehicle = vehicleBuilder.build();
@@ -116,8 +116,9 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(vrp,Solutions.bestOf(solutions),Print.VERBOSE);
-		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.bestOf(solutions), "output/p08_solution.png", "p08");
 
+		new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/p08_solution.png", "p08");
+		
 		new GraphStreamViewer(vrp,Solutions.bestOf(solutions)).setRenderDelay(50).display();
 	}
 

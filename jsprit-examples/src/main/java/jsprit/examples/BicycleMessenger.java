@@ -304,7 +304,7 @@ public class BicycleMessenger {
 	
 	static double getTimeOfDirectRoute(Job job, Vehicle v, VehicleRoutingTransportCosts routingCosts) {
 		Shipment envelope = (Shipment) job;
-		double direct = routingCosts.getTransportTime(v.getLocationId(), envelope.getPickupLocation(), 0.0, DriverImpl.noDriver(), v) + 
+		double direct = routingCosts.getTransportTime(v.getStartLocationId(), envelope.getPickupLocation(), 0.0, DriverImpl.noDriver(), v) + 
 				routingCosts.getTransportTime(envelope.getPickupLocation(), envelope.getDeliveryLocation(), 0.0, DriverImpl.noDriver(), v);
 		return direct;
 	}
@@ -342,7 +342,7 @@ public class BicycleMessenger {
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			//build your vehicle
-			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setLocationCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
+			Vehicle vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setStartLocationCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setReturnToDepot(false).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
 			//build the penalty vehicle

@@ -17,6 +17,7 @@
 package jsprit.core.problem.io;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -58,7 +59,7 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(2,vrp.getVehicles().size());
+		assertEquals(4,vrp.getVehicles().size());
 		assertTrue(idsInCollection(Arrays.asList("v1","v2"),vrp.getVehicles()));
 	}
 	
@@ -69,9 +70,9 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Vehicle v1 = getVehicle("v1",vrp.getVehicles());
 		assertEquals(20,v1.getCapacity());
-		assertEquals(100.0,v1.getCoord().getX(),0.01);
+		assertEquals(100.0,v1.getStartLocationCoordinate().getX(),0.01);
 		assertEquals(0.0,v1.getEarliestDeparture(),0.01);
-		assertEquals("depotLoc2",v1.getLocationId());
+		assertEquals("depotLoc2",v1.getStartLocationId());
 		assertNotNull(v1.getType());
 		assertEquals("vehType", v1.getType().getTypeId());
 		assertEquals(1000.0,v1.getLatestArrival(),0.01);
@@ -175,7 +176,128 @@ public class VrpReaderV2Test {
 		assertEquals("service",s1.getType());
 	}
 	
+	@Test
+	public void whenReadingFile_v2MustNotReturnToDepot(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v = getVehicle("v2",vrp.getVehicles());
+		assertFalse(v.isReturnToDepot());
+	}
 	
+	@Test
+	public void whenReadingFile_v3HasTheCorrectStartLocation(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v3 = getVehicle("v3",vrp.getVehicles());
+		assertEquals("startLoc",v3.getStartLocationId());
+	}
+	
+	@Test
+	public void whenReadingFile_v3HasTheCorrectEndLocation(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v3 = getVehicle("v3",vrp.getVehicles());
+		assertEquals("endLoc",v3.getEndLocationId());
+	}
+	
+	@Test
+	public void whenReadingFile_v3HasTheCorrectEndLocationCoordinate(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v3 = getVehicle("v3",vrp.getVehicles());
+		assertEquals(1000.0,v3.getEndLocationCoordinate().getX(),0.01);
+		assertEquals(2000.0,v3.getEndLocationCoordinate().getY(),0.01);
+	}
+	
+	@Test
+	public void whenReadingFile_v3HasTheCorrectStartLocationCoordinate(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v3 = getVehicle("v3",vrp.getVehicles());
+		assertEquals(10.0,v3.getStartLocationCoordinate().getX(),0.01);
+		assertEquals(100.0,v3.getStartLocationCoordinate().getY(),0.01);
+	}
+	
+	@Test
+	public void whenReadingFile_v3HasTheCorrectLocationCoordinate(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v3 = getVehicle("v3",vrp.getVehicles());
+		assertEquals(10.0,v3.getStartLocationCoordinate().getX(),0.01);
+		assertEquals(100.0,v3.getStartLocationCoordinate().getY(),0.01);
+	}
+	
+	@Test
+	public void whenReadingFile_v3HasTheCorrectLocationId(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v3 = getVehicle("v3",vrp.getVehicles());
+		assertEquals("startLoc",v3.getStartLocationId());
+	}
+	
+	@Test
+	public void whenReadingFile_v4HasTheCorrectStartLocation(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v = getVehicle("v4",vrp.getVehicles());
+		assertEquals("startLoc",v.getStartLocationId());
+	}
+	
+	@Test
+	public void whenReadingFile_v4HasTheCorrectEndLocation(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v = getVehicle("v4",vrp.getVehicles());
+		assertEquals("endLoc",v.getEndLocationId());
+	}
+	
+	@Test
+	public void whenReadingFile_v4HasTheCorrectEndLocationCoordinate(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v = getVehicle("v4",vrp.getVehicles());
+		assertEquals(1000.0,v.getEndLocationCoordinate().getX(),0.01);
+		assertEquals(2000.0,v.getEndLocationCoordinate().getY(),0.01);
+	}
+	
+	@Test
+	public void whenReadingFile_v4HasTheCorrectStartLocationCoordinate(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v = getVehicle("v4",vrp.getVehicles());
+		assertEquals(10.0,v.getStartLocationCoordinate().getX(),0.01);
+		assertEquals(100.0,v.getStartLocationCoordinate().getY(),0.01);
+	}
+	
+	@Test
+	public void whenReadingFile_v4HasTheCorrectLocationCoordinate(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v = getVehicle("v4",vrp.getVehicles());
+		assertEquals(10.0,v.getStartLocationCoordinate().getX(),0.01);
+		assertEquals(100.0,v.getStartLocationCoordinate().getY(),0.01);
+	}
+	
+	@Test
+	public void whenReadingFile_v4HasTheCorrectLocationId(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v = getVehicle("v4",vrp.getVehicles());
+		assertEquals("startLoc",v.getStartLocationId());
+	}
 	
 	@Test
 	public void whenReadingJobs_capOfShipment3IsReadCorrectly(){

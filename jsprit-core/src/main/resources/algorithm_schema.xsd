@@ -226,7 +226,8 @@
 					<xs:extension base="xs:string">
 						<xs:attribute name="weight" type="xs:double"/>			
 					</xs:extension>
-				</xs:simpleContent>	
+				</xs:simpleContent>
+					
 			</xs:complexType>
 		</xs:element>
 		<xs:element name="allowVehicleSwitch" type="xs:boolean" minOccurs="0" maxOccurs="1"/>

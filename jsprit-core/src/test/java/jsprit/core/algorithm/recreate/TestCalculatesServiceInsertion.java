@@ -39,9 +39,7 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.ServiceActivity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.problem.solution.route.activity.TourActivities;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
@@ -72,9 +70,9 @@ public class TestCalculatesServiceInsertion {
 
 	private Service first;
 
-	private Service second;
-
 	private Service third;
+
+	private Service second;
 
 	private StateManager states;
 
@@ -86,18 +84,11 @@ public class TestCalculatesServiceInsertion {
 	public void setup(){
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 		
-		costs = mock(VehicleRoutingTransportCosts.class);
-		vehicle = mock(Vehicle.class);
-		when(vehicle.getCapacity()).thenReturn(1000);
-		when(vehicle.getLocationId()).thenReturn("0,0");
-		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
-		when(vehicle.getLatestArrival()).thenReturn(100.0);
-		when(vehicle.isReturnToDepot()).thenReturn(true);
 		VehicleType t1 = VehicleTypeImpl.Builder.newInstance("t1", 1000).setCostPerDistance(1.0).build();
-		vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setLocationId("0,0").setType(t1).build();
+		vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setStartLocationId("0,0").setType(t1).build();
 		
 		VehicleType t2 = VehicleTypeImpl.Builder.newInstance("t2", 1000).setCostPerDistance(2.0).build();
-		newVehicle = VehicleImpl.Builder.newInstance("newVehicle").setLatestArrival(100.0).setLocationId("0,0").setType(t2).build();
+		newVehicle = VehicleImpl.Builder.newInstance("newVehicle").setLatestArrival(100.0).setStartLocationId("0,0").setType(t2).build();
 		
 		driver = DriverImpl.noDriver();
 		
@@ -127,12 +118,13 @@ public class TestCalculatesServiceInsertion {
 
 		
 		first = Service.Builder.newInstance("1", 0).setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		second = Service.Builder.newInstance("3", 0).setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		third = Service.Builder.newInstance("2", 0).setLocationId("10,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		second = Service.Builder.newInstance("2", 0).setLocationId("10,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		third = Service.Builder.newInstance("3", 0).setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		
 		Collection<Job> jobs = new ArrayList<Job>();
 		jobs.add(first);
-		jobs.add(second);
 		jobs.add(third);
+		jobs.add(second);
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).setRoutingCost(costs).build();
 		
@@ -158,11 +150,9 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingTheFirstJobInAnEmptyTourWithVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
-		
+
 		InsertionData iData = serviceInsertion.getInsertionData(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(0, iData.getDeliveryInsertionIndex());
@@ -170,70 +160,53 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingTheSecondJobInAnNonEmptyTourWithVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
-		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(20.0, iData.getInsertionCost(), 0.2);
 		assertEquals(0, iData.getDeliveryInsertionIndex());
 	}
 	
 	@Test
 	public void whenInsertingThirdJobWithVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		tour.addActivity(ServiceActivity.newInstance(second));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(third).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
-		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(0.0, iData.getInsertionCost(), 0.2);
 		assertEquals(1, iData.getDeliveryInsertionIndex());
 	}
 	
 	@Test
 	public void whenInsertingThirdJobWithNewVehicle_itCalculatesMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		tour.addActivity(ServiceActivity.newInstance(second));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(third).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
-		InsertionData iData = serviceInsertion.getInsertionData(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
-		assertEquals(20.0, iData.getInsertionCost(), 0.2);
+		InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		assertEquals(40.0, iData.getInsertionCost(), 0.2);
 		assertEquals(1, iData.getDeliveryInsertionIndex());
 	}
 	
 	@Test
 	public void whenInsertingASecondJobWithAVehicle_itCalculatesLocalMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		tour.addActivity(ServiceActivity.newInstance(third));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(second).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
-		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
 		assertEquals(0.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}
 	
 	@Test
 	public void whenInsertingASecondJobWithANewVehicle_itCalculatesLocalMarginalCostChanges(){
-		TourActivities tour = new TourActivities();
-		tour.addActivity(ServiceActivity.newInstance(first));
-		tour.addActivity(ServiceActivity.newInstance(third));
-		
-		VehicleRoute route = VehicleRoute.newInstance(tour,driver,vehicle);
+
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(second).build();
+
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
-		InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
-		assertEquals(20.0, iData.getInsertionCost(), 0.2);
+		InsertionData iData = serviceInsertion.getInsertionData(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
+		assertEquals(50.0, iData.getInsertionCost(), 0.2);
 		assertEquals(2, iData.getDeliveryInsertionIndex());
 	}
 	
@@ -276,13 +249,13 @@ public class TestCalculatesServiceInsertion {
 				return EuclideanDistanceCalculator.calculateDistance(coords.get(fromId), coords.get(toId));
 			}
 		};
-		Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setLocationId("oldV").build();
+		Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setStartLocationId("oldV").build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(oldVehicle, DriverImpl.noDriver())
 				.addService(Service.Builder.newInstance("service", 0).setLocationId("service").build())
 				.build();
 		
-		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setLocationId("newV").build();
+		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setStartLocationId("newV").build();
 		
 		AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(routingCosts);
 		Job job = Service.Builder.newInstance("service2", 0).setLocationId("service").build();
