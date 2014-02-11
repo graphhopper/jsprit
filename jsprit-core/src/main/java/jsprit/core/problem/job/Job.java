@@ -45,6 +45,11 @@ public interface Job {
 	@Deprecated
 	public int getCapacityDemand();
 	
+	/**
+	 * Returns capacity of jobs which can consist of an arbitrary number of capacity dimensions.
+	 * 
+	 * @return Capacity
+	 */
 	public Capacity getCapacity();
 	
 }
