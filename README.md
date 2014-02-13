@@ -18,7 +18,7 @@ reading classical VRP instances to benchmark your algorithm. It is fit for chang
 
 ##In Development
 - continues improvement of code, handling and performance
-- soft constraints
+- simplifying management of soft and hard constraints
 - various capacity dimensions and multiple time-windows
 - large scale instances
 
@@ -59,5 +59,3 @@ It is mainly inspired by my research group at [KIT-ECON](http://netze.econ.kit.e
 If you have questions or if you use jsprit, it would be great you give feedback and let me know your experience:
 
 Email: jsprit.vehicle.routing@gmail.com
-
-[![](https://cruel-carlota.pagodabox.com/ba53806a8cc8ff439c1a51d152245dee "githalytics.com")](http://githalytics.com/jsprit/jsprit)

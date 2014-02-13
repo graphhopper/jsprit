@@ -252,8 +252,8 @@ class CalculatorBuilder {
 			actInsertionCalc = activityInsertionCostCalculator;
 		}
 
-		ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
-		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
+		ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
+		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
 		
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
 		switcher.put(Shipment.class, shipmentInsertion);
@@ -263,8 +263,6 @@ class CalculatorBuilder {
 		
 		PenalyzeInsertionCostsWithPenaltyVehicle penalyzeInsertionCosts = new PenalyzeInsertionCostsWithPenaltyVehicle(switcher);
 		
-//		JobInsertionCostsCalculator standardServiceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager, constraintManager);
-//		((ServiceInsertionCalculator) standardServiceInsertion).setNeighborhood(vrp.getNeighborhood());
 		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(penalyzeInsertionCosts);
 		
 		return calcPlusListeners;

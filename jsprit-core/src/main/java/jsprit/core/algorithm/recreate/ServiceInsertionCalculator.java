@@ -17,9 +17,12 @@
 package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
+import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
+import jsprit.core.problem.constraint.SoftActivityConstraint;
+import jsprit.core.problem.constraint.SoftRouteConstraint;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
@@ -34,48 +37,45 @@ import jsprit.core.problem.solution.route.activity.TourActivityFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import jsprit.core.util.CalculationUtils;
-import jsprit.core.util.Neighborhood;
 
 import org.apache.log4j.Logger;
 
-
-
-
+/**
+ * Calculator that calculates the best insertion position for a {@link Service}.
+ * 
+ * @author schroeder
+ *
+ */
 final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
-
+	
 	private static final Logger logger = Logger.getLogger(ServiceInsertionCalculator.class);
 
 	private HardRouteStateLevelConstraint hardRouteLevelConstraint;
 	
 	private HardActivityStateLevelConstraint hardActivityLevelConstraint;
 	
-	private Neighborhood neighborhood = new Neighborhood() {
-		
-		@Override
-		public boolean areNeighbors(String location1, String location2) {
-			return true;
-		}
-	};
+	private SoftRouteConstraint softRouteConstraint;
 	
-	private ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
+	private SoftActivityConstraint softActivityConstraint;
 	
 	private VehicleRoutingTransportCosts transportCosts;
 	
+	private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
+	
 	private TourActivityFactory activityFactory;
 	
-	public void setNeighborhood(Neighborhood neighborhood) {
-		this.neighborhood = neighborhood;
-		logger.info("initialise neighborhood " + neighborhood);
-	}
-	
+	private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-	public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteStateLevelConstraint hardRouteLevelConstraint, HardActivityStateLevelConstraint hardActivityLevelConstraint) {
+	public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
 		super();
-		this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
-		this.hardRouteLevelConstraint = hardRouteLevelConstraint;
-		this.hardActivityLevelConstraint = hardActivityLevelConstraint;
 		this.transportCosts = routingCosts;
+		hardRouteLevelConstraint = constraintManager;
+		hardActivityLevelConstraint = constraintManager;
+		softActivityConstraint = constraintManager;
+		softRouteConstraint = constraintManager;
+		this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
 		activityFactory = new DefaultTourActivityFactory();
+		additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
 		logger.info("initialise " + this);
 	}
 	
@@ -100,35 +100,38 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		}
 		
 		double bestCost = bestKnownCosts;
-		ActivityInsertionCosts bestMarginals = null;
+		
+		//from job2insert induced costs at route level
+		double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
+		additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
+		
 		Service service = (Service)jobToInsert;
 		int insertionIndex = InsertionData.NO_INDEX;
 		
 		TourActivity deliveryAct2Insert = activityFactory.createActivity(service);
 		
-		Start start = Start.newInstance(newVehicle.getLocationId(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
+		Start start = Start.newInstance(newVehicle.getStartLocationId(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
 		start.setEndTime(newVehicleDepartureTime);
-		End end = End.newInstance(newVehicle.getLocationId(), 0.0, newVehicle.getLatestArrival());
+		End end = End.newInstance(newVehicle.getEndLocationId(), 0.0, newVehicle.getLatestArrival());
 		
 		TourActivity prevAct = start;
 		double prevActStartTime = newVehicleDepartureTime;
 		int actIndex = 0;
 		boolean loopBroken = false;
 		for(TourActivity nextAct : currentRoute.getTourActivities().getActivities()){
-			if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-				ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-				if(status.equals(ConstraintsStatus.FULFILLED)){
-					ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-					if(mc.getAdditionalCosts() < bestCost){
-						bestCost = mc.getAdditionalCosts();
-						bestMarginals = mc;
-						insertionIndex = actIndex;
-					}
+			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+			if(status.equals(ConstraintsStatus.FULFILLED)){
+				//from job2insert induced costs at activity level
+				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+				ActivityInsertionCosts additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts() < bestCost){
+					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts();
+					insertionIndex = actIndex;
 				}
-				else if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)){
-					loopBroken = true;
-					break;
-				}
+			}
+			else if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)){
+				loopBroken = true;
+				break;
 			}
 			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActStartTime, newDriver, newVehicle);
 			double nextActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
@@ -138,29 +141,22 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		}
 		End nextAct = end;
 		if(!loopBroken){
-			if(neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), prevAct.getLocationId()) && neighborhood.areNeighbors(deliveryAct2Insert.getLocationId(), nextAct.getLocationId())){
-				ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime); 
-				if(status.equals(ConstraintsStatus.FULFILLED)){
-					ActivityInsertionCosts mc = calculate(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-					if(mc.getAdditionalCosts() < bestCost){
-						bestCost = mc.getAdditionalCosts();
-						bestMarginals = mc;
-						insertionIndex = actIndex;
-					}
+			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime); 
+			if(status.equals(ConstraintsStatus.FULFILLED)){
+				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+				ActivityInsertionCosts additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts() < bestCost){
+					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts();
+					insertionIndex = actIndex;
 				}
 			}
 		}
-
 		if(insertionIndex == InsertionData.NO_INDEX) {
 			return InsertionData.createEmptyInsertionData();
 		}
 		InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
-		insertionData.setAdditionalTime(bestMarginals.getAdditionalTime());
 		return insertionData;
 	}
 
-	public ActivityInsertionCosts calculate(JobInsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double departureTimeAtPrevAct) {	
-		return activityInsertionCostsCalculator.getCosts(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);		
-	}
 }

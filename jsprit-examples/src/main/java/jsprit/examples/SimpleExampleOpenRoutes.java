@@ -18,7 +18,7 @@ package jsprit.examples;
 
 import java.util.Collection;
 
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -55,7 +55,7 @@ public class SimpleExampleOpenRoutes {
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
 		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setLocationCoord(Coordinate.newInstance(10, 10));
+		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
 		vehicleBuilder.setReturnToDepot(false);
 		
@@ -99,7 +99,9 @@ public class SimpleExampleOpenRoutes {
 		/*
 		 * plot
 		 */
-		SolutionPlotter.plotSolutionAsPNG(problem, bestSolution, "output/solution.png", "solution");
+	
+		new Plotter(problem, bestSolution).plot("output/solution.png", "solution");
+		
 	}
 
 }

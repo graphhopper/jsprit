@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.analysis.toolbox.StopWatch;
@@ -32,7 +32,6 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -79,36 +78,19 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
-				vehicleBuilder.setLocationCoord(depotCoord);
+				vehicleBuilder.setStartLocationCoordinate(depotCoord);
 				vehicleBuilder.setType(vehicleType);
 				vehicleBuilder.setLatestArrival(maxDuration);
 				Vehicle vehicle = vehicleBuilder.build();
 				vrpBuilder.addVehicle(vehicle);
 			}
-			/*
-			 * define penalty-type with the same id, but other higher fixed and variable costs
-			 */
-			VehicleType penaltyType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setFixedCost(50).setCostPerDistance(3.0).build();
-			/*
-			 * to mark the penalty-type as penalty-type, wrap it with PenaltyVehicleType(Wrapper)
-			 * this is to tell the fleetManager that this is not a regular but a penalty vehicle
-			 */
-			PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType,3);
-			String vehicleId = depotCounter + "_vehicle#penalty";
-			VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
-			vehicleBuilder.setLocationCoord(depotCoord);
-			/*
-			 * set PenaltyVehicleType
-			 */
-			vehicleBuilder.setType(penaltyVehicleType);
-			vehicleBuilder.setLatestArrival(maxDuration);
-			Vehicle penaltyVehicle = vehicleBuilder.build();
-			vrpBuilder.addVehicle(penaltyVehicle);
-
 			depotCounter++;
 		}
 		
-		
+		/*
+		 * define penalty-type with the same id, but other higher fixed and variable costs
+		 */
+		vrpBuilder.addPenaltyVehicles(3, 50);
 		
 		/*
 		 * define problem with finite fleet
@@ -134,8 +116,9 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(vrp,Solutions.bestOf(solutions),Print.VERBOSE);
-		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.bestOf(solutions), "output/p08_solution.png", "p08");
 
+		new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/p08_solution.png", "p08");
+		
 		new GraphStreamViewer(vrp,Solutions.bestOf(solutions)).setRenderDelay(50).display();
 	}
 

@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
-import jsprit.analysis.toolbox.SolutionPlotter;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.StopWatch;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -77,7 +77,7 @@ public class MultipleDepotExample {
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second,third,fourth)){
 			for(int i=0;i<nuOfVehicles;i++){
 				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
-				Vehicle vehicle = VehicleImpl.Builder.newInstance(depotCounter + "_" + (i+1) + "_vehicle").setLocationCoord(depotCoord).setType(vehicleType).build();
+				Vehicle vehicle = VehicleImpl.Builder.newInstance(depotCounter + "_" + (i+1) + "_vehicle").setStartLocationCoordinate(depotCoord).setType(vehicleType).build();
 				vrpBuilder.addVehicle(vehicle);
 			}
 			depotCounter++;
@@ -101,14 +101,15 @@ public class MultipleDepotExample {
 		/*
 		 * solve the problem
 		 */
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfigWithSchrimpfAcceptance.xml");
 		vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(Solutions.bestOf(solutions));
-		SolutionPlotter.plotSolutionAsPNG(vrp, Solutions.bestOf(solutions), "output/p01_solution.png", "p01");
-
+		
+		new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/p01_solution.png", "p01");
+		
 		new GraphStreamViewer(vrp, Solutions.bestOf(solutions)).setRenderDelay(100).display();
 		
 	}

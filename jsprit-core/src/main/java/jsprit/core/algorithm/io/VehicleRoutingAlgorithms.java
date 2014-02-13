@@ -481,9 +481,6 @@ public class VehicleRoutingAlgorithms {
 
 		@Override
 		public void finish() {
-			if(firstAct){
-				assert vehicle.getLocationId() == end.getLocationId() : "route end and last activity are not equal even route is open. this should not be.";
-			}
 			firstAct = true;
 		}
 		
