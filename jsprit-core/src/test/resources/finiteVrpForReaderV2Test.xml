@@ -89,7 +89,9 @@
      <vehicleTypes>
           <type>
           		<id>vehType</id>
-               <capacity>20</capacity>
+               <capacity-dimensions>
+               		<dimension index="1">20</dimension>
+               </capacity-dimensions>
                <costs>
                     <fixed>0.0</fixed>
                     <distance>0.0</distance>
@@ -111,7 +113,9 @@
      	 <service id="1" type="service">
                <locationId>j(1,5)</locationId>
                 <coord x="10.0" y="10.0"/>
-               <capacity-demand>1</capacity-demand>
+               <capacity-dimensions>
+               		<dimension index="1">1</dimension>
+               </capacity-dimensions>
                <duration>10.0</duration>
                <timeWindows>
                     <timeWindow>
