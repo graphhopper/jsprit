@@ -42,7 +42,9 @@
      <vehicleTypes>
           <type>
                <id>vehType</id>
-               <capacity>20</capacity>
+               <capacity-dimensions>
+                    <dimension index="0">20</dimension>
+               </capacity-dimensions>
                <costs>
                     <fixed>0.0</fixed>
                     <distance>1.0</distance>
@@ -51,7 +53,9 @@
           </type>
           <type>
                <id>vehType2</id>
-               <capacity>200</capacity>
+               <capacity-dimensions>
+                    <dimension index="0">200</dimension>
+               </capacity-dimensions>
                <costs>
                     <fixed>0.0</fixed>
                     <distance>1.0</distance>
@@ -62,7 +66,9 @@
      <services>
           <service id="2" type="service">
                <locationId>loc2</locationId>
-               <capacity-demand>1</capacity-demand>
+               <capacity-dimensions>
+                    <dimension index="0">1</dimension>
+               </capacity-dimensions>
                <duration>4.0</duration>
                <timeWindows>
                     <timeWindow>
@@ -73,7 +79,9 @@
           </service>
           <service id="1" type="service">
                <locationId>loc</locationId>
-               <capacity-demand>1</capacity-demand>
+               <capacity-dimensions>
+                    <dimension index="0">1</dimension>
+               </capacity-dimensions>
                <duration>2.0</duration>
                <timeWindows>
                     <timeWindow>

@@ -81,7 +81,11 @@ public interface Vehicle {
 	 * Returns the capacity of this vehicle.
 	 * 
 	 * @return capacity
+	 * @deprecated use .getType().getCapacityDimensions() - if you still use this method, 
+	 * but set capacity-dimensions via <code>VehicleTypeImpl.Builder.newInstance(...).addCapacityDimension(...)</code> then this method returns the
+	 * dimension with index=0.
 	 */
+	@Deprecated
 	public abstract int getCapacity();
 	
 	/**

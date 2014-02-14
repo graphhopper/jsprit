@@ -84,8 +84,8 @@
 									<xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" default="0"/>
 									<xs:element name="capacity-dimensions" minOccurs="0" maxOccurs="1">
 										<xs:complexType>
-											<xs:all>
-												<xs:element name="dimension" minOccurs="1">
+											<xs:sequence>
+												<xs:element name="dimension" minOccurs="1" maxOccurs="unbounded">
 													<xs:complexType>
 														<xs:simpleContent>
 															<xs:extension base="xs:integer">
@@ -94,7 +94,7 @@
 														</xs:simpleContent>
 													</xs:complexType>
 												</xs:element>
-											</xs:all>
+											</xs:sequence>
 										</xs:complexType>
 									</xs:element>
 									<xs:element name="costs">
@@ -126,8 +126,8 @@
 									<xs:element name="capacity-demand" type="xs:integer" minOccurs="0" maxOccurs="1" default="0"/>
 									<xs:element name="capacity-dimensions" minOccurs="0" maxOccurs="1">
 										<xs:complexType>
-											<xs:all>
-												<xs:element name="dimension" minOccurs="1">
+											<xs:sequence>
+												<xs:element name="dimension" minOccurs="1" maxOccurs="unbounded">
 													<xs:complexType>
 														<xs:simpleContent>
 															<xs:extension base="xs:integer">
@@ -136,7 +136,7 @@
 														</xs:simpleContent>
 													</xs:complexType>
 												</xs:element>
-											</xs:all>
+											</xs:sequence>
 										</xs:complexType>
 									</xs:element>
 									<xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
@@ -195,11 +195,11 @@
 											</xs:all>
 										</xs:complexType>
 									</xs:element>
-									<xs:element name="capacity-demand" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+									<xs:element name="capacity-demand" type="xs:integer" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="capacity-dimensions" minOccurs="0" maxOccurs="1">
 										<xs:complexType>
-											<xs:all>
-												<xs:element name="dimension" minOccurs="1">
+											<xs:sequence>
+												<xs:element name="dimension" minOccurs="1" maxOccurs="unbounded">
 													<xs:complexType>
 														<xs:simpleContent>
 															<xs:extension base="xs:integer">
@@ -208,7 +208,7 @@
 														</xs:simpleContent>
 													</xs:complexType>
 												</xs:element>
-											</xs:all>
+											</xs:sequence>
 										</xs:complexType>
 									</xs:element>
 								</xs:sequence>

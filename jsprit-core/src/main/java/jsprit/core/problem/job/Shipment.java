@@ -31,8 +31,6 @@ public class Shipment implements Job{
 	 */
 	public static class Builder {
 		
-		private int demand;
-		
 		private String id;
 		
 		private String pickupLocation;
@@ -58,11 +56,16 @@ public class Shipment implements Job{
 		/**
 		 * Returns a new instance of this builder.
 		 * 
+		 * <p>Note that if you use this builder, size is assigned to capacity-dimension with index=0.
+		 * 
 		 * @param id
 		 * @param size
 		 * @return builder
 		 * @throws IllegalArgumentException if size < 0 or id is null
+		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
+		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
 		 */
+		@Deprecated
 		public static Builder newInstance(String id, int size){
 			Builder builder = new Builder(id,size);
 			builder.addCapacityDimension(0, size);
@@ -84,7 +87,6 @@ public class Shipment implements Job{
 			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 			if(id == null) throw new IllegalArgumentException("id must not be null");
 			this.id = id;
-			this.demand = size;
 		}
 		
 		Builder(String id){
@@ -241,8 +243,6 @@ public class Shipment implements Job{
 		
 	}
 	
-	private final int demand;
-	
 	private final String id;
 	
 	private final String pickupLocation;
@@ -271,7 +271,6 @@ public class Shipment implements Job{
 	 */
 	Shipment(Builder builder){
 		this.id = builder.id;
-		this.demand = builder.demand;
 		this.pickupLocation = builder.pickupLocation;
 		this.pickupCoord = builder.pickupCoord;
 		this.pickupServiceTime = builder.pickupServiceTime;
@@ -288,9 +287,14 @@ public class Shipment implements Job{
 		return id;
 	}
 
+	/**
+	 * @Deprecated use <code>.getCapacity()</code> instead. if you still use this method, it returns the 
+	 * capacity dimension with index=0.
+	 */
+	@Deprecated
 	@Override
 	public int getCapacityDemand() {
-		return demand;
+		return capacity.get(0);
 	}
 
 	/**

@@ -35,7 +35,7 @@ import jsprit.core.util.Coordinate;
 import org.junit.Before;
 import org.junit.Test;
 
-
+@SuppressWarnings("deprecation")
 public class VrpWriterV2Test {
 	
 	private String infileName;
@@ -99,6 +99,7 @@ public class VrpWriterV2Test {
 		
 		builder.addVehicle(v1);
 		builder.addVehicle(v2);
+		
 		
 		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("loc").setServiceTime(2.0).build();
 		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setServiceTime(4.0).build();

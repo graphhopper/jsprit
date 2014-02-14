@@ -372,6 +372,7 @@ public class VehicleImpl implements Vehicle {
 	}
 
 	@Override
+	@Deprecated
 	public int getCapacity() {
 		return type.getCapacity();
 	}

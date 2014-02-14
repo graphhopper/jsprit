@@ -39,7 +39,7 @@ public interface Job {
 	 * 
 	 * <p>It determines how much capacity this job consumes of vehicle/transport unit.
 	 * 
-	 * @deprecated use getCapacity() instead
+	 * @deprecated use <code>.getCapacity()</code> instead
 	 * @return
 	 */
 	@Deprecated

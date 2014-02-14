@@ -187,6 +187,13 @@ public class VehicleTypeImpl implements VehicleType {
 			return new VehicleTypeImpl(this);
 		}
 
+		/**
+		 * Adds a capacity dimension.
+		 * 
+		 * @param dimIndex
+		 * @param dimVal
+		 * @return the builder
+		 */
 		public Builder addCapacityDimension(int dimIndex, int dimVal) {
 			capacityBuilder.addDimension(dimIndex,dimVal);
 			return this;
@@ -285,8 +292,9 @@ public class VehicleTypeImpl implements VehicleType {
 	 * @see basics.route.VehicleType#getCapacity()
 	 */
 	@Override
+	@Deprecated
 	public int getCapacity() {
-		return capacity;
+		return capacityDimensions.get(0);
 	}
 
 	/* (non-Javadoc)

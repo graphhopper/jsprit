@@ -44,11 +44,16 @@ public class Service implements Job {
 		/**
 		 * Returns a new instance of service-builder.
 		 * 
+		 * <p>Note that if you use this builder, size is assigned to capacity-dimension with index=0.
+		 * 
 		 * @param id of service
 		 * @param size of capacity-demand
 		 * @return builder
 		 * @throws IllegalArgumentException if size < 0 or id is null
+		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
+		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
 		 */
+		@Deprecated
 		public static Builder newInstance(String id, int size){
 			Builder builder = new Builder(id,size);
 			builder.addCapacityDimension(0, size);
@@ -71,7 +76,6 @@ public class Service implements Job {
 		
 		protected TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 		
-		protected int demand;
 		protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
 		protected Capacity capacity;
 		
@@ -86,7 +90,6 @@ public class Service implements Job {
 			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 			if(id == null) throw new IllegalArgumentException("id must not be null");
 			this.id = id;
-			this.demand = size;
 		}
 		
 		Builder(String id){
@@ -144,7 +147,13 @@ public class Service implements Job {
 			return this;
 		}
 		
-
+		/**
+		 * Adds capacity dimension.
+		 * 
+		 * @param dimensionIndex
+		 * @param dimensionValue
+		 * @return the builder
+		 */
 		public Builder addCapacityDimension(int dimensionIndex, int dimensionValue){
 			capacityBuilder.addDimension(dimensionIndex, dimensionValue);
 			return this;
@@ -196,7 +205,7 @@ public class Service implements Job {
 
 	private final TimeWindow timeWindow;
 
-	private final int demand;
+//	private final int demand;
 	
 	private final Capacity capacity;
 
@@ -206,7 +215,6 @@ public class Service implements Job {
 		coord = builder.coord;
 		serviceTime = builder.serviceTime;
 		timeWindow = builder.timeWindow;
-		demand = builder.demand;
 		type = builder.type;
 		capacity = builder.capacity;
 	}
@@ -252,9 +260,15 @@ public class Service implements Job {
 		return timeWindow;
 	}
 	
+	/**
+	 * @Deprecated use <code>.getCapacity()</code> instead. if you still use this method, it returns the 
+	 * capacity dimension with index=0.
+	 * 
+	 */
 	@Override
+	@Deprecated
 	public int getCapacityDemand() {
-		return demand;
+		return capacity.get(0);
 	}
 	
 	/**
@@ -271,7 +285,7 @@ public class Service implements Job {
 	 */
 	@Override
 	public String toString() {
-		return "[id=" + id + "][type="+type+"][locationId=" + locationId + "][coord="+coord+"][size=" + demand + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
+		return "[id=" + id + "][type="+type+"][locationId=" + locationId + "][coord="+coord+"][capacity=" + capacity + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
 	}
 
 

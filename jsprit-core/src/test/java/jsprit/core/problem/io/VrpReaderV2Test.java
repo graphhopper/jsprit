@@ -59,10 +59,11 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(4,vrp.getVehicles().size());
+		assertEquals(5,vrp.getVehicles().size());
 		assertTrue(idsInCollection(Arrays.asList("v1","v2"),vrp.getVehicles()));
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void whenReadingVrp_vehiclesAreReadCorrectly2(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -70,6 +71,7 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Vehicle v1 = getVehicle("v1",vrp.getVehicles());
 		assertEquals(20,v1.getCapacity());
+		assertEquals(20,v1.getType().getCapacityDimensions().get(0));
 		assertEquals(100.0,v1.getStartLocationCoordinate().getX(),0.01);
 		assertEquals(0.0,v1.getEarliestDeparture(),0.01);
 		assertEquals("depotLoc2",v1.getStartLocationId());
@@ -96,7 +98,7 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(2,vrp.getTypes().size());
+		assertEquals(3,vrp.getTypes().size());
 	}
 	
 	@Test 
@@ -139,6 +141,7 @@ public class VrpReaderV2Test {
 		assertEquals(2,shipCounter);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void whenReadingServices_capOfService1IsReadCorrectly(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -146,6 +149,7 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Service s1 = (Service) vrp.getJobs().get("1");
 		assertEquals(1,s1.getCapacityDemand());
+		assertEquals(1,s1.getCapacity().get(0));
 	}
 	
 	@Test
@@ -299,6 +303,7 @@ public class VrpReaderV2Test {
 		assertEquals("startLoc",v.getStartLocationId());
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void whenReadingJobs_capOfShipment3IsReadCorrectly(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -306,6 +311,7 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
 		assertEquals(10,s.getCapacityDemand());
+		assertEquals(10,s.getCapacity().get(0));
 	}
 	
 	@Test
@@ -418,6 +424,21 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("4");
 		assertEquals(100.0,s.getDeliveryServiceTime(),0.01);
+	}
+	
+	@Test
+	public void whenReadingFile_v5AndItsTypeHasTheCorrectCapacityDimensionValues(){
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read(inFileName);
+		VehicleRoutingProblem vrp = builder.build();
+		Vehicle v = getVehicle("v5",vrp.getVehicles());
+//		assertEquals(100, v.getType().getCapacityDimensions().get(0));
+		assertEquals(1000, v.getType().getCapacityDimensions().get(1));
+//		assertEquals(10000, v.getType().getCapacityDimensions().get(2));
+//		assertEquals(0, v.getType().getCapacityDimensions().get(3));
+//		assertEquals(0, v.getType().getCapacityDimensions().get(5));
+//		assertEquals(100000, v.getType().getCapacityDimensions().get(10));
+		
 	}
 
 }
