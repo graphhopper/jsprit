@@ -242,6 +242,7 @@ public class VehicleRoutingAlgorithm {
 
 	public void setNuOfIterations(int nOfIterations) {
 		this.nOfIterations = nOfIterations;
+		logger.info("set nuOfIterations to " + nOfIterations);
 	}
 
 }
