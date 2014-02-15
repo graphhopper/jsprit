@@ -94,9 +94,6 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
-
-
-
 public class VehicleRoutingAlgorithms {
 	
 	static class TypedMap {
@@ -583,7 +580,6 @@ public class VehicleRoutingAlgorithms {
 		if(config.containsKey("iterations")){
 			int iter = config.getInt("iterations");
 			metaAlgorithm.setNuOfIterations(iter);
-			log.info("set nuOfIterations to " + iter);
 		}
 		
 		
