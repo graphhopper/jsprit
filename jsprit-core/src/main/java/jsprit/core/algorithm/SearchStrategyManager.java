@@ -86,7 +86,7 @@ public class SearchStrategyManager {
 				return strategies.get(i);
 			}
 		}
-		throw new IllegalStateException("no seaarch-strategy found");
+		throw new IllegalStateException("no search-strategy found");
 	}
 	
 	public void addSearchStrategyListener(SearchStrategyListener strategyListener){
