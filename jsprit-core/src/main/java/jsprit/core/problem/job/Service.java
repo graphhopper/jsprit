@@ -77,6 +77,7 @@ public class Service implements Job {
 		protected TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 		
 		protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+		
 		protected Capacity capacity;
 		
 		/**

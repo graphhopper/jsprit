@@ -60,6 +60,7 @@ public class Delivery extends Service{
 				locationId = coord.toString();
 			}
 			this.setType("delivery");
+			super.capacity = super.capacityBuilder.build();
 			return new Delivery(this);
 		}
 		

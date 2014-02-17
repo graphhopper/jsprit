@@ -63,6 +63,7 @@ public class Pickup extends Service {
 				locationId = coord.toString();
 			}
 			this.setType("pickup");
+			super.capacity = super.capacityBuilder.build();
 			return new Pickup(this);
 		}
 		
