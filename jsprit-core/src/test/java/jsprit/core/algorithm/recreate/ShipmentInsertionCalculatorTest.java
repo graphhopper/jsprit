@@ -228,13 +228,7 @@ public class ShipmentInsertionCalculatorTest {
 		StateManager stateManager = new StateManager(vrp);
 		stateManager.updateLoadStates();
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
-		
-//		RouteActivityVisitor routeActVisitor = new RouteActivityVisitor();
-//		routeActVisitor.addActivityVisitor(new UpdateLoads(stateManager));
-//		routeActVisitor.visit(route);
-		
-		
-		
+
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 		constraintManager.addLoadConstraint();
 //		constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager),Priority.CRITICAL);

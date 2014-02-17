@@ -117,14 +117,6 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		Inserter inserter = new Inserter(new InsertionListeners());
 		
 		inserter.insertJob(delivery, new InsertionData(0,0,0,vehicle,null), route);
-//		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
-//		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
-		
-		
-		
-//		RouteActivityVisitor routeActVisitor = new RouteActivityVisitor();
-//		routeActVisitor.addActivityVisitor(new UpdateLoads(stateManager));
-//		routeActVisitor.visit(route);
 		
 		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
