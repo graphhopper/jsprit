@@ -432,12 +432,12 @@ public class VrpReaderV2Test {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Vehicle v = getVehicle("v5",vrp.getVehicles());
-//		assertEquals(100, v.getType().getCapacityDimensions().get(0));
+		assertEquals(100, v.getType().getCapacityDimensions().get(0));
 		assertEquals(1000, v.getType().getCapacityDimensions().get(1));
-//		assertEquals(10000, v.getType().getCapacityDimensions().get(2));
-//		assertEquals(0, v.getType().getCapacityDimensions().get(3));
-//		assertEquals(0, v.getType().getCapacityDimensions().get(5));
-//		assertEquals(100000, v.getType().getCapacityDimensions().get(10));
+		assertEquals(10000, v.getType().getCapacityDimensions().get(2));
+		assertEquals(0, v.getType().getCapacityDimensions().get(3));
+		assertEquals(0, v.getType().getCapacityDimensions().get(5));
+		assertEquals(100000, v.getType().getCapacityDimensions().get(10));
 		
 	}
 

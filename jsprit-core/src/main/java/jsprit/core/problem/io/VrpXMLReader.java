@@ -239,11 +239,6 @@ public class VrpXMLReader{
 				String end = routeConfig.getString("end");
 				if(end == null) throw new IllegalStateException("route end-time is missing.");
 				
-//				Start startAct = Start.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-//				startAct.setEndTime(Double.parseDouble(start));
-//				End endAct = End.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-//				endAct.setArrTime(Double.parseDouble(end));
-				
 				VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
 				routeBuilder.setDepartureTime(departureTime);
 				routeBuilder.setRouteEndArrivalTime(Double.parseDouble(end));
@@ -332,10 +327,10 @@ public class VrpXMLReader{
 			}
 			else {
 				builder = Shipment.Builder.newInstance(id);
-				List<HierarchicalConfiguration> dimensionConfigs = shipmentConfig.configurationsAt("capacity-dimensions");
+				List<HierarchicalConfiguration> dimensionConfigs = shipmentConfig.configurationsAt("capacity-dimensions.dimension");
 				for(HierarchicalConfiguration dimension : dimensionConfigs){
-					Integer index = dimension.getInt("dimension[@index]");
-					Integer value = dimension.getInt("dimension");
+					Integer index = dimension.getInt("[@index]");
+					Integer value = dimension.getInt("");
 					builder.addCapacityDimension(index, value);
 				}
 			}
@@ -441,10 +436,10 @@ public class VrpXMLReader{
 			}
 			else {
 				builder = serviceBuilderFactory.createBuilder(type, id, null);
-				List<HierarchicalConfiguration> dimensionConfigs = serviceConfig.configurationsAt("capacity-dimensions");
+				List<HierarchicalConfiguration> dimensionConfigs = serviceConfig.configurationsAt("capacity-dimensions.dimension");
 				for(HierarchicalConfiguration dimension : dimensionConfigs){
-					Integer index = dimension.getInt("dimension[@index]");
-					Integer value = dimension.getInt("dimension");
+					Integer index = dimension.getInt("[@index]");
+					Integer value = dimension.getInt("");
 					builder.addCapacityDimension(index, value);
 				}
 			}
@@ -501,10 +496,10 @@ public class VrpXMLReader{
 			}
 			else {
 				typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId);
-				List<HierarchicalConfiguration> dimensionConfigs = typeConfig.configurationsAt("capacity-dimensions");
+				List<HierarchicalConfiguration> dimensionConfigs = typeConfig.configurationsAt("capacity-dimensions.dimension");
 				for(HierarchicalConfiguration dimension : dimensionConfigs){
-					Integer index = dimension.getInt("dimension[@index]");
-					Integer value = dimension.getInt("dimension");
+					Integer index = dimension.getInt("[@index]");
+					Integer value = dimension.getInt("");
 					typeBuilder.addCapacityDimension(index, value);
 				}
 			}
