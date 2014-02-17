@@ -20,6 +20,7 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
 import jsprit.core.problem.job.Pickup;
+import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -240,8 +241,10 @@ public class ShipmentInsertionCalculatorTest {
 		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
 		switcher.put(Pickup.class, serviceInsertionCalc);
+		switcher.put(Service.class, serviceInsertionCalc);
 		switcher.put(Shipment.class, insertionCalculator);
 		
+//		Service service = Service.Builder.newInstance("pick", 1).setLocationId("5,5").build();
 		Pickup service = (Pickup)Pickup.Builder.newInstance("pick", 1).setLocationId("5,5").build();
 		InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
 //		routeActVisitor.visit(route);

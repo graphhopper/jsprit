@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
  * 
@@ -33,9 +34,24 @@ public class Pickup extends Service {
 		 * @param size
 		 * @return builder
 		 * @throws IllegalArgumentException if size < 0 or id is null
+		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
+		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
 		 */
+		@Deprecated
 		public static Builder newInstance(String id, int size){
-			return new Builder(id,size);
+			Builder builder = new Builder(id,size);
+			builder.addCapacityDimension(0, size);
+			return builder;
+		}
+		
+		/**
+		 * Returns a new instance of builder that builds a pickup.
+		 * 
+		 * @param id
+		 * @return the builder
+		 */
+		public static Builder newInstance(String id){
+			return new Builder(id);
 		}
 		
 		/**
@@ -47,6 +63,10 @@ public class Pickup extends Service {
 		 */
 		Builder(String id, int size) {
 			super(id, size);
+		}
+		
+		Builder(String id) {
+			super(id);
 		}
 		
 		/**

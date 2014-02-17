@@ -60,6 +60,12 @@ public class Service implements Job {
 			return builder;
 		}
 		
+		/**
+		 * Returns a new instance of builder that builds a service.
+		 * 
+		 * @param id
+		 * @return the builder
+		 */
 		public static Builder newInstance(String id){
 			return new Builder(id);
 		}
