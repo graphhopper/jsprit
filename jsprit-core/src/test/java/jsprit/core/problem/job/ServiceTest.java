@@ -30,7 +30,7 @@ import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
 
-
+@SuppressWarnings("deprecation")
 public class ServiceTest {
 	
 	@Test

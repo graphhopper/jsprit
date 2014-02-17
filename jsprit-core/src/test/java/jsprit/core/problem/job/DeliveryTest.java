@@ -6,6 +6,7 @@ import org.junit.Test;
 
 public class DeliveryTest {
 	
+	@SuppressWarnings("deprecation")
 	@Test(expected=IllegalStateException.class)
 	public void whenNeitherLocationIdNorCoordIsSet_itThrowsException(){
 		Delivery.Builder.newInstance("p", 0).build();
@@ -31,6 +32,7 @@ public class DeliveryTest {
 		assertEquals(0,one.getCapacity().get(0));
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
 		Delivery one = (Delivery)Delivery.Builder.newInstance("s",1).setLocationId("foofoo")
