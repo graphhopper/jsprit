@@ -120,6 +120,32 @@ public class VrpWriterV2Test {
 	}
 	
 	@Test
+	public void whenWritingServicesWithSeveralCapacityDimensions_itWritesThemCorrectly(){
+		Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		
+		Service s1 = Service.Builder.newInstance("1")
+				.addCapacityDimension(0, 20)
+				.addCapacityDimension(1, 200)
+				.setLocationId("loc").setServiceTime(2.0).build();
+		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setServiceTime(4.0).build();
+		
+		VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+		new VrpXMLWriter(vrp, null).write(infileName);
+		
+		VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+		VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+		assertEquals(2,readVrp.getJobs().size());
+		
+		Service s1_read = (Service) vrp.getJobs().get("1");
+		
+		assertEquals(2, s1_read.getCapacity().getNuOfDimensions());
+		assertEquals(20, s1_read.getCapacity().get(0));
+		assertEquals(200, s1_read.getCapacity().get(1));
+		
+	}
+	
+	@Test
 	public void whenWritingShipments_readingThemAgainMustReturnTheWrittenLocationIdsOfS1(){
 		Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
@@ -307,6 +333,36 @@ public class VrpWriterV2Test {
 	}
 	
 	@Test
+	public void whenWritingShipmentWithSeveralCapacityDimension_itShouldWriteAndReadItCorrectly(){
+		Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		
+		Shipment s1 = Shipment.Builder.newInstance("1")
+				.setPickupCoord(Coordinate.newInstance(1, 2)).setDeliveryCoord(Coordinate.newInstance(5, 6)).setDeliveryLocation("delLoc").setPickupTimeWindow(TimeWindow.newInstance(1, 2))
+				.setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50)
+				.addCapacityDimension(0, 10)
+				.addCapacityDimension(2, 100)
+				.build();
+		
+		Shipment s2 = Shipment.Builder.newInstance("2", 20).setPickupLocation("pickLocation").setDeliveryLocation("delLocation").setPickupTimeWindow(TimeWindow.newInstance(5, 6))
+				.setDeliveryTimeWindow(TimeWindow.newInstance(7, 8)).build();
+		
+		VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+		new VrpXMLWriter(vrp, null).write(infileName);
+		
+		VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+		VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+		
+		assertEquals(3,((Shipment)readVrp.getJobs().get("1")).getCapacity().getNuOfDimensions());
+		assertEquals(10,((Shipment)readVrp.getJobs().get("1")).getCapacity().get(0));
+		assertEquals(0,((Shipment)readVrp.getJobs().get("1")).getCapacity().get(1));
+		assertEquals(100,((Shipment)readVrp.getJobs().get("1")).getCapacity().get(2));
+		
+		assertEquals(1,((Shipment)readVrp.getJobs().get("2")).getCapacity().getNuOfDimensions());
+		assertEquals(20,((Shipment)readVrp.getJobs().get("2")).getCapacity().get(0));
+	}
+	
+	@Test
 	public void whenWritingVehicleV1_itsStartLocationMustBeWrittenCorrectly(){
 		Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
@@ -471,6 +527,61 @@ public class VrpWriterV2Test {
 		
 		assertEquals(4.0,v.getEndLocationCoordinate().getX(),0.01);
 		assertEquals(5.0,v.getEndLocationCoordinate().getY(),0.01);
+	}
+	
+	@Test
+	public void whenWritingVehicleWithSeveralCapacityDimensions_itShouldBeWrittenAndRereadCorrectly(){
+		Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type", 200)
+				.addCapacityDimension(0, 100)
+				.addCapacityDimension(1, 1000)
+				.addCapacityDimension(2, 10000)
+				.build();
+		
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(1, 2))
+				.setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(4, 5)).setType(type2).build();
+		builder.addVehicle(v2);
+
+		VehicleRoutingProblem vrp = builder.build();
+		new VrpXMLWriter(vrp, null).write(infileName);
+		
+		VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+		VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+		
+		Vehicle v = getVehicle("v",readVrp.getVehicles());
+		assertEquals(3,v.getType().getCapacityDimensions().getNuOfDimensions());
+		assertEquals(100,v.getType().getCapacityDimensions().get(0));
+		assertEquals(1000,v.getType().getCapacityDimensions().get(1));
+		assertEquals(10000,v.getType().getCapacityDimensions().get(2));
+	}
+	
+	@Test
+	public void whenWritingVehicleWithSeveralCapacityDimensions_itShouldBeWrittenAndRereadCorrectlyV2(){
+		Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type", 200)
+				.addCapacityDimension(0, 100)
+				.addCapacityDimension(1, 1000)
+				.addCapacityDimension(10, 10000)
+				.build();
+		
+		Vehicle v2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(1, 2))
+				.setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(4, 5)).setType(type2).build();
+		builder.addVehicle(v2);
+
+		VehicleRoutingProblem vrp = builder.build();
+		new VrpXMLWriter(vrp, null).write(infileName);
+		
+		VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+		VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+		
+		Vehicle v = getVehicle("v",readVrp.getVehicles());
+		assertEquals(11,v.getType().getCapacityDimensions().getNuOfDimensions());
+		assertEquals(0,v.getType().getCapacityDimensions().get(9));
+		assertEquals(10000,v.getType().getCapacityDimensions().get(10));
 	}
 	
 	private Vehicle getVehicle(String string, Collection<Vehicle> vehicles) {
