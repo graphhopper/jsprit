@@ -25,6 +25,8 @@ public final class Start implements TourActivity {
 	
 	public static int creation;
 	
+	private static Capacity capacity = Capacity.Builder.newInstance().build();
+	
 	public static Start newInstance(String locationId, double theoreticalStart, double theoreticalEnd){
 		creation++;
 		return new Start(locationId,theoreticalStart,theoreticalEnd);
@@ -36,8 +38,6 @@ public final class Start implements TourActivity {
 	
 	private String locationId;
 	
-	
-	
 	private Coordinate coordinate;
 	
 	private double theoretical_earliestOperationStartTime;
@@ -46,7 +46,7 @@ public final class Start implements TourActivity {
 
 	private double endTime;
 
-	private double arrTime;
+	private double arrTime; 
 
 	public Start(String locationId, double theoreticalStart, double theoreticalEnd) {
 		super();
@@ -63,13 +63,13 @@ public final class Start implements TourActivity {
 		theoretical_latestOperationStartTime = start.getTheoreticalLatestOperationStartTime();
 		endTime = start.getEndTime();
 	}
-	
-	
 
+	@Deprecated
 	Coordinate getCoordinate() {
 		return coordinate;
 	}
 
+	@Deprecated
 	void setCoordinate(Coordinate coordinate) {
 		this.coordinate = coordinate;
 	}
@@ -156,10 +156,7 @@ public final class Start implements TourActivity {
 
 	@Override
 	public Capacity getCapacity() {
-		// TODO Auto-generated method stub
-		return null;
+		return capacity;
 	}
-
-	
 
 }
