@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
@@ -165,6 +166,12 @@ public class ServiceActivity implements JobActivity{
 	@Override
 	public TourActivity duplicate() {
 		return new ServiceActivity(this);
+	}
+
+	@Override
+	public Capacity getCapacity() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

@@ -1,5 +1,6 @@
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 
@@ -89,6 +90,12 @@ public final class PickupService implements PickupActivity{
 	@Override
 	public String toString() {
 		return "[act="+getName()+"][capDemand="+getCapacityDemand()+"][loc="+getLocationId()+"]";
+	}
+
+	@Override
+	public Capacity getCapacity() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

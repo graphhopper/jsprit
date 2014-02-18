@@ -24,7 +24,7 @@ import jsprit.core.problem.solution.route.activity.ServiceActivity;
 import org.junit.Test;
 
 
-public class ServiceActTest {
+public class ServiceActivityTest {
 
 	@Test
 	public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual(){

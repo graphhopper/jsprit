@@ -1,5 +1,6 @@
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 
@@ -83,5 +84,10 @@ public final class DeliverShipment implements DeliveryActivity{
 	@Override
 	public String toString() {
 		return "[act="+getName()+"][loc="+getLocationId()+"]";
+	}
+
+	@Override
+	public Capacity getCapacity() {
+		return null;
 	}
 }

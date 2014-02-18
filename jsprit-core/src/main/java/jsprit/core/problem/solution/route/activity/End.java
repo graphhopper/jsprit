@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.util.Coordinate;
 
 public final class End implements TourActivity {
@@ -145,6 +146,12 @@ public final class End implements TourActivity {
 	@Override
 	public TourActivity duplicate() {
 		return new End(this);
+	}
+
+	@Override
+	public Capacity getCapacity() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
