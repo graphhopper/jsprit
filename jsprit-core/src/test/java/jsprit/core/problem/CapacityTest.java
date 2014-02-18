@@ -176,12 +176,13 @@ public class CapacityTest {
 		assertEquals(1, result.get(2));
 	}
 	
-	@Test(expected=IllegalStateException.class)
-	public void whenSubtractingTwoCapacitiesWithDifferentNuOfDimensions_itShouldThrowException(){
+	@Test
+	public void whenSubtractingTwoCapacitiesWithDifferentNuOfDimensions_itShouldSubtractCorrectly(){
 		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).build();
 		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).build();
-		@SuppressWarnings("unused")
 		Capacity result = Capacity.subtract(cap2, cap1);
+		assertEquals(1,result.get(0));
+		assertEquals(-2,result.get(1));
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -191,12 +192,14 @@ public class CapacityTest {
 		Capacity result = Capacity.subtract(cap1, null);
 	}
 	
-	@Test(expected=IllegalStateException.class)
-	public void whenSubtractingBiggerFromLower_itShouldReturnException(){
+	@Test
+	public void whenSubtractingBiggerFromLower_itShouldSubtractCorrectly(){
 		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 3).build();
 		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 3).addDimension(2, 4).build();
-		@SuppressWarnings("unused")
 		Capacity result = Capacity.subtract(cap1, cap2);
+		assertEquals(-1,result.get(0));
+		assertEquals(-1,result.get(1));
+		assertEquals(-1,result.get(2));
 	}
 	
 	@Test
@@ -253,6 +256,15 @@ public class CapacityTest {
 		assertEquals(1,wheelChair_plus_passenger.get(passengerSeats));
 		assertEquals(110,wheelChair_plus_passenger.get(weight));
 		assertFalse(wheelChair_plus_passenger.isLessOrEqual(cap1));
+	}
+	
+	@Test
+	public void whenInvertingCap_itShouldBeDoneCorrectly(){
+		Capacity cap = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 3).addDimension(2, 4).build();
+		Capacity inverted = Capacity.invert(cap);
+		assertEquals(-2,inverted.get(0));
+		assertEquals(-3,inverted.get(1));
+		assertEquals(-4,inverted.get(2));
 	}
 	
 }

@@ -38,20 +38,34 @@ public class Capacity {
 	 * @return new capacity
 	 * @throws NullPointerException if one of the args is null
 	 * @throws IllegalStateException if number of capacityDimensions of cap1 and cap2 are different (i.e. <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>).
-	 * @throws IllegalStateException if one of the capacityDimenstions has a negative value after subtracting 
+	 *  
 	 */
 	public static Capacity subtract(Capacity cap, Capacity cap2substract){
 		if(cap==null || cap2substract==null) throw new NullPointerException("arguments must not be null");
 		Capacity.Builder capacityBuilder= Capacity.Builder.newInstance();
 		for(int i=0;i<Math.max(cap.getNuOfDimensions(),cap2substract.getNuOfDimensions());i++){
 			int dimValue = cap.get(i)-cap2substract.get(i);
-			if(dimValue<0) throw new IllegalStateException("this must not be. dimension " + i + " has a negative value after subtracting");
 			capacityBuilder.addDimension(i, dimValue);
 		}
 		return capacityBuilder.build();
 	}
 	
-	
+	/**
+	 * Returns the inverted capacity, i.e. it multiplies all capacity dimensions with -1.
+	 * 
+	 * @param cap
+	 * @return inverted capacity
+	 * @throws NullPointerException if one of the args is null
+	 */
+	public static Capacity invert(Capacity cap2invert){
+		if(cap2invert==null) throw new NullPointerException("arguments must not be null");
+		Capacity.Builder capacityBuilder= Capacity.Builder.newInstance();
+		for(int i=0;i<cap2invert.getNuOfDimensions();i++){
+			int dimValue = cap2invert.get(i)*-1;
+			capacityBuilder.addDimension(i, dimValue);
+		}
+		return capacityBuilder.build();
+	}
 	
 	/**
 	 * Makes a deep copy of Capacity.
@@ -94,13 +108,11 @@ public class Capacity {
 		 * <p>Note that it automatically resizes dimensions according to index, i.e. if index=7 there are 8 dimensions.
 		 * New dimensions then are initialized with 0
 		 * 
-		 * @throw IllegalStateException if dimValue < 0
 		 * @param index
 		 * @param dimValue
 		 * @return
 		 */
 		public Builder addDimension(int index, int dimValue){
-			if(dimValue<0) throw new IllegalStateException("dimValue can never be negative");
 			if(index < dimensions.length){
 				dimensions[index] = dimValue;
 			}
