@@ -32,6 +32,8 @@ public final class End implements TourActivity {
 		return new End(end);
 	}
 
+	private final static Capacity capacity = Capacity.Builder.newInstance().build();
+	
 	private String locationId;
 	
 	private Coordinate coordinate;
@@ -150,8 +152,7 @@ public final class End implements TourActivity {
 
 	@Override
 	public Capacity getCapacity() {
-		// TODO Auto-generated method stub
-		return null;
+		return capacity;
 	}
 
 }

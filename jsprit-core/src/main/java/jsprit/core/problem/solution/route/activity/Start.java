@@ -25,7 +25,7 @@ public final class Start implements TourActivity {
 	
 	public static int creation;
 	
-	private static Capacity capacity = Capacity.Builder.newInstance().build();
+	private final static Capacity capacity = Capacity.Builder.newInstance().build();
 	
 	public static Start newInstance(String locationId, double theoreticalStart, double theoreticalEnd){
 		creation++;
