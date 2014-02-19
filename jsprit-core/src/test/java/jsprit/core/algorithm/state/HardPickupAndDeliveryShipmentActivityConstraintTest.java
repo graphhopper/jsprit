@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.PickupAndDeliverShipmentLoadActivityLevelConstraint;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
@@ -39,6 +40,8 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		stateManager = new StateManager(mock(VehicleRoutingProblem.class));
 		shipment = mock(Shipment.class);
 		when(shipment.getCapacityDemand()).thenReturn(1);
+		Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 1).build();
+		when(shipment.getCapacity()).thenReturn(capacity);
 		iFacts = new JobInsertionContext(null, null, vehicle, null, 0.0);
 		constraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
 	}

@@ -28,6 +28,10 @@ public final class PickupShipment implements PickupActivity{
 		return shipment;
 	}
 
+	/**
+	 * @deprecated use <code>getCapacity()</code> instead
+	 */
+	@Deprecated
 	@Override
 	public int getCapacityDemand() {
 		return shipment.getCapacityDemand();

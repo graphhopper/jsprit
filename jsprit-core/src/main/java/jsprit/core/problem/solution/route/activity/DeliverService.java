@@ -7,6 +7,8 @@ public final class DeliverService implements DeliveryActivity{
 	
 	private Delivery delivery;
 	
+	private Capacity capacity;
+	
 	private double arrTime;
 	
 	private double endTime;
@@ -14,14 +16,20 @@ public final class DeliverService implements DeliveryActivity{
 	public DeliverService(Delivery delivery) {
 		super();
 		this.delivery = delivery;
+		capacity = Capacity.invert(delivery.getCapacity());
 	}
 	
 	private DeliverService(DeliverService deliveryActivity){
 		this.delivery=deliveryActivity.getJob();
 		this.arrTime=deliveryActivity.getArrTime();
 		this.endTime=deliveryActivity.getEndTime();
+		capacity = deliveryActivity.getCapacity();
 	}
 
+	/**
+	 * @deprecated use <code>getCapacity()</code> instead
+	 */
+	@Deprecated
 	@Override
 	public int getCapacityDemand() {
 		return delivery.getCapacityDemand()*-1;
@@ -89,6 +97,6 @@ public final class DeliverService implements DeliveryActivity{
 
 	@Override
 	public Capacity getCapacity() {
-		return null;
+		return capacity;
 	}
 }

@@ -82,7 +82,12 @@ public final class PickupService implements PickupActivity{
 		return pickup;
 	}
 
+	/**
+	 * @deprecated use <code>getCapacity()</code> instead
+	 * 
+	 */
 	@Override
+	@Deprecated
 	public int getCapacityDemand() {
 		return pickup.getCapacityDemand();
 	}
@@ -94,8 +99,7 @@ public final class PickupService implements PickupActivity{
 
 	@Override
 	public Capacity getCapacity() {
-		// TODO Auto-generated method stub
-		return null;
+		return pickup.getCapacity();
 	}
 
 }

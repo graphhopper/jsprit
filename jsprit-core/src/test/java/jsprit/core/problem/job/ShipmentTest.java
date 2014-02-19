@@ -200,7 +200,7 @@ public class ShipmentTest {
 		assertEquals(2.0,s.getDeliveryTimeWindow().getEnd(),0.01);
 	}
 	
-	@Test(expected=IllegalStateException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void whenShipmentHasNegativeCapacityVal_throwIllegalStateExpception(){
 		@SuppressWarnings("unused")
 		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setDeliveryLocation("foofoo")

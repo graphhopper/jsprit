@@ -28,8 +28,6 @@ public class ServiceActivity implements JobActivity{
 	
 	public double endTime;
 	
-	public int capacityDemand;
-	
 	/**
 	 * @return the arrTime
 	 */
@@ -65,24 +63,13 @@ public class ServiceActivity implements JobActivity{
 	public static ServiceActivity newInstance(Service service){
 		return new ServiceActivity(service);
 	}
-	
-	/**
-	 * creates a new instance of {@link ServiceActivity} with a flag that indicates whether smthing is unloaded or loaded. 
-	 * 
-	 * @param service
-	 * @param capacityDemand
-	 * @return
-	 */
-//	public static ServiceActivity newInstance(Service service, boolean isPickup){
-//		return new ServiceActivity(service, capacityDemand);
-//	}
+
 	
 	private final Service service;
 			
 	protected ServiceActivity(Service service) {
 		counter++;
 		this.service = service;
-		this.capacityDemand = service.getCapacityDemand();
 	}
 	
 	protected ServiceActivity(ServiceActivity serviceActivity) {
@@ -90,7 +77,6 @@ public class ServiceActivity implements JobActivity{
 		this.service = serviceActivity.getJob();
 		this.arrTime = serviceActivity.getArrTime();
 		this.endTime = serviceActivity.getEndTime();
-		this.capacityDemand = serviceActivity.getCapacityDemand();
 	}
 	
 	
@@ -133,9 +119,13 @@ public class ServiceActivity implements JobActivity{
 		return service.getTimeWindow().getEnd();
 	}
 
+	/**
+	 * @deprecated use <code>getCapacity()</code> instead
+	 */
 	@Override
+	@Deprecated
 	public int getCapacityDemand() {
-		return this.capacityDemand;
+		return service.getCapacityDemand();
 	}
 
 	@Override
@@ -170,8 +160,7 @@ public class ServiceActivity implements JobActivity{
 
 	@Override
 	public Capacity getCapacity() {
-		// TODO Auto-generated method stub
-		return null;
+		return service.getCapacity();
 	}
 	
 	

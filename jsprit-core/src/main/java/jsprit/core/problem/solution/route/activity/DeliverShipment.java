@@ -7,18 +7,24 @@ import jsprit.core.problem.job.Shipment;
 public final class DeliverShipment implements DeliveryActivity{
 
 	private Shipment shipment;
+	
 	private double endTime;
+	
 	private double arrTime;
+	
+	private Capacity capacity;
 	
 	public DeliverShipment(Shipment shipment) {
 		super();
 		this.shipment = shipment;
+		this.capacity = Capacity.invert(shipment.getCapacity());
 	}
 
 	public DeliverShipment(DeliverShipment deliveryShipmentActivity) {
 		this.shipment = (Shipment) deliveryShipmentActivity.getJob();
 		this.arrTime = deliveryShipmentActivity.getArrTime();
 		this.endTime = deliveryShipmentActivity.getEndTime();
+		this.capacity = deliveryShipmentActivity.getCapacity();
 	}
 
 	@Override
@@ -26,6 +32,10 @@ public final class DeliverShipment implements DeliveryActivity{
 		return shipment;
 	}
 
+	/**
+	 * @deprecated use <code>getCapacity()</code> instead
+	 */
+	@Deprecated
 	@Override
 	public int getCapacityDemand() {
 		return shipment.getCapacityDemand()*-1;
@@ -88,6 +98,6 @@ public final class DeliverShipment implements DeliveryActivity{
 
 	@Override
 	public Capacity getCapacity() {
-		return null;
+		return capacity;
 	}
 }
