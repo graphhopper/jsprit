@@ -45,6 +45,12 @@ public class ShipmentTest {
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
+	public void whenShipmentIsBuiltWithNegativeDemand_itShouldThrowException_v2(){
+		@SuppressWarnings("unused")
+		Shipment one = Shipment.Builder.newInstance("s").addCapacityDimension(0, -10).setPickupLocation("foo").setDeliveryLocation("foofoo").build();
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
 	public void whenIdIsNull_itShouldThrowException(){
 		@SuppressWarnings("unused")
 		Shipment one = Shipment.Builder.newInstance(null, 10).setPickupLocation("foo").setDeliveryLocation("foofoo").build();

@@ -160,8 +160,10 @@ public class Service implements Job {
 		 * @param dimensionIndex
 		 * @param dimensionValue
 		 * @return the builder
+		 * @throws IllegalArgumentException if dimensionValue < 0
 		 */
 		public Builder addCapacityDimension(int dimensionIndex, int dimensionValue){
+			if(dimensionValue<0) throw new IllegalArgumentException("capacity value cannot be negative");
 			capacityBuilder.addDimension(dimensionIndex, dimensionValue);
 			return this;
 		}

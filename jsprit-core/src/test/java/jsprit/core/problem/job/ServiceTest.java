@@ -60,7 +60,7 @@ public class ServiceTest {
 		assertTrue(serviceSet.isEmpty());
 	}
 	
-	@Test(expected=IllegalStateException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void whenCapacityDimValueIsNegative_throwIllegalStateExpception(){
 		@SuppressWarnings("unused")
 		Service s = Service.Builder.newInstance("s").setLocationId("foo").addCapacityDimension(0, -10).build();

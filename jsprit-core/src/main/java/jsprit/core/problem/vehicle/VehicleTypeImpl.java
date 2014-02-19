@@ -193,8 +193,10 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @param dimIndex
 		 * @param dimVal
 		 * @return the builder
+		 * @throws IllegalArgumentException if dimVal < 0
 		 */
 		public Builder addCapacityDimension(int dimIndex, int dimVal) {
+			if(dimVal<0) throw new IllegalArgumentException("capacity value cannot be negative");
 			capacityBuilder.addDimension(dimIndex,dimVal);
 			return this;
 		}

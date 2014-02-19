@@ -212,9 +212,11 @@ public class Shipment implements Job{
 		 * 
 		 * @param dimIndex
 		 * @param dimVal
-		 * @return
+		 * @return builder
+		 * @throws IllegalArgumentException if dimVal < 0
 		 */
 		public Builder addCapacityDimension(int dimIndex, int dimVal) {
+			if(dimVal<0) throw new IllegalArgumentException("capacity value cannot be negative");
 			capacityBuilder.addDimension(dimIndex, dimVal);
 			return this;
 		}

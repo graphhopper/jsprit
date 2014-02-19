@@ -7,7 +7,7 @@ import org.junit.Test;
 public class VehicleTypeImplTest {
 	
 
-	@Test(expected=IllegalStateException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void whenTypeHasNegativeCapacityVal_throwIllegalStateExpception(){
 		@SuppressWarnings("unused")
 		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0,-10).build();
