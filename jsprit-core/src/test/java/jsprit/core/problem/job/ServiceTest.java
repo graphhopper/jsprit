@@ -63,24 +63,24 @@ public class ServiceTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void whenCapacityDimValueIsNegative_throwIllegalStateExpception(){
 		@SuppressWarnings("unused")
-		Service s = Service.Builder.newInstance("s").setLocationId("foo").addCapacityDimension(0, -10).build();
+		Service s = Service.Builder.newInstance("s").setLocationId("foo").addSizeDimension(0, -10).build();
 	}
 	
 	@Test
 	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
 		Service one = Service.Builder.newInstance("s").setLocationId("foofoo")
-				.addCapacityDimension(0,2)
-				.addCapacityDimension(1,4)
+				.addSizeDimension(0,2)
+				.addSizeDimension(1,4)
 				.build();
-		assertEquals(2,one.getCapacity().getNuOfDimensions());
+		assertEquals(2,one.getSize().getNuOfDimensions());
 	}
 	
 	@Test
 	public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
 		Service one = Service.Builder.newInstance("s").setLocationId("foofoo")
 				.build();
-		assertEquals(1,one.getCapacity().getNuOfDimensions());
-		assertEquals(0,one.getCapacity().get(0));
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(0,one.getSize().get(0));
 	}
 	
 	@Test
@@ -88,8 +88,8 @@ public class ServiceTest {
 		Service one = Service.Builder.newInstance("s",1).setLocationId("foofoo")
 				.build();
 		assertEquals(1,one.getCapacityDemand());
-		assertEquals(1,one.getCapacity().getNuOfDimensions());
-		assertEquals(1,one.getCapacity().get(0));
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(1,one.getSize().get(0));
 	}
 
 	@Test

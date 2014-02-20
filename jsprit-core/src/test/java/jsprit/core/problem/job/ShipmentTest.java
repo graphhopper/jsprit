@@ -47,7 +47,7 @@ public class ShipmentTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void whenShipmentIsBuiltWithNegativeDemand_itShouldThrowException_v2(){
 		@SuppressWarnings("unused")
-		Shipment one = Shipment.Builder.newInstance("s").addCapacityDimension(0, -10).setPickupLocation("foo").setDeliveryLocation("foofoo").build();
+		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, -10).setPickupLocation("foo").setDeliveryLocation("foofoo").build();
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -204,25 +204,25 @@ public class ShipmentTest {
 	public void whenShipmentHasNegativeCapacityVal_throwIllegalStateExpception(){
 		@SuppressWarnings("unused")
 		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setDeliveryLocation("foofoo")
-		.addCapacityDimension(0, -2)
+		.addSizeDimension(0, -2)
 		.build();
 	}
 	
 	@Test
 	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
 		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setDeliveryLocation("foofoo")
-				.addCapacityDimension(0,2)
-				.addCapacityDimension(1,4)
+				.addSizeDimension(0,2)
+				.addSizeDimension(1,4)
 				.build();
-		assertEquals(2,one.getCapacity().getNuOfDimensions());
+		assertEquals(2,one.getSize().getNuOfDimensions());
 	}
 	
 	@Test
 	public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
 		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setPickupCoord(Coordinate.newInstance(0, 0))
 				.setDeliveryLocation("foofoo").build();
-		assertEquals(1,one.getCapacity().getNuOfDimensions());
-		assertEquals(0,one.getCapacity().get(0));
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(0,one.getSize().get(0));
 	}
 	
 	@Test
@@ -230,7 +230,7 @@ public class ShipmentTest {
 		Shipment one = Shipment.Builder.newInstance("s",1).setPickupLocation("foo").setPickupCoord(Coordinate.newInstance(0, 0))
 				.setDeliveryLocation("foofoo").build();
 		assertEquals(1,one.getCapacityDemand());
-		assertEquals(1,one.getCapacity().getNuOfDimensions());
-		assertEquals(1,one.getCapacity().get(0));
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(1,one.getSize().get(0));
 	}
 }

@@ -46,10 +46,10 @@ public interface Job {
 	public int getCapacityDemand();
 	
 	/**
-	 * Returns capacity of jobs which can consist of an arbitrary number of capacity dimensions.
+	 * Returns size, i.e. capacity-demand, of this job which can consist of an arbitrary number of capacity dimensions.
 	 * 
 	 * @return Capacity
 	 */
-	public Capacity getCapacity();
+	public Capacity getSize();
 	
 }

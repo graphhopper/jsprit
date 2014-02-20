@@ -17,7 +17,7 @@ public class PickupServiceTest {
 	public void doBefore(){
 		service = Service.Builder.newInstance("service").setLocationId("loc").
 				setTimeWindow(TimeWindow.newInstance(1., 2.)).
-				addCapacityDimension(0, 10).addCapacityDimension(1, 100).addCapacityDimension(2, 1000).build();
+				addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
 		pickup = new PickupService(service);
 	}
 	

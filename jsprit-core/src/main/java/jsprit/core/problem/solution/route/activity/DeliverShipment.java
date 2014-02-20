@@ -17,7 +17,7 @@ public final class DeliverShipment implements DeliveryActivity{
 	public DeliverShipment(Shipment shipment) {
 		super();
 		this.shipment = shipment;
-		this.capacity = Capacity.invert(shipment.getCapacity());
+		this.capacity = Capacity.invert(shipment.getSize());
 	}
 
 	public DeliverShipment(DeliverShipment deliveryShipmentActivity) {

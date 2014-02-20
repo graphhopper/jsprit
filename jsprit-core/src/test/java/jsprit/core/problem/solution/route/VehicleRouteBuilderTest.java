@@ -32,7 +32,7 @@ public class VehicleRouteBuilderTest {
 	public void whenShipmentIsPickedDeliveredAndDeliveredAgain_throwsException(){
 		Shipment s = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(s.getCapacity()).thenReturn(capacity);
+		when(s.getSize()).thenReturn(capacity);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
 		builder.addPickup(s);
 		builder.addDelivery(s);
@@ -43,7 +43,7 @@ public class VehicleRouteBuilderTest {
 	public void whenShipmentIsPickedUpThoughButHasNotBeenDeliveredAndRouteIsBuilt_throwsException(){
 		Shipment s = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(s.getCapacity()).thenReturn(capacity);
+		when(s.getSize()).thenReturn(capacity);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(mock(Shipment.class));
@@ -56,8 +56,8 @@ public class VehicleRouteBuilderTest {
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(s.getCapacity()).thenReturn(capacity);
-		when(s2.getCapacity()).thenReturn(capacity);
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(s2);
@@ -72,8 +72,8 @@ public class VehicleRouteBuilderTest {
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(s.getCapacity()).thenReturn(capacity);
-		when(s2.getCapacity()).thenReturn(capacity);
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
@@ -92,8 +92,8 @@ public class VehicleRouteBuilderTest {
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(s.getCapacity()).thenReturn(capacity);
-		when(s2.getCapacity()).thenReturn(capacity);
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		when(s2.getDeliveryLocation()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
@@ -112,8 +112,8 @@ public class VehicleRouteBuilderTest {
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(s.getCapacity()).thenReturn(capacity);
-		when(s2.getCapacity()).thenReturn(capacity);
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		when(s2.getDeliveryLocation()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
@@ -135,8 +135,8 @@ public class VehicleRouteBuilderTest {
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(s.getCapacity()).thenReturn(capacity);
-		when(s2.getCapacity()).thenReturn(capacity);
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		when(s2.getDeliveryLocation()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);

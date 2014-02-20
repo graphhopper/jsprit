@@ -124,8 +124,8 @@ public class VrpWriterV2Test {
 		Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
 		Service s1 = Service.Builder.newInstance("1")
-				.addCapacityDimension(0, 20)
-				.addCapacityDimension(1, 200)
+				.addSizeDimension(0, 20)
+				.addSizeDimension(1, 200)
 				.setLocationId("loc").setServiceTime(2.0).build();
 		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("loc2").setServiceTime(4.0).build();
 		
@@ -139,9 +139,9 @@ public class VrpWriterV2Test {
 		
 		Service s1_read = (Service) vrp.getJobs().get("1");
 		
-		assertEquals(2, s1_read.getCapacity().getNuOfDimensions());
-		assertEquals(20, s1_read.getCapacity().get(0));
-		assertEquals(200, s1_read.getCapacity().get(1));
+		assertEquals(2, s1_read.getSize().getNuOfDimensions());
+		assertEquals(20, s1_read.getSize().get(0));
+		assertEquals(200, s1_read.getSize().get(1));
 		
 	}
 	
@@ -339,8 +339,8 @@ public class VrpWriterV2Test {
 		Shipment s1 = Shipment.Builder.newInstance("1")
 				.setPickupCoord(Coordinate.newInstance(1, 2)).setDeliveryCoord(Coordinate.newInstance(5, 6)).setDeliveryLocation("delLoc").setPickupTimeWindow(TimeWindow.newInstance(1, 2))
 				.setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50)
-				.addCapacityDimension(0, 10)
-				.addCapacityDimension(2, 100)
+				.addSizeDimension(0, 10)
+				.addSizeDimension(2, 100)
 				.build();
 		
 		Shipment s2 = Shipment.Builder.newInstance("2", 20).setPickupLocation("pickLocation").setDeliveryLocation("delLocation").setPickupTimeWindow(TimeWindow.newInstance(5, 6))
@@ -353,13 +353,13 @@ public class VrpWriterV2Test {
 		new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
 		VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 		
-		assertEquals(3,((Shipment)readVrp.getJobs().get("1")).getCapacity().getNuOfDimensions());
-		assertEquals(10,((Shipment)readVrp.getJobs().get("1")).getCapacity().get(0));
-		assertEquals(0,((Shipment)readVrp.getJobs().get("1")).getCapacity().get(1));
-		assertEquals(100,((Shipment)readVrp.getJobs().get("1")).getCapacity().get(2));
+		assertEquals(3,((Shipment)readVrp.getJobs().get("1")).getSize().getNuOfDimensions());
+		assertEquals(10,((Shipment)readVrp.getJobs().get("1")).getSize().get(0));
+		assertEquals(0,((Shipment)readVrp.getJobs().get("1")).getSize().get(1));
+		assertEquals(100,((Shipment)readVrp.getJobs().get("1")).getSize().get(2));
 		
-		assertEquals(1,((Shipment)readVrp.getJobs().get("2")).getCapacity().getNuOfDimensions());
-		assertEquals(20,((Shipment)readVrp.getJobs().get("2")).getCapacity().get(0));
+		assertEquals(1,((Shipment)readVrp.getJobs().get("2")).getSize().getNuOfDimensions());
+		assertEquals(20,((Shipment)readVrp.getJobs().get("2")).getSize().get(0));
 	}
 	
 	@Test

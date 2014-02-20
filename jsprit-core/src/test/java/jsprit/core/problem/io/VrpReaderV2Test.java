@@ -149,7 +149,7 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Service s1 = (Service) vrp.getJobs().get("1");
 		assertEquals(1,s1.getCapacityDemand());
-		assertEquals(1,s1.getCapacity().get(0));
+		assertEquals(1,s1.getSize().get(0));
 	}
 	
 	@Test
@@ -311,7 +311,7 @@ public class VrpReaderV2Test {
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
 		assertEquals(10,s.getCapacityDemand());
-		assertEquals(10,s.getCapacity().get(0));
+		assertEquals(10,s.getSize().get(0));
 	}
 	
 	@Test

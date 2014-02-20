@@ -40,7 +40,7 @@ public class Pickup extends Service {
 		@Deprecated
 		public static Builder newInstance(String id, int size){
 			Builder builder = new Builder(id,size);
-			builder.addCapacityDimension(0, size);
+			builder.addSizeDimension(0, size);
 			return builder;
 		}
 		

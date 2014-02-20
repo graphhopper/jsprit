@@ -56,7 +56,7 @@ public class Service implements Job {
 		@Deprecated
 		public static Builder newInstance(String id, int size){
 			Builder builder = new Builder(id,size);
-			builder.addCapacityDimension(0, size);
+			builder.addSizeDimension(0, size);
 			return builder;
 		}
 		
@@ -162,7 +162,7 @@ public class Service implements Job {
 		 * @return the builder
 		 * @throws IllegalArgumentException if dimensionValue < 0
 		 */
-		public Builder addCapacityDimension(int dimensionIndex, int dimensionValue){
+		public Builder addSizeDimension(int dimensionIndex, int dimensionValue){
 			if(dimensionValue<0) throw new IllegalArgumentException("capacity value cannot be negative");
 			capacityBuilder.addDimension(dimensionIndex, dimensionValue);
 			return this;
@@ -213,10 +213,8 @@ public class Service implements Job {
 	private final double serviceTime;
 
 	private final TimeWindow timeWindow;
-
-//	private final int demand;
 	
-	private final Capacity capacity;
+	private final Capacity size;
 
 	Service(Builder builder){
 		id = builder.id;
@@ -225,7 +223,7 @@ public class Service implements Job {
 		serviceTime = builder.serviceTime;
 		timeWindow = builder.timeWindow;
 		type = builder.type;
-		capacity = builder.capacity;
+		size = builder.capacity;
 	}
 
 	@Override
@@ -277,7 +275,7 @@ public class Service implements Job {
 	@Override
 	@Deprecated
 	public int getCapacityDemand() {
-		return capacity.get(0);
+		return size.get(0);
 	}
 	
 	/**
@@ -294,7 +292,7 @@ public class Service implements Job {
 	 */
 	@Override
 	public String toString() {
-		return "[id=" + id + "][type="+type+"][locationId=" + locationId + "][coord="+coord+"][capacity=" + capacity + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
+		return "[id=" + id + "][type="+type+"][locationId=" + locationId + "][coord="+coord+"][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
 	}
 
 
@@ -328,8 +326,8 @@ public class Service implements Job {
 	}
 
 	@Override
-	public Capacity getCapacity() {
-		return capacity;
+	public Capacity getSize() {
+		return size;
 	}
 	
 }

@@ -174,9 +174,9 @@ public class VrpXMLWriter {
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").coord[@x]", service.getCoord().getX());
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").coord[@y]", service.getCoord().getY());
 			}
-			for(int i=0;i<service.getCapacity().getNuOfDimensions();i++){
+			for(int i=0;i<service.getSize().getNuOfDimensions();i++){
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")[@index]", i);
-				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")", service.getCapacity().get(i));
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")", service.getSize().get(i));
 			}
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").duration", service.getServiceDuration());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").timeWindows.timeWindow(0).start", service.getTimeWindow().getStart());
@@ -215,9 +215,9 @@ public class VrpXMLWriter {
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).start", shipment.getDeliveryTimeWindow().getStart());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).end", shipment.getDeliveryTimeWindow().getEnd());
 			
-			for(int i=0;i<shipment.getCapacity().getNuOfDimensions();i++){
+			for(int i=0;i<shipment.getSize().getNuOfDimensions();i++){
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")[@index]", i);
-				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")", shipment.getCapacity().get(i));
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")", shipment.getSize().get(i));
 			}
 			counter++;
 		}

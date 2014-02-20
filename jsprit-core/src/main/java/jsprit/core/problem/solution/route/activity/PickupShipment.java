@@ -94,7 +94,7 @@ public final class PickupShipment implements PickupActivity{
 
 	@Override
 	public Capacity getCapacity() {
-		return shipment.getCapacity();
+		return shipment.getSize();
 	}
 
 

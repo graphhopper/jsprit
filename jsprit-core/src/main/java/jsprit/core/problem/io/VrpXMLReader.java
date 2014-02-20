@@ -331,7 +331,7 @@ public class VrpXMLReader{
 				for(HierarchicalConfiguration dimension : dimensionConfigs){
 					Integer index = dimension.getInt("[@index]");
 					Integer value = dimension.getInt("");
-					builder.addCapacityDimension(index, value);
+					builder.addSizeDimension(index, value);
 				}
 			}
 			
@@ -440,7 +440,7 @@ public class VrpXMLReader{
 				for(HierarchicalConfiguration dimension : dimensionConfigs){
 					Integer index = dimension.getInt("[@index]");
 					Integer value = dimension.getInt("");
-					builder.addCapacityDimension(index, value);
+					builder.addSizeDimension(index, value);
 				}
 			}
 			String serviceLocationId = serviceConfig.getString("locationId");

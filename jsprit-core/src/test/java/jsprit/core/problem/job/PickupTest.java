@@ -15,12 +15,12 @@ public class PickupTest {
 	@Test
 	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
 		Pickup one = (Pickup)Pickup.Builder.newInstance("s").setLocationId("foofoo")
-				.addCapacityDimension(0,2)
-				.addCapacityDimension(1,4)
+				.addSizeDimension(0,2)
+				.addSizeDimension(1,4)
 				.build();
-		assertEquals(2,one.getCapacity().getNuOfDimensions());
-		assertEquals(2,one.getCapacity().get(0));
-		assertEquals(4,one.getCapacity().get(1));
+		assertEquals(2,one.getSize().getNuOfDimensions());
+		assertEquals(2,one.getSize().get(0));
+		assertEquals(4,one.getSize().get(1));
 		
 	}
 	
@@ -28,8 +28,8 @@ public class PickupTest {
 	public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
 		Pickup one = (Pickup)Pickup.Builder.newInstance("s").setLocationId("foofoo")
 				.build();
-		assertEquals(1,one.getCapacity().getNuOfDimensions());
-		assertEquals(0,one.getCapacity().get(0));
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(0,one.getSize().get(0));
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -38,8 +38,8 @@ public class PickupTest {
 		Pickup one = (Pickup)Pickup.Builder.newInstance("s",1).setLocationId("foofoo")
 				.build();
 		assertEquals(1,one.getCapacityDemand());
-		assertEquals(1,one.getCapacity().getNuOfDimensions());
-		assertEquals(1,one.getCapacity().get(0));
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(1,one.getSize().get(0));
 	}
 
 

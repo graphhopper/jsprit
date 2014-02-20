@@ -19,7 +19,7 @@ public class PickupShipmentTest {
 				.setDeliveryLocation("deliveryLoc")
 				.setPickupTimeWindow(TimeWindow.newInstance(1., 2.))
 				.setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
-				.addCapacityDimension(0, 10).addCapacityDimension(1, 100).addCapacityDimension(2, 1000).build();
+				.addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
 		pickup = new PickupShipment(shipment);
 	}
 	
@@ -79,7 +79,7 @@ public class PickupShipmentTest {
 	@Test
 	public void whenGettingCapacity_itShouldReturnItCorrectly(){
 		Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation("pickLoc").setDeliveryLocation("delLoc")
-				.addCapacityDimension(0, 10).addCapacityDimension(1, 100).build();
+				.addSizeDimension(0, 10).addSizeDimension(1, 100).build();
 		PickupShipment pick = new PickupShipment(shipment);
 		assertEquals(10,pick.getCapacity().get(0));
 		assertEquals(100,pick.getCapacity().get(1));

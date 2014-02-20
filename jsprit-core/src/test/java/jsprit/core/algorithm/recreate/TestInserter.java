@@ -75,7 +75,7 @@ public class TestInserter {
 	public void whenInsertingShipmentAndRouteIsClosed_itInsertsCorrectly(){
 		Shipment shipment = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(shipment.getCapacity()).thenReturn(capacity);
+		when(shipment.getSize()).thenReturn(capacity);
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
 		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
@@ -85,7 +85,7 @@ public class TestInserter {
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
 		Shipment shipmentToInsert = mock(Shipment.class);
-		when(shipmentToInsert.getCapacity()).thenReturn(capacity);
+		when(shipmentToInsert.getSize()).thenReturn(capacity);
 		when(shipmentToInsert.getDeliveryLocation()).thenReturn("delLoc");
 		when(shipmentToInsert.getPickupLocation()).thenReturn("pickLoc");
 		InsertionData iData = mock(InsertionData.class);
@@ -106,7 +106,7 @@ public class TestInserter {
 	public void whenInsertingShipmentAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation(){
 		Shipment shipment = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(shipment.getCapacity()).thenReturn(capacity);
+		when(shipment.getSize()).thenReturn(capacity);
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		when(vehicle.getId()).thenReturn("vehId");
@@ -114,7 +114,7 @@ public class TestInserter {
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
 		Shipment shipmentToInsert = mock(Shipment.class);
-		when(shipmentToInsert.getCapacity()).thenReturn(capacity);
+		when(shipmentToInsert.getSize()).thenReturn(capacity);
 		when(shipmentToInsert.getDeliveryLocation()).thenReturn("delLoc");
 		when(shipmentToInsert.getPickupLocation()).thenReturn("pickLoc");
 		InsertionData iData = mock(InsertionData.class);
@@ -135,14 +135,14 @@ public class TestInserter {
 	public void whenSwitchingVehicleAndRouteIsClosed_newStartAndEndShouldBeTheLocationOfNewVehicle(){
 		Shipment shipment = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(shipment.getCapacity()).thenReturn(capacity);
+		when(shipment.getSize()).thenReturn(capacity);
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
 		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
 		Shipment shipmentToInsert = mock(Shipment.class);
-		when(shipmentToInsert.getCapacity()).thenReturn(capacity);
+		when(shipmentToInsert.getSize()).thenReturn(capacity);
 		when(shipmentToInsert.getDeliveryLocation()).thenReturn("delLoc");
 		when(shipmentToInsert.getPickupLocation()).thenReturn("pickLoc");
 		
@@ -161,14 +161,14 @@ public class TestInserter {
 	public void whenSwitchingVehicleAndRouteIsOpen_endLocationShouldBeTheLocationOfTheLastActivity(){
 		Shipment shipment = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(shipment.getCapacity()).thenReturn(capacity);
+		when(shipment.getSize()).thenReturn(capacity);
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
 		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
 		Shipment shipmentToInsert = mock(Shipment.class);
-		when(shipmentToInsert.getCapacity()).thenReturn(capacity);
+		when(shipmentToInsert.getSize()).thenReturn(capacity);
 		when(shipmentToInsert.getDeliveryLocation()).thenReturn("delLoc");
 		when(shipmentToInsert.getPickupLocation()).thenReturn("pickLoc");
 		
@@ -187,7 +187,7 @@ public class TestInserter {
 	public void whenInsertingShipmentAtBeginningAndSwitchingVehicleAndRouteIsOpen_endLocationShouldBeTheLocationOfTheLastActivity(){
 		Shipment shipment = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
-		when(shipment.getCapacity()).thenReturn(capacity);
+		when(shipment.getSize()).thenReturn(capacity);
 		when(shipment.getDeliveryLocation()).thenReturn("oldShipmentDelLoc");
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
 		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
@@ -195,7 +195,7 @@ public class TestInserter {
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
 		Shipment shipmentToInsert = mock(Shipment.class);
-		when(shipmentToInsert.getCapacity()).thenReturn(capacity);
+		when(shipmentToInsert.getSize()).thenReturn(capacity);
 		when(shipmentToInsert.getDeliveryLocation()).thenReturn("delLoc");
 		when(shipmentToInsert.getPickupLocation()).thenReturn("pickLoc");
 		

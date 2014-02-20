@@ -17,7 +17,7 @@ public class DeliverServiceTest {
 	public void doBefore(){
 		service = (Delivery) Delivery.Builder.newInstance("service").setLocationId("loc").
 				setTimeWindow(TimeWindow.newInstance(1., 2.)).
-				addCapacityDimension(0, 10).addCapacityDimension(1, 100).addCapacityDimension(2, 1000).build();
+				addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
 		deliver = new DeliverService(service);
 	}
 	

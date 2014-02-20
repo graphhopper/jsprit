@@ -68,7 +68,7 @@ public class Shipment implements Job{
 		@Deprecated
 		public static Builder newInstance(String id, int size){
 			Builder builder = new Builder(id,size);
-			builder.addCapacityDimension(0, size);
+			builder.addSizeDimension(0, size);
 			return builder;
 		}
 		
@@ -210,14 +210,14 @@ public class Shipment implements Job{
 		/**
 		 * Adds capacity dimension.
 		 * 
-		 * @param dimIndex
-		 * @param dimVal
+		 * @param dimensionIndex
+		 * @param dimensionValue
 		 * @return builder
 		 * @throws IllegalArgumentException if dimVal < 0
 		 */
-		public Builder addCapacityDimension(int dimIndex, int dimVal) {
-			if(dimVal<0) throw new IllegalArgumentException("capacity value cannot be negative");
-			capacityBuilder.addDimension(dimIndex, dimVal);
+		public Builder addSizeDimension(int dimensionIndex, int dimensionValue) {
+			if(dimensionValue<0) throw new IllegalArgumentException("capacity value cannot be negative");
+			capacityBuilder.addDimension(dimensionIndex, dimensionValue);
 			return this;
 		}
 		
@@ -404,7 +404,7 @@ public class Shipment implements Job{
 	}
 
 	@Override
-	public Capacity getCapacity() {
+	public Capacity getSize() {
 		return capacity;
 	}
 

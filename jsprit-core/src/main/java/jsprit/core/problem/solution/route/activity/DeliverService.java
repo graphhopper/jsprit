@@ -16,7 +16,7 @@ public final class DeliverService implements DeliveryActivity{
 	public DeliverService(Delivery delivery) {
 		super();
 		this.delivery = delivery;
-		capacity = Capacity.invert(delivery.getCapacity());
+		capacity = Capacity.invert(delivery.getSize());
 	}
 	
 	private DeliverService(DeliverService deliveryActivity){

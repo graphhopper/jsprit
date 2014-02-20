@@ -41,7 +41,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		shipment = mock(Shipment.class);
 		when(shipment.getCapacityDemand()).thenReturn(1);
 		Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 1).build();
-		when(shipment.getCapacity()).thenReturn(capacity);
+		when(shipment.getSize()).thenReturn(capacity);
 		iFacts = new JobInsertionContext(null, null, vehicle, null, 0.0);
 		constraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
 	}
