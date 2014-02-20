@@ -64,7 +64,6 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 
 	@Override
 	public void finish() {
-//		stateManager.putRouteState(route, StateFactory., state)
 		currentLoad = 0;
 	}
 	
@@ -90,16 +89,12 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	
 	@Override
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
-//		log.debug("insert("+job2insert+").into("+inRoute+")");
-//		log(inRoute);
 		if(job2insert instanceof Delivery){
 			int loadAtDepot = (int) stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING).toDouble();
-//			log.info("loadAtDepot="+loadAtDepot);
 			stateManager.putInternalRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, StateFactory.createState(loadAtDepot + job2insert.getCapacityDemand()));
 		}
 		else if(job2insert instanceof Pickup || job2insert instanceof Service){
 			int loadAtEnd = (int) stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_END).toDouble();
-//			log.info("loadAtEnd="+loadAtEnd);
 			stateManager.putInternalRouteState(inRoute, StateFactory.LOAD_AT_END, StateFactory.createState(loadAtEnd + job2insert.getCapacityDemand()));
 		}
 	}
