@@ -55,6 +55,23 @@ public class UpdateLoadsTest {
 		assertEquals(1.,stateManager.getRouteState(route, StateFactory.LOAD_AT_END).toDouble(),0.1);
 	}
 	
+	@Test
+	public void whenVehcicleRouteIsNotEmpty_multipleLoadsAtBeginningAndEndShouldBeCalculatedCorrectly(){
+		StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
+		UpdateLoads updateLoads = new UpdateLoads(stateManager);
+
+		Service service = mock(Service.class);
+		Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1,2).build();
+		when(service.getSize()).thenReturn(capacity);
+		
+		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+				.addService(service).build();
+		
+		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
+		assertEquals(0.,stateManager.getRouteState(route, StateFactory.LOAD_AT_BEGINNING).toDouble(),0.1);
+		assertEquals(1.,stateManager.getRouteState(route, StateFactory.LOAD_AT_END).toDouble(),0.1);
+	}
+	
 	@SuppressWarnings("deprecation")
 	@Test
 	public void whenVehcicleRouteHasTwoActivities_loadsAtBeginningAndEndShouldBeCalculatedCorrectly(){
