@@ -202,4 +202,14 @@ public class Capacity {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append("[nuOfDimensions="+getNuOfDimensions()+"]");
+		for(int i=0;i<getNuOfDimensions();i++){
+			sBuilder.append("[[dimIndex="+i+"][dimValue="+dimensions[i]+"]]");
+		}
+		return sBuilder.toString();
+	}
+	
 }
