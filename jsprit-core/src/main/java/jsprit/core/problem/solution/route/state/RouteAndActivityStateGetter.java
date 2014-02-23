@@ -23,9 +23,14 @@ import jsprit.core.problem.solution.route.state.StateFactory.StateId;
 
 public interface RouteAndActivityStateGetter {
 
+	@Deprecated
 	public State getActivityState(TourActivity act, StateId stateId);
 
+	@Deprecated
 	public State getRouteState(VehicleRoute route, StateId stateId);
 
+	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type);
+	
+	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type);
 
 }

@@ -45,14 +45,31 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.solution.route.state.StateFactory.State;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
-import jsprit.core.problem.solution.route.state.StateFactory.States;
 
 
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 	
-	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, States>();
+	static class States_ {
+		
+		private Map<StateId,Object> states = new HashMap<StateId,Object>();
+		
+		public <T> void putState(StateId id, Class<T> type, T state){
+			states.put(id, type.cast(state));
+		}
+		
+		public <T> T getState(StateId id, Class<T> type){
+			if(states.containsKey(id)){
+				T s = type.cast(states.get(id));
+				return s;
+			}
+			return null;
+		}
+		
+	}
+
+	private Map<VehicleRoute,States_> vehicleRouteStates_ = new HashMap<VehicleRoute, States_>();
 	
-	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, States>();
+	private Map<TourActivity,States_> activityStates_ = new HashMap<TourActivity, States_>();
 	
 	private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
 	
@@ -66,9 +83,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	private Collection<StateUpdater> updaters = new ArrayList<StateUpdater>();
 	
-	private Map<StateId,State> defaultRouteStates = new HashMap<StateId, State>();
+	private Map<StateId,Object> defaultRouteStates_ = new HashMap<StateId,Object>();
 	
-	private Map<StateId,State> defaultActivityStates = new HashMap<StateId, State>();
+	private Map<StateId,Object> defaultActivityStates_ = new HashMap<StateId,Object>();
 	
 	private VehicleRoutingTransportCosts routingCosts;
 	
@@ -79,76 +96,169 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	public StateManager(VehicleRoutingProblem vrp) {
 		super();
 		this.routingCosts = vrp.getTransportCosts();
+		addDefaultStates();
 	}
 	
+	private void addDefaultStates() {
+		defaultActivityStates_.put(StateFactory.LOAD, StateFactory.createState(0));
+		defaultActivityStates_.put(StateFactory.COSTS, StateFactory.createState(0));
+		defaultActivityStates_.put(StateFactory.DURATION, StateFactory.createState(0));
+		defaultActivityStates_.put(StateFactory.FUTURE_MAXLOAD, StateFactory.createState(0));
+		defaultActivityStates_.put(StateFactory.PAST_MAXLOAD, StateFactory.createState(0));
+		
+		defaultRouteStates_.put(StateFactory.LOAD, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.COSTS, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.DURATION, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.FUTURE_MAXLOAD, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.PAST_MAXLOAD, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.LOAD_AT_END, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.MAXLOAD, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.LOAD_AT_BEGINNING, StateFactory.createState(0));
+		
+	}
+
 	public StateManager(VehicleRoutingTransportCosts routingCosts){
 		this.routingCosts = routingCosts;
+		addDefaultStates();
 	}
 	
-
+	@Deprecated
 	public void addDefaultRouteState(StateId stateId, State defaultState){
-		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-		defaultRouteStates.put(stateId, defaultState);
+		addDefaultRouteState(stateId, State.class, defaultState);
 	}
 	
-	public void addDefaultActivityState(StateId stateId, State defaultState){
+	public <T> void addDefaultRouteState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-		defaultActivityStates.put(stateId, defaultState);
+		defaultRouteStates_.put(stateId, type.cast(defaultState));
+	}
+	
+	@Deprecated
+	public void addDefaultActivityState(StateId stateId, State defaultState){
+		addDefaultActivityState(stateId, State.class, defaultState);
+	}
+	
+	public <T> void addDefaultActivityState(StateId stateId, Class<T> type, T defaultState){
+		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
+		defaultActivityStates_.put(stateId, type.cast(defaultState));
 	}
 	
 	public void clear(){
-		vehicleRouteStates.clear();
-		activityStates.clear();
+		vehicleRouteStates_.clear();
+		activityStates_.clear();
 	}
 
+	@Deprecated
 	@Override
 	public State getActivityState(TourActivity act, StateId stateId) {
-		if(!activityStates.containsKey(act)){
-			return getDefaultActState(stateId,act);
+		if(!activityStates_.containsKey(act)){
+			return getDefaultActivityState_(act,stateId,State.class);
 		}
-		States actStates = activityStates.get(act);
-		State state = actStates.getState(stateId);
+		States_ actStates = activityStates_.get(act);
+		State state = actStates.getState(stateId, State.class);
 		if(state == null){
-			return getDefaultActState(stateId,act);
+			return getDefaultActivityState_(act,stateId,State.class);
 		}
 		return state;
 	}
 	
-	void putInternalActivityState(TourActivity act, StateId stateId, State state){
-		if(!activityStates.containsKey(act)){
-			activityStates.put(act, StateFactory.createStates());
+	@Override
+	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type) {
+		if(!activityStates_.containsKey(act)){
+			return getDefaultActivityState_(act, stateId, type);
 		}
-		States actStates = activityStates.get(act);
-		actStates.putState(stateId, state);
+		States_ states = activityStates_.get(act);
+		T state = states.getState(stateId, type);
+		if(state == null) return getDefaultActivityState_(act, stateId, type);
+		return state;
 	}
 
-	public void putActivityState(TourActivity act, StateId stateId, State state){
-		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-		putInternalActivityState(act, stateId, state);
-	}
-
-	void putInternalRouteState(VehicleRoute route, StateId stateId, State state){
-		if(!vehicleRouteStates.containsKey(route)){
-			vehicleRouteStates.put(route, StateFactory.createStates());
+	private <T> T getDefaultActivityState_(TourActivity act, StateId stateId,Class<T> type) {
+		if(defaultActivityStates_.containsKey(stateId)){
+			return type.cast(defaultActivityStates_.get(stateId));
 		}
-		States routeStates = (States) vehicleRouteStates.get(route);
-		routeStates.putState(stateId, state);
-	}
-
-	public void putRouteState(VehicleRoute route, StateId stateId, State state){
-		 if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-         putInternalRouteState(route, stateId, state);
+		if(stateId.equals(StateFactory.EARLIEST_OPERATION_START_TIME)){
+			return type.cast(StateFactory.createState(act.getTheoreticalEarliestOperationStartTime()));
+		}
+		if(stateId.equals(StateFactory.LATEST_OPERATION_START_TIME)){
+			return type.cast(StateFactory.createState(act.getTheoreticalLatestOperationStartTime()));
+		}
+		return null;
 	}
 
 	@Override
-	public State getRouteState(VehicleRoute route, StateId stateId) {
-		if(!vehicleRouteStates.containsKey(route)){
-			return getDefaultRouteState(stateId,route);
+	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
+		if(!vehicleRouteStates_.containsKey(route)){
+			return getDefaultRouteState_(stateId, type);
 		}
-		States routeStates = vehicleRouteStates.get(route);
-		State state = routeStates.getState(stateId);
+		States_ states = vehicleRouteStates_.get(route);
+		T state = states.getState(stateId, type);
+		if(state == null) return getDefaultRouteState_(stateId, type);
+		return state;
+	}
+
+	private <T> T getDefaultRouteState_(StateId stateId, Class<T> type) {
+		if(defaultRouteStates_.containsKey(stateId)){
+			return type.cast(defaultRouteStates_.get(stateId));
+		}
+		return null;
+	}
+	
+	@Deprecated
+	public void putActivityState(TourActivity act, StateId stateId, State state){
+		putActivityState_(act, stateId, State.class, state);
+	}
+	
+	public <T> void putActivityState_(TourActivity act, StateId stateId, Class<T> type, T state){
+		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
+		putInternalActivityState_(act, stateId, type, state);
+	}
+	
+	@Deprecated
+	void putInternalActivityState(TourActivity act, StateId stateId, State state){
+		putInternalActivityState_(act, stateId, State.class, state);
+	}
+	
+	<T> void putInternalActivityState_(TourActivity act, StateId stateId, Class<T> type, T state){
+		if(!activityStates_.containsKey(act)){
+			activityStates_.put(act, new States_());
+		}
+		States_ actStates = activityStates_.get(act);
+		actStates.putState(stateId, type, state);
+	}
+
+	@Deprecated
+	void putInternalRouteState(VehicleRoute route, StateId stateId, State state){
+		putInternalRouteState_(route, stateId, State.class, state);
+	}
+	
+	<T> void putInternalRouteState_(VehicleRoute route, StateId stateId, Class<T> type, T state){
+		if(!vehicleRouteStates_.containsKey(route)){
+			vehicleRouteStates_.put(route, new States_());
+		}
+		States_ routeStates = vehicleRouteStates_.get(route);
+		routeStates.putState(stateId, type, state);
+	}
+
+	@Deprecated
+	public void putRouteState(VehicleRoute route, StateId stateId, State state){
+		 putRouteState_(route, stateId, State.class, state);
+	}
+	
+	public <T> void putRouteState_(VehicleRoute route, StateId stateId, Class<T> type, T state){
+		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
+        putInternalRouteState_(route, stateId, type, state);
+	}
+
+	@Deprecated
+	@Override
+	public State getRouteState(VehicleRoute route, StateId stateId) {
+		if(!vehicleRouteStates_.containsKey(route)){
+			return getDefaultRouteState_(stateId,State.class);
+		}
+		States_ routeStates = vehicleRouteStates_.get(route);
+		State state = routeStates.getState(stateId,State.class);
 		if(state == null){
-			return getDefaultRouteState(stateId, route);
+			return getDefaultRouteState_(stateId, State.class);
 		}
 		return state;
 	}
@@ -220,29 +330,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		insertionListeners.removeListener(insertionListener);
 	}
 
-	private State getDefaultActState(StateId stateId, TourActivity act){
-		if(stateId.equals(StateFactory.LOAD)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.COSTS)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.DURATION)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.EARLIEST_OPERATION_START_TIME)) return StateFactory.createState(act.getTheoreticalEarliestOperationStartTime());
-		if(stateId.equals(StateFactory.LATEST_OPERATION_START_TIME)) return StateFactory.createState(act.getTheoreticalLatestOperationStartTime());
-		if(stateId.equals(StateFactory.FUTURE_MAXLOAD)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.PAST_MAXLOAD)) return StateFactory.createState(0);
-		if(defaultActivityStates.containsKey(stateId)) return defaultActivityStates.get(stateId);
-		return null;
-	}
 	
-	private State getDefaultRouteState(StateId stateId, VehicleRoute route){
-		if(stateId.equals(StateFactory.MAXLOAD)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.LOAD)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.LOAD_AT_END)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.LOAD_AT_BEGINNING)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.COSTS)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.DURATION)) return StateFactory.createState(0);
-		if(defaultRouteStates.containsKey(stateId)) return defaultRouteStates.get(stateId);
-		return null;
-	}
-
 	@Override
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 //		log.debug("insert " + job2insert + " in " + inRoute);
@@ -306,4 +394,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 			addActivityVisitor(new UpdateTimeWindow(this, routingCosts));
 		}
 	}
+
+	
 }
