@@ -129,7 +129,7 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	
 	private double getThreshold(int iteration) {
 		double scheduleVariable = (double) iteration / (double) nOfTotalIterations;
-		double currentThreshold = initialThreshold * Math.exp(-Math.log(2) * scheduleVariable / alpha);
+		double currentThreshold = initialThreshold * Math.exp(-1. * Math.log(2) * scheduleVariable / alpha);
 		return currentThreshold;
 	}
 
