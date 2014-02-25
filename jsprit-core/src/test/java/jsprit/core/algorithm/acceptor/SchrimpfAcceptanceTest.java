@@ -1,11 +1,13 @@
 package jsprit.core.algorithm.acceptor;
 
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -50,7 +52,11 @@ public class SchrimpfAcceptanceTest {
 	@Test
 	public void respectsTheNonZeroThreshold_usingWorstCostSolution() {
 		schrimpfAcceptance.setInitialThreshold(0.5);
-		assertFalse("Worst cost solution (2.1 > 2.0) should not be accepted", schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1)));
+		/*
+		 * it should be accepted since 2.1 < 2.0 + 0.5 (2.0 is the best solution found so far and 0.5 the ini threshold
+		 * since the threshold of 0.5 allows new solutions to be <0.5 worse than the current best solution
+		 */
+		assertTrue("Worst cost solution (2.1 > 2.0) should be accepted", schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1)));
 	}
 
 	@Test
@@ -62,12 +68,68 @@ public class SchrimpfAcceptanceTest {
 	@Test
 	public void respectsTheNonZeroThreshold_usingBetterButBelowTheThresholdCostSolution() {
 		schrimpfAcceptance.setInitialThreshold(0.5);
-		assertFalse("Better cost solution (1.9 < 2.0) should not be accepted since the better cost is still below the threshold", schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.9)));
+		//new solution also be in between 2.0 and 2.5, but it is even better than 2.0 --> thus true
+		assertTrue("Better cost solution (1.9 < 2.0) should not be accepted since the better cost is still below the threshold", schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.9)));
 	}
 
 	@Test
 	public void respectsTheNonZeroThreshold_usingSameCostSolution() {
 		schrimpfAcceptance.setInitialThreshold(0.5);
-		assertFalse("Same cost solution (2.0 == 2.0) should not be accepted", schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0)));
+		assertTrue("Same cost solution (2.0 == 2.0) should not be accepted", schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0)));
 	}
+	
+	@Test
+	public void whenIniThresholdIsSetAndCurrentIterationIs0_itShouldJustAcceptSolution(){
+		schrimpfAcceptance.setInitialThreshold(0.5);
+		schrimpfAcceptance.informIterationStarts(0, mock(VehicleRoutingProblem.class), Collections.<VehicleRoutingProblemSolution>emptyList());
+		boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.499999));
+		assertTrue(accepted);
+	}
+	
+	@Test
+	public void whenIniThresholdIsSetAndCurrentIterationIs500_itShouldJustAcceptSolution(){
+		//1000 is the default totalNuOfIterations
+		schrimpfAcceptance.setInitialThreshold(0.5);
+		schrimpfAcceptance.informIterationStarts(500, mock(VehicleRoutingProblem.class), Collections.<VehicleRoutingProblemSolution>emptyList());
+		//according to the acceptance-function, it should just accept every solution less than 2.0 + 0.15749013123
+		//threshold(1000) = 0.15749013123
+		boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.15748));
+		assertTrue(accepted);
+	}
+	
+	@Test
+	public void whenIniThresholdIsSetAndCurrentIterationIs500_itShouldJustNotAcceptSolution(){
+		//1000 is the default totalNuOfIterations
+		schrimpfAcceptance.setInitialThreshold(0.5);
+		schrimpfAcceptance.informIterationStarts(500, mock(VehicleRoutingProblem.class), Collections.<VehicleRoutingProblemSolution>emptyList());
+		//according to the acceptance-function, it should just accept every solution less than 2.0 + 0.15749013123
+		//threshold(1000) = 0.15749013123
+		boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1575));
+		assertFalse(accepted);
+	}
+	
+	@Test
+	public void whenIniThresholdIsSetAndCurrentIterationIs1000_itShouldJustAcceptSolution(){
+		//1000 is the default totalNuOfIterations
+		schrimpfAcceptance.setInitialThreshold(0.5);
+		schrimpfAcceptance.informIterationStarts(1000, mock(VehicleRoutingProblem.class), Collections.<VehicleRoutingProblemSolution>emptyList());
+		//according to the acceptance-function, it should just accept every solution less than 2.0 + 0.04960628287 
+		//threshold(1000)= 0.04960628287
+		boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0496));
+		assertTrue(accepted);
+	}
+	
+	@Test
+	public void whenIniThresholdIsSetAndCurrentIterationIs1000_itShouldJustNotAcceptSolution(){
+		//1000 is the default totalNuOfIterations
+		schrimpfAcceptance.setInitialThreshold(0.5);
+		schrimpfAcceptance.informIterationStarts(1000, mock(VehicleRoutingProblem.class), Collections.<VehicleRoutingProblemSolution>emptyList());
+		//according to the acceptance-function, it should just accept every solution less than 2.0 + 0.04960628287 
+		//threshold(1000)=0.04960628287
+		boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0497));
+		assertFalse(accepted);
+	}
+	
+	
+	
 }
