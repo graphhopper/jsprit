@@ -35,8 +35,46 @@ import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
 import org.apache.log4j.Logger;
 
 
-
-
+/**
+ * ThresholdAcceptance-Function defined by Schrimpf et al. (2000).
+ * 
+ * <p>The <b>idea</b> can be described as follows: Most problems do not only have one unique minimum (maximum) but 
+ * a number of local minima (maxima). To avoid to get stuck in a local minimum at the beginning of a search
+ * this threshold-acceptance function accepts also worse solution at the beginning (in contrary to a greedy
+ * approach which only accepts better solutions), and converges to a greedy approach at the end. <br>
+ * The difficulty is to define (i) an appropriate initial threshold and (ii) a corresponding function describing
+ * how the threshold converges to zero, i.e. the greedy threshold.
+ * 
+ * <p>ad i) The initial threshold is determined by a random walk through the search space. 
+ * The random walk currently runs with the following algorithm: src/main/resources/randomWalk.xml. It runs 
+ * as long as it is specified in nuOfWarmupIterations. In the first iteration or walk respectively the algorithm generates a solution. 
+ * This solution in turn is the basis of the next walk yielding to another solution value ... and so on. 
+ * Each solution value is memorized since the initial threshold is essentially a function of the standard deviation of these solution values. 
+ * To be more precise: initial threshold = stddev(solution values) / 2.     
+ * 
+ * <p>ad ii) The threshold of iteration i is determined as follows: 
+ * threshold(i) = initialThreshold * Math.exp(-Math.log(2) * (i / nuOfTotalIterations) / alpha)
+ * To get a better understanding of the threshold-function go to Wolfram Alpha and plot the following line 
+ * (just copy and paste it into Wolfram's console: <a href="https://www.wolframalpha.com/">www.wolframalpha.com</a>):
+ * <p>100. * exp(-log(2)* (x/1000) / 0.1) (x from 0 to 1000) (y from 0 to 100)
+ * <p>with <br>
+ * initialThreshold = 100<br>
+ * nuOfTotalIter = 1000<br>
+ * alpha = 0.1<br>
+ * x corresponds to i iterations and<br>
+ * y to the threshold(i)
+ * 
+ * <p>Gerhard Schrimpf, Johannes Schneider, Hermann Stamm- Wilbrandt, and Gunter Dueck (2000). 
+ * Record breaking optimization results using the ruin and recreate principle. 
+ * Journal of Computational Physics, 159(2):139 – 171, 2000. ISSN 0021-9991. doi: 10.1006/jcph.1999. 6413. 
+ * URL http://www.sciencedirect.com/science/article/ pii/S0021999199964136
+ * 
+ * <p>Probably the determination of the initial threshold will be separated from the threshold-acceptance
+ * function (25.02.14 stefan)
+ * 
+ * @author schroeder
+ *
+ */
 public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsListener, AlgorithmStartsListener{
 
 	private static Logger logger = Logger.getLogger(SchrimpfAcceptance.class);
@@ -62,8 +100,6 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 		logger.info("initialise " + this);
 	}
 	
-
-
 	@Override
 	public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution) {
 		boolean solutionAccepted = false;
@@ -93,7 +129,6 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	
 	private double getThreshold(int iteration) {
 		double scheduleVariable = (double) iteration / (double) nOfTotalIterations;
-//		logger.debug("iter="+iteration+" totalIter="+nOfTotalIterations+" scheduling="+scheduleVariable);
 		double currentThreshold = initialThreshold * Math.exp(-Math.log(2) * scheduleVariable / alpha);
 		return currentThreshold;
 	}
