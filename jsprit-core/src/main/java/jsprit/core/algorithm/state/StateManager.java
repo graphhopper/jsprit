@@ -46,7 +46,15 @@ import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.solution.route.state.StateFactory.State;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
 
-
+/**
+ * Manages states.
+ * 
+ * <p>Some condition, rules or constraints are stateful. This StateManager manages these states, i.e. it offers
+ * methods to add, store and retrieve states based on vehicle-routes and tour-activities.
+ * 
+ * @author schroeder
+ *
+ */
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 	
 	static class States_ {
@@ -93,6 +101,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	private boolean updateTWs = false;
 	
+	/**
+	 * @deprecated use <code>StateManager(VehicleRoutingTransportCosts tpcosts)</code> instead.
+	 * @param vrp
+	 */
+	@Deprecated
 	public StateManager(VehicleRoutingProblem vrp) {
 		super();
 		this.routingCosts = vrp.getTransportCosts();
@@ -122,21 +135,48 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		addDefaultStates();
 	}
 	
+	/**
+	 * @deprecated use the generic methode <code>addDefaultRouteState(StateId stateId, Class<T> type, T defaultState)</code> instead.
+	 * @param stateId
+	 * @param defaultState
+	 */
 	@Deprecated
 	public void addDefaultRouteState(StateId stateId, State defaultState){
 		addDefaultRouteState(stateId, State.class, defaultState);
 	}
 	
+	/**
+	 * Generic method to add a default route state.
+	 * 
+	 * <p>for example if you want to store 'maximum weight' at route-level, the default might be zero and you
+	 * can add the default simply by coding <br>
+	 * <code>addDefaultRouteState(StateFactory.createStateId("max_weight"), Integer.class, 0)</code>
+	 * 
+	 * @param stateId
+	 * @param type
+	 * @param defaultState
+	 */
 	public <T> void addDefaultRouteState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
 		defaultRouteStates_.put(stateId, type.cast(defaultState));
 	}
 	
+	/**
+	 * @deprecated use generic method <code>addDefaultActivityState(StateId stateId, Class<T> type, T defaultState)</code>
+	 * @param stateId
+	 * @param defaultState
+	 */
 	@Deprecated
 	public void addDefaultActivityState(StateId stateId, State defaultState){
 		addDefaultActivityState(stateId, State.class, defaultState);
 	}
 	
+	/**
+	 * 
+	 * @param stateId
+	 * @param type
+	 * @param defaultState
+	 */
 	public <T> void addDefaultActivityState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
 		defaultActivityStates_.put(stateId, type.cast(defaultState));
