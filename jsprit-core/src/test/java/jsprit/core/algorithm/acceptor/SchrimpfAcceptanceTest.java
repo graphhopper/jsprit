@@ -92,7 +92,7 @@ public class SchrimpfAcceptanceTest {
 		schrimpfAcceptance.setInitialThreshold(0.5);
 		schrimpfAcceptance.informIterationStarts(500, mock(VehicleRoutingProblem.class), Collections.<VehicleRoutingProblemSolution>emptyList());
 		//according to the acceptance-function, it should just accept every solution less than 2.0 + 0.15749013123
-		//threshold(1000) = 0.15749013123
+		//threshold(500) = 0.15749013123
 		boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.15748));
 		assertTrue(accepted);
 	}
@@ -103,7 +103,7 @@ public class SchrimpfAcceptanceTest {
 		schrimpfAcceptance.setInitialThreshold(0.5);
 		schrimpfAcceptance.informIterationStarts(500, mock(VehicleRoutingProblem.class), Collections.<VehicleRoutingProblemSolution>emptyList());
 		//according to the acceptance-function, it should just accept every solution less than 2.0 + 0.15749013123
-		//threshold(1000) = 0.15749013123
+		//threshold(500) = 0.15749013123
 		boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1575));
 		assertFalse(accepted);
 	}
