@@ -68,7 +68,7 @@ public class SchrimpfAcceptanceTest {
 	@Test
 	public void respectsTheNonZeroThreshold_usingBetterButBelowTheThresholdCostSolution() {
 		schrimpfAcceptance.setInitialThreshold(0.5);
-		//new solution also be in between 2.0 and 2.5, but it is even better than 2.0 --> thus true
+		//new solution can also be in between 2.0 and 2.5, but it is even better than 2.0 --> thus true
 		assertTrue("Better cost solution (1.9 < 2.0) should not be accepted since the better cost is still below the threshold", schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.9)));
 	}
 
