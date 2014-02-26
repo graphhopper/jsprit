@@ -47,7 +47,7 @@ The following documentation is recommended:
 
 Here you learn to setup the Java environment and an Integrated Development Environment (IDE). In the subsection <em>Adding Jars to your Project</em> you learn to integrate external libraries in your project. Just copy/paste the above jsprit releases/snapshots to your pom.xml instead of the GeoTools-artifacts.
 
-##Contributors
+##[Contributors](https://github.com/jsprit/jsprit/graphs/contributors)
 [Pierre-David Bélanger](https://github.com/pierredavidbelanger)
 
 ##About
