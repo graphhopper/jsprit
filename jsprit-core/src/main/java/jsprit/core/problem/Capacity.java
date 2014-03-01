@@ -202,6 +202,22 @@ public class Capacity {
 		return true;
 	}
 	
+	/**
+	 * Returns true if this capacity is greater or equal than the capacity toCompare
+	 * 
+	 * @param toCompare
+	 * @return
+	 * @throws NullPointerException if one of the args is null
+	 
+	 */
+	public boolean isGreaterOrEqual(Capacity toCompare) {
+		if(toCompare == null) throw new NullPointerException();
+		for(int i=0;i<Math.max(this.getNuOfDimensions(), toCompare.getNuOfDimensions());i++){
+			if(this.get(i) < toCompare.get(i)) return false;
+		}
+		return true;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sBuilder = new StringBuilder();
@@ -211,5 +227,23 @@ public class Capacity {
 		}
 		return sBuilder.toString();
 	}
+
+	/**
+	 * Return the maximum, i.e. the maximum of each capacity dimension.
+	 * 
+	 * @param cap1
+	 * @param cap2
+	 * @return
+	 */
+	public static Capacity max(Capacity cap1, Capacity cap2) {
+		if(cap1 == null || cap2 == null) throw new IllegalArgumentException("arg must not be null");
+		Capacity.Builder toReturnBuilder = Capacity.Builder.newInstance(); 
+		for(int i=0;i<Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions());i++){
+			toReturnBuilder.addDimension(i, Math.max(cap1.get(i), cap2.get(i)));
+		}
+		return toReturnBuilder.build();
+	}
+
+	
 	
 }

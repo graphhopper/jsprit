@@ -231,6 +231,28 @@ public class CapacityTest {
 	}
 	
 	@Test
+	public void whenOneCapIsBiggerThanAnother_greaterOrEqualShouldReturnTrue(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 3).addDimension(2, 4).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).addDimension(2, 4).build();
+		assertTrue(cap2.isGreaterOrEqual(cap1));
+	}
+	
+	@Test
+	public void whenOneCapIsBiggerThanAnother_greaterOrEqualShouldReturnTrue_v2(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 3).addDimension(2, 4).build();
+		//which is zero-cap
+		Capacity cap2 = Capacity.Builder.newInstance().build();
+		assertTrue(cap1.isGreaterOrEqual(cap2));
+	}
+	
+	@Test
+	public void whenOneCapIsEqualToAnother_greaterOrEqualShouldReturnTrue(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 3).addDimension(2, 4).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 3).addDimension(2, 4).build();
+		assertTrue(cap2.isGreaterOrEqual(cap1));
+	}
+	
+	@Test
 	public void whenAddingTwo_itShouldReturnCorrectCap(){
 		int wheelChairSpace = 0;
 		int passengerSeats = 1;
@@ -265,6 +287,31 @@ public class CapacityTest {
 		assertEquals(-2,inverted.get(0));
 		assertEquals(-3,inverted.get(1));
 		assertEquals(-4,inverted.get(2));
+	}
+	
+	@Test
+	public void whenDeterminingTheMaximumOfTwoCapacities_itShouldReturnCapWithMaxOfEachDimension(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).build();
+		assertEquals(3,Capacity.max(cap1,cap2).get(0));
+		assertEquals(4,Capacity.max(cap1,cap2).get(1));
+	}
+	
+	@Test
+	public void whenDeterminingTheMaximumOfTwoCapacities_itShouldReturnCapWithMaxOfEachDimension_v2(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 3).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).build();
+		assertEquals(2,Capacity.max(cap1,cap2).get(0));
+		assertEquals(4,Capacity.max(cap1,cap2).get(1));
+	}
+	
+	@Test
+	public void whenDeterminingTheMaximumOfTwoCapacities_itShouldReturnCapWithMaxOfEachDimension_v3(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 3).addDimension(2, 3).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).build();
+		assertEquals(2,Capacity.max(cap1,cap2).get(0));
+		assertEquals(4,Capacity.max(cap1,cap2).get(1));
+		assertEquals(3,Capacity.max(cap1,cap2).get(2));
 	}
 	
 }

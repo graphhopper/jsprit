@@ -30,6 +30,7 @@ import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
@@ -113,20 +114,25 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	}
 	
 	private void addDefaultStates() {
-		defaultActivityStates_.put(StateFactory.LOAD, StateFactory.createState(0));
+		defaultActivityStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
+		
+		
 		defaultActivityStates_.put(StateFactory.COSTS, StateFactory.createState(0));
 		defaultActivityStates_.put(StateFactory.DURATION, StateFactory.createState(0));
 		defaultActivityStates_.put(StateFactory.FUTURE_MAXLOAD, StateFactory.createState(0));
 		defaultActivityStates_.put(StateFactory.PAST_MAXLOAD, StateFactory.createState(0));
 		
-		defaultRouteStates_.put(StateFactory.LOAD, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
+		
 		defaultRouteStates_.put(StateFactory.COSTS, StateFactory.createState(0));
 		defaultRouteStates_.put(StateFactory.DURATION, StateFactory.createState(0));
 		defaultRouteStates_.put(StateFactory.FUTURE_MAXLOAD, StateFactory.createState(0));
 		defaultRouteStates_.put(StateFactory.PAST_MAXLOAD, StateFactory.createState(0));
-		defaultRouteStates_.put(StateFactory.LOAD_AT_END, StateFactory.createState(0));
+		
 		defaultRouteStates_.put(StateFactory.MAXLOAD, StateFactory.createState(0));
-		defaultRouteStates_.put(StateFactory.LOAD_AT_BEGINNING, StateFactory.createState(0));
+		
+		defaultRouteStates_.put(StateFactory.LOAD_AT_END, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(StateFactory.LOAD_AT_BEGINNING, Capacity.Builder.newInstance().build());
 		
 	}
 
@@ -423,7 +429,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 			addActivityVisitor(updateLoads);
 			addListener(updateLoads);
 			addActivityVisitor(new UpdatePrevMaxLoad(this));
-			addActivityVisitor(new UpdateMaxLoad(this));
+			addActivityVisitor(new UpdateMaxLoadForwardLooking(this));
 			addActivityVisitor(new UpdateMaxLoad_(this));
 		}
 	}

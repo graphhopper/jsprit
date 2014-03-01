@@ -5,12 +5,24 @@ import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.StateFactory;
 
-
-class UpdateMaxLoad implements ReverseActivityVisitor, StateUpdater {
+/**
+ * A {@link ReverseActivityVisitor} that looks forward in the vehicle route and determines
+ * the maximum load for subsequent activities.
+ * 
+ * <p>
+ * 
+ * @author schroeder
+ *
+ */
+class UpdateMaxLoadForwardLooking implements ReverseActivityVisitor, StateUpdater {
+	
 	private StateManager stateManager;
+	
 	private VehicleRoute route;
+	
 	private double maxLoad;
-	public UpdateMaxLoad(StateManager stateManager) {
+	
+	public UpdateMaxLoadForwardLooking(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
 	}
