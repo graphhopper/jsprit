@@ -155,7 +155,7 @@ public final class Start implements TourActivity {
 	}
 
 	@Override
-	public Capacity getCapacity() {
+	public Capacity getSize() {
 		return capacity;
 	}
 

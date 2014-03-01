@@ -151,7 +151,7 @@ public final class End implements TourActivity {
 	}
 
 	@Override
-	public Capacity getCapacity() {
+	public Capacity getSize() {
 		return capacity;
 	}
 

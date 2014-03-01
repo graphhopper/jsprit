@@ -9,7 +9,7 @@ public class StartTest {
 	@Test
 	public void whenCallingCapacity_itShouldReturnEmptyCapacity(){
 		Start start = Start.newInstance("loc", 0., 0.);
-		assertEquals(0,start.getCapacity().get(0));
+		assertEquals(0,start.getSize().get(0));
 	}
 
 	@Test

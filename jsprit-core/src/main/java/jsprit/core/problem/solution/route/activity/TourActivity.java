@@ -133,7 +133,7 @@ public interface TourActivity {
 	 * 
 	 * @return capacity
 	 */
-	public abstract Capacity getCapacity();
+	public abstract Capacity getSize();
 	
 	/**
 	 * Makes a deep copy of this activity.

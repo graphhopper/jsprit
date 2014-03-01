@@ -24,7 +24,7 @@ public final class DeliverShipment implements DeliveryActivity{
 		this.shipment = (Shipment) deliveryShipmentActivity.getJob();
 		this.arrTime = deliveryShipmentActivity.getArrTime();
 		this.endTime = deliveryShipmentActivity.getEndTime();
-		this.capacity = deliveryShipmentActivity.getCapacity();
+		this.capacity = deliveryShipmentActivity.getSize();
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public final class DeliverShipment implements DeliveryActivity{
 	}
 
 	@Override
-	public Capacity getCapacity() {
+	public Capacity getSize() {
 		return capacity;
 	}
 }

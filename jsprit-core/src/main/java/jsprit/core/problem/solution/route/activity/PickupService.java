@@ -98,7 +98,7 @@ public final class PickupService implements PickupActivity{
 	}
 
 	@Override
-	public Capacity getCapacity() {
+	public Capacity getSize() {
 		return pickup.getSize();
 	}
 

@@ -25,9 +25,9 @@ public class DeliverShipmentTest {
 	
 	@Test
 	public void whenCallingCapacity_itShouldReturnCorrectCapacity(){
-		assertEquals(-10,deliver.getCapacity().get(0));
-		assertEquals(-100,deliver.getCapacity().get(1));
-		assertEquals(-1000,deliver.getCapacity().get(2));
+		assertEquals(-10,deliver.getSize().get(0));
+		assertEquals(-100,deliver.getSize().get(1));
+		assertEquals(-1000,deliver.getSize().get(2));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -69,9 +69,9 @@ public class DeliverShipmentTest {
 		assertEquals(3.,copy.getTheoreticalEarliestOperationStartTime(),0.01);
 		assertEquals(4.,copy.getTheoreticalLatestOperationStartTime(),0.01);
 		assertEquals("deliveryLoc",copy.getLocationId());
-		assertEquals(-10,copy.getCapacity().get(0));
-		assertEquals(-100,copy.getCapacity().get(1));
-		assertEquals(-1000,copy.getCapacity().get(2));
+		assertEquals(-10,copy.getSize().get(0));
+		assertEquals(-100,copy.getSize().get(1));
+		assertEquals(-1000,copy.getSize().get(2));
 		assertTrue(copy!=deliver);
 	}
 
@@ -81,8 +81,8 @@ public class DeliverShipmentTest {
 		Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation("pickLoc").setDeliveryLocation("delLoc")
 				.addSizeDimension(0, 10).addSizeDimension(1, 100).build();
 		PickupShipment pick = new PickupShipment(shipment);
-		assertEquals(10,pick.getCapacity().get(0));
-		assertEquals(100,pick.getCapacity().get(1));
+		assertEquals(10,pick.getSize().get(0));
+		assertEquals(100,pick.getSize().get(1));
 	}
 
 }

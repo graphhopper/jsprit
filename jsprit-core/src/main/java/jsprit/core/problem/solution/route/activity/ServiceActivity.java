@@ -159,7 +159,7 @@ public class ServiceActivity implements JobActivity{
 	}
 
 	@Override
-	public Capacity getCapacity() {
+	public Capacity getSize() {
 		return service.getSize();
 	}
 	

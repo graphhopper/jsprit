@@ -23,7 +23,7 @@ public final class DeliverService implements DeliveryActivity{
 		this.delivery=deliveryActivity.getJob();
 		this.arrTime=deliveryActivity.getArrTime();
 		this.endTime=deliveryActivity.getEndTime();
-		capacity = deliveryActivity.getCapacity();
+		capacity = deliveryActivity.getSize();
 	}
 
 	/**
@@ -96,7 +96,7 @@ public final class DeliverService implements DeliveryActivity{
 	}
 
 	@Override
-	public Capacity getCapacity() {
+	public Capacity getSize() {
 		return capacity;
 	}
 }
