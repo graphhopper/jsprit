@@ -18,10 +18,27 @@ import jsprit.core.problem.solution.route.RouteActivityVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleType;
 
+import org.junit.Before;
 import org.junit.Test;
 
-public class UpdateCapacityUtilizationForwardLookingTest {
+public class UpdateMaxCapacityUtilizationAtActivitiesByLookingForwardInRouteTest {
+	
+	private Vehicle vehicle;
+	
+	@Before
+	public void doBefore(){
+		vehicle = mock(Vehicle.class);
+		VehicleType type = mock(VehicleType.class);
+		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10000)
+				.addDimension(1, 10000)
+				.addDimension(2, 10000)
+				.addDimension(3, 10000)
+				.addDimension(4, 10000)
+				.addDimension(5, 10000).build());
+		when(vehicle.getType()).thenReturn(type);
+	}
 	
 	@Test
 	public void whenVehicleRouteHasPickupAndDelivery_futureMaxLoadAtEachActivityShouldBeCalculatedCorrectly(){
@@ -41,7 +58,7 @@ public class UpdateCapacityUtilizationForwardLookingTest {
 		Delivery delivery = mock(Delivery.class);
 		when(delivery.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoad.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -72,7 +89,7 @@ public class UpdateCapacityUtilizationForwardLookingTest {
 		when(delivery.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10)
 				.addDimension(1, 3).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoad.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -109,7 +126,7 @@ public class UpdateCapacityUtilizationForwardLookingTest {
 		when(pickup2.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 3)
 				.addDimension(1, 8).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).addService(pickup2).build();
 		
 		updateLoad.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -151,7 +168,7 @@ public class UpdateCapacityUtilizationForwardLookingTest {
 		when(pickup2.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 3)
 				.addDimension(1, 8).addDimension(4, 29).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).addService(pickup2).build();
 		
 		updateLoad.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());

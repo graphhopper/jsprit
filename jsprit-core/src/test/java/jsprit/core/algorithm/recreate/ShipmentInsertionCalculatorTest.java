@@ -30,9 +30,7 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
-import jsprit.core.util.Coordinate;
-import jsprit.core.util.Locations;
-import jsprit.core.util.ManhattanCosts;
+import jsprit.core.util.CostFactory;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -76,19 +74,8 @@ public class ShipmentInsertionCalculatorTest {
 	
 	@Before
 	public void doBefore(){
-		Locations locations = new Locations(){
-
-			@Override
-			public Coordinate getCoord(String id) {
-				//assume: locationId="x,y"
-				String[] splitted = id.split(",");
-				return Coordinate.newInstance(Double.parseDouble(splitted[0]), 
-						Double.parseDouble(splitted[1]));
-			}
-			
-		};
-		routingCosts = new ManhattanCosts(locations);
-		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1).build();
+		routingCosts = CostFactory.createManhattanCosts();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).setCostPerDistance(1).build();
 		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
@@ -102,7 +89,7 @@ public class ShipmentInsertionCalculatorTest {
 	
 	@Test
 	public void whenCalculatingInsertionCostsOfShipment_itShouldReturnCorrectCostValue(){
-		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
+		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		
 		InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
@@ -111,8 +98,8 @@ public class ShipmentInsertionCalculatorTest {
 	
 	@Test
 	public void whenCalculatingInsertionIntoExistingRoute_itShouldReturnCorrectCosts(){
-		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
-		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
+		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
+		Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		new Inserter(new InsertionListeners()).insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		
@@ -124,8 +111,8 @@ public class ShipmentInsertionCalculatorTest {
 	
 	@Test
 	public void whenInsertingShipmentInRouteWithNotEnoughCapacity_itShouldReturnNoInsertion(){
-		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
-		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
+		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
+		Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		new Inserter(new InsertionListeners()).insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		createInsertionCalculator(new HardRouteStateLevelConstraint() {
@@ -144,9 +131,9 @@ public class ShipmentInsertionCalculatorTest {
 	
 	@Test
 	public void whenInsertingThirdShipment_itShouldCalcCorrectVal(){
-		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
-		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
-		Shipment shipment3 = Shipment.Builder.newInstance("s3", 1).setPickupLocation("0,0").setDeliveryLocation("9,10").build();
+		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
+		Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
+		Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("9,10").build();
 		
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		Inserter inserter = new Inserter(new InsertionListeners());
@@ -161,9 +148,9 @@ public class ShipmentInsertionCalculatorTest {
 	
 	@Test
 	public void whenInsertingThirdShipment_itShouldCalcCorrectVal2(){
-		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
-		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
-		Shipment shipment3 = Shipment.Builder.newInstance("s3", 1).setPickupLocation("0,0").setDeliveryLocation("9,9").build();
+		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
+		Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
+		Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("9,9").build();
 		
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		Inserter inserter = new Inserter(new InsertionListeners());
@@ -178,9 +165,9 @@ public class ShipmentInsertionCalculatorTest {
 	
 	@Test
 	public void whenInstertingShipmentWithLoadConstraintWhereCapIsNotSufficient_capConstraintsAreFulfilled(){
-		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
-		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
-		Shipment shipment3 = Shipment.Builder.newInstance("s3", 1).setPickupLocation("0,0").setDeliveryLocation("9,9").build();
+		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
+		Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
+		Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("9,9").build();
 		
 		
 		
@@ -194,7 +181,7 @@ public class ShipmentInsertionCalculatorTest {
 		
 		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
-		StateManager stateManager = new StateManager(vrp);
+		StateManager stateManager = new StateManager(vrp.getTransportCosts());
 		stateManager.updateLoadStates();		
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
 		
@@ -213,8 +200,8 @@ public class ShipmentInsertionCalculatorTest {
 	
 	@Test
 	public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnNoInsertionData(){
-		Shipment shipment = Shipment.Builder.newInstance("s", 1).setPickupLocation("0,10").setDeliveryLocation("0,0").build();
-		Shipment shipment2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
+		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("0,0").build();
+		Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
@@ -226,7 +213,7 @@ public class ShipmentInsertionCalculatorTest {
 		
 		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
-		StateManager stateManager = new StateManager(vrp);
+		StateManager stateManager = new StateManager(vrp.getTransportCosts());
 		stateManager.updateLoadStates();
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
 
@@ -245,7 +232,7 @@ public class ShipmentInsertionCalculatorTest {
 		switcher.put(Shipment.class, insertionCalculator);
 		
 //		Service service = Service.Builder.newInstance("pick", 1).setLocationId("5,5").build();
-		Pickup service = (Pickup)Pickup.Builder.newInstance("pick", 1).setLocationId("5,5").build();
+		Pickup service = (Pickup)Pickup.Builder.newInstance("pick").addSizeDimension(0, 1).setLocationId("5,5").build();
 		InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
 //		routeActVisitor.visit(route);
 		

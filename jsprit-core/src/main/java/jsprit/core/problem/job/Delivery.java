@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
-import jsprit.core.problem.job.Pickup.Builder;
 
 /**
  * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.

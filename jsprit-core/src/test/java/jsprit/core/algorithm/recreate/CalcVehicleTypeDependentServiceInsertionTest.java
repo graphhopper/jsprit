@@ -23,20 +23,18 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 
 import org.junit.Before;
 import org.junit.Test;
-
-
-
-
 
 
 public class CalcVehicleTypeDependentServiceInsertionTest {
@@ -51,8 +49,8 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 	public void doBefore(){
 		veh1 = mock(Vehicle.class);
 		veh2 = mock(Vehicle.class);
-		when(veh1.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type1", 0).build());
-		when(veh2.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type2", 0).build());
+		when(veh1.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type1").build());
+		when(veh2.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type2").build());
 		when(veh1.getStartLocationId()).thenReturn("loc1");
 		when(veh2.getStartLocationId()).thenReturn("loc2");
 		fleetManager = mock(VehicleFleetManager.class);
@@ -61,10 +59,13 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 		
 		when(fleetManager.getAvailableVehicles()).thenReturn(Arrays.asList(veh1,veh2));
 		
-		when(veh1.getCapacity()).thenReturn(10);
-		when(veh2.getCapacity()).thenReturn(10);
+		VehicleType type = mock(VehicleType.class);
+		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
+		when(veh1.getType()).thenReturn(type);
 		
-		when(service.getCapacityDemand()).thenReturn(0);
+		when(veh2.getType()).thenReturn(type);
+		
+		when(service.getSize()).thenReturn(Capacity.Builder.newInstance().build());
 		when(service.getTimeWindow()).thenReturn(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
 		
 		when(vehicleRoute.getDriver()).thenReturn(null);

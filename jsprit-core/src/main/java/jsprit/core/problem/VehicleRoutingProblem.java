@@ -388,10 +388,11 @@ public class VehicleRoutingProblem {
 				if(penaltyFixedCosts!=null){
 					fixed = penaltyFixedCosts;
 				}
-				VehicleTypeImpl t = VehicleTypeImpl.Builder.newInstance(v.getType().getTypeId(), v.getCapacity())
+				VehicleTypeImpl t = VehicleTypeImpl.Builder.newInstance(v.getType().getTypeId())
 						.setCostPerDistance(penaltyFactor*v.getType().getVehicleCostParams().perDistanceUnit)
 						.setCostPerTime(penaltyFactor*v.getType().getVehicleCostParams().perTimeUnit)
 						.setFixedCost(fixed)
+						.setCapacityDimensions(v.getType().getCapacityDimensions())
 						.build();
 				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
 				String vehicleId = "penaltyVehicle_" + v.getStartLocationId() + "_" + t.getTypeId();

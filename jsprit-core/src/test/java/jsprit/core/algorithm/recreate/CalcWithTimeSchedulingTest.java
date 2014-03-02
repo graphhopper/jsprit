@@ -39,14 +39,14 @@ import jsprit.core.util.Solutions;
 
 public class CalcWithTimeSchedulingTest {
 	
-
+	
 	public void timeScheduler(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("myVehicle").setEarliestStart(0.0).setLatestArrival(100.0).
 				setStartLocationCoordinate(Coordinate.newInstance(0, 0)).setStartLocationId("0,0")
-				.setType(VehicleTypeImpl.Builder.newInstance("myType", 20).setCostPerDistance(1.0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("myType").addCapacityDimension(0, 20).setCostPerDistance(1.0).build()).build();
 		vrpBuilder.addVehicle(vehicle);
-		vrpBuilder.addJob(Service.Builder.newInstance("myService", 2).setLocationId("0,20").setCoord(Coordinate.newInstance(0, 20)).build());
+		vrpBuilder.addJob(Service.Builder.newInstance("myService").addSizeDimension(0, 2).setLocationId("0,20").setCoord(Coordinate.newInstance(0, 20)).build());
 		vrpBuilder.setFleetSize(FleetSize.INFINITE);
 		vrpBuilder.setRoutingCost(getTpCosts(new CrowFlyCosts(vrpBuilder.getLocations())));
 		VehicleRoutingProblem vrp = vrpBuilder.build();

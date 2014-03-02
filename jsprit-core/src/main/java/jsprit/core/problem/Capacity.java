@@ -190,12 +190,9 @@ public class Capacity {
 	 * @param toCompare
 	 * @return
 	 * @throws NullPointerException if one of the args is null
-	 * @throws IllegalStateException if number of capacityDimensions of this capacity and toCompare are different.
 	 */
 	public boolean isLessOrEqual(Capacity toCompare){
 		if(toCompare == null) throw new NullPointerException();
-		if(this.getNuOfDimensions() != toCompare.getNuOfDimensions()) throw new IllegalStateException("cap1.getNuOfDimension()="+this.getNuOfDimensions()+
-				"!= cap2.getNuOfDimension()="+toCompare.getNuOfDimensions()+ ". cannot add up capacities with different dimension.");
 		for(int i=0;i<this.getNuOfDimensions();i++){
 			if(this.get(i) > toCompare.get(i)) return false;
 		}

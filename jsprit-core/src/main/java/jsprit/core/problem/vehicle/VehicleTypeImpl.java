@@ -76,7 +76,9 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @param capacity
 		 * @return the vehicleType builder
 		 * @throws IllegalStateException if capacity is smaller than zero or id is null
+		 * @deprecated use <code>newInstance(String id)</code> instead
 		 */
+		@Deprecated
 		public static VehicleTypeImpl.Builder newInstance(String id, int capacity){
 			if(capacity < 0) throw new IllegalStateException("capacity cannot be smaller than zero");
 			if(id == null) throw new IllegalStateException("typeId must be null");
@@ -102,7 +104,9 @@ public class VehicleTypeImpl implements VehicleType {
 		
 		private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
 		
-		private Capacity capacityDimensions;
+		private Capacity capacityDimensions = null;
+		
+		private boolean dimensionAdded = false;
 
 		/**
 		 * Constructs the builder.
@@ -110,6 +114,7 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @param id
 		 * @param capacity
 		 */
+		@Deprecated
 		private Builder(String id, int capacity) {
 			super();
 			this.id = id;
@@ -183,7 +188,9 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @return VehicleTypeImpl
 		 */
 		public VehicleTypeImpl build(){
-			capacityDimensions = capacityBuilder.build();
+			if(capacityDimensions == null){
+				capacityDimensions = capacityBuilder.build();
+			}
 			return new VehicleTypeImpl(this);
 		}
 
@@ -194,14 +201,36 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @param dimVal
 		 * @return the builder
 		 * @throws IllegalArgumentException if dimVal < 0
+		 * @throws IllegalStateException if capacity dimension is already set
 		 */
 		public Builder addCapacityDimension(int dimIndex, int dimVal) {
 			if(dimVal<0) throw new IllegalArgumentException("capacity value cannot be negative");
+			if(capacityDimensions != null) throw new IllegalStateException("either build your dimension with build your dimensions with " +
+					"addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+					"You used both methods.");
+			dimensionAdded = true;
 			capacityBuilder.addDimension(dimIndex,dimVal);
 			return this;
 		}
 
-		
+		/**
+		 * Sets capacity dimensions.
+		 * 
+		 * <p>Note if you use this you cannot use <code>addCapacityDimension(int dimIndex, int dimVal)</code> anymore. Thus either build
+		 * your dimensions with <code>addCapacityDimension(int dimIndex, int dimVal)</code> or set the already built dimensions with
+		 * this method.
+		 * 
+		 * @param capacity
+		 * @return this builder
+		 * @throws IllegalStateException if capacityDimension has already been added
+		 */
+		public Builder setCapacityDimensions(Capacity capacity){
+			if(dimensionAdded) throw new IllegalStateException("either build your dimension with build your dimensions with " +
+					"addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+					"You used both methods.");
+			this.capacityDimensions = capacity;
+			return this;
+		}
 	}
 	
 	@Override

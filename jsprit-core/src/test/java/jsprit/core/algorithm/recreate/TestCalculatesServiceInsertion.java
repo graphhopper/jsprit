@@ -84,10 +84,10 @@ public class TestCalculatesServiceInsertion {
 	public void setup(){
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 		
-		VehicleType t1 = VehicleTypeImpl.Builder.newInstance("t1", 1000).setCostPerDistance(1.0).build();
+		VehicleType t1 = VehicleTypeImpl.Builder.newInstance("t1").addCapacityDimension(0, 1000).setCostPerDistance(1.0).build();
 		vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setStartLocationId("0,0").setType(t1).build();
 		
-		VehicleType t2 = VehicleTypeImpl.Builder.newInstance("t2", 1000).setCostPerDistance(2.0).build();
+		VehicleType t2 = VehicleTypeImpl.Builder.newInstance("t2").addCapacityDimension(0, 1000).setCostPerDistance(2.0).build();
 		newVehicle = VehicleImpl.Builder.newInstance("newVehicle").setLatestArrival(100.0).setStartLocationId("0,0").setType(t2).build();
 		
 		driver = DriverImpl.noDriver();
@@ -117,9 +117,9 @@ public class TestCalculatesServiceInsertion {
 		};
 
 		
-		first = Service.Builder.newInstance("1", 0).setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		second = Service.Builder.newInstance("2", 0).setLocationId("10,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		third = Service.Builder.newInstance("3", 0).setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		first = Service.Builder.newInstance("1").addSizeDimension(0, 0).setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		second = Service.Builder.newInstance("2").addSizeDimension(0, 0).setLocationId("10,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		third = Service.Builder.newInstance("3").addSizeDimension(0, 0).setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
 		
 		Collection<Job> jobs = new ArrayList<Job>();
 		jobs.add(first);
@@ -128,7 +128,7 @@ public class TestCalculatesServiceInsertion {
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).setRoutingCost(costs).build();
 		
-		states = new StateManager(vrp);
+		states = new StateManager(vrp.getTransportCosts());
 		states.updateLoadStates();
 		states.updateTimeWindowStates();
 		
@@ -214,7 +214,7 @@ public class TestCalculatesServiceInsertion {
 	public void whenInsertingJobAndCurrRouteIsEmpty_accessEggressCalcShouldReturnZero(){
 		VehicleRoute route = VehicleRoute.Builder.newInstance(VehicleImpl.createNoVehicle(), DriverImpl.noDriver()).build();
 		AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
-		Job job = Service.Builder.newInstance("1", 0).setLocationId("1").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		Job job = Service.Builder.newInstance("1").addSizeDimension(0, 0).setLocationId("1").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
 		JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
 		assertEquals(0.0, accessEgressCalc.getCosts(iContex),0.01);
 	}
@@ -252,13 +252,13 @@ public class TestCalculatesServiceInsertion {
 		Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setStartLocationId("oldV").build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(oldVehicle, DriverImpl.noDriver())
-				.addService(Service.Builder.newInstance("service", 0).setLocationId("service").build())
+				.addService(Service.Builder.newInstance("service").addSizeDimension(0, 0).setLocationId("service").build())
 				.build();
 		
 		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setStartLocationId("newV").build();
 		
 		AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(routingCosts);
-		Job job = Service.Builder.newInstance("service2", 0).setLocationId("service").build();
+		Job job = Service.Builder.newInstance("service2").addSizeDimension(0, 0).setLocationId("service").build();
 		JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
 		assertEquals(8.0, accessEgressCalc.getCosts(iContex),0.01);
 	}

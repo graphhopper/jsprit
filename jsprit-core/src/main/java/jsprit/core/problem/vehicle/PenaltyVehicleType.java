@@ -45,6 +45,10 @@ public class PenaltyVehicleType implements VehicleType{
 		return type.getTypeId();
 	}
 
+	/**
+	 * @deprecated use <code>getCapacityDimensions()</code> instead
+	 */
+	@Deprecated
 	@Override
 	public int getCapacity() {
 		return type.getCapacity();

@@ -18,10 +18,27 @@ import jsprit.core.problem.solution.route.RouteActivityVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleType;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class UpdateLoadsTest {
+	
+	private Vehicle vehicle;
+	
+	@Before
+	public void doBefore(){
+		vehicle = mock(Vehicle.class);
+		VehicleType type = mock(VehicleType.class);
+		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10000)
+				.addDimension(1, 10000)
+				.addDimension(2, 10000)
+				.addDimension(3, 10000)
+				.addDimension(4, 10000)
+				.addDimension(5, 10000).build());
+		when(vehicle.getType()).thenReturn(type);
+	}
 	
 	@Test
 	public void whenVehicleRouteIsEmpty_loadsAtBeginningAndEndShouldBeZero(){
@@ -45,7 +62,7 @@ public class UpdateLoadsTest {
 		Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 1).build();
 		when(service.getSize()).thenReturn(capacity);
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(service).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -62,7 +79,7 @@ public class UpdateLoadsTest {
 		Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1,2).build();
 		when(service.getSize()).thenReturn(capacity);
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(service).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -83,7 +100,7 @@ public class UpdateLoadsTest {
 		Service service2 = mock(Service.class);
 		when(service2.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(service).addService(service2).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -102,7 +119,7 @@ public class UpdateLoadsTest {
 		Service service2 = mock(Service.class);
 		when(service2.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).addDimension(1, 14).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(service).addService(service2).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -126,7 +143,7 @@ public class UpdateLoadsTest {
 		Service service2 = mock(Service.class);
 		when(service2.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(service).addService(service2).build();
 		
 		routeActivityVisitor.visit(route);
@@ -149,7 +166,7 @@ public class UpdateLoadsTest {
 		Service service2 = mock(Service.class);
 		when(service2.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).addDimension(1, 13).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(service).addService(service2).build();
 		
 		routeActivityVisitor.visit(route);
@@ -171,7 +188,7 @@ public class UpdateLoadsTest {
 		Delivery delivery = mock(Delivery.class);
 		when(delivery.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -190,7 +207,7 @@ public class UpdateLoadsTest {
 		Delivery delivery = mock(Delivery.class);
 		when(delivery.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).addDimension(1, 13).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -215,7 +232,7 @@ public class UpdateLoadsTest {
 		Capacity capacity2 = Capacity.Builder.newInstance().addDimension(0, 10).build();
 		when(delivery.getSize()).thenReturn(capacity2);
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -240,7 +257,7 @@ public class UpdateLoadsTest {
 		Capacity capacity2 = Capacity.Builder.newInstance().addDimension(0, 10).addDimension(1, 14).build();
 		when(delivery.getSize()).thenReturn(capacity2);
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -270,7 +287,7 @@ public class UpdateLoadsTest {
 		Pickup pickup2insert = mock(Pickup.class);
 		when(pickup2insert.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -298,7 +315,7 @@ public class UpdateLoadsTest {
 		Pickup pickup2insert = mock(Pickup.class);
 		when(pickup2insert.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).build());
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -329,7 +346,7 @@ public class UpdateLoadsTest {
 		Capacity size2 = Capacity.Builder.newInstance().addDimension(0, 20).build();
 		when(delivery2insert.getSize()).thenReturn(size2);
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -358,7 +375,7 @@ public class UpdateLoadsTest {
 		Capacity size2 = Capacity.Builder.newInstance().addDimension(0, 20).addDimension(1, 25).build();
 		when(delivery2insert.getSize()).thenReturn(size2);
 		
-		VehicleRoute route = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class))
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
 				.addService(pickup).addService(delivery).build();
 		
 		updateLoads.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());

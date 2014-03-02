@@ -37,15 +37,15 @@ public class AverageJobDistanceTest {
 	
 	@Test
 	public void distanceOfTwoEqualShipmentsShouldBeSmallerThanAnyOtherDistance(){
-		Shipment s1 = Shipment.Builder.newInstance("s1", 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
-		Shipment s2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
+		Shipment s1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
+		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
 		
 		double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
 		
 		for(int i=0;i<10;i++){
 			for(int j=0;j<10;j++){
-				Shipment other1 = Shipment.Builder.newInstance("s1", 1).setPickupLocation("0,0").setDeliveryLocation(i+","+j).build();
-				Shipment other2 = Shipment.Builder.newInstance("s2", 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
+				Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation(i+","+j).build();
+				Shipment other2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
 				double dist2 = new AvgServiceAndShipmentDistance(routingCosts).getDistance(other1, other2);
 				System.out.println("("+i+","+j+"), dist=" + dist + ", dist2=" + dist2);
 				assertTrue(dist<=dist2+dist2*0.001);
@@ -57,8 +57,8 @@ public class AverageJobDistanceTest {
 	
 	@Test
 	public void whenServicesHaveSameLocation_distanceShouldBeZero(){
-		Service s1 = Service.Builder.newInstance("s1", 1).setLocationId("10,0").build();
-		Service s2 = Service.Builder.newInstance("s2", 1).setLocationId("10,0").build();
+		Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setLocationId("10,0").build();
+		Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setLocationId("10,0").build();
 		
 		double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
 		assertEquals(0.0,dist,0.01);

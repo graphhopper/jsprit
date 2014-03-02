@@ -44,9 +44,9 @@ public class TestDepartureTimeOpt {
 	@Test
 	public void whenSettingOneCustWithTWAnd_NO_DepTimeChoice_totalCostsShouldBe50(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
-		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
+		Service service = Service.Builder.newInstance("s").setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
-				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType").build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -71,9 +71,9 @@ public class TestDepartureTimeOpt {
 	@Test
 	public void whenSettingOneCustWithTWAnd_NO_DepTimeChoice_depTimeShouldBe0(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
-		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
+		Service service = Service.Builder.newInstance("s").setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
-				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType").build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -98,9 +98,9 @@ public class TestDepartureTimeOpt {
 	@Test
 	public void whenSettingOneCustWithTWAndDepTimeChoice_totalCostsShouldBe50(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
-		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
+		Service service = Service.Builder.newInstance("s").setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
-				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType").build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -126,9 +126,9 @@ public class TestDepartureTimeOpt {
 	@Test
 	public void whenSettingOneCustWithTWAndDepTimeChoice_depTimeShouldBe0(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
-		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
+		Service service = Service.Builder.newInstance("s").setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
-				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType").build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -154,13 +154,13 @@ public class TestDepartureTimeOpt {
 	@Test
 	public void whenSettingTwoCustWithTWAndDepTimeChoice_totalCostsShouldBe50(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
-		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
+		Service service = Service.Builder.newInstance("s").setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
 		
-		Service service2 = Service.Builder.newInstance("s2", 0).setLocationId("servLoc2").setCoord(Coordinate.newInstance(0, 20)).
+		Service service2 = Service.Builder.newInstance("s2").setLocationId("servLoc2").setCoord(Coordinate.newInstance(0, 20)).
 				setTimeWindow(TimeWindow.newInstance(30, 40)).build();
 		
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
-				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType").build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){
@@ -186,13 +186,13 @@ public class TestDepartureTimeOpt {
 	@Test
 	public void whenSettingTwoCustWithTWAndDepTimeChoice_depTimeShouldBe10(){
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
-		Service service = Service.Builder.newInstance("s", 0).setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
+		Service service = Service.Builder.newInstance("s").setLocationId("servLoc").setCoord(Coordinate.newInstance(0, 10)).setTimeWindow(timeWindow).build();
 		
-		Service service2 = Service.Builder.newInstance("s2", 0).setLocationId("servLoc2").setCoord(Coordinate.newInstance(0, 20)).
+		Service service2 = Service.Builder.newInstance("s2").setLocationId("servLoc2").setCoord(Coordinate.newInstance(0, 20)).
 				setTimeWindow(TimeWindow.newInstance(30, 40)).build();
 		
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
-				.setType(VehicleTypeImpl.Builder.newInstance("vType", 0).build()).build();
+				.setType(VehicleTypeImpl.Builder.newInstance("vType").build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.setActivityCosts(new VehicleRoutingActivityCosts(){

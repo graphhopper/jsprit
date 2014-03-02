@@ -540,7 +540,7 @@ public class VehicleRoutingAlgorithms {
 			stateManager = stateMan;
 		}
 		else{
-			stateManager = 	new StateManager(vrp);
+			stateManager = 	new StateManager(vrp.getTransportCosts());
 		}
 		stateManager.updateLoadStates();
 		stateManager.updateTimeWindowStates();
@@ -621,7 +621,7 @@ public class VehicleRoutingAlgorithms {
 			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble() + getFixedCosts(route.getVehicle());
+					costs += stateManager.getRouteState(route, StateFactory.COSTS, Double.class) + getFixedCosts(route.getVehicle());
 				}
 				return costs;
 			}

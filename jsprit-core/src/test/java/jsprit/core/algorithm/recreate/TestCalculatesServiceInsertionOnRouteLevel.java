@@ -27,6 +27,7 @@ import java.util.Collection;
 import jsprit.core.algorithm.ExampleActivityCostFunction;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -41,6 +42,7 @@ import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivities;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.ManhattanDistanceCalculator;
 
@@ -78,7 +80,11 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		
 		costs = mock(VehicleRoutingTransportCosts.class);
 		vehicle = mock(Vehicle.class);
-		when(vehicle.getCapacity()).thenReturn(1000);
+		VehicleType type = mock(VehicleType.class);
+		
+		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 1000).build());
+		
+		when(vehicle.getType()).thenReturn(type);
 		when(vehicle.getStartLocationId()).thenReturn("0,0");
 		when(vehicle.getEndLocationId()).thenReturn("0,0");
 		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
@@ -86,7 +92,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
 		newVehicle = mock(Vehicle.class);
-		when(newVehicle.getCapacity()).thenReturn(1000);
+		when(newVehicle.getType()).thenReturn(type);
 		when(newVehicle.getStartLocationId()).thenReturn("0,0");
 		when(newVehicle.getEndLocationId()).thenReturn("0,0");
 		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);
@@ -140,9 +146,9 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		};
 
 		
-		first = Service.Builder.newInstance("1", 0).setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		second = Service.Builder.newInstance("3", 0).setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-		third = Service.Builder.newInstance("2", 0).setLocationId("10,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		first = Service.Builder.newInstance("1").setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		second = Service.Builder.newInstance("3").setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+		third = Service.Builder.newInstance("2").setLocationId("10,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
 		Collection<Job> jobs = new ArrayList<Job>();
 		jobs.add(first);
 		jobs.add(second);
@@ -150,7 +156,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).addVehicle(newVehicle).setRoutingCost(costs).build();
 		
-		states = new StateManager(vrp);
+		states = new StateManager(vrp.getTransportCosts());
 		states.updateLoadStates();
 		states.updateTimeWindowStates();
 		states.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), states));

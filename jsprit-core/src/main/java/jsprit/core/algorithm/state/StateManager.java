@@ -117,19 +117,19 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		defaultActivityStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
 		
 		
-		defaultActivityStates_.put(StateFactory.COSTS, StateFactory.createState(0));
-		defaultActivityStates_.put(StateFactory.DURATION, StateFactory.createState(0));
-		defaultActivityStates_.put(StateFactory.FUTURE_MAXLOAD, StateFactory.createState(0));
-		defaultActivityStates_.put(StateFactory.PAST_MAXLOAD, StateFactory.createState(0));
+		defaultActivityStates_.put(StateFactory.COSTS, 0.);
+		defaultActivityStates_.put(StateFactory.DURATION, 0.);
+		defaultActivityStates_.put(StateFactory.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultActivityStates_.put(StateFactory.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
 		
 		defaultRouteStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
 		
-		defaultRouteStates_.put(StateFactory.COSTS, StateFactory.createState(0));
-		defaultRouteStates_.put(StateFactory.DURATION, StateFactory.createState(0));
-		defaultRouteStates_.put(StateFactory.FUTURE_MAXLOAD, StateFactory.createState(0));
-		defaultRouteStates_.put(StateFactory.PAST_MAXLOAD, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.COSTS, 0.);
+		defaultRouteStates_.put(StateFactory.DURATION, 0.);
+		defaultRouteStates_.put(StateFactory.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(StateFactory.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
 		
-		defaultRouteStates_.put(StateFactory.MAXLOAD, StateFactory.createState(0));
+		defaultRouteStates_.put(StateFactory.MAXLOAD, Capacity.Builder.newInstance().build());
 		
 		defaultRouteStates_.put(StateFactory.LOAD_AT_END, Capacity.Builder.newInstance().build());
 		defaultRouteStates_.put(StateFactory.LOAD_AT_BEGINNING, Capacity.Builder.newInstance().build());
@@ -223,10 +223,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 			return type.cast(defaultActivityStates_.get(stateId));
 		}
 		if(stateId.equals(StateFactory.EARLIEST_OPERATION_START_TIME)){
-			return type.cast(StateFactory.createState(act.getTheoreticalEarliestOperationStartTime()));
+			return type.cast(act.getTheoreticalEarliestOperationStartTime());
 		}
 		if(stateId.equals(StateFactory.LATEST_OPERATION_START_TIME)){
-			return type.cast(StateFactory.createState(act.getTheoreticalLatestOperationStartTime()));
+			return type.cast(act.getTheoreticalLatestOperationStartTime());
 		}
 		return null;
 	}
@@ -437,7 +437,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	public void updateTimeWindowStates() {
 		if(!updateTWs){
 			updateTWs=true;
-			addActivityVisitor(new UpdateTimeWindow(this, routingCosts));
+			addActivityVisitor(new UpdatePracticalTimeWindows(this, routingCosts));
 		}
 	}
 
