@@ -17,6 +17,7 @@
 package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -83,37 +84,40 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 	}
 
 	private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
-		double load = getCurrentMaxLoadInRoute(route) + job.getCapacityDemand();
+		Capacity load = Capacity.addup(getCurrentMaxLoadInRoute(route), job.getSize());
+//		double load = getCurrentMaxLoadInRoute(route) + job.getCapacityDemand();
 		double currentFix = 0.0;
 		if(route.getVehicle() != null){
 			if(!(route.getVehicle() instanceof NoVehicle)){
 				currentFix += route.getVehicle().getType().getVehicleCostParams().fix;
 			}
 		}
-		if(newVehicle.getCapacity() < load){
+		if(!newVehicle.getType().getCapacityDimensions().isGreaterOrEqual(load)){
 			return Double.MAX_VALUE;
 		}
 		return newVehicle.getType().getVehicleCostParams().fix - currentFix;
 	}
 
 	private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
-		int currentLoad = getCurrentMaxLoadInRoute(route);
-		double load = currentLoad + job.getCapacityDemand();
+		Capacity currentLoad = getCurrentMaxLoadInRoute(route);
+//		int currentLoad = getCurrentMaxLoadInRoute(route);
+		Capacity load = Capacity.addup(currentLoad, job.getSize());
+//		double load = currentLoad + job.getCapacityDemand();
 		double currentRelFix = 0.0;
 		if(route.getVehicle() != null){
 			if(!(route.getVehicle() instanceof NoVehicle)){
-				currentRelFix += route.getVehicle().getType().getVehicleCostParams().fix*currentLoad/route.getVehicle().getCapacity();
+				currentRelFix += route.getVehicle().getType().getVehicleCostParams().fix * Capacity.divide(currentLoad, route.getVehicle().getType().getCapacityDimensions());
 			}
 		}
-		if(newVehicle.getCapacity() < load){
+		if(!newVehicle.getType().getCapacityDimensions().isGreaterOrEqual(load)){
 			return Double.MAX_VALUE;
 		}
-		double relativeFixCost = newVehicle.getType().getVehicleCostParams().fix*(load/newVehicle.getCapacity()) - currentRelFix;
+		double relativeFixCost = newVehicle.getType().getVehicleCostParams().fix* (Capacity.divide(load, newVehicle.getType().getCapacityDimensions())) - currentRelFix;
 		return relativeFixCost;
 	}
 
-	private int getCurrentMaxLoadInRoute(VehicleRoute route) {
-		return (int) stateGetter.getRouteState(route, StateFactory.MAXLOAD).toDouble();
+	private Capacity getCurrentMaxLoadInRoute(VehicleRoute route) {
+		return stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class);
 	}
 
 }

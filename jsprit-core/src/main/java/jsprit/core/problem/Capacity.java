@@ -68,6 +68,36 @@ public class Capacity {
 	}
 	
 	/**
+	 * Divides every dimension of numerator capacity by the corresponding dimension of denominator capacity,
+	 * , and averages each quotient.  
+	 * 
+	 * <p>If both nominator.get(i) and denominator.get(i) equal to 0, dimension i is ignored.
+	 * <p>If both capacities are have only dimensions with dimensionVal=0, it returns 0.0
+	 * @param numerator
+	 * @param denominator
+	 * @return
+	 * @throws IllegalStateException if numerator.get(i) != 0 and denominator.get(i) == 0 
+	 */
+	public static double divide(Capacity numerator, Capacity denominator){
+		int nuOfDimensions = 0;
+		double sumQuotients = 0.0;
+		for(int index=0;index<Math.max(numerator.getNuOfDimensions(), denominator.getNuOfDimensions());index++){
+			if(numerator.get(index) != 0 && denominator.get(index) == 0){
+				throw new IllegalStateException("numerator > 0 and denominator = 0. cannot divide by 0");
+			}
+			else if(numerator.get(index) == 0 && denominator.get(index) == 0){
+				continue;
+			}
+			else{
+				nuOfDimensions++;
+				sumQuotients += (double)numerator.get(index)/(double)denominator.get(index);
+			}
+		}
+		if(nuOfDimensions > 0) return sumQuotients/(double)nuOfDimensions;
+		return 0.0;
+	}
+	
+	/**
 	 * Makes a deep copy of Capacity.
 	 * 
 	 * @param capacity

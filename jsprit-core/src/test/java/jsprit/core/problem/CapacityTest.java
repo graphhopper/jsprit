@@ -314,4 +314,45 @@ public class CapacityTest {
 		assertEquals(3,Capacity.max(cap1,cap2).get(2));
 	}
 	
+	@Test
+	public void whenDividingTwoCapacities_itShouldReturn05(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).build();
+		assertEquals(0.5,Capacity.divide(cap1, cap2),0.001);
+	}
+	
+	@Test
+	public void whenDividingTwoEqualCapacities_itShouldReturn10(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).build();
+		assertEquals(1.0,Capacity.divide(cap1, cap2),0.001);
+	}
+	
+	@Test
+	public void whenDividingTwoCapacities_itShouldReturn00(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).build();
+		assertEquals(0.0,Capacity.divide(cap1, cap2),0.001);
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void whenDividingByAZeroDim_itShouldThrowException(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 0).build();
+		Capacity.divide(cap1, cap2);
+	}
+	
+	@Test
+	public void whenBothDimOfNominatorAndDenominatorAreZero_divisionShouldIgnoreThisDim(){
+		Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(3, 0).build();
+		Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 4).addDimension(3, 0).build();
+		assertEquals(0.5,Capacity.divide(cap1, cap2),0.001);
+	}
+	
+	@Test
+	public void whenDividingZeroCaps_itShouldReturnZero(){
+		Capacity cap1 = Capacity.Builder.newInstance().build();
+		Capacity cap2 = Capacity.Builder.newInstance().build();
+		assertEquals(0.0,Capacity.divide(cap1, cap2),0.001);
+	}
 }
