@@ -65,7 +65,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		PickupService anotherService = new PickupService(mock(Service.class));
 		PickupShipment pickupShipment = new PickupShipment(shipment);
 		
-		stateManager.putInternalActivityState_(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 2).build());
+		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 2).build());
 //		when(stateManager.getActivityState(pickupService, StateFactory.LOAD)).thenReturn(StateFactory.createState(2.0));
 		assertEquals(ConstraintsStatus.NOT_FULFILLED,constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
 	}
@@ -76,7 +76,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		PickupService anotherService = new PickupService(mock(Service.class));
 		DeliverShipment pickupShipment = new DeliverShipment(shipment);
 		
-		stateManager.putInternalActivityState_(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 2).build());
+		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 2).build());
 		assertEquals(ConstraintsStatus.NOT_FULFILLED_BREAK,constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
 	}
 
@@ -86,7 +86,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		PickupService anotherService = new PickupService(mock(Service.class));
 		DeliverShipment pickupShipment = new DeliverShipment(shipment);
 		
-		stateManager.putInternalActivityState_(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 1).build());
+		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 1).build());
 //		stateManager.putInternalActivityState(pickupService, StateFactory.LOAD, StateFactory.createState(1));
 		assertEquals(ConstraintsStatus.FULFILLED,constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
 	}

@@ -50,7 +50,7 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
 	public void visit(TourActivity act) {
 		maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, StateFactory.LOAD, Capacity.class));
 //		maxLoad = Math.max(maxLoad, stateManager.getActivityState(act, StateFactory.LOAD).toDouble());
-		stateManager.putInternalActivityState_(act, StateFactory.FUTURE_MAXLOAD, Capacity.class, maxLoad);
+		stateManager.putInternalTypedActivityState(act, StateFactory.FUTURE_MAXLOAD, Capacity.class, maxLoad);
 //		stateManager.putInternalActivityState(act, StateFactory.FUTURE_MAXLOAD, StateFactory.createState(maxLoad));
 		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can in every capacity dimension never be bigger than vehicleCap";
 //		assert maxLoad <= route.getVehicle().getCapacity() : "maxLoad can never be bigger than vehicleCap";

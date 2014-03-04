@@ -51,7 +51,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	@Override
 	public void visit(TourActivity act) {
 		currentLoad = Capacity.addup(currentLoad, act.getSize());
-		stateManager.putInternalActivityState_(act, StateFactory.LOAD, Capacity.class, currentLoad);
+		stateManager.putInternalTypedActivityState(act, StateFactory.LOAD, Capacity.class, currentLoad);
 		assert currentLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "currentLoad at activity must not be > vehicleCapacity";
 		assert currentLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "currentLoad at act must not be < 0 in one of the applied dimensions";
 	}
@@ -72,8 +72,8 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 				loadAtEnd = Capacity.addup(loadAtEnd, j.getSize());
 			}
 		}
-		stateManager.putInternalRouteState_(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class, loadAtDepot);
-		stateManager.putInternalRouteState_(route, StateFactory.LOAD_AT_END, Capacity.class, loadAtEnd);
+		stateManager.putTypedInternalRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class, loadAtDepot);
+		stateManager.putTypedInternalRouteState(route, StateFactory.LOAD_AT_END, Capacity.class, loadAtEnd);
 	}
 
 	@Override
@@ -85,11 +85,11 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 		if(job2insert instanceof Delivery){
 			Capacity loadAtDepot = stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, Capacity.class);
-			stateManager.putInternalRouteState_(inRoute, StateFactory.LOAD_AT_BEGINNING, Capacity.class, Capacity.addup(loadAtDepot, job2insert.getSize()));
+			stateManager.putTypedInternalRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, Capacity.class, Capacity.addup(loadAtDepot, job2insert.getSize()));
 		}
 		else if(job2insert instanceof Pickup || job2insert instanceof Service){
 			Capacity loadAtEnd = stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_END, Capacity.class);
-			stateManager.putInternalRouteState_(inRoute, StateFactory.LOAD_AT_END, Capacity.class, Capacity.addup(loadAtEnd, job2insert.getSize()));
+			stateManager.putTypedInternalRouteState(inRoute, StateFactory.LOAD_AT_END, Capacity.class, Capacity.addup(loadAtEnd, job2insert.getSize()));
 		}
 	}
 

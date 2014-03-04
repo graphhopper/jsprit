@@ -76,7 +76,7 @@ public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
 
-		states.putInternalActivityState_(act, StateFactory.COSTS, Double.class, totalOperationCost);
+		states.putInternalTypedActivityState(act, StateFactory.COSTS, Double.class, totalOperationCost);
 
 		prevAct = act;
 		startTimeAtPrevAct = timeTracker.getActEndTime();
@@ -91,7 +91,7 @@ public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
 		
-		states.putInternalRouteState_(vehicleRoute, StateFactory.COSTS, Double.class, totalOperationCost);
+		states.putTypedInternalRouteState(vehicleRoute, StateFactory.COSTS, Double.class, totalOperationCost);
 		
 		startTimeAtPrevAct = 0.0;
 		prevAct = null;

@@ -42,7 +42,7 @@ public class StateManagerTest {
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
 		StateId id = StateFactory.createId("myState");
 		State state = StateFactory.createState(1.);
-		stateManager.putRouteState_(route, id, State.class, state);
+		stateManager.putTypedRouteState(route, id, State.class, state);
 		assertEquals(1.,stateManager.getRouteState(route, id, State.class).toDouble(),0.01);
 	}
 	
@@ -52,7 +52,7 @@ public class StateManagerTest {
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
 		StateId id = StateFactory.createId("myState");
 		boolean routeIsRed = true;
-		stateManager.putRouteState_(route, id, Boolean.class, routeIsRed);
+		stateManager.putTypedRouteState(route, id, Boolean.class, routeIsRed);
 		assertTrue(stateManager.getRouteState(route, id, Boolean.class));
 	}
 	
@@ -62,7 +62,7 @@ public class StateManagerTest {
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
 		StateId id = StateFactory.createId("myState");
 		int load = 3;
-		stateManager.putRouteState_(route, id, Integer.class, load);
+		stateManager.putTypedRouteState(route, id, Integer.class, load);
 		int getLoad = stateManager.getRouteState(route, id, Integer.class);
 		assertEquals(3, getLoad);
 	}
@@ -73,7 +73,7 @@ public class StateManagerTest {
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
 		StateId id = StateFactory.createId("myState");
 		Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
-		stateManager.putRouteState_(route, id, Capacity.class, capacity);
+		stateManager.putTypedRouteState(route, id, Capacity.class, capacity);
 		Capacity getCap = stateManager.getRouteState(route, id, Capacity.class);
 		assertEquals(500, getCap.get(0));
 	}
@@ -108,7 +108,7 @@ public class StateManagerTest {
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
 		StateId id = StateFactory.createId("myState");
 		State state = StateFactory.createState(1.);
-		stateManager.putActivityState_(activity, id, State.class, state);
+		stateManager.putTypedActivityState(activity, id, State.class, state);
 		assertEquals(1.,stateManager.getActivityState(activity, id, State.class).toDouble(),0.01);
 	}
 	
@@ -118,7 +118,7 @@ public class StateManagerTest {
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
 		StateId id = StateFactory.createId("myState");
 		boolean routeIsRed = true;
-		stateManager.putActivityState_(activity, id, Boolean.class, routeIsRed);
+		stateManager.putTypedActivityState(activity, id, Boolean.class, routeIsRed);
 		assertTrue(stateManager.getActivityState(activity, id, Boolean.class));
 	}
 	
@@ -128,7 +128,7 @@ public class StateManagerTest {
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
 		StateId id = StateFactory.createId("myState");
 		int load = 3;
-		stateManager.putActivityState_(activity, id, Integer.class, load);
+		stateManager.putTypedActivityState(activity, id, Integer.class, load);
 		int getLoad = stateManager.getActivityState(activity, id, Integer.class);
 		assertEquals(3, getLoad);
 	}
@@ -139,7 +139,7 @@ public class StateManagerTest {
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
 		StateId id = StateFactory.createId("myState");
 		Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
-		stateManager.putActivityState_(activity, id, Capacity.class, capacity);
+		stateManager.putTypedActivityState(activity, id, Capacity.class, capacity);
 		Capacity getCap = stateManager.getActivityState(activity, id, Capacity.class);
 		assertEquals(500, getCap.get(0));
 	}

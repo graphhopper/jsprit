@@ -178,6 +178,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	}
 	
 	/**
+	 * Generic method to add default activity state.
 	 * 
 	 * @param stateId
 	 * @param type
@@ -188,37 +189,55 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		defaultActivityStates_.put(stateId, type.cast(defaultState));
 	}
 	
+	/**
+	 * Clears all states.
+	 * 
+	 */
 	public void clear(){
 		vehicleRouteStates_.clear();
 		activityStates_.clear();
 	}
 
+	/**
+	 * @Deprecated use generic method instead <code>getActivityState(TourActivity act, StateId stateId, Class<T> type)</code>
+	 */
 	@Deprecated
 	@Override
 	public State getActivityState(TourActivity act, StateId stateId) {
 		if(!activityStates_.containsKey(act)){
-			return getDefaultActivityState_(act,stateId,State.class);
+			return getDefaultTypedActivityState(act,stateId,State.class);
 		}
 		States_ actStates = activityStates_.get(act);
 		State state = actStates.getState(stateId, State.class);
 		if(state == null){
-			return getDefaultActivityState_(act,stateId,State.class);
+			return getDefaultTypedActivityState(act,stateId,State.class);
 		}
 		return state;
 	}
 	
+	/**
+	 * Returns activity state of type 'type'.
+	 * 
+	 */
 	@Override
 	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type) {
 		if(!activityStates_.containsKey(act)){
-			return getDefaultActivityState_(act, stateId, type);
+			return getDefaultTypedActivityState(act, stateId, type);
 		}
 		States_ states = activityStates_.get(act);
 		T state = states.getState(stateId, type);
-		if(state == null) return getDefaultActivityState_(act, stateId, type);
+		if(state == null) return getDefaultTypedActivityState(act, stateId, type);
 		return state;
 	}
 
-	private <T> T getDefaultActivityState_(TourActivity act, StateId stateId,Class<T> type) {
+	/**
+	 * 
+	 * @param act
+	 * @param stateId
+	 * @param type
+	 * @return
+	 */
+	private <T> T getDefaultTypedActivityState(TourActivity act, StateId stateId,Class<T> type) {
 		if(defaultActivityStates_.containsKey(stateId)){
 			return type.cast(defaultActivityStates_.get(stateId));
 		}
@@ -231,40 +250,67 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		return null;
 	}
 
+	/**
+	 * Return route state of type 'type'.
+	 * 
+	 * @return route-state
+	 * @throws ClassCastException if state of route and stateId is of another type
+	 */
 	@Override
 	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
 		if(!vehicleRouteStates_.containsKey(route)){
-			return getDefaultRouteState_(stateId, type);
+			return getDefaultTypedRouteState(stateId, type);
 		}
 		States_ states = vehicleRouteStates_.get(route);
 		T state = states.getState(stateId, type);
-		if(state == null) return getDefaultRouteState_(stateId, type);
+		if(state == null) return getDefaultTypedRouteState(stateId, type);
 		return state;
 	}
 
-	private <T> T getDefaultRouteState_(StateId stateId, Class<T> type) {
+	private <T> T getDefaultTypedRouteState(StateId stateId, Class<T> type) {
 		if(defaultRouteStates_.containsKey(stateId)){
 			return type.cast(defaultRouteStates_.get(stateId));
 		}
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param act
+	 * @param stateId
+	 * @param state
+	 * @deprecated use generic method <code>putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state)</code> instead
+	 */
 	@Deprecated
 	public void putActivityState(TourActivity act, StateId stateId, State state){
-		putActivityState_(act, stateId, State.class, state);
+		putTypedActivityState(act, stateId, State.class, state);
 	}
 	
-	public <T> void putActivityState_(TourActivity act, StateId stateId, Class<T> type, T state){
+	/**
+	 * Generic method to memorize state 'state' of type 'type' of act and stateId.
+	 * 
+	 * <p><b>For example: </b><br>
+	 * <code>Capacity loadAtMyActivity = Capacity.Builder.newInstance().addCapacityDimension(0,10).build();<br>
+	 * stateManager.putTypedActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class, loadAtMyActivity);</code>
+	 * <p>you can retrieve the load at myActivity by <br>
+	 * <code>Capacity load = stateManager.getActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class);</code>
+	 * 
+	 * @param act
+	 * @param stateId
+	 * @param type
+	 * @param state
+	 */
+	public <T> void putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-		putInternalActivityState_(act, stateId, type, state);
+		putInternalTypedActivityState(act, stateId, type, state);
 	}
 	
 	@Deprecated
 	void putInternalActivityState(TourActivity act, StateId stateId, State state){
-		putInternalActivityState_(act, stateId, State.class, state);
+		putInternalTypedActivityState(act, stateId, State.class, state);
 	}
 	
-	<T> void putInternalActivityState_(TourActivity act, StateId stateId, Class<T> type, T state){
+	<T> void putInternalTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
 		if(!activityStates_.containsKey(act)){
 			activityStates_.put(act, new States_());
 		}
@@ -274,10 +320,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
 	@Deprecated
 	void putInternalRouteState(VehicleRoute route, StateId stateId, State state){
-		putInternalRouteState_(route, stateId, State.class, state);
+		putTypedInternalRouteState(route, stateId, State.class, state);
 	}
 	
-	<T> void putInternalRouteState_(VehicleRoute route, StateId stateId, Class<T> type, T state){
+	<T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
 		if(!vehicleRouteStates_.containsKey(route)){
 			vehicleRouteStates_.put(route, new States_());
 		}
@@ -287,24 +333,38 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
 	@Deprecated
 	public void putRouteState(VehicleRoute route, StateId stateId, State state){
-		 putRouteState_(route, stateId, State.class, state);
+		 putTypedRouteState(route, stateId, State.class, state);
 	}
 	
-	public <T> void putRouteState_(VehicleRoute route, StateId stateId, Class<T> type, T state){
+	/**
+	 * Generic method to memorize state 'state' of type 'type' of route and stateId.
+	 * 
+	 * <p><b>For example:</b> <br>
+	 * <code>double totalRouteDuration = 100.0;<br>
+	 * stateManager.putTypedActivityState(myRoute, StateFactory.createStateId("route-duration"), Double.class, totalRouteDuration);</code>
+	 * <p>you can retrieve the duration of myRoute then by <br>
+	 * <code>double totalRouteDuration = stateManager.getRouteState(myRoute, StateFactory.createStateId("route-duration"), Double.class);</code> 
+	 * 
+	 * @param act
+	 * @param stateId
+	 * @param type
+	 * @param state
+	 */
+	public <T> void putTypedRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-        putInternalRouteState_(route, stateId, type, state);
+        putTypedInternalRouteState(route, stateId, type, state);
 	}
 
 	@Deprecated
 	@Override
 	public State getRouteState(VehicleRoute route, StateId stateId) {
 		if(!vehicleRouteStates_.containsKey(route)){
-			return getDefaultRouteState_(stateId,State.class);
+			return getDefaultTypedRouteState(stateId,State.class);
 		}
 		States_ routeStates = vehicleRouteStates_.get(route);
 		State state = routeStates.getState(stateId,State.class);
 		if(state == null){
-			return getDefaultRouteState_(stateId, State.class);
+			return getDefaultTypedRouteState(stateId, State.class);
 		}
 		return state;
 	}
