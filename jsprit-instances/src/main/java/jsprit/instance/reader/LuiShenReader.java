@@ -87,7 +87,7 @@ public class LuiShenReader {
 					createVehicles(vehicleFile,costScenario,customerId,coord,start,end);
 				}
 				else{
-					Service service = Service.Builder.newInstance("" + counter, demand).setCoord(coord).setLocationId(customerId).setServiceTime(serviceTime)
+					Service service = Service.Builder.newInstance("" + counter).addSizeDimension(0, demand).setCoord(coord).setLocationId(customerId).setServiceTime(serviceTime)
 							.setTimeWindow(TimeWindow.newInstance(start, end)).build();
 					vrpBuilder.addJob(service);
 				}
@@ -117,13 +117,13 @@ public class LuiShenReader {
 			int capacity = Integer.parseInt(tokens[capacityColumn]);
 			int fixCost = Integer.parseInt(tokens[costScenarioColumn]);
 			
-			VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance(vehicleId, capacity);
+			VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance(vehicleId).addCapacityDimension(0, capacity);
 			typeBuilder.setFixedCost(fixCost).setCostPerDistance(1.0);
 			
 			VehicleTypeImpl type = typeBuilder.build();
 			
 			Vehicle reprVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(start).setLatestArrival(end).
-					setLocationId(locationId).setLocationCoord(coord).setType(type).build();
+					setStartLocationId(locationId).setStartLocationCoordinate(coord).setType(type).build();
 			
 			vrpBuilder.addVehicle(reprVehicle);
 			

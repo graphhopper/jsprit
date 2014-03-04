@@ -75,7 +75,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		int depotCounter = 1;
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second)){
 			for(int i=0;i<nuOfVehicles;i++){
-				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type", capacity).setCostPerDistance(1.0).build();
+				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type").addCapacityDimension(0, capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
 				vehicleBuilder.setStartLocationCoordinate(depotCoord);

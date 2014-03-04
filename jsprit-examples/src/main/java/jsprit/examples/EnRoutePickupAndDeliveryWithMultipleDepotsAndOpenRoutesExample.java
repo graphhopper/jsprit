@@ -51,7 +51,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 2);
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 2);
 		vehicleTypeBuilder.setCostPerDistance(1.0);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
@@ -85,29 +85,29 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
 
 		 */
 		
-		Shipment shipment1 = Shipment.Builder.newInstance("1", 1).setPickupCoord(Coordinate.newInstance(5, 7)).setDeliveryCoord(Coordinate.newInstance(6, 9)).build();
-		Shipment shipment2 = Shipment.Builder.newInstance("2", 1).setPickupCoord(Coordinate.newInstance(5, 13)).setDeliveryCoord(Coordinate.newInstance(6, 11)).build();
+		Shipment shipment1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(5, 7)).setDeliveryCoord(Coordinate.newInstance(6, 9)).build();
+		Shipment shipment2 = Shipment.Builder.newInstance("2").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(5, 13)).setDeliveryCoord(Coordinate.newInstance(6, 11)).build();
 		
-		Shipment shipment3 = Shipment.Builder.newInstance("3", 1).setPickupCoord(Coordinate.newInstance(15, 7)).setDeliveryCoord(Coordinate.newInstance(14, 9)).build();
-		Shipment shipment4 = Shipment.Builder.newInstance("4", 1).setPickupCoord(Coordinate.newInstance(15, 13)).setDeliveryCoord(Coordinate.newInstance(14, 11)).build();
+		Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(15, 7)).setDeliveryCoord(Coordinate.newInstance(14, 9)).build();
+		Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(15, 13)).setDeliveryCoord(Coordinate.newInstance(14, 11)).build();
 		
-		Shipment shipment5 = Shipment.Builder.newInstance("5", 1).setPickupCoord(Coordinate.newInstance(25, 27)).setDeliveryCoord(Coordinate.newInstance(26, 29)).build();
-		Shipment shipment6 = Shipment.Builder.newInstance("6", 1).setPickupCoord(Coordinate.newInstance(25, 33)).setDeliveryCoord(Coordinate.newInstance(26, 31)).build();
+		Shipment shipment5 = Shipment.Builder.newInstance("5").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(25, 27)).setDeliveryCoord(Coordinate.newInstance(26, 29)).build();
+		Shipment shipment6 = Shipment.Builder.newInstance("6").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(25, 33)).setDeliveryCoord(Coordinate.newInstance(26, 31)).build();
 		
-		Shipment shipment7 = Shipment.Builder.newInstance("7", 1).setPickupCoord(Coordinate.newInstance(35, 27)).setDeliveryCoord(Coordinate.newInstance(34, 29)).build();
-		Shipment shipment8 = Shipment.Builder.newInstance("8", 1).setPickupCoord(Coordinate.newInstance(35, 33)).setDeliveryCoord(Coordinate.newInstance(34, 31)).build();
+		Shipment shipment7 = Shipment.Builder.newInstance("7").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(35, 27)).setDeliveryCoord(Coordinate.newInstance(34, 29)).build();
+		Shipment shipment8 = Shipment.Builder.newInstance("8").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(35, 33)).setDeliveryCoord(Coordinate.newInstance(34, 31)).build();
 		
-		Shipment shipment9 = Shipment.Builder.newInstance("9", 1).setPickupCoord(Coordinate.newInstance(5, 27)).setDeliveryCoord(Coordinate.newInstance(6, 29)).build();
-		Shipment shipment10 = Shipment.Builder.newInstance("10", 1).setPickupCoord(Coordinate.newInstance(5, 33)).setDeliveryCoord(Coordinate.newInstance(6, 31)).build();
+		Shipment shipment9 = Shipment.Builder.newInstance("9").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(5, 27)).setDeliveryCoord(Coordinate.newInstance(6, 29)).build();
+		Shipment shipment10 = Shipment.Builder.newInstance("10").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(5, 33)).setDeliveryCoord(Coordinate.newInstance(6, 31)).build();
 		
-		Shipment shipment11 = Shipment.Builder.newInstance("11", 1).setPickupCoord(Coordinate.newInstance(15, 27)).setDeliveryCoord(Coordinate.newInstance(14, 29)).build();
-		Shipment shipment12 = Shipment.Builder.newInstance("12", 1).setPickupCoord(Coordinate.newInstance(15, 33)).setDeliveryCoord(Coordinate.newInstance(14, 31)).build();
+		Shipment shipment11 = Shipment.Builder.newInstance("11").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(15, 27)).setDeliveryCoord(Coordinate.newInstance(14, 29)).build();
+		Shipment shipment12 = Shipment.Builder.newInstance("12").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(15, 33)).setDeliveryCoord(Coordinate.newInstance(14, 31)).build();
 		
-		Shipment shipment13 = Shipment.Builder.newInstance("13", 1).setPickupCoord(Coordinate.newInstance(25, 7)).setDeliveryCoord(Coordinate.newInstance(26, 9)).build();
-		Shipment shipment14 = Shipment.Builder.newInstance("14", 1).setPickupCoord(Coordinate.newInstance(25, 13)).setDeliveryCoord(Coordinate.newInstance(26, 11)).build();
+		Shipment shipment13 = Shipment.Builder.newInstance("13").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(25, 7)).setDeliveryCoord(Coordinate.newInstance(26, 9)).build();
+		Shipment shipment14 = Shipment.Builder.newInstance("14").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(25, 13)).setDeliveryCoord(Coordinate.newInstance(26, 11)).build();
 		
-		Shipment shipment15 = Shipment.Builder.newInstance("15", 1).setPickupCoord(Coordinate.newInstance(35, 7)).setDeliveryCoord(Coordinate.newInstance(34, 9)).build();
-		Shipment shipment16 = Shipment.Builder.newInstance("16", 1).setPickupCoord(Coordinate.newInstance(35, 13)).setDeliveryCoord(Coordinate.newInstance(34, 11)).build();
+		Shipment shipment15 = Shipment.Builder.newInstance("15").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(35, 7)).setDeliveryCoord(Coordinate.newInstance(34, 9)).build();
+		Shipment shipment16 = Shipment.Builder.newInstance("16").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(35, 13)).setDeliveryCoord(Coordinate.newInstance(34, 11)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

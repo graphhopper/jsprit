@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
@@ -97,7 +98,7 @@ public class CordeauReader {
 				int duration = Integer.parseInt(tokens[0].trim());
 				if(duration == 0) duration = 999999;
 				int capacity = Integer.parseInt(tokens[1].trim());
-				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance(counter + "_cordeauType", capacity).
+				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance(counter + "_cordeauType").addCapacityDimension(0, capacity).
 						setCostPerDistance(1.0).setFixedCost(0).build();
 				List<Builder> builders = new ArrayList<VehicleImpl.Builder>();
 				for(int vehicleCounter=0;vehicleCounter<nOfVehiclesAtEachDepot;vehicleCounter++){
@@ -112,29 +113,30 @@ public class CordeauReader {
 				Coordinate customerCoord = makeCoord(tokens[1].trim(),tokens[2].trim());
 				double serviceTime = Double.parseDouble(tokens[3].trim());
 				int demand = Integer.parseInt(tokens[4].trim());
-				Service service = Service.Builder.newInstance(id, demand).setServiceTime(serviceTime).setLocationId(id).setCoord(customerCoord).build();
+				Service service = Service.Builder.newInstance(id).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocationId(id).setCoord(customerCoord).build();
 				vrpBuilder.addJob(service);				
 			}
 			else if(counter <= (nOfCustomers+nOfDepots+nOfDepots)){
 				Coordinate depotCoord = makeCoord(tokens[1].trim(),tokens[2].trim());
 				List<Builder> vBuilders = vehiclesAtDepot.get(depotCounter);
-				int cap = 0;
+//				int cap = 0;
+				Capacity cap = Capacity.Builder.newInstance().build();
 				double latestArrTime = 0.0;
 				Coordinate coord = null;
 				String typeId = null;
 				for(Builder vBuilder : vBuilders){
-					vBuilder.setLocationCoord(depotCoord);
+					vBuilder.setStartLocationCoordinate(depotCoord);
 					VehicleImpl vehicle = vBuilder.build();
-					cap = vehicle.getCapacity();
+					cap = vehicle.getType().getCapacityDimensions();
 					typeId = vehicle.getType().getTypeId();
 					latestArrTime = vehicle.getLatestArrival();
-					coord = vehicle.getCoord();
+					coord = vehicle.getStartLocationCoordinate();
 					vrpBuilder.addVehicle(vehicle);
 				}
 				if(addPenaltyVehicles){
-					VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance(typeId, cap).setCostPerDistance(3.0).setFixedCost(50).build();
+					VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance(typeId).setCapacityDimensions(cap).setCostPerDistance(3.0).setFixedCost(50).build();
 					VehicleImpl penaltyVehicle = VehicleImpl.Builder.newInstance(counter + "_penaltyVehicle").setLatestArrival(latestArrTime)
-							.setType(new PenaltyVehicleType(penaltyType)).setLocationCoord(coord).build();
+							.setType(new PenaltyVehicleType(penaltyType)).setStartLocationCoordinate(coord).build();
 					vrpBuilder.addVehicle(penaltyVehicle);
 				}
 				depotCounter++;
