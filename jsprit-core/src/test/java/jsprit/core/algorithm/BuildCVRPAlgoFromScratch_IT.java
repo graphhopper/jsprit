@@ -108,7 +108,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 
 		vra.addInitialSolution(iniSolution);
 		
-		vra.setNuOfIterations(2000);
+		vra.setNuOfIterations(1000);
 
 	}
 	
