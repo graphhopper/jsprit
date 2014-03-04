@@ -91,7 +91,7 @@ public class BicycleMessenger {
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts,TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 			//make sure vehicle can manage direct path
 			double directArr_at_next = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-			if(directArr_at_next > stateManager.getActivityState(nextAct, StateFactory.createId("latest-act-arrival-time")).toDouble()){
+			if(directArr_at_next > stateManager.getActivityState(nextAct, StateFactory.createId("latest-act-arrival-time"),Double.class)){
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
 			
@@ -108,7 +108,7 @@ public class BicycleMessenger {
 			double departureTime_at_newAct = arrivalTime_at_newAct + newAct.getOperationTime();
 			double arrTimeAtNextAct = departureTime_at_newAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), departureTime_at_newAct, iFacts.getNewDriver(), iFacts.getNewVehicle());;
 			//here you need an activity state
-			if(arrTimeAtNextAct > stateManager.getActivityState(nextAct, StateFactory.createId("latest-act-arrival-time")).toDouble()){
+			if(arrTimeAtNextAct > stateManager.getActivityState(nextAct, StateFactory.createId("latest-act-arrival-time"),Double.class)){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
 			return ConstraintsStatus.FULFILLED;
@@ -190,7 +190,7 @@ public class BicycleMessenger {
 			double potentialLatestArrivalTimeAtCurrAct = 
 					latestArrivalTime_at_prevAct - routingCosts.getBackwardTransportTime(activity.getLocationId(), prevAct.getLocationId(), latestArrivalTime_at_prevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
 			double latestArrivalTime_at_activity = Math.min(3*timeOfNearestMessenger, potentialLatestArrivalTimeAtCurrAct);
-			stateManager.putActivityState(activity, StateFactory.createId("latest-act-arrival-time"), StateFactory.createState(latestArrivalTime_at_activity));
+			stateManager.putTypedActivityState(activity, StateFactory.createId("latest-act-arrival-time"), Double.class, latestArrivalTime_at_activity);
 			assert activity.getArrTime() <= latestArrivalTime_at_activity : "this must not be since it breaks condition; actArrTime: " + activity.getArrTime() + " latestArrTime: " + latestArrivalTime_at_activity + " vehicle: " + route.getVehicle().getId();
 			latestArrivalTime_at_prevAct = latestArrivalTime_at_activity;
 			prevAct = activity;
@@ -221,7 +221,7 @@ public class BicycleMessenger {
 		//define stateManager to update the required activity-state: "latest-activity-start-time"
 		StateManager stateManager = new StateManager(routingCosts);
 		//default states makes it more comfortable since state has a value and cannot be null (thus u dont need to check nulls)
-		stateManager.addDefaultActivityState(StateFactory.createId("latest-act-arrival-time"), StateFactory.createState(Double.MAX_VALUE));
+		stateManager.addDefaultActivityState(StateFactory.createId("latest-act-arrival-time"), Double.class, Double.MAX_VALUE);
 		
 		//add the above problem-constraints
 		problemBuilder.addConstraint(new ThreeTimesLessThanBestDirectRouteConstraint(nearestMessengers, routingCosts, stateManager));
@@ -317,7 +317,7 @@ public class BicycleMessenger {
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			//define your envelope which is basically a shipment from A to B
-			Shipment envelope = Shipment.Builder.newInstance(tokens[1], 1).setPickupCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
+			Shipment envelope = Shipment.Builder.newInstance(tokens[1]).addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
 					.setDeliveryCoord(Coordinate.newInstance(Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]))).build();
 			problemBuilder.addJob(envelope);
 		}
@@ -328,7 +328,7 @@ public class BicycleMessenger {
 		BufferedReader reader = new BufferedReader(new FileReader(new File("input/bicycle_messenger_supply.txt")));
 		String line = null;
 		boolean firstLine = true;
-		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType", 15).setCostPerDistance(1).build();
+		VehicleType messengerType = VehicleTypeImpl.Builder.newInstance("messengerType").addCapacityDimension(0, 15).setCostPerDistance(1).build();
 		/*
 		 * the algo requires some time and space to search for a valid solution. if you ommit a penalty-type, it probably throws an Exception once it cannot insert an envelope anymore
 		 * thus, give it space by defining a penalty/shadow vehicle with higher variable and fixed costs to up the pressure to find solutions without penalty type

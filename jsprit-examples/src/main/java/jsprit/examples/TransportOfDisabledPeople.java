@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -173,9 +174,10 @@ public class TransportOfDisabledPeople {
 		/*
 		 * plot problem without solution
 		 */
-//		Plotter problemPlotter = new Plotter(problem);
-//		problemPlotter.plotShipments(true);
-//		problemPlotter.plot("output/enRoutePickupAndDeliveryWithMultipleLocationsExample_problem.png", "en-route pickup and delivery");
+		Plotter problemPlotter = new Plotter(problem);
+		problemPlotter.plotShipments(true);
+		problemPlotter.setLabel(jsprit.analysis.toolbox.Plotter.Label.SIZE);
+		problemPlotter.plot("output/transportOfDisabledPeopleExample_problem.png", "disabled people tp");
 //		
 //		/*
 //		 * plot problem with solution
