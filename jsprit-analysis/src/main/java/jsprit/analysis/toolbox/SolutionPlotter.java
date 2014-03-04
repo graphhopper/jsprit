@@ -56,6 +56,8 @@ import org.jfree.data.xy.XYSeriesCollection;
  * @author stefan schroeder
  *
  */
+
+@Deprecated
 public class SolutionPlotter {
 	
 	private static class NoLocationFoundException extends Exception{
