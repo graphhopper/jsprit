@@ -50,7 +50,7 @@ public class ChristophidesReaderTest {
 		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		for(Vehicle v : vrp.getVehicles()){
-			assertEquals(160,v.getCapacity());
+			assertEquals(160,v.getType().getCapacityDimensions().get(0));
 		}
 	}
 	
@@ -60,8 +60,8 @@ public class ChristophidesReaderTest {
 		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		for(Vehicle v : vrp.getVehicles()){
-			assertEquals(30.0,v.getCoord().getX(),0.01);
-			assertEquals(40.0,v.getCoord().getY(),0.01);
+			assertEquals(30.0,v.getStartLocationCoordinate().getX(),0.01);
+			assertEquals(40.0,v.getStartLocationCoordinate().getY(),0.01);
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class ChristophidesReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new ChristofidesReader(builder).read(this.getClass().getClassLoader().getResource("vrpnc1.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(7,vrp.getJobs().get("1").getCapacityDemand());
+		assertEquals(7,vrp.getJobs().get("1").getSize().get(0));
 	}
 	
 	@Test

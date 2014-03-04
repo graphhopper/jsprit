@@ -50,7 +50,7 @@ public class SolomonReaderTest {
 		new SolomonReader(builder).read(this.getClass().getClassLoader().getResource("C101_solomon.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		for(Vehicle v : vrp.getVehicles()){
-			assertEquals(200,v.getCapacity());
+			assertEquals(200,v.getType().getCapacityDimensions().get(0));
 		}
 	}
 	
@@ -60,8 +60,8 @@ public class SolomonReaderTest {
 		new SolomonReader(builder).read(this.getClass().getClassLoader().getResource("C101_solomon.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
 		for(Vehicle v : vrp.getVehicles()){
-			assertEquals(40.0,v.getCoord().getX(),0.01);
-			assertEquals(50.0,v.getCoord().getY(),0.01);
+			assertEquals(40.0,v.getStartLocationCoordinate().getX(),0.01);
+			assertEquals(50.0,v.getStartLocationCoordinate().getY(),0.01);
 		}
 	}
 	
@@ -70,7 +70,7 @@ public class SolomonReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new SolomonReader(builder).read(this.getClass().getClassLoader().getResource("C101_solomon.txt").getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(10,vrp.getJobs().get("1").getCapacityDemand());
+		assertEquals(10,vrp.getJobs().get("1").getSize().get(0));
 	}
 	
 	@Test

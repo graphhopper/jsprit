@@ -60,7 +60,7 @@ public class CordeauReaderTest {
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		for(Vehicle v : vrp.getVehicles()){
-			assertEquals(80, v.getCapacity());
+			assertEquals(80, v.getType().getCapacityDimensions().get(0));
 		}
 	}
 	
@@ -100,7 +100,7 @@ public class CordeauReaderTest {
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Service service = (Service) vrp.getJobs().get("3");
-		assertEquals(16.0, service.getCapacityDemand(), 0.1);	
+		assertEquals(16.0, service.getSize().get(0), 0.1);	
 	}
 	
 	@Test
@@ -109,7 +109,7 @@ public class CordeauReaderTest {
 		new CordeauReader(vrpBuilder).read(this.getClass().getClassLoader().getResource("p01").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Service service = (Service) vrp.getJobs().get("47");
-		assertEquals(25.0, service.getCapacityDemand(), 0.1);	
+		assertEquals(25.0, service.getSize().get(0), 0.1);	
 	}
 	
 	@Test
@@ -123,11 +123,11 @@ public class CordeauReaderTest {
 		boolean loc3ok = false;
 		boolean loc4ok = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getCapacity() != 80) capacityOk = false;
-			if(v.getCoord().getX() == 20.0 && v.getCoord().getY() == 20.0) loc1ok = true;
-			if(v.getCoord().getX() == 30.0 && v.getCoord().getY() == 40.0) loc2ok = true;
-			if(v.getCoord().getX() == 50.0 && v.getCoord().getY() == 30.0) loc3ok = true;
-			if(v.getCoord().getX() == 60.0 && v.getCoord().getY() == 50.0) loc4ok = true;
+			if(v.getType().getCapacityDimensions().get(0) != 80) capacityOk = false;
+			if(v.getStartLocationCoordinate().getX() == 20.0 && v.getStartLocationCoordinate().getY() == 20.0) loc1ok = true;
+			if(v.getStartLocationCoordinate().getX() == 30.0 && v.getStartLocationCoordinate().getY() == 40.0) loc2ok = true;
+			if(v.getStartLocationCoordinate().getX() == 50.0 && v.getStartLocationCoordinate().getY() == 30.0) loc3ok = true;
+			if(v.getStartLocationCoordinate().getX() == 60.0 && v.getStartLocationCoordinate().getY() == 50.0) loc4ok = true;
 		}
 		assertTrue(capacityOk);
 		assertTrue(loc1ok);
