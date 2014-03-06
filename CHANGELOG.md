@@ -2,11 +2,25 @@ Change-log
 ==========
 **v1.2.0** @ 2014-03-06
 
-- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.1_to_1.2.0.txt) (to search for added and deprecated methods and classes)
+- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.1_to_1.2.0.txt) (containing added and deprecated methods and classes)
 
 <em>jsprit-core:</em>
 - added feature: multiple capacity dimensions ([#55](https://github.com/jsprit/jsprit/issues/55))
 - added feature: different start and end locations of routes ([#74](https://github.com/jsprit/jsprit/issues/74))
+- jsprit.core.problem.io.VrpXMLReader$ServiceBuilderFactory: Parameter 3 of 'public jsprit.core.problem.job.Service$Builder createBuilder(java.lang.String, java.lang.String, int)' has changed its type to java.lang.Integer
+- jsprit.core.problem.job.Job: Method 'public jsprit.core.problem.Capacity getSize()' has been added to an interface 
+- jsprit.core.problem.job.Service$Builder: Removed field demand
+- jsprit.core.problem.solution.route.activity.ServiceActivity: Removed field capacityDemand
+- jsprit.core.problem.solution.route.activity.TourActivity: Method 'public jsprit.core.problem.Capacity getSize()' has been added to an interface
+- jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter: Method 'public java.lang.Object getActivityState(jsprit.core.problem.solution.route.activity.TourActivity, jsprit.core.problem.solution.route.state.StateFactory$StateId, java.lang.Class)' has been added to an interface
+- jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter: Method 'public java.lang.Object getRouteState(jsprit.core.problem.solution.route.VehicleRoute, jsprit.core.problem.solution.route.state.StateFactory$StateId, java.lang.Class)' has been added to an interface
+- jsprit.core.problem.vehicle.Vehicle: Method 'public jsprit.core.util.Coordinate getEndLocationCoordinate()' has been added to an interface
+- jsprit.core.problem.vehicle.Vehicle: Method 'public java.lang.String getEndLocationId()' has been added to an interface
+- jsprit.core.problem.vehicle.Vehicle: Method 'public jsprit.core.util.Coordinate getStartLocationCoordinate()' has been added to an interface
+- jsprit.core.problem.vehicle.Vehicle: Method 'public java.lang.String getStartLocationId()' has been added to an interface
+- jsprit.core.problem.vehicle.VehicleFleetManager: Method 'public java.util.Collection getAvailableVehicles(jsprit.core.problem.vehicle.Vehicle)' has been added to an interface
+- jsprit.core.problem.vehicle.VehicleType: Method 'public jsprit.core.problem.Capacity getCapacityDimensions()' has been added to an interface
+- jsprit.core.util.VrpVerifier: Class jsprit.core.util.VrpVerifier removed
 
 
 <em>jsprit-analysis:</em>
