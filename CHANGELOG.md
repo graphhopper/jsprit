@@ -1,5 +1,15 @@
 Change-log
 ==========
+**v1.2.0** @ 2014-03-06
+
+- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.1_to_1.2.0.txt)
+
+<em>jsprit-core:</em>
+
+<em>jsprit-analysis:</em>
+
+<em>jsprit-example:</em>
+
 **v1.1.1** @ 2014-01-31
 
 <em>jsprit-core:</em>
