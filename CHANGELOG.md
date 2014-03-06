@@ -23,9 +23,6 @@ Change-log
 - jsprit.core.util.VrpVerifier: Class jsprit.core.util.VrpVerifier removed <b>[potential Break Change]</b>
 
 
-<em>jsprit-analysis:</em>
-
-<em>jsprit-example:</em>
 
 **v1.1.1** @ 2014-01-31
 
