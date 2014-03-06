@@ -2,7 +2,7 @@ Change-log
 ==========
 **v1.2.0** @ 2014-03-06
 
-- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.1_to_1.2.0.txt)
+- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.1_to_1.2.0.txt) (to search for added and deprecated methods and classes)
 
 <em>jsprit-core:</em>
 - added feature: multiple capacity dimensions ([#55](https://github.com/jsprit/jsprit/issues/55))
