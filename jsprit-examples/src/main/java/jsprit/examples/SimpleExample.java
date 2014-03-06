@@ -40,6 +40,8 @@ import jsprit.util.Examples;
 
 public class SimpleExample {
 	
+	
+	
 	public static void main(String[] args) {
 		/*
 		 * some preparation - create output folder
@@ -47,9 +49,10 @@ public class SimpleExample {
 		Examples.createOutputFolder();
 		
 		/*
-		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
+		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and one capacity dimension, i.e. weight, and capacity dimension value of 2
 		 */
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 2);
+		final int WEIGHT_INDEX = 0;
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(WEIGHT_INDEX, 2);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
 		/*
@@ -63,11 +66,11 @@ public class SimpleExample {
 		/*
 		 * build services at the required locations, each with a capacity-demand of 1.
 		 */
-		Service service1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 7)).build();
-		Service service2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 13)).build();
+		Service service1 = Service.Builder.newInstance("1").addSizeDimension(WEIGHT_INDEX, 1).setCoord(Coordinate.newInstance(5, 7)).build();
+		Service service2 = Service.Builder.newInstance("2").addSizeDimension(WEIGHT_INDEX, 1).setCoord(Coordinate.newInstance(5, 13)).build();
 		
-		Service service3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 7)).build();
-		Service service4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 13)).build();
+		Service service3 = Service.Builder.newInstance("3").addSizeDimension(WEIGHT_INDEX, 1).setCoord(Coordinate.newInstance(15, 7)).build();
+		Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX, 1).setCoord(Coordinate.newInstance(15, 13)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
