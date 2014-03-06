@@ -1,10 +1,13 @@
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Delivery;
 
 public final class DeliverService implements DeliveryActivity{
 	
 	private Delivery delivery;
+	
+	private Capacity capacity;
 	
 	private double arrTime;
 	
@@ -13,14 +16,20 @@ public final class DeliverService implements DeliveryActivity{
 	public DeliverService(Delivery delivery) {
 		super();
 		this.delivery = delivery;
+		capacity = Capacity.invert(delivery.getSize());
 	}
 	
 	private DeliverService(DeliverService deliveryActivity){
 		this.delivery=deliveryActivity.getJob();
 		this.arrTime=deliveryActivity.getArrTime();
 		this.endTime=deliveryActivity.getEndTime();
+		capacity = deliveryActivity.getSize();
 	}
 
+	/**
+	 * @deprecated use <code>getCapacity()</code> instead
+	 */
+	@Deprecated
 	@Override
 	public int getCapacityDemand() {
 		return delivery.getCapacityDemand()*-1;
@@ -84,5 +93,10 @@ public final class DeliverService implements DeliveryActivity{
 	@Override
 	public String toString() {
 		return "[act="+getName()+"][capDemand="+getCapacityDemand()+"][loc="+getLocationId()+"]";
+	}
+
+	@Override
+	public Capacity getSize() {
+		return capacity;
 	}
 }

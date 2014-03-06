@@ -17,7 +17,9 @@
 package jsprit.core.problem.job;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertNotNull;
+
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
@@ -28,11 +30,11 @@ import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
 
-
+@SuppressWarnings("deprecation")
 public class ServiceTest {
 	
 	@Test
-	public void whenTwoServicesHaveTheSameId_theyReferencesShouldBeUnEqual(){
+	public void whenTwoServicesHaveTheSameId_theirReferencesShouldBeUnEqual(){
 		Service one = Service.Builder.newInstance("service", 10).setLocationId("foo").build();
 		Service two = Service.Builder.newInstance("service", 10).setLocationId("fo").build();
 		
@@ -56,9 +58,40 @@ public class ServiceTest {
 //		assertTrue(serviceSet.contains(two));
 		serviceSet.remove(two);
 		assertTrue(serviceSet.isEmpty());
-		
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void whenCapacityDimValueIsNegative_throwIllegalStateExpception(){
+		@SuppressWarnings("unused")
+		Service s = Service.Builder.newInstance("s").setLocationId("foo").addSizeDimension(0, -10).build();
+	}
+	
+	@Test
+	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
+		Service one = Service.Builder.newInstance("s").setLocationId("foofoo")
+				.addSizeDimension(0,2)
+				.addSizeDimension(1,4)
+				.build();
+		assertEquals(2,one.getSize().getNuOfDimensions());
+	}
+	
+	@Test
+	public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
+		Service one = Service.Builder.newInstance("s").setLocationId("foofoo")
+				.build();
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(0,one.getSize().get(0));
+	}
+	
+	@Test
+	public void whenShipmentIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
+		Service one = Service.Builder.newInstance("s",1).setLocationId("foofoo")
+				.build();
+		assertEquals(1,one.getCapacityDemand());
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(1,one.getSize().get(0));
+	}
+
 	@Test
 	public void whenCallingForNewInstanceOfBuilder_itShouldReturnBuilderCorrectly(){
 		Service.Builder builder = Service.Builder.newInstance("s", 0);
@@ -115,4 +148,5 @@ public class ServiceTest {
 		assertEquals(1.0,s.getTimeWindow().getStart(),0.01);
 		assertEquals(2.0,s.getTimeWindow().getEnd(),0.01);
 	}
+
 }

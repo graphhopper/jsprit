@@ -1,5 +1,6 @@
 package jsprit.core.problem.vehicle;
 
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
@@ -196,5 +197,6 @@ public class VehicleImplTest {
 		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("start").setReturnToDepot(false).build();
 		assertTrue(true);
 	}
+
 
 }

@@ -35,7 +35,7 @@ import jsprit.core.util.CalculationUtils;
 			}
 			//			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
 			double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-			double latestArrTimeAtNewAct = states.getActivityState(newAct, StateFactory.LATEST_OPERATION_START_TIME).toDouble();
+			double latestArrTimeAtNewAct = states.getActivityState(newAct, StateFactory.LATEST_OPERATION_START_TIME, Double.class);
 			
 			if(arrTimeAtNewAct > latestArrTimeAtNewAct){
 				return ConstraintsStatus.NOT_FULFILLED;
@@ -43,7 +43,7 @@ import jsprit.core.util.CalculationUtils;
 //			log.info(newAct + " arrTime=" + arrTimeAtNewAct);
 			double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
 			double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
-			double latestArrTimeAtNextAct = states.getActivityState(nextAct, StateFactory.LATEST_OPERATION_START_TIME).toDouble();
+			double latestArrTimeAtNextAct = states.getActivityState(nextAct, StateFactory.LATEST_OPERATION_START_TIME, Double.class);
 			if(arrTimeAtNextAct > latestArrTimeAtNextAct){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}

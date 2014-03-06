@@ -22,7 +22,7 @@ public class VariablePlusFixedSolutionCostCalculatorFactory {
 			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double c = 0.0;
 				for(VehicleRoute r : solution.getRoutes()){
-					c += stateManager.getRouteState(r, StateFactory.COSTS).toDouble();
+					c += stateManager.getRouteState(r, StateFactory.COSTS,Double.class);
 					c += r.getVehicle().getType().getVehicleCostParams().fix;
 				}
 				return c;

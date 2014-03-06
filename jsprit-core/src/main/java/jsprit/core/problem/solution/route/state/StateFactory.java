@@ -47,6 +47,7 @@ public class StateFactory {
 		
 	}
 	
+		
 	static class StateImpl implements State{
 		double state;
 

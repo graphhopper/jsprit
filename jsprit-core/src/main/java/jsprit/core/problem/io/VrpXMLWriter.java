@@ -174,7 +174,10 @@ public class VrpXMLWriter {
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").coord[@x]", service.getCoord().getX());
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").coord[@y]", service.getCoord().getY());
 			}
-			xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-demand", service.getCapacityDemand());
+			for(int i=0;i<service.getSize().getNuOfDimensions();i++){
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")[@index]", i);
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")", service.getSize().get(i));
+			}
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").duration", service.getServiceDuration());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").timeWindows.timeWindow(0).start", service.getTimeWindow().getStart());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").timeWindows.timeWindow(0).end", service.getTimeWindow().getEnd());
@@ -212,8 +215,10 @@ public class VrpXMLWriter {
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).start", shipment.getDeliveryTimeWindow().getStart());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).end", shipment.getDeliveryTimeWindow().getEnd());
 			
-			
-			xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-demand", shipment.getCapacityDemand());
+			for(int i=0;i<shipment.getSize().getNuOfDimensions();i++){
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")[@index]", i);
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")", shipment.getSize().get(i));
+			}
 			counter++;
 		}
 	}
@@ -262,7 +267,12 @@ public class VrpXMLWriter {
 				xmlConfig.setProperty(typePathString + "("+typeCounter+")[@penaltyFactor]", ((PenaltyVehicleType)type).getPenaltyFactor());
 			}
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").id", type.getTypeId());
-			xmlConfig.setProperty(typePathString + "("+typeCounter+").capacity", type.getCapacity());
+			
+			for(int i=0;i<type.getCapacityDimensions().getNuOfDimensions();i++){
+				xmlConfig.setProperty(typePathString + "("+typeCounter+").capacity-dimensions.dimension("+i+")[@index]", i);
+				xmlConfig.setProperty(typePathString + "("+typeCounter+").capacity-dimensions.dimension("+i+")", type.getCapacityDimensions().get(i));
+			}
+			
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.fixed", type.getVehicleCostParams().fix);
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.distance", type.getVehicleCostParams().perDistanceUnit);
 			xmlConfig.setProperty(typePathString + "("+typeCounter+").costs.time", type.getVehicleCostParams().perTimeUnit);

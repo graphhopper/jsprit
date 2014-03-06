@@ -53,12 +53,12 @@ public class CostMatrixExample {
 		 */
 		Examples.createOutputFolder();
 		
-		VehicleType type = VehicleTypeImpl.Builder.newInstance("type", 2).setCostPerDistance(1).setCostPerTime(2).build();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).setCostPerDistance(1).setCostPerTime(2).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("0").setType(type).build();
 		
-		Service s1 = Service.Builder.newInstance("1", 1).setLocationId("1").build();
-		Service s2 = Service.Builder.newInstance("2", 1).setLocationId("2").build();
-		Service s3 = Service.Builder.newInstance("3", 1).setLocationId("3").build();
+		Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocationId("1").build();
+		Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocationId("2").build();
+		Service s3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setLocationId("3").build();
 		
 		
 		/*

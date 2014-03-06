@@ -7,23 +7,8 @@
      </problemType>
      <vehicles>
           <vehicle>
-               <id>v1</id>
-               <typeId>vehType</typeId>
-               <startLocation>
-                    <id>loc</id>
-               </startLocation>
-               <endLocation>
-                    <id>loc</id>
-               </endLocation>
-               <timeSchedule>
-                    <start>0.0</start>
-                    <end>1.7976931348623157E308</end>
-               </timeSchedule>
-               <returnToDepot>false</returnToDepot>
-          </vehicle>
-          <vehicle>
-               <id>v2</id>
-               <typeId>vehType2</typeId>
+               <id>v</id>
+               <typeId>type</typeId>
                <startLocation>
                     <id>startLoc</id>
                     <coord x="1.0" y="2.0"/>
@@ -41,17 +26,20 @@
      </vehicles>
      <vehicleTypes>
           <type>
-               <id>vehType</id>
-               <capacity>20</capacity>
-               <costs>
-                    <fixed>0.0</fixed>
-                    <distance>1.0</distance>
-                    <time>0.0</time>
-               </costs>
-          </type>
-          <type>
-               <id>vehType2</id>
-               <capacity>200</capacity>
+               <id>type</id>
+               <capacity-dimensions>
+                    <dimension index="0">100</dimension>
+                    <dimension index="1">1000</dimension>
+                    <dimension index="2">0</dimension>
+                    <dimension index="3">0</dimension>
+                    <dimension index="4">0</dimension>
+                    <dimension index="5">0</dimension>
+                    <dimension index="6">0</dimension>
+                    <dimension index="7">0</dimension>
+                    <dimension index="8">0</dimension>
+                    <dimension index="9">0</dimension>
+                    <dimension index="10">10000</dimension>
+               </capacity-dimensions>
                <costs>
                     <fixed>0.0</fixed>
                     <distance>1.0</distance>
@@ -59,28 +47,4 @@
                </costs>
           </type>
      </vehicleTypes>
-     <services>
-          <service id="2" type="service">
-               <locationId>loc2</locationId>
-               <capacity-demand>1</capacity-demand>
-               <duration>4.0</duration>
-               <timeWindows>
-                    <timeWindow>
-                         <start>0.0</start>
-                         <end>1.7976931348623157E308</end>
-                    </timeWindow>
-               </timeWindows>
-          </service>
-          <service id="1" type="service">
-               <locationId>loc</locationId>
-               <capacity-demand>1</capacity-demand>
-               <duration>2.0</duration>
-               <timeWindows>
-                    <timeWindow>
-                         <start>0.0</start>
-                         <end>1.7976931348623157E308</end>
-                    </timeWindow>
-               </timeWindows>
-          </service>
-     </services>
 </problem>

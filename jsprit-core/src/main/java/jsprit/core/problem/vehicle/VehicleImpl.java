@@ -87,7 +87,7 @@ public class VehicleImpl implements Vehicle {
 		
 		private boolean returnToDepot = true;
 		
-		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default", 0).build();
+		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
 		
 		/**
 		 * Constructs the builder with the vehicleId.
@@ -372,6 +372,7 @@ public class VehicleImpl implements Vehicle {
 	}
 
 	@Override
+	@Deprecated
 	public int getCapacity() {
 		return type.getCapacity();
 	}

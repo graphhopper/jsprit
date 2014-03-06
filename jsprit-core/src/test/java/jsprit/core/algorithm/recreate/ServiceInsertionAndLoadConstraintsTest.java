@@ -5,13 +5,6 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 
-import jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator;
-import jsprit.core.algorithm.recreate.Inserter;
-import jsprit.core.algorithm.recreate.InsertionData;
-import jsprit.core.algorithm.recreate.JobCalculatorSwitcher;
-import jsprit.core.algorithm.recreate.LocalActivityInsertionCostsCalculator;
-import jsprit.core.algorithm.recreate.ServiceInsertionCalculator;
-import jsprit.core.algorithm.recreate.ShipmentInsertionCalculator;
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -33,9 +26,7 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
-import jsprit.core.util.Coordinate;
-import jsprit.core.util.Locations;
-import jsprit.core.util.ManhattanCosts;
+import jsprit.core.util.CostFactory;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,19 +70,8 @@ public class ServiceInsertionAndLoadConstraintsTest {
 	
 	@Before
 	public void doBefore(){
-		Locations locations = new Locations(){
-
-			@Override
-			public Coordinate getCoord(String id) {
-				//assume: locationId="x,y"
-				String[] splitted = id.split(",");
-				return Coordinate.newInstance(Double.parseDouble(splitted[0]), 
-						Double.parseDouble(splitted[1]));
-			}
-			
-		};
-		routingCosts = new ManhattanCosts(locations);
-		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 2).setCostPerDistance(1).build();
+		routingCosts = CostFactory.createManhattanCosts();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).setCostPerDistance(1).build();
 		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
@@ -105,10 +85,10 @@ public class ServiceInsertionAndLoadConstraintsTest {
 	
 	@Test
 	public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnTheCorrectInsertionIndex(){
-		Delivery delivery = (Delivery) Delivery.Builder.newInstance("del", 41).setLocationId("10,10").build();
-		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick", 15).setLocationId("0,10").build();
+		Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0, 41).setLocationId("10,10").build();
+		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 15).setLocationId("0,10").build();
 		
-		VehicleType type = VehicleTypeImpl.Builder.newInstance("t", 50).setCostPerDistance(1).build();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 50).setCostPerDistance(1).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		
 		VehicleRoute route = VehicleRoute.emptyRoute();
@@ -117,18 +97,10 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		Inserter inserter = new Inserter(new InsertionListeners());
 		
 		inserter.insertJob(delivery, new InsertionData(0,0,0,vehicle,null), route);
-//		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
-//		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
-		
-		
-		
-//		RouteActivityVisitor routeActVisitor = new RouteActivityVisitor();
-//		routeActVisitor.addActivityVisitor(new UpdateLoads(stateManager));
-//		routeActVisitor.visit(route);
 		
 		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
-		StateManager stateManager = new StateManager(vrp);
+		StateManager stateManager = new StateManager(vrp.getTransportCosts());
 		stateManager.updateLoadStates();
 		
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);

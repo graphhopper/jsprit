@@ -1,12 +1,15 @@
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 
 public final class PickupShipment implements PickupActivity{
 
 	private Shipment shipment;
+	
 	private double endTime;
+	
 	private double arrTime;
 	
 	public PickupShipment(Shipment shipment) {
@@ -25,6 +28,10 @@ public final class PickupShipment implements PickupActivity{
 		return shipment;
 	}
 
+	/**
+	 * @deprecated use <code>getCapacity()</code> instead
+	 */
+	@Deprecated
 	@Override
 	public int getCapacityDemand() {
 		return shipment.getCapacityDemand();
@@ -84,5 +91,12 @@ public final class PickupShipment implements PickupActivity{
 	public String toString() {
 		return "[act="+getName()+"][loc="+getLocationId()+"]";
 	}
+
+	@Override
+	public Capacity getSize() {
+		return shipment.getSize();
+	}
+
+
 
 }

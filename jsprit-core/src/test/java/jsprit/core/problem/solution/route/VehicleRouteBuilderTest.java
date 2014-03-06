@@ -3,6 +3,7 @@ package jsprit.core.problem.solution.route;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -30,6 +31,8 @@ public class VehicleRouteBuilderTest {
 	@Test(expected=IllegalStateException.class)
 	public void whenShipmentIsPickedDeliveredAndDeliveredAgain_throwsException(){
 		Shipment s = mock(Shipment.class);
+		Capacity capacity = Capacity.Builder.newInstance().build();
+		when(s.getSize()).thenReturn(capacity);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
 		builder.addPickup(s);
 		builder.addDelivery(s);
@@ -39,6 +42,8 @@ public class VehicleRouteBuilderTest {
 	@Test(expected=IllegalStateException.class)
 	public void whenShipmentIsPickedUpThoughButHasNotBeenDeliveredAndRouteIsBuilt_throwsException(){
 		Shipment s = mock(Shipment.class);
+		Capacity capacity = Capacity.Builder.newInstance().build();
+		when(s.getSize()).thenReturn(capacity);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(mock(Shipment.class));
@@ -50,6 +55,9 @@ public class VehicleRouteBuilderTest {
 	public void whenTwoShipmentsHaveBeenAdded_nuOfActivitiesMustEqualFour(){
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
+		Capacity capacity = Capacity.Builder.newInstance().build();
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(s2);
@@ -63,6 +71,9 @@ public class VehicleRouteBuilderTest {
 	public void whenBuildingClosedRoute_routeEndShouldHaveLocationOfVehicle(){
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
+		Capacity capacity = Capacity.Builder.newInstance().build();
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
@@ -80,6 +91,9 @@ public class VehicleRouteBuilderTest {
 	public void whenBuildingOpenRoute_routeEndShouldHaveLocationOfLastActivity(){
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
+		Capacity capacity = Capacity.Builder.newInstance().build();
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		when(s2.getDeliveryLocation()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
@@ -97,6 +111,9 @@ public class VehicleRouteBuilderTest {
 	public void whenSettingDepartureTime(){
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
+		Capacity capacity = Capacity.Builder.newInstance().build();
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		when(s2.getDeliveryLocation()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
@@ -117,6 +134,9 @@ public class VehicleRouteBuilderTest {
 	public void whenSettingEndTime(){
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
+		Capacity capacity = Capacity.Builder.newInstance().build();
+		when(s.getSize()).thenReturn(capacity);
+		when(s2.getSize()).thenReturn(capacity);
 		when(s2.getDeliveryLocation()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);

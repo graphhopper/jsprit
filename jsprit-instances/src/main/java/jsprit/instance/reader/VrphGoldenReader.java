@@ -78,14 +78,14 @@ public class VrphGoldenReader {
 					depotCoord = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
 				}
 				else{
-					Service.Builder serviceBuilder = Service.Builder.newInstance(tokens[0], Integer.parseInt(tokens[3]));
+					Service.Builder serviceBuilder = Service.Builder.newInstance(tokens[0]).addSizeDimension(0, Integer.parseInt(tokens[3]));
 					serviceBuilder.setCoord(Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])));
 					vrpBuilder.addJob(serviceBuilder.build());
 				}
 				customerCount++;
 			}
 			else if(trimedLine.startsWith("v")){
-				VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("type_"+tokens[1], Integer.parseInt(tokens[2]));
+				VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("type_"+tokens[1]).addCapacityDimension(0, Integer.parseInt(tokens[2]));
 				int nuOfVehicles = 1;
 				if(vrphType.equals(VrphType.FSMF)){
 					typeBuilder.setFixedCost(Double.parseDouble(tokens[3]));
@@ -125,7 +125,7 @@ public class VrphGoldenReader {
 				for(int i=0;i<nuOfVehicles;i++){
 					VehicleTypeImpl type = typeBuilder.build();
 					Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle_"+tokens[1]+"_"+i)
-							.setLocationCoord(depotCoord).setType(type).build();
+							.setStartLocationCoordinate(depotCoord).setType(type).build();
 					vrpBuilder.addVehicle(vehicle);
 				}
 			}

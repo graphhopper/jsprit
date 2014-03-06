@@ -50,7 +50,7 @@ public class SimpleVRPWithBackhaulsExample {
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 2);
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 2);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
 		/*
@@ -64,11 +64,11 @@ public class SimpleVRPWithBackhaulsExample {
 		/*
 		 * build pickups and deliveries at the required locations, each with a capacity-demand of 1.
 		 */
-		Pickup pickup1 = (Pickup) Pickup.Builder.newInstance("1", 1).setCoord(Coordinate.newInstance(5, 7)).build();
-		Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("2", 1).setCoord(Coordinate.newInstance(5, 13)).build();
+		Pickup pickup1 = (Pickup) Pickup.Builder.newInstance("1").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 7)).build();
+		Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("2").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 13)).build();
 		
-		Pickup pickup2 = (Pickup) Pickup.Builder.newInstance("3", 1).setCoord(Coordinate.newInstance(15, 7)).build();
-		Delivery delivery2 = (Delivery) Delivery.Builder.newInstance("4", 1).setCoord(Coordinate.newInstance(15, 13)).build();
+		Pickup pickup2 = (Pickup) Pickup.Builder.newInstance("3").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 7)).build();
+		Delivery delivery2 = (Delivery) Delivery.Builder.newInstance("4").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 13)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

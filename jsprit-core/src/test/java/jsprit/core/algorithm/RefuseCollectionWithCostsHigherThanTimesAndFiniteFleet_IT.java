@@ -106,30 +106,6 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
 		}
 	}
 	
-//	static class RoutingCosts extends AbstractForwardVehicleRoutingTransportCosts {
-//
-//		private Map<RelationKey,Integer> distances;
-//		
-//		public RoutingCosts(Map<RelationKey, Integer> distances) {
-//			super();
-//			this.distances = distances;
-//		}
-//
-//		@Override
-//		public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-//			return getTransportCost(fromId, toId, departureTime, driver, vehicle)/2.;
-//		}
-//
-//		@Override
-//		public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-//			if(fromId.equals(toId)) return 0.0;
-//			RelationKey key = RelationKey.newKey(fromId, toId);
-//			return distances.get(key);
-//		}
-//		
-//	}
-	
-	
 	@Test
 	public void testAlgo(){ 
 	
@@ -137,7 +113,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
 		/*
 		 * create vehicle-type and vehicle
 		 */
-		VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type", 23);
+		VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type").addCapacityDimension(0, 23);
 		typeBuilder.setCostPerDistance(1.0);
 		VehicleTypeImpl bigType = typeBuilder.build();
 		
@@ -198,7 +174,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
 			/*
 			 * build service
 			 */
-			Service service = Service.Builder.newInstance(lineTokens[0], Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
+			Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
 			/*
 			 * and add it to problem
 			 */

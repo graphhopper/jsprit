@@ -30,6 +30,7 @@ import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
@@ -45,14 +46,39 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.solution.route.state.StateFactory.State;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
-import jsprit.core.problem.solution.route.state.StateFactory.States;
 
-
+/**
+ * Manages states.
+ * 
+ * <p>Some condition, rules or constraints are stateful. This StateManager manages these states, i.e. it offers
+ * methods to add, store and retrieve states based on vehicle-routes and tour-activities.
+ * 
+ * @author schroeder
+ *
+ */
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 	
-	private Map<VehicleRoute,States> vehicleRouteStates = new HashMap<VehicleRoute, States>();
+	static class States_ {
+		
+		private Map<StateId,Object> states = new HashMap<StateId,Object>();
+		
+		public <T> void putState(StateId id, Class<T> type, T state){
+			states.put(id, type.cast(state));
+		}
+		
+		public <T> T getState(StateId id, Class<T> type){
+			if(states.containsKey(id)){
+				T s = type.cast(states.get(id));
+				return s;
+			}
+			return null;
+		}
+		
+	}
+
+	private Map<VehicleRoute,States_> vehicleRouteStates_ = new HashMap<VehicleRoute, States_>();
 	
-	private Map<TourActivity,States> activityStates = new HashMap<TourActivity, States>();
+	private Map<TourActivity,States_> activityStates_ = new HashMap<TourActivity, States_>();
 	
 	private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
 	
@@ -66,9 +92,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	private Collection<StateUpdater> updaters = new ArrayList<StateUpdater>();
 	
-	private Map<StateId,State> defaultRouteStates = new HashMap<StateId, State>();
+	private Map<StateId,Object> defaultRouteStates_ = new HashMap<StateId,Object>();
 	
-	private Map<StateId,State> defaultActivityStates = new HashMap<StateId, State>();
+	private Map<StateId,Object> defaultActivityStates_ = new HashMap<StateId,Object>();
 	
 	private VehicleRoutingTransportCosts routingCosts;
 	
@@ -76,79 +102,269 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	private boolean updateTWs = false;
 	
+	/**
+	 * @deprecated use <code>StateManager(VehicleRoutingTransportCosts tpcosts)</code> instead.
+	 * @param vrp
+	 */
+	@Deprecated
 	public StateManager(VehicleRoutingProblem vrp) {
 		super();
 		this.routingCosts = vrp.getTransportCosts();
+		addDefaultStates();
 	}
 	
+	private void addDefaultStates() {
+		defaultActivityStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
+		
+		
+		defaultActivityStates_.put(StateFactory.COSTS, 0.);
+		defaultActivityStates_.put(StateFactory.DURATION, 0.);
+		defaultActivityStates_.put(StateFactory.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultActivityStates_.put(StateFactory.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
+		
+		defaultRouteStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
+		
+		defaultRouteStates_.put(StateFactory.COSTS, 0.);
+		defaultRouteStates_.put(StateFactory.DURATION, 0.);
+		defaultRouteStates_.put(StateFactory.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(StateFactory.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
+		
+		defaultRouteStates_.put(StateFactory.MAXLOAD, Capacity.Builder.newInstance().build());
+		
+		defaultRouteStates_.put(StateFactory.LOAD_AT_END, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(StateFactory.LOAD_AT_BEGINNING, Capacity.Builder.newInstance().build());
+		
+	}
+
 	public StateManager(VehicleRoutingTransportCosts routingCosts){
 		this.routingCosts = routingCosts;
+		addDefaultStates();
 	}
 	
-
+	/**
+	 * @deprecated use the generic methode <code>addDefaultRouteState(StateId stateId, Class<T> type, T defaultState)</code> instead.
+	 * @param stateId
+	 * @param defaultState
+	 */
+	@Deprecated
 	public void addDefaultRouteState(StateId stateId, State defaultState){
-		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-		defaultRouteStates.put(stateId, defaultState);
+		addDefaultRouteState(stateId, State.class, defaultState);
 	}
 	
+	/**
+	 * Generic method to add a default route state.
+	 * 
+	 * <p>for example if you want to store 'maximum weight' at route-level, the default might be zero and you
+	 * can add the default simply by coding <br>
+	 * <code>addDefaultRouteState(StateFactory.createStateId("max_weight"), Integer.class, 0)</code>
+	 * 
+	 * @param stateId
+	 * @param type
+	 * @param defaultState
+	 */
+	public <T> void addDefaultRouteState(StateId stateId, Class<T> type, T defaultState){
+		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
+		defaultRouteStates_.put(stateId, type.cast(defaultState));
+	}
+	
+	/**
+	 * @deprecated use generic method <code>addDefaultActivityState(StateId stateId, Class<T> type, T defaultState)</code>
+	 * @param stateId
+	 * @param defaultState
+	 */
+	@Deprecated
 	public void addDefaultActivityState(StateId stateId, State defaultState){
-		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-		defaultActivityStates.put(stateId, defaultState);
+		addDefaultActivityState(stateId, State.class, defaultState);
 	}
 	
+	/**
+	 * Generic method to add default activity state.
+	 * 
+	 * @param stateId
+	 * @param type
+	 * @param defaultState
+	 */
+	public <T> void addDefaultActivityState(StateId stateId, Class<T> type, T defaultState){
+		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
+		defaultActivityStates_.put(stateId, type.cast(defaultState));
+	}
+	
+	/**
+	 * Clears all states.
+	 * 
+	 */
 	public void clear(){
-		vehicleRouteStates.clear();
-		activityStates.clear();
+		vehicleRouteStates_.clear();
+		activityStates_.clear();
 	}
 
+	/**
+	 * @Deprecated use generic method instead <code>getActivityState(TourActivity act, StateId stateId, Class<T> type)</code>
+	 */
+	@Deprecated
 	@Override
 	public State getActivityState(TourActivity act, StateId stateId) {
-		if(!activityStates.containsKey(act)){
-			return getDefaultActState(stateId,act);
+		if(!activityStates_.containsKey(act)){
+			return getDefaultTypedActivityState(act,stateId,State.class);
 		}
-		States actStates = activityStates.get(act);
-		State state = actStates.getState(stateId);
+		States_ actStates = activityStates_.get(act);
+		State state = actStates.getState(stateId, State.class);
 		if(state == null){
-			return getDefaultActState(stateId,act);
+			return getDefaultTypedActivityState(act,stateId,State.class);
 		}
 		return state;
 	}
 	
-	void putInternalActivityState(TourActivity act, StateId stateId, State state){
-		if(!activityStates.containsKey(act)){
-			activityStates.put(act, StateFactory.createStates());
+	/**
+	 * Returns activity state of type 'type'.
+	 * 
+	 */
+	@Override
+	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type) {
+		if(!activityStates_.containsKey(act)){
+			return getDefaultTypedActivityState(act, stateId, type);
 		}
-		States actStates = activityStates.get(act);
-		actStates.putState(stateId, state);
+		States_ states = activityStates_.get(act);
+		T state = states.getState(stateId, type);
+		if(state == null) return getDefaultTypedActivityState(act, stateId, type);
+		return state;
 	}
 
+	/**
+	 * 
+	 * @param act
+	 * @param stateId
+	 * @param type
+	 * @return
+	 */
+	private <T> T getDefaultTypedActivityState(TourActivity act, StateId stateId,Class<T> type) {
+		if(defaultActivityStates_.containsKey(stateId)){
+			return type.cast(defaultActivityStates_.get(stateId));
+		}
+		if(stateId.equals(StateFactory.EARLIEST_OPERATION_START_TIME)){
+			return type.cast(act.getTheoreticalEarliestOperationStartTime());
+		}
+		if(stateId.equals(StateFactory.LATEST_OPERATION_START_TIME)){
+			return type.cast(act.getTheoreticalLatestOperationStartTime());
+		}
+		return null;
+	}
+
+	/**
+	 * Return route state of type 'type'.
+	 * 
+	 * @return route-state
+	 * @throws ClassCastException if state of route and stateId is of another type
+	 */
+	@Override
+	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
+		if(!vehicleRouteStates_.containsKey(route)){
+			return getDefaultTypedRouteState(stateId, type);
+		}
+		States_ states = vehicleRouteStates_.get(route);
+		T state = states.getState(stateId, type);
+		if(state == null) return getDefaultTypedRouteState(stateId, type);
+		return state;
+	}
+
+	private <T> T getDefaultTypedRouteState(StateId stateId, Class<T> type) {
+		if(defaultRouteStates_.containsKey(stateId)){
+			return type.cast(defaultRouteStates_.get(stateId));
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param act
+	 * @param stateId
+	 * @param state
+	 * @deprecated use generic method <code>putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state)</code> instead
+	 */
+	@Deprecated
 	public void putActivityState(TourActivity act, StateId stateId, State state){
+		putTypedActivityState(act, stateId, State.class, state);
+	}
+	
+	/**
+	 * Generic method to memorize state 'state' of type 'type' of act and stateId.
+	 * 
+	 * <p><b>For example: </b><br>
+	 * <code>Capacity loadAtMyActivity = Capacity.Builder.newInstance().addCapacityDimension(0,10).build();<br>
+	 * stateManager.putTypedActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class, loadAtMyActivity);</code>
+	 * <p>you can retrieve the load at myActivity by <br>
+	 * <code>Capacity load = stateManager.getActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class);</code>
+	 * 
+	 * @param act
+	 * @param stateId
+	 * @param type
+	 * @param state
+	 */
+	public <T> void putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-		putInternalActivityState(act, stateId, state);
+		putInternalTypedActivityState(act, stateId, type, state);
 	}
-
-	void putInternalRouteState(VehicleRoute route, StateId stateId, State state){
-		if(!vehicleRouteStates.containsKey(route)){
-			vehicleRouteStates.put(route, StateFactory.createStates());
+	
+	@Deprecated
+	void putInternalActivityState(TourActivity act, StateId stateId, State state){
+		putInternalTypedActivityState(act, stateId, State.class, state);
+	}
+	
+	<T> void putInternalTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
+		if(!activityStates_.containsKey(act)){
+			activityStates_.put(act, new States_());
 		}
-		States routeStates = (States) vehicleRouteStates.get(route);
-		routeStates.putState(stateId, state);
+		States_ actStates = activityStates_.get(act);
+		actStates.putState(stateId, type, state);
 	}
 
+	@Deprecated
+	void putInternalRouteState(VehicleRoute route, StateId stateId, State state){
+		putTypedInternalRouteState(route, stateId, State.class, state);
+	}
+	
+	<T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
+		if(!vehicleRouteStates_.containsKey(route)){
+			vehicleRouteStates_.put(route, new States_());
+		}
+		States_ routeStates = vehicleRouteStates_.get(route);
+		routeStates.putState(stateId, type, state);
+	}
+
+	@Deprecated
 	public void putRouteState(VehicleRoute route, StateId stateId, State state){
-		 if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
-         putInternalRouteState(route, stateId, state);
+		 putTypedRouteState(route, stateId, State.class, state);
+	}
+	
+	/**
+	 * Generic method to memorize state 'state' of type 'type' of route and stateId.
+	 * 
+	 * <p><b>For example:</b> <br>
+	 * <code>double totalRouteDuration = 100.0;<br>
+	 * stateManager.putTypedActivityState(myRoute, StateFactory.createStateId("route-duration"), Double.class, totalRouteDuration);</code>
+	 * <p>you can retrieve the duration of myRoute then by <br>
+	 * <code>double totalRouteDuration = stateManager.getRouteState(myRoute, StateFactory.createStateId("route-duration"), Double.class);</code> 
+	 * 
+	 * @param act
+	 * @param stateId
+	 * @param type
+	 * @param state
+	 */
+	public <T> void putTypedRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
+		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
+        putTypedInternalRouteState(route, stateId, type, state);
 	}
 
+	@Deprecated
 	@Override
 	public State getRouteState(VehicleRoute route, StateId stateId) {
-		if(!vehicleRouteStates.containsKey(route)){
-			return getDefaultRouteState(stateId,route);
+		if(!vehicleRouteStates_.containsKey(route)){
+			return getDefaultTypedRouteState(stateId,State.class);
 		}
-		States routeStates = vehicleRouteStates.get(route);
-		State state = routeStates.getState(stateId);
+		States_ routeStates = vehicleRouteStates_.get(route);
+		State state = routeStates.getState(stateId,State.class);
 		if(state == null){
-			return getDefaultRouteState(stateId, route);
+			return getDefaultTypedRouteState(stateId, State.class);
 		}
 		return state;
 	}
@@ -220,29 +436,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		insertionListeners.removeListener(insertionListener);
 	}
 
-	private State getDefaultActState(StateId stateId, TourActivity act){
-		if(stateId.equals(StateFactory.LOAD)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.COSTS)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.DURATION)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.EARLIEST_OPERATION_START_TIME)) return StateFactory.createState(act.getTheoreticalEarliestOperationStartTime());
-		if(stateId.equals(StateFactory.LATEST_OPERATION_START_TIME)) return StateFactory.createState(act.getTheoreticalLatestOperationStartTime());
-		if(stateId.equals(StateFactory.FUTURE_MAXLOAD)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.PAST_MAXLOAD)) return StateFactory.createState(0);
-		if(defaultActivityStates.containsKey(stateId)) return defaultActivityStates.get(stateId);
-		return null;
-	}
 	
-	private State getDefaultRouteState(StateId stateId, VehicleRoute route){
-		if(stateId.equals(StateFactory.MAXLOAD)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.LOAD)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.LOAD_AT_END)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.LOAD_AT_BEGINNING)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.COSTS)) return StateFactory.createState(0);
-		if(stateId.equals(StateFactory.DURATION)) return StateFactory.createState(0);
-		if(defaultRouteStates.containsKey(stateId)) return defaultRouteStates.get(stateId);
-		return null;
-	}
-
 	@Override
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 //		log.debug("insert " + job2insert + " in " + inRoute);
@@ -294,16 +488,18 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 			UpdateLoads updateLoads = new UpdateLoads(this);
 			addActivityVisitor(updateLoads);
 			addListener(updateLoads);
-			addActivityVisitor(new UpdatePrevMaxLoad(this));
-			addActivityVisitor(new UpdateMaxLoad(this));
-			addActivityVisitor(new UpdateMaxLoad_(this));
+			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(this));
+			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute(this));
+			addActivityVisitor(new UpdateMaxCapacityUtilisationAtRoute(this));
 		}
 	}
 
 	public void updateTimeWindowStates() {
 		if(!updateTWs){
 			updateTWs=true;
-			addActivityVisitor(new UpdateTimeWindow(this, routingCosts));
+			addActivityVisitor(new UpdatePracticalTimeWindows(this, routingCosts));
 		}
 	}
+
+	
 }

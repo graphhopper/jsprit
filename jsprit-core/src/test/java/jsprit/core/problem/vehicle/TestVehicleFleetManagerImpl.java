@@ -39,8 +39,8 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 	public void setUp(){
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		
-		v1 = VehicleImpl.Builder.newInstance("standard").setStartLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
-		v2 = VehicleImpl.Builder.newInstance("foo").setStartLocationId("fooLoc").setType(VehicleTypeImpl.Builder.newInstance("foo", 0).build()).build();
+		v1 = VehicleImpl.Builder.newInstance("standard").setStartLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("standard").build()).build();
+		v2 = VehicleImpl.Builder.newInstance("foo").setStartLocationId("fooLoc").setType(VehicleTypeImpl.Builder.newInstance("foo").build()).build();
 
 //		v1.
 		vehicles.add(v1);
@@ -92,7 +92,7 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 	
 	public void testWithPenalty_whenHavingOneRegularVehicleAvailable_noPenaltyVehicleIsReturn(){
 		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setStartLocationId("loc").
-					setType(VehicleTypeImpl.Builder.newInstance("standard", 0).build()).build();
+					setType(VehicleTypeImpl.Builder.newInstance("standard").build()).build();
 		
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		vehicles.add(v1);
@@ -105,7 +105,7 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 	}
 
 	public void testWithPenalty_whenHavingTwoRegularVehicleAvailablePlusOnePenaltyVehicle_andOneIsLocked_returnTheOtherRegularVehicle(){
-		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard", 0).build();
+		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard").build();
 		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
 		
 		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setStartLocationId("loc").
@@ -128,7 +128,7 @@ public class TestVehicleFleetManagerImpl extends TestCase{
 	}
 	
 	public void testWithPenalty_whenHavingNoRegularVehicleAvailable_penaltyVehicleIsReturned(){
-		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard", 0).build();
+		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard").build();
 		
 		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setStartLocationId("loc").
 					setType(penaltyType).build();

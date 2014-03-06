@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
@@ -43,13 +44,30 @@ public class Service implements Job {
 		/**
 		 * Returns a new instance of service-builder.
 		 * 
+		 * <p>Note that if you use this builder, size is assigned to capacity-dimension with index=0.
+		 * 
 		 * @param id of service
 		 * @param size of capacity-demand
 		 * @return builder
 		 * @throws IllegalArgumentException if size < 0 or id is null
+		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
+		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
 		 */
+		@Deprecated
 		public static Builder newInstance(String id, int size){
-			return new Builder(id,size);
+			Builder builder = new Builder(id,size);
+			builder.addSizeDimension(0, size);
+			return builder;
+		}
+		
+		/**
+		 * Returns a new instance of builder that builds a service.
+		 * 
+		 * @param id
+		 * @return the builder
+		 */
+		public static Builder newInstance(String id){
+			return new Builder(id);
 		}
 		
 		private String id;
@@ -64,7 +82,9 @@ public class Service implements Job {
 		
 		protected TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 		
-		protected int demand;
+		protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+		
+		protected Capacity capacity;
 		
 		/**
 		 * Constructs the builder.
@@ -77,7 +97,10 @@ public class Service implements Job {
 			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 			if(id == null) throw new IllegalArgumentException("id must not be null");
 			this.id = id;
-			this.demand = size;
+		}
+		
+		Builder(String id){
+			this.id = id;
 		}
 		
 		/**
@@ -132,6 +155,20 @@ public class Service implements Job {
 		}
 		
 		/**
+		 * Adds capacity dimension.
+		 * 
+		 * @param dimensionIndex
+		 * @param dimensionValue
+		 * @return the builder
+		 * @throws IllegalArgumentException if dimensionValue < 0
+		 */
+		public Builder addSizeDimension(int dimensionIndex, int dimensionValue){
+			if(dimensionValue<0) throw new IllegalArgumentException("capacity value cannot be negative");
+			capacityBuilder.addDimension(dimensionIndex, dimensionValue);
+			return this;
+		}
+		
+		/**
 		 * Sets the time-window of this service.
 		 * 
 		 * <p>The time-window indicates the time period a service/activity/operation is allowed to start. 
@@ -158,6 +195,7 @@ public class Service implements Job {
 				locationId = coord.toString();
 			}
 			this.setType("service");
+			capacity = capacityBuilder.build();
 			return new Service(this);
 		}
 		
@@ -175,8 +213,8 @@ public class Service implements Job {
 	private final double serviceTime;
 
 	private final TimeWindow timeWindow;
-
-	private final int demand;
+	
+	private final Capacity size;
 
 	Service(Builder builder){
 		id = builder.id;
@@ -184,8 +222,8 @@ public class Service implements Job {
 		coord = builder.coord;
 		serviceTime = builder.serviceTime;
 		timeWindow = builder.timeWindow;
-		demand = builder.demand;
 		type = builder.type;
+		size = builder.capacity;
 	}
 
 	@Override
@@ -229,9 +267,15 @@ public class Service implements Job {
 		return timeWindow;
 	}
 	
+	/**
+	 * @Deprecated use <code>.getCapacity()</code> instead. if you still use this method, it returns the 
+	 * capacity dimension with index=0.
+	 * 
+	 */
 	@Override
+	@Deprecated
 	public int getCapacityDemand() {
-		return demand;
+		return size.get(0);
 	}
 	
 	/**
@@ -248,7 +292,7 @@ public class Service implements Job {
 	 */
 	@Override
 	public String toString() {
-		return "[id=" + id + "][type="+type+"][locationId=" + locationId + "][coord="+coord+"][size=" + demand + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
+		return "[id=" + id + "][type="+type+"][locationId=" + locationId + "][coord="+coord+"][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
 	}
 
 
@@ -281,6 +325,9 @@ public class Service implements Job {
 		return true;
 	}
 
-	
+	@Override
+	public Capacity getSize() {
+		return size;
+	}
 	
 }

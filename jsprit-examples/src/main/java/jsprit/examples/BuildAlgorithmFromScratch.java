@@ -99,7 +99,7 @@ public class BuildAlgorithmFromScratch {
 		/*
 		 * manages route and activity states.
 		 */
-		StateManager stateManager = new StateManager(vrp);
+		StateManager stateManager = new StateManager(vrp.getTransportCosts());
 		/*
 		 * tells stateManager to update load states
 		 */

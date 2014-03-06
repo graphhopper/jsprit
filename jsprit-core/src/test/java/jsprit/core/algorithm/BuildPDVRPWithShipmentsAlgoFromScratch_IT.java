@@ -62,7 +62,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
 			
 			vrp = builder.build();
 			
-			final StateManager stateManager = new StateManager(vrp);
+			final StateManager stateManager = new StateManager(vrp.getTransportCosts());
 			stateManager.updateLoadStates();
 			stateManager.updateTimeWindowStates();
 			stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
@@ -87,7 +87,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
 				public double getCosts(VehicleRoutingProblemSolution solution) {
 					double costs = 0.0;
 					for(VehicleRoute route : solution.getRoutes()){
-						costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble();
+						costs += stateManager.getRouteState(route, StateFactory.COSTS, Double.class);
 					}
 					return costs;
 				}

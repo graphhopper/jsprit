@@ -8,7 +8,7 @@ import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
 
-
+@SuppressWarnings("deprecation")
 public class ShipmentTest {
 	
 	@Test
@@ -42,6 +42,12 @@ public class ShipmentTest {
 	public void whenShipmentIsBuiltWithNegativeDemand_itShouldThrowException(){
 		@SuppressWarnings("unused")
 		Shipment one = Shipment.Builder.newInstance("s", -10).setPickupLocation("foo").setDeliveryLocation("foofoo").build();
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void whenShipmentIsBuiltWithNegativeDemand_itShouldThrowException_v2(){
+		@SuppressWarnings("unused")
+		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, -10).setPickupLocation("foo").setDeliveryLocation("foofoo").build();
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -192,5 +198,39 @@ public class ShipmentTest {
 		Shipment s = Shipment.Builder.newInstance("s", 0).setDeliveryTimeWindow(TimeWindow.newInstance(1, 2)).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
 		assertEquals(1.0,s.getDeliveryTimeWindow().getStart(),0.01);
 		assertEquals(2.0,s.getDeliveryTimeWindow().getEnd(),0.01);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void whenShipmentHasNegativeCapacityVal_throwIllegalStateExpception(){
+		@SuppressWarnings("unused")
+		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setDeliveryLocation("foofoo")
+		.addSizeDimension(0, -2)
+		.build();
+	}
+	
+	@Test
+	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
+		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setDeliveryLocation("foofoo")
+				.addSizeDimension(0,2)
+				.addSizeDimension(1,4)
+				.build();
+		assertEquals(2,one.getSize().getNuOfDimensions());
+	}
+	
+	@Test
+	public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
+		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation("foo").setPickupCoord(Coordinate.newInstance(0, 0))
+				.setDeliveryLocation("foofoo").build();
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(0,one.getSize().get(0));
+	}
+	
+	@Test
+	public void whenShipmentIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
+		Shipment one = Shipment.Builder.newInstance("s",1).setPickupLocation("foo").setPickupCoord(Coordinate.newInstance(0, 0))
+				.setDeliveryLocation("foofoo").build();
+		assertEquals(1,one.getCapacityDemand());
+		assertEquals(1,one.getSize().getNuOfDimensions());
+		assertEquals(1,one.getSize().get(0));
 	}
 }

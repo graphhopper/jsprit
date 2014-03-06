@@ -35,7 +35,6 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivityFactory;
 import jsprit.core.problem.vehicle.PenaltyVehicleType;
@@ -60,21 +59,25 @@ import org.xml.sax.SAXException;
 public class VrpXMLReader{
 	
 	public interface ServiceBuilderFactory {
-		Service.Builder createBuilder(String serviceType, String id, int size);
+		Service.Builder createBuilder(String serviceType, String id, Integer size);
 	}
 	
 	static class DefaultServiceBuilderFactory implements ServiceBuilderFactory{
 
 		@Override
-		public jsprit.core.problem.job.Service.Builder createBuilder(String serviceType, String id, int size) {
+		public jsprit.core.problem.job.Service.Builder createBuilder(String serviceType, String id, Integer size) {
 			if(serviceType.equals("pickup")){
-				return Pickup.Builder.newInstance(id, size);
+				if(size != null) return Pickup.Builder.newInstance(id, size);
+				else return Pickup.Builder.newInstance(id);
 			}
 			else if(serviceType.equals("delivery")){
-				return Delivery.Builder.newInstance(id, size);
+				if(size != null) return Delivery.Builder.newInstance(id, size);
+				else return Delivery.Builder.newInstance(id);
 			}
 			else{
-				return Service.Builder.newInstance(id, size);
+				if(size != null) return Service.Builder.newInstance(id, size);
+				else return Service.Builder.newInstance(id);
+				
 			}
 		}
 	}
@@ -236,11 +239,6 @@ public class VrpXMLReader{
 				String end = routeConfig.getString("end");
 				if(end == null) throw new IllegalStateException("route end-time is missing.");
 				
-//				Start startAct = Start.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-//				startAct.setEndTime(Double.parseDouble(start));
-				End endAct = End.newInstance(vehicle.getLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-				endAct.setArrTime(Double.parseDouble(end));
-				
 				VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
 				routeBuilder.setDepartureTime(departureTime);
 				routeBuilder.setRouteEndArrivalTime(Double.parseDouble(end));
@@ -313,8 +311,29 @@ public class VrpXMLReader{
 		for(HierarchicalConfiguration shipmentConfig : shipmentConfigs){
 			String id = shipmentConfig.getString("[@id]");
 			if(id == null) throw new IllegalStateException("shipment[@id] is missing.");
-			int cap = getCap(shipmentConfig);
-			Shipment.Builder builder = Shipment.Builder.newInstance(id, cap);
+			
+			String capacityString = shipmentConfig.getString("capacity-demand");
+			boolean capacityDimensionsExist = shipmentConfig.containsKey("capacity-dimensions.dimension(0)");
+			if(capacityString == null && !capacityDimensionsExist){ 
+				throw new IllegalStateException("capacity of shipment is not set. use 'capacity-dimensions'"); 
+			}
+			if(capacityString != null && capacityDimensionsExist){
+				throw new IllegalStateException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+			}
+			
+			Shipment.Builder builder;
+			if(capacityString != null){
+				builder = Shipment.Builder.newInstance(id, Integer.parseInt(capacityString));
+			}
+			else {
+				builder = Shipment.Builder.newInstance(id);
+				List<HierarchicalConfiguration> dimensionConfigs = shipmentConfig.configurationsAt("capacity-dimensions.dimension");
+				for(HierarchicalConfiguration dimension : dimensionConfigs){
+					Integer index = dimension.getInt("[@index]");
+					Integer value = dimension.getInt("");
+					builder.addSizeDimension(index, value);
+				}
+			}
 			
 			//pickup-locationId
 			String pickupLocationId = shipmentConfig.getString("pickup.locationId");
@@ -394,13 +413,6 @@ public class VrpXMLReader{
 		return pickupCoord;
 	}
 
-	private static int getCap(HierarchicalConfiguration serviceConfig) {
-		String capacityDemand = serviceConfig.getString("capacity-demand");
-		int cap = 0;
-		if(capacityDemand != null) cap = Integer.parseInt(capacityDemand);
-		return cap;
-	}
-
 	private void readServices(XMLConfiguration vrpProblem) {
 		List<HierarchicalConfiguration> serviceConfigs = vrpProblem.configurationsAt("services.service");
 		for(HierarchicalConfiguration serviceConfig : serviceConfigs){
@@ -408,8 +420,29 @@ public class VrpXMLReader{
 			if(id == null) throw new IllegalStateException("service[@id] is missing.");
 			String type = serviceConfig.getString("[@type]");
 			if(type == null) type = "service";
-			int cap = getCap(serviceConfig);
-			Service.Builder builder = serviceBuilderFactory.createBuilder(type, id, cap);
+			
+			String capacityString = serviceConfig.getString("capacity-demand");
+			boolean capacityDimensionsExist = serviceConfig.containsKey("capacity-dimensions.dimension(0)");
+			if(capacityString == null && !capacityDimensionsExist){ 
+				throw new IllegalStateException("capacity of service is not set. use 'capacity-dimensions'"); 
+			}
+			if(capacityString != null && capacityDimensionsExist){
+				throw new IllegalStateException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+			}
+			
+			Service.Builder builder;
+			if(capacityString != null){
+				builder = serviceBuilderFactory.createBuilder(type, id, Integer.parseInt(capacityString));
+			}
+			else {
+				builder = serviceBuilderFactory.createBuilder(type, id, null);
+				List<HierarchicalConfiguration> dimensionConfigs = serviceConfig.configurationsAt("capacity-dimensions.dimension");
+				for(HierarchicalConfiguration dimension : dimensionConfigs){
+					Integer index = dimension.getInt("[@index]");
+					Integer value = dimension.getInt("");
+					builder.addSizeDimension(index, value);
+				}
+			}
 			String serviceLocationId = serviceConfig.getString("locationId");
 			if(serviceLocationId != null) builder.setLocationId(serviceLocationId);
 			Coordinate serviceCoord = getCoord(serviceConfig,"");
@@ -446,13 +479,34 @@ public class VrpXMLReader{
 		List<HierarchicalConfiguration> typeConfigs = vrpProblem.configurationsAt("vehicleTypes.type");
 		for(HierarchicalConfiguration typeConfig : typeConfigs){
 			String typeId = typeConfig.getString("id");
-			Integer capacity = typeConfig.getInt("capacity");
+			if(typeId == null) throw new IllegalStateException("typeId is missing.");
+			
+			String capacityString = typeConfig.getString("capacity");
+			boolean capacityDimensionsExist = typeConfig.containsKey("capacity-dimensions.dimension(0)");
+			if(capacityString == null && !capacityDimensionsExist){ 
+				throw new IllegalStateException("capacity of type is not set. use 'capacity-dimensions'"); 
+			}
+			if(capacityString != null && capacityDimensionsExist){
+				throw new IllegalStateException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+			}
+			
+			VehicleTypeImpl.Builder typeBuilder;
+			if(capacityString != null){
+				typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId, Integer.parseInt(capacityString));
+			}
+			else {
+				typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId);
+				List<HierarchicalConfiguration> dimensionConfigs = typeConfig.configurationsAt("capacity-dimensions.dimension");
+				for(HierarchicalConfiguration dimension : dimensionConfigs){
+					Integer index = dimension.getInt("[@index]");
+					Integer value = dimension.getInt("");
+					typeBuilder.addCapacityDimension(index, value);
+				}
+			}
 			Double fix = typeConfig.getDouble("costs.fixed");
 			Double timeC = typeConfig.getDouble("costs.time");
 			Double distC = typeConfig.getDouble("costs.distance");
-			if(typeId == null) throw new IllegalStateException("typeId is missing.");
-			if(capacity == null) throw new IllegalStateException("capacity is missing.");
-			VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId, capacity);
+			
 			if(fix != null) typeBuilder.setFixedCost(fix);
 			if(timeC != null) typeBuilder.setCostPerTime(timeC);
 			if(distC != null) typeBuilder.setCostPerDistance(distC);

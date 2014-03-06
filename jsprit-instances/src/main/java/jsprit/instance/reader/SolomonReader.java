@@ -100,20 +100,20 @@ public class SolomonReader {
 				double end = Double.parseDouble(tokens[5])*timeProjectionFactor;
 				double serviceTime = Double.parseDouble(tokens[6])*timeProjectionFactor;
 				if(counter == 10){
-					VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("solomonType", vehicleCapacity);
+					VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("solomonType").addCapacityDimension(0, vehicleCapacity);
 					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(fixedCostPerVehicle);
 					
 					VehicleTypeImpl vehicleType = typeBuilder.build();
 		
 					Vehicle vehicle = VehicleImpl.Builder.newInstance("solomonVehicle").setEarliestStart(start).setLatestArrival(end)
-							.setLocationId(customerId).setLocationCoord(coord).setType(vehicleType).build();
+							.setStartLocationId(customerId).setStartLocationCoordinate(coord).setType(vehicleType).build();
 					
 //					vrpBuilder.addVehicleType(vehicleType);
 					vrpBuilder.addVehicle(vehicle);
 					
 				}
 				else{
-					Service service = Service.Builder.newInstance(customerId, demand).setCoord(coord).setLocationId(customerId).setServiceTime(serviceTime)
+					Service service = Service.Builder.newInstance(customerId).addSizeDimension(0, demand).setCoord(coord).setLocationId(customerId).setServiceTime(serviceTime)
 							.setTimeWindow(TimeWindow.newInstance(start, end)).build();
 					vrpBuilder.addJob(service);
 				}

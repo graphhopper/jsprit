@@ -61,7 +61,6 @@ public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 	@Override
 	public void begin(VehicleRoute route) {
 		vehicleRoute = route;
-//		vehicleRoute.getVehicleRouteCostCalculator().reset();
 		timeTracker.begin(route);
 		prevAct = route.getStart();
 		startTimeAtPrevAct = timeTracker.getActEndTime();
@@ -74,13 +73,10 @@ public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 		double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), act.getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 		double actCost = activityCost.getActivityCost(act, timeTracker.getActArrTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 
-//		vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
-//		vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
-//		
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
 
-		states.putInternalActivityState(act, StateFactory.COSTS, StateFactory.createState(totalOperationCost));
+		states.putInternalTypedActivityState(act, StateFactory.COSTS, Double.class, totalOperationCost);
 
 		prevAct = act;
 		startTimeAtPrevAct = timeTracker.getActEndTime();
@@ -91,20 +87,11 @@ public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 		timeTracker.finish();
 		double transportCost = this.transportCost.getTransportCost(prevAct.getLocationId(), vehicleRoute.getEnd().getLocationId(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 		double actCost = activityCost.getActivityCost(vehicleRoute.getEnd(), timeTracker.getActEndTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
-		
-//		vehicleRoute.getVehicleRouteCostCalculator().addTransportCost(transportCost);
-//		vehicleRoute.getVehicleRouteCostCalculator().addActivityCost(actCost);
-//		
+
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
-//		totalOperationCost += getFixCosts(vehicleRoute.getVehicle());
 		
-		states.putInternalRouteState(vehicleRoute, StateFactory.COSTS, StateFactory.createState(totalOperationCost));
-		
-//		//this is rather strange and likely to change
-//		vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getDriver());
-//		vehicleRoute.getVehicleRouteCostCalculator().price(vehicleRoute.getVehicle());
-//		vehicleRoute.getVehicleRouteCostCalculator().finish();
+		states.putTypedInternalRouteState(vehicleRoute, StateFactory.COSTS, Double.class, totalOperationCost);
 		
 		startTimeAtPrevAct = 0.0;
 		prevAct = null;

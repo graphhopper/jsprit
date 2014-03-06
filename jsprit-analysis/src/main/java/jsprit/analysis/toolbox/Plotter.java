@@ -84,7 +84,7 @@ public class Plotter {
 //		
 //	}
 	
-	private static Logger log = Logger.getLogger(SolutionPlotter.class);
+	private static Logger log = Logger.getLogger(Plotter.class);
 	
 	
 	public static enum Label {
@@ -465,13 +465,31 @@ public class Plotter {
 
 	private void addLabel(Map<XYDataItem, String> labels, Job job, XYDataItem dataItem) {
 		if(this.label.equals(Label.SIZE)){
-			labels.put(dataItem, String.valueOf(job.getCapacityDemand()));
+			labels.put(dataItem, getSizeString(job));
 		}
 		else if(this.label.equals(Label.ID)){
 			labels.put(dataItem, String.valueOf(job.getId()));
 		}
 	}
 	
+	private String getSizeString(Job job) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("(");
+		boolean firstDim = true;
+		for(int i=0;i<job.getSize().getNuOfDimensions();i++){
+			if(firstDim) {
+				builder.append(String.valueOf(job.getSize().get(i)));
+				firstDim = false;
+			}
+			else {
+				builder.append(",");
+				builder.append(String.valueOf(job.getSize().get(i)));
+			}
+		}
+		builder.append(")");
+		return builder.toString();
+	}
+
 	private XYSeriesCollection makeVrpSeries(VehicleRoutingProblem vrp, Map<XYDataItem, String> labels) throws NoLocationFoundException{
 		return makeVrpSeries(vrp.getVehicles(), vrp.getJobs().values(), labels);
 	}

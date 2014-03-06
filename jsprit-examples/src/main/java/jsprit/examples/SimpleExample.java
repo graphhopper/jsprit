@@ -49,7 +49,7 @@ public class SimpleExample {
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 2);
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 2);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
 		/*
@@ -63,11 +63,11 @@ public class SimpleExample {
 		/*
 		 * build services at the required locations, each with a capacity-demand of 1.
 		 */
-		Service service1 = Service.Builder.newInstance("1", 1).setCoord(Coordinate.newInstance(5, 7)).build();
-		Service service2 = Service.Builder.newInstance("2", 1).setCoord(Coordinate.newInstance(5, 13)).build();
+		Service service1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 7)).build();
+		Service service2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 13)).build();
 		
-		Service service3 = Service.Builder.newInstance("3", 1).setCoord(Coordinate.newInstance(15, 7)).build();
-		Service service4 = Service.Builder.newInstance("4", 1).setCoord(Coordinate.newInstance(15, 13)).build();
+		Service service3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 7)).build();
+		Service service4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 13)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

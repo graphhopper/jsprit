@@ -50,7 +50,7 @@ public class ServicePickupsWithMultipleDepotsExample {
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 8);
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 8);
 		vehicleTypeBuilder.setCostPerDistance(1.0);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
@@ -77,17 +77,17 @@ public class ServicePickupsWithMultipleDepotsExample {
 		 * 4: (15,13)->(14,11)
 		 */
 		
-		Service shipment1 = Service.Builder.newInstance("1", 1).setCoord(Coordinate.newInstance(5, 7)).build();
-		Service shipment2 = Service.Builder.newInstance("2", 1).setCoord(Coordinate.newInstance(5, 13)).build();
+		Service shipment1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 7)).build();
+		Service shipment2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 13)).build();
 		
-		Service shipment3 = Service.Builder.newInstance("3", 1).setCoord(Coordinate.newInstance(15, 7)).build();
-		Service shipment4 = Service.Builder.newInstance("4", 1).setCoord(Coordinate.newInstance(15, 13)).build();
+		Service shipment3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 7)).build();
+		Service shipment4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 13)).build();
 		
-		Service shipment5 = Service.Builder.newInstance("5", 1).setCoord(Coordinate.newInstance(55, 57)).build();
-		Service shipment6 = Service.Builder.newInstance("6", 1).setCoord(Coordinate.newInstance(55, 63)).build();
+		Service shipment5 = Service.Builder.newInstance("5").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(55, 57)).build();
+		Service shipment6 = Service.Builder.newInstance("6").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(55, 63)).build();
 		
-		Service shipment7 = Service.Builder.newInstance("7", 1).setCoord(Coordinate.newInstance(65, 57)).build();
-		Service shipment8 = Service.Builder.newInstance("8", 1).setCoord(Coordinate.newInstance(65, 63)).build();
+		Service shipment7 = Service.Builder.newInstance("7").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(65, 57)).build();
+		Service shipment8 = Service.Builder.newInstance("8").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(65, 63)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

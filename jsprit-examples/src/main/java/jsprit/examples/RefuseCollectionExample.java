@@ -160,7 +160,7 @@ public class RefuseCollectionExample {
 		/*
 		 * create vehicle-type and vehicle
 		 */
-		VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type", 23);
+		VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type").addCapacityDimension(0, 23);
 		typeBuilder.setCostPerDistance(1.0);
 		VehicleTypeImpl bigType = typeBuilder.build();
 		
@@ -215,7 +215,7 @@ public class RefuseCollectionExample {
 			/*
 			 * build service
 			 */
-			Service service = Service.Builder.newInstance(lineTokens[0], Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
+			Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
 			/*
 			 * and add it to problem
 			 */

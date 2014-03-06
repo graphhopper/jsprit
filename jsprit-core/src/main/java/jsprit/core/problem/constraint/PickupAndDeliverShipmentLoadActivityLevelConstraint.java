@@ -1,5 +1,6 @@
 package jsprit.core.problem.constraint;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.DeliverShipment;
 import jsprit.core.problem.solution.route.activity.PickupShipment;
@@ -36,27 +37,38 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 		this.stateManager = stateManager;
 	}
 	
+	/**
+	 * Checks whether there is enough capacity to insert newAct between prevAct and nextAct.
+	 * 
+	 */
 	@Override
 	public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 		if(!(newAct instanceof PickupShipment) && !(newAct instanceof DeliverShipment)){
 			return ConstraintsStatus.FULFILLED;
 		}
-		int loadAtPrevAct;
+		Capacity loadAtPrevAct;
+//		int loadAtPrevAct;
 		if(prevAct instanceof Start){
-			loadAtPrevAct = (int)stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING).toDouble();
+			loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING, Capacity.class);
 		}
 		else{
-			loadAtPrevAct = (int) stateManager.getActivityState(prevAct, StateFactory.LOAD).toDouble();
+			loadAtPrevAct = stateManager.getActivityState(prevAct, StateFactory.LOAD, Capacity.class);
 		}
 		if(newAct instanceof PickupShipment){
-			if(loadAtPrevAct + newAct.getCapacityDemand() > iFacts.getNewVehicle().getCapacity()){
+			if(!Capacity.addup(loadAtPrevAct, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
+//			if(loadAtPrevAct + newAct.getCapacityDemand() > iFacts.getNewVehicle().getCapacity()){
+//				return ConstraintsStatus.NOT_FULFILLED;
+//			}
 		}
 		if(newAct instanceof DeliverShipment){
-			if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) > iFacts.getNewVehicle().getCapacity()){
+			if(!Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize())).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())){
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
+//			if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) > iFacts.getNewVehicle().getCapacity()){
+//				return ConstraintsStatus.NOT_FULFILLED_BREAK;
+//			}
 		}
 		return ConstraintsStatus.FULFILLED;
 	}

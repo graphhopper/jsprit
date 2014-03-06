@@ -1,5 +1,6 @@
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
@@ -30,8 +31,6 @@ public class Shipment implements Job{
 	 */
 	public static class Builder {
 		
-		private int demand;
-		
 		private String id;
 		
 		private String pickupLocation;
@@ -48,18 +47,33 @@ public class Shipment implements Job{
 
 		private TimeWindow deliveryTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 
-		private TimeWindow pickupTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);;
+		private TimeWindow pickupTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
+		
+		private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+		
+		private Capacity capacity;
 		
 		/**
 		 * Returns a new instance of this builder.
+		 * 
+		 * <p>Note that if you use this builder, size is assigned to capacity-dimension with index=0.
 		 * 
 		 * @param id
 		 * @param size
 		 * @return builder
 		 * @throws IllegalArgumentException if size < 0 or id is null
+		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
+		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
 		 */
+		@Deprecated
 		public static Builder newInstance(String id, int size){
-			return new Builder(id,size);
+			Builder builder = new Builder(id,size);
+			builder.addSizeDimension(0, size);
+			return builder;
+		}
+		
+		public static Builder newInstance(String id){
+			return new Builder(id);
 		}
 		
 		/**
@@ -73,7 +87,10 @@ public class Shipment implements Job{
 			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 			if(id == null) throw new IllegalArgumentException("id must not be null");
 			this.id = id;
-			this.demand = size;
+		}
+		
+		Builder(String id){
+			this.id = id;
 		}
 		
 		/**
@@ -191,6 +208,21 @@ public class Shipment implements Job{
 		}
 		
 		/**
+		 * Adds capacity dimension.
+		 * 
+		 * @param dimensionIndex
+		 * @param dimensionValue
+		 * @return builder
+		 * @throws IllegalArgumentException if dimVal < 0
+		 */
+		public Builder addSizeDimension(int dimensionIndex, int dimensionValue) {
+			if(dimensionValue<0) throw new IllegalArgumentException("capacity value cannot be negative");
+			capacityBuilder.addDimension(dimensionIndex, dimensionValue);
+			return this;
+		}
+		
+
+		/**
 		 * Builds the shipment.
 		 * 
 		 * @return shipment
@@ -206,11 +238,12 @@ public class Shipment implements Job{
 				if(deliveryCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
 				deliveryLocation = deliveryCoord.toString();
 			}
+			capacity = capacityBuilder.build();
 			return new Shipment(this);
 		}
+
+		
 	}
-	
-	private final int demand;
 	
 	private final String id;
 	
@@ -230,6 +263,9 @@ public class Shipment implements Job{
 
 	private final TimeWindow pickupTimeWindow;
 	
+	private final Capacity capacity;
+
+	
 	/**
 	 * Constructs the shipment.
 	 * 
@@ -237,7 +273,6 @@ public class Shipment implements Job{
 	 */
 	Shipment(Builder builder){
 		this.id = builder.id;
-		this.demand = builder.demand;
 		this.pickupLocation = builder.pickupLocation;
 		this.pickupCoord = builder.pickupCoord;
 		this.pickupServiceTime = builder.pickupServiceTime;
@@ -246,6 +281,7 @@ public class Shipment implements Job{
 		this.deliveryCoord = builder.deliveryCoord;
 		this.deliveryServiceTime = builder.deliveryServiceTime;
 		this.deliveryTimeWindow = builder.deliveryTimeWindow;
+		this.capacity = builder.capacity;
 	}
 	
 	@Override
@@ -253,9 +289,14 @@ public class Shipment implements Job{
 		return id;
 	}
 
+	/**
+	 * @Deprecated use <code>.getCapacity()</code> instead. if you still use this method, it returns the 
+	 * capacity dimension with index=0.
+	 */
+	@Deprecated
 	@Override
 	public int getCapacityDemand() {
-		return demand;
+		return capacity.get(0);
 	}
 
 	/**
@@ -360,6 +401,11 @@ public class Shipment implements Job{
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Capacity getSize() {
+		return capacity;
 	}
 
 	

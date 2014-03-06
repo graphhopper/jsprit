@@ -59,7 +59,7 @@ public class TestJobDistanceAvgCosts {
 			}
 		};
 		AvgServiceDistance c = new AvgServiceDistance(costs);
-		c.getDistance(Service.Builder.newInstance("1", 1).setLocationId("foo").build(), Service.Builder.newInstance("2", 2).setLocationId("foo").build());
+		c.getDistance(Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocationId("foo").build(), Service.Builder.newInstance("2").addSizeDimension(0, 2).setLocationId("foo").build());
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -96,7 +96,7 @@ public class TestJobDistanceAvgCosts {
 			}
 		};
 		AvgServiceDistance c = new AvgServiceDistance(costs);
-		c.getDistance(Service.Builder.newInstance("1", 1).setLocationId("loc").build(), Service.Builder.newInstance("2", 2).setLocationId("loc").build());
+		c.getDistance(Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocationId("loc").build(), Service.Builder.newInstance("2").addSizeDimension(0, 2).setLocationId("loc").build());
 	}
 
 }

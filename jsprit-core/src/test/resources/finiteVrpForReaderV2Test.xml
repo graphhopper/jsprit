@@ -85,11 +85,29 @@
                     <end>1000.0</end>
                </timeSchedule>
           </vehicle>
+           <vehicle>
+               <id>v5</id>
+               <location>
+               		<id>startLoc</id>
+               		<coord x="10.0" y="100.0"/>
+               </location>
+               <endLocation>
+               		<id>endLoc</id>
+               		<coord x="1000.0" y="2000.0"/>
+               </endLocation>
+               <typeId>vehType3</typeId>
+               <timeSchedule>
+                    <start>0.0</start>
+                    <end>1000.0</end>
+               </timeSchedule>
+          </vehicle>
      </vehicles>
      <vehicleTypes>
           <type>
           		<id>vehType</id>
-               <capacity>20</capacity>
+               <capacity-dimensions>
+               		<dimension index="0">20</dimension>
+               </capacity-dimensions>
                <costs>
                     <fixed>0.0</fixed>
                     <distance>0.0</distance>
@@ -105,13 +123,29 @@
                     <time>0.0</time>
                </costs>
           </type>
+          <type>
+               <id>vehType3</id>
+               <capacity-dimensions>
+               		<dimension index="0">100</dimension>
+               		<dimension index="1">1000</dimension>
+               		<dimension index="2">10000</dimension>
+               		<dimension index="10">100000</dimension>
+               </capacity-dimensions>
+               <costs>
+                    <fixed>0.0</fixed>
+                    <distance>0.0</distance>
+                    <time>0.0</time>
+               </costs>
+          </type>
      </vehicleTypes>
      
      <services>
      	 <service id="1" type="service">
                <locationId>j(1,5)</locationId>
                 <coord x="10.0" y="10.0"/>
-               <capacity-demand>1</capacity-demand>
+               <capacity-dimensions>
+               		<dimension index="0">1</dimension>
+               </capacity-dimensions>
                <duration>10.0</duration>
                <timeWindows>
                     <timeWindow>
@@ -183,7 +217,9 @@
                     </timeWindow>
                	</timeWindows>
      		</delivery>
-     		<capacity-demand>10</capacity-demand>
+     		<capacity-dimensions>
+               		<dimension index="0">10</dimension>
+               </capacity-dimensions>
      	</shipment>
      	
      </shipments>

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+
 /**
  * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
  * 
@@ -33,9 +34,24 @@ public class Delivery extends Service{
 		 * @param size
 		 * @return builder
 		 * @throws IllegalArgumentException if size < 0 or id is null
+		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
+		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
 		 */
+		@Deprecated
 		public static Builder newInstance(String id, int size){
-			return new Builder(id,size);
+			Builder builder = new Builder(id,size);
+			builder.addSizeDimension(0, size);
+			return builder;
+		}
+		
+		/**
+		 * Returns a new instance of builder that builds a delivery.
+		 * 
+		 * @param id
+		 * @return the builder
+		 */
+		public static Builder newInstance(String id){
+			return new Builder(id);
 		}
 		
 		/**
@@ -48,6 +64,11 @@ public class Delivery extends Service{
 		Builder(String id, int size) {
 			super(id, size);
 		}
+		
+		Builder(String id) {
+			super(id);
+		}
+		
 		/**
 		 * Builds Delivery.
 		 * 
@@ -60,6 +81,7 @@ public class Delivery extends Service{
 				locationId = coord.toString();
 			}
 			this.setType("delivery");
+			super.capacity = super.capacityBuilder.build();
 			return new Delivery(this);
 		}
 		

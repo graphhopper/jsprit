@@ -16,6 +16,9 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+
+import jsprit.core.problem.Capacity;
+
 /**
  * Implementation of {@link VehicleType}.
  * 
@@ -73,15 +76,24 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @param capacity
 		 * @return the vehicleType builder
 		 * @throws IllegalStateException if capacity is smaller than zero or id is null
+		 * @deprecated use <code>newInstance(String id)</code> instead
 		 */
+		@Deprecated
 		public static VehicleTypeImpl.Builder newInstance(String id, int capacity){
 			if(capacity < 0) throw new IllegalStateException("capacity cannot be smaller than zero");
 			if(id == null) throw new IllegalStateException("typeId must be null");
-			return new Builder(id,capacity);
+			Builder builder = new Builder(id,capacity);
+			builder.addCapacityDimension(0, capacity);
+			return builder;
 		}
 		
+		public static VehicleTypeImpl.Builder newInstance(String id) {
+			return new Builder(id);
+		}
+
+		
 		private String id;
-		private int capacity;
+		private int capacity = 0;
 		private double maxVelo = Double.MAX_VALUE;
 		/**
 		 * default cost values for default vehicle type
@@ -89,6 +101,12 @@ public class VehicleTypeImpl implements VehicleType {
 		private double fixedCost = 0.0;
 		private double perDistance = 1.0;
 		private double perTime = 0.0;
+		
+		private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+		
+		private Capacity capacityDimensions = null;
+		
+		private boolean dimensionAdded = false;
 
 		/**
 		 * Constructs the builder.
@@ -96,10 +114,15 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @param id
 		 * @param capacity
 		 */
+		@Deprecated
 		private Builder(String id, int capacity) {
 			super();
 			this.id = id;
 			this.capacity = capacity;
+		}
+
+		public Builder(String id) {
+			this.id = id;
 		}
 
 		/**
@@ -165,9 +188,49 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @return VehicleTypeImpl
 		 */
 		public VehicleTypeImpl build(){
+			if(capacityDimensions == null){
+				capacityDimensions = capacityBuilder.build();
+			}
 			return new VehicleTypeImpl(this);
 		}
 
+		/**
+		 * Adds a capacity dimension.
+		 * 
+		 * @param dimIndex
+		 * @param dimVal
+		 * @return the builder
+		 * @throws IllegalArgumentException if dimVal < 0
+		 * @throws IllegalStateException if capacity dimension is already set
+		 */
+		public Builder addCapacityDimension(int dimIndex, int dimVal) {
+			if(dimVal<0) throw new IllegalArgumentException("capacity value cannot be negative");
+			if(capacityDimensions != null) throw new IllegalStateException("either build your dimension with build your dimensions with " +
+					"addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+					"You used both methods.");
+			dimensionAdded = true;
+			capacityBuilder.addDimension(dimIndex,dimVal);
+			return this;
+		}
+
+		/**
+		 * Sets capacity dimensions.
+		 * 
+		 * <p>Note if you use this you cannot use <code>addCapacityDimension(int dimIndex, int dimVal)</code> anymore. Thus either build
+		 * your dimensions with <code>addCapacityDimension(int dimIndex, int dimVal)</code> or set the already built dimensions with
+		 * this method.
+		 * 
+		 * @param capacity
+		 * @return this builder
+		 * @throws IllegalStateException if capacityDimension has already been added
+		 */
+		public Builder setCapacityDimensions(Capacity capacity){
+			if(dimensionAdded) throw new IllegalStateException("either build your dimension with build your dimensions with " +
+					"addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+					"You used both methods.");
+			this.capacityDimensions = capacity;
+			return this;
+		}
 	}
 	
 	@Override
@@ -205,7 +268,10 @@ public class VehicleTypeImpl implements VehicleType {
 	
 	private final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
 	
+	private final Capacity capacityDimensions;
+
 	private final double maxVelocity;
+
 
 	/**
 	 * @deprecated use builder instead
@@ -225,6 +291,7 @@ public class VehicleTypeImpl implements VehicleType {
 		capacity = builder.capacity;
 		maxVelocity = builder.maxVelo;
 		vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance);
+		capacityDimensions = builder.capacityDimensions;
 	}
 
 	/**
@@ -240,6 +307,7 @@ public class VehicleTypeImpl implements VehicleType {
 		this.typeId = typeId;
 		this.capacity = capacity;
 		this.vehicleCostParams = vehicleCostParams;
+		this.capacityDimensions = Capacity.Builder.newInstance().addDimension(0, capacity).build();
 		this.maxVelocity = Double.MAX_VALUE;
 	}
 
@@ -255,8 +323,9 @@ public class VehicleTypeImpl implements VehicleType {
 	 * @see basics.route.VehicleType#getCapacity()
 	 */
 	@Override
+	@Deprecated
 	public int getCapacity() {
-		return capacity;
+		return capacityDimensions.get(0);
 	}
 
 	/* (non-Javadoc)
@@ -275,5 +344,10 @@ public class VehicleTypeImpl implements VehicleType {
 	@Override
 	public double getMaxVelocity() {
 		return maxVelocity;
+	}
+
+	@Override
+	public Capacity getCapacityDimensions() {
+		return capacityDimensions;
 	}
 }

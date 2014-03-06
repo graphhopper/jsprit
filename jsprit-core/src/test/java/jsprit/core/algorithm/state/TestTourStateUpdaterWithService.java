@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
@@ -36,13 +37,10 @@ import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
-import jsprit.core.util.Coordinate;
-import jsprit.core.util.ManhattanDistanceCalculator;
+import jsprit.core.util.CostFactory;
 
 import org.junit.Before;
 import org.junit.Test;
-
-
 
 public class TestTourStateUpdaterWithService {
 
@@ -66,54 +64,56 @@ public class TestTourStateUpdaterWithService {
 	@Before
 	public void setUp() {
 
-		VehicleRoutingTransportCosts cost = new VehicleRoutingTransportCosts() {
+		VehicleRoutingTransportCosts cost = CostFactory.createManhattanCosts();
+		
+//		VehicleRoutingTransportCosts cost = new VehicleRoutingTransportCosts() {
+//
+//			@Override
+//			public double getBackwardTransportTime(String fromId, String toId,
+//					double arrivalTime, Driver driver, Vehicle vehicle) {
+//				return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
+//			}
+//
+//			@Override
+//			public double getBackwardTransportCost(String fromId, String toId,
+//					double arrivalTime, Driver driver, Vehicle vehicle) {
+//				return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
+//			}
+//
+//			@Override
+//			public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+//				String[] fromTokens = fromId.split(",");
+//				String[] toTokens = toId.split(",");
+//				double fromX = Double.parseDouble(fromTokens[0]);
+//				double fromY = Double.parseDouble(fromTokens[1]);
+//
+//				double toX = Double.parseDouble(toTokens[0]);
+//				double toY = Double.parseDouble(toTokens[1]);
+//
+//				return ManhattanDistanceCalculator.calculateDistance(new Coordinate(fromX, fromY), new Coordinate(toX, toY));
+//			}
+//
+//			@Override
+//			public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+//				return getTransportCost(fromId, toId, departureTime, driver, vehicle);
+//			}
+//		};
 
-			@Override
-			public double getBackwardTransportTime(String fromId, String toId,
-					double arrivalTime, Driver driver, Vehicle vehicle) {
-				return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-			}
-
-			@Override
-			public double getBackwardTransportCost(String fromId, String toId,
-					double arrivalTime, Driver driver, Vehicle vehicle) {
-				return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-			}
-
-			@Override
-			public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-				String[] fromTokens = fromId.split(",");
-				String[] toTokens = toId.split(",");
-				double fromX = Double.parseDouble(fromTokens[0]);
-				double fromY = Double.parseDouble(fromTokens[1]);
-
-				double toX = Double.parseDouble(toTokens[0]);
-				double toY = Double.parseDouble(toTokens[1]);
-
-				return ManhattanDistanceCalculator.calculateDistance(new Coordinate(fromX, fromY), new Coordinate(toX, toY));
-			}
-
-			@Override
-			public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-				return getTransportCost(fromId, toId, departureTime, driver, vehicle);
-			}
-		};
-
-		Service firstService = Service.Builder.newInstance("1", 5).setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0, 20)).build();
-		Service secondService = Service.Builder.newInstance("2", 5).setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0, 50)).build();
+		Service firstService = Service.Builder.newInstance("1").addSizeDimension(0, 5).setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0, 20)).build();
+		Service secondService = Service.Builder.newInstance("2").addSizeDimension(0, 5).setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0, 50)).build();
 		
 		Collection<Job> services = new ArrayList<Job>();
 		services.add(firstService);
 		services.add(secondService);
 		
-		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("test", 10).build();
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("test").addCapacityDimension(0, 10).build();
 		vehicle = VehicleImpl.Builder.newInstance("testvehicle").setType(type).setStartLocationId("0,0")
 				.setEarliestStart(0.0).setLatestArrival(50.0).build();
 		
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(services).addVehicle(vehicle).setRoutingCost(cost).build();
 		
-		states = new StateManager(vrp);
+		states = new StateManager(vrp.getTransportCosts());
 		states.updateLoadStates();
 		states.updateTimeWindowStates();
 		states.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), states));
@@ -130,8 +130,8 @@ public class TestTourStateUpdaterWithService {
 	@Test
 	public void testCalculatedCost() {
 		states.informInsertionStarts(Arrays.asList(vehicleRoute), null);
-		assertEquals(40.0, states.getRouteState(vehicleRoute,StateFactory.COSTS).toDouble(), 0.05);
-		assertEquals(10, states.getRouteState(vehicleRoute, StateFactory.LOAD_AT_END).toDouble(), 0.05);
+		assertEquals(40., states.getRouteState(vehicleRoute,StateFactory.COSTS, Double.class), 0.05);
+		assertEquals(10, states.getRouteState(vehicleRoute, StateFactory.LOAD_AT_END, Capacity.class).get(0));
 	}
 	
 	@Test
@@ -147,23 +147,23 @@ public class TestTourStateUpdaterWithService {
 	@Test
 	public void testStatesOfAct1(){
 		states.informInsertionStarts(Arrays.asList(vehicleRoute), null);
-		assertEquals(10.0, states.getActivityState(act1, StateFactory.COSTS).toDouble(),0.05);
-		assertEquals(5.0, states.getActivityState(act1, StateFactory.LOAD).toDouble(),0.05);
-		assertEquals(20.0, states.getActivityState(act1, StateFactory.LATEST_OPERATION_START_TIME).toDouble(),0.05);
+		assertEquals(10.0, states.getActivityState(act1, StateFactory.COSTS, Double.class),0.05);
+		assertEquals(5, states.getActivityState(act1, StateFactory.LOAD, Capacity.class).get(0),0.05);
+		assertEquals(20.0, states.getActivityState(act1, StateFactory.LATEST_OPERATION_START_TIME, Double.class),0.05);
 	}
 	
 	@Test
 	public void testStatesOfAct2(){
 		states.informInsertionStarts(Arrays.asList(vehicleRoute), null);
-		assertEquals(30.0, states.getActivityState(act2, StateFactory.COSTS).toDouble(),0.05);
-		assertEquals(10.0, states.getActivityState(act2, StateFactory.LOAD).toDouble(),0.05);
-		assertEquals(40.0, states.getActivityState(act2, StateFactory.LATEST_OPERATION_START_TIME).toDouble(),0.05);
+		assertEquals(30.0, states.getActivityState(act2, StateFactory.COSTS, Double.class),0.05);
+		assertEquals(10, states.getActivityState(act2, StateFactory.LOAD, Capacity.class).get(0),0.05);
+		assertEquals(40.0, states.getActivityState(act2, StateFactory.LATEST_OPERATION_START_TIME, Double.class),0.05);
 	}
 	
 	@Test
 	public void testStatesOfAct3(){
 		states.informInsertionStarts(Arrays.asList(vehicleRoute), null);
-		assertEquals(40.0, states.getRouteState(vehicleRoute, StateFactory.COSTS).toDouble(), 0.05);
+		assertEquals(40.0, states.getRouteState(vehicleRoute, StateFactory.COSTS, Double.class), 0.05);
 		assertEquals(40.0, vehicleRoute.getEnd().getArrTime(),0.05);
 		assertEquals(50.0, vehicleRoute.getEnd().getTheoreticalLatestOperationStartTime(),0.05);
 	}

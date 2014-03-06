@@ -126,11 +126,11 @@ public class LiLimReader {
 	public void read(String filename){
 		readShipments(filename);
 		buildShipments();
-		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type", vehicleCapacity)
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, vehicleCapacity)
 				.setCostPerDistance(1.0).setFixedCost(fixCosts).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle")
 				.setEarliestStart(depotOpeningTime).setLatestArrival(depotClosingTime)
-				.setLocationCoord(customers.get(depotId).coord).setType(type).build();
+				.setStartLocationCoordinate(customers.get(depotId).coord).setType(type).build();
 		vrpBuilder.addVehicle(vehicle);
 	}
 	
@@ -141,7 +141,7 @@ public class LiLimReader {
 			String from = rel.from;
 			String to = rel.to;
 			int demand = rel.demand;
-			Shipment s = Shipment.Builder.newInstance(counter.toString(), demand)
+			Shipment s = Shipment.Builder.newInstance(counter.toString()).addSizeDimension(0, demand)
 					.setPickupCoord(customers.get(from).coord).setPickupServiceTime(customers.get(from).serviceTime)
 					.setPickupTimeWindow(TimeWindow.newInstance(customers.get(from).start, customers.get(from).end))
 					.setDeliveryCoord(customers.get(to).coord).setDeliveryServiceTime(customers.get(to).serviceTime)

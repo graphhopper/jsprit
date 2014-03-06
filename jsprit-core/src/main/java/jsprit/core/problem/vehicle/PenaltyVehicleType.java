@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.vehicle.VehicleTypeImpl.VehicleCostParams;
 
 public class PenaltyVehicleType implements VehicleType{
@@ -44,6 +45,10 @@ public class PenaltyVehicleType implements VehicleType{
 		return type.getTypeId();
 	}
 
+	/**
+	 * @deprecated use <code>getCapacityDimensions()</code> instead
+	 */
+	@Deprecated
 	@Override
 	public int getCapacity() {
 		return type.getCapacity();
@@ -57,6 +62,11 @@ public class PenaltyVehicleType implements VehicleType{
 	@Override
 	public double getMaxVelocity() {
 		return type.getMaxVelocity();
+	}
+
+	@Override
+	public Capacity getCapacityDimensions() {
+		return type.getCapacityDimensions();
 	}
 
 	

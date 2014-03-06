@@ -85,9 +85,9 @@ public class ChristofidesReader {
 			}
 			else if(counter == 1){
 				Coordinate depotCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
-				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance("christophidesType", vehicleCapacity).
+				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance("christophidesType").addCapacityDimension(0, vehicleCapacity).
 						setCostPerDistance(1.0).build();
-				Vehicle vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setLocationCoord(depotCoord).
+				Vehicle vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setStartLocationCoordinate(depotCoord).
 						setType(vehicleType).build();
 				vrpBuilder.addVehicle(vehicle);
 			}
@@ -95,7 +95,7 @@ public class ChristofidesReader {
 				Coordinate customerCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
 				int demand = Integer.parseInt(tokens[2].trim());
 				String customer = Integer.valueOf(counter-1).toString();
-				Service service = Service.Builder.newInstance(customer, demand).setServiceTime(serviceTime).setCoord(customerCoord).build();
+				Service service = Service.Builder.newInstance(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setCoord(customerCoord).build();
 				vrpBuilder.addJob(service);
 			}
 			counter++;

@@ -49,7 +49,7 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType", 2);
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 2);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 		
 		/*
@@ -69,11 +69,11 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
 		 * 4: (15,13)->(14,11)
 		 */
 		
-		Shipment shipment1 = Shipment.Builder.newInstance("1", 1).setPickupCoord(Coordinate.newInstance(5, 7)).setDeliveryCoord(Coordinate.newInstance(6, 9)).build();
-		Shipment shipment2 = Shipment.Builder.newInstance("2", 1).setPickupCoord(Coordinate.newInstance(5, 13)).setDeliveryCoord(Coordinate.newInstance(6, 11)).build();
+		Shipment shipment1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(5, 7)).setDeliveryCoord(Coordinate.newInstance(6, 9)).build();
+		Shipment shipment2 = Shipment.Builder.newInstance("2").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(5, 13)).setDeliveryCoord(Coordinate.newInstance(6, 11)).build();
 		
-		Shipment shipment3 = Shipment.Builder.newInstance("3", 1).setPickupCoord(Coordinate.newInstance(15, 7)).setDeliveryCoord(Coordinate.newInstance(14, 9)).build();
-		Shipment shipment4 = Shipment.Builder.newInstance("4", 1).setPickupCoord(Coordinate.newInstance(15, 13)).setDeliveryCoord(Coordinate.newInstance(14, 11)).build();
+		Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(15, 7)).setDeliveryCoord(Coordinate.newInstance(14, 9)).build();
+		Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(15, 13)).setDeliveryCoord(Coordinate.newInstance(14, 11)).build();
 //		
 		/*
 		 * build deliveries, (implicitly picked up in the depot)
@@ -82,10 +82,10 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
 		 * 3: (16,8)
 		 * 4: (16,12)
 		 */
-		Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("5", 1).setCoord(Coordinate.newInstance(4, 8)).build();
-		Delivery delivery2 = (Delivery) Delivery.Builder.newInstance("6", 1).setCoord(Coordinate.newInstance(4, 12)).build();
-		Delivery delivery3 = (Delivery) Delivery.Builder.newInstance("7", 1).setCoord(Coordinate.newInstance(16, 8)).build();
-		Delivery delivery4 = (Delivery) Delivery.Builder.newInstance("8", 1).setCoord(Coordinate.newInstance(16, 12)).build();
+		Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("5").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(4, 8)).build();
+		Delivery delivery2 = (Delivery) Delivery.Builder.newInstance("6").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(4, 12)).build();
+		Delivery delivery3 = (Delivery) Delivery.Builder.newInstance("7").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(16, 8)).build();
+		Delivery delivery4 = (Delivery) Delivery.Builder.newInstance("8").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(16, 12)).build();
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);

@@ -82,6 +82,21 @@
 								<xs:all>
 									<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
 									<xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" default="0"/>
+									<xs:element name="capacity-dimensions" minOccurs="0" maxOccurs="1">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="dimension" minOccurs="1" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:simpleContent>
+															<xs:extension base="xs:integer">
+																<xs:attribute name="index" type="xs:integer" use="required"/>			
+															</xs:extension>
+														</xs:simpleContent>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
 									<xs:element name="costs">
 										<xs:complexType>
 											<xs:all>
@@ -109,6 +124,21 @@
 									<xs:element name="locationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="capacity-demand" type="xs:integer" minOccurs="0" maxOccurs="1" default="0"/>
+									<xs:element name="capacity-dimensions" minOccurs="0" maxOccurs="1">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="dimension" minOccurs="1" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:simpleContent>
+															<xs:extension base="xs:integer">
+																<xs:attribute name="index" type="xs:integer" use="required"/>			
+															</xs:extension>
+														</xs:simpleContent>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
 									<xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
 									<xs:element name="timeWindows" minOccurs="0" maxOccurs="1">
 										<xs:complexType>
@@ -165,7 +195,22 @@
 											</xs:all>
 										</xs:complexType>
 									</xs:element>
-									<xs:element name="capacity-demand" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+									<xs:element name="capacity-demand" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+									<xs:element name="capacity-dimensions" minOccurs="0" maxOccurs="1">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="dimension" minOccurs="1" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:simpleContent>
+															<xs:extension base="xs:integer">
+																<xs:attribute name="index" type="xs:integer" use="required"/>			
+															</xs:extension>
+														</xs:simpleContent>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
 								</xs:sequence>
 								<xs:attribute name="id" type="xs:string" use="required" />
 							</xs:complexType>

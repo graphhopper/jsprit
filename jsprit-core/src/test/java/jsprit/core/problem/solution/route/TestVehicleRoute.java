@@ -41,7 +41,7 @@ public class TestVehicleRoute {
 
 	@Before
 	public void doBefore(){
-		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo", 0).build()).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(VehicleTypeImpl.Builder.newInstance("yo").build()).build();
 		driver = DriverImpl.noDriver();
 	}
 
@@ -78,7 +78,7 @@ public class TestVehicleRoute {
 	@Test
 	public void whenBuildingANonEmptyTour2Times_tourIterIteratesOverActivitiesCorrectly(){
 		VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
-		routeBuilder.addService(Service.Builder.newInstance("2", 30).setLocationId("1").build());
+		routeBuilder.addService(Service.Builder.newInstance("2").addSizeDimension(0, 30).setLocationId("1").build());
 		VehicleRoute route = routeBuilder.build();
 		
 		{
@@ -92,7 +92,7 @@ public class TestVehicleRoute {
 			assertEquals(1,count);
 		}
 		{
-			route.getTourActivities().addActivity(ServiceActivity.newInstance(Service.Builder.newInstance("3", 30).setLocationId("1").build()));
+			route.getTourActivities().addActivity(ServiceActivity.newInstance(Service.Builder.newInstance("3").addSizeDimension(0, 30).setLocationId("1").build()));
 			Iterator<TourActivity> iter = route.getTourActivities().iterator();
 			int count = 0;
 			while(iter.hasNext()){
@@ -120,7 +120,7 @@ public class TestVehicleRoute {
 	@Test
 	public void whenBuildingANonEmptyTourV2_tourReverseIterIteratesOverActivitiesCorrectly(){
 		VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
-		routeBuilder.addService(Service.Builder.newInstance("2", 30).setLocationId("1").build());
+		routeBuilder.addService(Service.Builder.newInstance("2").addSizeDimension(0, 30).setLocationId("1").build());
 		VehicleRoute route = routeBuilder.build();
 		Iterator<TourActivity> iter = route.getTourActivities().reverseActivityIterator();
 		int count = 0;
@@ -135,8 +135,8 @@ public class TestVehicleRoute {
 	@Test
 	public void whenBuildingANonEmptyTour2Times_tourReverseIterIteratesOverActivitiesCorrectly(){
 		VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
-		routeBuilder.addService(Service.Builder.newInstance("2", 30).setLocationId("1").build());
-		routeBuilder.addService(Service.Builder.newInstance("3", 30).setLocationId("2").build());
+		routeBuilder.addService(Service.Builder.newInstance("2").addSizeDimension(0, 30).setLocationId("1").build());
+		routeBuilder.addService(Service.Builder.newInstance("3").addSizeDimension(0, 30).setLocationId("2").build());
 		VehicleRoute route = routeBuilder.build();
 		{
 			Iterator<TourActivity> iter = route.getTourActivities().reverseActivityIterator();

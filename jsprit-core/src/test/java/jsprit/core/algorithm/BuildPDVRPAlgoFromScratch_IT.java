@@ -60,7 +60,7 @@ public class BuildPDVRPAlgoFromScratch_IT {
 			new VrpXMLReader(builder).read("src/test/resources/pd_solomon_r101.xml");
 			vrp = builder.build();
 			
-			final StateManager stateManager = new StateManager(vrp);
+			final StateManager stateManager = new StateManager(vrp.getTransportCosts());
 			
 			ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 			constraintManager.addTimeWindowConstraint();
@@ -81,7 +81,7 @@ public class BuildPDVRPAlgoFromScratch_IT {
 				public double getCosts(VehicleRoutingProblemSolution solution) {
 					double costs = 0.0;
 					for(VehicleRoute route : solution.getRoutes()){
-						costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble();
+						costs += stateManager.getRouteState(route, StateFactory.COSTS, Double.class);
 					}
 					return costs;
 				}

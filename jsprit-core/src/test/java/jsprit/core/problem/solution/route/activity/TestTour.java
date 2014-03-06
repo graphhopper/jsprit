@@ -40,7 +40,7 @@ public class TestTour {
 
 	@Before
 	public void doBefore(){
-		service = Service.Builder.newInstance("yo", 10).setLocationId("loc").build();
+		service = Service.Builder.newInstance("yo").addSizeDimension(0, 10).setLocationId("loc").build();
 		act = ServiceActivity.newInstance(service);
 		tour = new TourActivities();
 	}
@@ -73,7 +73,7 @@ public class TestTour {
 		assertEquals(0, tour.getActivities().size());
 		tour.addActivity(act);
 		assertEquals(1, tour.getActivities().size());
-		Service anotherServiceInstance = Service.Builder.newInstance("yo", 10).setLocationId("loc").build();
+		Service anotherServiceInstance = Service.Builder.newInstance("yo").addSizeDimension(0, 10).setLocationId("loc").build();
 		assertTrue(service.equals(anotherServiceInstance));
 		boolean removed = tour.removeJob(anotherServiceInstance);
 		assertTrue(removed);
@@ -82,7 +82,7 @@ public class TestTour {
 	
 	@Test
 	public void whenAddingAShipmentActivity_tourShouldServeShipment(){
-		Shipment s = Shipment.Builder.newInstance("s", 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
+		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
 		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
 		TourActivity pickupShipment = fac.createPickup(s);
 		TourActivity deliverShipment = fac.createDelivery(s);
@@ -96,7 +96,7 @@ public class TestTour {
 	
 	@Test
 	public void whenRemovingShipment_tourShouldNotServiceItAnymore(){
-		Shipment s = Shipment.Builder.newInstance("s", 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
+		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
 		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
 		TourActivity pickupShipment = fac.createPickup(s);
 		TourActivity deliverShipment = fac.createDelivery(s);
@@ -110,7 +110,7 @@ public class TestTour {
 	
 	@Test
 	public void whenRemovingShipment_theirCorrespondingActivitiesShouldBeRemoved(){
-		Shipment s = Shipment.Builder.newInstance("s", 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
+		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
 		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
 		TourActivity pickupShipment = fac.createPickup(s);
 		TourActivity deliverShipment = fac.createDelivery(s);

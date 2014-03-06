@@ -54,7 +54,7 @@ public class GoldenReaderTest {
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
 			if(v.getType().getTypeId().equals("type_1") && !(v.getType() instanceof PenaltyVehicleType) ){
-				sumOfType1Cap+=v.getCapacity();
+				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
 		assertEquals(80,sumOfType1Cap);
@@ -84,7 +84,7 @@ public class GoldenReaderTest {
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
 			if(v.getType().getTypeId().equals("type_2")  && !(v.getType() instanceof PenaltyVehicleType) ){
-				sumOfType1Cap+=v.getCapacity();
+				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
 		assertEquals(60,sumOfType1Cap);
@@ -114,7 +114,7 @@ public class GoldenReaderTest {
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
 			if(v.getType().getTypeId().equals("type_3") && !(v.getType() instanceof PenaltyVehicleType) ){
-				sumOfType1Cap+=v.getCapacity();
+				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
 		assertEquals(160,sumOfType1Cap);
@@ -144,7 +144,7 @@ public class GoldenReaderTest {
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
 			if(v.getType().getTypeId().equals("type_4") && !(v.getType() instanceof PenaltyVehicleType) ){
-				sumOfType1Cap+=v.getCapacity();
+				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
 		assertEquals(280,sumOfType1Cap);
@@ -174,7 +174,7 @@ public class GoldenReaderTest {
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
 			if(v.getType().getTypeId().equals("type_5") && !(v.getType() instanceof PenaltyVehicleType) ){
-				sumOfType1Cap+=v.getCapacity();
+				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
 		assertEquals(240,sumOfType1Cap);
@@ -204,7 +204,7 @@ public class GoldenReaderTest {
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
 			if(v.getType().getTypeId().equals("type_6") && !(v.getType() instanceof PenaltyVehicleType) ){
-				sumOfType1Cap+=v.getCapacity();
+				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
 		assertEquals(200,sumOfType1Cap);
@@ -217,10 +217,10 @@ public class GoldenReaderTest {
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getCoord().getX() != 40.0){
+			if(v.getStartLocationCoordinate().getX() != 40.0){
 				assertFalse(true);
 			}
-			if(v.getCoord().getY() != 40.0){
+			if(v.getStartLocationCoordinate().getY() != 40.0){
 				assertFalse(true);
 			}
 		}
@@ -234,7 +234,7 @@ public class GoldenReaderTest {
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Job job = getJob("1",vrp);
-		assertEquals(18,job.getCapacityDemand());
+		assertEquals(18,job.getSize().get(0));
 	}
 	
 	@Test
@@ -284,7 +284,7 @@ public class GoldenReaderTest {
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Job job = getJob("4",vrp);
-		assertEquals(30,job.getCapacityDemand());
+		assertEquals(30,job.getSize().get(0));
 	}
 	
 	@Test
@@ -294,7 +294,7 @@ public class GoldenReaderTest {
 			.read(this.getClass().getClassLoader().getResource("cn_13mix.txt").getPath());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		Job job = getJob("50",vrp);
-		assertEquals(22,job.getCapacityDemand());
+		assertEquals(22,job.getSize().get(0));
 	}
 
 	private Job getJob(String string, VehicleRoutingProblem vrp) {

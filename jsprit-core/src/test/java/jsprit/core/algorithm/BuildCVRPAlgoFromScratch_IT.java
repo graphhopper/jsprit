@@ -58,7 +58,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 		new VrpXMLReader(builder).read("src/test/resources/vrpnc1-jsprit.xml");
 		vrp = builder.build();
 		
-		final StateManager stateManager = new StateManager(vrp);
+		final StateManager stateManager = new StateManager(vrp.getTransportCosts());
 		stateManager.updateLoadStates();
 		stateManager.updateTimeWindowStates();
 		stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
@@ -82,7 +82,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, StateFactory.COSTS).toDouble();
+					costs += stateManager.getRouteState(route, StateFactory.COSTS,Double.class);
 				}
 				return costs;
 			}
@@ -108,7 +108,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 
 		vra.addInitialSolution(iniSolution);
 		
-		vra.setNuOfIterations(2000);
+		vra.setNuOfIterations(1000);
 
 	}
 	

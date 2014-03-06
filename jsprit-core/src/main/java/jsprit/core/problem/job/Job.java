@@ -16,6 +16,9 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+
+import jsprit.core.problem.Capacity;
+
 /**
  * Basic interface for all jobs.
  * 
@@ -36,9 +39,17 @@ public interface Job {
 	 * 
 	 * <p>It determines how much capacity this job consumes of vehicle/transport unit.
 	 * 
+	 * @deprecated use <code>.getCapacity()</code> instead
 	 * @return
 	 */
+	@Deprecated
 	public int getCapacityDemand();
 	
+	/**
+	 * Returns size, i.e. capacity-demand, of this job which can consist of an arbitrary number of capacity dimensions.
+	 * 
+	 * @return Capacity
+	 */
+	public Capacity getSize();
 	
 }
