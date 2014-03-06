@@ -5,6 +5,9 @@ Change-log
 - [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.1_to_1.2.0.txt)
 
 <em>jsprit-core:</em>
+- added feature: multiple capacity dimensions ([#55](https://github.com/jsprit/jsprit/issues/55))
+- added feature: different start and end locations of routes ([#74](https://github.com/jsprit/jsprit/issues/74))
+
 
 <em>jsprit-analysis:</em>
 
