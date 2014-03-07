@@ -8,6 +8,7 @@ Change-log
 - added feature: multiple capacity dimensions ([#55](https://github.com/jsprit/jsprit/issues/55))
 - added feature: different start and end locations of routes ([#74](https://github.com/jsprit/jsprit/issues/74))
 - added a number of unit-tests
+- reworked jsprit.core.algorithm.state.StateManager to deal with any state-object
 - jsprit.core.problem.io.VrpXMLReader$ServiceBuilderFactory: Parameter 3 of 'public jsprit.core.problem.job.Service$Builder createBuilder(java.lang.String, java.lang.String, int)' has changed its type to java.lang.Integer
 - jsprit.core.problem.job.Job: Method 'public jsprit.core.problem.Capacity getSize()' has been added to an interface <b>[potential Break Change]</b>
 - jsprit.core.problem.job.Service$Builder: Removed field demand
