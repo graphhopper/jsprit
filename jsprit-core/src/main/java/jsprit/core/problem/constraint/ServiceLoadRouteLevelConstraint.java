@@ -9,7 +9,10 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 
 /**
- * lsjdfjsdlfjsa
+ * Ensures that capacity constraint is met, i.e. that current load plus
+ * new job size does not exceeds capacity of new vehicle.
+ * 
+ * <p>If job is neither Pickup, Delivery nor Service, it returns true.
  * 
  * @author stefan
  *
@@ -27,24 +30,15 @@ class ServiceLoadRouteLevelConstraint implements HardRouteStateLevelConstraint {
 	public boolean fulfilled(JobInsertionContext insertionContext) {
 		if(insertionContext.getJob() instanceof Delivery){
 			Capacity loadAtDepot = stateManager.getRouteState(insertionContext.getRoute(), StateFactory.LOAD_AT_BEGINNING, Capacity.class);
-//			int loadAtDepot = (int) stateManager.getRouteState(insertionContext.getRoute(), StateFactory.LOAD_AT_BEGINNING).toDouble();
 			if(!Capacity.addup(loadAtDepot, insertionContext.getJob().getSize()).isLessOrEqual(insertionContext.getNewVehicle().getType().getCapacityDimensions())){
 				return false;
 			}
-//			if(loadAtDepot + insertionContext.getJob().getCapacityDemand() > insertionContext.getNewVehicle().getCapacity()){
-//				return false;
-//			}
 		}
 		else if(insertionContext.getJob() instanceof Pickup || insertionContext.getJob() instanceof Service){
 			Capacity loadAtEnd = stateManager.getRouteState(insertionContext.getRoute(), StateFactory.LOAD_AT_END, Capacity.class);
-//			int loadAtEnd = (int) stateManager.getRouteState(insertionContext.getRoute(), StateFactory.LOAD_AT_END).toDouble();
 			if(!Capacity.addup(loadAtEnd, insertionContext.getJob().getSize()).isLessOrEqual(insertionContext.getNewVehicle().getType().getCapacityDimensions())){
 				return false;
 			}
-//			
-//			if(loadAtEnd + insertionContext.getJob().getCapacityDemand() > insertionContext.getNewVehicle().getCapacity()){
-//				return false;
-//			}
 		}
 		return true;
 	}
