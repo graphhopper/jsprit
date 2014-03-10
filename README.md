@@ -14,13 +14,7 @@ It is lightweight, flexible and easy-to-use, and based on a single all-purpose <
 - Various combination of these types
 
 Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
-reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](https://github.com/jsprit/jsprit/wiki/Features)
-
-##In Development
-- continues improvement of code, handling and performance
-- simplifying management of soft and hard constraints
-- multiple time-windows
-- large scale instances
+reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](https://github.com/jsprit/jsprit/wiki/features)
 
 ##Documentation
 
