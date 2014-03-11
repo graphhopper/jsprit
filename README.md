@@ -31,8 +31,6 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 [Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
 
-If you do not want Maven to manage your dependencies, go to [snapshot-jars](https://github.com/jsprit/mvn-rep/tree/master/snapshots/jsprit) or [realease-jars](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) to download jsprit-binaries directly. Just click on the jar-file you want to download and use the 'Raw'-button to actually download it. Put the jars into your classpath. Note that you then need to put all [dependencies](https://github.com/jsprit/jsprit/wiki/Modules-and-Dependencies) jsprit relies on manually to your classpath as well.
-
 ####If not
 
 The following documentation is recommended:
@@ -40,6 +38,11 @@ The following documentation is recommended:
 <a href="http://docs.geotools.org/latest/userguide/tutorial/quickstart/index.html" target="blank_">GeoTools - Quickstart</a>
 
 Here you learn to setup the Java environment and an Integrated Development Environment (IDE). In the subsection <em>Adding Jars to your Project</em> you learn to integrate external libraries in your project. Just copy/paste the above jsprit releases/snapshots to your pom.xml instead of the GeoTools-artifacts.
+
+#### If you do not want Maven
+
+to manage your dependencies, go to [snapshot-jars](https://github.com/jsprit/mvn-rep/tree/master/snapshots/jsprit) or [realease-jars](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) to download jsprit-binaries directly. Just click on the jar-file you want to download and use the 'Raw'-button to actually download it. Put the jars into your classpath. Note that you then need to put all [dependencies](https://github.com/jsprit/jsprit/wiki/Modules-and-Dependencies) jsprit relies on manually to your classpath as well.
+
 
 ##[Contributors](https://github.com/jsprit/jsprit/graphs/contributors)
 [Pierre-David Bélanger](https://github.com/pierredavidbelanger)
