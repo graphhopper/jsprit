@@ -31,9 +31,9 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 [Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
 
-####If not
+####If not and you want to use Maven
 
-The following documentation is recommended:
+the following documentation is recommended:
 
 <a href="http://docs.geotools.org/latest/userguide/tutorial/quickstart/index.html" target="blank_">GeoTools - Quickstart</a>
 
