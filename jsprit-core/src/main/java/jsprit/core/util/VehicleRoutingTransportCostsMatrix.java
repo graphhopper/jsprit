@@ -220,7 +220,15 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 		}
 	}
 
-	private double getDistance(String fromId, String toId) {
+	/**
+	 * Returns the distance fromId to toId.
+	 * 
+	 * @param fromId
+	 * @param toId
+	 * @return
+	 * @throws IllegalStateException if distance of fromId -> toId is not found 
+	 */
+	public double getDistance(String fromId, String toId) {
 		if(fromId.equals(toId)) return 0.0;
 		if(!distancesSet) return 0.0;
 		RelationKey key = RelationKey.newKey(fromId, toId);
