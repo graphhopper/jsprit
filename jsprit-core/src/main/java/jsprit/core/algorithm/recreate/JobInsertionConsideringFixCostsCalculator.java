@@ -18,8 +18,10 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.constraint.SoftRouteConstraint;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
+import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
@@ -28,10 +30,7 @@ import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 
 import org.apache.log4j.Logger;
 
-
-
-
-final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCostsCalculator{
+final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCostsCalculator, SoftRouteConstraint{
 
 	private static final Logger logger = Logger.getLogger(JobInsertionConsideringFixCostsCalculator.class);
 	
@@ -52,10 +51,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 
 	@Override
 	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownPrice) {
-		double relFixCost = getDeltaRelativeFixCost(currentRoute, newVehicle, jobToInsert);
-		double absFixCost = getDeltaAbsoluteFixCost(currentRoute, newVehicle, jobToInsert);
-		double deltaFixCost = (1-solution_completeness_ratio)*relFixCost + solution_completeness_ratio*absFixCost;
-		double fixcost_contribution = weight_deltaFixCost*solution_completeness_ratio*deltaFixCost;
+		double fixcost_contribution = getFixCostContribution(currentRoute,jobToInsert, newVehicle);
 		if(fixcost_contribution > bestKnownPrice){
 			return InsertionData.createEmptyInsertionData();
 		}
@@ -67,6 +63,15 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 		InsertionData insertionData = new InsertionData(totalInsertionCost, iData.getPickupInsertionIndex(), iData.getDeliveryInsertionIndex(), newVehicle, newDriver);
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
 		return insertionData;
+	}
+
+	private double getFixCostContribution(final VehicleRoute currentRoute,
+			final Job jobToInsert, final Vehicle newVehicle) {
+		double relFixCost = getDeltaRelativeFixCost(currentRoute, newVehicle, jobToInsert);
+		double absFixCost = getDeltaAbsoluteFixCost(currentRoute, newVehicle, jobToInsert);
+		double deltaFixCost = (1-solution_completeness_ratio)*relFixCost + solution_completeness_ratio*absFixCost;
+		double fixcost_contribution = weight_deltaFixCost*solution_completeness_ratio*deltaFixCost;
+		return fixcost_contribution;
 	}
 	
 	public void setWeightOfFixCost(double weight){
@@ -118,6 +123,11 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 
 	private Capacity getCurrentMaxLoadInRoute(VehicleRoute route) {
 		return stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class);
+	}
+
+	@Override
+	public double getCosts(JobInsertionContext insertionContext) {
+		return getFixCostContribution(insertionContext.getRoute(), insertionContext.getJob(), insertionContext.getNewVehicle());
 	}
 
 }

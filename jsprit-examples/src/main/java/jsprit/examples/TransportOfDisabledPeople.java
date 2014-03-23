@@ -7,13 +7,18 @@ import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.algorithm.recreate.DellAmicoFixCostCalculator;
+import jsprit.core.algorithm.recreate.VariableTransportCostCalculator;
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
+import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
@@ -21,6 +26,7 @@ import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
+import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 
@@ -131,14 +137,35 @@ public class TransportOfDisabledPeople {
 				return true;
 			}
 		};
+		
+		CrowFlyCosts crowFlyCosts = new CrowFlyCosts(vrpBuilder.getLocations());
+		StateManager stateManager = new StateManager(crowFlyCosts);
+		
 		//add the constraint to the problem
 		vrpBuilder.addConstraint(wheelchair_bus_passenger_pickup_constraint);
+		vrpBuilder.addConstraint(new DellAmicoFixCostCalculator(vrpBuilder.getAddedJobs().size(), stateManager));
+		vrpBuilder.addConstraint(new VariableTransportCostCalculator(crowFlyCosts));
 		
+		SolutionCostCalculator objectiveFunction = new SolutionCostCalculator() {
+			
+			@Override
+			public double getCosts(VehicleRoutingProblemSolution solution) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		};
 		
 		//build the problem
 		VehicleRoutingProblem problem = vrpBuilder.build();
 
+		VehicleRoutingAlgorithmBuilder algorithmBuilder = new VehicleRoutingAlgorithmBuilder(problem, "input/algorithmConfig_noVehicleSwitch.xml");
+		algorithmBuilder.setObjectiveFunction(objectiveFunction);
+		algorithmBuilder.setStateManager(stateManager);
+		algorithmBuilder.addCoreConstraints();
+		algorithmBuilder.addVariableCostCalculator();
+		algorithmBuilder.addFixCostCalculator();
 		
+		VehicleRoutingAlgorithm vra = algorithmBuilder.build();
 		/*
 		 * get a sample algorithm. 
 		 * 
