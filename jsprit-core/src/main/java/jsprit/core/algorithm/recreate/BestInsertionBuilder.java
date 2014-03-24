@@ -45,6 +45,8 @@ public class BestInsertionBuilder {
 	private boolean timeScheduling=false;
 
 	private boolean allowVehicleSwitch=true;
+
+	private boolean addDefaultCostCalc=true;
 	
 	public BestInsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
 		super();
@@ -61,10 +63,31 @@ public class BestInsertionBuilder {
 		return this;
 	};
 	
+	public BestInsertionBuilder setRouteLevel(int forwardLooking, int memory, boolean addDefaultMarginalCostCalculation){
+		local = false;
+		this.forwaredLooking = forwardLooking;
+		this.memory = memory;
+		this.addDefaultCostCalc = addDefaultMarginalCostCalculation;
+		return this;
+	};
+	
 	public BestInsertionBuilder setLocalLevel(){
 		local = true;
 		return this;
 	};
+	
+	/**
+	 * If addDefaulMarginalCostCalculation is false, no calculator is set which implicitly assumes that marginal cost calculation 
+	 * is controlled by your custom soft constraints.
+	 * 
+	 * @param addDefaultMarginalCostCalculation
+	 * @return
+	 */
+	public BestInsertionBuilder setLocalLevel(boolean addDefaultMarginalCostCalculation){
+		local = true;
+		addDefaultCostCalc = addDefaultMarginalCostCalculation;
+		return this;
+	}
 	
 	public BestInsertionBuilder considerFixedCosts(double weightOfFixedCosts){
 		this.weightOfFixedCosts = weightOfFixedCosts;
@@ -89,10 +112,10 @@ public class BestInsertionBuilder {
 		List<PrioritizedVRAListener> algorithmListeners = new ArrayList<PrioritizedVRAListener>();
 		CalculatorBuilder calcBuilder = new CalculatorBuilder(iListeners, algorithmListeners);
 		if(local){
-			calcBuilder.setLocalLevel();
+			calcBuilder.setLocalLevel(addDefaultCostCalc);
 		}
 		else {
-			calcBuilder.setRouteLevel(forwaredLooking, memory);
+			calcBuilder.setRouteLevel(forwaredLooking, memory, addDefaultCostCalc);
 		}
 		calcBuilder.setConstraintManager(constraintManager);
 		calcBuilder.setStates(stateManager);

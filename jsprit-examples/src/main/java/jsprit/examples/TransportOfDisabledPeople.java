@@ -6,27 +6,29 @@ import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
-import jsprit.core.algorithm.recreate.DellAmicoFixCostCalculator;
 import jsprit.core.algorithm.recreate.VariableTransportCostCalculator;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
+import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
+import jsprit.core.problem.constraint.SoftActivityConstraint;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
-import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 
@@ -67,10 +69,20 @@ public class TransportOfDisabledPeople {
 		vehicleBuilder1.setType(vehicleType_wheelchair);
 		Vehicle vehicle1 = vehicleBuilder1.build();
 		
+		Builder vehicleBuilder1_2 = VehicleImpl.Builder.newInstance("wheelchair_bus_2");
+		vehicleBuilder1_2.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
+		vehicleBuilder1_2.setType(vehicleType_wheelchair);
+		Vehicle vehicle1_2 = vehicleBuilder1_2.build();
+		
 		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("passenger_bus");
 		vehicleBuilder2.setStartLocationCoordinate(Coordinate.newInstance(30, 30)).setEndLocationCoordinate(Coordinate.newInstance(30, 19));
 		vehicleBuilder2.setType(vehicleType_solelypassenger);
 		Vehicle vehicle2 = vehicleBuilder2.build();
+		
+		Builder vehicleBuilder2_2 = VehicleImpl.Builder.newInstance("passenger_bus_2");
+		vehicleBuilder2_2.setStartLocationCoordinate(Coordinate.newInstance(30, 30)).setEndLocationCoordinate(Coordinate.newInstance(30, 19));
+		vehicleBuilder2_2.setType(vehicleType_solelypassenger);
+		Vehicle vehicle2_2 = vehicleBuilder2_2.build();
 	
 		
 		/*
@@ -108,7 +120,7 @@ public class TransportOfDisabledPeople {
 		Shipment shipment20 = Shipment.Builder.newInstance("wheelchair_10").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1).setPickupCoord(Coordinate.newInstance(15, 20)).setDeliveryCoord(Coordinate.newInstance(14, 18)).build();
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		vrpBuilder.addVehicle(vehicle1).addVehicle(vehicle2);
+		vrpBuilder.addVehicle(vehicle1).addVehicle(vehicle2).addVehicle(vehicle1_2).addVehicle(vehicle2_2);
 		vrpBuilder.addJob(shipment1).addJob(shipment2).addJob(shipment3).addJob(shipment4);
 		vrpBuilder.addJob(shipment5).addJob(shipment6).addJob(shipment7).addJob(shipment8);
 		vrpBuilder.addJob(shipment9).addJob(shipment10).addJob(shipment11).addJob(shipment12);
@@ -137,35 +149,50 @@ public class TransportOfDisabledPeople {
 				return true;
 			}
 		};
-		
-		CrowFlyCosts crowFlyCosts = new CrowFlyCosts(vrpBuilder.getLocations());
-		StateManager stateManager = new StateManager(crowFlyCosts);
-		
-		//add the constraint to the problem
-		vrpBuilder.addConstraint(wheelchair_bus_passenger_pickup_constraint);
-		vrpBuilder.addConstraint(new DellAmicoFixCostCalculator(vrpBuilder.getAddedJobs().size(), stateManager));
-		vrpBuilder.addConstraint(new VariableTransportCostCalculator(crowFlyCosts));
-		
+
 		SolutionCostCalculator objectiveFunction = new SolutionCostCalculator() {
 			
 			@Override
 			public double getCosts(VehicleRoutingProblemSolution solution) {
-				// TODO Auto-generated method stub
-				return 0;
+				double maxTransportTime = 0.;
+				for(VehicleRoute route : solution.getRoutes()){
+					if(route.getEnd().getArrTime() > maxTransportTime){
+						maxTransportTime = route.getEnd().getArrTime(); 
+					}
+				}
+				return maxTransportTime;
 			}
 		};
 		
 		//build the problem
 		VehicleRoutingProblem problem = vrpBuilder.build();
 
+		StateManager stateManager = new StateManager(problem.getTransportCosts());
+		
+		ConstraintManager constraintManager = new ConstraintManager(problem, stateManager);
+		constraintManager.addConstraint(wheelchair_bus_passenger_pickup_constraint);
+//		DellAmicoFixCostCalculator dellAmicoFixCostCalc = new DellAmicoFixCostCalculator(vrpBuilder.getAddedJobs().size(), stateManager);
+//		constraintManager.addConstraint(dellAmicoFixCostCalc);
+		constraintManager.addConstraint(new VariableTransportCostCalculator(problem.getTransportCosts()));
+		constraintManager.addConstraint(new SoftActivityConstraint() {
+			
+			@Override
+			public double getCosts(JobInsertionContext iFacts, TourActivity prevAct,
+					TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		});
+		
 		VehicleRoutingAlgorithmBuilder algorithmBuilder = new VehicleRoutingAlgorithmBuilder(problem, "input/algorithmConfig_noVehicleSwitch.xml");
 		algorithmBuilder.setObjectiveFunction(objectiveFunction);
 		algorithmBuilder.setStateManager(stateManager);
+		algorithmBuilder.setConstraintManager(constraintManager);
 		algorithmBuilder.addCoreConstraints();
-		algorithmBuilder.addVariableCostCalculator();
-		algorithmBuilder.addFixCostCalculator();
+//		algorithmBuilder.addDefaultCostCalculators();
 		
-		VehicleRoutingAlgorithm vra = algorithmBuilder.build();
+		VehicleRoutingAlgorithm algorithm = algorithmBuilder.build();
+//		algorithm.addListener(dellAmicoFixCostCalc);
 		/*
 		 * get a sample algorithm. 
 		 * 
@@ -175,7 +202,7 @@ public class TransportOfDisabledPeople {
 		 * bit more complicated and you cannot just add the above hard-constraint. Latter will be covered in another example.
 		 * 
 		 */
-		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig_noVehicleSwitch.xml");
+//		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig_noVehicleSwitch.xml");
 		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 //		algorithm.setNuOfIterations(30000);
 		/*
@@ -196,7 +223,7 @@ public class TransportOfDisabledPeople {
 		/*
 		 * print nRoutes and totalCosts of bestSolution
 		 */
-		SolutionPrinter.print(bestSolution);
+		SolutionPrinter.print(problem,bestSolution,Print.VERBOSE);
 		
 		/*
 		 * plot problem without solution

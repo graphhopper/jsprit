@@ -28,6 +28,8 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.misc.JobInsertionContext;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 
@@ -93,6 +95,8 @@ class CalculatorBuilder {
 
 	private boolean allowVehicleSwitch = true;
 
+	private boolean addDefaultCostCalc = true;
+
 	/**
 	 * Constructs the builder.
 	 * 
@@ -145,9 +149,11 @@ class CalculatorBuilder {
 	 * Sets a flag to build a calculator based on local calculations.
 	 * 
 	 * <p>Insertion of a job and job-activity is evaluated based on the previous and next activity.
+	 * @param addDefaultCostCalc TODO
 	 */
-	public void setLocalLevel(){
+	public void setLocalLevel(boolean addDefaultCostCalc){
 		local = true;
+		this.addDefaultCostCalc  = addDefaultCostCalc;
 	}
 	
 	public void setActivityInsertionCostsCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
@@ -159,8 +165,9 @@ class CalculatorBuilder {
 	 * 
 	 * @param forwardLooking
 	 * @param memory
+	 * @param addDefaultMarginalCostCalc TODO
 	 */
-	public void setRouteLevel(int forwardLooking, int memory){
+	public void setRouteLevel(int forwardLooking, int memory, boolean addDefaultMarginalCostCalc){
 		local = false;
 		this.forwardLooking = forwardLooking;
 		this.memory = memory;
@@ -242,11 +249,23 @@ class CalculatorBuilder {
 
 	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, RouteAndActivityStateGetter statesManager){
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
- 		
 
 		ActivityInsertionCostsCalculator actInsertionCalc;
-		if(activityInsertionCostCalculator == null){
+		if(activityInsertionCostCalculator == null && addDefaultCostCalc){
 			actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
+		}
+		else if(activityInsertionCostCalculator == null && !addDefaultCostCalc){
+			actInsertionCalc = new ActivityInsertionCostsCalculator(){
+
+				final ActivityInsertionCosts noInsertionCosts = new ActivityInsertionCosts(0.,0.);
+				
+				@Override
+				public ActivityInsertionCosts getCosts(JobInsertionContext iContext, TourActivity prevAct,TourActivity nextAct, TourActivity newAct,
+						double depTimeAtPrevAct) {
+					return noInsertionCosts;
+				}
+				
+			};
 		}
 		else{
 			actInsertionCalc = activityInsertionCostCalculator;
@@ -279,8 +298,21 @@ class CalculatorBuilder {
 	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, RouteAndActivityStateGetter activityStates2, int forwardLooking, int solutionMemory){
 		int after = forwardLooking;
 		ActivityInsertionCostsCalculator routeLevelCostEstimator;
-		if(activityInsertionCostCalculator == null){
+		if(activityInsertionCostCalculator == null && addDefaultCostCalc){
 			routeLevelCostEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityStates2);
+		}
+		else if(activityInsertionCostCalculator == null && !addDefaultCostCalc){
+			routeLevelCostEstimator = new ActivityInsertionCostsCalculator(){
+
+				final ActivityInsertionCosts noInsertionCosts = new ActivityInsertionCosts(0.,0.);
+				
+				@Override
+				public ActivityInsertionCosts getCosts(JobInsertionContext iContext, TourActivity prevAct,TourActivity nextAct, TourActivity newAct,
+						double depTimeAtPrevAct) {
+					return noInsertionCosts;
+				}
+				
+			};
 		}
 		else{
 			routeLevelCostEstimator = activityInsertionCostCalculator;
