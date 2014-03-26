@@ -1,5 +1,7 @@
 package jsprit.core.algorithm;
 
+import jsprit.core.algorithm.io.AlgorithmConfig;
+import jsprit.core.algorithm.io.AlgorithmConfigXmlReader;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateActivityTimes;
@@ -17,7 +19,9 @@ import jsprit.core.problem.solution.SolutionCostCalculator;
  */
 public class VehicleRoutingAlgorithmBuilder {
 
-	private final String algorithmConfig;
+	private String algorithmConfigFile;
+	
+	private AlgorithmConfig algorithmConfig;
 	
 	private final VehicleRoutingProblem vrp;
 
@@ -34,13 +38,26 @@ public class VehicleRoutingAlgorithmBuilder {
 	private int nuOfThreads=0;
 	
 	/**
-	 * Constructs the builder.
+	 * Constructs the builder with the problem and an algorithmConfigFile. Latter is to configure and specify the ruin-and-recreate meta-heuristic.
 	 * 
 	 * @param problem
 	 * @param algorithmConfig
 	 */
 	public VehicleRoutingAlgorithmBuilder(VehicleRoutingProblem problem, String algorithmConfig) {
 		this.vrp=problem;
+		this.algorithmConfigFile=algorithmConfig;
+		this.algorithmConfig=null;
+	}
+	
+	/**
+	 * Constructs the builder with the problem and an algorithmConfig. Latter is to configure and specify the ruin-and-recreate meta-heuristic.
+	 * 
+	 * @param problem
+	 * @param algorithmConfig
+	 */
+	public VehicleRoutingAlgorithmBuilder(VehicleRoutingProblem problem, AlgorithmConfig algorithmConfig) {
+		this.vrp=problem;
+		this.algorithmConfigFile=null;
 		this.algorithmConfig=algorithmConfig;
 	}
 
@@ -117,6 +134,8 @@ public class VehicleRoutingAlgorithmBuilder {
 	/**
 	 * Builds and returns the algorithm.
 	 * 
+	 * <p>If algorithmConfigFile is set, it reads the configuration.
+	 * 
 	 * @return
 	 */
 	public VehicleRoutingAlgorithm build() {
@@ -132,6 +151,11 @@ public class VehicleRoutingAlgorithmBuilder {
 			constraintManager.addTimeWindowConstraint();
 			stateManager.updateLoadStates();
 			stateManager.updateTimeWindowStates();
+		}
+		if(algorithmConfig==null){
+			algorithmConfig = new AlgorithmConfig();
+			AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
+			xmlReader.read(algorithmConfigFile);
 		}
 		return VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, algorithmConfig, nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators);
 	}
