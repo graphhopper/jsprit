@@ -6,6 +6,14 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 
+/**
+ * Default objective function which is the sum of all fixed vehicle and variable
+ * transportation costs, i.e. each is generated solution is evaluated according
+ * this objective function.
+ * 
+ * @author schroeder
+ *
+ */
 public class VariablePlusFixedSolutionCostCalculatorFactory {
 	
 	private RouteAndActivityStateGetter stateManager;

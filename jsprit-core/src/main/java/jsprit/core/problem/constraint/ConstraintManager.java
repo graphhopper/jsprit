@@ -13,7 +13,12 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
 import org.apache.log4j.Logger;
 
-@SuppressWarnings("deprecation")
+/**
+ * Manager that manage hard- and soft constraints, both on route and activity level.
+ * 
+ * @author schroeder
+ *
+ */
 public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint, SoftActivityConstraint, SoftRouteConstraint{
 
 	public static enum Priority {

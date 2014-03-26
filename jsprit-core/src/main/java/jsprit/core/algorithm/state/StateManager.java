@@ -51,7 +51,7 @@ import jsprit.core.problem.solution.route.state.StateFactory.StateId;
  * Manages states.
  * 
  * <p>Some condition, rules or constraints are stateful. This StateManager manages these states, i.e. it offers
- * methods to add, store and retrieve states based on vehicle-routes and tour-activities.
+ * methods to add, store and retrieve states based on the problem, vehicle-routes and tour-activities.
  * 
  * @author schroeder
  *

@@ -9,6 +9,12 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 
+/**
+ * Builder that builds a {@link VehicleRoutingAlgorithm}.
+ * 
+ * @author schroeder
+ *
+ */
 public class VehicleRoutingAlgorithmBuilder {
 
 	private final String algorithmConfig;
@@ -27,36 +33,92 @@ public class VehicleRoutingAlgorithmBuilder {
 
 	private int nuOfThreads=0;
 	
+	/**
+	 * Constructs the builder.
+	 * 
+	 * @param problem
+	 * @param algorithmConfig
+	 */
 	public VehicleRoutingAlgorithmBuilder(VehicleRoutingProblem problem, String algorithmConfig) {
 		this.vrp=problem;
 		this.algorithmConfig=algorithmConfig;
 	}
 
+	/**
+	 * Sets custom objective function. 
+	 * 
+	 * <p>If objective function is not set, a default function is applied (which basically minimizes 
+	 * fixed and variable transportation costs ({@link VariablePlusFixedSolutionCostCalculatorFactory}).
+	 * 
+	 * @param objectiveFunction
+	 * @see VariablePlusFixedSolutionCostCalculatorFactory
+	 */
 	public void setObjectiveFunction(SolutionCostCalculator objectiveFunction) {
 		this.solutionCostCalculator = objectiveFunction;
 	}
 
+	/**
+	 * Sets stateManager to memorize states.
+	 * 
+	 * @param stateManager
+	 * @see StateManager
+	 */
 	public void setStateManager(StateManager stateManager) {
 		this.stateManager=stateManager;
 	}
 
+	/**
+	 * Adds core constraints.
+	 * 
+	 * <p>Thus, it adds vehicle-capacity and time-window constraints and their 
+	 * required stateUpdater.
+	 * 
+	 */
 	public void addCoreConstraints() {
 		addCoreConstraints=true;
 	}
 
+	/**
+	 * Adds default cost calculators used by the insertion heuristic,
+	 * to calculate activity insertion costs.
+	 * By default, marginal transportation costs are calculated. Thus when inserting
+	 * act_k between act_i and act_j, marginal (additional) transportation costs
+	 * are basically c(act_i,act_k)+c(act_k,act_j)-c(act_i,act_j).
+	 * 
+	 * <p>Do not use this method, if you plan to control the insertion heuristic
+	 * entirely via hard- and soft-constraints.
+	 */
 	public void addDefaultCostCalculators() {
 		addDefaultCostCalculators=true;
 	}
 
+	/**
+	 * Sets state- and constraintManager. 
+	 * 
+	 * @param stateManager
+	 * @param constraintManager
+	 * @see StateManager
+	 * @see ConstraintManager
+	 */
 	public void setStateAndConstraintManager(StateManager stateManager, ConstraintManager constraintManager) {
 		this.stateManager=stateManager;
 		this.constraintManager=constraintManager;
 	}
 	
+	/**
+	 * Sets nuOfThreads.
+	 * 
+	 * @param nuOfThreads
+	 */
 	public void setNuOfThreads(int nuOfThreads){
 		this.nuOfThreads=nuOfThreads;
 	}
 
+	/**
+	 * Builds and returns the algorithm.
+	 * 
+	 * @return
+	 */
 	public VehicleRoutingAlgorithm build() {
 		if(stateManager == null) stateManager = new StateManager(vrp.getTransportCosts());
 		if(constraintManager == null) constraintManager = new ConstraintManager(vrp,stateManager,vrp.getConstraints());
