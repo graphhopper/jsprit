@@ -74,11 +74,23 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 			return null;
 		}
 		
+		public boolean containsKey(StateId stateId){
+			return states.containsKey(stateId);
+		}
+		
+		public void clear(){
+			states.clear();
+		}
+		
 	}
 
 	private Map<VehicleRoute,States_> vehicleRouteStates_ = new HashMap<VehicleRoute, States_>();
 	
 	private Map<TourActivity,States_> activityStates_ = new HashMap<TourActivity, States_>();
+	
+	private States_ problemStates_ = new States_();
+	
+	private States_ defaultProblemStates_ = new States_();
 	
 	private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
 	
@@ -115,8 +127,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	private void addDefaultStates() {
 		defaultActivityStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
-		
-		
 		defaultActivityStates_.put(StateFactory.COSTS, 0.);
 		defaultActivityStates_.put(StateFactory.DURATION, 0.);
 		defaultActivityStates_.put(StateFactory.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
@@ -139,6 +149,25 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	public StateManager(VehicleRoutingTransportCosts routingCosts){
 		this.routingCosts = routingCosts;
 		addDefaultStates();
+	}
+	
+	public <T> void putDefaultProblemState(StateId stateId, Class<T> type, T defaultState){
+		defaultProblemStates_.putState(stateId, type, defaultState); 
+	}
+	
+	public <T> void putProblemState(StateId stateId, Class<T> type, T state){
+		problemStates_.putState(stateId, type, state); 
+	}
+	
+	public <T> T getProblemState(StateId stateId, Class<T> type){
+		if(!problemStates_.containsKey(stateId)){
+			return getDefaultProblemState(stateId, type);
+		}
+		return problemStates_.getState(stateId, type);
+	}
+	
+	<T> T getDefaultProblemState(StateId stateId, Class<T> type){
+		return defaultProblemStates_.getState(stateId, type);
 	}
 	
 	/**
@@ -196,6 +225,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	public void clear(){
 		vehicleRouteStates_.clear();
 		activityStates_.clear();
+		problemStates_.clear();
 	}
 
 	/**
