@@ -48,7 +48,8 @@ public class VehicleRoutingAlgorithmBuilder {
 		addDefaultCostCalculators=true;
 	}
 
-	public void setConstraintManager(ConstraintManager constraintManager) {
+	public void setStateAndConstraintManager(StateManager stateManager, ConstraintManager constraintManager) {
+		this.stateManager=stateManager;
 		this.constraintManager=constraintManager;
 	}
 	
