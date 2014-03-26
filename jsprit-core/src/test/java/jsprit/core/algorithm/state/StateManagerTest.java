@@ -143,4 +143,34 @@ public class StateManagerTest {
 		Capacity getCap = stateManager.getActivityState(activity, id, Capacity.class);
 		assertEquals(500, getCap.get(0));
 	}
+	
+	@Test
+	public void whenProblemStateIsSet_itMustBeSetCorrectly(){
+		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+		StateId id = StateFactory.createId("problemState");
+		stateManager.putProblemState(id, Boolean.class, true);
+		boolean problemState = stateManager.getProblemState(id, Boolean.class);
+		assertTrue(problemState);
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void whenProblemStateIsSetAndStateManagerClearedAfterwards_itThrowsException(){
+		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+		StateId id = StateFactory.createId("problemState");
+		stateManager.putProblemState(id, Boolean.class, true);
+		stateManager.clear();
+		@SuppressWarnings("unused")
+		boolean problemState = stateManager.getProblemState(id, Boolean.class);
+	}
+	
+	@Test
+	public void whenProblemStateIsSetAndStateManagerClearedAfterwards_itReturnsDefault(){
+		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+		StateId id = StateFactory.createId("problemState");
+		stateManager.putDefaultProblemState(id, Boolean.class, false);
+		stateManager.putProblemState(id, Boolean.class, true);
+		stateManager.clear();
+		boolean problemState = stateManager.getProblemState(id, Boolean.class);
+		assertFalse(problemState);
+	}
 }

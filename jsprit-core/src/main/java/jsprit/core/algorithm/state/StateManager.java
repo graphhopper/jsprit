@@ -167,7 +167,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	}
 	
 	<T> T getDefaultProblemState(StateId stateId, Class<T> type){
-		return defaultProblemStates_.getState(stateId, type);
+		if(defaultProblemStates_.containsKey(stateId)) return defaultProblemStates_.getState(stateId, type); 
+		return null;
 	}
 	
 	/**
