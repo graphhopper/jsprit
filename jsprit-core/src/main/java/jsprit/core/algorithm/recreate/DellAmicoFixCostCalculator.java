@@ -41,6 +41,7 @@ public class DellAmicoFixCostCalculator implements SoftRouteConstraint, Insertio
 		nuOfJobsToRecreate--;
 		double completenessRatio = (1-((double)nuOfJobsToRecreate/(double)nuOfJobs));
 		calculator.setSolutionCompletenessRatio(completenessRatio);
+		System.out.println(completenessRatio);
 	}
 
 }
