@@ -510,12 +510,12 @@ public class VehicleRoutingAlgorithms {
 		return readAndCreateAlgorithm(vrp, config, nuOfThreads, null, stateManager, constraintManager, true);	
 	}
 
-	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, String config,
+	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, AlgorithmConfig config,
 			int nuOfThreads, SolutionCostCalculator solutionCostCalculator, final StateManager stateManager, ConstraintManager constraintManager, boolean addDefaultCostCalculators) {
-		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
-		xmlReader.read(config);
-		return readAndCreateAlgorithm(vrp, algorithmConfig.getXMLConfiguration(),nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators);
+//		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
+//		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
+//		xmlReader.read(config);
+		return readAndCreateAlgorithm(vrp, config.getXMLConfiguration(),nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators);
 	}
 	
 	private static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, XMLConfiguration config,
