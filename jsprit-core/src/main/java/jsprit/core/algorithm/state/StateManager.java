@@ -151,7 +151,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		addDefaultStates();
 	}
 	
-	public <T> void putDefaultProblemState(StateId stateId, Class<T> type, T defaultState){
+	public <T> void addDefaultProblemState(StateId stateId, Class<T> type, T defaultState){
 		defaultProblemStates_.putState(stateId, type, defaultState); 
 	}
 	
@@ -403,7 +403,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	/**
 	 * Adds state updater.
 	 * 
-	 * <p>Note that a state update occurs if route and/or activity states change, i.e. if jobs are removed
+	 * <p>Note that a state update occurs if route and/or activity states have changed, i.e. if jobs are removed
 	 * or inserted into a route. Thus here, it is assumed that a state updater is either of type InsertionListener, 
 	 * RuinListener, ActivityVisitor, ReverseActivityVisitor, RouteVisitor, ReverseRouteVisitor. 
 	 * 
@@ -420,6 +420,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		if(updater instanceof RuinListener) addListener((RuinListener) updater);
 		updaters.add(updater);
 	}
+	
+	
 	
 	Collection<StateUpdater> getStateUpdaters(){
 		return Collections.unmodifiableCollection(updaters);
