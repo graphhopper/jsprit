@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
  * @author schroeder
  *
  */
+@SuppressWarnings("deprecation")
 public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint, SoftActivityConstraint, SoftRouteConstraint{
 
 	public static enum Priority {
@@ -87,6 +88,7 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 		}
 	}
 
+	
 	public void addLoadConstraint(){
 		if(!loadConstraintsSet){
 			if(vrp.getProblemConstraints().contains(Constraint.DELIVERIES_FIRST)){
