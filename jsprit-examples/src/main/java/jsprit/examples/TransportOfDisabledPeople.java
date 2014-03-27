@@ -9,20 +9,15 @@ import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
-import jsprit.core.algorithm.recreate.VariableTransportCostCalculator;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
-import jsprit.core.problem.constraint.SoftActivityConstraint;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
-import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
@@ -150,20 +145,6 @@ public class TransportOfDisabledPeople {
 			}
 		};
 
-		SolutionCostCalculator objectiveFunction = new SolutionCostCalculator() {
-			
-			@Override
-			public double getCosts(VehicleRoutingProblemSolution solution) {
-				double maxTransportTime = 0.;
-				for(VehicleRoute route : solution.getRoutes()){
-					if(route.getEnd().getArrTime() > maxTransportTime){
-						maxTransportTime = route.getEnd().getArrTime(); 
-					}
-				}
-				return maxTransportTime;
-			}
-		};
-		
 		//build the problem
 		VehicleRoutingProblem problem = vrpBuilder.build();
 
@@ -171,28 +152,7 @@ public class TransportOfDisabledPeople {
 		
 		ConstraintManager constraintManager = new ConstraintManager(problem, stateManager);
 		constraintManager.addConstraint(wheelchair_bus_passenger_pickup_constraint);
-//		DellAmicoFixCostCalculator dellAmicoFixCostCalc = new DellAmicoFixCostCalculator(vrpBuilder.getAddedJobs().size(), stateManager);
-//		constraintManager.addConstraint(dellAmicoFixCostCalc);
-		constraintManager.addConstraint(new VariableTransportCostCalculator(problem.getTransportCosts()));
-		constraintManager.addConstraint(new SoftActivityConstraint() {
-			
-			@Override
-			public double getCosts(JobInsertionContext iFacts, TourActivity prevAct,
-					TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-		});
 		
-		VehicleRoutingAlgorithmBuilder algorithmBuilder = new VehicleRoutingAlgorithmBuilder(problem, "input/algorithmConfig_noVehicleSwitch.xml");
-		algorithmBuilder.setObjectiveFunction(objectiveFunction);
-		algorithmBuilder.setStateManager(stateManager);
-		algorithmBuilder.setConstraintManager(constraintManager);
-		algorithmBuilder.addCoreConstraints();
-//		algorithmBuilder.addDefaultCostCalculators();
-		
-		VehicleRoutingAlgorithm algorithm = algorithmBuilder.build();
-//		algorithm.addListener(dellAmicoFixCostCalc);
 		/*
 		 * get a sample algorithm. 
 		 * 
@@ -202,9 +162,14 @@ public class TransportOfDisabledPeople {
 		 * bit more complicated and you cannot just add the above hard-constraint. Latter will be covered in another example.
 		 * 
 		 */
-//		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig_noVehicleSwitch.xml");
+		VehicleRoutingAlgorithmBuilder algorithmBuilder = new VehicleRoutingAlgorithmBuilder(problem, "input/algorithmConfig_noVehicleSwitch.xml");
+		algorithmBuilder.setStateAndConstraintManager(stateManager, constraintManager);
+		algorithmBuilder.addCoreConstraints();
+		algorithmBuilder.addDefaultCostCalculators();
+		
+		VehicleRoutingAlgorithm algorithm = algorithmBuilder.build();
 		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
-//		algorithm.setNuOfIterations(30000);
+
 		/*
 		 * and search a solution
 		 */
