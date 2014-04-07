@@ -212,6 +212,7 @@ public class Plotter {
 		};
 
 		chart.removeLegend();
+		
 		LegendTitle legend = new LegendTitle(lis);
 		legend.setPosition(RectangleEdge.BOTTOM);
 		chart.addLegend(legend);

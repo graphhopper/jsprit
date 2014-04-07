@@ -36,7 +36,7 @@ public class ComputationalLaboratory {
 		public abstract void runStarts(VehicleRoutingAlgorithm vra);
 		
 		public abstract void runEnds(VehicleRoutingProblemSolution vrs);
-		
+
 		public abstract Collection<Result> getResults();
 		
 	}
