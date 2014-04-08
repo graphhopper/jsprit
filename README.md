@@ -46,6 +46,7 @@ to manage your dependencies, go to [snapshot-jars](https://github.com/jsprit/mvn
 
 ##[Contributors](https://github.com/jsprit/jsprit/graphs/contributors)
 [Pierre-David Bélanger](https://github.com/pierredavidbelanger)
+
 [Abraham Gausachs](https://github.com/agausachs)
 
 ##About
