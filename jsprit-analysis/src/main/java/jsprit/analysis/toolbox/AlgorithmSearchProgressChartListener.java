@@ -124,7 +124,13 @@ public class AlgorithmSearchProgressChartListener implements IterationEndsListen
 		Range rangeBounds = coll.getRangeBounds(true);
 		double upper = Math.min(rangeBounds.getUpperBound(), rangeBounds.getLowerBound()*5);
 		if(upper == 0.0){ upper = 10000; }
-		yAxis.setRangeWithMargins(rangeBounds.getLowerBound(),upper);
+		if(rangeBounds.getLowerBound() == upper){
+			yAxis.setRangeWithMargins(rangeBounds.getLowerBound()-rangeBounds.getLowerBound()*.1,upper+upper*.1);
+		}
+		else{
+			yAxis.setRangeWithMargins(rangeBounds.getLowerBound(),upper);
+		}
+		
 		
 		try {
 			ChartUtilities.saveChartAsJPEG(new File(filename), chart, 1000, 600);
