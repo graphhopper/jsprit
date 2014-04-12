@@ -55,7 +55,7 @@ First, you can find vehicle routing problems **everywhere** in the world of dist
 
 Second, it is motivated by my PhD-project at [KIT](http://www.kit.edu/english/index.php) where I apply vehicle routing algorithms to solve behavioural models of freight agents to assess (freight) transport policy measures. 
 
-It is mainly inspired by my research group at [KIT-ECON](http://netze.econ.kit.edu/21.php), and by a great open-source project called [MATSim](www.matsim.org) and its developers.
+It is mainly inspired by my research group at [KIT-ECON](http://netze.econ.kit.edu/21.php), and by a great open-source project called [MATSim](http://www.matsim.org) and its developers.
 
 If you have questions or if you use jsprit, it would be great you give feedback and let me know your experience:
 
