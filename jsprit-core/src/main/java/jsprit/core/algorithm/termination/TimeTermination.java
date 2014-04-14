@@ -48,7 +48,7 @@ public class TimeTermination implements PrematureAlgorithmTermination, Algorithm
 	 * Constructs TimeBreaker that breaks algorithm prematurely based on specified time.
 	 * 
 	 * <p>Note, TimeBreaker must be registered as AlgorithmListener <br>
-	 * <code>agorithm.getAlgorithmListeners().addListener(this);</code>
+	 * <code>agorithm.addListener(this);</code>
 	 * 
 	 * @author stefan
 	 *
