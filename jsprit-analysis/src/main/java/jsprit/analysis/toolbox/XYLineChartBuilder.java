@@ -15,8 +15,19 @@ import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class AlgorithmSearchProgressChartBuilder {
+/**
+ * 
+ * @author schroeder
+ *
+ */
+public class XYLineChartBuilder {
 	
+	/**
+	 * Helper that just saves the chart as specified png-file. The width of the image is 1000 and height 600.
+	 * 
+	 * @param chart
+	 * @param pngFilename
+	 */
 	public static void saveChartAsPNG(JFreeChart chart, String pngFilename){
 		try {
 			ChartUtilities.saveChartAsPNG(new File(pngFilename), chart, 1000, 600);
@@ -25,8 +36,17 @@ public class AlgorithmSearchProgressChartBuilder {
 		}
 	}
 	
-	public static AlgorithmSearchProgressChartBuilder newInstance(String chartName, String xDomainName, String yDomainName){
-		return new AlgorithmSearchProgressChartBuilder(chartName, xDomainName, yDomainName);
+	/**
+	 * Returns a new instance of the builder.
+	 * 
+	 * @param chartTitle appears on top of the XYLineChart
+	 * @param xDomainName appears below the xAxis
+	 * @param yDomainName appears beside the yAxis
+	 * 
+	 * @return the builder
+	 */
+	public static XYLineChartBuilder newInstance(String chartTitle, String xDomainName, String yDomainName){
+		return new XYLineChartBuilder(chartTitle, xDomainName, yDomainName);
 	}
 	
 	private ConcurrentHashMap<String,XYSeries> seriesMap = new ConcurrentHashMap<String, XYSeries>();
@@ -37,12 +57,19 @@ public class AlgorithmSearchProgressChartBuilder {
 	
 	private final String chartName;
 	
-	private AlgorithmSearchProgressChartBuilder(String chartName, String xDomainName, String yDomainName) {
+	private XYLineChartBuilder(String chartName, String xDomainName, String yDomainName) {
 		this.xDomain=xDomainName;
 		this.yDomain=yDomainName;
 		this.chartName=chartName;
 	}
 	
+	/**
+	 * Adds data to the according series (i.e. XYLine).
+	 * 
+	 * @param seriesName
+	 * @param xVal
+	 * @param yVal
+	 */
 	public void addData(String seriesName, double xVal, double yVal){
 		if(!seriesMap.containsKey(seriesName)){
 			seriesMap.put(seriesName, new XYSeries(seriesName,true,true));
@@ -50,6 +77,10 @@ public class AlgorithmSearchProgressChartBuilder {
 		seriesMap.get(seriesName).add(xVal, yVal);
 	}
 	
+	/**
+	 * Builds and returns JFreeChart.
+	 * @return
+	 */
 	public JFreeChart build(){
 		XYSeriesCollection collection = new XYSeriesCollection();
 		for(XYSeries s : seriesMap.values()){

@@ -44,7 +44,7 @@ public class AlgorithmSearchProgressChartListener implements IterationEndsListen
 
 	private String filename;
 	
-	private AlgorithmSearchProgressChartBuilder chartBuilder;
+	private XYLineChartBuilder chartBuilder;
 
 	/**
 	 * Constructs chart listener with target png-file (filename plus path).
@@ -62,7 +62,7 @@ public class AlgorithmSearchProgressChartListener implements IterationEndsListen
 	@Override
 	public void informAlgorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 		log.info("create chart " + filename);
-		AlgorithmSearchProgressChartBuilder.saveChartAsPNG(chartBuilder.build(), filename);
+		XYLineChartBuilder.saveChartAsPNG(chartBuilder.build(), filename);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class AlgorithmSearchProgressChartListener implements IterationEndsListen
 
 	@Override
 	public void informAlgorithmStarts(VehicleRoutingProblem problem,VehicleRoutingAlgorithm algorithm,Collection<VehicleRoutingProblemSolution> solutions) {
-		chartBuilder = AlgorithmSearchProgressChartBuilder.newInstance("search-progress", "iterations", "results");
+		chartBuilder = XYLineChartBuilder.newInstance("search-progress", "iterations", "results");
 	}
 
 }
