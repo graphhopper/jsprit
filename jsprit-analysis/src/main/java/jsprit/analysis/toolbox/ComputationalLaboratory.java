@@ -239,6 +239,14 @@ public class ComputationalLaboratory {
 		algorithms.add(new Algorithm(name,factory));
 		algorithmNames.add(name);
 	}
+	
+	public Collection<String> getAlgorithmNames() {
+		return algorithmNames;
+	}
+	
+	public Collection<String> getInstanceNames(){
+		return instanceNames;
+	}
 
 	/**
 	 * Adds instance by name.
