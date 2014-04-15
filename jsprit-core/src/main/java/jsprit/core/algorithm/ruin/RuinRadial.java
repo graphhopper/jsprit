@@ -187,6 +187,7 @@ final class RuinRadial implements RuinStrategy {
 		
 		public void initialise(){
 			logger.info("calculates distances from EACH job to EACH job --> n^2="+Math.pow(vrp.getJobs().values().size(), 2) + " calculations, but 'only' "+(vrp.getJobs().values().size()*capacity)+ " are cached.");
+			if(capacity==0) return;
 			calculateDistancesFromJob2Job();
 		}
 		
@@ -291,39 +292,6 @@ final class RuinRadial implements RuinStrategy {
 		jobNeighborhoodsImpl.initialise();
 		jobNeighborhoods = jobNeighborhoodsImpl;
 		logger.info("intialise " + this);
-//<<<<<<< HEAD
-//	}
-//
-//	private void calculateDistancesFromJob2Job() {
-//		logger.info("preprocess distances between locations ...");
-//		StopWatch stopWatch = new StopWatch();
-//		stopWatch.start();
-//		int nuOfDistancesStored = 0;
-//		for (Job i : vrp.getJobs().values()) {
-//			TreeSet<ReferencedJob> treeSet = new TreeSet<ReferencedJob>(
-//					new Comparator<ReferencedJob>() {
-//						@Override
-//						public int compare(ReferencedJob o1, ReferencedJob o2) {
-//							if (o1.getDistance() <= o2.getDistance()) {
-//								return 1;
-//							} else {
-//								return -1;
-//							}
-//						}
-//					});
-//			distanceNodeTree.put(i.getId(), treeSet);
-//			for (Job j : vrp.getJobs().values()) {
-//				double distance = jobDistance.getDistance(i, j);
-//				ReferencedJob refNode = new ReferencedJob(j, distance);
-//				treeSet.add(refNode);
-//				nuOfDistancesStored++;
-//			}
-//		}
-//		stopWatch.stop();
-//		logger.info("preprocessing comp-time: " + stopWatch + "; nuOfDistances stored: " + nuOfDistancesStored + "; estimated memory: " + 
-//				(distanceNodeTree.keySet().size()*64+nuOfDistancesStored*92) + " bytes");
-//=======
-//>>>>>>> refs/heads/master
 	}
 	
 	@Override
