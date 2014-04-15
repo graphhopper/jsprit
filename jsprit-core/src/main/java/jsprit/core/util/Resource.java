@@ -35,32 +35,41 @@ public class Resource {
 	private static Logger log = Logger.getLogger(Resource.class);
 	
 	public final static URL getAsURL(final String filename) {
+		URL url = Resource.class.getClassLoader().getResource(filename);
+		if (url != null) {
+			return url;
+		}
+		log.info("Resource " + filename + " is unreachable by the current class loader, try the filesystem");
 		File file = new File(filename);
-		if (file.exists()) {
-			try {
-				return file.toURI().toURL();
-			} catch (MalformedURLException e) {
-				log.warn("Even resource exists, could not return its URL.", e);				
-			}
+		if (!file.exists()) {
+			log.warn("Resource " + filename + " do not exists on the filesystem");
+			return null;
 		}
-		URL url = Resource.class.getResource("/" + filename);
-		if (url == null) {
-			log.warn("Could not find resource '" + filename + "'!");
+		try {
+			return file.toURI().toURL();
+		} catch (MalformedURLException e) {
+			log.warn("Resource " + filename + " exists on the filesystem, but its URL is invalid: " + e.getMessage());
+			return null;
 		}
-		return url;
 	}
 
 	public final static InputStream getAsInputStream(final String filename) {
+		InputStream stream = Resource.class.getClassLoader().getResourceAsStream(filename);
+		if (stream != null) {
+			return stream;
+		}
+		log.info("Resource " + filename + " is unreachable by the current class loader, try the filesystem");
+		File file = new File(filename);
+		if (!file.exists()) {
+			log.warn("Resource " + filename + " do not exists on the filesystem");
+			return null;
+		}
 		try {
-			return new FileInputStream("/" + filename);
+			return new FileInputStream(file);
 		} catch (FileNotFoundException e) {
-			log.info("Could not find '" + filename + "'!.");
+			log.warn("Resource " + filename + " exists on the filesystem, but its URL is invalid: " + e.getMessage());
+			return null;
 		}
-		InputStream stream = Resource.class.getResourceAsStream("/" + filename);
-		if (stream == null) {
-			log.warn("Could not find resource '" + filename + "'!");
-		}
-		return stream;
 	}
 	
 }
