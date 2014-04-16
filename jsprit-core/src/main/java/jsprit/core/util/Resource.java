@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 /**
  * 
- * @author stefan schroeder
+ * @author stefan schroeder, pierre-david belanger
  *
  */
 public class Resource {
