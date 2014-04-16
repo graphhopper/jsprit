@@ -76,7 +76,7 @@ public class ComputationalExperiments_schrimpf_vs_greedy {
 		 * add algorithms through factories
 		 * 
 		 * 
-		 * Define 3 algorithms 
+		 * Define 2 algorithms 
 		 * - algorithmsConfigWithSchrimpfAcceptance (4000 iterations)
 		 * - algorithmsConfigWithGreedyAcceptance (4000 iterations)
 		 * 
