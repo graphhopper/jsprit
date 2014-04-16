@@ -125,8 +125,11 @@ public class ComputationalLaboratory {
 			
 		}
 		
+		private final static String SOLUTION_INDICATOR_NAME = "vehicle-routing-problem-solution"; 
+		
 		private ConcurrentHashMap<Key, Double> data = new ConcurrentHashMap<ComputationalLaboratory.DataCollector.Key, Double>();
 		
+		private ConcurrentHashMap<Key, VehicleRoutingProblemSolution> solutions = new ConcurrentHashMap<ComputationalLaboratory.DataCollector.Key, VehicleRoutingProblemSolution>();
 		/**
 		 * Adds a single date by instanceName, algorithmName, run and indicatorName. 
 		 * <p>If there is already an entry for this instance, algorithm, run and indicatorName, it is overwritten.
@@ -138,8 +141,14 @@ public class ComputationalLaboratory {
 		 * @param value
 		 */
 		public void addDate(String instanceName, String algorithmName, int run, String indicatorName, double value){
+			if(indicatorName.equals(SOLUTION_INDICATOR_NAME)) throw new IllegalArgumentException(indicatorName + " is already used internally. please choose another indicator-name.");
 			Key key = new Key(instanceName,algorithmName,run,indicatorName);
 			data.put(key, value);
+		}
+		
+		public void addSolution(String instanceName, String algorithmName, int run, VehicleRoutingProblemSolution solution){
+			Key key = new Key(instanceName,algorithmName,run,SOLUTION_INDICATOR_NAME);
+			solutions.put(key, solution);
 		}
 		
 		/**
@@ -172,14 +181,30 @@ public class ComputationalLaboratory {
 		public Double getDate(String instanceName, String algorithmName, int run, String indicator){
 			return data.get(new Key(instanceName,algorithmName,run,indicator));
 		}
+		
+		public VehicleRoutingProblemSolution getSolution(String instanceName, String algorithmName, int run){
+			return solutions.get(new Key(instanceName,algorithmName,run,"solution"));
+		}
 
 		/**
 		 * Returns all keys that have been created. A key is a unique combination of algorithmName, instanceName, run and indicator.
 		 * 
 		 * @return
 		 */
-		public Set<Key> keySet(){
+		public Set<Key> getDataKeySet(){
 			return data.keySet();
+		}
+		
+		public Set<Key> getSolutionKeySet(){
+			return solutions.keySet();
+		}
+		
+		public VehicleRoutingProblemSolution getSolution(Key solutionKey){
+			return solutions.get(solutionKey);
+		}
+		
+		public Collection<VehicleRoutingProblemSolution> getSolutions(){
+			return solutions.values();
 		}
 		
 		/**
