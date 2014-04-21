@@ -612,7 +612,7 @@ public class VehicleRoutingAlgorithms {
 		metaAlgorithm.setPrematureAlgorithmTermination(prematureAlgoBreaker);
 		
 		//misc
-		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new SolutionVerifier()));
+//		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new SolutionVerifier()));
 		
 		//register listeners
 		registerListeners(metaAlgorithm,algorithmListeners);
