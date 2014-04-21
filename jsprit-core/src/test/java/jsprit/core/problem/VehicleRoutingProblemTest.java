@@ -31,15 +31,18 @@ import jsprit.core.problem.constraint.Constraint;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.driver.Driver;
+import jsprit.core.problem.driver.DriverImpl;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
 
@@ -488,5 +491,41 @@ public class VehicleRoutingProblemTest {
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);
 		assertTrue(vrpBuilder.getLocationMap().containsKey("end"));
+	}
+	
+	@Test 
+	public void whenAddingInitialRoute_itShouldBeAddedCorrectly(){
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, DriverImpl.noDriver()).build();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.addInitialVehicleRoute(route);
+		VehicleRoutingProblem vrp = vrpBuilder.build();	
+		assertTrue(!vrp.getInitialVehicleRoutes().isEmpty());
+	}
+	
+	@Test 
+	public void whenAddingInitialRoutes_theyShouldBeAddedCorrectly(){
+		Vehicle vehicle1 = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		VehicleRoute route1 = VehicleRoute.Builder.newInstance(vehicle1, DriverImpl.noDriver()).build();
+		
+		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		VehicleRoute route2 = VehicleRoute.Builder.newInstance(vehicle2, DriverImpl.noDriver()).build();
+		
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.addInitialVehicleRoutes(Arrays.asList(route1,route2));
+		
+		VehicleRoutingProblem vrp = vrpBuilder.build();	
+		assertEquals(2,vrp.getInitialVehicleRoutes().size());
+	}
+	
+	@Test 
+	public void whenAddingInitialRoute_locationOfVehicleMustBeMemorized(){
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, DriverImpl.noDriver()).build();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.addInitialVehicleRoute(route);
+		VehicleRoutingProblem vrp = vrpBuilder.build();	
+		assertEquals(0.,vrp.getLocations().getCoord("start").getX(),0.01);
+		assertEquals(1.,vrp.getLocations().getCoord("start").getY(),0.01);
 	}
 }

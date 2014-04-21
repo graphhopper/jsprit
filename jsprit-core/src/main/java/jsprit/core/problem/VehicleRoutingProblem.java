@@ -31,6 +31,7 @@ import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -162,8 +163,6 @@ public class VehicleRoutingProblem {
 		
 		private Collection<Service> services;
 
-		private Collection<Vehicle> vehicles;
-
 		private Map<String, Coordinate> coordinates;
 
 		private FleetSize fleetSize = FleetSize.INFINITE;
@@ -174,6 +173,10 @@ public class VehicleRoutingProblem {
 		private FleetComposition fleetComposition = FleetComposition.HOMOGENEOUS;
 		
 		private Collection<VehicleType> vehicleTypes;
+		
+		private Collection<VehicleRoute> initialRoutes = new ArrayList<VehicleRoute>();
+		
+		private Set<Vehicle> uniqueVehicles = new HashSet<Vehicle>();
 		
 		/**
 		 * @deprecated is not going to be used anymore
@@ -206,7 +209,7 @@ public class VehicleRoutingProblem {
 		@Deprecated
 		public Builder() {
 			jobs = new HashMap<String, Job>();
-			vehicles = new ArrayList<Vehicle>();
+			new ArrayList<Vehicle>();
 			coordinates = new HashMap<String, Coordinate>();
 			vehicleTypes = new ArrayList<VehicleType>();
 			services = new ArrayList<Service>();
@@ -307,7 +310,27 @@ public class VehicleRoutingProblem {
 			throw new IllegalStateException("job must be either a service or a shipment");
 		}
 
-
+		public Builder addInitialVehicleRoute(VehicleRoute route){
+			addVehicle(route.getVehicle());
+			for(Job job : route.getTourActivities().getJobs()){
+				if(job instanceof Service) coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
+				if(job instanceof Shipment){
+					Shipment shipment = (Shipment)job;
+					coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
+					coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
+				}
+			}
+			initialRoutes.add(route);
+			return this;
+		}
+		
+		public Builder addInitialVehicleRoutes(Collection<VehicleRoute> routes){
+			for(VehicleRoute r : routes){
+				addInitialVehicleRoute(r);
+			}
+			return this;
+		}
+		
 		private void addShipment(Shipment job) {
 			if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
 			coordinates.put(job.getPickupLocation(), job.getPickupCoord());
@@ -323,7 +346,7 @@ public class VehicleRoutingProblem {
 		 * @return this builder
 		 */
 		public Builder addVehicle(Vehicle vehicle) {
-			vehicles.add(vehicle);
+			uniqueVehicles.add(vehicle);
 			if(!vehicleTypes.contains(vehicle.getType())){
 				vehicleTypes.add(vehicle.getType());
 			}
@@ -376,7 +399,7 @@ public class VehicleRoutingProblem {
 		private void addPenaltyVehicles() {
 			Set<LocTypeKey> locTypeKeys = new HashSet<LocTypeKey>();
 			List<Vehicle> uniqueVehicles = new ArrayList<Vehicle>();
-			for(Vehicle v : vehicles){
+			for(Vehicle v : this.uniqueVehicles){
 				LocTypeKey key = new LocTypeKey(v.getStartLocationId(),v.getType().getTypeId());
 				if(!locTypeKeys.contains(key)){
 					uniqueVehicles.add(v);
@@ -404,8 +427,8 @@ public class VehicleRoutingProblem {
 			}
 		}
 
-		public Builder addLocation(String id, Coordinate coord) {
-			coordinates.put(id, coord);
+		public Builder addLocation(String locationId, Coordinate coord) {
+			coordinates.put(locationId, coord);
 			return this;
 		}
 
@@ -441,7 +464,7 @@ public class VehicleRoutingProblem {
 		 * @return collection of vehicles
 		 */
 		public Collection<Vehicle> getAddedVehicles(){
-			return Collections.unmodifiableCollection(vehicles);
+			return Collections.unmodifiableCollection(uniqueVehicles);
 		}
 		
 		/**
@@ -640,6 +663,9 @@ public class VehicleRoutingProblem {
 	 */
 	private final Collection<VehicleType> vehicleTypes;
 	
+	
+	private final Collection<VehicleRoute> initialVehicleRoutes;
+	
 	/**
 	 * An enum that indicates type of fleetSize. By default, it is INFINTE
 	 */
@@ -649,6 +675,8 @@ public class VehicleRoutingProblem {
 	 * contains all constraints
 	 */
 	private final Collection<jsprit.core.problem.constraint.Constraint> constraints;
+	
+	private final Locations locations;
 	
 	/**
 	 * @deprecated not used anymore
@@ -670,13 +698,15 @@ public class VehicleRoutingProblem {
 		this.jobs = builder.jobs;
 		this.fleetComposition = builder.fleetComposition;
 		this.fleetSize = builder.fleetSize;
-		this.vehicles=builder.vehicles;
+		this.vehicles=builder.uniqueVehicles;
 		this.vehicleTypes = builder.vehicleTypes;
+		this.initialVehicleRoutes = builder.initialRoutes;
 		this.transportCosts = builder.transportCosts;
 		this.activityCosts = builder.activityCosts;
 		this.neighborhood = builder.neighborhood;
 		this.problemConstraints = builder.problemConstraints;
 		this.constraints = builder.constraints;
+		this.locations = builder.getLocations();
 		logger.info("initialise " + this);
 	}
 	
@@ -704,6 +734,10 @@ public class VehicleRoutingProblem {
 	 */
 	public Map<String, Job> getJobs() {
 		return Collections.unmodifiableMap(jobs);
+	}
+	
+	public Collection<VehicleRoute> getInitialVehicleRoutes(){
+		return Collections.unmodifiableCollection(initialVehicleRoutes);
 	}
 
 	/**
@@ -751,6 +785,10 @@ public class VehicleRoutingProblem {
 	 */
 	public Collection<jsprit.core.problem.constraint.Constraint> getConstraints(){
 		return Collections.unmodifiableCollection(constraints);
+	}
+	
+	public Locations getLocations(){
+		return locations;
 	}
 
 	/**
