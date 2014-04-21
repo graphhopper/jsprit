@@ -142,6 +142,9 @@ public class Plotter {
 		if(plotSolutionAsWell){
 			plotSolutionAsPNG(vrp, routes, filename, plotTitle);
 		}
+		else if(!(vrp.getInitialVehicleRoutes().isEmpty())){
+			plotSolutionAsPNG(vrp, vrp.getInitialVehicleRoutes(), filename, plotTitle);
+		}
 		else{
 			plotVrpAsPNG(vrp, filename, plotTitle);
 		}
@@ -240,10 +243,9 @@ public class Plotter {
 		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
 		
 		NumberAxis xAxis = new NumberAxis();
+		NumberAxis yAxis = new NumberAxis();
 		
 		xAxis.setRangeWithMargins(getDomainRange(problem));
-		
-		NumberAxis yAxis = new NumberAxis();
 		yAxis.setRangeWithMargins(getRange(problem));
 		
 		plot.setDataset(0, problem);
@@ -296,17 +298,11 @@ public class Plotter {
 		});
 		problemRenderer.setBaseItemLabelsVisible(true);
 		problemRenderer.setBaseItemLabelPaint(Color.BLACK);
-
-		NumberAxis xAxis = new NumberAxis();		
-		xAxis.setRangeWithMargins(getDomainRange(solutionColl));
-		
-		NumberAxis yAxis = new NumberAxis();
-		yAxis.setRangeWithMargins(getRange(solutionColl));
 		
 		plot.setDataset(0, problem);
 		plot.setRenderer(0, problemRenderer);
-		plot.setDomainAxis(0, xAxis);
-		plot.setRangeAxis(0, yAxis);
+//		plot.setDomainAxis(0, xAxis);
+//		plot.setRangeAxis(0, yAxis);
 //		plot.mapDatasetToDomainAxis(0, 0);
 
 		
@@ -335,6 +331,24 @@ public class Plotter {
 		plot.setRenderer(2, solutionRenderer);
 //		plot.setDomainAxis(2, xAxis);
 //		plot.setRangeAxis(2, yAxis);
+		
+
+		NumberAxis xAxis = new NumberAxis();
+		NumberAxis yAxis = new NumberAxis();
+		
+		if(boundingBox == null){
+			xAxis.setRangeWithMargins(Math.min(problem.getDomainLowerBound(true), solutionColl.getDomainLowerBound(true)), 
+					Math.max(problem.getDomainUpperBound(true), solutionColl.getDomainUpperBound(true)));
+			yAxis.setRangeWithMargins(Math.min(problem.getRangeLowerBound(true), solutionColl.getRangeLowerBound(true)), 
+					Math.max(problem.getRangeUpperBound(true), solutionColl.getRangeUpperBound(true)));
+		}
+		else{
+			xAxis.setRangeWithMargins(new Range(boundingBox.minX, boundingBox.maxX));
+			yAxis.setRangeWithMargins(new Range(boundingBox.minY, boundingBox.maxY));
+		}
+		
+		plot.setDomainAxis(xAxis);
+		plot.setRangeAxis(yAxis);
 		
 		return plot;
 	}
@@ -421,47 +435,56 @@ public class Plotter {
 		XYSeries pickupSeries = new XYSeries("pickup", false, true);
 		XYSeries deliverySeries = new XYSeries("delivery", false, true);
 		for(Job job : jobs){
-			if(job instanceof Shipment){
-				Shipment s = (Shipment)job;
-				XYDataItem dataItem = new XYDataItem(s.getPickupCoord().getX(), s.getPickupCoord().getY());
-				pickupSeries.add(dataItem);
-				addLabel(labels, s, dataItem);
-				
-				XYDataItem dataItem2 = new XYDataItem(s.getDeliveryCoord().getX(), s.getDeliveryCoord().getY());
-				deliverySeries.add(dataItem2);
-				addLabel(labels, s, dataItem2);
+			addJob(labels, serviceSeries, pickupSeries, deliverySeries, job);	
+		}
+		for(VehicleRoute r : vrp.getInitialVehicleRoutes()){
+			for(Job job : r.getTourActivities().getJobs()){
+				addJob(labels, serviceSeries, pickupSeries, deliverySeries, job);
 			}
-			else if(job instanceof Pickup){
-				Pickup service = (Pickup)job;
-				Coordinate coord = service.getCoord();
-				XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
-				pickupSeries.add(dataItem);
-				addLabel(labels, service, dataItem);
-				
-			}
-			else if(job instanceof Delivery){
-				Delivery service = (Delivery)job;
-				Coordinate coord = service.getCoord();
-				XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
-				deliverySeries.add(dataItem);
-				addLabel(labels, service, dataItem);
-			}
-			else if(job instanceof Service){
-				Service service = (Service)job;
-				Coordinate coord = service.getCoord();
-				XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
-				serviceSeries.add(dataItem);
-				addLabel(labels, service, dataItem);
-			}
-			else{
-				throw new IllegalStateException("job instanceof " + job.getClass().toString() + ". this is not supported.");
-			}
-			
 		}
 		if(!serviceSeries.isEmpty()) coll.addSeries(serviceSeries);
 		if(!pickupSeries.isEmpty()) coll.addSeries(pickupSeries);
 		if(!deliverySeries.isEmpty()) coll.addSeries(deliverySeries);
 		return coll;
+	}
+
+	private void addJob(Map<XYDataItem, String> labels, XYSeries serviceSeries,
+			XYSeries pickupSeries, XYSeries deliverySeries, Job job) {
+		if(job instanceof Shipment){
+			Shipment s = (Shipment)job;
+			XYDataItem dataItem = new XYDataItem(s.getPickupCoord().getX(), s.getPickupCoord().getY());
+			pickupSeries.add(dataItem);
+			addLabel(labels, s, dataItem);
+			
+			XYDataItem dataItem2 = new XYDataItem(s.getDeliveryCoord().getX(), s.getDeliveryCoord().getY());
+			deliverySeries.add(dataItem2);
+			addLabel(labels, s, dataItem2);
+		}
+		else if(job instanceof Pickup){
+			Pickup service = (Pickup)job;
+			Coordinate coord = service.getCoord();
+			XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+			pickupSeries.add(dataItem);
+			addLabel(labels, service, dataItem);
+			
+		}
+		else if(job instanceof Delivery){
+			Delivery service = (Delivery)job;
+			Coordinate coord = service.getCoord();
+			XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+			deliverySeries.add(dataItem);
+			addLabel(labels, service, dataItem);
+		}
+		else if(job instanceof Service){
+			Service service = (Service)job;
+			Coordinate coord = service.getCoord();
+			XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+			serviceSeries.add(dataItem);
+			addLabel(labels, service, dataItem);
+		}
+		else{
+			throw new IllegalStateException("job instanceof " + job.getClass().toString() + ". this is not supported.");
+		}
 	}
 
 	private void addLabel(Map<XYDataItem, String> labels, Job job, XYDataItem dataItem) {
@@ -496,56 +519,58 @@ public class Plotter {
 	}
 	
 	private Locations retrieveLocations(VehicleRoutingProblem vrp) throws NoLocationFoundException {
-		final Map<String, Coordinate> locs = new HashMap<String, Coordinate>();
-		for(Vehicle v : vrp.getVehicles()){
-			String startLocationId = v.getStartLocationId();
-			if(startLocationId == null) throw new NoLocationFoundException();
-			Coordinate startCoord = v.getStartLocationCoordinate();
-			if(startCoord == null) throw new NoLocationFoundException();
-			locs.put(startLocationId, startCoord);
-			
-			String endLocationId = v.getEndLocationId();
-			if(!startLocationId.equals(endLocationId)){
-				Coordinate endCoord = v.getEndLocationCoordinate();
-				if(endCoord == null) throw new NoLocationFoundException();
-				locs.put(endLocationId, endCoord);
-			}
-		}
-		for(Job j : vrp.getJobs().values()){
-			if(j instanceof Service){
-				String locationId = ((Service) j).getLocationId();
-				if(locationId == null) throw new NoLocationFoundException();
-				Coordinate coord = ((Service) j).getCoord();
-				if(coord == null) throw new NoLocationFoundException();
-				locs.put(locationId, coord);
-			}
-			else if(j instanceof Shipment){
-				{
-					String locationId = ((Shipment) j).getPickupLocation();
-					if(locationId == null) throw new NoLocationFoundException();
-					Coordinate coord = ((Shipment) j).getPickupCoord();
-					if(coord == null) throw new NoLocationFoundException();
-					locs.put(locationId, coord);
-				}
-				{
-					String locationId = ((Shipment) j).getDeliveryLocation();
-					if(locationId == null) throw new NoLocationFoundException();
-					Coordinate coord = ((Shipment) j).getDeliveryCoord();
-					if(coord == null) throw new NoLocationFoundException();
-					locs.put(locationId, coord);	
-				}
-			}
-			else{
-				throw new IllegalStateException("job is neither a service nor a shipment. this is not supported yet.");
-			}
-		}
-		return new Locations() {
-			
-			@Override
-			public Coordinate getCoord(String id) {
-				return locs.get(id);
-			}
-		};
+		return vrp.getLocations();
+//		final Map<String, Coordinate> locs = new HashMap<String, Coordinate>();
+//		
+//		for(Vehicle v : vrp.getVehicles()){
+//			String startLocationId = v.getStartLocationId();
+//			if(startLocationId == null) throw new NoLocationFoundException();
+//			Coordinate startCoord = v.getStartLocationCoordinate();
+//			if(startCoord == null) throw new NoLocationFoundException();
+//			locs.put(startLocationId, startCoord);
+//			
+//			String endLocationId = v.getEndLocationId();
+//			if(!startLocationId.equals(endLocationId)){
+//				Coordinate endCoord = v.getEndLocationCoordinate();
+//				if(endCoord == null) throw new NoLocationFoundException();
+//				locs.put(endLocationId, endCoord);
+//			}
+//		}
+//		for(Job j : vrp.getJobs().values()){
+//			if(j instanceof Service){
+//				String locationId = ((Service) j).getLocationId();
+//				if(locationId == null) throw new NoLocationFoundException();
+//				Coordinate coord = ((Service) j).getCoord();
+//				if(coord == null) throw new NoLocationFoundException();
+//				locs.put(locationId, coord);
+//			}
+//			else if(j instanceof Shipment){
+//				{
+//					String locationId = ((Shipment) j).getPickupLocation();
+//					if(locationId == null) throw new NoLocationFoundException();
+//					Coordinate coord = ((Shipment) j).getPickupCoord();
+//					if(coord == null) throw new NoLocationFoundException();
+//					locs.put(locationId, coord);
+//				}
+//				{
+//					String locationId = ((Shipment) j).getDeliveryLocation();
+//					if(locationId == null) throw new NoLocationFoundException();
+//					Coordinate coord = ((Shipment) j).getDeliveryCoord();
+//					if(coord == null) throw new NoLocationFoundException();
+//					locs.put(locationId, coord);	
+//				}
+//			}
+//			else{
+//				throw new IllegalStateException("job is neither a service nor a shipment. this is not supported yet.");
+//			}
+//		}
+//		return new Locations() {
+//			
+//			@Override
+//			public Coordinate getCoord(String id) {
+//				return locs.get(id);
+//			}
+//		};
 	}
 
 	public void plotShipments(boolean plotShipments) {
