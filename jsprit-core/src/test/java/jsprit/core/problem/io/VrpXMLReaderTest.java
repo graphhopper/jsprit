@@ -37,13 +37,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class VrpReaderV2Test {
+public class VrpXMLReaderTest {
 	
 	private String inFileName;
 	
 	@Before
 	public void doBefore(){
-		inFileName = "src/test/resources/finiteVrpForReaderV2Test.xml";
+		inFileName = "src/test/resources/finiteVrpForReaderTest.xml";
 	}
 	
 	@Test
@@ -437,8 +437,38 @@ public class VrpReaderV2Test {
 		assertEquals(10000, v.getType().getCapacityDimensions().get(2));
 		assertEquals(0, v.getType().getCapacityDimensions().get(3));
 		assertEquals(0, v.getType().getCapacityDimensions().get(5));
-		assertEquals(100000, v.getType().getCapacityDimensions().get(10));
-		
+		assertEquals(100000, v.getType().getCapacityDimensions().get(10));		
 	}
-
+	
+	@Test
+	public void whenReadingInitialRouteWithShipment4_thisShipmentShouldNotAppearInJobMap(){ //since it is not part of the problem anymore
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
+		VehicleRoutingProblem vrp = builder.build();
+		assertFalse(vrp.getJobs().containsKey("4"));
+	}
+	
+	@Test
+	public void whenReadingInitialRouteWithDepTime10_departureTimeOfRouteShouldBeReadCorrectly(){ //i.e. these jobs should not be part of the problem
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(10.,vrp.getInitialVehicleRoutes().iterator().next().getDepartureTime(),0.01);
+	}
+	
+	@Test
+	public void whenReadingInitialRoute_nuInitialRoutesShouldBeCorrect(){ //i.e. these jobs should not be part of the problem
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(1,vrp.getInitialVehicleRoutes().size());
+	}
+	
+	@Test
+	public void whenReadingInitialRoute_nuActivitiesShouldBeCorrect(){ //i.e. these jobs should not be part of the problem
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
+		VehicleRoutingProblem vrp = builder.build();
+		assertEquals(2,vrp.getInitialVehicleRoutes().iterator().next().getActivities().size());
+	}
 }
