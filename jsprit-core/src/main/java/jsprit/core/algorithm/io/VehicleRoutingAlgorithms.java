@@ -88,7 +88,6 @@ import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
-import jsprit.core.util.SolutionVerifier;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
