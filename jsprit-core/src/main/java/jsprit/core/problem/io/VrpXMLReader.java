@@ -214,9 +214,61 @@ public class VrpXMLReader{
 		readShipments(xmlConfig);
 		readServices(xmlConfig);
 		
+		readInitialRoutes(xmlConfig);
 		readSolutions(xmlConfig);
 	}
 
+	private void readInitialRoutes(XMLConfiguration xmlConfig) {
+		List<HierarchicalConfiguration> initialRouteConfigs = xmlConfig.configurationsAt("initialRoutes.route");
+		for(HierarchicalConfiguration routeConfig : initialRouteConfigs){
+			Driver driver = DriverImpl.noDriver();
+			String vehicleId = routeConfig.getString("vehicleId");
+			Vehicle vehicle = getVehicle(vehicleId);
+			if(vehicle == null) throw new IllegalStateException("vehicle is missing.");
+			String start = routeConfig.getString("start");
+			if(start == null) throw new IllegalStateException("route start-time is missing.");
+			double departureTime = Double.parseDouble(start);
+			
+			VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
+			routeBuilder.setDepartureTime(departureTime);
+			
+			List<HierarchicalConfiguration> actConfigs = routeConfig.configurationsAt("act");
+			for(HierarchicalConfiguration actConfig : actConfigs){
+				String type = actConfig.getString("[@type]");
+				if(type == null) throw new IllegalStateException("act[@type] is missing.");
+				double arrTime = 0.;
+				double endTime = 0.;
+				String arrTimeS = actConfig.getString("arrTime");
+				if(arrTimeS!=null) arrTime=Double.parseDouble(arrTimeS);
+				String endTimeS = actConfig.getString("endTime");
+				if(endTimeS!=null) endTime=Double.parseDouble(endTimeS);
+				
+				String serviceId = actConfig.getString("serviceId");
+				if(serviceId != null) {
+					Service service = getService(serviceId);
+					//!!!
+
+					routeBuilder.addService(service, arrTime, endTime);
+				}
+				else{
+					String shipmentId = actConfig.getString("shipmentId");
+					if(shipmentId == null) throw new IllegalStateException("either serviceId or shipmentId is missing");
+					Shipment shipment = getShipment(shipmentId);
+					if(shipment == null) throw new IllegalStateException("shipment with id " + shipmentId + " does not exist.");
+					if(type.equals("pickupShipment")){
+						routeBuilder.addPickup(shipment, arrTime, endTime);
+					}
+					else if(type.equals("deliverShipment")){
+						routeBuilder.addDelivery(shipment, arrTime, endTime);
+					}
+					else throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+				}
+			}
+			VehicleRoute route = routeBuilder.build();
+			vrpBuilder.addInitialVehicleRoute(route);
+		}
+		
+	}
 	private void readSolutions(XMLConfiguration vrpProblem) {
 		if(solutions == null) return;
 		List<HierarchicalConfiguration> solutionConfigs = vrpProblem.configurationsAt("solutions.solution");
@@ -246,13 +298,13 @@ public class VrpXMLReader{
 				for(HierarchicalConfiguration actConfig : actConfigs){
 					String type = actConfig.getString("[@type]");
 					if(type == null) throw new IllegalStateException("act[@type] is missing.");
-					
+					double arrTime = 0.;
+					double endTime = 0.;
 					String arrTimeS = actConfig.getString("arrTime");
-					if(arrTimeS == null) throw new IllegalStateException("act.arrTime is missing.");
+					if(arrTimeS!=null) arrTime=Double.parseDouble(arrTimeS);
 					String endTimeS = actConfig.getString("endTime");
-					if(endTimeS == null) throw new IllegalStateException("act.endTime is missing.");
-					double arrTime = Double.parseDouble(arrTimeS);
-					double endTime = Double.parseDouble(endTimeS);
+					if(endTimeS!=null) endTime=Double.parseDouble(endTimeS);
+					
 					String serviceId = actConfig.getString("serviceId");
 					if(serviceId != null) {
 						Service service = getService(serviceId);
@@ -270,8 +322,7 @@ public class VrpXMLReader{
 							routeBuilder.addDelivery(shipment, arrTime, endTime);
 						}
 						else throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
-					}
-					
+					}	
 				}
 				routes.add(routeBuilder.build());
 			}
@@ -399,7 +450,7 @@ public class VrpXMLReader{
 			
 			Shipment shipment = builder.build();
 			vrpBuilder.addJob(shipment);
-			shipmentMap .put(shipment.getId(),shipment);
+			shipmentMap.put(shipment.getId(),shipment);
 		}
 	}
 

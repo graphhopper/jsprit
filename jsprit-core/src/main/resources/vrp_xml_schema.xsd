@@ -219,6 +219,32 @@
 				</xs:complexType>
 			</xs:element>
 			
+			<xs:element name="initialRoutes" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="route" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+						 		<xs:sequence>
+						 			<xs:element name="driverId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						 			<xs:element name="vehicleId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						 			<xs:element name="start" type="xs:double" minOccurs="1" maxOccurs="1"/>
+						 			<xs:element name="act" minOccurs="0" maxOccurs="unbounded">
+						 				<xs:complexType>
+						 					<xs:choice>
+						 						<xs:group ref="serviceActGroup"/>
+						 						<xs:group ref="shipmentActGroup"/>			
+						 					</xs:choice>
+						 					<xs:attribute name="type" type="xs:string" use="required"/>
+						 				</xs:complexType>
+						 			</xs:element>
+						 			<xs:element name="end" type="xs:anySimpleType" minOccurs="1" maxOccurs="1"/>
+						 		</xs:sequence>
+						 	</xs:complexType>
+						 </xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+						
 			<xs:element name="solutions" minOccurs="0" maxOccurs="1">
 				<xs:complexType>
 					<xs:sequence>
@@ -272,16 +298,16 @@
 <xs:group name="serviceActGroup">
 	<xs:sequence>
 		<xs:element name="serviceId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-		<xs:element name="arrTime" type="xs:double" minOccurs="1" maxOccurs="1"/>
-		<xs:element name="endTime" type="xs:double" minOccurs="1" maxOccurs="1"/>
+		<xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
 	</xs:sequence>	
 </xs:group>
 
 <xs:group name="shipmentActGroup">
 	<xs:sequence>
 		<xs:element name="shipmentId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-		<xs:element name="arrTime" type="xs:double" minOccurs="1" maxOccurs="1"/>
-		<xs:element name="endTime" type="xs:double" minOccurs="1" maxOccurs="1"/>
+		<xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
 	</xs:sequence>	
 </xs:group>
 

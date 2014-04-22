@@ -449,7 +449,7 @@ public class VrpXMLReaderTest {
 	}
 	
 	@Test
-	public void whenReadingInitialRouteWithDepTime10_departureTimeOfRouteShouldBeReadCorrectly(){ //i.e. these jobs should not be part of the problem
+	public void whenReadingInitialRouteWithDepTime10_departureTimeOfRouteShouldBeReadCorrectly(){ 
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
 		VehicleRoutingProblem vrp = builder.build();
@@ -457,7 +457,7 @@ public class VrpXMLReaderTest {
 	}
 	
 	@Test
-	public void whenReadingInitialRoute_nuInitialRoutesShouldBeCorrect(){ //i.e. these jobs should not be part of the problem
+	public void whenReadingInitialRoute_nuInitialRoutesShouldBeCorrect(){ 
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
 		VehicleRoutingProblem vrp = builder.build();
@@ -465,7 +465,7 @@ public class VrpXMLReaderTest {
 	}
 	
 	@Test
-	public void whenReadingInitialRoute_nuActivitiesShouldBeCorrect(){ //i.e. these jobs should not be part of the problem
+	public void whenReadingInitialRoute_nuActivitiesShouldBeCorrect(){ 
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new VrpXMLReader(builder, null).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
 		VehicleRoutingProblem vrp = builder.build();
