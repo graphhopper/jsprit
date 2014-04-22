@@ -21,8 +21,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetComposition;
@@ -131,6 +133,8 @@ public class VrpXMLReader{
 	
 	private Map<String, Shipment> shipmentMap;
 	
+	private Set<String> freezedJobIds = new HashSet<String>();
+	
 	private boolean schemaValidation = true;
 
 	private Collection<VehicleRoutingProblemSolution> solutions;
@@ -216,8 +220,22 @@ public class VrpXMLReader{
 		
 		readInitialRoutes(xmlConfig);
 		readSolutions(xmlConfig);
+		
+		addJobsAndTheirLocationsToVrp();
 	}
 
+	private void addJobsAndTheirLocationsToVrp() {
+		for(Service service : serviceMap.values()) {
+			if(!freezedJobIds.contains(service.getId())){
+				vrpBuilder.addJob(service);
+			}
+		}
+		for(Shipment shipment : shipmentMap.values()){ 
+			if(!freezedJobIds.contains(shipment.getId())){
+				vrpBuilder.addJob(shipment);
+			}
+		}
+	}
 	private void readInitialRoutes(XMLConfiguration xmlConfig) {
 		List<HierarchicalConfiguration> initialRouteConfigs = xmlConfig.configurationsAt("initialRoutes.route");
 		for(HierarchicalConfiguration routeConfig : initialRouteConfigs){
@@ -246,15 +264,17 @@ public class VrpXMLReader{
 				String serviceId = actConfig.getString("serviceId");
 				if(serviceId != null) {
 					Service service = getService(serviceId);
-					//!!!
-
+					if(service==null) throw new IllegalStateException("service to serviceId " + serviceId + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
+					//!!!since job is part of initial route, it does not belong to jobs in problem, i.e. variable jobs that can be assigned/scheduled
+					freezedJobIds.add(serviceId);
 					routeBuilder.addService(service, arrTime, endTime);
 				}
 				else{
 					String shipmentId = actConfig.getString("shipmentId");
 					if(shipmentId == null) throw new IllegalStateException("either serviceId or shipmentId is missing");
 					Shipment shipment = getShipment(shipmentId);
-					if(shipment == null) throw new IllegalStateException("shipment with id " + shipmentId + " does not exist.");
+					if(shipment == null) throw new IllegalStateException("shipment to shipmentId " + shipmentId + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
+					freezedJobIds.add(shipmentId);
 					if(type.equals("pickupShipment")){
 						routeBuilder.addPickup(shipment, arrTime, endTime);
 					}
@@ -397,10 +417,10 @@ public class VrpXMLReader{
 			if(pickupCoord != null){
 				builder.setPickupCoord(pickupCoord);
 				if(pickupLocationId != null){
-					vrpBuilder.addLocation(pickupLocationId,pickupCoord);
+//					vrpBuilder.addLocation(pickupLocationId,pickupCoord);
 				}
 				else{
-					vrpBuilder.addLocation(pickupCoord.toString(),pickupCoord);
+//					vrpBuilder.addLocation(pickupCoord.toString(),pickupCoord);
 					builder.setPickupLocation(pickupCoord.toString());
 				}
 			}
@@ -428,10 +448,10 @@ public class VrpXMLReader{
 			if(deliveryCoord != null){
 				builder.setDeliveryCoord(deliveryCoord);
 				if(deliveryLocationId != null){
-					vrpBuilder.addLocation(deliveryLocationId,deliveryCoord);
+//					vrpBuilder.addLocation(deliveryLocationId,deliveryCoord);
 				}
 				else{
-					vrpBuilder.addLocation(deliveryCoord.toString(),deliveryCoord);
+//					vrpBuilder.addLocation(deliveryCoord.toString(),deliveryCoord);
 					builder.setDeliveryLocation(deliveryCoord.toString());
 				}
 			}
@@ -449,7 +469,7 @@ public class VrpXMLReader{
 			
 			
 			Shipment shipment = builder.build();
-			vrpBuilder.addJob(shipment);
+//			vrpBuilder.addJob(shipment);
 			shipmentMap.put(shipment.getId(),shipment);
 		}
 	}
@@ -500,10 +520,10 @@ public class VrpXMLReader{
 			if(serviceCoord != null){
 				builder.setCoord(serviceCoord);
 				if(serviceLocationId != null){
-					vrpBuilder.addLocation(serviceLocationId,serviceCoord);
+//					vrpBuilder.addLocation(serviceLocationId,serviceCoord);
 				}
 				else{
-					vrpBuilder.addLocation(serviceCoord.toString(),serviceCoord);
+//					vrpBuilder.addLocation(serviceCoord.toString(),serviceCoord);
 					builder.setLocationId(serviceCoord.toString());
 				}
 			}
@@ -518,7 +538,7 @@ public class VrpXMLReader{
 			}
 			Service service = builder.build();
 			serviceMap.put(service.getId(),service);
-			vrpBuilder.addJob(service);
+//			vrpBuilder.addJob(service);
 
 		}
 	}

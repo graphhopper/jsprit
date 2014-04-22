@@ -227,7 +227,7 @@
      <initialRoutes>
      	<route>
            <driverId>noDriver</driverId>
-           <vehicleId>A</vehicleId>
+           <vehicleId>v1</vehicleId>
            <start>10.</start>
            <act type="pickupShipment">
                <shipmentId>4</shipmentId>
