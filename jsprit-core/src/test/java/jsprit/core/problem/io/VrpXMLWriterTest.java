@@ -589,5 +589,66 @@ public class VrpXMLWriterTest {
 		return null;
 	}
 	
+	@Test
+	public void whenWritingAndReadingInitialRouteWithShipment4_thisShipmentShouldNotAppearInJobMap(){ //since it is not part of the problem anymore
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
+		VehicleRoutingProblem vrp = builder.build();
+		
+		new VrpXMLWriter(vrp).write("src/test/resources/finiteVrpWithInitialSolutionForWriterTest.xml");
+		
+		VehicleRoutingProblem.Builder newBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(newBuilder).read("src/test/resources/finiteVrpWithInitialSolutionForWriterTest.xml");
+		VehicleRoutingProblem newVrp = newBuilder.build();
+		
+		assertFalse(newVrp.getJobs().containsKey("4"));
+	}
+	
+	@Test
+	public void whenReadingInitialRouteWithDepTime10_departureTimeOfRouteShouldBeReadCorrectly(){ 
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
+		VehicleRoutingProblem vrp = builder.build();
+		
+		new VrpXMLWriter(vrp).write("src/test/resources/finiteVrpWithInitialSolutionForWriterTest.xml");
+		
+		VehicleRoutingProblem.Builder newBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(newBuilder).read("src/test/resources/finiteVrpWithInitialSolutionForWriterTest.xml");
+		VehicleRoutingProblem newVrp = newBuilder.build();
+		
+		assertEquals(10.,newVrp.getInitialVehicleRoutes().iterator().next().getDepartureTime(),0.01);
+	}
+	
+	@Test
+	public void whenReadingInitialRoute_nuInitialRoutesShouldBeCorrect(){ 
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
+		VehicleRoutingProblem vrp = builder.build();
+		
+		new VrpXMLWriter(vrp).write("src/test/resources/finiteVrpWithInitialSolutionForWriterTest.xml");
+		
+		VehicleRoutingProblem.Builder newBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(newBuilder).read("src/test/resources/finiteVrpWithInitialSolutionForWriterTest.xml");
+		VehicleRoutingProblem newVrp = newBuilder.build();
+		
+		
+		assertEquals(1,newVrp.getInitialVehicleRoutes().size());
+	}
+	
+	@Test
+	public void whenReadingInitialRoute_nuActivitiesShouldBeCorrect(){ 
+		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(builder, null).read("src/test/resources/finiteVrpWithInitialSolutionForReaderTest.xml");
+		VehicleRoutingProblem vrp = builder.build();
+		
+		new VrpXMLWriter(vrp).write("src/test/resources/finiteVrpWithInitialSolutionForWriterTest.xml");
+		
+		VehicleRoutingProblem.Builder newBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(newBuilder).read("src/test/resources/finiteVrpWithInitialSolutionForWriterTest.xml");
+		VehicleRoutingProblem newVrp = newBuilder.build();
+		
+		
+		assertEquals(2,newVrp.getInitialVehicleRoutes().iterator().next().getActivities().size());
+	}
 
 }

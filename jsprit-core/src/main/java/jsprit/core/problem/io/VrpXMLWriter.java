@@ -19,7 +19,9 @@ package jsprit.core.problem.io;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
@@ -85,12 +87,22 @@ public class VrpXMLWriter {
 		xmlConfig.setAttributeSplittingDisabled(true);
 		xmlConfig.setDelimiterParsingDisabled(true);
 		
-		
 		writeProblemType(xmlConfig);
 		writeVehiclesAndTheirTypes(xmlConfig);
-		writeServices(xmlConfig);
-		writeShipments(xmlConfig);
+		
+		//might be sorted?
+		List<Job> jobs = new ArrayList<Job>();
+		jobs.addAll(vrp.getJobs().values());
+		for(VehicleRoute r : vrp.getInitialVehicleRoutes()){
+			jobs.addAll(r.getTourActivities().getJobs());
+		}
+		
+		writeServices(xmlConfig,jobs);
+		writeShipments(xmlConfig,jobs);
+		
+		writeInitialRoutes(xmlConfig);
 		writeSolutions(xmlConfig);
+		
 		
 		OutputFormat format = new OutputFormat();
 		format.setIndenting(true);
@@ -121,6 +133,39 @@ public class VrpXMLWriter {
 		}
 		
 		
+	}
+
+	private void writeInitialRoutes(XMLConf xmlConfig) {
+		if(vrp.getInitialVehicleRoutes().isEmpty()) return;
+		String path = "initialRoutes.route";
+		int routeCounter = 0;
+		for(VehicleRoute route : vrp.getInitialVehicleRoutes()){
+			xmlConfig.setProperty(path + "(" + routeCounter + ").driverId", route.getDriver().getId());
+			xmlConfig.setProperty(path + "(" + routeCounter + ").vehicleId", route.getVehicle().getId());
+			xmlConfig.setProperty(path + "(" + routeCounter + ").start", route.getStart().getEndTime());
+			int actCounter = 0;
+			for(TourActivity act : route.getTourActivities().getActivities()){
+				xmlConfig.setProperty(path + "(" + routeCounter + ").act("+actCounter+")[@type]", act.getName());
+				if(act instanceof JobActivity){
+					Job job = ((JobActivity) act).getJob();
+					if(job instanceof Service){
+						xmlConfig.setProperty(path + "(" + routeCounter + ").act("+actCounter+").serviceId", job.getId());
+					}
+					else if(job instanceof Shipment){
+						xmlConfig.setProperty(path + "(" + routeCounter + ").act("+actCounter+").shipmentId", job.getId());
+					}
+					else{
+						throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
+					}
+				}
+				xmlConfig.setProperty(path + "(" + routeCounter + ").act("+actCounter+").arrTime", act.getArrTime());
+				xmlConfig.setProperty(path + "(" + routeCounter + ").act("+actCounter+").endTime", act.getEndTime());
+				actCounter++;
+			}
+			xmlConfig.setProperty(path + "(" + routeCounter + ").end", route.getEnd().getArrTime());
+			routeCounter++;
+		}
+
 	}
 
 	private void writeSolutions(XMLConf xmlConfig) {
@@ -161,10 +206,10 @@ public class VrpXMLWriter {
 		}
 	}
 
-	private void writeServices(XMLConf xmlConfig) {
+	private void writeServices(XMLConf xmlConfig, List<Job> jobs) {
 		String shipmentPathString = "services.service";
 		int counter = 0;
-		for(Job j : vrp.getJobs().values()){
+		for(Job j : jobs){
 			if(!(j instanceof Service)) continue;
 			Service service = (Service) j;
 			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@id]", service.getId());
@@ -186,10 +231,10 @@ public class VrpXMLWriter {
 		}
 	}
 	
-	private void writeShipments(XMLConf xmlConfig) {
+	private void writeShipments(XMLConf xmlConfig, List<Job> jobs) {
 		String shipmentPathString = "shipments.shipment";
 		int counter = 0;
-		for(Job j : vrp.getJobs().values()){
+		for(Job j : jobs){
 			if(!(j instanceof Shipment)) continue;
 			Shipment shipment = (Shipment) j;
 			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@id]", shipment.getId());
