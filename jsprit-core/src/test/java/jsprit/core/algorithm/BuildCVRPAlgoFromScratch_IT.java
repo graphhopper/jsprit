@@ -116,7 +116,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 	public void testVRA(){
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		System.out.println("costs="+Solutions.bestOf(solutions).getCost()+";#routes="+Solutions.bestOf(solutions).getRoutes().size());
-		assertEquals(530.0, Solutions.bestOf(solutions).getCost(),15.0);
+		assertEquals(530.0, Solutions.bestOf(solutions).getCost(),50.0);
 		assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
 	}
 
