@@ -161,6 +161,10 @@ public class VehicleRoutingProblem {
 
 		private Map<String,Job> jobs;
 		
+		private Map<String,Job> tentativeJobs = new HashMap<String,Job>();
+		
+		private Set<String> jobsInInitialRoutes = new HashSet<String>();
+		
 		private Collection<Service> services;
 
 		private Map<String, Coordinate> coordinates;
@@ -298,21 +302,25 @@ public class VehicleRoutingProblem {
 		 * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
 		 */
 		public Builder addJob(Job job) {
-			if(jobs.containsKey(job.getId())) throw new IllegalStateException("jobList already contains a job with id " + job.getId() + ". make sure you use unique ids for your jobs (i.e. service and shipments)");
+			if(tentativeJobs.containsKey(job.getId())) throw new IllegalStateException("jobList already contains a job with id " + job.getId() + ". make sure you use unique ids for your jobs (i.e. service and shipments)");
+			if(!(job instanceof Service || job instanceof Shipment)) throw new IllegalStateException("job must be either a service or a shipment");  
+			tentativeJobs.put(job.getId(), job);
+			return this;
+		}
+		
+		private void addJobToFinalJobMap(Job job){
 			if(job instanceof Service) {
 				addService((Service) job);
-				return this;
 			}
 			else if(job instanceof Shipment){
 				addShipment((Shipment)job);
-				return this;
 			}
-			throw new IllegalStateException("job must be either a service or a shipment");
 		}
 
 		public Builder addInitialVehicleRoute(VehicleRoute route){
 			addVehicle(route.getVehicle());
 			for(Job job : route.getTourActivities().getJobs()){
+				jobsInInitialRoutes.add(job.getId());
 				if(job instanceof Service) coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
 				if(job instanceof Shipment){
 					Shipment shipment = (Shipment)job;
@@ -391,6 +399,11 @@ public class VehicleRoutingProblem {
 				}
 				else{
 					addPenaltyVehicles();
+				}
+			}
+			for(Job job : tentativeJobs.values()){
+				if(!jobsInInitialRoutes.contains(job.getId())){
+					addJobToFinalJobMap(job);
 				}
 			}
 			return new VehicleRoutingProblem(this);
@@ -528,7 +541,7 @@ public class VehicleRoutingProblem {
          * @return collection of jobs
          */
 		public Collection<Job> getAddedJobs(){
-			return Collections.unmodifiableCollection(jobs.values());
+			return Collections.unmodifiableCollection(tentativeJobs.values());
 		}
 
 		/**
