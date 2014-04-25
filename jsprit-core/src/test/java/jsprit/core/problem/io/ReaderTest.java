@@ -45,9 +45,9 @@ public class ReaderTest {
 	@Test
 	public void testRead_ifReaderIsCalled_itReadsSuccessfullyV2(){	 
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		VehicleRoutingProblem vrp = vrpBuilder.build();
 		ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
 		new VrpXMLReader(vrpBuilder, solutions).read("src/test/resources/finiteVrpWithShipmentsAndSolution.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
 		assertEquals(3,vrp.getJobs().size());
 		assertEquals(1,solutions.size());
 		
