@@ -18,8 +18,11 @@ package jsprit.core.algorithm.recreate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -38,6 +41,10 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 	
 	private final JobInsertionCostsCalculator insertionCalculator;
 	
+	private final VehicleRoutingProblem vrp;
+	
+	private Set<String> initialVehicleIds = new HashSet<String>();
+	
 	/**
 	 * true if a vehicle(-type) is allowed to take over the whole route that was previously served by another vehicle
 	 * 
@@ -48,10 +55,18 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 	 */
 	private boolean vehicleSwitchAllowed = false;
 
-	public VehicleTypeDependentJobInsertionCalculator(final VehicleFleetManager fleetManager, final JobInsertionCostsCalculator jobInsertionCalc) {
+	public VehicleTypeDependentJobInsertionCalculator(final VehicleRoutingProblem vrp, final VehicleFleetManager fleetManager, final JobInsertionCostsCalculator jobInsertionCalc) {
 		this.fleetManager = fleetManager;
 		this.insertionCalculator = jobInsertionCalc;
+		this.vrp = vrp;
+		getInitialVehicleIds();
 		logger.info("inialise " + this);
+	}
+
+	private void getInitialVehicleIds() {
+		for(VehicleRoute initialRoute : vrp.getInitialVehicleRoutes()){
+			initialVehicleIds.add(initialRoute.getVehicle().getId());
+		}
 	}
 
 	@Override
@@ -84,7 +99,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 		Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
 		if(!(selectedVehicle instanceof NoVehicle)) {
 			relevantVehicles.add(selectedVehicle);
-			if(vehicleSwitchAllowed){
+			if(vehicleSwitchAllowed && !isVehicleWithInitialRoute(selectedVehicle)){
 				relevantVehicles.addAll(fleetManager.getAvailableVehicles(selectedVehicle));
 			}
 		}
@@ -104,6 +119,11 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 			}
 		}
 		return bestIData;
+	}
+
+	private boolean isVehicleWithInitialRoute(Vehicle selectedVehicle) {
+		if(initialVehicleIds.contains(selectedVehicle.getId())) return true;
+		return false;
 	}
 
 }

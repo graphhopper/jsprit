@@ -329,7 +329,7 @@ class CalculatorBuilder {
 	}
 
 	private JobInsertionCostsCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCostsCalculator baseCalc, RouteAndActivityStateGetter activityStates2){
-		VehicleTypeDependentJobInsertionCalculator vehicleTypeDependentJobInsertionCalculator = new VehicleTypeDependentJobInsertionCalculator(fleetManager, baseCalc);
+		VehicleTypeDependentJobInsertionCalculator vehicleTypeDependentJobInsertionCalculator = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, baseCalc);
 		vehicleTypeDependentJobInsertionCalculator.setVehicleSwitchAllowed(allowVehicleSwitch);
 		return vehicleTypeDependentJobInsertionCalculator;
 	}
