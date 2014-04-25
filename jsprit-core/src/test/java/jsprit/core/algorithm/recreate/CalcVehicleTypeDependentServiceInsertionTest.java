@@ -22,8 +22,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -80,7 +82,9 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 		when(calc.getInsertionData(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
 		when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
 		when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 10.0)).thenReturn(iDataVeh2);
-		VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager,calc);
+		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+		when(vrp.getInitialVehicleRoutes()).thenReturn(Collections.<VehicleRoute>emptyList());
+		VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp,fleetManager, calc);
 		InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
 		assertThat(iData.getSelectedVehicle(), is(veh1));
 
@@ -94,7 +98,9 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 		when(calc.getInsertionData(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
 		when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
 		when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 20.0)).thenReturn(iDataVeh2);
-		VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(fleetManager,calc);
+		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+		when(vrp.getInitialVehicleRoutes()).thenReturn(Collections.<VehicleRoute>emptyList());
+		VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp,fleetManager, calc);
 		InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
 		assertThat(iData.getSelectedVehicle(), is(veh2));
 
