@@ -110,6 +110,25 @@ public class VehicleRoute {
 			return new Builder(vehicle,driver);
 		}
 		
+		/**
+		 * Returns new instance of this builder.
+		 * 
+		 * <p><b>Construction-settings of vehicleRoute:</b>
+		 * <p>startLocation == vehicle.getStartLocationId()
+		 * <p>endLocation == vehicle.getEndLocationId()
+		 * <p>departureTime == vehicle.getEarliestDepartureTime()
+		 * <p>latestStart == Double.MAX_VALUE
+		 * <p>earliestEnd == 0.0
+		 * 
+		 * @param vehicle
+		 * @param driver
+		 * @return this builder
+		 */
+		public static Builder newInstance(Vehicle vehicle){
+			if(vehicle == null) throw new IllegalArgumentException("null arguments not accepted. ini emptyRoute with VehicleImpl.createNoVehicle() and DriverImpl.noDriver()");
+			return new Builder(vehicle,DriverImpl.noDriver());
+		}
+		
 		private Vehicle vehicle;
 		
 		private Driver driver;
