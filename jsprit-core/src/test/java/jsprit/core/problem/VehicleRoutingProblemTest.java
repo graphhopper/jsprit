@@ -528,4 +528,16 @@ public class VehicleRoutingProblemTest {
 		assertEquals(0.,vrp.getLocations().getCoord("start").getX(),0.01);
 		assertEquals(1.,vrp.getLocations().getCoord("start").getY(),0.01);
 	}
+	
+	@Test
+	public void whenAddingJobAndInitialRouteWithThatJobAfterwards_thisJobShouldNotBeInFinalJobMap(){
+		Service service = Service.Builder.newInstance("myService").setLocationId("loc").build();
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.addJob(service);
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+		VehicleRoute initialRoute = VehicleRoute.Builder.newInstance(vehicle).addService(service).build();
+		vrpBuilder.addInitialVehicleRoute(initialRoute);
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+		assertFalse(vrp.getJobs().containsKey("myService"));
+	}
 }
