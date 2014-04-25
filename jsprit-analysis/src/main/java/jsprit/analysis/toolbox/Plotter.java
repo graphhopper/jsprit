@@ -105,16 +105,19 @@ public class Plotter {
 	
 	private BoundingBox boundingBox = null;
 	
-	public void setShowFirstActivity(boolean show){
+	public Plotter setShowFirstActivity(boolean show){
 		showFirstActivity = show;
+		return this;
 	}
 	
-	public void setLabel(Label label){
+	public Plotter setLabel(Label label){
 		this.label = label;
+		return this;
 	}
 	
-	public void setBoundingBox(double minX, double minY, double maxX, double maxY){
+	public Plotter setBoundingBox(double minX, double minY, double maxX, double maxY){
 		boundingBox = new BoundingBox(minX,minY,maxX,maxY);
+		return this;
 	}
 
 	public Plotter(VehicleRoutingProblem vrp) {
