@@ -105,6 +105,25 @@ public class Plotter {
 	
 	private BoundingBox boundingBox = null;
 	
+	public Plotter(VehicleRoutingProblem vrp) {
+		super();
+		this.vrp = vrp;
+	}
+
+	public Plotter(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution) {
+		super();
+		this.vrp = vrp;
+		this.routes = solution.getRoutes();
+		plotSolutionAsWell = true;
+	}
+
+	public Plotter(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) {
+		super();
+		this.vrp = vrp;
+		this.routes = routes;
+		plotSolutionAsWell = true;
+	}
+
 	public Plotter setShowFirstActivity(boolean show){
 		showFirstActivity = show;
 		return this;
@@ -120,23 +139,9 @@ public class Plotter {
 		return this;
 	}
 
-	public Plotter(VehicleRoutingProblem vrp) {
-		super();
-		this.vrp = vrp;
-	}
-
-	public Plotter(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution) {
-		super();
-		this.vrp = vrp;
-		this.routes = solution.getRoutes();
-		plotSolutionAsWell = true;
-	}
-	
-	public Plotter(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) {
-		super();
-		this.vrp = vrp;
-		this.routes = routes;
-		plotSolutionAsWell = true;
+	public Plotter plotShipments(boolean plotShipments) {
+		this.plotShipments  = plotShipments;
+		return this;
 	}
 
 	public void plot(String pngFileName, String plotTitle){
@@ -574,10 +579,6 @@ public class Plotter {
 //				return locs.get(id);
 //			}
 //		};
-	}
-
-	public void plotShipments(boolean plotShipments) {
-		this.plotShipments  = plotShipments;
 	}
 
 }
