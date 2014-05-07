@@ -48,9 +48,13 @@ public class MultipleDepotWithInitialRoutesExample {
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		/*
-		 * Read cordeau-instance p01, BUT only its services without any vehicles 
+		 * Read cordeau-instance p01
 		 */
 		new VrpXMLReader(vrpBuilder).read("input/cordeau01.xml");
+		
+		/*
+		 * Add initial route with 1_4_vehicle and services 44, 26
+		 */
 		VehicleRoute initialRoute = VehicleRoute.Builder.newInstance(getVehicle("1_4_vehicle",vrpBuilder)).addService(getService("44",vrpBuilder))
 				.addService(getService("26",vrpBuilder)).build();
 		vrpBuilder.addInitialVehicleRoute(initialRoute);
@@ -59,8 +63,12 @@ public class MultipleDepotWithInitialRoutesExample {
 		 * build the problem
 		 */
 		VehicleRoutingProblem vrp = vrpBuilder.build();
+		/*
+		 * since job (service) 26 and 44 are already planned in initial route and thus static AND sequence is fixed they
+		 * should not be in jobMap anymore (only variable jobs are in jobMap)
+		 */
 		assert !vrp.getJobs().containsKey("26") : "strange. service 26 should not be part of the problem";
-		assert !vrp.getJobs().containsKey("44") : "strange. service 26 should not be part of the problem";
+		assert !vrp.getJobs().containsKey("44") : "strange. service 44 should not be part of the problem";
 		
 		/*
 		 * plot to see how the problem looks like
