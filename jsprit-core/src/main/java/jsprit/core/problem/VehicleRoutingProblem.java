@@ -168,6 +168,8 @@ public class VehicleRoutingProblem {
 		private Collection<Service> services;
 
 		private Map<String, Coordinate> coordinates;
+		
+		private Map<String, Coordinate> tentative_coordinates = new HashMap<String, Coordinate>();
 
 		private FleetSize fleetSize = FleetSize.INFINITE;
 
@@ -229,40 +231,42 @@ public class VehicleRoutingProblem {
 		 * @return locationId
 		 * @see Coordinate
 		 */
+		@Deprecated
 		public String createLocation(double x, double y){
 			Coordinate coord = new Coordinate(x, y);
 			String id = coord.toString();
-			if(!coordinates.containsKey(id)){
-				coordinates.put(id, coord);
+			if(!tentative_coordinates.containsKey(id)){
+				tentative_coordinates.put(id, coord);
 			}
 			return id;
 		}
 	
 
 		/**
-		 * Returns the unmodifiable map of locations (mapped by their id).
+		 * Returns the unmodifiable map of collected locations (mapped by their location-id).
 		 * 
 		 * @return map with locations
 		 */
 		public Map<String,Coordinate> getLocationMap(){
-			return Collections.unmodifiableMap(coordinates);
+			return Collections.unmodifiableMap(tentative_coordinates);
 		}
 
 		/**
-		 * Returns the locations collected by this builder.
+		 * Returns the locations collected SO FAR by this builder.
 		 * 
 		 * <p>Locations are cached when adding a shipment, service, depot, vehicle.
 		 * 
 		 * @return locations
 		 * 
-		 */
+		 **/
 		public Locations getLocations(){
 			return new Locations() {
 
 				@Override
 				public Coordinate getCoord(String id) {
-					return coordinates.get(id);
+					return tentative_coordinates.get(id);
 				}
+				
 			};
 		}
 
@@ -305,9 +309,21 @@ public class VehicleRoutingProblem {
 			if(tentativeJobs.containsKey(job.getId())) throw new IllegalStateException("jobList already contains a job with id " + job.getId() + ". make sure you use unique ids for your jobs (i.e. service and shipments)");
 			if(!(job instanceof Service || job instanceof Shipment)) throw new IllegalStateException("job must be either a service or a shipment");  
 			tentativeJobs.put(job.getId(), job);
+			addLocationToTentativeLocations(job);
 			return this;
 		}
 		
+		private void addLocationToTentativeLocations(Job job) {
+			if(job instanceof Service) {
+				tentative_coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
+			}
+			else if(job instanceof Shipment){
+				Shipment shipment = (Shipment)job;
+				tentative_coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
+				tentative_coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
+			}
+		}
+
 		private void addJobToFinalJobMap(Job job){
 			if(job instanceof Service) {
 				addService((Service) job);
@@ -321,11 +337,16 @@ public class VehicleRoutingProblem {
 			addVehicle(route.getVehicle());
 			for(Job job : route.getTourActivities().getJobs()){
 				jobsInInitialRoutes.add(job.getId());
-				if(job instanceof Service) coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
+				if(job instanceof Service) {
+					coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
+					tentative_coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
+				}
 				if(job instanceof Shipment){
 					Shipment shipment = (Shipment)job;
 					coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
+					tentative_coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
 					coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
+					tentative_coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
 				}
 			}
 			initialRoutes.add(route);
@@ -360,8 +381,10 @@ public class VehicleRoutingProblem {
 			}
 			String startLocationId = vehicle.getStartLocationId();
 			coordinates.put(startLocationId, vehicle.getStartLocationCoordinate());
+			tentative_coordinates.put(startLocationId, vehicle.getStartLocationCoordinate());
 			if(!vehicle.getEndLocationId().equals(startLocationId)){
 				coordinates.put(vehicle.getEndLocationId(), vehicle.getEndLocationCoordinate());
+				tentative_coordinates.put(vehicle.getEndLocationId(), vehicle.getEndLocationCoordinate());
 			}
 			return this;
 		}
