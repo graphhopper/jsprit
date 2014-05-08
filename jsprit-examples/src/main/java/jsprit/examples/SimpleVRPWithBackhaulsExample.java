@@ -105,7 +105,6 @@ public class SimpleVRPWithBackhaulsExample {
 		 */
 		Plotter plotter = new Plotter(problem,bestSolution);
 		plotter.setLabel(Label.SIZE);
-		plotter.setShowFirstActivity(true);
 		plotter.plot("output/solution.png", "solution");
 
 	}

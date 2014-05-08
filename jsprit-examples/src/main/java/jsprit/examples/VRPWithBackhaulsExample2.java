@@ -95,7 +95,6 @@ public class VRPWithBackhaulsExample2 {
 //		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/pd_solomon_r101_solution.png","pd_r101");
 		Plotter plotter = new Plotter(vrp, solution);
 		plotter.setLabel(Label.SIZE);
-		plotter.setShowFirstActivity(true);
 		plotter.plot("output/vrpwbh_christophides_vrpnc1_solution.png","vrpwbh_vrpnc1");
 	
 		

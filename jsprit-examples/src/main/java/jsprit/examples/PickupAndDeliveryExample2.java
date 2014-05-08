@@ -98,7 +98,6 @@ public class PickupAndDeliveryExample2 {
 //		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/pd_solomon_r101_solution.png","pd_r101");
 		Plotter plotter = new Plotter(vrp, solution);
 		plotter.setLabel(Label.SIZE);
-		plotter.setShowFirstActivity(true);
 		plotter.plot("output/pd_christophides_vrpnc1_solution.png","pd_vrpnc1");
 	
 		

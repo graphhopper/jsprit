@@ -256,7 +256,6 @@ public class BicycleMessenger {
 		//and the problem as well as the solution
 		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Solutions.bestOf(solutions));
 		plotter1.plotShipments(false);
-		plotter1.setShowFirstActivity(true);
 //		plotter1.setBoundingBox(5000, 45500, 25000, 66500);
 		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
 		
