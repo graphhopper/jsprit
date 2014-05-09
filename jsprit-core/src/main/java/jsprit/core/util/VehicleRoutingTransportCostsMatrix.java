@@ -43,14 +43,7 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 	static class RelationKey {
 		
 		static RelationKey newKey(String from, String to){
-			int fromInt = Integer.parseInt(from);
-			int toInt = Integer.parseInt(to);
-			if(fromInt < toInt){
-				return new RelationKey(from, to);
-			}
-			else {
-				return new RelationKey(to, from);
-			}
+			return new RelationKey(from, to);
 		}
 		
 		final String from;
@@ -148,6 +141,10 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 				log.warn("distance from " + from + " to " + to + " already exists. This overrides distance.");
 			}
 			distances.put(key, distance);
+			if(isSymmetric) {
+				RelationKey revKey = RelationKey.newKey(to, from);
+				if(distances.containsKey(revKey)) distances.put(revKey, distance);
+			}
 			return this;
 		}
 		
@@ -165,6 +162,10 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 				log.warn("transport-time from " + from + " to " + to + " already exists. This overrides distance.");
 			}
 			times.put(key, time);
+			if(isSymmetric) {
+				RelationKey revKey = RelationKey.newKey(to, from);
+				if(distances.containsKey(revKey)) distances.put(revKey, time);
+			}
 			return this;
 		}
 		
