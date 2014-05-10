@@ -23,6 +23,7 @@ public class SchrimpfAcceptanceTest {
 		return when(mock(VehicleRoutingProblemSolution.class).getCost()).thenReturn(cost).getMock();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Before
 	public void setup() {
 		schrimpfAcceptance = new SchrimpfAcceptance(1, 0.3, 100);
