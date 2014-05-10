@@ -42,6 +42,7 @@ import jsprit.core.algorithm.acceptor.ExperimentalSchrimpfAcceptance;
 import jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import jsprit.core.algorithm.acceptor.GreedyAcceptance_minVehFirst;
 import jsprit.core.algorithm.acceptor.SchrimpfAcceptance;
+import jsprit.core.algorithm.acceptor.SchrimpfInitialThresholdGenerator;
 import jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
@@ -810,9 +811,17 @@ public class VehicleRoutingAlgorithms {
 			return acceptor;
 		}
 		if(acceptorName.equals("schrimpfAcceptance")){
-			int iterOfSchrimpf = strategyConfig.getInt("acceptor.warmup");
+			String nuWarmupIterations = strategyConfig.getString("acceptor.warmup");
 			double alpha = strategyConfig.getDouble("acceptor.alpha");
-			SchrimpfAcceptance schrimpf = new SchrimpfAcceptance(solutionMemory, alpha, iterOfSchrimpf);
+			SchrimpfAcceptance schrimpf = new SchrimpfAcceptance(solutionMemory, alpha);
+			if(nuWarmupIterations!=null){
+				SchrimpfInitialThresholdGenerator iniThresholdGenerator = new SchrimpfInitialThresholdGenerator(schrimpf, Integer.parseInt(nuWarmupIterations));
+				algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, iniThresholdGenerator));
+			}
+			else{
+				double threshold = strategyConfig.getDouble("acceptor.initialThreshold");
+				schrimpf.setInitialThreshold(threshold);
+			}
 			algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, schrimpf));
 			typedMap.put(acceptorKey, schrimpf);
 			return schrimpf;
