@@ -87,11 +87,28 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	
 	private double initialThreshold = 0.0;
 
-	private final int nOfRandomWalks;
+	private int nOfRandomWalks;
 	
 	private final int solutionMemory;
 	
+	private boolean determineInitialThreshold = true;
 	
+	public SchrimpfAcceptance(int solutionMemory, double alpha){
+		this.alpha = alpha;
+		this.solutionMemory = solutionMemory;
+		determineInitialThreshold = false;
+		logger.info("initialise " + this);
+	}
+	
+	/**
+	 * 
+	 * @param solutionMemory
+	 * @param alpha
+	 * @param nOfWarmupIterations
+	 * @Deprecated use <code>new SchrimpfAcceptance(solutionMemory,alpha)</code> instead. if you want to determine ini-threshold with a
+	 * random walk and the algorithm 'randomWalk.xml' use SchrimpfInitialThresholdGenerator.class instead.
+	 */
+	@Deprecated
 	public SchrimpfAcceptance(int solutionMemory, double alpha, int nOfWarmupIterations) {
 		super();
 		this.alpha = alpha;
@@ -134,15 +151,27 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	}
 
 
+	public double getInitialThreshold(){
+		return initialThreshold;
+	}
+	
 	/**
+	 * Sets initial threshold.
+	 * <p>Note that if initial threshold has been set, automatic generation of initial threshold is disabled.
+	 *  
 	 * @param initialThreshold the initialThreshold to set
 	 */
 	public void setInitialThreshold(double initialThreshold) {
 		this.initialThreshold = initialThreshold;
+		determineInitialThreshold=false;
 	}
 
 	@Override
 	public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
+		if(!determineInitialThreshold){
+			logger.info("skip threshold initialization from here");
+			return;
+		}
 		reset();
 		logger.info("---------------------------------------------------------------------");
 		logger.info("prepare schrimpfAcceptanceFunction, i.e. determine initial threshold");
