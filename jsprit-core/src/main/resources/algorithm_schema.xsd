@@ -92,7 +92,11 @@
 <xs:complexType name="acceptorType">
 	<xs:sequence>
 		<xs:element name="alpha" type="xs:double" minOccurs="0" maxOccurs="1"/>
-		<xs:element name="warmup" type="xs:double" minOccurs="0" maxOccurs="1"/>
+		<xs:choice>
+			<xs:element name="warmup" type="xs:int" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="initialThreshold" type="xs:double" minOccurs="0" maxOccurs="1"/>
+		</xs:choice>
+		
 	</xs:sequence>
 	<xs:attribute name="name">
 		<xs:simpleType>
