@@ -83,7 +83,7 @@ class CalculatorBuilder {
 
 	private VehicleFleetManager fleetManager;
 
-	private boolean timeScheduling;
+	private boolean timeScheduling = false;
 
 	private double timeSlice;
 
