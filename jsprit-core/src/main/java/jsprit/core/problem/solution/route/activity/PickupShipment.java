@@ -87,9 +87,11 @@ public final class PickupShipment implements PickupActivity{
 		return new PickupShipment(this);
 	}
 	
-	@Override
 	public String toString() {
-		return "[act="+getName()+"][loc="+getLocationId()+"]";
+		return "[type="+getName()+"][locationId=" + getLocationId() 
+		+ "][size=" + getSize().toString()
+		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
 	}
 
 	@Override

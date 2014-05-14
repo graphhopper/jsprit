@@ -144,10 +144,15 @@ public class ServiceActivity implements JobActivity{
 		return service;
 	}
 
+	
+	@Override
 	public String toString() {
-		return "[type="+getName()+"][service="+this.service+"]";
+		return "[type="+getName()+"][locationId=" + getLocationId() 
+		+ "][size=" + getSize().toString()
+		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
 	}
-
+	
 	@Override
 	public String getName() {
 		return service.getType();

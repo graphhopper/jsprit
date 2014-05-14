@@ -113,17 +113,10 @@ public final class End implements TourActivity {
 	@Override
 	public String toString() {
 		return "[type="+getName()+"][locationId=" + getLocationId() 
-		+ "][twStart=" + round(theoretical_earliestOperationStartTime)
-		+ "][twEnd=" + round(theoretical_latestOperationStartTime) + "]";
+		+ "][twStart=" + Activities.round(theoretical_earliestOperationStartTime)
+		+ "][twEnd=" + Activities.round(theoretical_latestOperationStartTime) + "]";
 	}
 	
-	private String round(double time) {
-		if (time == Double.MAX_VALUE) {
-			return "oo";
-		}
-		return "" + Math.round(time);
-	}
-
 	@Override
 	public String getName() {
 		return "end";

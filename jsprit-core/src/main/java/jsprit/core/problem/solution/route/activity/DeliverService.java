@@ -90,9 +90,11 @@ public final class DeliverService implements DeliveryActivity{
 		return delivery;
 	}
 
-	@Override
 	public String toString() {
-		return "[act="+getName()+"][capDemand="+getCapacityDemand()+"][loc="+getLocationId()+"]";
+		return "[type="+getName()+"][locationId=" + getLocationId() 
+		+ "][size=" + getSize().toString()
+		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
 	}
 
 	@Override

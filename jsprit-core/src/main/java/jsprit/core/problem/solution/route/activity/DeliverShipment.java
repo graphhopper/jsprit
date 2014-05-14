@@ -90,10 +90,12 @@ public final class DeliverShipment implements DeliveryActivity{
 	public TourActivity duplicate() {
 		return new DeliverShipment(this);
 	}
-
-	@Override
+	
 	public String toString() {
-		return "[act="+getName()+"][loc="+getLocationId()+"]";
+		return "[type="+getName()+"][locationId=" + getLocationId() 
+		+ "][size=" + getSize().toString()
+		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
 	}
 
 	@Override
