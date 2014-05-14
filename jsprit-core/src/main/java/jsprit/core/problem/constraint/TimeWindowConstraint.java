@@ -9,7 +9,7 @@ import jsprit.core.util.CalculationUtils;
 
 
 /**
-	 * ljsljslfjs
+	 * 
 	 * @author stefan
 	 *
 	 */
@@ -27,7 +27,17 @@ import jsprit.core.util.CalculationUtils;
 
 		@Override
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			double latestVehicleArrival = iFacts.getNewVehicle().getLatestArrival();
+			if(latestVehicleArrival < prevAct.getTheoreticalEarliestOperationStartTime() || 
+					latestVehicleArrival < newAct.getTheoreticalEarliestOperationStartTime() ||
+						latestVehicleArrival < nextAct.getTheoreticalEarliestOperationStartTime()){
+				return ConstraintsStatus.NOT_FULFILLED_BREAK;
+			}
 			if(newAct.getTheoreticalLatestOperationStartTime() < prevAct.getTheoreticalEarliestOperationStartTime()){
+				return ConstraintsStatus.NOT_FULFILLED_BREAK;
+			}
+			double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			if(arrTimeAtNextOnDirectRouteWithNewVehicle > nextAct.getTheoreticalLatestOperationStartTime()){
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
 			if(newAct.getTheoreticalEarliestOperationStartTime() > nextAct.getTheoreticalLatestOperationStartTime()){
@@ -47,8 +57,7 @@ import jsprit.core.util.CalculationUtils;
 			if(arrTimeAtNextAct > latestArrTimeAtNextAct){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
-			double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle()); 
-			//if vehicle cannot even manage direct-route - break
+//			if vehicle cannot even manage direct-route - break
 			if(arrTimeAtNextOnDirectRouteWithNewVehicle > latestArrTimeAtNextAct){
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
