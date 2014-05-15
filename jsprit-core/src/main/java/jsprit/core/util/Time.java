@@ -7,7 +7,7 @@ public class Time {
 	 * 
 	 * <p>If you add PM or AM to timeString, it considers english-time, otherwise not.
 	 * 
-	 * <p>timeString must be hour:min:sec
+	 * <p>timeString can be 6AM, 06AM, 6 am, 6:01AM, 6:1 pM, 6:12:1 pm, 6:12:01 am, 06:12:01 Pm etc. - but not more precise than seconds.
 	 * <p>example: 12 AM returns 12*3600. sec
 	 * 6:30 AM --> 6*3600. + 30*60.
 	 * 0:30:20 AM --> 30*3600. + 20. 
