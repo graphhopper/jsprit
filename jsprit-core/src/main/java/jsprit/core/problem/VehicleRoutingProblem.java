@@ -38,6 +38,7 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.problem.vehicle.VehicleTypeKey;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Locations;
@@ -85,57 +86,6 @@ public class VehicleRoutingProblem {
 	 */
 	public static class Builder {
 
-		/**
-		 * Two locTypeKeys are equal if they have the same locationId and typeId
-		 * 
-		 * @author schroeder
-		 *
-		 */
-		private static class LocTypeKey {
-			String locationId;
-			String typeId;
-			
-			public LocTypeKey(String locationId, String typeId) {
-				super();
-				this.locationId = locationId;
-				this.typeId = typeId;
-			}
-
-			@Override
-			public int hashCode() {
-				final int prime = 31;
-				int result = 1;
-				result = prime * result
-						+ ((locationId == null) ? 0 : locationId.hashCode());
-				result = prime * result
-						+ ((typeId == null) ? 0 : typeId.hashCode());
-				return result;
-			}
-
-			@Override
-			public boolean equals(Object obj) {
-				if (this == obj)
-					return true;
-				if (obj == null)
-					return false;
-				if (getClass() != obj.getClass())
-					return false;
-				LocTypeKey other = (LocTypeKey) obj;
-				if (locationId == null) {
-					if (other.locationId != null)
-						return false;
-				} else if (!locationId.equals(other.locationId))
-					return false;
-				if (typeId == null) {
-					if (other.typeId != null)
-						return false;
-				} else if (!typeId.equals(other.typeId))
-					return false;
-				return true;
-			}
-			
-		}
-		
 		/**
 		 * Returns a new instance of this builder.
 		 * 
@@ -433,13 +383,13 @@ public class VehicleRoutingProblem {
 		}
 
 		private void addPenaltyVehicles() {
-			Set<LocTypeKey> locTypeKeys = new HashSet<LocTypeKey>();
+			Set<VehicleTypeKey> vehicleTypeKeys = new HashSet<VehicleTypeKey>();
 			List<Vehicle> uniqueVehicles = new ArrayList<Vehicle>();
 			for(Vehicle v : this.uniqueVehicles){
-				LocTypeKey key = new LocTypeKey(v.getStartLocationId(),v.getType().getTypeId());
-				if(!locTypeKeys.contains(key)){
+				VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(),v.getStartLocationId(),v.getEndLocationId(),v.getEarliestDeparture(),v.getLatestArrival());
+				if(!vehicleTypeKeys.contains(key)){
 					uniqueVehicles.add(v);
-					locTypeKeys.add(key);
+					vehicleTypeKeys.add(key);
 				}
 			}
 			for(Vehicle v : uniqueVehicles){
@@ -454,7 +404,7 @@ public class VehicleRoutingProblem {
 						.setCapacityDimensions(v.getType().getCapacityDimensions())
 						.build();
 				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
-				String vehicleId = "penaltyVehicle_" + v.getStartLocationId() + "_" + t.getTypeId();
+				String vehicleId = "penaltyVehicle_" + new VehicleTypeKey(v.getType().getTypeId(),v.getStartLocationId(),v.getEndLocationId(),v.getEarliestDeparture(),v.getLatestArrival()).toString();
 				Vehicle penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
 						.setLatestArrival(v.getLatestArrival()).setStartLocationCoordinate(v.getStartLocationCoordinate()).setStartLocationId(v.getStartLocationId())
 						.setEndLocationId(v.getEndLocationId()).setEndLocationCoordinate(v.getEndLocationCoordinate())

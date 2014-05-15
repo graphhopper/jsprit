@@ -42,6 +42,7 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.problem.vehicle.VehicleTypeKey;
 import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
@@ -343,7 +344,7 @@ public class VehicleRoutingProblemTest {
 		
 		boolean penaltyVehicleInCollection = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
+			if(v.getId().equals(getPenaltyVehicleId(v))) penaltyVehicleInCollection = true;
 		}
 		assertTrue(penaltyVehicleInCollection);
 		
@@ -364,10 +365,15 @@ public class VehicleRoutingProblemTest {
 		
 		boolean penaltyVehicleInCollection = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
+			if(v.getId().equals(getPenaltyVehicleId(v))) penaltyVehicleInCollection = true;
 		}
 		assertFalse(penaltyVehicleInCollection);
 		
+	}
+
+	private String getPenaltyVehicleId(Vehicle v) {
+		return "penaltyVehicle_" + new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(),
+				v.getEarliestDeparture(), v.getLatestArrival()).toString();
 	}
 	
 	@Test
@@ -388,7 +394,7 @@ public class VehicleRoutingProblemTest {
 		
 		boolean penaltyVehicleInCollection = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
+			if(v.getId().equals(getPenaltyVehicleId(v))) penaltyVehicleInCollection = true;
 		}
 		assertTrue(penaltyVehicleInCollection);
 		
@@ -412,7 +418,7 @@ public class VehicleRoutingProblemTest {
 		
 		double fix = 0.0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals("penaltyVehicle_loc_type")) {
+			if(v.getId().equals(getPenaltyVehicleId(v))) {
 				fix = v.getType().getVehicleCostParams().fix;
 			}
 		}
@@ -439,8 +445,8 @@ public class VehicleRoutingProblemTest {
 		boolean penaltyVehicleInCollection = false;
 		boolean anotherPenVehInCollection = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
-			if(v.getId().equals("penaltyVehicle_loc2_type")) anotherPenVehInCollection = true;
+			if(v.getId().equals(getPenaltyVehicleId(vehicle))) penaltyVehicleInCollection = true;
+			if(v.getId().equals(getPenaltyVehicleId(vehicle2))) anotherPenVehInCollection = true;
 		}
 		assertTrue(penaltyVehicleInCollection);
 		assertTrue(anotherPenVehInCollection);
@@ -467,8 +473,8 @@ public class VehicleRoutingProblemTest {
 		boolean penaltyVehicleInCollection = false;
 		boolean anotherPenVehInCollection = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals("penaltyVehicle_loc_type")) penaltyVehicleInCollection = true;
-			if(v.getId().equals("penaltyVehicle_loc_type2")) anotherPenVehInCollection = true;
+			if(v.getId().equals(getPenaltyVehicleId(vehicle))) penaltyVehicleInCollection = true;
+			if(v.getId().equals(getPenaltyVehicleId(vehicle2))) anotherPenVehInCollection = true;
 		}
 		assertTrue(penaltyVehicleInCollection);
 		assertTrue(anotherPenVehInCollection);
