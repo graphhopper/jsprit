@@ -132,7 +132,7 @@ final class BestInsertion implements InsertionStrategy{
 				VehicleRoute newRoute = VehicleRoute.emptyRoute();
 				InsertionData bestI = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
 				if(bestI instanceof InsertionData.NoInsertionFound){
-					throw new IllegalStateException(getErrorMsg(unassignedJob));
+					throw new NoSolutionFoundException(getErrorMsg(unassignedJob));
 				}
 				else{
 					bestInsertion = new Insertion(newRoute,bestI);
