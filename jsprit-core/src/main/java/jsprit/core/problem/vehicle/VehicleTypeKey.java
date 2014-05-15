@@ -3,8 +3,7 @@ package jsprit.core.problem.vehicle;
 /**
  * Key to identify different vehicles
  * 
- * <p>Two vehicles are equal if they share the same type and location.
- * <p>Note that earliestStart and latestArrival are ignored by this key (this might change in future)
+ * <p>Two vehicles are equal if they share the same type, the same start and end-location and the same earliestStart and latestStart.
  * 
  * @author stefan
  *
