@@ -45,7 +45,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 
 	private void extractTypes(Collection<Vehicle> vehicles) {
 		for(Vehicle v : vehicles){
-			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(),v.getEndLocationId());
+			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(),v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
 			types.put(typeKey,v);
 			sortedTypes.add(typeKey);
 
@@ -86,7 +86,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 	@Deprecated
 	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId) {
 		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType, locationId,locationId);
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType, locationId,locationId, 0., 0.);
 		for(VehicleTypeKey key : types.keySet()){
 			if(!key.equals(thisKey)){
 				vehicles.add(types.get(key));
@@ -98,7 +98,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
 		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId());
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival());
 		for(VehicleTypeKey key : types.keySet()){
 			if(!key.equals(thisKey)){
 				vehicles.add(types.get(key));
