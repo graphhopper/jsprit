@@ -29,10 +29,6 @@ import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 
 import org.apache.log4j.Logger;
 
-
-
-
-
 class VehicleFleetManagerImpl implements VehicleFleetManager {
 	
 	public VehicleFleetManagerImpl newInstance(Collection<Vehicle> vehicles){
@@ -132,11 +128,11 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		}
 		String typeId = v.getType().getTypeId();
 		if(v.getType() instanceof PenaltyVehicleType){
-			VehicleTypeKey typeKey = new VehicleTypeKey(typeId, v.getStartLocationId(), v.getEndLocationId());
+			VehicleTypeKey typeKey = new VehicleTypeKey(typeId, v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
 			penaltyVehicles.put(typeKey, v);
 		}
 		else{
-			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId());
+			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
 			if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
 				typeMapOfAvailableVehicles.put(typeKey, new TypeContainer(typeKey));
 			}
@@ -147,7 +143,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	private void removeVehicle(Vehicle v){
 		//it might be better to introduce a class PenaltyVehicle
 		if(!(v.getType() instanceof PenaltyVehicleType)){
-			VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId());
+			VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
 			if(typeMapOfAvailableVehicles.containsKey(key)){
 				typeMapOfAvailableVehicles.get(key).remove(v);
 			}
@@ -192,7 +188,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	@Deprecated
 	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String withThisLocationId) {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType, withThisLocationId, withThisLocationId);
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType, withThisLocationId, withThisLocationId, 0., 0.);
 		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
 			if(key.equals(thisKey)) continue;
 			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
@@ -212,7 +208,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId());
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival());
 		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
 			if(key.equals(thisKey)) continue;
 			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
