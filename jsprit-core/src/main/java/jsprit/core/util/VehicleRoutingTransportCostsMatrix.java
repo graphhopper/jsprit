@@ -159,12 +159,12 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 			RelationKey key = RelationKey.newKey(from, to);
 			if(!timesSet) timesSet = true;
 			if(times.containsKey(key)){
-				log.warn("transport-time from " + from + " to " + to + " already exists. This overrides distance.");
+				log.warn("transport-time from " + from + " to " + to + " already exists. This overrides times.");
 			}
 			times.put(key, time);
 			if(isSymmetric) {
 				RelationKey revKey = RelationKey.newKey(to, from);
-				if(distances.containsKey(revKey)) distances.put(revKey, time);
+				if(times.containsKey(revKey)) times.put(revKey, time);
 			}
 			return this;
 		}
