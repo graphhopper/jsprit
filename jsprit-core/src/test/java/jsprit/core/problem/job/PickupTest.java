@@ -6,10 +6,9 @@ import org.junit.Test;
 
 public class PickupTest {
 	
-	@SuppressWarnings("deprecation")
 	@Test(expected=IllegalStateException.class)
 	public void whenNeitherLocationIdNorCoordIsSet_itThrowsException(){
-		Pickup.Builder.newInstance("p", 0).build();
+		Pickup.Builder.newInstance("p").build();
 	}
 	
 	@Test
@@ -32,12 +31,10 @@ public class PickupTest {
 		assertEquals(0,one.getSize().get(0));
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
-		Pickup one = (Pickup)Pickup.Builder.newInstance("s",1).setLocationId("foofoo")
+		Pickup one = (Pickup)Pickup.Builder.newInstance("s").addSizeDimension(0, 1).setLocationId("foofoo")
 				.build();
-		assertEquals(1,one.getCapacityDemand());
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(1,one.getSize().get(0));
 	}

@@ -62,16 +62,6 @@ public interface VehicleFleetManager {
 	 * @return
 	 */
 	public abstract Collection<Vehicle> getAvailableVehicles();
-
-	/**
-	 * 
-	 * @param withoutThisType
-	 * @param locationId
-	 * @return
-	 * @deprecated use .getAvailableVehicles(Vehicle without) instead. this might ignore withoutType and returns all available vehicles
-	 */
-	@Deprecated
-	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId);
 	
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType);
 

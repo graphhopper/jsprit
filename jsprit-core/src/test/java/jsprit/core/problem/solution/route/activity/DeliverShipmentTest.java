@@ -30,12 +30,6 @@ public class DeliverShipmentTest {
 		assertEquals(-1000,deliver.getSize().get(2));
 	}
 
-	@SuppressWarnings("deprecation")
-	@Test
-	public void whenCallingCapacityDemand_itShouldReturnCapDimWithIndex0(){
-		assertEquals(-10,deliver.getCapacityDemand());
-	}
-	
 	@Test
 	public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly(){
 		assertEquals(3.,deliver.getTheoreticalEarliestOperationStartTime(),0.01);

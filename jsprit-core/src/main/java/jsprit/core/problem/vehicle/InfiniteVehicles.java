@@ -79,22 +79,6 @@ class InfiniteVehicles implements VehicleFleetManager{
 		return types.values();
 	}
 
-	/**
-	 * @deprecated use getAvailableVehicles(Vehicle withoutThisType) instead
-	 */
-	@Override
-	@Deprecated
-	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String locationId) {
-		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType, locationId,locationId, 0., 0.);
-		for(VehicleTypeKey key : types.keySet()){
-			if(!key.equals(thisKey)){
-				vehicles.add(types.get(key));
-			}
-		}
-		return vehicles;
-	}
-
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
 		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();

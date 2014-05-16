@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.FleetComposition;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
@@ -56,8 +55,6 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
-@SuppressWarnings("deprecation")
 public class VrpXMLReader{
 	
 	public interface ServiceBuilderFactory {
@@ -69,15 +66,15 @@ public class VrpXMLReader{
 		@Override
 		public jsprit.core.problem.job.Service.Builder createBuilder(String serviceType, String id, Integer size) {
 			if(serviceType.equals("pickup")){
-				if(size != null) return Pickup.Builder.newInstance(id, size);
+				if(size != null) return Pickup.Builder.newInstance(id).addSizeDimension(0, size);
 				else return Pickup.Builder.newInstance(id);
 			}
 			else if(serviceType.equals("delivery")){
-				if(size != null) return Delivery.Builder.newInstance(id, size);
+				if(size != null) return Delivery.Builder.newInstance(id).addSizeDimension(0, size);
 				else return Delivery.Builder.newInstance(id);
 			}
 			else{
-				if(size != null) return Service.Builder.newInstance(id, size);
+				if(size != null) return Service.Builder.newInstance(id).addSizeDimension(0, size);
 				else return Service.Builder.newInstance(id);
 				
 			}
@@ -367,14 +364,6 @@ public class VrpXMLReader{
 		if(fleetSize == null) vrpBuilder.setFleetSize(FleetSize.INFINITE);
 		else if(fleetSize.toUpperCase().equals(FleetSize.INFINITE.toString())) vrpBuilder.setFleetSize(FleetSize.INFINITE);
 		else vrpBuilder.setFleetSize(FleetSize.FINITE);
-		
-		String fleetComposition = vrpProblem.getString("problemType.fleetComposition");
-		if(fleetComposition == null) vrpBuilder.setFleetComposition(FleetComposition.HOMOGENEOUS);
-		else if(fleetComposition.toUpperCase().equals(FleetComposition.HETEROGENEOUS.toString())){
-			vrpBuilder.setFleetComposition(FleetComposition.HETEROGENEOUS);
-		}
-		else vrpBuilder.setFleetComposition(FleetComposition.HOMOGENEOUS);
-		
 	}
 	
 	private void readShipments(XMLConfiguration config){
@@ -394,7 +383,7 @@ public class VrpXMLReader{
 			
 			Shipment.Builder builder;
 			if(capacityString != null){
-				builder = Shipment.Builder.newInstance(id, Integer.parseInt(capacityString));
+				builder = Shipment.Builder.newInstance(id).addSizeDimension(0, Integer.parseInt(capacityString));
 			}
 			else {
 				builder = Shipment.Builder.newInstance(id);
@@ -563,7 +552,7 @@ public class VrpXMLReader{
 			
 			VehicleTypeImpl.Builder typeBuilder;
 			if(capacityString != null){
-				typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId, Integer.parseInt(capacityString));
+				typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId).addCapacityDimension(0, Integer.parseInt(capacityString));
 			}
 			else {
 				typeBuilder = VehicleTypeImpl.Builder.newInstance(typeId);

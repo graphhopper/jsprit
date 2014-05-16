@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
-import jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import jsprit.core.algorithm.listener.IterationEndsListener;
@@ -29,7 +28,6 @@ import jsprit.core.algorithm.listener.SearchStrategyListener;
 import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners;
-import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -121,20 +119,10 @@ public class VehicleRoutingAlgorithm {
 	}
 	
 	/**
-	 * Sets premature break.
-	 * 
-	 * <p>This breaks the algorithm prematurely after the assigned number of iterations without improvement (see input parameter). 
-	 * Improvement is what {@link SolutionAcceptor} understands about improvement. Or to put it in other words, the algo breaks prematurely after 
-	 * the assigned number of iterations without solution-acceptance.
-	 * 
-	 * @deprecated use setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(int nuIterationsWithoutImprovement));
-	 * @param nuIterationsWithoutImprovement
+	 * Sets premature termination.
+	 *
+	 * @param prematureAlgorithmTermination
 	 */
-	@Deprecated
-	public void setPrematureBreak(int nuIterationsWithoutImprovement){
-		prematureAlgorithmTermination = new IterationWithoutImprovementTermination(nuIterationsWithoutImprovement);
-	}
-	
 	public void setPrematureAlgorithmTermination(PrematureAlgorithmTermination prematureAlgorithmTermination){
 		this.prematureAlgorithmTermination = prematureAlgorithmTermination;
 	}

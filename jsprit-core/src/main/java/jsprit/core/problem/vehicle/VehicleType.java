@@ -35,19 +35,6 @@ public interface VehicleType {
 	public String getTypeId();
 
 	/**
-	 * Returns capacity.
-	 * 
-	 * <p>In future versions there will be a capacity-object with an arbitrary number of capacity dimensions. (stefan,11.01.14)
-	 * 
-	 * 
-	 * @deprecated use <code>.getCapacityDimensions()</code> - if you still use it, but set CapacityDimensions rather
-	 * than setCapacity(...) it will return the capacity.dimension with index=0
-	 * @return cap
-	 */
-	@Deprecated
-	public int getCapacity();
-	
-	/**
 	 * Returns capacity dimensions.
 	 * 
 	 * @return {@link Capacity}

@@ -119,15 +119,6 @@ public class ServiceActivity implements JobActivity{
 		return service.getTimeWindow().getEnd();
 	}
 
-	/**
-	 * @deprecated use <code>getCapacity()</code> instead
-	 */
-	@Override
-	@Deprecated
-	public int getCapacityDemand() {
-		return service.getCapacityDemand();
-	}
-
 	@Override
 	public double getOperationTime() {
 		return service.getServiceDuration();

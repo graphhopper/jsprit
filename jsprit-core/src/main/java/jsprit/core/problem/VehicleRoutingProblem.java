@@ -42,7 +42,6 @@ import jsprit.core.problem.vehicle.VehicleTypeKey;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Locations;
-import jsprit.core.util.Neighborhood;
 
 import org.apache.log4j.Logger;
 
@@ -63,20 +62,6 @@ import org.apache.log4j.Logger;
  *
  */
 public class VehicleRoutingProblem {
-	
-	/**
-	 * Overall problem constraints.
-	 * 
-	 * <p>DELIVERIES_FIRST corresponds to the vehicle routing problem with back hauls, i.e. before a vehicle is not entirely unloaded, no pickup can be made. 
-	 * 
-	 * @deprecated define and add constraint directly with .addConstraint(...) - since constraints are too diverse to put them in an enum
-	 * @author stefan
-	 *
-	 */
-	@Deprecated
-	public enum Constraint {
-		DELIVERIES_FIRST
-	}
 	
 	/**
 	 * Builder to build the routing-problem.
@@ -109,69 +94,33 @@ public class VehicleRoutingProblem {
 			
 		};
 
-		private Map<String,Job> jobs;
+		private Map<String,Job> jobs = new HashMap<String, Job>();
 		
 		private Map<String,Job> tentativeJobs = new HashMap<String,Job>();
 		
 		private Set<String> jobsInInitialRoutes = new HashSet<String>();
 		
-		private Collection<Service> services;
+		private Collection<Service> services = new ArrayList<Service>();
 
-		private Map<String, Coordinate> coordinates;
+		private Map<String, Coordinate> coordinates = new HashMap<String, Coordinate>();
 		
 		private Map<String, Coordinate> tentative_coordinates = new HashMap<String, Coordinate>();
 
 		private FleetSize fleetSize = FleetSize.INFINITE;
-
-		/**
-		 * @deprecated is not going to be used anymore
-		 */
-		private FleetComposition fleetComposition = FleetComposition.HOMOGENEOUS;
 		
-		private Collection<VehicleType> vehicleTypes;
+		private Collection<VehicleType> vehicleTypes = new ArrayList<VehicleType>();
 		
 		private Collection<VehicleRoute> initialRoutes = new ArrayList<VehicleRoute>();
 		
 		private Set<Vehicle> uniqueVehicles = new HashSet<Vehicle>();
 		
-		/**
-		 * @deprecated is not going to be used anymore
-		 */
-		private Collection<Constraint> problemConstraints;
-		
-		private Collection<jsprit.core.problem.constraint.Constraint> constraints;
-
-		/**
-		 * by default all locations are neighbors
-		 * @deprecated is not going to be used anymore
-		 */
-		private Neighborhood neighborhood = new Neighborhood() {
-			
-			@Override
-			public boolean areNeighbors(String location1, String location2) {
-				return true;
-			}
-		};
+		private Collection<jsprit.core.problem.constraint.Constraint> constraints = new ArrayList<jsprit.core.problem.constraint.Constraint>();
 
 		private boolean addPenaltyVehicles = false;
 
 		private double penaltyFactor = 1.0;
 
 		private Double penaltyFixedCosts = null;
-
-		/**
-		 * @deprecated use static method .newInstance() instead
-		 */
-		@Deprecated
-		public Builder() {
-			jobs = new HashMap<String, Job>();
-			new ArrayList<Vehicle>();
-			coordinates = new HashMap<String, Coordinate>();
-			vehicleTypes = new ArrayList<VehicleType>();
-			services = new ArrayList<Service>();
-			problemConstraints = new ArrayList<VehicleRoutingProblem.Constraint>();
-			constraints = new ArrayList<jsprit.core.problem.constraint.Constraint>();
-		}
 
 		/**
 		 * Create a location (i.e. coordinate) and returns the key of the location which is Coordinate.toString().
@@ -518,42 +467,14 @@ public class VehicleRoutingProblem {
 		}
 
 		/**
-		 * Gets an unmodifiable collection of already added services.
-		 * 
-		 * @return collection of services
-		         * @deprecated use .getAddedJobs() instead
-		 */
-		        @Deprecated
-		public Collection<Service> getAddedServices(){
-			return Collections.unmodifiableCollection(services);
-		}
-
-		/**
-		 * Sets the fleetComposition.
-		 * 
-		 * <p>FleetComposition is either FleetComposition.HETEROGENEOUS or FleetComposition.HOMOGENEOUS
-		 * 
-		 * @deprecated has no effect
-		 * @param fleetComposition
-		 * @return
-		 */
-		@Deprecated
-		public Builder setFleetComposition(FleetComposition fleetComposition){
-			this.fleetComposition = fleetComposition;
-			return this;
-		}
-
-		/**
 		 * Adds a service to jobList.
 		 * 
 		 * <p>If jobList already contains service, a warning message is printed, and the existing job will be overwritten.
 		 * 
-		 * @deprecated use addJob(...) instead
 		 * @param service
 		 * @return
 		 */
-		@Deprecated
-		public Builder addService(Service service){
+		private Builder addService(Service service){
 			coordinates.put(service.getLocationId(), service.getCoord());
 			if(jobs.containsKey(service.getId())){ logger.warn("service " + service + " already in job list. overrides existing job."); }
 			jobs.put(service.getId(),service);
@@ -561,41 +482,7 @@ public class VehicleRoutingProblem {
 			return this;
 		}
 
-		/**
-		 * Adds a vehicleType.
-		 * 
-		 * @deprecated use add vehicle instead
-		 * @param type
-		 * @return builder
-		 */
-		@Deprecated
-		public Builder addVehicleType(VehicleType type){
-			vehicleTypes.add(type);
-			return this;
-		}
-
-		/**
-		 * Sets the neighborhood.
-		 * 
-		 * @deprecated use HardRoute- or ActivityLevelConstraint instead
-		 * @param neighborhood
-		 * @return
-		 */
-		@Deprecated
-		public Builder setNeighborhood(Neighborhood neighborhood){
-			this.neighborhood = neighborhood;
-			return this;
-		}
-
-		/**
-		 * 
-		 * @deprecated use .addConstraint(new ServiceDeliveriesFirstConstraint())
-		 * @param constraint
-		 */
-		@Deprecated
-		public void addProblemConstraint(Constraint constraint){
-			if(!problemConstraints.contains(constraint)) problemConstraints.add(constraint);
-		}
+		
 }
 	
 	/**
@@ -664,33 +551,14 @@ public class VehicleRoutingProblem {
 	
 	private final Locations locations;
 	
-	/**
-	 * @deprecated not used anymore
-	 */
-	private Neighborhood neighborhood;
-
-	/**
-	 * An enum that indicates fleetSizeComposition. By default, it is HOMOGENOUS.
-	     * @deprecated
-	 */
-	private FleetComposition fleetComposition;
-
-	/**
-	 * @deprecated
-	 */
-	private Collection<Constraint> problemConstraints;
-
 	private VehicleRoutingProblem(Builder builder) {
 		this.jobs = builder.jobs;
-		this.fleetComposition = builder.fleetComposition;
 		this.fleetSize = builder.fleetSize;
 		this.vehicles=builder.uniqueVehicles;
 		this.vehicleTypes = builder.vehicleTypes;
 		this.initialVehicleRoutes = builder.initialRoutes;
 		this.transportCosts = builder.transportCosts;
 		this.activityCosts = builder.activityCosts;
-		this.neighborhood = builder.neighborhood;
-		this.problemConstraints = builder.problemConstraints;
 		this.constraints = builder.constraints;
 		this.locations = builder.getLocations();
 		logger.info("initialise " + this);
@@ -776,37 +644,5 @@ public class VehicleRoutingProblem {
 	public Locations getLocations(){
 		return locations;
 	}
-
-	/**
-	 * Returns fleet-composition.
-	 * 
-	 * @return fleetComposition which is either FleetComposition.HETEROGENEOUS or FleetComposition.HOMOGENEOUS
-	     * @deprecated it is not used and thus has no effect
-	 */
-	@Deprecated
-	public FleetComposition getFleetComposition() {
-		return fleetComposition;
-	}
-
-	/**
-	 * @deprecated see builder.setNeighborhood(...). addConstraint(...) instead.
-	 * @return the neighborhood
-	 */
-	@Deprecated
-	public Neighborhood getNeighborhood() {
-		return neighborhood;
-	}
-
-	/**
-	 * Returns unmodifiable collection of problem-constraints.
-	 * 
-	 * @deprecated use .getConstraints() and builder.add
-	 * @return
-	 */
-	@Deprecated
-	public Collection<Constraint> getProblemConstraints(){
-		return Collections.unmodifiableCollection(problemConstraints);
-	}
-	
 	
 }

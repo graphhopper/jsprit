@@ -134,11 +134,6 @@ public final class End implements TourActivity {
 	}
 
 	@Override
-	public int getCapacityDemand() {
-		return 0;
-	}
-
-	@Override
 	public TourActivity duplicate() {
 		return new End(this);
 	}

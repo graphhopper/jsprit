@@ -30,12 +30,6 @@ public class PickupShipmentTest {
 		assertEquals(1000,pickup.getSize().get(2));
 	}
 
-	@SuppressWarnings("deprecation")
-	@Test
-	public void whenCallingCapacityDemand_itShouldReturnCapDimWithIndex0(){
-		assertEquals(10,pickup.getCapacityDemand());
-	}
-	
 	@Test
 	public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly(){
 		assertEquals(1.,pickup.getTheoreticalEarliestOperationStartTime(),0.01);

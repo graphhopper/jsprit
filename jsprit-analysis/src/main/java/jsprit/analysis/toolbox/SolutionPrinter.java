@@ -140,39 +140,4 @@ public class SolutionPrinter {
 		return new Jobs(nServices,nShipments);
 	}
 	
-//	/**
-//	 * Prints the details of the solution according to a print-level, i.e. Print.CONCISE or PRINT.VERBOSE.
-//	 * 
-//	 * <p>CONCISE prints total-costs and #vehicles.
-//	 * <p>VERBOSE prints the route-details additionally. If the DefaultVehicleRouteCostCalculator (which is the standard-calculator) 
-//	 * is used in VehicleRoute, then route-costs are differentiated further between transport, activity, vehicle, driver and other-costs.
-//	 * 
-//	 * @param solution
-//	 * @param level
-//	 * 
-//	 * @deprecated is not going to work anymore
-//	 */
-//	@Deprecated
-//	public static void print(VehicleRoutingProblemSolution solution, Print level){
-//		if(level.equals(Print.CONCISE)){
-//			print(solution);
-//		}
-//		else{
-//			print(solution);
-//			System.out.println("routes");
-//			int routeCount = 1;
-//			for(VehicleRoute route : solution.getRoutes()){
-//				System.out.println("[route="+routeCount+"][departureTime="+route.getStart().getEndTime()+"[total=" + route.getCost() +  "]");
-//				if(route.getVehicleRouteCostCalculator() instanceof DefaultVehicleRouteCostCalculator){
-//					DefaultVehicleRouteCostCalculator defaultCalc = (DefaultVehicleRouteCostCalculator) route.getVehicleRouteCostCalculator();
-//					System.out.println("[transport=" + defaultCalc.getTpCosts() + "][activity=" + defaultCalc.getActCosts() + 
-//							"][vehicle=" + defaultCalc.getVehicleCosts() + "][driver=" + defaultCalc.getDriverCosts() + "][other=" + defaultCalc.getOther() + "]");
-//				}
-//				routeCount++;
-//			}
-//		}
-//		
-//		
-//	}
-	
 }

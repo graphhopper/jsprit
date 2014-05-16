@@ -42,25 +42,6 @@ public class Service implements Job {
 	public static class Builder {
 		
 		/**
-		 * Returns a new instance of service-builder.
-		 * 
-		 * <p>Note that if you use this builder, size is assigned to capacity-dimension with index=0.
-		 * 
-		 * @param id of service
-		 * @param size of capacity-demand
-		 * @return builder
-		 * @throws IllegalArgumentException if size < 0 or id is null
-		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
-		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
-		 */
-		@Deprecated
-		public static Builder newInstance(String id, int size){
-			Builder builder = new Builder(id,size);
-			builder.addSizeDimension(0, size);
-			return builder;
-		}
-		
-		/**
 		 * Returns a new instance of builder that builds a service.
 		 * 
 		 * @param id
@@ -265,17 +246,6 @@ public class Service implements Job {
 	 */
 	public TimeWindow getTimeWindow(){
 		return timeWindow;
-	}
-	
-	/**
-	 * @Deprecated use <code>.getCapacity()</code> instead. if you still use this method, it returns the 
-	 * capacity dimension with index=0.
-	 * 
-	 */
-	@Override
-	@Deprecated
-	public int getCapacityDemand() {
-		return size.get(0);
 	}
 	
 	/**

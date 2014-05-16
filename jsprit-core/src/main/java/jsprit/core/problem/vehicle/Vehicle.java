@@ -42,28 +42,6 @@ public interface Vehicle {
 	public abstract double getLatestArrival();
 
 	/**
-	 * Returns the location-id of the this vehicle which should be the start-location of this vehicle.
-	 * 
-	 * <p> Consequently, it should be the end-location of this vehicle, if returnToDepot is true.
-	 * 
-	 * @return location-id of this vehicle
-	 * @deprecated use getStartLocationId() instead
-	 */
-	@Deprecated
-	public abstract String getLocationId();
-	
-	/**
-	 * Returns the coordinate of this vehicle which should be the coordinate of the start-location of this vehicle.
-	 * 
-	 * <p> Consequently, it should be the coordinate of the end-location, if returnToDepot is true.
-	 * 
-	 * @return coordinate of this vehicle
-	 * @deprecated use getStartLocationCoordinate() instead
-	 */
-	@Deprecated 
-	public abstract Coordinate getCoord();
-
-	/**
 	 * Returns the {@link VehicleType} of this vehicle.
 	 * 
 	 * @return {@link VehicleType} of this vehicle
@@ -77,17 +55,6 @@ public interface Vehicle {
 	 */
 	public abstract String getId();
 
-	/**
-	 * Returns the capacity of this vehicle.
-	 * 
-	 * @return capacity
-	 * @deprecated use .getType().getCapacityDimensions() - if you still use this method, 
-	 * but set capacity-dimensions via <code>VehicleTypeImpl.Builder.newInstance(...).addCapacityDimension(...)</code> then this method returns the
-	 * dimension with index=0.
-	 */
-	@Deprecated
-	public abstract int getCapacity();
-	
 	/**
 	 * Returns true if vehicle returns to depot, false otherwise.
 	 * 

@@ -173,38 +173,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		return vehicles;
 	}
 	
-	/**
-	 * Returns a collection of available vehicles without vehicles with typeId 'withoutThisType' and locationId 'withThisLocation'.
-	 * 
-	 * <p>If there is no vehicle with a certain type and location anymore, it looks up whether a penalty vehicle has been specified with 
-	 * this type and location. If so, it returns this penalty vehicle. If not, no vehicle with this type and location is returned.
-	 * 
-	 * @param typeId to specify the typeId that should not be the returned collection
-	 * @param locationId to specify the locationId that should not be in the returned collection
-	 * @return collection of available vehicles without the vehicles that have the typeId 'withoutThisType' AND the locationId 'withThisLocation'.
-	 * @deprecated use .getAvailableVehicles(Vehicle without) instead - this might ignore withoutThisType and returns all available vehicles
-	 */
-	@Override
-	@Deprecated
-	public Collection<Vehicle> getAvailableVehicles(String withoutThisType, String withThisLocationId) {
-		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType, withThisLocationId, withThisLocationId, 0., 0.);
-		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
-			if(key.equals(thisKey)) continue;
-			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
-				vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
-			}
-			else{
-				if(penaltyVehicles.containsKey(key)){
-					vehicles.add(penaltyVehicles.get(key));
-				}
-			}
-		}
-		return vehicles;
-	}
-	
-	
-	
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();

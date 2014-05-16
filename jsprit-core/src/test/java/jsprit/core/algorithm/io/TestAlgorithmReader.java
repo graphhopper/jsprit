@@ -27,7 +27,6 @@ import jsprit.core.algorithm.SearchStrategyModule;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import jsprit.core.algorithm.acceptor.SolutionAcceptor;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.ModKey;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.RuinStrategyKey;
@@ -45,14 +44,13 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.XMLConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
 
 public class TestAlgorithmReader {
 	
-	XMLConfiguration config;
+	AlgorithmConfig config;
 	
 	VehicleRoutingProblem vrp;
 	
@@ -60,7 +58,8 @@ public class TestAlgorithmReader {
 	
 	@Before
 	public void doBefore() throws ConfigurationException{
-		config = new XMLConfiguration("src/test/resources/testConfig.xml");
+		config = new AlgorithmConfig();
+		new AlgorithmConfigXmlReader(config).setSchemaValidation(false).read("src/test/resources/testConfig.xml");
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		solutions = new ArrayList<VehicleRoutingProblemSolution>();
 		new VrpXMLReader(vrpBuilder,solutions).read("src/test/resources/finiteVrp.xml");
@@ -216,33 +215,27 @@ public class TestAlgorithmReader {
 		
 	}
 	
-
-	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void initialiseConstructionAlgoCorrectly(){
-		VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
+		VehicleRoutingAlgorithms.createAlgorithm(vrp, config);
 		assertTrue(true);
 	}
 	
 	@Test
 	public void whenCreatingAlgorithm_nOfStrategiesIsCorrect(){
-		@SuppressWarnings("deprecation")
-		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
+		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.createAlgorithm(vrp, config);
 		assertEquals(3, algo.getSearchStrategyManager().getStrategies().size());
 	}
 
 	@Test
 	public void whenCreatingAlgorithm_nOfIterationsIsReadCorrectly(){
-		@SuppressWarnings("deprecation")
-		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
+		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.createAlgorithm(vrp, config);
 		assertEquals(10, algo.getNuOfIterations());
 	}
 	
 	@Test
 	public void whenCreatingAlgorithm_nOfStrategyModulesIsCorrect(){
-		@SuppressWarnings("deprecation")
-		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, config);
+		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.createAlgorithm(vrp, config);
 		int nOfModules = 0;
 		for(SearchStrategy strat : algo.getSearchStrategyManager().getStrategies()){
 			nOfModules += strat.getSearchStrategyModules().size();

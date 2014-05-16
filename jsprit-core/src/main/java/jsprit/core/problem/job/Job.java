@@ -33,17 +33,6 @@ public interface Job {
 	 * @return id
 	 */
 	public String getId();
-
-	/**
-	 * Returns capacity (demand) of job.
-	 * 
-	 * <p>It determines how much capacity this job consumes of vehicle/transport unit.
-	 * 
-	 * @deprecated use <code>.getCapacity()</code> instead
-	 * @return
-	 */
-	@Deprecated
-	public int getCapacityDemand();
 	
 	/**
 	 * Returns size, i.e. capacity-demand, of this job which can consist of an arbitrary number of capacity dimensions.

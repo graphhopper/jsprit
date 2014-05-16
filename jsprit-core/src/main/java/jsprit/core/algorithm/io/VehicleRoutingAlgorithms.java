@@ -397,11 +397,6 @@ public class VehicleRoutingAlgorithms {
 		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, null);
 	}
 	
-	@Deprecated
-	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final XMLConfiguration config){
-		return createAlgo(vrp,config,0, null);
-	}
-	
 	/**
 	 * Read and creates a {@link VehicleRoutingAlgorithm} from an url.
 	 * 

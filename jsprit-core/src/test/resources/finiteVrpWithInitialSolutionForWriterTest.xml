@@ -3,7 +3,6 @@
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
      <problemType>
           <fleetSize>FINITE</fleetSize>
-          <fleetComposition>HETEROGENEOUS</fleetComposition>
      </problemType>
      <vehicles>
           <vehicle>
@@ -41,7 +40,7 @@
                <returnToDepot>false</returnToDepot>
           </vehicle>
           <vehicle>
-               <id>v4</id>
+               <id>v3</id>
                <typeId>vehType2</typeId>
                <startLocation>
                     <id>startLoc</id>
@@ -58,7 +57,7 @@
                <returnToDepot>true</returnToDepot>
           </vehicle>
           <vehicle>
-               <id>v3</id>
+               <id>v4</id>
                <typeId>vehType2</typeId>
                <startLocation>
                     <id>startLoc</id>

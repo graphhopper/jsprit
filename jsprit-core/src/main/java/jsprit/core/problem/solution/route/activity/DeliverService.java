@@ -26,15 +26,6 @@ public final class DeliverService implements DeliveryActivity{
 		capacity = deliveryActivity.getSize();
 	}
 
-	/**
-	 * @deprecated use <code>getCapacity()</code> instead
-	 */
-	@Deprecated
-	@Override
-	public int getCapacityDemand() {
-		return delivery.getCapacityDemand()*-1;
-	}
-
 	@Override
 	public String getName() {
 		return delivery.getType();

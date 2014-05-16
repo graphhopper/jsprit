@@ -14,12 +14,6 @@ public class EndTest {
 	}
 
 	@Test
-	public void whenCallingCapacityDemand_itShouldReturnEmptyCapacity(){
-		End end = End.newInstance("loc", 0., 0.);
-		assertEquals(0,end.getCapacityDemand());
-	}
-	
-	@Test
 	public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly(){
 		End end = End.newInstance("loc", 1., 2.);
 		assertEquals(1.,end.getTheoreticalEarliestOperationStartTime(),0.01);

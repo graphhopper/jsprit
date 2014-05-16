@@ -48,12 +48,6 @@ public class ServiceActivityTest {
 	}
 
 	
-	@SuppressWarnings("deprecation")
-	@Test
-	public void whenCallingCapacityDemand_itShouldReturnCapDimWithIndex0(){
-		assertEquals(10,serviceActivity.getCapacityDemand());
-	}
-	
 	@Test
 	public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly(){
 		assertEquals(1.,serviceActivity.getTheoreticalEarliestOperationStartTime(),0.01);

@@ -31,16 +31,6 @@ import org.apache.log4j.Logger;
 public class VehicleImpl implements Vehicle {
 
 	/**
-	 * @deprecated use createNoVehicle() instead.
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public static NoVehicle noVehicle(){
-		return createNoVehicle();
-	}
-	
-	/**
 	 * Extension of {@link VehicleImpl} representing an unspecified vehicle with the id 'noVehicle'
 	 * (to avoid null).
 	 * 
@@ -48,14 +38,9 @@ public class VehicleImpl implements Vehicle {
 	 *
 	 */
 	public static class NoVehicle extends VehicleImpl {
-
-		@SuppressWarnings("deprecation")
-		public NoVehicle() {
-			super(Builder.newInstance("noVehicle").setType(VehicleTypeImpl.newInstance(null, 0, null)));
-		}
 		
-		public int getCapacity(){
-			return 0;
+		public NoVehicle() {
+			super(Builder.newInstance("noVehicle").setType(VehicleTypeImpl.Builder.newInstance("noType").build()));
 		}
 		
 	}
@@ -126,38 +111,6 @@ public class VehicleImpl implements Vehicle {
 		 */
 		public Builder setReturnToDepot(boolean returnToDepot){
 			this.returnToDepot = returnToDepot;
-			return this;
-		}
-		
-		/**
-		 * Sets location-id of the vehicle which should be its start-location.
-		 * 
-		 * <p>If returnToDepot is true, it is also its end-location.
-		 * 
-		 * @param id
-		 * @return this builder
-		 * @deprecated use setStartLocationId(..) instead
-		 */
-		@Deprecated
-		public Builder setLocationId(String id){
-			this.locationId = id;
-			this.startLocationId = id;
-			return this;
-		}
-		
-		/**
-		 * Sets coordinate of the vehicle which should be the coordinate of start-location.
-		 * 
-		 * <p>If returnToDepot is true, it is also the coordinate of the end-location.
-		 * 
-		 * @param coord
-		 * @return this builder
-		 * @deprecated use setStartLocationCoordinate(...) instead
-		 */
-		@Deprecated 
-		public Builder setLocationCoord(Coordinate coord){
-			this.locationCoord = coord;
-			this.startLocationCoord = coord;
 			return this;
 		}
 		
@@ -334,14 +287,6 @@ public class VehicleImpl implements Vehicle {
 		return "[id="+id+"][type="+type+"][locationId="+locationId+"][coord=" + coord + "][isReturnToDepot=" + isReturnToDepot() + "]";
 	}
 
-	/**
-	 * @deprecated use getStartLocationCoordinate() instead
-	 */
-	@Deprecated
-	public Coordinate getCoord() {
-		return coord;
-	}
-
 	@Override
 	public double getEarliestDeparture() {
 		return earliestDeparture;
@@ -352,15 +297,6 @@ public class VehicleImpl implements Vehicle {
 		return latestArrival;
 	}
 
-	/**
-	 * @deprecated use getStartLocationId() instead
-	 */
-	@Deprecated
-	@Override
-	public String getLocationId() {
-		return locationId;
-	}
-
 	@Override
 	public VehicleType getType() {
 		return type;
@@ -369,12 +305,6 @@ public class VehicleImpl implements Vehicle {
 	@Override
 	public String getId() {
 		return id;
-	}
-
-	@Override
-	@Deprecated
-	public int getCapacity() {
-		return type.getCapacity();
 	}
 
 	public boolean isReturnToDepot() {

@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class VehicleTypeImplTest {
-	
 
 	@Test(expected=IllegalArgumentException.class)
 	public void whenTypeHasNegativeCapacityVal_throwIllegalStateExpception(){
@@ -44,47 +43,34 @@ public class VehicleTypeImplTest {
 		assertEquals(0,type.getCapacityDimensions().get(0));
 	}
 	
-	@SuppressWarnings("deprecation")
-	@Test
-	public void whenTypeIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
-		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t",20).build();
-		assertEquals(20,type.getCapacity());
-		assertEquals(20,type.getCapacityDimensions().get(0));
-	}
-
-	@SuppressWarnings("deprecation")
 	@Test
 	public void whenCallingStaticNewBuilderInstance_itShouldReturnNewBuilderInstance(){
-		VehicleTypeImpl.Builder builder = VehicleTypeImpl.Builder.newInstance("foo", 0);
+		VehicleTypeImpl.Builder builder = VehicleTypeImpl.Builder.newInstance("foo");
 		assertNotNull(builder);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void whenBuildingTypeJustByCallingNewInstance_typeIdMustBeCorrect(){
-		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo", 0).build();
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo").build();
 		assertEquals("foo",type.getTypeId());
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void whenBuildingTypeJustByCallingNewInstance_capMustBeCorrect(){
-		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo", 0).build();
-		assertEquals(0,type.getCapacity());
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo").build();
+		assertEquals(0,type.getCapacityDimensions().get(0));
 	}
 	
-	@SuppressWarnings("deprecation")
-	@Test(expected=IllegalStateException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void whenBuildingTypeWithCapSmallerThanZero_throwIllegalStateException(){
 		@SuppressWarnings("unused")
-		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo", -10).build();
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo").addCapacityDimension(0, -10).build();
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test(expected=IllegalStateException.class)
 	public void whenBuildingTypeWithNullId_throwIllegalStateException(){
 		@SuppressWarnings("unused")
-		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance(null, 10).build();
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance(null).addCapacityDimension(0, 10).build();
 	}
 	
 	

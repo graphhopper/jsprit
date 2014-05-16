@@ -17,7 +17,7 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:element>
-						<xs:element name="fleetComposition">
+						<xs:element name="fleetComposition" minOccurs="0" maxOccurs="1">
 							<xs:simpleType>
 								<xs:restriction base="xs:string">
 									<xs:enumeration value="HOMOGENEOUS" />

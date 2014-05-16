@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.VehicleRoutingProblem.Constraint;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -19,7 +18,6 @@ import org.apache.log4j.Logger;
  * @author schroeder
  *
  */
-@SuppressWarnings("deprecation")
 public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint, SoftActivityConstraint, SoftRouteConstraint{
 
 	public static enum Priority {
@@ -91,9 +89,6 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 	
 	public void addLoadConstraint(){
 		if(!loadConstraintsSet){
-			if(vrp.getProblemConstraints().contains(Constraint.DELIVERIES_FIRST)){
-				addConstraint(new ServiceDeliveriesFirstConstraint(),Priority.HIGH);
-			}
 			addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager),Priority.CRITICAL);
 			addConstraint(new ServiceLoadRouteLevelConstraint(stateManager));
 			addConstraint(new ServiceLoadActivityLevelConstraint(stateManager),Priority.LOW);

@@ -11,12 +11,6 @@ public class StartTest {
 		Start start = Start.newInstance("loc", 0., 0.);
 		assertEquals(0,start.getSize().get(0));
 	}
-
-	@Test
-	public void whenCallingCapacityDemand_itShouldReturnEmptyCapacity(){
-		Start start = Start.newInstance("loc", 0., 0.);
-		assertEquals(0,start.getCapacityDemand());
-	}
 	
 	@Test
 	public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly(){

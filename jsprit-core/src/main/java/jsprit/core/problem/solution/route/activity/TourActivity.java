@@ -49,16 +49,6 @@ public interface TourActivity {
 	}
 	
 	/**
-	 * Returns the capacity-demand of that activity, in terms of what needs to be loaded or unloaded at
-	 * this activity.
-	 * 
-	 * @return int
-	 * @deprecated use <code>getCapacity()</code> instead
-	 */
-	@Deprecated
-	public int getCapacityDemand();
-	
-	/**
 	 * Returns the name of this activity.
 	 * 
 	 * @return name

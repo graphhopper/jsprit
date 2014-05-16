@@ -32,15 +32,6 @@ public final class DeliverShipment implements DeliveryActivity{
 		return shipment;
 	}
 
-	/**
-	 * @deprecated use <code>getCapacity()</code> instead
-	 */
-	@Deprecated
-	@Override
-	public int getCapacityDemand() {
-		return shipment.getCapacityDemand()*-1;
-	}
-
 	@Override
 	public String getName() {
 		return "deliverShipment";

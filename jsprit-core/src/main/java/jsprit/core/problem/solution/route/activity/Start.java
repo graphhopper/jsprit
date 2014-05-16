@@ -17,7 +17,6 @@
 package jsprit.core.problem.solution.route.activity;
 
 import jsprit.core.problem.Capacity;
-import jsprit.core.util.Coordinate;
 
 public final class Start implements TourActivity {
 
@@ -37,8 +36,6 @@ public final class Start implements TourActivity {
 	}
 	
 	private String locationId;
-	
-	private Coordinate coordinate;
 	
 	private double theoretical_earliestOperationStartTime;
 	
@@ -62,16 +59,6 @@ public final class Start implements TourActivity {
 		theoretical_earliestOperationStartTime = start.getTheoreticalEarliestOperationStartTime();
 		theoretical_latestOperationStartTime = start.getTheoreticalLatestOperationStartTime();
 		endTime = start.getEndTime();
-	}
-
-	@Deprecated
-	Coordinate getCoordinate() {
-		return coordinate;
-	}
-
-	@Deprecated
-	void setCoordinate(Coordinate coordinate) {
-		this.coordinate = coordinate;
 	}
 
 	public double getTheoreticalEarliestOperationStartTime() {
@@ -134,11 +121,6 @@ public final class Start implements TourActivity {
 	@Override
 	public void setEndTime(double endTime) {
 		this.endTime = endTime;
-	}
-
-	@Override
-	public int getCapacityDemand() {
-		return 0;
 	}
 
 	@Override

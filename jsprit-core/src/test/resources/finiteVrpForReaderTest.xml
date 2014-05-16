@@ -194,7 +194,9 @@
                     </timeWindow>
                	</timeWindows>
      		</delivery>
-     		<capacity-demand>10</capacity-demand>
+     		<capacity-dimensions>
+               		<dimension index="0">10</dimension>
+             </capacity-dimensions>
      	</shipment>
      	
      	<shipment id="4">

@@ -54,24 +54,11 @@ public class Shipment implements Job{
 		private Capacity capacity;
 		
 		/**
-		 * Returns a new instance of this builder.
-		 * 
-		 * <p>Note that if you use this builder, size is assigned to capacity-dimension with index=0.
+		 * Returns new instance of this builder.
 		 * 
 		 * @param id
-		 * @param size
-		 * @return builder
-		 * @throws IllegalArgumentException if size < 0 or id is null
-		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
-		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
+		 * @return
 		 */
-		@Deprecated
-		public static Builder newInstance(String id, int size){
-			Builder builder = new Builder(id,size);
-			builder.addSizeDimension(0, size);
-			return builder;
-		}
-		
 		public static Builder newInstance(String id){
 			return new Builder(id);
 		}
@@ -90,6 +77,7 @@ public class Shipment implements Job{
 		}
 		
 		Builder(String id){
+			if(id == null) throw new IllegalArgumentException("id must not be null");
 			this.id = id;
 		}
 		
@@ -287,16 +275,6 @@ public class Shipment implements Job{
 	@Override
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * @Deprecated use <code>.getCapacity()</code> instead. if you still use this method, it returns the 
-	 * capacity dimension with index=0.
-	 */
-	@Deprecated
-	@Override
-	public int getCapacityDemand() {
-		return capacity.get(0);
 	}
 
 	/**

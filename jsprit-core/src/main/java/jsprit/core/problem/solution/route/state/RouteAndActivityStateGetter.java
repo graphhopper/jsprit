@@ -18,16 +18,9 @@ package jsprit.core.problem.solution.route.state;
 
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory.State;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
 
 public interface RouteAndActivityStateGetter {
-
-	@Deprecated
-	public State getActivityState(TourActivity act, StateId stateId);
-
-	@Deprecated
-	public State getRouteState(VehicleRoute route, StateId stateId);
 
 	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type);
 	

@@ -82,16 +82,6 @@ public final class PickupService implements PickupActivity{
 		return pickup;
 	}
 
-	/**
-	 * @deprecated use <code>getCapacity()</code> instead
-	 * 
-	 */
-	@Override
-	@Deprecated
-	public int getCapacityDemand() {
-		return pickup.getCapacityDemand();
-	}
-	
 	public String toString() {
 		return "[type="+getName()+"][locationId=" + getLocationId() 
 		+ "][size=" + getSize().toString()

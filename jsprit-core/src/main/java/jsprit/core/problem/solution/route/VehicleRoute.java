@@ -59,20 +59,6 @@ public class VehicleRoute {
 	}
 	
 	/**
-	 * Returns a newInstance of {@link VehicleRoute}.
-	 * 
-	 * @param tour
-	 * @param driver
-	 * @param vehicle
-	 * @return VehicleRoute
-	 * @deprecated use VehicleRoute.Builder instead
-	 */
-	@Deprecated
-	public static VehicleRoute newInstance(TourActivities tour, Driver driver, Vehicle vehicle) {
-		return new VehicleRoute(tour,driver,vehicle);
-	}
-
-	/**
 	 * Returns an empty route.
 	 * 
 	 * <p>An empty route has an empty list of tour-activities, no driver (DriverImpl.noDriver()) and no vehicle (VehicleImpl.createNoVehicle()).
@@ -356,16 +342,6 @@ public class VehicleRoute {
 		this.driver = route.getDriver();
 	}
 	
-	@Deprecated
-	private VehicleRoute(TourActivities tour, Driver driver, Vehicle vehicle) {
-		super();
-		verify(tour, driver, vehicle);
-		this.tourActivities = tour;
-		this.vehicle = vehicle;
-		this.driver = driver;
-		setStartAndEnd(vehicle, vehicle.getEarliestDeparture());
-	}
-	
 	/**
 	 * Constructs route.
 	 * 
@@ -377,22 +353,6 @@ public class VehicleRoute {
 		this.driver = builder.driver;
 		this.start = builder.start;
 		this.end = builder.end;
-	}
-
-	/**
-	 * 
-	 * @param tour
-	 * @param driver
-	 * @param vehicle
-	 * @deprecated verification is a task of VehicleRoute.Builder
-	 */
-	@Deprecated
-	private void verify(TourActivities tour, Driver driver, Vehicle vehicle) {
-		if(tour == null || driver == null || vehicle == null) throw new IllegalStateException("null is not allowed for tour, driver or vehicle. use emptyRoute. use Tour.emptyTour, DriverImpl.noDriver() and VehicleImpl.noVehicle() instead." +
-				"\n\tor make it easier and use VehicleRoute.emptyRoute()");
-		if(!tour.isEmpty() && vehicle instanceof NoVehicle){
-			throw new IllegalStateException("if tour is not empty. there must be a vehicle for this tour, but there is no vehicle.");
-		}
 	}
 
 	/**
@@ -450,29 +410,6 @@ public class VehicleRoute {
 		this.vehicle = vehicle;
 		setStartAndEnd(vehicle, vehicleDepTime);
 	}
-	
-	/**
-	 *  Sets the vehicle and its departureTime from <code>vehicle.getStartLocationId()</code>.
-	 * 
-	 * <p>This implies the following:<br>
-	 * if start and end are null, new start and end activities are created.<br>
-	 * <p>startActivity is initialized with the start-location of the specified vehicle (<code>vehicle.getStartLocationId()</code>). the time-window of this activity is initialized 
-	 * such that [<code>startActivity.getTheoreticalEarliestOperationStartTime()</code> = <code>vehicle.getEarliestDeparture()</code>][<code>startActivity.getTheoreticalLatestOperationStartTime()</code> = <code>vehicle.getLatestArrival()</code>]
-	 * <p>endActivity is initialized with the end-location of the specified vehicle (<code>vehicle.getEndLocationId()</code>). The time-window of the 
-	 * endActivity is initialized such that [<code>endActivity.getTheoreticalEarliestOperationStartTime()</code> = <code>vehicle.getEarliestDeparture()</code>][<code>endActivity.getTheoreticalLatestOperationStartTime()</code> = <code>vehicle.getLatestArrival()</code>]
-	 * <p>startActivity.endTime (<code>startActivity.getEndTime()</code>) is set to max{<code>vehicle.getEarliestDeparture()</code>, <code>vehicleDepTime</code>}. 
-	 * thus, <code>vehicle.getEarliestDeparture()</code> is a physical constraint that has to be met.
-	 * 
-	 * @param vehicle
-	 * @param vehicleDepTime
-	 * @deprecated use .setVehicleAndDepartureTime(Vehicle vehicle, double vehicleDepTime) instead
-	 */
-	@Deprecated
-	public void setVehicle(Vehicle vehicle, double vehicleDepTime){
-		this.vehicle = vehicle;
-		setStartAndEnd(vehicle, vehicleDepTime);
-	}
-	
 	private void setStartAndEnd(Vehicle vehicle, double vehicleDepTime) {
 		if(!(vehicle instanceof NoVehicle)){
 			if(start == null && end == null){
@@ -490,19 +427,6 @@ public class VehicleRoute {
 		
 	}
 
-	/**
-	 * Sets departureTime of this route, i.e. the time the vehicle departs from its start-location.
-	 * 
-	 * @param vehicleDepTime
-	 * @deprecated use .setVehicleAndDepartureTime(...) instead (vehicle requires departureTime and the other way around, and earliestDepartureTime
-	 * of a vehicle is a physical constraint of the vehicle and cannot be broken. Using this method might break this constraint.)
-	 */
-	@Deprecated
-	public void setDepartureTime(double vehicleDepTime){
-		if(start == null) throw new IllegalStateException("cannot set departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
-		start.setEndTime(vehicleDepTime);
-	}
-	
 	/**
 	 * Returns the departureTime of this vehicle in this route.
 	 * 

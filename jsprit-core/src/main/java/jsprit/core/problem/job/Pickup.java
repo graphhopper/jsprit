@@ -28,23 +28,6 @@ public class Pickup extends Service {
 	public static class Builder extends Service.Builder {
 		
 		/**
-		 * Returns a new instance of Pickup.Builder
-		 * 
-		 * @param id
-		 * @param size
-		 * @return builder
-		 * @throws IllegalArgumentException if size < 0 or id is null
-		 * @deprecated use <code>.newInstance(String id)</code> instead, and add a capacity dimension
-		 * with dimensionIndex='your index' and and dimsionValue=size to the returned builder
-		 */
-		@Deprecated
-		public static Builder newInstance(String id, int size){
-			Builder builder = new Builder(id,size);
-			builder.addSizeDimension(0, size);
-			return builder;
-		}
-		
-		/**
 		 * Returns a new instance of builder that builds a pickup.
 		 * 
 		 * @param id

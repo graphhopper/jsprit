@@ -40,8 +40,9 @@ public class AlgorithmConfigXmlReader {
 	/**
 	 * @param schemaValidation the schemaValidation to set
 	 */
-	public void setSchemaValidation(boolean schemaValidation) {
+	public AlgorithmConfigXmlReader setSchemaValidation(boolean schemaValidation) {
 		this.schemaValidation = schemaValidation;
+		return this;
 	}
 
 	public AlgorithmConfigXmlReader(AlgorithmConfig algorithmConfig){

@@ -66,31 +66,10 @@ public class VehicleTypeImpl implements VehicleType {
 	 */
 	public static class Builder{
 		
-		/**
-		 * Returns a new instance.
-		 * 
-		 * <p>Input parameters are id and capacity. Note that two vehicle-types are equal
-		 * if they have the same vehicleId.
-		 * 
-		 * @param id
-		 * @param capacity
-		 * @return the vehicleType builder
-		 * @throws IllegalStateException if capacity is smaller than zero or id is null
-		 * @deprecated use <code>newInstance(String id)</code> instead
-		 */
-		@Deprecated
-		public static VehicleTypeImpl.Builder newInstance(String id, int capacity){
-			if(capacity < 0) throw new IllegalStateException("capacity cannot be smaller than zero");
-			if(id == null) throw new IllegalStateException("typeId must be null");
-			Builder builder = new Builder(id,capacity);
-			builder.addCapacityDimension(0, capacity);
-			return builder;
-		}
-		
 		public static VehicleTypeImpl.Builder newInstance(String id) {
+			if(id==null) throw new IllegalStateException();
 			return new Builder(id);
 		}
-
 		
 		private String id;
 		private int capacity = 0;
@@ -108,20 +87,7 @@ public class VehicleTypeImpl implements VehicleType {
 		
 		private boolean dimensionAdded = false;
 
-		/**
-		 * Constructs the builder.
-		 * 
-		 * @param id
-		 * @param capacity
-		 */
-		@Deprecated
-		private Builder(String id, int capacity) {
-			super();
-			this.id = id;
-			this.capacity = capacity;
-		}
-
-		public Builder(String id) {
+		private Builder(String id) {
 			this.id = id;
 		}
 
@@ -271,15 +237,6 @@ public class VehicleTypeImpl implements VehicleType {
 	private final Capacity capacityDimensions;
 
 	private final double maxVelocity;
-
-
-	/**
-	 * @deprecated use builder instead
-	 */
-	@Deprecated
-	public static VehicleTypeImpl newInstance(String typeId, int capacity, VehicleTypeImpl.VehicleCostParams para){
-		return new VehicleTypeImpl(typeId, capacity, para);
-	}
 	
 	/**
 	 * priv constructor constructing vehicle-type
@@ -294,38 +251,12 @@ public class VehicleTypeImpl implements VehicleType {
 		capacityDimensions = builder.capacityDimensions;
 	}
 
-	/**
-	 * @deprecated use Builder.newInstance(...) instead.
-	 * 
-	 * @param typeId
-	 * @param capacity
-	 * @param vehicleCostParams
-	 */
-	@Deprecated
-	public VehicleTypeImpl(String typeId, int capacity,VehicleTypeImpl.VehicleCostParams vehicleCostParams) {
-		super();
-		this.typeId = typeId;
-		this.capacity = capacity;
-		this.vehicleCostParams = vehicleCostParams;
-		this.capacityDimensions = Capacity.Builder.newInstance().addDimension(0, capacity).build();
-		this.maxVelocity = Double.MAX_VALUE;
-	}
-
 	/* (non-Javadoc)
 	 * @see basics.route.VehicleType#getTypeId()
 	 */
 	@Override
 	public String getTypeId() {
 		return typeId;
-	}
-
-	/* (non-Javadoc)
-	 * @see basics.route.VehicleType#getCapacity()
-	 */
-	@Override
-	@Deprecated
-	public int getCapacity() {
-		return capacityDimensions.get(0);
 	}
 
 	/* (non-Javadoc)

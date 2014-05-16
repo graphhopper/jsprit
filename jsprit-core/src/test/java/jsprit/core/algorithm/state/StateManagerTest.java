@@ -14,28 +14,6 @@ import org.junit.Test;
 
 public class StateManagerTest {
 	
-	@SuppressWarnings("deprecation")
-	@Test
-	public void whenInternalRouteStateIsSet_itMustBeSetCorrectly(){
-		VehicleRoute route = mock(VehicleRoute.class);
-		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("myState");
-		State state = StateFactory.createState(1.);
-		stateManager.putInternalRouteState(route, id, state);
-		assertEquals(1.,stateManager.getRouteState(route, id).toDouble(),0.01);
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Test
-	public void whenRouteStateIsSet_itMustBeSetCorrectly(){
-		VehicleRoute route = mock(VehicleRoute.class);
-		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("myState");
-		State state = StateFactory.createState(1.);
-		stateManager.putRouteState(route, id, state);
-		assertEquals(1.,stateManager.getRouteState(route, id).toDouble(),0.01);
-	}
-	
 	@Test
 	public void whenRouteStateIsSetWithGenericMethod_itMustBeSetCorrectly(){
 		VehicleRoute route = mock(VehicleRoute.class);
@@ -76,30 +54,6 @@ public class StateManagerTest {
 		stateManager.putTypedRouteState(route, id, Capacity.class, capacity);
 		Capacity getCap = stateManager.getRouteState(route, id, Capacity.class);
 		assertEquals(500, getCap.get(0));
-	}
-	
-	
-
-	@SuppressWarnings("deprecation")
-	@Test
-	public void whenInternalActivityStateIsSet_itMustBeSetCorrectly(){
-		TourActivity activity = mock(TourActivity.class);
-		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("myState");
-		State state = StateFactory.createState(1.);
-		stateManager.putInternalActivityState(activity, id, state);
-		assertEquals(1.,stateManager.getActivityState(activity, id).toDouble(),0.01);
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Test
-	public void whenActivityStateIsSet_itMustBeSetCorrectly(){
-		TourActivity activity = mock(TourActivity.class);
-		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("myState");
-		State state = StateFactory.createState(1.);
-		stateManager.putActivityState(activity, id, state);
-		assertEquals(1.,stateManager.getActivityState(activity, id).toDouble(),0.01);
 	}
 	
 	@Test
