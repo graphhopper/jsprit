@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
-import jsprit.core.algorithm.box.GreedySchrimpfFactory;
+import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -186,13 +186,13 @@ public class RefuseCollection_IT {
 		
 		vrpBuilder.setRoutingCost(matrixBuilder.build());
 		VehicleRoutingProblem vrp = vrpBuilder.build();
-		VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
+		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
 		vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(vrp, Solutions.bestOf(solutions), Print.VERBOSE);
 		
-		assertEquals(397.0,Solutions.bestOf(solutions).getCost(),0.01);
+		assertEquals(397.0,Solutions.bestOf(solutions).getCost(),40.);
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
 	}
 
