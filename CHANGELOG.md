@@ -1,5 +1,30 @@
 Change-log
 ==========
+**v1.3.0** @ 2014-05-18
+- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.2.0_to_1.3.0.txt)
+- removed deprecated code (that had been deprecated before v1.2.0)
+
+<em>jsprit-analysis</em>
+- redesigned analysis.toolbox.Plotter - it now always shows first activity as small triangle (no annotation that does not scale anymore)
+- added analysis.toolbox.ComputationalLaboratory to conduct various sensitivity studies concurrently
+- added analysis.toolbox.XYLineChartBuilder to simplify chart creation of n XYLines
+- bugfix [#59](https://github.com/jsprit/jsprit/issues/59)
+
+<em>jsprit-core</em>
+- added a number of unit- and integration-test to better guarantee/protect functionality
+- added feature: algorithm maximizes/minimizes whatever constraints and custom objective suggests, i.e.constraints and custom objective function can now be easily defined
+and considered by the meta-heuristic [#57](https://github.com/jsprit/jsprit/issues/57), [#72](https://github.com/jsprit/jsprit/issues/72)
+- added feature: initial loads can now be defined [#87](https://github.com/jsprit/jsprit/issues/87)
+- bugfix [#84](https://github.com/jsprit/jsprit/issues/84)
+- bugfix [#91](https://github.com/jsprit/jsprit/issues/91)
+- bugfix [#92](https://github.com/jsprit/jsprit/issues/92)
+- bugfix [#95](https://github.com/jsprit/jsprit/issues/95)
+- bugfix [#96](https://github.com/jsprit/jsprit/issues/96)
+- bugfix [#98](https://github.com/jsprit/jsprit/issues/98)
+
+
+
+
 **v1.2.0** @ 2014-03-06
 
 - [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.1_to_1.2.0.txt) (containing added and deprecated methods and classes)
