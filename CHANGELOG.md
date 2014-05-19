@@ -12,7 +12,7 @@ Change-log
 
 <em>jsprit-core</em>
 - added a number of unit- and integration-test to better guarantee/protect functionality
-- added feature: algorithm maximizes/minimizes whatever constraints and custom objective suggests, i.e.constraints and custom objective function can now be easily defined
+- added feature: algorithm maximizes/minimizes whatever constraints and custom objective suggest, i.e.constraints and custom objective function can now be easily defined
 and considered by the meta-heuristic [#57](https://github.com/jsprit/jsprit/issues/57), [#72](https://github.com/jsprit/jsprit/issues/72)
 - added feature: initial loads can now be defined [#87](https://github.com/jsprit/jsprit/issues/87)
 - bugfix [#84](https://github.com/jsprit/jsprit/issues/84)
