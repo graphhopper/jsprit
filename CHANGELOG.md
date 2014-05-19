@@ -1,6 +1,6 @@
 Change-log
 ==========
-**v1.3.0** @ 2014-05-18
+**v1.3.0** @ 2014-05-19
 - [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.2.0_to_1.3.0.txt)
 - removed deprecated code (that had been deprecated before v1.2.0)
 
