@@ -3,11 +3,10 @@
   <parent>
   	<groupId>jsprit</groupId>
   	<artifactId>jsprit</artifactId>
-  	<version>1.3.0</version>
+  	<version>1.2.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jsprit-core</artifactId>
-  <version>.0</version>
   <name>jsprit-core</name>
 
 <build>
