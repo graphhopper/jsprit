@@ -38,11 +38,11 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
-import jsprit.core.problem.vehicle.VehicleTypeKey;
 import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
@@ -344,7 +344,7 @@ public class VehicleRoutingProblemTest {
 		
 		boolean penaltyVehicleInCollection = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals(getPenaltyVehicleId(v))) penaltyVehicleInCollection = true;
+			if(v.getType() instanceof PenaltyVehicleType) penaltyVehicleInCollection = true;
 		}
 		assertTrue(penaltyVehicleInCollection);
 		
@@ -365,16 +365,13 @@ public class VehicleRoutingProblemTest {
 		
 		boolean penaltyVehicleInCollection = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals(getPenaltyVehicleId(v))) penaltyVehicleInCollection = true;
+			if(v.getType() instanceof PenaltyVehicleType) penaltyVehicleInCollection = true;
 		}
 		assertFalse(penaltyVehicleInCollection);
 		
 	}
 
-	private String getPenaltyVehicleId(Vehicle v) {
-		return "penaltyVehicle_" + new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(),
-				v.getEarliestDeparture(), v.getLatestArrival()).toString();
-	}
+	
 	
 	@Test
 	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithSameLocationAndType_onlyOnePenaltyVehicleIsAdded(){
@@ -394,7 +391,7 @@ public class VehicleRoutingProblemTest {
 		
 		boolean penaltyVehicleInCollection = false;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals(getPenaltyVehicleId(v))) penaltyVehicleInCollection = true;
+			if(v.getType() instanceof PenaltyVehicleType) penaltyVehicleInCollection = true;
 		}
 		assertTrue(penaltyVehicleInCollection);
 		
@@ -418,7 +415,7 @@ public class VehicleRoutingProblemTest {
 		
 		double fix = 0.0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals(getPenaltyVehicleId(v))) {
+			if(v.getType() instanceof PenaltyVehicleType) {
 				fix = v.getType().getVehicleCostParams().fix;
 			}
 		}
@@ -442,14 +439,14 @@ public class VehicleRoutingProblemTest {
 		
 		assertEquals(4,vrp.getVehicles().size());
 		
-		boolean penaltyVehicleInCollection = false;
-		boolean anotherPenVehInCollection = false;
+		int countPenaltyVehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals(getPenaltyVehicleId(vehicle))) penaltyVehicleInCollection = true;
-			if(v.getId().equals(getPenaltyVehicleId(vehicle2))) anotherPenVehInCollection = true;
+			if(v.getType() instanceof PenaltyVehicleType) {
+				countPenaltyVehicles++;
+			}
+			
 		}
-		assertTrue(penaltyVehicleInCollection);
-		assertTrue(anotherPenVehInCollection);
+		assertEquals(2,countPenaltyVehicles);
 		
 	}
 	
@@ -470,15 +467,13 @@ public class VehicleRoutingProblemTest {
 		
 		assertEquals(4,vrp.getVehicles().size());
 		
-		boolean penaltyVehicleInCollection = false;
-		boolean anotherPenVehInCollection = false;
+		int countPenaltyVehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getId().equals(getPenaltyVehicleId(vehicle))) penaltyVehicleInCollection = true;
-			if(v.getId().equals(getPenaltyVehicleId(vehicle2))) anotherPenVehInCollection = true;
+			if(v.getType() instanceof PenaltyVehicleType) {
+				countPenaltyVehicles++;
+			}
 		}
-		assertTrue(penaltyVehicleInCollection);
-		assertTrue(anotherPenVehInCollection);
-		
+		assertEquals(2,countPenaltyVehicles);
 	}
 	
 	@Test
