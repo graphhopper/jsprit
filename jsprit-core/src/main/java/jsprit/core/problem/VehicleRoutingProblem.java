@@ -353,7 +353,8 @@ public class VehicleRoutingProblem {
 						.setCapacityDimensions(v.getType().getCapacityDimensions())
 						.build();
 				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
-				String vehicleId = "penaltyVehicle_" + new VehicleTypeKey(v.getType().getTypeId(),v.getStartLocationId(),v.getEndLocationId(),v.getEarliestDeparture(),v.getLatestArrival()).toString();
+				String vehicleId = v.getId();
+//				String vehicleId = "penaltyVehicle_" + new VehicleTypeKey(v.getType().getTypeId(),v.getStartLocationId(),v.getEndLocationId(),v.getEarliestDeparture(),v.getLatestArrival()).toString();
 				Vehicle penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
 						.setLatestArrival(v.getLatestArrival()).setStartLocationCoordinate(v.getStartLocationCoordinate()).setStartLocationId(v.getStartLocationId())
 						.setEndLocationId(v.getEndLocationId()).setEndLocationCoordinate(v.getEndLocationCoordinate())
