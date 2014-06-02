@@ -50,7 +50,7 @@ public class LuiShenReader {
 	}
 	
 	/**
-	 * Reads input files to build luiShen problem.
+	 * Reads input files to build Liu Shen problem.
 	 * 
 	 * <p>The instance-file is a solomon file. The vehicle-file is a
 	 * txt-file that has the following columns:

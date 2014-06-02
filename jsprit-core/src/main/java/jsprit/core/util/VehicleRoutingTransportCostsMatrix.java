@@ -176,6 +176,8 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 		public VehicleRoutingTransportCostsMatrix build(){
 			return new VehicleRoutingTransportCostsMatrix(this);
 		}
+		
+		
 	}
 	
 	private Map<RelationKey,Double> distances = new HashMap<RelationKey, Double>();
