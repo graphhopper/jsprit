@@ -24,6 +24,7 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
+import jsprit.core.problem.vehicle.PenaltyVehicleType;
 
 /**
  * Printer to print the details of a vehicle-routing-problem solution.
@@ -109,7 +110,7 @@ public class SolutionPrinter {
 		for(VehicleRoute route : solution.getRoutes()){
 			System.out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
 			double costs = 0;
-			System.out.format(leftAlgin, routeNu, route.getVehicle().getId(), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),Math.round(costs));
+			System.out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),Math.round(costs));
 			TourActivity prevAct = route.getStart();
 			for(TourActivity act : route.getActivities()){
 				String jobId;
@@ -118,16 +119,24 @@ public class SolutionPrinter {
 				double c = problem.getTransportCosts().getTransportCost(prevAct.getLocationId(), act.getLocationId(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
 				c+= problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
 				costs+=c;
-				System.out.format(leftAlgin, routeNu, route.getVehicle().getId(), act.getName(), jobId, Math.round(act.getArrTime()), Math.round(act.getEndTime()),Math.round(costs));
+				System.out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()), Math.round(act.getEndTime()),Math.round(costs));
 				prevAct=act;
 			}
 			double c = problem.getTransportCosts().getTransportCost(prevAct.getLocationId(), route.getEnd().getLocationId(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
 			c+= problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
 			costs+=c;
-			System.out.format(leftAlgin, routeNu, route.getVehicle().getId(), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef", Math.round(costs));
+			System.out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef", Math.round(costs));
 			routeNu++;
 		}
+		System.out.format("+*:=PenaltyVehicle+%n");
 		System.out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
+	}
+
+	private static String getVehicleString(VehicleRoute route) {
+		if(route.getVehicle().getType() instanceof PenaltyVehicleType){
+			return route.getVehicle().getId()+"*";
+		}
+		return route.getVehicle().getId();
 	}
 
 	private static Jobs getNuOfJobs(VehicleRoutingProblem problem) {
