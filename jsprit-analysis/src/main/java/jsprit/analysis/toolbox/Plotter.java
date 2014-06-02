@@ -190,6 +190,8 @@ public class Plotter {
 	
 	private boolean containsServiceAct = false;
 	
+	private double scalingFactor = 1.;
+	
 	/**
 	 * Constructs Plotter with problem. Thus only the problem can be rendered.
 	 * 
@@ -234,6 +236,11 @@ public class Plotter {
 	 */
 	@Deprecated
 	public Plotter setShowFirstActivity(boolean show){
+		return this;
+	}
+	
+	public Plotter setScalingFactor(double scalingFactor){
+		this.scalingFactor=scalingFactor;
 		return this;
 	}
 	
@@ -414,8 +421,8 @@ public class Plotter {
 	private XYPlot createPlot(final XYSeriesCollection problem, XYSeriesCollection shipments, XYSeriesCollection solution) {
 		XYPlot plot = new XYPlot();
 		plot.setBackgroundPaint(Color.LIGHT_GRAY);
-		plot.setRangeGridlinePaint(Color.WHITE);
-		plot.setDomainGridlinePaint(Color.WHITE);
+		plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+		plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 		
 		XYLineAndShapeRenderer problemRenderer = getProblemRenderer(problem);
 		plot.setDataset(0, problem);
@@ -478,15 +485,15 @@ public class Plotter {
 			XYSeries series = new XYSeries(counter, false, true);
 			
 			Coordinate startCoord = locations.getCoord(route.getStart().getLocationId());
-			series.add(startCoord.getX(), startCoord.getY());
+			series.add(startCoord.getX()*scalingFactor, startCoord.getY()*scalingFactor);
 			
 			for(TourActivity act : route.getTourActivities().getActivities()){
 				Coordinate coord = locations.getCoord(act.getLocationId());
-				series.add(coord.getX(), coord.getY());
+				series.add(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			}
 			
 			Coordinate endCoord = locations.getCoord(route.getEnd().getLocationId());
-			series.add(endCoord.getX(), endCoord.getY());
+			series.add(endCoord.getX()*scalingFactor, endCoord.getY()*scalingFactor);
 			
 			coll.addSeries(series);
 			counter++;
@@ -514,8 +521,8 @@ public class Plotter {
 				shipmentSeries = new XYSeries(sCounter, false, true);
 				sCounter++;
 			}
-			shipmentSeries.add(shipment.getPickupCoord().getX(), shipment.getPickupCoord().getY());
-			shipmentSeries.add(shipment.getDeliveryCoord().getX(), shipment.getDeliveryCoord().getY());
+			shipmentSeries.add(shipment.getPickupCoord().getX()*scalingFactor, shipment.getPickupCoord().getY()*scalingFactor);
+			shipmentSeries.add(shipment.getDeliveryCoord().getX()*scalingFactor, shipment.getDeliveryCoord().getY()*scalingFactor);
 			coll.addSeries(shipmentSeries);
 		}
 		return coll;
@@ -524,13 +531,13 @@ public class Plotter {
 	private void addJob(XYSeries activities, Job job) {
 		if(job instanceof Shipment){
 			Shipment s = (Shipment)job;
-			XYDataItem dataItem = new XYDataItem(s.getPickupCoord().getX(), s.getPickupCoord().getY());
+			XYDataItem dataItem = new XYDataItem(s.getPickupCoord().getX()*scalingFactor, s.getPickupCoord().getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(s, dataItem);
 			markItem(dataItem,Activity.PICKUP, job);
 			containsPickupAct = true;
 			
-			XYDataItem dataItem2 = new XYDataItem(s.getDeliveryCoord().getX(), s.getDeliveryCoord().getY());
+			XYDataItem dataItem2 = new XYDataItem(s.getDeliveryCoord().getX()*scalingFactor, s.getDeliveryCoord().getY()*scalingFactor);
 			activities.add(dataItem2);
 			addLabel(s, dataItem2);
 			markItem(dataItem2,Activity.DELIVERY, job);
@@ -539,7 +546,7 @@ public class Plotter {
 		else if(job instanceof Pickup){
 			Pickup service = (Pickup)job;
 			Coordinate coord = service.getCoord();
-			XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
 			markItem(dataItem, Activity.PICKUP, job);
@@ -548,7 +555,7 @@ public class Plotter {
 		else if(job instanceof Delivery){
 			Delivery service = (Delivery)job;
 			Coordinate coord = service.getCoord();
-			XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
 			markItem(dataItem, Activity.DELIVERY, job);
@@ -557,7 +564,7 @@ public class Plotter {
 		else if(job instanceof Service){
 			Service service = (Service)job;
 			Coordinate coord = service.getCoord();
-			XYDataItem dataItem = new XYDataItem(coord.getX(), coord.getY());
+			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
 			markItem(dataItem, Activity.SERVICE, job);
@@ -600,14 +607,14 @@ public class Plotter {
 		for(Vehicle v : vrp.getVehicles()){
 			Coordinate startCoord = v.getStartLocationCoordinate();
 			if(startCoord == null) throw new NoLocationFoundException();
-			XYDataItem item = new XYDataItem(startCoord.getX(), startCoord.getY());
+			XYDataItem item = new XYDataItem(startCoord.getX()*scalingFactor, startCoord.getY()*scalingFactor);
 			markItem(item,Activity.START, null);
 			activities.add(item);
 			
 			if(!v.getStartLocationId().equals(v.getEndLocationId())){
 				Coordinate endCoord = v.getEndLocationCoordinate();
 				if(endCoord == null) throw new NoLocationFoundException();
-				activities.add(endCoord.getX(),endCoord.getY());
+				activities.add(endCoord.getX()*scalingFactor,endCoord.getY()*scalingFactor);
 			}
 		}
 		for(Job job : vrp.getJobs().values()){
