@@ -58,9 +58,10 @@ public class RouteActivityVisitor implements RouteVisitor{
 		
 	}
 
-	public void addActivityVisitor(ActivityVisitor activityVisitor){
+	public RouteActivityVisitor addActivityVisitor(ActivityVisitor activityVisitor){
 		if(!visitors.contains(activityVisitor)){
 			visitors.add(activityVisitor);
 		}
+		return this;
 	}
 }
