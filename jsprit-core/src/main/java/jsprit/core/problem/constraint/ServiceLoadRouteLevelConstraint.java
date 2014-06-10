@@ -28,15 +28,20 @@ class ServiceLoadRouteLevelConstraint implements HardRouteStateLevelConstraint {
 
 	@Override
 	public boolean fulfilled(JobInsertionContext insertionContext) {
+		Capacity maxLoadAtRoute = stateManager.getRouteState(insertionContext.getRoute(), StateFactory.MAXLOAD, Capacity.class);
+		Capacity capacityDimensions = insertionContext.getNewVehicle().getType().getCapacityDimensions();
+		if(!maxLoadAtRoute.isLessOrEqual(capacityDimensions)){
+			return false;
+		}
 		if(insertionContext.getJob() instanceof Delivery){
 			Capacity loadAtDepot = stateManager.getRouteState(insertionContext.getRoute(), StateFactory.LOAD_AT_BEGINNING, Capacity.class);
-			if(!Capacity.addup(loadAtDepot, insertionContext.getJob().getSize()).isLessOrEqual(insertionContext.getNewVehicle().getType().getCapacityDimensions())){
+			if(!Capacity.addup(loadAtDepot, insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)){
 				return false;
 			}
 		}
 		else if(insertionContext.getJob() instanceof Pickup || insertionContext.getJob() instanceof Service){
 			Capacity loadAtEnd = stateManager.getRouteState(insertionContext.getRoute(), StateFactory.LOAD_AT_END, Capacity.class);
-			if(!Capacity.addup(loadAtEnd, insertionContext.getJob().getSize()).isLessOrEqual(insertionContext.getNewVehicle().getType().getCapacityDimensions())){
+			if(!Capacity.addup(loadAtEnd, insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)){
 				return false;
 			}
 		}
