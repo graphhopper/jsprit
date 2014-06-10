@@ -31,7 +31,7 @@ public class CapacityTest {
 	@Test
 	public void whenSettingRandomNuOfCapDimension_nuOfDimensionMustBeCorrect(){
 		Random rand = new Random();
-		int nuOfCapDimensions = rand.nextInt(100);
+		int nuOfCapDimensions = 1+rand.nextInt(100);
 		Capacity.Builder capBuilder = Capacity.Builder.newInstance();
 		capBuilder.addDimension(nuOfCapDimensions-1, 4);
 		Capacity cap = capBuilder.build();
