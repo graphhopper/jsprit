@@ -2,6 +2,7 @@ package jsprit.core.problem.constraint;
 
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
+import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
@@ -77,6 +78,12 @@ import jsprit.core.util.CalculationUtils;
 			 */
 			if(arrTimeAtNewAct > latestArrTimeAtNewAct){
 				return ConstraintsStatus.NOT_FULFILLED;
+			}
+			
+			if(nextAct instanceof End){
+				if(!iFacts.getNewVehicle().isReturnToDepot()){
+					return ConstraintsStatus.FULFILLED;
+				}
 			}
 //			log.info(newAct + " arrTime=" + arrTimeAtNewAct);
 			double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
