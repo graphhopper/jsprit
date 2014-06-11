@@ -22,6 +22,7 @@ import jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import jsprit.core.problem.solution.route.activity.PickupActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
+import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 
 import org.graphstream.graph.Edge;
@@ -384,7 +385,9 @@ public class GraphStreamViewer {
 	}
 
 	private void renderVehicle(Graph g, Vehicle vehicle, Label label) {
-		Node vehicleStart = g.addNode(makeId(vehicle.getId(),vehicle.getStartLocationId()));
+		String nodeId = makeId(vehicle.getId(),vehicle.getStartLocationId());
+		if(vehicle.getType() instanceof PenaltyVehicleType) nodeId = makeId("pen_"+vehicle.getId(),vehicle.getStartLocationId());
+		Node vehicleStart = g.addNode(nodeId);
 		if(label.equals(Label.ID)) vehicleStart.addAttribute("ui.label", "depot");
 //		if(label.equals(Label.ACTIVITY)) n.addAttribute("ui.label", "start");
 		vehicleStart.addAttribute("x", vehicle.getStartLocationCoordinate().getX());
