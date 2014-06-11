@@ -134,6 +134,49 @@ public class OpenRoutesTest {
 	}
 	
 	@Test
+	public void whenDealingWithOpenRouteAndShipments_insertionShouldNotRequireRouteToBeClosed(){
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(11.)
+				.setType(type).setReturnToDepot(false).setStartLocationCoordinate(Coordinate.newInstance(0, 0)).build();
+		
+		Shipment shipment = Shipment.Builder.newInstance("s").setPickupCoord(Coordinate.newInstance(5, 0))
+				.setDeliveryCoord(Coordinate.newInstance(10, 0)).build();
+		
+		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
+		
+		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+		
+		try{
+			@SuppressWarnings("unused")
+			Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+			assertTrue(true);
+		}
+		catch(NoSolutionFoundException e){
+			assertFalse(true);
+		}
+		
+	}
+	
+	@Test
+	public void whenDealingWithOpenRouteAndShipments_algorithmShouldCalculateCorrectCosts(){
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(20.)
+				.setType(type).setReturnToDepot(false).setStartLocationCoordinate(Coordinate.newInstance(0, 0)).build();
+		
+		Shipment shipment = Shipment.Builder.newInstance("s").setPickupCoord(Coordinate.newInstance(5, 0))
+				.setDeliveryCoord(Coordinate.newInstance(10, 0)).build();
+		
+		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
+		
+		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+		
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+		
+		assertEquals(10.,Solutions.bestOf(solutions).getCost(),0.01);
+		
+	}
+	
+	@Test
 	public void whenDealingWithOpenRoute_algorithmShouldCalculateCorrectCosts(){
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(10.)
