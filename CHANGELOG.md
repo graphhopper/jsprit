@@ -1,5 +1,11 @@
 Change-log
 ==========
+**v1.3.1** @ 2014-06-14
+
+<em>jsprit-core</em>
+- bugfix [#104](https://github.com/jsprit/jsprit/issues/104)
+- bugfix [#105](https://github.com/jsprit/jsprit/issues/105)
+
 **v1.3.0** @ 2014-05-19
 - [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.2.0_to_1.3.0.txt)
 - removed deprecated code (that had been deprecated before v1.2.0) which is definitely a break change (see details above)
