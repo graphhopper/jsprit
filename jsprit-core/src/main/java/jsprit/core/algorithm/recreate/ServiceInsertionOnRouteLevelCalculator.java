@@ -303,7 +303,9 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 			}
 		}
 		if(best_insertion_index == InsertionData.NO_INDEX) return InsertionData.createEmptyInsertionData();
-		return new InsertionData(best_insertion_costs, InsertionData.NO_INDEX, best_insertion_index, newVehicle, newDriver);
+		InsertionData insertionData = new InsertionData(best_insertion_costs, InsertionData.NO_INDEX, best_insertion_index, newVehicle, newDriver);
+		insertionData.setVehicleDepartureTime(start.getEndTime());
+		return insertionData;
 	}
 	
 	/**
