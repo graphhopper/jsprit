@@ -126,6 +126,7 @@ public class VrpXMLWriter {
 			Writer out = new FileWriter(filename);
 			XMLSerializer serializer = new XMLSerializer(out, format);
 			serializer.serialize(xmlConfig.getDocument());
+			out.close();
 		} catch (IOException e) {
 			logger.error(e);
 			e.printStackTrace();
