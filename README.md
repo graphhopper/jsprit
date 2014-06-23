@@ -60,4 +60,4 @@ It is mainly inspired by my research group at [KIT-ECON](http://netze.econ.kit.e
 
 If you have questions or if you use jsprit, it would be great you give feedback and let me know your experience:
 
-Email: jsprit.vehicle.routing@gmail.com
+Email: info@jspr.it
