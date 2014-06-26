@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.examples;
 
+import java.io.File;
 import java.util.Collection;
 
 import jsprit.analysis.toolbox.GraphStreamViewer;
@@ -46,7 +47,13 @@ public class SimpleExample {
 		/*
 		 * some preparation - create output folder
 		 */
-		Examples.createOutputFolder();
+		File dir = new File("output");
+		// if the directory does not exist, create it
+		if (!dir.exists()){
+			System.out.println("creating directory ./output");
+			boolean result = dir.mkdir();  
+			if(result) System.out.println("./output created");  
+		}
 		
 		/*
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and one capacity dimension, i.e. weight, and capacity dimension value of 2
