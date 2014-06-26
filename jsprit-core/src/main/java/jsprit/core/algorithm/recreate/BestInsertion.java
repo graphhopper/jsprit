@@ -122,10 +122,12 @@ final class BestInsertion implements InsertionStrategy{
 			if(!minVehiclesFirst){
 				VehicleRoute newRoute = VehicleRoute.emptyRoute();
 				InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
-				if(newIData.getInsertionCost() < bestInsertionCost){
-					bestInsertion = new Insertion(newRoute,newIData);
-					bestInsertionCost = newIData.getInsertionCost();
-					vehicleRoutes.add(newRoute);
+				if(!(newIData instanceof NoInsertionFound)) {
+					if(newIData.getInsertionCost() < bestInsertionCost){
+						bestInsertion = new Insertion(newRoute,newIData);
+						bestInsertionCost = newIData.getInsertionCost();
+						vehicleRoutes.add(newRoute);
+					}
 				}
 			}			
 			if(bestInsertion == null){

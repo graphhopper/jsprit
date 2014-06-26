@@ -45,6 +45,9 @@ public class RuinAndRecreateModule implements SearchStrategyModule{
 
 	@Override
 	public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
+		if(vrpSolution.getRoutes().size()>4){
+			System.out.println("hmm");
+		}
 		Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
 		insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobs);
 		return vrpSolution;

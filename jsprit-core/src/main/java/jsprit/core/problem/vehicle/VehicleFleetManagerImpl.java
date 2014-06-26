@@ -57,15 +57,15 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 			vehicleList = new ArrayList<Vehicle>();
 		}
 		
-		void add(Vehicle vehicle){
+		boolean add(Vehicle vehicle){
 			if(vehicleList.contains(vehicle)){
 				throw new IllegalStateException("cannot add vehicle twice " + vehicle.getId());
 			}
-			vehicleList.add(vehicle);
+			return vehicleList.add(vehicle);
 		}
 		
-		void remove(Vehicle vehicle){
-			vehicleList.remove(vehicle);
+		boolean remove(Vehicle vehicle){
+			return vehicleList.remove(vehicle);
 		}
 
 		public Vehicle getVehicle() {
@@ -140,14 +140,17 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		}
 	}
 	
-	private void removeVehicle(Vehicle v){
+	private boolean removeVehicle(Vehicle v){
 		//it might be better to introduce a class PenaltyVehicle
 		if(!(v.getType() instanceof PenaltyVehicleType)){
 			VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
 			if(typeMapOfAvailableVehicles.containsKey(key)){
-				typeMapOfAvailableVehicles.get(key).remove(v);
+				boolean removed = typeMapOfAvailableVehicles.get(key).remove(v);
+				return removed;
 			}
+			return false;
 		}
+		else return true;
 	}
 
 	
@@ -201,7 +204,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		}
 		if(vehicle.getType() instanceof PenaltyVehicleType) return;
 		boolean locked = lockedVehicles.add(vehicle);
-		removeVehicle(vehicle);
+		boolean removed = removeVehicle(vehicle);
 		if(!locked){
 			throw new IllegalStateException("cannot lock vehicle twice " + vehicle.getId());
 		}

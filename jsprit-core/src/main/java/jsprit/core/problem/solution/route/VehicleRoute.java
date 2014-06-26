@@ -410,13 +410,22 @@ public class VehicleRoute {
 		this.vehicle = vehicle;
 		setStartAndEnd(vehicle, vehicleDepTime);
 	}
+	
+	
 	private void setStartAndEnd(Vehicle vehicle, double vehicleDepTime) {
+		if(vehicleDepTime==21600){
+			System.out.println("hu");
+		}
 		if(!(vehicle instanceof NoVehicle)){
 			if(start == null && end == null){
 				start = Start.newInstance(vehicle.getStartLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
 				end = End.newInstance(vehicle.getEndLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
 			}
-			start.setEndTime(Math.max(vehicleDepTime, vehicle.getEarliestDeparture()));
+			double max = Math.max(vehicleDepTime, vehicle.getEarliestDeparture());
+			if(max==21600){
+				System.out.println("hu");
+			}
+			start.setEndTime(max);
 			start.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
 			start.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
 			start.setLocationId(vehicle.getStartLocationId());
