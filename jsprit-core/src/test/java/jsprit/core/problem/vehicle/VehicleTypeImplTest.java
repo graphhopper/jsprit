@@ -115,9 +115,25 @@ public class VehicleTypeImplTest {
 		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(-10).build();
 	}
 	
+	@Test
 	public void whenSettingPerTimeCosts_itShouldBeSetCorrectly(){
 		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
-		assertEquals(10.0, type.getVehicleCostParams().perDistanceUnit,0.0);
+		assertEquals(10.0, type.getVehicleCostParams().perTimeUnit,0.0);
+	}
+	
+	@Test
+	public void whenHavingTwoTypesWithTheSameId_theyShouldBeEqual(){
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
+		assertTrue(type.equals(type2));
+	}
+	
+	@Test
+	public void whenHavingTwoTypesWithTheSameIdButDiffClass_theyShouldNotBeEqual(){
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
+		PenaltyVehicleType penType = new PenaltyVehicleType(type2);
+		assertTrue(!type.equals(penType));
 	}
 	
 
