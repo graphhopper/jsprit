@@ -36,7 +36,6 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
-import jsprit.util.Examples;
 
 
 public class SimpleExample {
