@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 import jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
+import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
@@ -305,6 +306,10 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 		if(best_insertion_index == InsertionData.NO_INDEX) return InsertionData.createEmptyInsertionData();
 		InsertionData insertionData = new InsertionData(best_insertion_costs, InsertionData.NO_INDEX, best_insertion_index, newVehicle, newDriver);
 		insertionData.setVehicleDepartureTime(start.getEndTime());
+		
+		if(!(insertionData instanceof NoInsertionFound) && insertionData.getVehicleDepartureTime() < 28000){
+			System.out.println("hmm");
+		}
 		return insertionData;
 	}
 	

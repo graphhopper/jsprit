@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
@@ -92,6 +93,9 @@ private static Logger log = Logger.getLogger(CalculatesServiceInsertionWithTimeS
 			System.out.println("hu");
 		}
 		InsertionData insertionData = jic.getInsertionData(currentRoute, jobToInsert, newVehicle, departureTime, newDriver, bestKnownScore);
+		if(!(insertionData instanceof NoInsertionFound) && insertionData.getVehicleDepartureTime() < 28000){
+			System.out.println("hmm");
+		}
 		return insertionData;
 	}
 	
