@@ -16,6 +16,10 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
@@ -66,6 +70,8 @@ public class Service implements Job {
 		protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
 		
 		protected Capacity capacity;
+		
+		protected Set<String> skills = new HashSet<String>();
 		
 		/**
 		 * Constructs the builder.
@@ -179,6 +185,11 @@ public class Service implements Job {
 			capacity = capacityBuilder.build();
 			return new Service(this);
 		}
+
+		public Builder addSkill(String string) {
+			skills.add(string.toLowerCase());
+			return this;
+		}
 		
 	}
 	
@@ -196,6 +207,8 @@ public class Service implements Job {
 	private final TimeWindow timeWindow;
 	
 	private final Capacity size;
+	
+	private final Set<String> skills;
 
 	Service(Builder builder){
 		id = builder.id;
@@ -205,6 +218,7 @@ public class Service implements Job {
 		timeWindow = builder.timeWindow;
 		type = builder.type;
 		size = builder.capacity;
+		skills = builder.skills;
 	}
 
 	@Override
@@ -298,6 +312,25 @@ public class Service implements Job {
 	@Override
 	public Capacity getSize() {
 		return size;
+	}
+
+	/**
+	 * Returns set of required skills. All skills are in lower case.
+	 * 
+	 * @return
+	 */
+	public Set<String> getRequiredSkills() {
+		return Collections.unmodifiableSet(skills);
+	}
+	
+	/**
+	 * Returns true if this contains requiredSkill. Not case sensitive.
+	 * 
+	 * @param requiredSkill
+	 * @return
+	 */
+	public boolean requiresSkill(String requiredSkill){
+		return skills.contains(requiredSkill.toLowerCase());
 	}
 	
 }

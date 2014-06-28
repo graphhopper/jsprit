@@ -1,6 +1,7 @@
 package jsprit.core.problem.job;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -37,6 +38,23 @@ public class PickupTest {
 				.build();
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(1,one.getSize().get(0));
+	}
+	
+	@Test
+	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
+		Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocationId("loc")
+				.addSkill("drill").addSkill("screwdriver").build();
+		assertTrue(s.getRequiredSkills().contains("drill"));
+		assertTrue(s.requiresSkill("drill"));
+		assertTrue(s.requiresSkill("ScrewDriver"));
+	}
+	
+	@Test
+	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
+		Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocationId("loc")
+				.addSkill("DriLl").addSkill("screwDriver").build();
+		assertTrue(s.getRequiredSkills().contains("drill"));
+		assertTrue(s.requiresSkill("drilL"));
 	}
 
 

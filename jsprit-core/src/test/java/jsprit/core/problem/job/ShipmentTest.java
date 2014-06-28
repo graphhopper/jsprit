@@ -231,4 +231,21 @@ public class ShipmentTest {
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(1,one.getSize().get(0));
 	}
+	
+	@Test
+	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
+		Shipment s = Shipment.Builder.newInstance("s").setPickupLocation("loc").setDeliveryLocation("delLoc")
+				.addSkill("drill").addSkill("screwdriver").build();
+		assertTrue(s.getRequiredSkills().contains("drill"));
+		assertTrue(s.requiresSkill("drill"));
+		assertTrue(s.requiresSkill("ScrewDriver"));
+	}
+	
+	@Test
+	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
+		Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocationId("loc")
+				.addSkill("DriLl").addSkill("screwDriver").build();
+		assertTrue(s.getRequiredSkills().contains("drill"));
+		assertTrue(s.requiresSkill("drilL"));
+	}
 }
