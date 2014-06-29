@@ -2,3 +2,13 @@
 /target
 /output
 .DS_Store
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.project
+.classpath
+
