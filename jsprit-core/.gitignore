@@ -9,7 +9,8 @@
 *.iws
 
 # Eclipse
-.classpath
 .project
+.classpath
+
 
 
