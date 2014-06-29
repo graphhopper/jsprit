@@ -6,6 +6,7 @@
 # IntelliJ
 *.ipr
 *.iws
+*.iml
 
 # Eclipse
 .project
