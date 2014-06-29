@@ -16,6 +16,8 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+import java.util.Set;
+
 import jsprit.core.util.Coordinate;
 
 /**
@@ -82,4 +84,8 @@ public interface Vehicle {
 	 * Returns the end-locationCoord of this vehicle.
 	 */
 	public abstract Coordinate getEndLocationCoordinate();
+
+	public abstract Set<String> getSkills();
+
+	public abstract boolean hasSkill(String string);
 }

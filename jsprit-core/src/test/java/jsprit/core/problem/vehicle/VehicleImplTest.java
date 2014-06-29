@@ -187,5 +187,33 @@ public class VehicleImplTest {
 		assertTrue(!v.equals(v2));
 	}
 	
+	@Test
+	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
+		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setType(type1).setEndLocationId("start")
+				.addSkill("drill").addSkill("screwdriver").build();
+		assertTrue(v.getSkills().contains("drill"));
+		assertTrue(v.hasSkill("drill"));
+		assertTrue(v.hasSkill("screwdriver"));
+	}
+	
+	@Test
+	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
+		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setType(type1).setEndLocationId("start")
+				.addSkill("drill").addSkill("screwdriver").build();
+		assertTrue(v.getSkills().contains("drill"));
+		assertTrue(v.hasSkill("dRill"));
+		assertTrue(v.hasSkill("ScrewDriver"));
+	}
+	
+	@Test
+	public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
+		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setType(type1).setEndLocationId("start")
+				.addSkill("drill").build();
+		assertFalse(v.hasSkill("ScrewDriver"));
+	}
+	
 	
 }

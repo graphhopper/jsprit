@@ -16,6 +16,10 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import jsprit.core.util.Coordinate;
 
 import org.apache.log4j.Logger;
@@ -73,6 +77,8 @@ public class VehicleImpl implements Vehicle {
 		private boolean returnToDepot = true;
 		
 		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
+		
+		private Set<String> skills = new HashSet<String>();
 		
 		/**
 		 * Constructs the builder with the vehicleId.
@@ -227,6 +233,17 @@ public class VehicleImpl implements Vehicle {
 		 * @return vehicle builder
 		 */
 		public static Builder newInstance(String vehicleId){ return new Builder(vehicleId); }
+
+		/**
+		 * Adds skill and returns build.
+		 * 
+		 * @param skill
+		 * @return
+		 */
+		public Builder addSkill(String skill) {
+			this.skills.add(skill.toLowerCase());
+			return this;
+		}
 		
 	}
 
@@ -241,13 +258,17 @@ public class VehicleImpl implements Vehicle {
 		return new NoVehicle();
 	}
 	
+	public static VehicleImpl copyAndCreateVehicle(Vehicle vehicleToCopy){
+		return new VehicleImpl(vehicleToCopy);
+	}
+//	
+	public static VehicleImpl copyAndCreateVehicleWithNewType(Vehicle vehicleToCopy, VehicleType newType){
+		return new VehicleImpl(vehicleToCopy, newType);
+	}
+//	
 	private final String id;
 
 	private final VehicleType type;
-
-	private final String locationId;
-
-	private final Coordinate coord;
 
 	private final double earliestDeparture;
 
@@ -262,12 +283,12 @@ public class VehicleImpl implements Vehicle {
 	private final Coordinate startLocationCoord;
 
 	private final String startLocationId;
+	
+	private final Set<String> skills;
 
 	private VehicleImpl(Builder builder){
 		id = builder.id;
 		type = builder.type;
-		coord = builder.locationCoord;
-		locationId = builder.locationId;
 		earliestDeparture = builder.earliestStart;
 		latestArrival = builder.latestArrival;
 		returnToDepot = builder.returnToDepot;
@@ -275,6 +296,43 @@ public class VehicleImpl implements Vehicle {
 		startLocationCoord = builder.startLocationCoord;
 		endLocationId = builder.endLocationId;
 		endLocationCoord = builder.endLocationCoord;
+		skills = builder.skills;
+	}
+	
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param vehicle
+	 */
+	private VehicleImpl(Vehicle vehicle){
+		id = vehicle.getId();
+		type = vehicle.getType();
+		startLocationId = vehicle.getStartLocationId();
+		startLocationCoord = vehicle.getStartLocationCoordinate();
+		endLocationId = vehicle.getEndLocationId();
+		endLocationCoord = vehicle.getEndLocationCoordinate();
+		earliestDeparture = vehicle.getEarliestDeparture();
+		latestArrival = vehicle.getLatestArrival();
+		returnToDepot = vehicle.isReturnToDepot();
+		skills = vehicle.getSkills();
+	}
+	
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param vehicle
+	 */
+	private VehicleImpl(Vehicle vehicle, VehicleType newType){
+		id = vehicle.getId();
+		this.type = newType;
+		startLocationId = vehicle.getStartLocationId();
+		startLocationCoord = vehicle.getStartLocationCoordinate();
+		endLocationId = vehicle.getEndLocationId();
+		endLocationCoord = vehicle.getEndLocationCoordinate();
+		earliestDeparture = vehicle.getEarliestDeparture();
+		latestArrival = vehicle.getLatestArrival();
+		returnToDepot = vehicle.isReturnToDepot();
+		skills = vehicle.getSkills();
 	}
 	
 	/**
@@ -284,7 +342,9 @@ public class VehicleImpl implements Vehicle {
 	 */
 	@Override
 	public String toString() {
-		return "[id="+id+"][type="+type+"][locationId="+locationId+"][coord=" + coord + "][isReturnToDepot=" + isReturnToDepot() + "]";
+		return "[id="+id+"][type="+type+"][startLocationId="+startLocationId+"][startLocationCoord=" + startLocationCoord + "]" +
+				"[endLocationId="+endLocationId+"][endLocationCoord=" + endLocationCoord + "]" +
+				"[isReturnToDepot=" + isReturnToDepot() + "]";
 	}
 
 	@Override
@@ -366,6 +426,16 @@ public class VehicleImpl implements Vehicle {
 		} else if (!type.equals(other.type))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Set<String> getSkills() {
+		return Collections.unmodifiableSet(skills);
+	}
+
+	@Override
+	public boolean hasSkill(String skill) {
+		return skills.contains(skill.toLowerCase());
 	}
 
 	
