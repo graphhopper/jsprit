@@ -1,5 +1,14 @@
-/output/*
+/output
 /bin
 /target
 .DS_Store
-/output
+
+# IntelliJ
+*.ipr
+*.iws
+*.iml
+.idea
+
+# Eclipse
+.project
+.classpath

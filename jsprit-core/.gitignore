@@ -7,10 +7,12 @@
 *.ipr
 *.iws
 *.iml
+.idea
 
 # Eclipse
 .project
 .classpath
+.settings
 
 
 
