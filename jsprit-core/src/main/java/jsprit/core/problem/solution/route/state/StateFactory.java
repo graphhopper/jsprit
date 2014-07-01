@@ -100,7 +100,7 @@ public class StateFactory {
 	public final static StateId PAST_MAXLOAD = new StateIdImpl("pastMaxload");
 	
 	final static List<String> reservedIds = Arrays.asList("maxload","load","costs","loadAtBeginning","loadAtEnd","duration","latestOST","earliestOST"
-			,"futureMaxload","pastMaxload");
+			,"futureMaxload","pastMaxload","skills");
 			
 	
 	public static States createStates(){
