@@ -23,31 +23,12 @@ Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 ##License
 This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
-##Get Started
-
-####You know Maven and have an IDE
-
-[Add the latest snapshot (i.e. head of development) to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
-
-[Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
-
-####If not and you want to use Maven
-
-the following documentation is recommended:
-
-<a href="http://docs.geotools.org/latest/userguide/tutorial/quickstart/index.html" target="blank_">GeoTools - Quickstart</a>
-
-Here you learn to setup the Java environment and an Integrated Development Environment (IDE). In the subsection <em>Adding Jars to your Project</em> you learn to integrate external libraries in your project. Just copy/paste the above jsprit releases/snapshots to your pom.xml instead of the GeoTools-artifacts.
-
-#### If you do not want Maven
-
-to manage your dependencies, go to [snapshot-jars](https://github.com/jsprit/mvn-rep/tree/master/snapshots/jsprit) or [realease-jars](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) to download jsprit-binaries directly. Just click on the jar-file you want to download and use the 'Raw'-button to actually download it. Put the jars into your classpath. Note that you then need to put all [dependencies](https://github.com/jsprit/jsprit/wiki/Modules-and-Dependencies) jsprit relies on manually to your classpath as well.
-
+##[Get Started](https://github.com/jsprit/jsprit/wiki/Getting-Started)
 
 ##[Contributors](https://github.com/jsprit/jsprit/graphs/contributors)
 [Pierre-David Bélanger](https://github.com/pierredavidbelanger)<br>
 [Abraham Gausachs](https://github.com/agausachs)<br>
-Subhamay Das
+[Subhamay Das](http://www.linkedin.com/profile/view?id=10203174)
 
 ##About
 The jsprit-project is created and maintained by [Stefan Schröder](https://github.com/oblonski). It is motivated by two issues. 
