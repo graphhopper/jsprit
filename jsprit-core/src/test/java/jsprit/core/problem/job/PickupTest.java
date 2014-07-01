@@ -1,6 +1,7 @@
 package jsprit.core.problem.job;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -44,18 +45,26 @@ public class PickupTest {
 	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
 		Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocationId("loc")
 				.addSkill("drill").addSkill("screwdriver").build();
-		assertTrue(s.getRequiredSkills().contains("drill"));
-		assertTrue(s.requiresSkill("drill"));
-		assertTrue(s.requiresSkill("ScrewDriver"));
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
 	}
 	
 	@Test
 	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
 		Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocationId("loc")
 				.addSkill("DriLl").addSkill("screwDriver").build();
-		assertTrue(s.getRequiredSkills().contains("drill"));
-		assertTrue(s.requiresSkill("drilL"));
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
 	}
+
+    @Test
+    public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
+        Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocationId("loc")
+                .addSkill("screwDriver").build();
+        assertFalse(s.getRequiredSkills().containsSkill("drill"));
+        assertFalse(s.getRequiredSkills().containsSkill("drilL"));
+    }
 
 
 }

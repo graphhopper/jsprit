@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import jsprit.core.problem.Skills;
 import jsprit.core.util.Coordinate;
 
 import org.apache.log4j.Logger;
@@ -77,8 +78,8 @@ public class VehicleImpl implements Vehicle {
 		private boolean returnToDepot = true;
 		
 		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
-		
-		private Set<String> skills = new HashSet<String>();
+
+        private Skills.Builder skillBuilder = Skills.Builder.newInstance();
 		
 		/**
 		 * Constructs the builder with the vehicleId.
@@ -235,13 +236,13 @@ public class VehicleImpl implements Vehicle {
 		public static Builder newInstance(String vehicleId){ return new Builder(vehicleId); }
 
 		/**
-		 * Adds skill and returns build.
+		 * Adds skill and returns builder.
 		 * 
 		 * @param skill
 		 * @return
 		 */
 		public Builder addSkill(String skill) {
-			this.skills.add(skill.toLowerCase());
+			skillBuilder.addSkill(skill);
 			return this;
 		}
 		
@@ -284,7 +285,7 @@ public class VehicleImpl implements Vehicle {
 
 	private final String startLocationId;
 	
-	private final Set<String> skills;
+	private final Skills skills;
 
 	private VehicleImpl(Builder builder){
 		id = builder.id;
@@ -296,7 +297,7 @@ public class VehicleImpl implements Vehicle {
 		startLocationCoord = builder.startLocationCoord;
 		endLocationId = builder.endLocationId;
 		endLocationCoord = builder.endLocationCoord;
-		skills = builder.skills;
+		skills = builder.skillBuilder.build();
 	}
 	
 	/**
@@ -429,16 +430,8 @@ public class VehicleImpl implements Vehicle {
 	}
 
 	@Override
-	public Set<String> getSkills() {
-		return Collections.unmodifiableSet(skills);
+	public Skills getSkills() {
+		return skills;
 	}
 
-	@Override
-	public boolean hasSkill(String skill) {
-		return skills.contains(skill.toLowerCase());
-	}
-
-	
-	
-	
 }

@@ -192,9 +192,9 @@ public class VehicleImplTest {
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
 		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setType(type1).setEndLocationId("start")
 				.addSkill("drill").addSkill("screwdriver").build();
-		assertTrue(v.getSkills().contains("drill"));
-		assertTrue(v.hasSkill("drill"));
-		assertTrue(v.hasSkill("screwdriver"));
+		assertTrue(v.getSkills().containsSkill("drill"));
+		assertTrue(v.getSkills().containsSkill("drill"));
+		assertTrue(v.getSkills().containsSkill("screwdriver"));
 	}
 	
 	@Test
@@ -202,9 +202,9 @@ public class VehicleImplTest {
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
 		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setType(type1).setEndLocationId("start")
 				.addSkill("drill").addSkill("screwdriver").build();
-		assertTrue(v.getSkills().contains("drill"));
-		assertTrue(v.hasSkill("dRill"));
-		assertTrue(v.hasSkill("ScrewDriver"));
+		assertTrue(v.getSkills().containsSkill("drill"));
+		assertTrue(v.getSkills().containsSkill("dRill"));
+		assertTrue(v.getSkills().containsSkill("ScrewDriver"));
 	}
 	
 	@Test
@@ -212,7 +212,7 @@ public class VehicleImplTest {
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
 		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setType(type1).setEndLocationId("start")
 				.addSkill("drill").build();
-		assertFalse(v.hasSkill("ScrewDriver"));
+		assertFalse(v.getSkills().containsSkill("ScrewDriver"));
 	}
 	
 	

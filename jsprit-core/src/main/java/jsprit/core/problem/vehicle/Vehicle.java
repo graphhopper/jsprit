@@ -18,6 +18,7 @@ package jsprit.core.problem.vehicle;
 
 import java.util.Set;
 
+import jsprit.core.problem.Skills;
 import jsprit.core.util.Coordinate;
 
 /**
@@ -85,7 +86,11 @@ public interface Vehicle {
 	 */
 	public abstract Coordinate getEndLocationCoordinate();
 
-	public abstract Set<String> getSkills();
+    /**
+     * Returns skills.
+     *
+     * @return
+     */
+    public abstract Skills getSkills();
 
-	public abstract boolean hasSkill(String string);
 }
