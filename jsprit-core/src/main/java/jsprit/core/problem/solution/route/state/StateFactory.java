@@ -27,9 +27,8 @@ import java.util.Map;
 
 
 public class StateFactory {
-	
-	
-	public interface StateId {
+
+    public interface StateId {
 		
 	}
 	
@@ -77,6 +76,8 @@ public class StateFactory {
 		}
 
 	}
+
+    public static final StateId SKILLS = new StateIdImpl("skills");
 	
 	public final static StateId MAXLOAD = new StateIdImpl("maxload");
 	
