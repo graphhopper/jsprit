@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
@@ -57,7 +58,7 @@ public class Shipment implements Job{
 		
 		private Capacity capacity;
 		
-		private Set<String> skills = new HashSet<String>();
+		private Skills.Builder skillBuilder = Skills.Builder.newInstance();
 		
 		/**
 		 * Returns new instance of this builder.
@@ -236,8 +237,8 @@ public class Shipment implements Job{
 			return new Shipment(this);
 		}
 
-		public Builder addSkill(String string) {
-			skills.add(string.toLowerCase());
+		public Builder addSkill(String skill) {
+			skillBuilder.addSkill(skill);
 			return this;
 		}
 
@@ -264,7 +265,7 @@ public class Shipment implements Job{
 	
 	private final Capacity capacity;
 	
-	private final Set<String> skills;
+	private final Skills skills;
 
 	
 	/**
@@ -283,7 +284,7 @@ public class Shipment implements Job{
 		this.deliveryServiceTime = builder.deliveryServiceTime;
 		this.deliveryTimeWindow = builder.deliveryTimeWindow;
 		this.capacity = builder.capacity;
-		this.skills = builder.skills;
+		this.skills = builder.skillBuilder.build();
 	}
 	
 	@Override
@@ -400,11 +401,8 @@ public class Shipment implements Job{
 		return capacity;
 	}
 
-	public Set<String> getRequiredSkills() {
-		return Collections.unmodifiableSet(skills);
+	public Skills getRequiredSkills() {
+		return skills;
 	}
-	
-	public boolean requiresSkill(String requiredSkill){
-		return skills.contains(requiredSkill.toLowerCase());
-	}
+
 }

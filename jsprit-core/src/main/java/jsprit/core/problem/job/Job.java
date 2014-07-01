@@ -18,6 +18,7 @@ package jsprit.core.problem.job;
 
 
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Skills;
 
 /**
  * Basic interface for all jobs.
@@ -40,5 +41,12 @@ public interface Job {
 	 * @return Capacity
 	 */
 	public Capacity getSize();
+
+    /**
+     * Returns required skills.
+     *
+     * @return
+     */
+    public Skills getRequiredSkills();
 	
 }
