@@ -53,7 +53,7 @@ public class Capacity {
 	/**
 	 * Returns the inverted capacity, i.e. it multiplies all capacity dimensions with -1.
 	 * 
-	 * @param cap
+	 * @param cap2invert
 	 * @return inverted capacity
 	 * @throws NullPointerException if one of the args is null
 	 */
