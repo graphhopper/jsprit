@@ -31,6 +31,7 @@ import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Skills;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
@@ -66,10 +67,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		}
 		
 		public <T> T getState(StateId id, Class<T> type){
-			if(states.containsKey(id)){
-				T s = type.cast(states.get(id));
-				return s;
-			}
+			if(states.containsKey(id)) return type.cast(states.get(id));
 			return null;
 		}
 		
@@ -121,7 +119,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		defaultActivityStates_.put(StateFactory.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
 		
 		defaultRouteStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
-		
+		defaultRouteStates_.put(StateFactory.SKILLS, Skills.Builder.newInstance().build());
 		defaultRouteStates_.put(StateFactory.COSTS, 0.);
 		defaultRouteStates_.put(StateFactory.DURATION, 0.);
 		defaultRouteStates_.put(StateFactory.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
@@ -300,7 +298,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>you can retrieve the duration of myRoute then by <br>
 	 * <code>double totalRouteDuration = stateManager.getRouteState(myRoute, StateFactory.createStateId("route-duration"), Double.class);</code> 
 	 * 
-	 * @param act
+	 * @param route
 	 * @param stateId
 	 * @param type
 	 * @param state
@@ -353,7 +351,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>This reverseVisitor visits all activities in a route subsequently (starting from the end of the route) in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
 	 * and, second, if a job has been inserted and thus if a route has changed. 
 	 * 
-	 * @param reverseActivityVistor
+	 * @param activityVistor
 	 */
 	 void addActivityVisitor(ReverseActivityVisitor activityVistor){
 		revRouteActivityVisitor.addActivityVisitor(activityVistor);
@@ -384,18 +382,20 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 //		log.debug("insert " + job2insert + " in " + inRoute);
 		insertionListeners.informJobInserted(job2insert, inRoute, additionalCosts, additionalTime);
-		for(RouteVisitor v : routeVisitors){ v.visit(inRoute); }
-		routeActivityVisitor.visit(inRoute);
-		revRouteActivityVisitor.visit(inRoute);
+        update(inRoute);
 	}
 
-	@Override
+    public void update(VehicleRoute inRoute) {
+        for(RouteVisitor v : routeVisitors){ v.visit(inRoute); }
+        routeActivityVisitor.visit(inRoute);
+        revRouteActivityVisitor.visit(inRoute);
+    }
+
+    @Override
 	public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes,Collection<Job> unassignedJobs) {
 		insertionListeners.informInsertionStarts(vehicleRoutes, unassignedJobs);
-		for(VehicleRoute route : vehicleRoutes){ 
-			for(RouteVisitor v : routeVisitors){ v.visit(route); }
-			routeActivityVisitor.visit(route);
-			revRouteActivityVisitor.visit(route);
+		for(VehicleRoute route : vehicleRoutes){
+            update(route);
 		}
 	}
 	
