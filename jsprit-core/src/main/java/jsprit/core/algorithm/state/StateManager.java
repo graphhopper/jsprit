@@ -57,8 +57,8 @@ import jsprit.core.problem.solution.route.state.StateFactory.StateId;
  *
  */
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
-	
-	static class States_ {
+
+    static class States_ {
 		
 		private Map<StateId,Object> states = new HashMap<StateId,Object>();
 		
@@ -110,6 +110,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	private boolean updateLoad = false;
 	
 	private boolean updateTWs = false;
+
+    private boolean updateSkills = false;
 	
 	private void addDefaultStates() {
 		defaultActivityStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
@@ -164,9 +166,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * can add the default simply by coding <br>
 	 * <code>addDefaultRouteState(StateFactory.createStateId("max_weight"), Integer.class, 0)</code>
 	 * 
-	 * @param stateId
-	 * @param type
-	 * @param defaultState
+	 * @param stateId id of state
+	 * @param type type of memorized state
+	 * @param defaultState actual state
 	 */
 	public <T> void addDefaultRouteState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
@@ -175,10 +177,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	/**
 	 * Generic method to add default activity state.
-	 * 
-	 * @param stateId
-	 * @param type
-	 * @param defaultState
+	 *
+     * @param stateId id of state
+     * @param type type of memorized state
+     * @param defaultState actual state
 	 */
 	public <T> void addDefaultActivityState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
@@ -211,11 +213,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	}
 
 	/**
-	 * 
-	 * @param act
-	 * @param stateId
-	 * @param type
-	 * @return
+	 *
+     * @param act tour activity
+     * @param stateId id of state
+     * @param type of actual state
+     *
+	 * @return state
 	 */
 	private <T> T getDefaultTypedActivityState(TourActivity act, StateId stateId,Class<T> type) {
 		if(defaultActivityStates_.containsKey(stateId)){
@@ -263,10 +266,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>you can retrieve the load at myActivity by <br>
 	 * <code>Capacity load = stateManager.getActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class);</code>
 	 * 
-	 * @param act
-	 * @param stateId
-	 * @param type
-	 * @param state
+	 * @param act tour activity
+	 * @param stateId stateId of state to be memorized
+	 * @param type type of state
+	 * @param state acutall state
 	 */
 	public <T> void putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
@@ -298,10 +301,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>you can retrieve the duration of myRoute then by <br>
 	 * <code>double totalRouteDuration = stateManager.getRouteState(myRoute, StateFactory.createStateId("route-duration"), Double.class);</code> 
 	 * 
-	 * @param route
-	 * @param stateId
-	 * @param type
-	 * @param state
+	 * @param route vehilcRoute that gets a state
+	 * @param stateId id of state
+	 * @param type of state
+	 * @param state actual state
 	 */
 	public <T> void putTypedRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
@@ -318,7 +321,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>The following rule pertain for activity/route visitors:These visitors visits all activities/route in a route subsequently in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
 	 * and, second, if a job has been inserted and thus if a route has changed.
 	 *  
-	 * @param updater
+	 * @param updater to be inserted here
 	 */
 	public void addStateUpdater(StateUpdater updater){
 		if(updater instanceof ActivityVisitor) addActivityVisitor((ActivityVisitor) updater);
@@ -444,5 +447,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		}
 	}
 
+    public void updateSkillStates(){
+        if(!updateSkills){
+            updateSkills=true;
+            addActivityVisitor(new UpdateSkills(this));
+        }
+    }
 	
 }
