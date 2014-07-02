@@ -117,13 +117,11 @@ public class StateFactory {
 	}
 	
 	 public static boolean isReservedId(String stateId){
-         if(reservedIds.contains(stateId)) return true;
-         return false;
+         return reservedIds.contains(stateId);
 	 }
 
 	 public static boolean isReservedId(StateId stateId){
-		 if(reservedIds.contains(stateId.toString())) return true;
-		 return false;
+		 return reservedIds.contains(stateId.toString());
 	 }
 
 	public static void throwReservedIdException(String name) {
