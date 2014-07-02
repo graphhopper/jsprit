@@ -6,23 +6,6 @@
      </problemType>
      <vehicles>
           <vehicle>
-               <id>v5</id>
-               <typeId>vehType3</typeId>
-               <startLocation>
-                    <id>startLoc</id>
-                    <coord x="10.0" y="100.0"/>
-               </startLocation>
-               <endLocation>
-                    <id>endLoc</id>
-                    <coord x="1000.0" y="2000.0"/>
-               </endLocation>
-               <timeSchedule>
-                    <start>0.0</start>
-                    <end>1000.0</end>
-               </timeSchedule>
-               <returnToDepot>true</returnToDepot>
-          </vehicle>
-          <vehicle>
                <id>v2</id>
                <typeId>vehType2</typeId>
                <startLocation>
@@ -42,6 +25,23 @@
           <vehicle>
                <id>v3</id>
                <typeId>vehType2</typeId>
+               <startLocation>
+                    <id>startLoc</id>
+                    <coord x="10.0" y="100.0"/>
+               </startLocation>
+               <endLocation>
+                    <id>endLoc</id>
+                    <coord x="1000.0" y="2000.0"/>
+               </endLocation>
+               <timeSchedule>
+                    <start>0.0</start>
+                    <end>1000.0</end>
+               </timeSchedule>
+               <returnToDepot>true</returnToDepot>
+          </vehicle>
+          <vehicle>
+               <id>v5</id>
+               <typeId>vehType3</typeId>
                <startLocation>
                     <id>startLoc</id>
                     <coord x="10.0" y="100.0"/>
