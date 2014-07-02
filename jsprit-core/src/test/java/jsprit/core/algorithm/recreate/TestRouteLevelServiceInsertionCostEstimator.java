@@ -1,5 +1,12 @@
 package jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -9,10 +16,7 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
-import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.PickupActivity;
-import jsprit.core.problem.solution.route.activity.PickupService;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -20,15 +24,9 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.CostFactory;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by schroeder on 02.07.14.
@@ -79,8 +77,6 @@ public class TestRouteLevelServiceInsertionCostEstimator {
     @Test
     public void whenNewServiceNeedToBeInserted_itShouldReturnCorrectInsertionCosts(){
         Service s4 = Service.Builder.newInstance("s4").setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
-//        PickupActivity pickupService = new PickupService(s4);
-        JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
         ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
@@ -93,8 +89,6 @@ public class TestRouteLevelServiceInsertionCostEstimator {
     @Test
     public void whenNewServiceNeedToBeInserted_itShouldReturnCorrectInsertionIndex(){
         Service s4 = Service.Builder.newInstance("s4").setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
-//        PickupActivity pickupService = new PickupService(s4);
-        JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
         ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
@@ -107,8 +101,6 @@ public class TestRouteLevelServiceInsertionCostEstimator {
     @Test
     public void whenNewServiceWithServiceTimeNeedToBeInserted_itShouldReturnCorrectInsertionData(){
         Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
-//        PickupActivity pickupService = new PickupService(s4);
-        JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
         ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
@@ -125,7 +117,6 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
 //        PickupActivity pickupService = new PickupService(s4);
         VehicleRoute emptyroute = VehicleRoute.emptyRoute();
-        JobInsertionContext context = new JobInsertionContext(emptyroute,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
         ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
@@ -141,7 +132,6 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(3.,3.)).build();
 //        PickupActivity pickupService = new PickupService(s4);
         VehicleRoute emptyroute = VehicleRoute.emptyRoute();
-        JobInsertionContext context = new JobInsertionContext(emptyroute,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
         ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
