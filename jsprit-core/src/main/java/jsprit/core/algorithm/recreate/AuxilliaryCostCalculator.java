@@ -39,15 +39,15 @@ final class AuxilliaryCostCalculator {
 		this.routingCosts = routingCosts;
 		this.activityCosts = actCosts;
 	}
-	
-	/**
-	 * 
-	 * @param path
-	 * @param depTime
-	 * @param driver
-	 * @param vehicle
-	 * @return
-	 */
+
+    /**
+     *
+     * @param path activity path to get the costs for
+     * @param depTime departure time at first activity in path
+     * @param driver driver of vehicle
+     * @param vehicle vehicle running the path
+     * @return cost of path
+     */
 	public double costOfPath(final List<TourActivity> path, final double depTime, final Driver driver, final Vehicle vehicle){
 		if(path.isEmpty()){
 			return 0.0;
@@ -69,9 +69,7 @@ final class AuxilliaryCostCalculator {
 			double transportTime = routingCosts.getTransportTime(prevAct.getLocationId(), act.getLocationId(), departureTimePrevAct, driver, vehicle);
 			cost += transportCost;
 			double actStartTime = departureTimePrevAct + transportTime;
-			double earliestOperationStartTime = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime());
-			double actEndTime = earliestOperationStartTime + act.getOperationTime();
-			departureTimePrevAct = actEndTime;
+            departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
 			cost += activityCosts.getActivityCost(act, actStartTime, driver, vehicle);
 			prevAct = act;
 		}

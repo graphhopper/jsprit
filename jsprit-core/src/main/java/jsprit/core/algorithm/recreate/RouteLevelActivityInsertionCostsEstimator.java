@@ -57,14 +57,13 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 		path.add(prevAct); path.add(newAct); path.add(nextAct);
 		int actIndex;
 		if(prevAct instanceof Start) actIndex = 0;
-		else actIndex = iFacts.getRoute().getTourActivities().getActivities().indexOf(prevAct);
+		else actIndex = iFacts.getRoute().getTourActivities().getActivities().indexOf(nextAct);
 		if(nuOfActivities2LookForward > 0){ path.addAll(getForwardLookingPath(iFacts.getRoute(),actIndex)); }
 
-		/**
+		/*
 		 * calculates the path costs with new vehicle, c(forwardPath,newVehicle).
 		 */
-		double forwardPathCost_newVehicle = auxilliaryPathCostCalculator.costOfPath(path, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle()); 
-
+		double forwardPathCost_newVehicle = auxilliaryPathCostCalculator.costOfPath(path, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		double additionalCosts = forwardPathCost_newVehicle - (actCostsOld(iFacts.getRoute(), path.get(path.size()-1)) - actCostsOld(iFacts.getRoute(), prevAct));
 		
 		return new ActivityInsertionCosts(additionalCosts, 0.0);
@@ -93,4 +92,7 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 		return forwardLookingPath;
 	}
 
+    public void setForwardLooking(int nActivities) {
+        this.nuOfActivities2LookForward = nActivities;
+    }
 }
