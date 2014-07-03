@@ -112,7 +112,7 @@ public class VehicleRoutingAlgorithm {
 	/**
 	 * Adds solution to the collection of initial solutions.
 	 * 
-	 * @param solution
+	 * @param solution to the set of initialSolutions
 	 */
 	public void addInitialSolution(VehicleRoutingProblemSolution solution){
 		initialSolutions.add(solution);
@@ -121,7 +121,7 @@ public class VehicleRoutingAlgorithm {
 	/**
 	 * Sets premature termination.
 	 *
-	 * @param prematureAlgorithmTermination
+	 * @param prematureAlgorithmTermination that terminates the algorithm according to its termination criterion
 	 */
 	public void setPrematureAlgorithmTermination(PrematureAlgorithmTermination prematureAlgorithmTermination){
 		this.prematureAlgorithmTermination = prematureAlgorithmTermination;
