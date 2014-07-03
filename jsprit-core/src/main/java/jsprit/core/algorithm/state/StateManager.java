@@ -343,10 +343,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>This visitor visits all activities in a route subsequently in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
 	 * and, second, if a job has been inserted and thus if a route has changed. 
 	 * 
-	 * @param activityVistor
+	 * @param activityVisitor
 	 */
-	 void addActivityVisitor(ActivityVisitor activityVistor){
-		routeActivityVisitor.addActivityVisitor(activityVistor);
+	 void addActivityVisitor(ActivityVisitor activityVisitor){
+		routeActivityVisitor.addActivityVisitor(activityVisitor);
 	}
 
 	/**
@@ -354,10 +354,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>This reverseVisitor visits all activities in a route subsequently (starting from the end of the route) in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
 	 * and, second, if a job has been inserted and thus if a route has changed. 
 	 * 
-	 * @param activityVistor
+	 * @param activityVisitor
 	 */
-	 void addActivityVisitor(ReverseActivityVisitor activityVistor){
-		revRouteActivityVisitor.addActivityVisitor(activityVistor);
+	 void addActivityVisitor(ReverseActivityVisitor activityVisitor){
+		revRouteActivityVisitor.addActivityVisitor(activityVisitor);
 	}
 
 	 void addRouteVisitor(RouteVisitor routeVisitor){
