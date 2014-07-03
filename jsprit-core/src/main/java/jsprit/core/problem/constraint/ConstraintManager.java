@@ -118,7 +118,7 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 
     public void addSkillsConstraint() {
         if (!skillconstraintSet){
-            addConstraint(new SkillConstraint(stateManager));
+            addConstraint(new HardSkillConstraint(stateManager));
             skillconstraintSet=true;
         }
     }
