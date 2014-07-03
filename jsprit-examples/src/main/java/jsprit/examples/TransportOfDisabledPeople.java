@@ -215,14 +215,12 @@ public class TransportOfDisabledPeople {
 		problemPlotter.plotShipments(true);
 		problemPlotter.setLabel(jsprit.analysis.toolbox.Plotter.Label.SIZE);
 		problemPlotter.plot("output/transportOfDisabledPeopleExample_problem.png", "disabled people tp");
-//		
-//		/*
-//		 * plot problem with solution
-//		 */
-//		Plotter solutionPlotter = new Plotter(problem,Arrays.asList(Solutions.bestOf(solutions).getRoutes().iterator().next()));
-//		solutionPlotter.plotShipments(true);
-//		solutionPlotter.plot("output/enRoutePickupAndDeliveryWithMultipleLocationsExample_solution.png", "en-route pickup and delivery");
-		
+
+        Plotter solutionPlotter = new Plotter(problem,Solutions.bestOf(solutions));
+        solutionPlotter.plotShipments(true);
+        solutionPlotter.setLabel(jsprit.analysis.toolbox.Plotter.Label.SIZE);
+        solutionPlotter.plot("output/transportOfDisabledPeopleExample_solution.png", "disabled people tp");
+
 		new GraphStreamViewer(problem).labelWith(Label.ID).setRenderDelay(100).setRenderShipments(true).display();
 		
 		new GraphStreamViewer(problem,Solutions.bestOf(solutions)).labelWith(Label.ACTIVITY).setRenderDelay(100).setRenderShipments(true).display();
