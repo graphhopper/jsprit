@@ -128,7 +128,8 @@ public class Plotter {
 			if(activity.equals(Activity.DELIVERY)) return DELIVERY_COLOR;
 			if(activity.equals(Activity.SERVICE)) return SERVICE_COLOR;
 			if(activity.equals(Activity.START)) return START_COLOR;
-			return END_COLOR;
+            if(activity.equals(Activity.END)) return END_COLOR;
+			throw new IllegalStateException("activity at "+dataItem.toString()+" cannot be assigned to a color");
 		}
 		
 	}
@@ -219,7 +220,7 @@ public class Plotter {
 	 * Constructs Plotter with problem and routes to render individual routes.
 	 * 
 	 * @param vrp
-	 * @param solution
+	 * @param routes
 	 */
 	public Plotter(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) {
 		super();
@@ -231,8 +232,8 @@ public class Plotter {
 	/**
 	 * 
 	 * @param show
-	 * @return
-	 * @deprecate always true
+	 * @return plotter
+	 * @deprecated always true
 	 */
 	@Deprecated
 	public Plotter setShowFirstActivity(boolean show){
@@ -614,7 +615,9 @@ public class Plotter {
 			if(!v.getStartLocationId().equals(v.getEndLocationId())){
 				Coordinate endCoord = v.getEndLocationCoordinate();
 				if(endCoord == null) throw new NoLocationFoundException();
-				activities.add(endCoord.getX()*scalingFactor,endCoord.getY()*scalingFactor);
+                XYDataItem enditem = new XYDataItem(endCoord.getX()*scalingFactor,endCoord.getY()*scalingFactor);
+                markItem(enditem,Activity.END, null);
+                activities.add(enditem);
 			}
 		}
 		for(Job job : vrp.getJobs().values()){
