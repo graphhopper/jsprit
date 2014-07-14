@@ -48,7 +48,7 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 	 * that is MUST be visited. It also assumes that pd-activities are visited in the order they occur in a tour.
 	 * 
 	 * 
-	 * @param stateManager
+	 * @param stateManager the stateManager
 	 */
 	public PickupAndDeliverShipmentLoadActivityLevelConstraint(RouteAndActivityStateGetter stateManager) {
 		super();
@@ -65,7 +65,6 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 			return ConstraintsStatus.FULFILLED;
 		}
 		Capacity loadAtPrevAct;
-//		int loadAtPrevAct;
 		if(prevAct instanceof Start){
 			loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING, Capacity.class);
 		}
@@ -76,17 +75,11 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 			if(!Capacity.addup(loadAtPrevAct, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())){
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
-//			if(loadAtPrevAct + newAct.getCapacityDemand() > iFacts.getNewVehicle().getCapacity()){
-//				return ConstraintsStatus.NOT_FULFILLED;
-//			}
 		}
 		if(newAct instanceof DeliverShipment){
 			if(!Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize())).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())){
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
-//			if(loadAtPrevAct + Math.abs(newAct.getCapacityDemand()) > iFacts.getNewVehicle().getCapacity()){
-//				return ConstraintsStatus.NOT_FULFILLED_BREAK;
-//			}
 		}
 		return ConstraintsStatus.FULFILLED;
 	}
