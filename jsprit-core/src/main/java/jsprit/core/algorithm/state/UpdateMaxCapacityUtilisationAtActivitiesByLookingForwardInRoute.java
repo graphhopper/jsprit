@@ -50,7 +50,6 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
 	private VehicleRoute route;
 	
 	private Capacity maxLoad = Capacity.Builder.newInstance().build();
-//	private double maxLoad;
 	
 	public UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute(StateManager stateManager) {
 		super();
@@ -61,19 +60,14 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
 	public void begin(VehicleRoute route) {
 		this.route = route;
 		maxLoad = stateManager.getRouteState(route, StateFactory.LOAD_AT_END, Capacity.class);
-//		maxLoad = stateManager.getRouteState(route, StateFactory.LOAD_AT_END).toDouble();
 	}
 
 	@Override
 	public void visit(TourActivity act) {
 		maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, StateFactory.LOAD, Capacity.class));
-//		maxLoad = Math.max(maxLoad, stateManager.getActivityState(act, StateFactory.LOAD).toDouble());
 		stateManager.putInternalTypedActivityState(act, StateFactory.FUTURE_MAXLOAD, Capacity.class, maxLoad);
-//		stateManager.putInternalActivityState(act, StateFactory.FUTURE_MAXLOAD, StateFactory.createState(maxLoad));
 		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can in every capacity dimension never be bigger than vehicleCap";
-//		assert maxLoad <= route.getVehicle().getCapacity() : "maxLoad can never be bigger than vehicleCap";
 		assert maxLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
-		//		assert maxLoad >= 0 : "maxLoad can never be smaller than 0";
 	}
 
 	@Override
