@@ -16,27 +16,19 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.algorithm.recreate.listener.InsertionListener;
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.RandomNumberGeneration;
-
 import org.apache.log4j.Logger;
+
+import java.util.*;
+import java.util.concurrent.*;
 
 
 
@@ -104,12 +96,12 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 		this.random = random;
 	}
 	
-	public BestInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, ExecutorService executorService, int nuOfBatches) {
+	public BestInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, ExecutorService executorService, int nuOfBatches, VehicleRoutingProblem vehicleRoutingProblem) {
 		super();
 		this.insertionsListeners = new InsertionListeners();
 		this.executor = executorService;
 		this.nuOfBatches = nuOfBatches;
-		inserter = new Inserter(insertionsListeners);
+		inserter = new Inserter(insertionsListeners, vehicleRoutingProblem);
 		bestInsertionCostCalculator = jobInsertionCalculator;
 		completionService = new ExecutorCompletionService<Insertion>(executor);
 		logger.info("initialise " + this);

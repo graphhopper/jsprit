@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.AbstractJob;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
@@ -31,7 +32,7 @@ import jsprit.core.util.Coordinate;
  * @author schroeder
  *
  */
-public class Service implements Job {
+public class Service extends AbstractJob {
 
 	/**
 	 * Builder that builds a service.

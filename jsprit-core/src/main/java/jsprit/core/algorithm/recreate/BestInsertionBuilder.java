@@ -18,16 +18,16 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import jsprit.core.algorithm.recreate.listener.InsertionListener;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 
 public class BestInsertionBuilder {
@@ -150,12 +150,10 @@ public class BestInsertionBuilder {
 		JobInsertionCostsCalculator jobInsertions = calcBuilder.build();
 		InsertionStrategy bestInsertion;
 		if(executor == null){
-			bestInsertion = new BestInsertion(jobInsertions);
-			
+			bestInsertion = new BestInsertion(jobInsertions,vrp);
 		}
 		else{
-
-			bestInsertion = new BestInsertionConcurrent(jobInsertions,executor,nuOfThreads);
+			bestInsertion = new BestInsertionConcurrent(jobInsertions,executor,nuOfThreads,vrp);
 
 		}
 		for(InsertionListener l : iListeners) bestInsertion.addListener(l);
@@ -164,8 +162,8 @@ public class BestInsertionBuilder {
 
 	/**
 	 * @deprecated this is experimental and can disappear.
-	 * @param parseDouble
-	 * @param parseInt
+	 * @param timeSlice the time slice
+	 * @param nNeighbors number of neighbors
 	 */
 	@Deprecated
 	public void experimentalTimeScheduler(double timeSlice, int nNeighbors) {

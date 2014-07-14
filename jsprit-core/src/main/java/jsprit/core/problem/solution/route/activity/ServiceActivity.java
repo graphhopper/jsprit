@@ -16,11 +16,12 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.AbstractTourActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
-public class ServiceActivity implements JobActivity{
+public class ServiceActivity extends AbstractTourActivity implements JobActivity{
 	
 	public static int counter = 0;
 	
@@ -77,6 +78,7 @@ public class ServiceActivity implements JobActivity{
 		this.service = serviceActivity.getJob();
 		this.arrTime = serviceActivity.getArrTime();
 		this.endTime = serviceActivity.getEndTime();
+        setIndex(serviceActivity.getIndex());
 	}
 	
 	

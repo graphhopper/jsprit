@@ -17,6 +17,7 @@
 package jsprit.core.problem.solution.route.activity;
 
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.HasIndex;
 import jsprit.core.problem.job.Job;
 
 /**
@@ -27,7 +28,7 @@ import jsprit.core.problem.job.Job;
  * @author schroeder
  *
  */
-public interface TourActivity {
+public interface TourActivity extends HasIndex {
 
 	/**
 	 * Basic interface of job-activies.

@@ -16,36 +16,26 @@
  ******************************************************************************/
 package jsprit.core.problem;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.Constraint;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
-import jsprit.core.problem.job.Delivery;
-import jsprit.core.problem.job.Pickup;
-import jsprit.core.problem.job.Service;
-import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.job.*;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.vehicle.PenaltyVehicleType;
-import jsprit.core.problem.vehicle.Vehicle;
-import jsprit.core.problem.vehicle.VehicleImpl;
-import jsprit.core.problem.vehicle.VehicleType;
-import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.problem.vehicle.*;
 import jsprit.core.util.Coordinate;
-
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class VehicleRoutingProblemTest {
@@ -186,9 +176,11 @@ public class VehicleRoutingProblemTest {
 	public void whenDelivieriesAreAdded_vrpShouldContainThem(){
 		Delivery s1 = mock(Delivery.class);
 		when(s1.getId()).thenReturn("s1");
+        when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().build());
 		Delivery s2 = mock(Delivery.class);
 		when(s2.getId()).thenReturn("s2");
-		
+        when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addJob(s1).addJob(s2);
 		
@@ -203,9 +195,11 @@ public class VehicleRoutingProblemTest {
 	public void whenDelivieriesAreAddedAllAtOnce_vrpShouldContainThem(){
 		Delivery s1 = mock(Delivery.class);
 		when(s1.getId()).thenReturn("s1");
+        when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().build());
 		Delivery s2 = mock(Delivery.class);
 		when(s2.getId()).thenReturn("s2");
-		
+        when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addAllJobs(Arrays.asList(s1,s2));
 		
@@ -541,4 +535,33 @@ public class VehicleRoutingProblemTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		assertFalse(vrp.getJobs().containsKey("myService"));
 	}
+
+    @Test
+    public void whenAddingTwoJobs_theyShouldHaveProperIndeces(){
+        Job service = Service.Builder.newInstance("myService").setLocationId("loc").build();
+        Job shipment = Shipment.Builder.newInstance("shipment").setPickupLocation("pick").setDeliveryLocation("del").build();
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        vrpBuilder.addJob(service);
+        vrpBuilder.addJob(shipment);
+        vrpBuilder.build();
+
+        assertEquals(0,service.getIndex());
+        assertEquals(1,shipment.getIndex());
+
+    }
+
+    @Test
+    public void whenAddingTwoVehicles_theyShouldHaveProperIndeces(){
+        Vehicle veh1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+        Vehicle veh2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        vrpBuilder.addVehicle(veh1);
+        vrpBuilder.addVehicle(veh2);
+        vrpBuilder.build();
+
+        assertEquals(0,veh1.getIndex());
+        assertEquals(1,veh2.getIndex());
+
+    }
 }

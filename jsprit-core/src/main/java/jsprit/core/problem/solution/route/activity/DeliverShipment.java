@@ -18,11 +18,12 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.AbstractTourActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 
-public final class DeliverShipment implements DeliveryActivity{
+public final class DeliverShipment extends AbstractTourActivity implements DeliveryActivity{
 
 	private Shipment shipment;
 	
@@ -38,11 +39,13 @@ public final class DeliverShipment implements DeliveryActivity{
 		this.capacity = Capacity.invert(shipment.getSize());
 	}
 
+    @Deprecated
 	public DeliverShipment(DeliverShipment deliveryShipmentActivity) {
 		this.shipment = (Shipment) deliveryShipmentActivity.getJob();
 		this.arrTime = deliveryShipmentActivity.getArrTime();
 		this.endTime = deliveryShipmentActivity.getEndTime();
 		this.capacity = deliveryShipmentActivity.getSize();
+        setIndex(deliveryShipmentActivity.getIndex());
 	}
 
 	@Override

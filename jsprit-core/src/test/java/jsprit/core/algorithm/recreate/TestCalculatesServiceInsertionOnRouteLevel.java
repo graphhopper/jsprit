@@ -16,17 +16,10 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 import jsprit.core.algorithm.ExampleActivityCostFunction;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
+import jsprit.core.problem.AbstractVehicle;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
@@ -45,11 +38,18 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.ManhattanDistanceCalculator;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 
@@ -60,9 +60,9 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 	
 	VehicleRoutingTransportCosts costs;
 	
-	Vehicle vehicle;
+	AbstractVehicle vehicle;
 	
-	Vehicle newVehicle;
+	AbstractVehicle newVehicle;
 
 	private Service first;
 
@@ -79,7 +79,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 		
 		costs = mock(VehicleRoutingTransportCosts.class);
-		vehicle = mock(Vehicle.class);
+		vehicle = mock(AbstractVehicle.class);
 		VehicleType type = mock(VehicleType.class);
 		
 		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 1000).build());
@@ -91,7 +91,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		when(vehicle.getLatestArrival()).thenReturn(100.0);
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
-		newVehicle = mock(Vehicle.class);
+		newVehicle = mock(AbstractVehicle.class);
 		when(newVehicle.getType()).thenReturn(type);
 		when(newVehicle.getStartLocationId()).thenReturn("0,0");
 		when(newVehicle.getEndLocationId()).thenReturn("0,0");

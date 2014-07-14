@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.AbstractTourActivity;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
@@ -23,8 +24,8 @@ import jsprit.core.problem.job.Service;
 public class DefaultTourActivityFactory implements TourActivityFactory{
 
 	@Override
-	public TourActivity createActivity(Service service) {
-		TourActivity act;
+	public AbstractTourActivity createActivity(Service service) {
+		AbstractTourActivity act;
 		if(service instanceof Pickup){
 			act = new PickupService((Pickup) service);
 		}

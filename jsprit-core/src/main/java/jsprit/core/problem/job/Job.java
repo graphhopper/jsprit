@@ -18,6 +18,8 @@ package jsprit.core.problem.job;
 
 
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.HasId;
+import jsprit.core.problem.HasIndex;
 
 /**
  * Basic interface for all jobs.
@@ -25,7 +27,7 @@ import jsprit.core.problem.Capacity;
  * @author schroeder
  *
  */
-public interface Job {
+public interface Job extends HasId, HasIndex {
 
 	/**
 	 * Returns the unique identifier (id) of a job.

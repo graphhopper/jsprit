@@ -16,12 +16,9 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
-
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -29,8 +26,12 @@ import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.instance.reader.SolomonReader;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 
 public class SolomonExample {
@@ -80,7 +81,14 @@ public class SolomonExample {
 		 * Retrieve best solution.
 		 */
 		VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
-		
+
+        for(VehicleRoute r : solution.getRoutes()){
+            System.out.println(r.getStart() + ";" + r.getStart().getIndex());
+            for(TourActivity act : r.getActivities()){
+                System.out.println(act + ";" + act.getIndex());
+            }
+            System.out.println(r.getEnd() + ";" + r.getEnd().getIndex());
+        }
 		/*
 		 * print solution
 		 */

@@ -16,11 +16,13 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.AbstractTourActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.util.Coordinate;
 
-public final class End implements TourActivity {
+public final class End extends AbstractTourActivity implements TourActivity {
 
+    @Deprecated
 	public static int creation = 0;
 	
 	public static End newInstance(String locationId, double earliestArrival, double latestArrival) {
@@ -69,6 +71,7 @@ public final class End implements TourActivity {
 		theoretical_earliestOperationStartTime = theoreticalStart;
 		theoretical_latestOperationStartTime = theoreticalEnd;
 		endTime = theoreticalEnd;
+        setIndex(-2);
 	}
 
 	public End(End end) {
@@ -77,6 +80,7 @@ public final class End implements TourActivity {
 		theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime();
 		arrTime = end.getArrTime();
 		endTime = end.getEndTime();
+        setIndex(-2);
 	}
 
 	public double getTheoreticalEarliestOperationStartTime() {

@@ -18,11 +18,12 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.AbstractTourActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 
-public final class PickupService implements PickupActivity{
+public final class PickupService extends AbstractTourActivity implements PickupActivity{
 	
 	private Service pickup;
 	
@@ -43,6 +44,7 @@ public final class PickupService implements PickupActivity{
 		this.pickup=pickupActivity.getJob();
 		this.arrTime=pickupActivity.getArrTime();
 		this.depTime=pickupActivity.getEndTime();
+        setIndex(pickupActivity.getIndex());
 	}
 
 	@Override

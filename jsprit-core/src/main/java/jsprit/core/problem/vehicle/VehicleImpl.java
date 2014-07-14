@@ -16,8 +16,8 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+import jsprit.core.problem.AbstractVehicle;
 import jsprit.core.util.Coordinate;
-
 import org.apache.log4j.Logger;
 
 
@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
  * 
  */
 
-public class VehicleImpl implements Vehicle {
+public class VehicleImpl extends AbstractVehicle{
 
 	/**
 	 * Extension of {@link VehicleImpl} representing an unspecified vehicle with the id 'noVehicle'

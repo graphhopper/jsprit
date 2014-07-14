@@ -16,6 +16,8 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+import jsprit.core.problem.HasId;
+import jsprit.core.problem.HasIndex;
 import jsprit.core.util.Coordinate;
 
 /**
@@ -24,7 +26,7 @@ import jsprit.core.util.Coordinate;
  * @author schroeder
  *
  */
-public interface Vehicle {
+public interface Vehicle extends HasId, HasIndex {
 
 	/**
 	 * Returns the earliest departure of vehicle which should be the lower bound of this vehicle's departure times. 

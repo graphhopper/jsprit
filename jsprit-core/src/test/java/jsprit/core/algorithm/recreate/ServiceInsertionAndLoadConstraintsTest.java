@@ -18,11 +18,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
-import java.util.Arrays;
-
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -38,6 +33,7 @@ import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.DeliverService;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -45,9 +41,16 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.CostFactory;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class ServiceInsertionAndLoadConstraintsTest {
@@ -83,6 +86,8 @@ public class ServiceInsertionAndLoadConstraintsTest {
 	ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 	
 	ShipmentInsertionCalculator insertionCalculator;
+
+    VehicleRoutingProblem vehicleRoutingProblem;
 	
 	Vehicle vehicle;
 	
@@ -93,6 +98,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
+        vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
 	}
 
 	private void createInsertionCalculator(HardRouteStateLevelConstraint hardRouteLevelConstraint) {
@@ -112,8 +118,10 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
-		Inserter inserter = new Inserter(new InsertionListeners());
-		
+		Inserter inserter = new Inserter(new InsertionListeners(), vehicleRoutingProblem);
+        List<TourActivity> acts = new ArrayList<TourActivity>();
+        acts.add(new DeliverService(delivery));
+        when(vehicleRoutingProblem.copyAndGetActivities(delivery)).thenReturn(acts);
 		inserter.insertJob(delivery, new InsertionData(0,0,0,vehicle,null), route);
 		
 		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);

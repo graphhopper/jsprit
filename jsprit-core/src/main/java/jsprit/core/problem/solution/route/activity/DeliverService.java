@@ -18,10 +18,11 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.AbstractTourActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Delivery;
 
-public final class DeliverService implements DeliveryActivity{
+public final class DeliverService extends AbstractTourActivity implements DeliveryActivity{
 	
 	private Delivery delivery;
 	
@@ -42,6 +43,7 @@ public final class DeliverService implements DeliveryActivity{
 		this.arrTime=deliveryActivity.getArrTime();
 		this.endTime=deliveryActivity.getEndTime();
 		capacity = deliveryActivity.getSize();
+        setIndex(deliveryActivity.getIndex());
 	}
 
 	@Override

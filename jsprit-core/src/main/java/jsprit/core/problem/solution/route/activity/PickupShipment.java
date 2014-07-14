@@ -18,11 +18,12 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.AbstractTourActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 
-public final class PickupShipment implements PickupActivity{
+public final class PickupShipment extends AbstractTourActivity implements PickupActivity{
 
 	private Shipment shipment;
 	
@@ -35,10 +36,12 @@ public final class PickupShipment implements PickupActivity{
 		this.shipment = shipment;
 	}
 
+    @Deprecated
 	public PickupShipment(PickupShipment pickupShipmentActivity) {
 		this.shipment = (Shipment) pickupShipmentActivity.getJob();
 		this.arrTime = pickupShipmentActivity.getArrTime();
 		this.endTime = pickupShipmentActivity.getEndTime();
+        setIndex(pickupShipmentActivity.getIndex());
 	}
 
 	@Override
