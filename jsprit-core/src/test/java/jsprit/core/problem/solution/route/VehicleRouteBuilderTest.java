@@ -18,15 +18,15 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.vehicle.Vehicle;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class VehicleRouteBuilderTest {
@@ -41,6 +41,7 @@ public class VehicleRouteBuilderTest {
 	@Test(expected=IllegalStateException.class)
 	public void whenPickupIsAddedTwice_throwsException(){
 		Shipment s = mock(Shipment.class);
+        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().build());
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(s);
@@ -61,10 +62,12 @@ public class VehicleRouteBuilderTest {
 	public void whenShipmentIsPickedUpThoughButHasNotBeenDeliveredAndRouteIsBuilt_throwsException(){
 		Shipment s = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
+        Shipment s2 = mock(Shipment.class);
+        when(s2.getSize()).thenReturn(capacity);
 		when(s.getSize()).thenReturn(capacity);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
 		builder.addPickup(s);
-		builder.addPickup(mock(Shipment.class));
+		builder.addPickup(s2);
 		builder.addDelivery(s);
 		builder.build();
 	}

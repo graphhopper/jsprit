@@ -205,20 +205,20 @@ public class ShipmentInsertionCalculatorTest {
 		Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
 		Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("9,9").build();
 
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment2)).thenReturn(getTourActivities(shipment2));
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleRoutingProblem vrp = vrpBuilder.addJob(shipment).addJob(shipment2).addJob(shipment3).build();
 
         VehicleRoute route = VehicleRoute.emptyRoute();
 		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
-		Inserter inserter = new Inserter(new InsertionListeners(), vehicleRoutingProblem);
+		Inserter inserter = new Inserter(new InsertionListeners(), vrp);
 		
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
 		
-		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+//		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
-		StateManager stateManager = new StateManager(vrp.getTransportCosts());
+		StateManager stateManager = new StateManager(vrp);
 		stateManager.updateLoadStates();		
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
 		
@@ -239,17 +239,18 @@ public class ShipmentInsertionCalculatorTest {
 	public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnNoInsertionData(){
 		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("0,0").build();
 		Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("10,10").setDeliveryLocation("0,0").build();
-		VehicleRoute route = VehicleRoute.emptyRoute();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleRoutingProblem vrp = vrpBuilder.addJob(shipment).addJob(shipment2).build();
+
+        VehicleRoute route = VehicleRoute.emptyRoute();
 		route.setVehicleAndDepartureTime(vehicle, 0.0);
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment2)).thenReturn(getTourActivities(shipment2));
-		Inserter inserter = new Inserter(new InsertionListeners(), vehicleRoutingProblem);
+
+		Inserter inserter = new Inserter(new InsertionListeners(), vrp);
 		
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
-		
-		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
-		
+
 		StateManager stateManager = new StateManager(vrp.getTransportCosts());
 		stateManager.updateLoadStates();
 		stateManager.informInsertionStarts(Arrays.asList(route), null);

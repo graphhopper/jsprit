@@ -454,9 +454,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 			UpdateLoads updateLoads = new UpdateLoads(this);
 			addActivityVisitor(updateLoads);
 			addListener(updateLoads);
-//			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(this));
-//			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute(this));
-//			addActivityVisitor(new UpdateMaxCapacityUtilisationAtRoute(this));
+			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(this));
+			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute(this));
+			addActivityVisitor(new UpdateMaxCapacityUtilisationAtRoute(this));
 		}
 	}
 

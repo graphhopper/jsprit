@@ -18,23 +18,29 @@
  ******************************************************************************/
 package jsprit.core.algorithm.state;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import jsprit.core.problem.Capacity;
+import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Delivery;
+import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.solution.route.ReverseRouteActivityVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.util.CostFactory;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class UpdatePracticalTimeWindowTest {
 	
@@ -56,25 +62,22 @@ public class UpdatePracticalTimeWindowTest {
 		reverseActivityVisitor = new ReverseRouteActivityVisitor();
 		reverseActivityVisitor.addActivityVisitor(new UpdatePracticalTimeWindows(stateManager, routingCosts));
 		
-		Pickup pickup = mock(Pickup.class);
-		when(pickup.getTimeWindow()).thenReturn(TimeWindow.newInstance(0, 30));
-		when(pickup.getLocationId()).thenReturn("0,20");
-		
-		Delivery delivery = mock(Delivery.class);
-		when(delivery.getTimeWindow()).thenReturn(TimeWindow.newInstance(10, 40));
-		when(delivery.getLocationId()).thenReturn("20,20");
-		when(delivery.getSize()).thenReturn(Capacity.Builder.newInstance().build());
-		
-		Pickup pickup2 = mock(Pickup.class);
-		when(pickup2.getTimeWindow()).thenReturn(TimeWindow.newInstance(20, 50));
-		when(pickup2.getLocationId()).thenReturn("20,0");
-		
-		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getStartLocationId()).thenReturn("0,0");
-		when(vehicle.getLatestArrival()).thenReturn(Double.MAX_VALUE);
-		
-		route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
-				.addService(pickup).addService(delivery).addService(pickup2).build();
+		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").setLocationId("0,20").setTimeWindow(TimeWindow.newInstance(0, 30)).build();
+		Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").setLocationId("20,20").setTimeWindow(TimeWindow.newInstance(10, 40)).build();
+		Pickup pickup2 = (Pickup) Pickup.Builder.newInstance("pick2").setLocationId("20,0").setTimeWindow(TimeWindow.newInstance(20, 50)).build();
+
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(mock(VehicleType.class)).build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        final VehicleRoutingProblem vrp = vrpBuilder.addJob(pickup).addJob(pickup2).addJob(delivery).build();
+
+		route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).setJobActivityFactory(new JobActivityFactory() {
+            @Override
+            public List<AbstractActivity> createActivity(Job job) {
+                return vrp.copyAndGetActivities(job);
+            }
+        })
+		.addService(pickup).addService(delivery).addService(pickup2).build();
 		
 		reverseActivityVisitor.visit(route);
 		

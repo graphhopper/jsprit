@@ -17,39 +17,10 @@
 package jsprit.core.algorithm.io;
 
 
-import java.lang.Thread.UncaughtExceptionHandler;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import jsprit.core.algorithm.InsertionInitialSolutionFactory;
-import jsprit.core.algorithm.RemoveEmptyVehicles;
-import jsprit.core.algorithm.ResetAndIniFleetManager;
-import jsprit.core.algorithm.SearchStrategy;
+import jsprit.core.algorithm.*;
 import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
-import jsprit.core.algorithm.SearchStrategyManager;
-import jsprit.core.algorithm.SearchStrategyModule;
-import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.acceptor.AcceptNewRemoveFirst;
-import jsprit.core.algorithm.acceptor.ExperimentalSchrimpfAcceptance;
-import jsprit.core.algorithm.acceptor.GreedyAcceptance;
-import jsprit.core.algorithm.acceptor.GreedyAcceptance_minVehFirst;
-import jsprit.core.algorithm.acceptor.SchrimpfAcceptance;
-import jsprit.core.algorithm.acceptor.SchrimpfInitialThresholdGenerator;
-import jsprit.core.algorithm.acceptor.SolutionAcceptor;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.AbstractKey;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.InsertionStrategyKey;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.RuinStrategyKey;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.SelectorKey;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.StrategyModuleKey;
+import jsprit.core.algorithm.acceptor.*;
+import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.*;
 import jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
@@ -66,11 +37,7 @@ import jsprit.core.algorithm.ruin.distance.JobDistance;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.selector.SelectRandomly;
 import jsprit.core.algorithm.selector.SolutionSelector;
-import jsprit.core.algorithm.state.StateManager;
-import jsprit.core.algorithm.state.StateUpdater;
-import jsprit.core.algorithm.state.UpdateActivityTimes;
-import jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
-import jsprit.core.algorithm.state.UpdateVariableCosts;
+import jsprit.core.algorithm.state.*;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import jsprit.core.algorithm.termination.TimeTermination;
@@ -89,10 +56,15 @@ import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
-
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
+
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class VehicleRoutingAlgorithms {
 	
@@ -485,7 +457,7 @@ public class VehicleRoutingAlgorithms {
 			stateManager = stateMan;
 		}
 		else{
-			stateManager = 	new StateManager(vrp.getTransportCosts());
+			stateManager = 	new StateManager(vrp);
 		}
 		stateManager.updateLoadStates();
 		stateManager.updateTimeWindowStates();

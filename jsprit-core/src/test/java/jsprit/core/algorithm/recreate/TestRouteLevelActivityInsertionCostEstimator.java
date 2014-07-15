@@ -20,6 +20,9 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
+import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
@@ -41,11 +44,12 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by schroeder on 02.07.14.
+ * unit tests to test route level insertion
  */
 public class TestRouteLevelActivityInsertionCostEstimator {
 
@@ -76,7 +80,16 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("0,0").setType(type).build();
 
-        route = VehicleRoute.Builder.newInstance(vehicle).addService(s1).addService(s2).addService(s3).build();
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        final VehicleRoutingProblem vrp = vrpBuilder.addJob(s1).addJob(s2).addJob(s3).build();
+
+        route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new JobActivityFactory() {
+            @Override
+            public List<AbstractActivity> createActivity(Job job) {
+                return vrp.copyAndGetActivities(job);
+            }
+
+        }).addService(s1).addService(s2).addService(s3).build();
 
         stateManager = new StateManager(routingCosts);
         stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts,routingCosts,stateManager));

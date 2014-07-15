@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StateManagerTest {
 	
@@ -77,8 +78,9 @@ public class StateManagerTest {
 	@Test
 	public void whenActivityStateIsSetWithGenericMethod_itMustBeSetCorrectly(){
 		TourActivity activity = mock(TourActivity.class);
+        when(activity.getIndex()).thenReturn(0);
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("myState");
+		StateId id = stateManager.createStateId("myState");
 		State state = StateFactory.createState(1.);
 		stateManager.putTypedActivityState(activity, id, State.class, state);
 		assertEquals(1.,stateManager.getActivityState(activity, id, State.class).toDouble(),0.01);
@@ -88,7 +90,7 @@ public class StateManagerTest {
 	public void whenActivityStateIsSetWithGenericMethodAndBoolean_itMustBeSetCorrectly(){
 		TourActivity activity = mock(TourActivity.class);
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("myState");
+		StateId id = stateManager.createStateId("myState");
 		boolean routeIsRed = true;
 		stateManager.putTypedActivityState(activity, id, Boolean.class, routeIsRed);
 		assertTrue(stateManager.getActivityState(activity, id, Boolean.class));
@@ -98,7 +100,7 @@ public class StateManagerTest {
 	public void whenActivityStateIsSetWithGenericMethodAndInteger_itMustBeSetCorrectly(){
 		TourActivity activity = mock(TourActivity.class);
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("myState");
+		StateId id = stateManager.createStateId("myState");
 		int load = 3;
 		stateManager.putTypedActivityState(activity, id, Integer.class, load);
 		int getLoad = stateManager.getActivityState(activity, id, Integer.class);
@@ -109,7 +111,7 @@ public class StateManagerTest {
 	public void whenActivityStateIsSetWithGenericMethodAndCapacity_itMustBeSetCorrectly(){
 		TourActivity activity = mock(TourActivity.class);
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("myState");
+		StateId id = stateManager.createStateId("myState");
 		Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
 		stateManager.putTypedActivityState(activity, id, Capacity.class, capacity);
 		Capacity getCap = stateManager.getActivityState(activity, id, Capacity.class);
@@ -119,7 +121,7 @@ public class StateManagerTest {
 	@Test
 	public void whenProblemStateIsSet_itMustBeSetCorrectly(){
 		StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-		StateId id = StateFactory.createId("problemState");
+		StateId id = stateManager.createStateId("problemState");
 		stateManager.putProblemState(id, Boolean.class, true);
 		boolean problemState = stateManager.getProblemState(id, Boolean.class);
 		assertTrue(problemState);
