@@ -5,7 +5,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 /**
  * Created by schroeder on 14.07.14.
  */
-public abstract class AbstractTourActivity implements TourActivity {
+public abstract class AbstractActivity implements TourActivity {
 
     private int index;
 

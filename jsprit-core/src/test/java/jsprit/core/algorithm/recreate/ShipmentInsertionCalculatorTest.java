@@ -20,6 +20,7 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.*;
 import jsprit.core.problem.constraint.ConstraintManager.Priority;
@@ -131,8 +132,8 @@ public class ShipmentInsertionCalculatorTest {
 		assertEquals(2,iData.getDeliveryInsertionIndex());
 	}
 
-    private List<TourActivity> getTourActivities(Shipment shipment) {
-        List<TourActivity> acts = new ArrayList<TourActivity>();
+    private List<AbstractActivity> getTourActivities(Shipment shipment) {
+        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
         PickupShipment pick = new PickupShipment(shipment);
         DeliverShipment del = new DeliverShipment(shipment);
         acts.add(pick);

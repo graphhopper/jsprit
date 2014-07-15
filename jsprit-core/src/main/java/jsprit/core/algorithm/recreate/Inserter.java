@@ -18,6 +18,7 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -104,7 +105,7 @@ class Inserter {
         @Override
 		public void handleJobInsertion(Job job, InsertionData iData, VehicleRoute route) {
 			if(job instanceof Shipment){
-                List<TourActivity> acts = vehicleRoutingProblem.copyAndGetActivities(job);
+                List<AbstractActivity> acts = vehicleRoutingProblem.copyAndGetActivities(job);
 				TourActivity pickupShipment = acts.get(0);
 				TourActivity deliverShipment = acts.get(1);
 				route.setVehicleAndDepartureTime(iData.getSelectedVehicle(),iData.getVehicleDepartureTime());

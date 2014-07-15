@@ -20,6 +20,7 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
@@ -119,7 +120,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
 		Inserter inserter = new Inserter(new InsertionListeners(), vehicleRoutingProblem);
-        List<TourActivity> acts = new ArrayList<TourActivity>();
+        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
         acts.add(new DeliverService(delivery));
         when(vehicleRoutingProblem.copyAndGetActivities(delivery)).thenReturn(acts);
 		inserter.insertJob(delivery, new InsertionData(0,0,0,vehicle,null), route);

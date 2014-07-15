@@ -20,6 +20,7 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.driver.Driver;
@@ -29,7 +30,6 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.DeliverShipment;
 import jsprit.core.problem.solution.route.activity.PickupService;
 import jsprit.core.problem.solution.route.activity.PickupShipment;
-import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -65,7 +65,7 @@ public class TestInserter {
 		when(iData.getSelectedVehicle()).thenReturn(vehicle);
 
         VehicleRoutingProblem vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
-        List<TourActivity> acts = new ArrayList<TourActivity>();
+        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
         PickupService act = new PickupService(serviceToInsert);
         acts.add(act);
         when(vehicleRoutingProblem.copyAndGetActivities(serviceToInsert)).thenReturn(acts);
@@ -105,8 +105,8 @@ public class TestInserter {
 		assertEquals(route.getEnd().getLocationId(),serviceToInsert.getLocationId());
 	}
 
-    private List<TourActivity> getTourActivities(Service serviceToInsert) {
-        List<TourActivity> acts = new ArrayList<TourActivity>();
+    private List<AbstractActivity> getTourActivities(Service serviceToInsert) {
+        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
         acts.add(new PickupService(serviceToInsert));
         return acts;
     }
@@ -126,11 +126,7 @@ public class TestInserter {
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
 		Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocation("delLoc").setPickupLocation("pickLoc").build();
-//        Shipment shipmentToInsert = mock(Shipment.class);
-//		when(shipmentToInsert.getSize()).thenReturn(capacity);
-//		when(shipmentToInsert.getDeliveryLocation()).thenReturn("delLoc");
-//		when(shipmentToInsert.getPickupLocation()).thenReturn("pickLoc");
-//        when(shipmentToInsert.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+
 		InsertionData iData = mock(InsertionData.class);
 		when(iData.getPickupInsertionIndex()).thenReturn(2);
 		when(iData.getDeliveryInsertionIndex()).thenReturn(2);
@@ -147,8 +143,8 @@ public class TestInserter {
 		assertEquals(route.getEnd().getLocationId(),vehicle.getEndLocationId());
 	}
 
-    private List<TourActivity> getTourActivities(Shipment shipmentToInsert) {
-        List<TourActivity> acts = new ArrayList<TourActivity>();
+    private List<AbstractActivity> getTourActivities(Shipment shipmentToInsert) {
+        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
         acts.add(new PickupShipment(shipmentToInsert));
         acts.add(new DeliverShipment(shipmentToInsert));
         return acts;

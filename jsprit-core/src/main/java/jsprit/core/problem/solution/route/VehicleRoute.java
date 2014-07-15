@@ -16,26 +16,19 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
+import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
-import jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
-import jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
-import jsprit.core.problem.solution.route.activity.End;
-import jsprit.core.problem.solution.route.activity.Start;
-import jsprit.core.problem.solution.route.activity.TourActivities;
-import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.activity.TourActivityFactory;
-import jsprit.core.problem.solution.route.activity.TourShipmentActivityFactory;
+import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
+
+import java.util.*;
 
 /**
  * Contains the tour, i.e. a number of activities, a vehicle servicing the tour and a driver.
@@ -49,7 +42,7 @@ public class VehicleRoute {
 	/**
 	 * Returns a deep copy of this vehicleRoute.
 	 * 
-	 * @param route
+	 * @param route route to copy
 	 * @return copied route
 	 * @throws IllegalArgumentException if route is null
 	 */
@@ -63,7 +56,7 @@ public class VehicleRoute {
 	 * 
 	 * <p>An empty route has an empty list of tour-activities, no driver (DriverImpl.noDriver()) and no vehicle (VehicleImpl.createNoVehicle()).
 	 * 
-	 * @return
+	 * @return empty route
 	 */
 	public static VehicleRoute emptyRoute() {
 		return Builder.newInstance(VehicleImpl.createNoVehicle(), DriverImpl.noDriver()).build();
@@ -76,8 +69,10 @@ public class VehicleRoute {
 	 *
 	 */
 	public static class Builder {
-		
-		/**
+
+        private Map<Shipment, TourActivity> openActivities = new HashMap<Shipment, TourActivity>();
+
+        /**
 		 * Returns new instance of this builder.
 		 * 
 		 * <p><b>Construction-settings of vehicleRoute:</b>
@@ -87,8 +82,8 @@ public class VehicleRoute {
 		 * <p>latestStart == Double.MAX_VALUE
 		 * <p>earliestEnd == 0.0
 		 * 
-		 * @param vehicle
-		 * @param driver
+		 * @param vehicle employed vehicle
+		 * @param driver employed driver
 		 * @return this builder
 		 */
 		public static Builder newInstance(Vehicle vehicle, Driver driver){
@@ -106,8 +101,7 @@ public class VehicleRoute {
 		 * <p>latestStart == Double.MAX_VALUE
 		 * <p>earliestEnd == 0.0
 		 * 
-		 * @param vehicle
-		 * @param driver
+		 * @param vehicle employed vehicle
 		 * @return this builder
 		 */
 		public static Builder newInstance(Vehicle vehicle){
@@ -130,16 +124,34 @@ public class VehicleRoute {
 		private TourShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
 		
 		private Set<Shipment> openShipments = new HashSet<Shipment>();
+
+        private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
+
+            @Override
+            public List<AbstractActivity> createActivity(Job job) {
+                List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+                if(job instanceof Service){
+                    acts.add(serviceActivityFactory.createActivity((Service) job));
+                }
+                else if(job instanceof Shipment){
+                    acts.add(shipmentActivityFactory.createPickup((Shipment) job));
+                    acts.add(shipmentActivityFactory.createDelivery((Shipment) job));
+                }
+                return acts;
+            }
+
+        };
 		
 		/**
 		 * Sets the serviceActivityFactory to create serviceActivities.
 		 * 
 		 * <p>By default {@link DefaultTourActivityFactory} is used.
 		 * 
-		 * @param serviceActivityFactory
+		 * @param serviceActivityFactory the factory to create serviceActivities
 		 */
-		public void setServiceActivityFactory(TourActivityFactory serviceActivityFactory) {
+		public Builder setServiceActivityFactory(TourActivityFactory serviceActivityFactory) {
 			this.serviceActivityFactory = serviceActivityFactory;
+            return this;
 		}
 
 		/**
@@ -147,23 +159,18 @@ public class VehicleRoute {
 		 * 
 		 * <p>By default {@link DefaultShipmentActivityFactory} is used.
 		 * 
-		 * @param shipmentActivityFactory
+		 * @param shipmentActivityFactory the factory to create shipmentActivities
 		 */
-		public void setShipmentActivityFactory(TourShipmentActivityFactory shipmentActivityFactory) {
+		public Builder setShipmentActivityFactory(TourShipmentActivityFactory shipmentActivityFactory) {
 			this.shipmentActivityFactory = shipmentActivityFactory;
+            return this;
 		}
 
-		/**
-		 * Constructs the route-builder.
-		 * 
-		 * <p>startLocation == vehicle.getStartLocationId()
-		 * <p>endLocation == vehicle.getEndLocationId()
-		 * <p>departureTime == vehicle.getEarliestDepartureTime()
-		 * <p>latestStart == Double.MAX_VALUE
-		 * <p>earliestEnd == 0.0
-		 * @param vehicle
-		 * @param driver
-		 */
+        public Builder setJobActivityFactory(JobActivityFactory jobActivityFactory){
+            this.jobActivityFactory = jobActivityFactory;
+            return this;
+        }
+
 		private Builder(Vehicle vehicle, Driver driver) {
 			super();
 			this.vehicle = vehicle;
@@ -178,7 +185,7 @@ public class VehicleRoute {
 		 * 
 		 * <p><b>Note</b> that departureTime cannot be lower than earliestDepartureTime of vehicle.
 		 * 
-		 * @param departureTime
+		 * @param departureTime departure time of vehicle being employed for this route
 		 * @return builder
 		 * @throws IllegalArgumentException if departureTime < vehicle.getEarliestDeparture()
 		 */
@@ -191,10 +198,11 @@ public class VehicleRoute {
 		/**
 		 * Sets the end-time of the route, i.e. which is the time the vehicle has to be at its end-location at latest.
 		 * 
-		 * @param endTime
+		 * @param endTime endTime of route
 		 * @return this builder
 		 * @throws IllegalArgumentException if endTime > vehicle.getLatestArrival()
 		 */
+        @Deprecated
 		public Builder setRouteEndArrivalTime(double endTime){
 			if(endTime > vehicle.getLatestArrival()) throw new IllegalArgumentException("endTime > vehicle.getLatestArrival(). this must not be.");
 			end.setArrTime(endTime);
@@ -208,11 +216,12 @@ public class VehicleRoute {
 		 * 
 		 * <p>The resulting activity occurs in the activity-sequence in the order adding/inserting.
 		 * 
-		 * @param service
+		 * @param service to be added
 		 * @return this builder
 		 * @throws IllegalArgumentException if service is null
 		 */
-		public Builder addService(Service service){
+		@SuppressWarnings("deprecation")
+        public Builder addService(Service service){
 			if(service == null) throw new IllegalArgumentException("service must not be null");
 			addService(service,0.0,0.0);
 			return this;
@@ -225,13 +234,15 @@ public class VehicleRoute {
 		 * 
 		 * <p>Basically this activity is then scheduled with an activity arrival and activity endTime.
 		 * 
-		 * @param service
-		 * @param arrTime
-		 * @param endTime
+		 * @param service to be added
+		 * @param arrTime at service activity
+		 * @param endTime of service activity
 		 * @return builder
 		 */
+        @Deprecated
 		public Builder addService(Service service, double arrTime, double endTime){
-			TourActivity act = serviceActivityFactory.createActivity(service);
+			List<AbstractActivity> acts = jobActivityFactory.createActivity(service);
+            TourActivity act = acts.get(0);
 			act.setArrTime(arrTime);
 			act.setEndTime(endTime);
 			tourActivities.addActivity(act);
@@ -241,54 +252,60 @@ public class VehicleRoute {
 		/**
 		 * Adds a the pickup of the specified shipment.
 		 * 
-		 * @param shipment
+		 * @param shipment to be picked up and added to this route
 		 * @throws IllegalStateException if method has already been called with the specified shipment.
-		 * @return
+		 * @return the builder
 		 */
-		public Builder addPickup(Shipment shipment){
-			addPickup(shipment,0.0,0.0);
+		@SuppressWarnings("deprecation")
+        public Builder addPickup(Shipment shipment){
+			addPickup(shipment,0.,0.);
 			return this;
 		}
 		
 		/**
 		 * Adds a the pickup of the specified shipment at specified arrival and end-time.
 		 * 
-		 * @param shipment
+		 * @param shipment to be picked up and added to this route
 		 * @throws IllegalStateException if method has already been called with the specified shipment.
-		 * @return
+		 * @return builder
 		 */
+        @Deprecated
 		public Builder addPickup(Shipment shipment, double arrTime, double endTime){
 			if(openShipments.contains(shipment)) throw new IllegalStateException("shipment has already been added. cannot add it twice.");
-			TourActivity act = shipmentActivityFactory.createPickup(shipment);
+			List<AbstractActivity> acts = jobActivityFactory.createActivity(shipment);
+            TourActivity act = acts.get(0);
 			act.setArrTime(arrTime);
 			act.setEndTime(endTime);
 			tourActivities.addActivity(act);
 			openShipments.add(shipment);
+            openActivities.put(shipment,acts.get(1));
 			return this;
 		}
 		
 		/**
 		 * Adds a the delivery of the specified shipment.
 		 * 
-		 * @param shipment
+		 * @param shipment to be delivered and add to this vehicleRoute
 		 * @throws IllegalStateException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
-		 * @return
+		 * @return builder
 		 */
-		public Builder addDelivery(Shipment shipment){
-			addDelivery(shipment,0.0,0.0);
+		@SuppressWarnings("deprecation")
+        public Builder addDelivery(Shipment shipment){
+			addDelivery(shipment,0.,0.);
 			return this;
 		}
 		
 		/**
 		 * Adds a the delivery of the specified shipment at a specified arrival and endTime.
 		 * 
-		 * @param shipment
+		 * @param shipment to be delivered and added to this route
 		 * @throws IllegalStateException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
-		 * @return
+		 * @return the builder
 		 */
+        @Deprecated
 		public Builder addDelivery(Shipment shipment, double arrTime, double endTime){
 			if(openShipments.contains(shipment)){
-				TourActivity act = shipmentActivityFactory.createDelivery(shipment);
+				TourActivity act = openActivities.get(shipment);
 				act.setArrTime(arrTime);
 				act.setEndTime(endTime);
 				tourActivities.addActivity(act);
@@ -313,8 +330,7 @@ public class VehicleRoute {
 					end.setLocationId(tourActivities.getActivities().get(tourActivities.getActivities().size()-1).getLocationId());
 				}
 			}
-			VehicleRoute route = new VehicleRoute(this);
-			return route;
+			return new VehicleRoute(this);
 		}
 
 	}
@@ -332,7 +348,7 @@ public class VehicleRoute {
 	/**
 	 * Copy constructor copying a route.
 	 * 
-	 * @param route
+	 * @param route to copy
 	 */
 	private VehicleRoute(VehicleRoute route){
 		this.start = Start.copyOf(route.getStart());
@@ -345,7 +361,7 @@ public class VehicleRoute {
 	/**
 	 * Constructs route.
 	 * 
-	 * @param builder
+	 * @param builder used to build route
 	 */
 	private VehicleRoute(Builder builder){
 		this.tourActivities = builder.tourActivities;
@@ -358,7 +374,7 @@ public class VehicleRoute {
 	/**
 	 * Returns an unmodifiable list of activities on this route (without start/end).
 	 * 
-	 * @return
+	 * @return list of tourActivities
 	 */
 	public List<TourActivity> getActivities(){
 		return Collections.unmodifiableList(tourActivities.getActivities());
@@ -403,8 +419,8 @@ public class VehicleRoute {
 	 * <p>startActivity.endTime (<code>startActivity.getEndTime()</code>) is set to max{<code>vehicle.getEarliestDeparture()</code>, <code>vehicleDepTime</code>}. 
 	 * thus, <code>vehicle.getEarliestDeparture()</code> is a physical constraint that has to be met.
 	 * 
-	 * @param vehicle
-	 * @param vehicleDepTime
+	 * @param vehicle to be employed
+	 * @param vehicleDepTime of employed vehicle
 	 */
 	public void setVehicleAndDepartureTime(Vehicle vehicle, double vehicleDepTime){
 		this.vehicle = vehicle;

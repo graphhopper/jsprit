@@ -18,8 +18,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.state;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -27,8 +25,10 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.solution.route.state.StateFactory.State;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
-
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class StateManagerTest {
 	
@@ -145,4 +145,29 @@ public class StateManagerTest {
 		boolean problemState = stateManager.getProblemState(id, Boolean.class);
 		assertFalse(problemState);
 	}
+
+    @Test
+    public void whenCreatingNewState_itShouldHaveAnIndex(){
+        StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+        StateId stateId = stateManager.createStateId("foo-state");
+        assertEquals(10,stateId.getIndex());
+    }
+
+    @Test
+    public void whenCreatingNewStates_theyShouldHaveAnIndex(){
+        StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+        StateId fooState = stateManager.createStateId("foo-state");
+        StateId foofooState = stateManager.createStateId("foo-foo-state");
+        assertEquals(10,fooState.getIndex());
+        assertEquals(11,foofooState.getIndex());
+    }
+
+    @Test
+    public void whenCreatingTwoStatesWithTheSameName_theyShouldHaveTheSameIndex(){
+        StateManager stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+        StateId fooState = stateManager.createStateId("foo-state");
+        StateId foofooState = stateManager.createStateId("foo-state");
+        assertEquals(10,fooState.getIndex());
+        assertEquals(10,foofooState.getIndex());
+    }
 }

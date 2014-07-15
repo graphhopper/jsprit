@@ -16,10 +16,10 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
-import jsprit.core.problem.AbstractTourActivity;
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Capacity;
 
-public final class Start extends AbstractTourActivity implements TourActivity {
+public final class Start extends AbstractActivity implements TourActivity {
 
 	public final static String ACTIVITY_NAME = "start";
 

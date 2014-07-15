@@ -107,7 +107,24 @@ public class VehicleRoutingProblem {
 		
 		private Collection<jsprit.core.problem.constraint.Constraint> constraints = new ArrayList<jsprit.core.problem.constraint.Constraint>();
 
-		private boolean addPenaltyVehicles = false;
+		private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
+
+            @Override
+            public List<AbstractActivity> createActivity(Job job) {
+                List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+                if(job instanceof Service){
+                    acts.add(serviceActivityFactory.createActivity((Service) job));
+                }
+                else if(job instanceof Shipment){
+                    acts.add(shipmentActivityFactory.createPickup((Shipment) job));
+                    acts.add(shipmentActivityFactory.createDelivery((Shipment) job));
+                }
+                return acts;
+            }
+
+        };
+
+        private boolean addPenaltyVehicles = false;
 
 		private double penaltyFactor = 1.0;
 
@@ -119,12 +136,14 @@ public class VehicleRoutingProblem {
 
         private int activityIndexCounter = 0;
 
-        private Map<Job,List<TourActivity>> activityMap = new HashMap<Job, List<TourActivity>>();
+        private int nuActivities = 0;
+
+        private Map<Job,List<AbstractActivity>> activityMap = new HashMap<Job, List<AbstractActivity>>();
 //        private ArrayList<List<TourActivity>> activityList;
 
-        private DefaultShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
+        private final DefaultShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
 
-        private DefaultTourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
+        private final DefaultTourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
 
 		/**
 		 * Create a location (i.e. coordinate) and returns the key of the location which is Coordinate.toString().
@@ -143,7 +162,11 @@ public class VehicleRoutingProblem {
 			}
 			return id;
 		}
-	
+
+        public Builder setJobActivityFactory(JobActivityFactory factory){
+            this.jobActivityFactory = factory;
+            return this;
+        }
 
         private void incJobIndexCounter(){
             jobIndexCounter++;
@@ -254,29 +277,21 @@ public class VehicleRoutingProblem {
 		}
 
 		private void addJobToFinalJobMapAndCreateActivities(Job job){
-            List<TourActivity> acts = new ArrayList<TourActivity>();
+            List<TourActivity> acts;
             if(job instanceof Service) {
                 Service service = (Service) job;
 				addService(service);
-                AbstractTourActivity activity = serviceActivityFactory.createActivity(service);
-                activity.setIndex(activityIndexCounter);
-                incActivityIndexCounter();
-                acts.add(activity);
-                activityMap.put(service, acts);
 			}
 			else if(job instanceof Shipment){
 				Shipment shipment = (Shipment)job;
                 addShipment(shipment);
-                AbstractTourActivity pickup = shipmentActivityFactory.createPickup(shipment);
-                pickup.setIndex(activityIndexCounter);
-                incActivityIndexCounter();
-                AbstractTourActivity delivery = shipmentActivityFactory.createDelivery(shipment);
-                delivery.setIndex(activityIndexCounter);
-                incActivityIndexCounter();
-                acts.add(pickup);
-                acts.add(delivery);
-                activityMap.put(shipment, acts);
 			}
+            List<AbstractActivity> jobActs = jobActivityFactory.createActivity(job);
+            for(AbstractActivity act : jobActs){
+                act.setIndex(activityIndexCounter);
+                incActivityIndexCounter();
+            }
+            activityMap.put(job, jobActs);
 		}
 
 		public Builder addInitialVehicleRoute(VehicleRoute route){
@@ -621,8 +636,9 @@ public class VehicleRoutingProblem {
 	
 	private final Locations locations;
 
-    private Map<Job,List<TourActivity>> activityMap;
-//    private List<List<TourActivity>> activityList;
+    private Map<Job,List<AbstractActivity>> activityMap;
+
+    private int nuActivities;
 	
 	private VehicleRoutingProblem(Builder builder) {
 		this.jobs = builder.jobs;
@@ -635,6 +651,7 @@ public class VehicleRoutingProblem {
 		this.constraints = builder.constraints;
 		this.locations = builder.getLocations();
         this.activityMap = builder.activityMap;
+        this.nuActivities = builder.activityIndexCounter;
 		logger.info("initialise " + this);
 	}
 	
@@ -719,14 +736,16 @@ public class VehicleRoutingProblem {
 		return locations;
 	}
 
-    public List<TourActivity> getActivities(Job job){
+    public List<AbstractActivity> getActivities(Job job){
         return Collections.unmodifiableList(activityMap.get(job));
     }
 
-    public List<TourActivity> copyAndGetActivities(Job job){
-        List<TourActivity> acts = new ArrayList<TourActivity>();
-        for(TourActivity act : activityMap.get(job)){
-            acts.add(act.duplicate());
+    public int getNuActivities(){ return nuActivities; }
+
+    public List<AbstractActivity> copyAndGetActivities(Job job){
+        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+        for(AbstractActivity act : activityMap.get(job)){
+            acts.add((AbstractActivity)act.duplicate());
         }
         return acts;
     }

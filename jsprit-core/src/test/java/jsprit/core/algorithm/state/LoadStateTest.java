@@ -1,6 +1,9 @@
 package jsprit.core.algorithm.state;
 
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.*;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -12,13 +15,14 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by schroeder on 13.07.14.
+ * Unit tests to test correct calc of load states
  */
 public class LoadStateTest {
 
@@ -37,10 +41,11 @@ public class LoadStateTest {
         when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0,20).build());
         when(vehicle.getType()).thenReturn(type);
 
-        Service s1 = mock(Service.class);
-        when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0,10).build());
-        Service s2 = mock(Service.class);
-        when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0,5).build());
+        VehicleRoutingProblem.Builder serviceProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
+        Service s1 = Service.Builder.newInstance("s").addSizeDimension(0,10).setLocationId("loc").build();
+        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0,5).setLocationId("loc").build();
+        serviceProblemBuilder.addJob(s1).addJob(s2);
+        final VehicleRoutingProblem serviceProblem = serviceProblemBuilder.build();
 
         Pickup pickup = mock(Pickup.class);
         when(pickup.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
@@ -52,15 +57,26 @@ public class LoadStateTest {
         Shipment shipment2 = mock(Shipment.class);
         when(shipment2.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 5).build());
 
-        serviceRoute = VehicleRoute.Builder.newInstance(vehicle).addService(s1).addService(s2).build();
+        VehicleRoute.Builder serviceRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);
+        serviceRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
+
+            @Override
+            public List<AbstractActivity> createActivity(Job job) {
+                return serviceProblem.copyAndGetActivities(job);
+            }
+
+        });
+        serviceRoute = serviceRouteBuilder.addService(s1).addService(s2).build();
         pickup_delivery_route = VehicleRoute.Builder.newInstance(vehicle).addService(pickup).addService(delivery).build();
         shipment_route = VehicleRoute.Builder.newInstance(vehicle).addPickup(shipment1).addPickup(shipment2).addDelivery(shipment2).addDelivery(shipment1).build();
 
         stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
         stateManager.updateLoadStates();
-        stateManager.informInsertionStarts(Arrays.asList(serviceRoute,pickup_delivery_route,shipment_route), Collections.<Job>emptyList());
+        stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
+//        <stateManager.informInsertionStarts(Arrays.asList(serviceRoute,pickup_delivery_route,shipment_route), Collections.<Job>emptyList());
 
     }
+
 
     @Test
     public void loadAtEndShouldBe15(){

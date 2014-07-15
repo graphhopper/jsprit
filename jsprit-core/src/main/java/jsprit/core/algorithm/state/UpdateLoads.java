@@ -18,8 +18,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.state;
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import jsprit.core.problem.Capacity;
@@ -31,6 +29,8 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.StateFactory;
+
+import java.util.Collection;
 
 
 /**
@@ -76,7 +76,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 
 	@Override
 	public void finish() {
-		currentLoad = Capacity.Builder.newInstance().build();
+        currentLoad = Capacity.Builder.newInstance().build();
 	}
 	
 	void insertionStarts(VehicleRoute route) {

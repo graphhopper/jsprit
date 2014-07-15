@@ -87,8 +87,13 @@ import jsprit.core.util.CalculationUtils;
 				return ConstraintsStatus.NOT_FULFILLED;
 			}
 			//			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
-			double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-			double latestArrTimeAtNewAct = states.getActivityState(newAct, StateFactory.LATEST_OPERATION_START_TIME, Double.class);
+            double latestArrTimeAtNextAct = states.getActivityState(nextAct, StateFactory.LATEST_OPERATION_START_TIME, Double.class);
+            double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+
+
+            double latestArrTimeAtNewAct = Math.min(newAct.getTheoreticalLatestOperationStartTime(),latestArrTimeAtNextAct -
+                    routingCosts.getBackwardTransportTime(nextAct.getLocationId(), newAct.getLocationId(), latestArrTimeAtNextAct, iFacts.getNewDriver(),
+                            iFacts.getNewVehicle()) - newAct.getOperationTime());
 			/*
 			 *  |--- prevAct ---|
 			 *                       		                 |--- vehicle's arrival @newAct
@@ -106,7 +111,7 @@ import jsprit.core.util.CalculationUtils;
 //			log.info(newAct + " arrTime=" + arrTimeAtNewAct);
 			double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
 			double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
-			double latestArrTimeAtNextAct = states.getActivityState(nextAct, StateFactory.LATEST_OPERATION_START_TIME, Double.class);
+
 			/*
 			 *  |--- newAct ---|
 			 *                       		                 |--- vehicle's arrival @nextAct

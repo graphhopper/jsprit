@@ -16,18 +16,8 @@
  ******************************************************************************/
 package jsprit.core.algorithm.state;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import jsprit.core.algorithm.listener.IterationStartsListener;
-import jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
-import jsprit.core.algorithm.recreate.listener.InsertionListener;
-import jsprit.core.algorithm.recreate.listener.InsertionListeners;
-import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
-import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
+import jsprit.core.algorithm.recreate.listener.*;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
 import jsprit.core.problem.Capacity;
@@ -46,6 +36,8 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
 
+import java.util.*;
+
 /**
  * Manages states.
  * 
@@ -56,8 +48,9 @@ import jsprit.core.problem.solution.route.state.StateFactory.StateId;
  *
  */
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
-	
-	static class States_ {
+
+
+    static class States_ {
 		
 		private Map<StateId,Object> states = new HashMap<StateId,Object>();
 		
@@ -112,8 +105,36 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	private boolean updateLoad = false;
 	
 	private boolean updateTWs = false;
-	
-	private void addDefaultStates() {
+
+    private int stateIndexCounter = 10;
+
+    private Map<String,StateId> createdStateIds = new HashMap<String, StateId>();
+
+    private int initialNuStates = 20;
+
+    private int initialNuActivities = 100;
+
+    private Object[][] activity_states;
+
+    private VehicleRoutingProblem vrp;
+
+    public StateId createStateId(String name){
+        if(createdStateIds.containsKey(name)) return createdStateIds.get(name);
+        if(stateIndexCounter>=activity_states[0].length){
+            activity_states = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
+        }
+        StateId id = StateFactory.createId(name,stateIndexCounter);
+        incStateIndexCounter();
+        createdStateIds.put(name, id);
+
+        return id;
+    }
+
+    private void incStateIndexCounter() {
+        stateIndexCounter++;
+    }
+
+    private void addDefaultStates() {
 		defaultActivityStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
 		defaultActivityStates_.put(StateFactory.COSTS, 0.);
 		defaultActivityStates_.put(StateFactory.DURATION, 0.);
@@ -136,8 +157,16 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
 	public StateManager(VehicleRoutingTransportCosts routingCosts){
 		this.routingCosts = routingCosts;
+        activity_states = new Object[initialNuActivities+1][initialNuStates];
 		addDefaultStates();
 	}
+
+    public StateManager(VehicleRoutingProblem vehicleRoutingProblem){
+        this.routingCosts = vehicleRoutingProblem.getTransportCosts();
+        this.vrp = vehicleRoutingProblem;
+        activity_states = new Object[vrp.getNuActivities()+1][initialNuStates];
+        addDefaultStates();
+    }
 	
 	public <T> void addDefaultProblemState(StateId stateId, Class<T> type, T defaultState){
 		defaultProblemStates_.putState(stateId, type, defaultState); 
@@ -192,6 +221,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * 
 	 */
 	public void clear(){
+//        activity_states = new Object[101][10];
 		vehicleRouteStates_.clear();
 		activityStates_.clear();
 		problemStates_.clear();
@@ -203,21 +233,18 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 */
 	@Override
 	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type) {
-		if(!activityStates_.containsKey(act)){
-			return getDefaultTypedActivityState(act, stateId, type);
-		}
-		States_ states = activityStates_.get(act);
-		T state = states.getState(stateId, type);
-		if(state == null) return getDefaultTypedActivityState(act, stateId, type);
-		return state;
+		if(act.getIndex()<0) return getDefaultTypedActivityState(act, stateId, type);
+        T state = type.cast(activity_states[act.getIndex()][stateId.getIndex()]);
+        if(state == null) return getDefaultTypedActivityState(act, stateId, type);
+        return state;
 	}
 
 	/**
 	 * 
-	 * @param act
-	 * @param stateId
-	 * @param type
-	 * @return
+	 * @param act activity for which the state is requested
+	 * @param stateId stateId of requested state
+	 * @param type class of state value
+	 * @return state value
 	 */
 	private <T> T getDefaultTypedActivityState(TourActivity act, StateId stateId,Class<T> type) {
 		if(defaultActivityStates_.containsKey(stateId)){
@@ -265,10 +292,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>you can retrieve the load at myActivity by <br>
 	 * <code>Capacity load = stateManager.getActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class);</code>
 	 * 
-	 * @param act
-	 * @param stateId
-	 * @param type
-	 * @param state
+	 * @param act for which a new state should be memorized
+	 * @param stateId stateId of state
+	 * @param type class of state-value
+	 * @param state state-value
 	 */
 	public <T> void putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
@@ -276,11 +303,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	}
 	
 	<T> void putInternalTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
-		if(!activityStates_.containsKey(act)){
-			activityStates_.put(act, new States_());
-		}
-		States_ actStates = activityStates_.get(act);
-		actStates.putState(stateId, type, state);
+        activity_states[act.getIndex()][stateId.getIndex()]=state;
 	}
 
 	<T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
@@ -300,7 +323,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>you can retrieve the duration of myRoute then by <br>
 	 * <code>double totalRouteDuration = stateManager.getRouteState(myRoute, StateFactory.createStateId("route-duration"), Double.class);</code> 
 	 * 
-	 * @param act
+	 * @param route
 	 * @param stateId
 	 * @param type
 	 * @param state
@@ -353,7 +376,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * <p>This reverseVisitor visits all activities in a route subsequently (starting from the end of the route) in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
 	 * and, second, if a job has been inserted and thus if a route has changed. 
 	 * 
-	 * @param reverseActivityVistor
+	 * @param activityVistor activityVisitor to add
 	 */
 	 void addActivityVisitor(ReverseActivityVisitor activityVistor){
 		revRouteActivityVisitor.addActivityVisitor(activityVistor);
@@ -431,9 +454,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 			UpdateLoads updateLoads = new UpdateLoads(this);
 			addActivityVisitor(updateLoads);
 			addListener(updateLoads);
-			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(this));
-			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute(this));
-			addActivityVisitor(new UpdateMaxCapacityUtilisationAtRoute(this));
+//			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(this));
+//			addActivityVisitor(new UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute(this));
+//			addActivityVisitor(new UpdateMaxCapacityUtilisationAtRoute(this));
 		}
 	}
 

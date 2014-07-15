@@ -18,18 +18,18 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
-import jsprit.core.problem.AbstractTourActivity;
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.job.Shipment;
 
 public class DefaultShipmentActivityFactory implements TourShipmentActivityFactory{
 
 	@Override
-	public AbstractTourActivity createPickup(Shipment shipment) {
+	public AbstractActivity createPickup(Shipment shipment) {
 		return new PickupShipment(shipment);
 	}
 
 	@Override
-	public AbstractTourActivity createDelivery(Shipment shipment) {
+	public AbstractActivity createDelivery(Shipment shipment) {
 		return new DeliverShipment(shipment);
 	}
 

@@ -20,6 +20,8 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.state;
 
+import jsprit.core.problem.HasIndex;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +31,8 @@ import java.util.Map;
 public class StateFactory {
 	
 	
-	public interface StateId {
+	public interface StateId extends HasIndex{
+
 		
 	}
 	
@@ -78,25 +81,25 @@ public class StateFactory {
 
 	}
 	
-	public final static StateId MAXLOAD = new StateIdImpl("maxload");
+	public final static StateId MAXLOAD = new StateIdImpl("maxload", 0);
 	
-	public final static StateId LOAD = new StateIdImpl("load");
+	public final static StateId LOAD = new StateIdImpl("load", 1);
 	
-	public final static StateId COSTS = new StateIdImpl("costs");
+	public final static StateId COSTS = new StateIdImpl("costs", 2);
 	
-	public final static StateId LOAD_AT_BEGINNING = new StateIdImpl("loadAtBeginning");
+	public final static StateId LOAD_AT_BEGINNING = new StateIdImpl("loadAtBeginning", 3);
 	
-	public final static StateId LOAD_AT_END = new StateIdImpl("loadAtEnd");
+	public final static StateId LOAD_AT_END = new StateIdImpl("loadAtEnd", 4);
 	
-	public final static StateId DURATION = new StateIdImpl("duration");
+	public final static StateId DURATION = new StateIdImpl("duration", 5);
 	
-	public final static StateId LATEST_OPERATION_START_TIME = new StateIdImpl("latestOST");
+	public final static StateId LATEST_OPERATION_START_TIME = new StateIdImpl("latestOST", 6);
 	
-	public final static StateId EARLIEST_OPERATION_START_TIME = new StateIdImpl("earliestOST");
+	public final static StateId EARLIEST_OPERATION_START_TIME = new StateIdImpl("earliestOST", 7);
 	
-	public final static StateId FUTURE_MAXLOAD = new StateIdImpl("futureMaxload");
+	public final static StateId FUTURE_MAXLOAD = new StateIdImpl("futureMaxload", 8);
 	
-	public final static StateId PAST_MAXLOAD = new StateIdImpl("pastMaxload");
+	public final static StateId PAST_MAXLOAD = new StateIdImpl("pastMaxload", 9);
 	
 	final static List<String> reservedIds = Arrays.asList("maxload","load","costs","loadAtBeginning","loadAtEnd","duration","latestOST","earliestOST"
 			,"futureMaxload","pastMaxload");
@@ -108,8 +111,14 @@ public class StateFactory {
 	
 	public static StateId createId(String name){
 		if(reservedIds.contains(name)){ throwReservedIdException(name); }
-		return new StateIdImpl(name);
+		return new StateIdImpl(name, -1);
 	}
+
+    public static StateId createId(String name, int index){
+        if(reservedIds.contains(name)) throwReservedIdException(name);
+        if(index < 10) throwReservedIdException(name);
+        return new StateIdImpl(name, index);
+    }
 	
 	public static State createState(double value){
 		return new StateImpl(value);
@@ -131,7 +140,11 @@ public class StateFactory {
 
 	
 	static class StateIdImpl implements StateId {
-		
+
+        private int index;
+
+        public int getIndex(){ return index; }
+
 		/* (non-Javadoc)
 		 * @see java.lang.Object#hashCode()
 		 */
@@ -165,9 +178,10 @@ public class StateFactory {
 
 		private String name;
 
-		public StateIdImpl(String name) {
+		public StateIdImpl(String name, int index) {
 			super();
 			this.name = name;
+            this.index = index;
 		}
 		
 		public String toString(){

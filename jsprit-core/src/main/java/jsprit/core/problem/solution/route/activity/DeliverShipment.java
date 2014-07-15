@@ -18,12 +18,12 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
-import jsprit.core.problem.AbstractTourActivity;
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 
-public final class DeliverShipment extends AbstractTourActivity implements DeliveryActivity{
+public final class DeliverShipment extends AbstractActivity implements DeliveryActivity{
 
 	private Shipment shipment;
 	

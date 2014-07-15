@@ -18,13 +18,13 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
-import jsprit.core.problem.AbstractTourActivity;
+import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.job.Shipment;
 
 public interface TourShipmentActivityFactory {
 	
-	public AbstractTourActivity createPickup(Shipment shipment);
+	public AbstractActivity createPickup(Shipment shipment);
 
-	public AbstractTourActivity createDelivery(Shipment shipment);
+	public AbstractActivity createDelivery(Shipment shipment);
 	
 }
