@@ -60,8 +60,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		
 		public <T> T getState(StateId id, Class<T> type){
 			if(states.containsKey(id)){
-				T s = type.cast(states.get(id));
-				return s;
+				return type.cast(states.get(id));
 			}
 			return null;
 		}
@@ -78,7 +77,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
 	private Map<VehicleRoute,States_> vehicleRouteStates_ = new HashMap<VehicleRoute, States_>();
 	
-	private Map<TourActivity,States_> activityStates_ = new HashMap<TourActivity, States_>();
+//	private Map<TourActivity,States_> activityStates_ = new HashMap<TourActivity, States_>();
 	
 	private States_ problemStates_ = new States_();
 	
@@ -116,17 +115,19 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private Object[][] activity_states;
 
+    private Object[][] route_states;
+
     private VehicleRoutingProblem vrp;
 
     public StateId createStateId(String name){
         if(createdStateIds.containsKey(name)) return createdStateIds.get(name);
         if(stateIndexCounter>=activity_states[0].length){
             activity_states = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
+            route_states = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
         }
         StateId id = StateFactory.createId(name,stateIndexCounter);
         incStateIndexCounter();
         createdStateIds.put(name, id);
-
         return id;
     }
 
@@ -155,9 +156,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		
 	}
 
+    @Deprecated
 	public StateManager(VehicleRoutingTransportCosts routingCosts){
 		this.routingCosts = routingCosts;
         activity_states = new Object[initialNuActivities+1][initialNuStates];
+        route_states = new Object[initialNuActivities+1][initialNuStates];
 		addDefaultStates();
 	}
 
@@ -165,6 +168,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         this.routingCosts = vehicleRoutingProblem.getTransportCosts();
         this.vrp = vehicleRoutingProblem;
         activity_states = new Object[vrp.getNuActivities()+1][initialNuStates];
+        route_states = new Object[vrp.getNuActivities()+1][initialNuStates];
         addDefaultStates();
     }
 	
@@ -195,9 +199,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * can add the default simply by coding <br>
 	 * <code>addDefaultRouteState(StateFactory.createStateId("max_weight"), Integer.class, 0)</code>
 	 * 
-	 * @param stateId
-	 * @param type
-	 * @param defaultState
+	 * @param stateId for which a default state is added
+	 * @param type of state
+	 * @param defaultState default state value
 	 */
 	public <T> void addDefaultRouteState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
@@ -207,9 +211,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	/**
 	 * Generic method to add default activity state.
 	 * 
-	 * @param stateId
-	 * @param type
-	 * @param defaultState
+	 * @param stateId for which a default state is added
+	 * @param type of state
+	 * @param defaultState default state value
 	 */
 	public <T> void addDefaultActivityState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
@@ -222,8 +226,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 */
 	public void clear(){
 //        activity_states = new Object[101][10];
+        route_states = new Object[vrp.getNuActivities()+1][initialNuStates];
 		vehicleRouteStates_.clear();
-		activityStates_.clear();
+//		activityStates_.clear();
 		problemStates_.clear();
 	}
 
@@ -267,13 +272,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 */
 	@Override
 	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
-		if(!vehicleRouteStates_.containsKey(route)){
-			return getDefaultTypedRouteState(stateId, type);
-		}
-		States_ states = vehicleRouteStates_.get(route);
-		T state = states.getState(stateId, type);
-		if(state == null) return getDefaultTypedRouteState(stateId, type);
-		return state;
+        if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
+        T state = type.cast(route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()]);
+        if(state==null) return getDefaultTypedRouteState(stateId,type);
+        return state;
 	}
 
 	private <T> T getDefaultTypedRouteState(StateId stateId, Class<T> type) {
@@ -306,14 +308,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         activity_states[act.getIndex()][stateId.getIndex()]=state;
 	}
 
-	<T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
-		if(!vehicleRouteStates_.containsKey(route)){
-			vehicleRouteStates_.put(route, new States_());
-		}
-		States_ routeStates = vehicleRouteStates_.get(route);
-		routeStates.putState(stateId, type, state);
-	}
-
 	/**
 	 * Generic method to memorize state 'state' of type 'type' of route and stateId.
 	 * 
@@ -332,6 +326,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
         putTypedInternalRouteState(route, stateId, type, state);
 	}
+
+    <T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
+        if(route.isEmpty()) return;
+        route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()] = state;
+    }
 
 	/**
 	 * Adds state updater.
