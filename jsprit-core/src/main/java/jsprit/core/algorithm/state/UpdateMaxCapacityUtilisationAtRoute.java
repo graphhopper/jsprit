@@ -65,6 +65,6 @@ class UpdateMaxCapacityUtilisationAtRoute implements ActivityVisitor, StateUpdat
 
 	@Override
 	public void finish() {
-		stateManager.putTypedInternalRouteState(route, StateFactory.MAXLOAD, Capacity.class, maxLoad);
+		stateManager.putTypedInternalRouteState(route, StateFactory.MAXLOAD, maxLoad);
 	}
 }
