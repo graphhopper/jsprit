@@ -103,8 +103,8 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
-        ActivityInsertionCostsCalculator.ActivityInsertionCosts iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
-        assertEquals(0.,iCosts.getAdditionalCosts(),0.01);
+        double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
+        assertEquals(0.,iCosts,0.01);
     }
 
     @Test
@@ -114,8 +114,8 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
-        ActivityInsertionCostsCalculator.ActivityInsertionCosts iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
-        assertEquals(0.,iCosts.getAdditionalCosts(),0.01);
+        double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
+        assertEquals(0.,iCosts,0.01);
     }
 
     @Test
@@ -125,10 +125,10 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
-        ActivityInsertionCostsCalculator.ActivityInsertionCosts iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
+        double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
         double expectedTransportCosts = 0.;
         double expectedActivityCosts = 10.;
-        assertEquals(expectedActivityCosts+expectedTransportCosts,iCosts.getAdditionalCosts(),0.01);
+        assertEquals(expectedActivityCosts+expectedTransportCosts,iCosts,0.01);
     }
 
     @Test
@@ -138,10 +138,10 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(3);
-        ActivityInsertionCostsCalculator.ActivityInsertionCosts iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
+        double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
         double expectedTransportCosts = 0.;
         double expectedActivityCosts = 30.;
-        assertEquals(expectedActivityCosts+expectedTransportCosts,iCosts.getAdditionalCosts(),0.01);
+        assertEquals(expectedActivityCosts+expectedTransportCosts,iCosts,0.01);
     }
 
     @Test
@@ -151,11 +151,11 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
-        ActivityInsertionCostsCalculator.ActivityInsertionCosts iCosts =
+        double iCosts =
                 estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
         double expectedTransportCosts = 10.;
         double expectedActivityCosts = 10.;
-        assertEquals(expectedTransportCosts+expectedActivityCosts,iCosts.getAdditionalCosts(),0.01);
+        assertEquals(expectedTransportCosts+expectedActivityCosts,iCosts,0.01);
     }
 
     @Test
@@ -165,11 +165,11 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(3);
-        ActivityInsertionCostsCalculator.ActivityInsertionCosts iCosts =
+        double iCosts =
                 estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
         double expectedTransportCosts = 10.;
         double expectedActivityCosts = 10.+10.;
-        assertEquals(expectedTransportCosts+expectedActivityCosts,iCosts.getAdditionalCosts(),0.01);
+        assertEquals(expectedTransportCosts+expectedActivityCosts,iCosts,0.01);
     }
 
     @Test
@@ -179,11 +179,11 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         JobInsertionContext context = new JobInsertionContext(route,s4,route.getVehicle(),route.getDriver(),0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(3);
-        ActivityInsertionCostsCalculator.ActivityInsertionCosts iCosts =
+        double iCosts =
                 estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
         double expectedTransportCosts = 10.;
         double expectedActivityCosts = 10.+10.+10.;
-        assertEquals(expectedTransportCosts+expectedActivityCosts,iCosts.getAdditionalCosts(),0.01);
+        assertEquals(expectedTransportCosts+expectedActivityCosts,iCosts,0.01);
     }
 
 }

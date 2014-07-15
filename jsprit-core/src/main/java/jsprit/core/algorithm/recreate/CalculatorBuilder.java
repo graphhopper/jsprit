@@ -16,22 +16,18 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import jsprit.core.algorithm.recreate.listener.InsertionListener;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.job.Delivery;
-import jsprit.core.problem.job.Job;
-import jsprit.core.problem.job.Pickup;
-import jsprit.core.problem.job.Service;
-import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.job.*;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -257,12 +253,10 @@ class CalculatorBuilder {
 		else if(activityInsertionCostCalculator == null && !addDefaultCostCalc){
 			actInsertionCalc = new ActivityInsertionCostsCalculator(){
 
-				final ActivityInsertionCosts noInsertionCosts = new ActivityInsertionCosts(0.,0.);
-				
 				@Override
-				public ActivityInsertionCosts getCosts(JobInsertionContext iContext, TourActivity prevAct,TourActivity nextAct, TourActivity newAct,
-						double depTimeAtPrevAct) {
-					return noInsertionCosts;
+				public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct,
+                                       double depTimeAtPrevAct) {
+					return 0.;
 				}
 				
 			};
@@ -308,9 +302,9 @@ class CalculatorBuilder {
 				final ActivityInsertionCosts noInsertionCosts = new ActivityInsertionCosts(0.,0.);
 				
 				@Override
-				public ActivityInsertionCosts getCosts(JobInsertionContext iContext, TourActivity prevAct,TourActivity nextAct, TourActivity newAct,
-						double depTimeAtPrevAct) {
-					return noInsertionCosts;
+				public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct,
+                                       double depTimeAtPrevAct) {
+					return 0.;
 				}
 				
 			};

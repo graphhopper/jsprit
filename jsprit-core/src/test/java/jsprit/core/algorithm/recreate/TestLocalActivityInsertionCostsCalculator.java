@@ -18,10 +18,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -29,9 +25,12 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestLocalActivityInsertionCostsCalculator {
 
@@ -82,8 +81,8 @@ public class TestLocalActivityInsertionCostsCalculator {
 		
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
-		ActivityInsertionCosts costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
-		assertEquals(4.0,costs.getAdditionalCosts(),0.01);
+		double costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
+		assertEquals(4.0,costs,0.01);
 	}
 	
 	@Test
@@ -96,8 +95,8 @@ public class TestLocalActivityInsertionCostsCalculator {
 		
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
-		ActivityInsertionCosts costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
-		assertEquals(4.0,costs.getAdditionalCosts(),0.01);
+		double costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
+		assertEquals(4.0,costs,0.01);
 	}
 
 	@Test
@@ -111,8 +110,8 @@ public class TestLocalActivityInsertionCostsCalculator {
 		
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		
-		ActivityInsertionCosts costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
-		assertEquals(4.0,costs.getAdditionalCosts(),0.01);
+		double costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
+		assertEquals(4.0,costs,0.01);
 	}
 	
 	@Test
@@ -125,7 +124,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 		
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		
-		ActivityInsertionCosts costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
-		assertEquals(3.0,costs.getAdditionalCosts(),0.01);
+		double costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
+		assertEquals(3.0,costs,0.01);
 	}
 }

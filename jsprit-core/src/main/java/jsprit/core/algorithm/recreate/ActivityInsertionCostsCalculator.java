@@ -51,6 +51,6 @@ public interface ActivityInsertionCostsCalculator {
 
 	}
 	
-	public ActivityInsertionCosts getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct);
+	public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct);
 
 }

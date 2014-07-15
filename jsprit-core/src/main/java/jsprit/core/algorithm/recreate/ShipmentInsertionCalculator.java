@@ -16,31 +16,21 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.List;
-
-import jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
-import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
-import jsprit.core.problem.constraint.SoftActivityConstraint;
-import jsprit.core.problem.constraint.SoftRouteConstraint;
+import jsprit.core.problem.constraint.*;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
-import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
-import jsprit.core.problem.solution.route.activity.End;
-import jsprit.core.problem.solution.route.activity.Start;
-import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.activity.TourShipmentActivityFactory;
+import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import jsprit.core.util.CalculationUtils;
-
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 
 
@@ -134,7 +124,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				break;
 			}
 			double additionalPickupICosts = softActivityConstraint.getCosts(insertionContext, prevAct, pickupShipment, activities.get(i), prevActEndTime);
-			ActivityInsertionCosts pickupAIC = calculate(insertionContext,prevAct,pickupShipment,activities.get(i),prevActEndTime);
+			double pickupAIC = calculate(insertionContext,prevAct,pickupShipment,activities.get(i),prevActEndTime);
 			TourActivity prevAct_deliveryLoop = pickupShipment;
 			double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), pickupShipment.getLocationId(), prevActEndTime, newDriver, newVehicle);
 			double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);
@@ -145,8 +135,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				ConstraintsStatus deliverShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, activities.get(j), prevActEndTime_deliveryLoop); 
 				if(deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)){
 					double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, activities.get(j), prevActEndTime_deliveryLoop);
-					ActivityInsertionCosts deliveryAIC = calculate(insertionContext,prevAct_deliveryLoop,deliverShipment,activities.get(j),prevActEndTime_deliveryLoop);
-					double totalActivityInsertionCosts = pickupAIC.getAdditionalCosts() + deliveryAIC.getAdditionalCosts() 
+					double deliveryAIC = calculate(insertionContext,prevAct_deliveryLoop,deliverShipment,activities.get(j),prevActEndTime_deliveryLoop);
+					double totalActivityInsertionCosts = pickupAIC + deliveryAIC
 							+ additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
 					if(totalActivityInsertionCosts < bestCost){
 						bestCost = totalActivityInsertionCosts;
@@ -167,8 +157,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				ConstraintsStatus deliverShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, end, prevActEndTime_deliveryLoop);
 				if(deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)){
 					double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, end, prevActEndTime_deliveryLoop);
-					ActivityInsertionCosts deliveryAIC = calculate(insertionContext,prevAct_deliveryLoop,deliverShipment,end,prevActEndTime_deliveryLoop);
-					double totalActivityInsertionCosts = pickupAIC.getAdditionalCosts() + deliveryAIC.getAdditionalCosts() 
+					double deliveryAIC = calculate(insertionContext,prevAct_deliveryLoop,deliverShipment,end,prevActEndTime_deliveryLoop);
+					double totalActivityInsertionCosts = pickupAIC + deliveryAIC
 							+ additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
 					if(totalActivityInsertionCosts < bestCost){
 						bestCost = totalActivityInsertionCosts;
@@ -186,7 +176,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 			ConstraintsStatus pickupShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, pickupShipment, end, prevActEndTime);
 			if(pickupShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)){
 				double additionalPickupICosts = softActivityConstraint.getCosts(insertionContext, prevAct, pickupShipment, end, prevActEndTime);
-				ActivityInsertionCosts pickupAIC = calculate(insertionContext,prevAct,pickupShipment,end,prevActEndTime);
+				double pickupAIC = calculate(insertionContext,prevAct,pickupShipment,end,prevActEndTime);
 				TourActivity prevAct_deliveryLoop = pickupShipment;
 				double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), pickupShipment.getLocationId(), prevActEndTime, newDriver, newVehicle);
 				double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);
@@ -195,8 +185,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				ConstraintsStatus deliverShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, end, prevActEndTime_deliveryLoop);
 				if(deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)){
 					double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, end, prevActEndTime_deliveryLoop);
-					ActivityInsertionCosts deliveryAIC = calculate(insertionContext,prevAct_deliveryLoop,deliverShipment,end,prevActEndTime_deliveryLoop);
-					double totalActivityInsertionCosts = pickupAIC.getAdditionalCosts() + deliveryAIC.getAdditionalCosts() 
+					double deliveryAIC = calculate(insertionContext,prevAct_deliveryLoop,deliverShipment,end,prevActEndTime_deliveryLoop);
+					double totalActivityInsertionCosts = pickupAIC + deliveryAIC
 							+ additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
 					if(totalActivityInsertionCosts < bestCost){
 						bestCost = totalActivityInsertionCosts;
@@ -214,7 +204,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		return insertionData;
 	}
 
-	private ActivityInsertionCosts calculate(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double departureTimeAtPrevAct) {	
+	private double calculate(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double departureTimeAtPrevAct) {
 		return activityInsertionCostsCalculator.getCosts(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);
 		
 	}

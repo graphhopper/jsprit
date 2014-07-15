@@ -16,28 +16,18 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
-import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
+import jsprit.core.problem.constraint.*;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
-import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
-import jsprit.core.problem.constraint.SoftActivityConstraint;
-import jsprit.core.problem.constraint.SoftRouteConstraint;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
-import jsprit.core.problem.solution.route.activity.End;
-import jsprit.core.problem.solution.route.activity.Start;
-import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.activity.TourActivityFactory;
+import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import jsprit.core.util.CalculationUtils;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -123,9 +113,9 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 			if(status.equals(ConstraintsStatus.FULFILLED)){
 				//from job2insert induced costs at activity level
 				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-				ActivityInsertionCosts additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts() < bestCost){
-					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts();
+				double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost){
+					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
 					insertionIndex = actIndex;
 				}
 			}
@@ -144,9 +134,9 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime); 
 			if(status.equals(ConstraintsStatus.FULFILLED)){
 				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-				ActivityInsertionCosts additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts() < bestCost){
-					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts.getAdditionalCosts();
+				double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost){
+					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
 					insertionIndex = actIndex;
 				}
 			}

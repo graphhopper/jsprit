@@ -16,14 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-
-import jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator.ActivityInsertionCosts;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
@@ -34,18 +26,14 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
-import jsprit.core.problem.solution.route.activity.End;
-import jsprit.core.problem.solution.route.activity.Start;
-import jsprit.core.problem.solution.route.activity.TourActivities;
-import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.activity.TourActivityFactory;
+import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
-
 import org.apache.log4j.Logger;
+
+import java.util.*;
 
 
 
@@ -172,12 +160,12 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
                 /**
                  * builds a path on this route forwardPath={i,k,j,j+1,j+2,...,j+nuOfActsForwardLooking}
                  */
-                ActivityInsertionCosts actInsertionCosts = activityInsertionCostsCalculator.getCosts(insertionContext, prevAct, nextAct, serviceAct2Insert, prevActDepTime_newVehicle);
+                double actInsertionCosts = activityInsertionCostsCalculator.getCosts(insertionContext, prevAct, nextAct, serviceAct2Insert, prevActDepTime_newVehicle);
 
                 /**
                  * insertion_cost_approximation = c({0,1,...,i},newVehicle) + c({i,k,j,j+1,j+2,...,j+nuOfActsForwardLooking},newVehicle) - c({0,1,...,i,j,j+1,...,j+nuOfActsForwardLooking},oldVehicle)
                  */
-                double insertion_cost_approximation = sumOf_prevCosts_newVehicle - sumOf_prevCosts_oldVehicle(currentRoute,prevAct) + actInsertionCosts.getAdditionalCosts();
+                double insertion_cost_approximation = sumOf_prevCosts_newVehicle - sumOf_prevCosts_oldVehicle(currentRoute,prevAct) + actInsertionCosts;
 
                 /**
                  * memorize it in insertion-queue
@@ -223,12 +211,12 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 			End nextAct = end;
             ConstraintsStatus hardActivityConstraintsStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, serviceAct2Insert, nextAct, prevActDepTime_newVehicle);
             if(hardActivityConstraintsStatus.equals(ConstraintsStatus.FULFILLED)){
-                ActivityInsertionCosts actInsertionCosts = activityInsertionCostsCalculator.getCosts(insertionContext, prevAct, nextAct, serviceAct2Insert, prevActDepTime_newVehicle);
-                if(actInsertionCosts != null){
+                double actInsertionCosts = activityInsertionCostsCalculator.getCosts(insertionContext, prevAct, nextAct, serviceAct2Insert, prevActDepTime_newVehicle);
+
                     /**
                      * insertion_cost_approximation = c({0,1,...,i},newVehicle) + c({i,k,j,j+1,j+2,...,j+nuOfActsForwardLooking},newVehicle) - c({0,1,...,i,j,j+1,...,j+nuOfActsForwardLooking},oldVehicle)
                      */
-                    double insertion_cost_approximation = sumOf_prevCosts_newVehicle - sumOf_prevCosts_oldVehicle(currentRoute,prevAct) + actInsertionCosts.getAdditionalCosts();
+                    double insertion_cost_approximation = sumOf_prevCosts_newVehicle - sumOf_prevCosts_oldVehicle(currentRoute,prevAct) + actInsertionCosts;
 
                     /**
                      * memorize it in insertion-queue
@@ -236,7 +224,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
                     if(insertion_cost_approximation < best_known_insertion_costs){
                         bestInsertionsQueue.add(new InsertionData(insertion_cost_approximation, InsertionData.NO_INDEX, actIndex, newVehicle, newDriver));
                     }
-                }
+
             }
         }
 

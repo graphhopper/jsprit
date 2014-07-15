@@ -20,9 +20,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -32,6 +29,9 @@ import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCostsCalculator{
@@ -52,7 +52,7 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 	}
 
 	@Override
-	public ActivityInsertionCosts getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
+	public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
 		List<TourActivity> path = new ArrayList<TourActivity>();
 		path.add(prevAct); path.add(newAct); path.add(nextAct);
 		int actIndex;
@@ -66,7 +66,7 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 		double forwardPathCost_newVehicle = auxilliaryPathCostCalculator.costOfPath(path, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		double additionalCosts = forwardPathCost_newVehicle - (actCostsOld(iFacts.getRoute(), path.get(path.size()-1)) - actCostsOld(iFacts.getRoute(), prevAct));
 		
-		return new ActivityInsertionCosts(additionalCosts, 0.0);
+		return additionalCosts;
 		
 	}
 	
