@@ -23,6 +23,7 @@ import jsprit.core.algorithm.ruin.listener.RuinListeners;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.ReverseRouteActivityVisitor;
@@ -35,6 +36,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
+import jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.*;
 
@@ -109,9 +111,15 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private int nuActivities;
 
+    private int nuVehicleTypeKeys;
+
     private Object[][] activity_states;
 
+    private Object[][][] vehicle_dependent_activity_states;
+
     private Object[][] route_states;
+
+    private Object[][][] vehicle_dependent_route_states;
 
     private VehicleRoutingProblem vrp;
 
@@ -120,6 +128,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if(stateIndexCounter>=activity_states[0].length){
             activity_states = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
             route_states = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
+            vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
+            vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
         }
         StateId id = StateFactory.createId(name,stateIndexCounter);
         incStateIndexCounter();
@@ -164,16 +174,27 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     public StateManager(VehicleRoutingProblem vehicleRoutingProblem){
         this.routingCosts = vehicleRoutingProblem.getTransportCosts();
         this.vrp = vehicleRoutingProblem;
-        nuActivities = vrp.getNuActivities() + 1;
+        nuActivities = Math.max(10,vrp.getNuActivities() + 1);
+        nuVehicleTypeKeys = Math.max(3,getNuVehicleTypes(vrp) + 1);
         activity_states = new Object[nuActivities][initialNuStates];
         route_states = new Object[nuActivities][initialNuStates];
+        vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][initialNuStates];
+        vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][initialNuStates];
         addDefaultStates();
     }
-	
-	public <T> void addDefaultProblemState(StateId stateId, Class<T> type, T defaultState){
+
+    private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
+        int maxIndex = 0;
+        for(Vehicle v : vrp.getVehicles()){
+            maxIndex = Math.max(maxIndex,v.getVehicleTypeIdentifier().getIndex());
+        }
+        return maxIndex;
+    }
+
+    public <T> void addDefaultProblemState(StateId stateId, Class<T> type, T defaultState){
 		defaultProblemStates_.putState(stateId, type, defaultState); 
 	}
-	
+
 	public <T> void putProblemState(StateId stateId, Class<T> type, T state){
 		problemStates_.putState(stateId, type, state); 
 	}
@@ -225,6 +246,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	public void clear(){
         activity_states = new Object[nuActivities][stateIndexCounter];
         route_states = new Object[nuActivities][stateIndexCounter];
+        vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][initialNuStates];
+        vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][initialNuStates];
 		problemStates_.clear();
 	}
 
@@ -239,6 +262,17 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if(state == null) return getDefaultTypedActivityState(act, stateId, type);
         return state;
 	}
+
+    /**
+     * Returns activity state of type 'type'.
+     *
+     */
+    public <T> T getActivityState(TourActivity act, Vehicle vehicle, Driver driver, StateId stateId, Class<T> type) {
+        if(act.getIndex()<0) return getDefaultTypedActivityState(act, stateId, type);
+        T state = type.cast(vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+        if(state == null) return getDefaultTypedActivityState(act, stateId, type);
+        return state;
+    }
 
 	/**
 	 * 
@@ -269,14 +303,17 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	@Override
 	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
         if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
-//        if(route.getActivities().get(0).getIndex()>=route_states.length){
-//            nuActivities=route.getActivities().get(0).getIndex()+1;
-//            this.route_states = resizeArr(route_states,nuActivities);
-//        }
         T state = type.cast(route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()]);
         if(state==null) return getDefaultTypedRouteState(stateId,type);
         return state;
 	}
+
+    public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, Driver driver, StateId stateId, Class<T> type) {
+        if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
+        T state = type.cast(vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+        if(state==null) return getDefaultTypedRouteState(stateId,type);
+        return state;
+    }
 
 	private <T> T getDefaultTypedRouteState(StateId stateId, Class<T> type) {
 		if(defaultRouteStates_.containsKey(stateId)){
@@ -303,20 +340,16 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 */
     @Deprecated
 	public <T> void putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
-//		if(act.getIndex()>=activity_states.length){
-//            nuActivities=act.getIndex()+1;
-//            this.activity_states = resizeArr(activity_states,nuActivities);
-//        }
         if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
                 "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
                 " does not assign indeces thus do not use it anymore, but use\n " +
                 "stateManager.createStateId(name)\n" +
                 " instead.\n");
-		putInternalTypedActivityState(act, stateId, type, state);
+		putInternalTypedActivityState(act, stateId, state);
 	}
 
     /**
-     * Generic method to memorize state 'state' of type 'type' of act and stateId.
+     * Method to memorize state 'state' of type 'type' of act and stateId.
      *
      * <p><b>For example: </b><br>
      * <code>Capacity loadAtMyActivity = Capacity.Builder.newInstance().addCapacityDimension(0,10).build();<br>
@@ -329,17 +362,32 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param type class of state-value
      * @param state state-value
      */
+    @Deprecated
     public <T> void putActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
-//		if(act.getIndex()>=activity_states.length){
-//            nuActivities=act.getIndex()+1;
-//            this.activity_states = resizeArr(activity_states,nuActivities);
-//        }
         if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
                 "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
                 " does not assign indeces thus do not use it anymore, but use\n " +
                 "stateManager.createStateId(name)\n" +
                 " instead.\n");
-        putInternalTypedActivityState(act, stateId, type, state);
+        putInternalTypedActivityState(act, stateId, state);
+    }
+
+    public <T> void putActivityState(TourActivity act, StateId stateId, T state){
+        if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
+                "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
+                " does not assign indeces thus do not use it anymore, but use\n " +
+                "stateManager.createStateId(name)\n" +
+                " instead.\n");
+        putInternalTypedActivityState(act, stateId, state);
+    }
+
+    public <T> void putActivityState(TourActivity act, Vehicle vehicle, Driver driver, StateId stateId, T state){
+        if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
+                "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
+                " does not assign indeces thus do not use it anymore, but use\n " +
+                "stateManager.createStateId(name)\n" +
+                " instead.\n");
+        putInternalTypedActivityState(act, vehicle, driver, stateId, state);
     }
 
     private Object[][] resizeArr(Object[][] states, int newLength) {
@@ -349,9 +397,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         return new_states;
     }
 
-    <T> void putInternalTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
+    <T> void putInternalTypedActivityState(TourActivity act, StateId stateId, T state){
         activity_states[act.getIndex()][stateId.getIndex()]=state;
 	}
+
+    <T> void putInternalTypedActivityState(TourActivity act, Vehicle vehicle, Driver driver, StateId stateId, T state){
+        vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]=state;
+    }
 
 	/**
 	 * Generic method to memorize state 'state' of type 'type' of route and stateId.
@@ -391,9 +443,19 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         putTypedInternalRouteState(route, stateId, state);
     }
 
+    public <T> void putRouteState(VehicleRoute route, Vehicle vehicle, Driver driver, StateId stateId, T state){
+        if(stateId.getIndex()<10) StateFactory.throwReservedIdException(stateId.toString());
+        putTypedInternalRouteState(route, vehicle, driver, stateId, state);
+    }
+
     <T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, T state){
         if(route.isEmpty()) return;
         route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()] = state;
+    }
+
+    <T> void putTypedInternalRouteState(VehicleRoute route, Vehicle vehicle, Driver driver, StateId stateId, T state){
+        if(route.isEmpty()) return;
+        vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
     }
 
 	/**

@@ -60,7 +60,7 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
 		double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocationId(), prevAct.getLocationId(), latestArrTimeAtPrevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
 		double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
 		
-		states.putInternalTypedActivityState(activity, StateFactory.LATEST_OPERATION_START_TIME, Double.class, latestArrivalTime);
+		states.putInternalTypedActivityState(activity, StateFactory.LATEST_OPERATION_START_TIME, latestArrivalTime);
 		
 		latestArrTimeAtPrevAct = latestArrivalTime;
 		prevAct = activity;

@@ -157,7 +157,7 @@ public class VehicleRoutingAlgorithmBuilder {
 	 * @return
 	 */
 	public VehicleRoutingAlgorithm build() {
-		if(stateManager == null) stateManager = new StateManager(vrp.getTransportCosts());
+		if(stateManager == null) stateManager = new StateManager(vrp);
 		if(constraintManager == null) constraintManager = new ConstraintManager(vrp,stateManager,vrp.getConstraints());
 		//add core updater
 		stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());

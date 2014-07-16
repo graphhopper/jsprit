@@ -18,13 +18,10 @@
  ******************************************************************************/
 package jsprit.core.algorithm.state;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
 import jsprit.core.problem.constraint.PickupAndDeliverShipmentLoadActivityLevelConstraint;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -34,9 +31,12 @@ import jsprit.core.problem.solution.route.activity.PickupShipment;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleType;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class HardPickupAndDeliveryShipmentActivityConstraintTest {
@@ -59,7 +59,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
 		when(vehicle.getType()).thenReturn(type);
 //		when(vehicle.getType().getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
-		stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+		stateManager = new StateManager(mock(VehicleRoutingProblem.class));
 		shipment = mock(Shipment.class);
 		when(shipment.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 1).build());
 //		when(shipment.getCapacityDemand()).thenReturn(1);
@@ -83,7 +83,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		PickupService anotherService = new PickupService(mock(Service.class));
 		PickupShipment pickupShipment = new PickupShipment(shipment);
 		
-		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 2).build());
+		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.Builder.newInstance().addDimension(0, 2).build());
 //		when(stateManager.getActivityState(pickupService, StateFactory.LOAD)).thenReturn(StateFactory.createState(2.0));
 		assertEquals(ConstraintsStatus.NOT_FULFILLED,constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
 	}
@@ -94,7 +94,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		PickupService anotherService = new PickupService(mock(Service.class));
 		DeliverShipment pickupShipment = new DeliverShipment(shipment);
 		
-		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 2).build());
+		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.Builder.newInstance().addDimension(0, 2).build());
 		assertEquals(ConstraintsStatus.NOT_FULFILLED_BREAK,constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
 	}
 
@@ -104,7 +104,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 		PickupService anotherService = new PickupService(mock(Service.class));
 		DeliverShipment pickupShipment = new DeliverShipment(shipment);
 		
-		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.class, Capacity.Builder.newInstance().addDimension(0, 1).build());
+		stateManager.putInternalTypedActivityState(pickupService, StateFactory.LOAD, Capacity.Builder.newInstance().addDimension(0, 1).build());
 //		stateManager.putInternalActivityState(pickupService, StateFactory.LOAD, StateFactory.createState(1));
 		assertEquals(ConstraintsStatus.FULFILLED,constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
 	}

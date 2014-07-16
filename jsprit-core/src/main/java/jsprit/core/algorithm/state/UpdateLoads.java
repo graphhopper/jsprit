@@ -69,7 +69,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	@Override
 	public void visit(TourActivity act) {
 		currentLoad = Capacity.addup(currentLoad, act.getSize());
-		stateManager.putInternalTypedActivityState(act, StateFactory.LOAD, Capacity.class, currentLoad);
+		stateManager.putInternalTypedActivityState(act, StateFactory.LOAD, currentLoad);
 		assert currentLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "currentLoad at activity must not be > vehicleCapacity";
 		assert currentLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "currentLoad at act must not be < 0 in one of the applied dimensions";
 	}

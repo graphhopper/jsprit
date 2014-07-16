@@ -57,7 +57,7 @@ public class UpdatePracticalTimeWindowTest {
 		
 		routingCosts = CostFactory.createManhattanCosts();
 
-		stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+		stateManager = new StateManager(mock(VehicleRoutingProblem.class));
 		
 		reverseActivityVisitor = new ReverseRouteActivityVisitor();
 		reverseActivityVisitor.addActivityVisitor(new UpdatePracticalTimeWindows(stateManager, routingCosts));
