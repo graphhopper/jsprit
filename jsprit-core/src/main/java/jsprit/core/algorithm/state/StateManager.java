@@ -284,7 +284,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		}
 		return null;
 	}
-	
+
+
 	/**
 	 * Generic method to memorize state 'state' of type 'type' of act and stateId.
 	 * 
@@ -298,15 +299,48 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * @param stateId stateId of state
 	 * @param type class of state-value
 	 * @param state state-value
+     * @deprecated use putActivityState(...) instead
 	 */
+    @Deprecated
 	public <T> void putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
 //		if(act.getIndex()>=activity_states.length){
 //            nuActivities=act.getIndex()+1;
 //            this.activity_states = resizeArr(activity_states,nuActivities);
 //        }
-        if(stateId.getIndex()<10) StateFactory.throwReservedIdException(stateId.toString());
+        if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
+                "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
+                " does not assign indeces thus do not use it anymore, but use\n " +
+                "stateManager.createStateId(name)\n" +
+                " instead.\n");
 		putInternalTypedActivityState(act, stateId, type, state);
 	}
+
+    /**
+     * Generic method to memorize state 'state' of type 'type' of act and stateId.
+     *
+     * <p><b>For example: </b><br>
+     * <code>Capacity loadAtMyActivity = Capacity.Builder.newInstance().addCapacityDimension(0,10).build();<br>
+     * stateManager.putTypedActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class, loadAtMyActivity);</code>
+     * <p>you can retrieve the load at myActivity by <br>
+     * <code>Capacity load = stateManager.getActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class);</code>
+     *
+     * @param act for which a new state should be memorized
+     * @param stateId stateId of state
+     * @param type class of state-value
+     * @param state state-value
+     */
+    public <T> void putActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
+//		if(act.getIndex()>=activity_states.length){
+//            nuActivities=act.getIndex()+1;
+//            this.activity_states = resizeArr(activity_states,nuActivities);
+//        }
+        if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
+                "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
+                " does not assign indeces thus do not use it anymore, but use\n " +
+                "stateManager.createStateId(name)\n" +
+                " instead.\n");
+        putInternalTypedActivityState(act, stateId, type, state);
+    }
 
     private Object[][] resizeArr(Object[][] states, int newLength) {
         int oldSize = states.length;
@@ -332,10 +366,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * @param stateId stateId of the state value to identify it
 	 * @param type type of state
 	 * @param state state value
+     * @deprecated use putRouteState(...) instead
 	 */
     @Deprecated
 	public <T> void putTypedRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
-		putTypedRouteState(route,stateId,state);
+		putRouteState(route, stateId, state);
 	}
 
     /**
@@ -351,7 +386,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param stateId stateId of the state value to identify it
      * @param state state value
      */
-    public <T> void putTypedRouteState(VehicleRoute route, StateId stateId, T state){
+    public <T> void putRouteState(VehicleRoute route, StateId stateId, T state){
         if(stateId.getIndex()<10) StateFactory.throwReservedIdException(stateId.toString());
         putTypedInternalRouteState(route, stateId, state);
     }

@@ -16,16 +16,10 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
+
+import java.util.*;
 
 
 
@@ -83,6 +77,8 @@ public class TourActivities {
 	private final ArrayList<TourActivity> tourActivities = new ArrayList<TourActivity>();
 
 	private final Set<Job> jobs = new HashSet<Job>();
+
+    private final Map<Job,List<Integer>> job2activityIndeces = new HashMap<Job,List<Integer>>();
 	
 	private ReverseActivityIterator backward;
 	
@@ -178,21 +174,19 @@ public class TourActivities {
 		 * ...
 		 * 
 		 */
-		if(insertionIndex < tourActivities.size()) tourActivities.add(insertionIndex, act); 
-		else if(insertionIndex >= tourActivities.size()) tourActivities.add(act);
+		if(insertionIndex < tourActivities.size()) {
+            tourActivities.add(insertionIndex, act);
+        }
+		else if(insertionIndex >= tourActivities.size()) {
+            tourActivities.add(act);
+        }
 		addJob(act);
 	}
 	
 	/**
-<<<<<<< HEAD
-	 * adds activity.
-	 * 
-	 * @throw {@link IllegalStateException} if same activity is added twice.
-=======
 	 * Adds specified activity at the end of activity-list. 
 	 * <p>If act instanceof JobActivity, it adds underlying job also.
 	 * @throws IllegalStateException if activity-list already contains act.
->>>>>>> refs/remotes/choose_remote_name/relaxAPI
 	 * @param act
 	 */
 	public void addActivity(TourActivity act){
