@@ -36,7 +36,7 @@
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
 				<acceptor name="schrimpfAcceptance">
-					<alpha>0.05</alpha>
+					<alpha>0.2</alpha>
 					<warmup>20</warmup>
 				</acceptor>
 				<modules>
