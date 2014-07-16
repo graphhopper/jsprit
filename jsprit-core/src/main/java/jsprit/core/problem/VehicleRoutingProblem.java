@@ -91,10 +91,6 @@ public class VehicleRoutingProblem {
 		
 		private Set<String> jobsInInitialRoutes = new HashSet<String>();
 		
-		private Collection<Service> services = new ArrayList<Service>();
-
-		private Map<String, Coordinate> coordinates = new HashMap<String, Coordinate>();
-		
 		private Map<String, Coordinate> tentative_coordinates = new HashMap<String, Coordinate>();
 
 		private FleetSize fleetSize = FleetSize.INFINITE;
@@ -104,7 +100,8 @@ public class VehicleRoutingProblem {
 		private Collection<VehicleRoute> initialRoutes = new ArrayList<VehicleRoute>();
 		
 		private Set<Vehicle> uniqueVehicles = new HashSet<Vehicle>();
-		
+
+        @Deprecated
 		private Collection<jsprit.core.problem.constraint.Constraint> constraints = new ArrayList<jsprit.core.problem.constraint.Constraint>();
 
 		private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
@@ -136,10 +133,11 @@ public class VehicleRoutingProblem {
 
         private int activityIndexCounter = 0;
 
-        private int nuActivities = 0;
+        private int vehicleTypeIdIndexCounter = 0;
+
+        private Map<VehicleTypeKey,Integer> typeKeyIndices = new HashMap<VehicleTypeKey, Integer>();
 
         private Map<Job,List<AbstractActivity>> activityMap = new HashMap<Job, List<AbstractActivity>>();
-//        private ArrayList<List<TourActivity>> activityList;
 
         private final DefaultShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
 
@@ -148,21 +146,23 @@ public class VehicleRoutingProblem {
 		/**
 		 * Create a location (i.e. coordinate) and returns the key of the location which is Coordinate.toString().
 		 *  
-		 * @param x
-		 * @param y
+		 * @param x x-coordinate of location
+		 * @param y y-coordinate of location
 		 * @return locationId
 		 * @see Coordinate
 		 */
-		@Deprecated
+		@SuppressWarnings("UnusedDeclaration")
+        @Deprecated
 		public String createLocation(double x, double y){
-			Coordinate coord = new Coordinate(x, y);
-			String id = coord.toString();
+			Coordinate coordinate = new Coordinate(x, y);
+			String id = coordinate.toString();
 			if(!tentative_coordinates.containsKey(id)){
-				tentative_coordinates.put(id, coord);
+				tentative_coordinates.put(id, coordinate);
 			}
 			return id;
 		}
 
+        @SuppressWarnings("UnusedDeclaration")
         public Builder setJobActivityFactory(JobActivityFactory factory){
             this.jobActivityFactory = factory;
             return this;
@@ -175,6 +175,8 @@ public class VehicleRoutingProblem {
         private void incActivityIndexCounter(){
             activityIndexCounter++;
         }
+
+        private void incVehicleTypeIdIndexCounter() { vehicleTypeIdIndexCounter++; }
 
 		/**
 		 * Returns the unmodifiable map of collected locations (mapped by their location-id).
@@ -207,7 +209,7 @@ public class VehicleRoutingProblem {
 		/**
 		 * Sets routing costs.
 		 * 
-		 * @param costs
+		 * @param costs the routingCosts
 		 * @return builder
 		 * @see VehicleRoutingTransportCosts
 		 */
@@ -222,7 +224,7 @@ public class VehicleRoutingProblem {
 		 * 
 		 * <p>FleetSize is either FleetSize.INFINITE or FleetSize.FINITE. By default it is FleetSize.INFINITE.
 		 * 
-		 * @param fleetSize
+		 * @param fleetSize the fleet size used in this problem. it can either be FleetSize.INFINITE or FleetSize.FINITE
 		 * @return this builder
 		 */
 		public Builder setFleetSize(FleetSize fleetSize){
@@ -235,7 +237,7 @@ public class VehicleRoutingProblem {
 		 * 
 		 * <p>Note that job.getId() must be unique, i.e. no job (either it is a shipment or a service) is allowed to have an already allocated id.
 		 * 
-		 * @param job
+		 * @param job job to be added
 		 * @return this builder
 		 * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
          * @deprecated use addJob(AbstractJob job) instead
@@ -251,7 +253,7 @@ public class VehicleRoutingProblem {
          *
          * <p>Note that job.getId() must be unique, i.e. no job (either it is a shipment or a service) is allowed to have an already allocated id.
          *
-         * @param job
+         * @param job job to be added
          * @return this builder
          * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
          */
@@ -277,7 +279,6 @@ public class VehicleRoutingProblem {
 		}
 
 		private void addJobToFinalJobMapAndCreateActivities(Job job){
-            List<TourActivity> acts;
             if(job instanceof Service) {
                 Service service = (Service) job;
 				addService(service);
@@ -294,19 +295,18 @@ public class VehicleRoutingProblem {
             activityMap.put(job, jobActs);
 		}
 
-		public Builder addInitialVehicleRoute(VehicleRoute route){
+
+		@SuppressWarnings("deprecation")
+        public Builder addInitialVehicleRoute(VehicleRoute route){
 			addVehicle(route.getVehicle());
 			for(Job job : route.getTourActivities().getJobs()){
 				jobsInInitialRoutes.add(job.getId());
 				if(job instanceof Service) {
-					coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
 					tentative_coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
 				}
 				if(job instanceof Shipment){
 					Shipment shipment = (Shipment)job;
-					coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
 					tentative_coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
-					coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
 					tentative_coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
 				}
 			}
@@ -323,8 +323,8 @@ public class VehicleRoutingProblem {
 		
 		private void addShipment(Shipment job) {
 			if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
-			coordinates.put(job.getPickupLocation(), job.getPickupCoord());
-			coordinates.put(job.getDeliveryLocation(), job.getDeliveryCoord());
+			tentative_coordinates.put(job.getPickupLocation(), job.getPickupCoord());
+			tentative_coordinates.put(job.getDeliveryLocation(), job.getDeliveryCoord());
 			jobs.put(job.getId(),job);
 		}
 
@@ -332,21 +332,21 @@ public class VehicleRoutingProblem {
 		 * Adds a vehicle.
 		 * 
 		 * 
-		 * @param vehicle
+		 * @param vehicle vehicle to be added
 		 * @return this builder
          * @deprecated use addVehicle(AbstractVehicle vehicle) instead
 		 */
         @Deprecated
 		public Builder addVehicle(Vehicle vehicle) {
             if(!(vehicle instanceof AbstractVehicle)) throw new IllegalStateException("vehicle must be an AbstractVehicle");
-			return addVehicle((AbstractVehicle)vehicle);
+            return addVehicle((AbstractVehicle)vehicle);
 		}
 
         /**
          * Adds a vehicle.
          *
          *
-         * @param vehicle
+         * @param vehicle vehicle to be added
          * @return this builder
          */
         public Builder addVehicle(AbstractVehicle vehicle) {
@@ -354,15 +354,21 @@ public class VehicleRoutingProblem {
                 vehicle.setIndex(vehicleIndexCounter);
                 incVehicleIndexCounter();
             }
+            if(typeKeyIndices.containsKey(vehicle.getVehicleTypeIdentifier())){
+                vehicle.getVehicleTypeIdentifier().setIndex(typeKeyIndices.get(vehicle.getVehicleTypeIdentifier()));
+            }
+            else {
+                vehicle.getVehicleTypeIdentifier().setIndex(vehicleTypeIdIndexCounter);
+                typeKeyIndices.put(vehicle.getVehicleTypeIdentifier(),vehicleTypeIdIndexCounter);
+                incVehicleTypeIdIndexCounter();
+            }
             uniqueVehicles.add(vehicle);
             if(!vehicleTypes.contains(vehicle.getType())){
                 vehicleTypes.add(vehicle.getType());
             }
             String startLocationId = vehicle.getStartLocationId();
-            coordinates.put(startLocationId, vehicle.getStartLocationCoordinate());
             tentative_coordinates.put(startLocationId, vehicle.getStartLocationCoordinate());
             if(!vehicle.getEndLocationId().equals(startLocationId)){
-                coordinates.put(vehicle.getEndLocationId(), vehicle.getEndLocationCoordinate());
                 tentative_coordinates.put(vehicle.getEndLocationId(), vehicle.getEndLocationCoordinate());
             }
             return this;
@@ -377,7 +383,7 @@ public class VehicleRoutingProblem {
 		 * 
 		 * <p>By default it is set to zero.
 		 * 
-		 * @param activityCosts
+		 * @param activityCosts activity costs of the problem
 		 * @return this builder
 		 * @see VehicleRoutingActivityCosts
 		 */
@@ -438,8 +444,7 @@ public class VehicleRoutingProblem {
 						.build();
 				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
 				String vehicleId = v.getId();
-//				String vehicleId = "penaltyVehicle_" + new VehicleTypeKey(v.getType().getTypeId(),v.getStartLocationId(),v.getEndLocationId(),v.getEarliestDeparture(),v.getLatestArrival()).toString();
-				Vehicle penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
+				VehicleImpl penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
 						.setLatestArrival(v.getLatestArrival()).setStartLocationCoordinate(v.getStartLocationCoordinate()).setStartLocationId(v.getStartLocationId())
 						.setEndLocationId(v.getEndLocationId()).setEndLocationCoordinate(v.getEndLocationCoordinate())
 						.setReturnToDepot(v.isReturnToDepot()).setType(penType).build();
@@ -447,8 +452,10 @@ public class VehicleRoutingProblem {
 			}
 		}
 
-		public Builder addLocation(String locationId, Coordinate coord) {
-			coordinates.put(locationId, coord);
+
+		@SuppressWarnings("UnusedDeclaration")
+        public Builder addLocation(String locationId, Coordinate coordinate) {
+			tentative_coordinates.put(locationId, coordinate);
 			return this;
 		}
 
@@ -458,7 +465,8 @@ public class VehicleRoutingProblem {
 		 * @param jobs which is a collection of jobs that subclasses Job
 		 * @return this builder
 		 */
-		public Builder addAllJobs(Collection<? extends Job> jobs) {
+		@SuppressWarnings("deprecation")
+        public Builder addAllJobs(Collection<? extends Job> jobs) {
 			for(Job j : jobs){
 				addJob(j);
 			}
@@ -468,10 +476,11 @@ public class VehicleRoutingProblem {
 		/**
 		 * Adds a collection of vehicles.
 		 * 
-		 * @param vehicles
+		 * @param vehicles vehicles to be added
 		 * @return this builder
 		 */
-		public Builder addAllVehicles(Collection<Vehicle> vehicles) {
+		@SuppressWarnings("deprecation")
+        public Builder addAllVehicles(Collection<? extends Vehicle> vehicles) {
 			for(Vehicle v : vehicles){
 				addVehicle(v);
 			}
@@ -490,7 +499,7 @@ public class VehicleRoutingProblem {
 		/**
 		 * Gets an unmodifiable collection of already added vehicle-types.
 		 * 
-		 * @returns collection of vehicle-types
+		 * @return collection of vehicle-types
 		 */
 		public Collection<VehicleType> getAddedVehicleTypes(){
 			return Collections.unmodifiableCollection(vehicleTypes);
@@ -499,11 +508,14 @@ public class VehicleRoutingProblem {
 		/**
 		 * Adds constraint to problem.
 		 * 
-		 * @param constraint
+		 * @param constraint constraint to be added
 		 * @return this builder
+         * @deprecated use ConstraintManager instead
 		 */
+        @Deprecated
 		public Builder addConstraint(jsprit.core.problem.constraint.Constraint constraint){
-			constraints.add(constraint);
+            //noinspection deprecation
+            constraints.add(constraint);
 			return this;
 		}
 		
@@ -515,7 +527,7 @@ public class VehicleRoutingProblem {
 		 * <p>The id of penaltyVehicles is constructed as follows vehicleId = "penaltyVehicle" + "_" + {locationId} + "_" + {typeId}. 
 		 * <p>By default: no penalty-vehicles are added
 		 * 
-		 * @param penaltyFactor
+		 * @param penaltyFactor penaltyFactor of penaltyVehicle
 		 * @return this builder
 		 */
 		public Builder addPenaltyVehicles(double penaltyFactor){
@@ -531,7 +543,7 @@ public class VehicleRoutingProblem {
 		 * <p>The id of penaltyVehicles is constructed as follows vehicleId = "penaltyVehicle" + "_" + {locationId} + "_" + {typeId}. 
 		 * <p>By default: no penalty-vehicles are added
 		 * 
-		 * @param penaltyFactor
+		 * @param penaltyFactor the penaltyFactor of penaltyVehicle
 		 * @param penaltyFixedCosts which is an absolute penaltyValue (in contrary to penaltyFactor)
 		 * @return this builder
 		 */
@@ -551,19 +563,10 @@ public class VehicleRoutingProblem {
 			return Collections.unmodifiableCollection(tentativeJobs.values());
 		}
 
-		/**
-		 * Adds a service to jobList.
-		 * 
-		 * <p>If jobList already contains service, a warning message is printed, and the existing job will be overwritten.
-		 * 
-		 * @param service
-		 * @return
-		 */
 		private Builder addService(Service service){
-			coordinates.put(service.getLocationId(), service.getCoord());
+			tentative_coordinates.put(service.getLocationId(), service.getCoord());
 			if(jobs.containsKey(service.getId())){ logger.warn("service " + service + " already in job list. overrides existing job."); }
 			jobs.put(service.getId(),service);
-			services.add(service);
 			return this;
 		}
 
@@ -577,18 +580,7 @@ public class VehicleRoutingProblem {
 	 *
 	 */
 	public static enum FleetSize {
-		FINITE, INFINITE;
-	}
-	
-	/**
-	 * Enum that characterizes fleet-compostion.
-	 * 
-	 * @author sschroeder
-	 * @deprecated FleetComposition is not used
-	 */
-	@Deprecated
-	public static enum FleetComposition {
-		HETEROGENEOUS, HOMOGENEOUS;
+		FINITE, INFINITE
 	}
 	
 	/**
@@ -648,7 +640,8 @@ public class VehicleRoutingProblem {
 		this.initialVehicleRoutes = builder.initialRoutes;
 		this.transportCosts = builder.transportCosts;
 		this.activityCosts = builder.activityCosts;
-		this.constraints = builder.constraints;
+        //noinspection deprecation
+        this.constraints = builder.constraints;
 		this.locations = builder.getLocations();
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
@@ -726,8 +719,10 @@ public class VehicleRoutingProblem {
 	/**
 	 * Returns an unmodifiable collection of constraints.
 	 * 
-	 * @return
+	 * @return collection of constraints
+     * @deprecated use ConstraintManager instead
 	 */
+    @Deprecated
 	public Collection<jsprit.core.problem.constraint.Constraint> getConstraints(){
 		return Collections.unmodifiableCollection(constraints);
 	}

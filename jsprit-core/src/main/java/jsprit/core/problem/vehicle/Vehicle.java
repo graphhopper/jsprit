@@ -84,4 +84,6 @@ public interface Vehicle extends HasId, HasIndex {
 	 * Returns the end-locationCoord of this vehicle.
 	 */
 	public abstract Coordinate getEndLocationCoordinate();
+
+    public abstract VehicleTypeKey getVehicleTypeIdentifier();
 }

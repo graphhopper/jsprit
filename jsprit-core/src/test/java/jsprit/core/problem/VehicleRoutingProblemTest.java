@@ -22,7 +22,10 @@ import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
-import jsprit.core.problem.job.*;
+import jsprit.core.problem.job.Delivery;
+import jsprit.core.problem.job.Pickup;
+import jsprit.core.problem.job.Service;
+import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.*;
@@ -60,10 +63,10 @@ public class VehicleRoutingProblemTest {
 	public void whenBuildingWithFourVehicles_vrpShouldContainTheCorrectNuOfVehicles(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").build();
-		Vehicle v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("start").build();
-		Vehicle v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("start").build();
+		VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").build();
+        VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("start").build();
+        VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("start").build();
 		
 		builder.addVehicle(v1).addVehicle(v2).addVehicle(v3).addVehicle(v4);
 		
@@ -76,10 +79,10 @@ public class VehicleRoutingProblemTest {
 	public void whenAddingFourVehiclesAllAtOnce_vrpShouldContainTheCorrectNuOfVehicles(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").build();
-		Vehicle v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("start").build();
-		Vehicle v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("start").build();
+		VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").build();
+        VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("start").build();
+        VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("start").build();
 		
 		builder.addAllVehicles(Arrays.asList(v1,v2,v3,v4));
 		
@@ -231,7 +234,8 @@ public class VehicleRoutingProblemTest {
 		assertEquals(s2,vrp.getJobs().get("s2"));
 	}
 	
-	@Test
+	@SuppressWarnings("deprecation")
+    @Test
 	public void whenConstraintsAdded_vrpShouldContainThem(){
 		Constraint c1 = mock(Constraint.class);
 		Constraint c2 = mock(Constraint.class);
@@ -284,7 +288,7 @@ public class VehicleRoutingProblemTest {
 	public void whenAddingAVehicle_getAddedVehicleTypesShouldReturnItsType(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
 		builder.addVehicle(vehicle);
 		
 		assertEquals(1,builder.getAddedVehicleTypes().size());
@@ -296,8 +300,8 @@ public class VehicleRoutingProblemTest {
 	public void whenAddingTwoVehicleWithSameType_getAddedVehicleTypesShouldReturnOnlyOneType(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -312,8 +316,8 @@ public class VehicleRoutingProblemTest {
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
 		VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type2").build();
 		
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type2).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -326,7 +330,7 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptions_itShouldAddPenaltyVehicle(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.setFleetSize(FleetSize.FINITE);
@@ -348,7 +352,7 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptionsAndFleetSizeIsInfinite_noPenaltyVehicleIsAdded(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addPenaltyVehicles(3.0);
@@ -371,8 +375,8 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithSameLocationAndType_onlyOnePenaltyVehicleIsAdded(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -395,8 +399,8 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptionsWithAbsoluteFixedCostsAndTwoVehiclesWithSameLocationAndType_onePenaltyVehicleIsAddedWithTheCorrectPenaltyFixedCosts(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -421,8 +425,8 @@ public class VehicleRoutingProblemTest {
 	public void whenSettingAddPenaltyVehicleOptionsAndTwoVehiclesWithDiffLocationAndType_twoPenaltyVehicleIsAdded(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc2").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc2").setType(type).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -449,8 +453,8 @@ public class VehicleRoutingProblemTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
 		VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type2").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+		VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("loc").setType(type2).build();
 		
 		builder.addVehicle(vehicle);
 		builder.addVehicle(vehicle2);
@@ -472,7 +476,7 @@ public class VehicleRoutingProblemTest {
 	
 	@Test
 	public void whenAddingVehicleWithDiffStartAndEnd_startLocationMustBeRegisteredInLocationMap(){
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);
@@ -481,7 +485,7 @@ public class VehicleRoutingProblemTest {
 	
 	@Test
 	public void whenAddingVehicleWithDiffStartAndEnd_endLocationMustBeRegisteredInLocationMap(){
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);
@@ -490,7 +494,7 @@ public class VehicleRoutingProblemTest {
 	
 	@Test 
 	public void whenAddingInitialRoute_itShouldBeAddedCorrectly(){
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, DriverImpl.noDriver()).build();
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addInitialVehicleRoute(route);
@@ -500,10 +504,10 @@ public class VehicleRoutingProblemTest {
 	
 	@Test 
 	public void whenAddingInitialRoutes_theyShouldBeAddedCorrectly(){
-		Vehicle vehicle1 = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		VehicleImpl vehicle1 = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
 		VehicleRoute route1 = VehicleRoute.Builder.newInstance(vehicle1, DriverImpl.noDriver()).build();
 		
-		Vehicle vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
+		VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setEndLocationId("end").build();
 		VehicleRoute route2 = VehicleRoute.Builder.newInstance(vehicle2, DriverImpl.noDriver()).build();
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -515,7 +519,7 @@ public class VehicleRoutingProblemTest {
 	
 	@Test 
 	public void whenAddingInitialRoute_locationOfVehicleMustBeMemorized(){
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, DriverImpl.noDriver()).build();
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addInitialVehicleRoute(route);
@@ -529,7 +533,7 @@ public class VehicleRoutingProblemTest {
 		Service service = Service.Builder.newInstance("myService").setLocationId("loc").build();
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addJob(service);
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
 		VehicleRoute initialRoute = VehicleRoute.Builder.newInstance(vehicle).addService(service).build();
 		vrpBuilder.addInitialVehicleRoute(initialRoute);
 		VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -538,8 +542,8 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenAddingTwoJobs_theyShouldHaveProperIndeces(){
-        Job service = Service.Builder.newInstance("myService").setLocationId("loc").build();
-        Job shipment = Shipment.Builder.newInstance("shipment").setPickupLocation("pick").setDeliveryLocation("del").build();
+        Service service = Service.Builder.newInstance("myService").setLocationId("loc").build();
+        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation("pick").setDeliveryLocation("del").build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service);
         vrpBuilder.addJob(shipment);
@@ -551,9 +555,9 @@ public class VehicleRoutingProblemTest {
     }
 
     @Test
-    public void whenAddingTwoVehicles_theyShouldHaveProperIndeces(){
-        Vehicle veh1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
-        Vehicle veh2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+    public void whenAddingTwoVehicles_theyShouldHaveProperIndices(){
+        VehicleImpl veh1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+        VehicleImpl veh2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(veh1);
@@ -562,6 +566,36 @@ public class VehicleRoutingProblemTest {
 
         assertEquals(0,veh1.getIndex());
         assertEquals(1,veh2.getIndex());
+
+    }
+
+    @Test
+    public void whenAddingTwoVehiclesWithSameTypeIdentifier_typeIdentifiersShouldHaveSameIndices(){
+        VehicleImpl veh1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+        VehicleImpl veh2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        vrpBuilder.addVehicle(veh1);
+        vrpBuilder.addVehicle(veh2);
+        vrpBuilder.build();
+
+        assertEquals(0, veh1.getVehicleTypeIdentifier().getIndex());
+        assertEquals(0, veh2.getVehicleTypeIdentifier().getIndex());
+
+    }
+
+    @Test
+    public void whenAddingTwoVehiclesDifferentTypeIdentifier_typeIdentifiersShouldHaveDifferentIndices(){
+        VehicleImpl veh1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+        VehicleImpl veh2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 1)).setEndLocationId("end").build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        vrpBuilder.addVehicle(veh1);
+        vrpBuilder.addVehicle(veh2);
+        vrpBuilder.build();
+
+        assertEquals(0,veh1.getVehicleTypeIdentifier().getIndex());
+        assertEquals(1,veh2.getVehicleTypeIdentifier().getIndex());
 
     }
 }

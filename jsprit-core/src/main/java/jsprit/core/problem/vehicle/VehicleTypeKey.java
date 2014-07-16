@@ -18,15 +18,17 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+import jsprit.core.problem.AbstractVehicle;
+
 /**
- * Key to identify different vehicles
+ * Key to identify similar vehicles
  * 
  * <p>Two vehicles are equal if they share the same type, the same start and end-location and the same earliestStart and latestStart.
  * 
  * @author stefan
  *
  */
-public class VehicleTypeKey {
+public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey{
 	
 	public final String type;
 	public final String startLocationId;
