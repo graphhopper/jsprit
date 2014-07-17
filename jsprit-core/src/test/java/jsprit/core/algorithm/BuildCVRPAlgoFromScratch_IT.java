@@ -16,10 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-
 import jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import jsprit.core.algorithm.module.RuinAndRecreateModule;
 import jsprit.core.algorithm.recreate.BestInsertionBuilder;
@@ -41,9 +37,12 @@ import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.util.Solutions;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class BuildCVRPAlgoFromScratch_IT {
@@ -58,7 +57,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 		new VrpXMLReader(builder).read("src/test/resources/vrpnc1-jsprit.xml");
 		vrp = builder.build();
 		
-		final StateManager stateManager = new StateManager(vrp.getTransportCosts());
+		final StateManager stateManager = new StateManager(vrp);
 		stateManager.updateLoadStates();
 		stateManager.updateTimeWindowStates();
 		stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));

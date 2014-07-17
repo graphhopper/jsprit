@@ -23,6 +23,7 @@ import jsprit.core.problem.AbstractVehicle;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
+import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
@@ -33,11 +34,10 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ServiceActivity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivities;
-import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
-import jsprit.core.util.Coordinate;
-import jsprit.core.util.ManhattanDistanceCalculator;
+import jsprit.core.util.CostFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -83,69 +83,29 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		VehicleType type = mock(VehicleType.class);
 		
 		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 1000).build());
-		
-		when(vehicle.getType()).thenReturn(type);
-		when(vehicle.getStartLocationId()).thenReturn("0,0");
-		when(vehicle.getEndLocationId()).thenReturn("0,0");
-		when(vehicle.getEarliestDeparture()).thenReturn(0.0);
-		when(vehicle.getLatestArrival()).thenReturn(100.0);
-		when(vehicle.isReturnToDepot()).thenReturn(true);
-		
-		newVehicle = mock(AbstractVehicle.class);
-		when(newVehicle.getType()).thenReturn(type);
-		when(newVehicle.getStartLocationId()).thenReturn("0,0");
-		when(newVehicle.getEndLocationId()).thenReturn("0,0");
-		when(newVehicle.getEarliestDeparture()).thenReturn(0.0);
-		when(newVehicle.getLatestArrival()).thenReturn(100.0);
-		when(newVehicle.isReturnToDepot()).thenReturn(true);
-		
+
+        vehicle = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocationId("0,0").setLatestArrival(100.).build();
+        newVehicle = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocationId("0,0").setLatestArrival(100.).build();
 		driver = DriverImpl.noDriver();
 
-		costs = new VehicleRoutingTransportCosts() {
+        costs = new AbstractForwardVehicleRoutingTransportCosts() {
 
-			@Override
-			public double getBackwardTransportTime(String fromId, String toId,
-					double arrivalTime, Driver driver, Vehicle vehicle) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
+            VehicleRoutingTransportCosts routingCosts = CostFactory.createManhattanCosts();
 
-			@Override
-			public double getBackwardTransportCost(String fromId, String toId,
-					double arrivalTime, Driver driver, Vehicle vehicle) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
+            @Override
+            public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+                return 0;
+            }
 
-			@Override
-			public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle veh) {
-				String[] fromTokens = fromId.split(",");
-				String[] toTokens = toId.split(",");
-				double fromX = Double.parseDouble(fromTokens[0]);
-				double fromY = Double.parseDouble(fromTokens[1]);
+            @Override
+            public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+                double tpCosts = routingCosts.getTransportCost(fromId,toId,departureTime,driver,vehicle);
+                if(vehicle.getId().equals("v1")) return tpCosts;
+                return 2. * tpCosts;
+            }
 
-				double toX = Double.parseDouble(toTokens[0]);
-				double toY = Double.parseDouble(toTokens[1]);
+        };
 
-				double dist = ManhattanDistanceCalculator.calculateDistance(new Coordinate(fromX, fromY), new Coordinate(toX, toY));
-				if(veh == vehicle){
-					return dist;
-				}
-				else if(veh == newVehicle){
-					return 2*dist;
-				}
-				throw new IllegalStateException();
-			}
-
-			@Override
-			public double getTransportTime(String fromId, String toId,
-					double departureTime, Driver driver, Vehicle vehicle) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-		};
-
-		
 		first = Service.Builder.newInstance("1").setLocationId("0,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
 		second = Service.Builder.newInstance("3").setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
 		third = Service.Builder.newInstance("2").setLocationId("10,10").setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
@@ -156,7 +116,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).addVehicle(newVehicle).setRoutingCost(costs).build();
 		
-		states = new StateManager(vrp.getTransportCosts());
+		states = new StateManager(vrp);
 		states.updateLoadStates();
 		states.updateTimeWindowStates();
 		states.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), states));
@@ -174,12 +134,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		
 		
 	}
-	
-	public TourActivity getActivityMock(String id, double earliestOperationStart, double currCost){
-		TourActivity act = mock(TourActivity.class);
-		when(act.getLocationId()).thenReturn(id);
-		return act;
-	}
+
 	
 	@Test
 	public void whenInsertingTheFirstJobInAnEmptyTourWithVehicle_itCalculatesMarginalCostChanges(){

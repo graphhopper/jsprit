@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import jsprit.core.algorithm.module.RuinAndRecreateModule;
 import jsprit.core.algorithm.recreate.BestInsertionBuilder;
@@ -39,10 +37,11 @@ import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.util.Solutions;
-
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collection;
 
 
 public class BuildPDVRPAlgoFromScratch_IT {
@@ -60,7 +59,7 @@ public class BuildPDVRPAlgoFromScratch_IT {
 			new VrpXMLReader(builder).read("src/test/resources/pd_solomon_r101.xml");
 			vrp = builder.build();
 			
-			final StateManager stateManager = new StateManager(vrp.getTransportCosts());
+			final StateManager stateManager = new StateManager(vrp);
 			
 			ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 			constraintManager.addTimeWindowConstraint();
