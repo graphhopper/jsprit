@@ -5,7 +5,6 @@ import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.*;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -90,7 +89,7 @@ public class LoadConstraintTest {
         });
         shipment_route = shipmentRouteBuilder.addPickup(shipment1).addPickup(shipment2).addDelivery(shipment2).addDelivery(shipment1).build();
 
-        stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
+        stateManager = new StateManager(mock(VehicleRoutingProblem.class));
         stateManager.updateLoadStates();
     }
 

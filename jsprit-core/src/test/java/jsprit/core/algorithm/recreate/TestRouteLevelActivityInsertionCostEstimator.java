@@ -91,7 +91,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
 
         }).addService(s1).addService(s2).addService(s3).build();
 
-        stateManager = new StateManager(routingCosts);
+        stateManager = new StateManager(vrp);
         stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts,routingCosts,stateManager));
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
     }

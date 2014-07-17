@@ -18,15 +18,9 @@
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
@@ -39,9 +33,15 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleType;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ServiceLoadRouteLevelConstraintTest {
 	
@@ -87,7 +87,7 @@ public class ServiceLoadRouteLevelConstraintTest {
 
 		constraint = new ServiceLoadRouteLevelConstraint(stateGetter);
 		
-		stateManager = new StateManager(routingCosts);
+		stateManager = new StateManager(mock(VehicleRoutingProblem.class));
 		stateManager.updateLoadStates();
 	}
 	

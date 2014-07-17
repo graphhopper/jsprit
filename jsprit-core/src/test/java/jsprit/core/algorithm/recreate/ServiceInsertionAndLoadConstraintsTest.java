@@ -127,7 +127,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		
 		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
-		StateManager stateManager = new StateManager(vrp.getTransportCosts());
+		StateManager stateManager = new StateManager(vrp);
 		stateManager.updateLoadStates();
 		
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);

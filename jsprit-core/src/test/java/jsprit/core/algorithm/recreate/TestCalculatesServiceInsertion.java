@@ -16,16 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
@@ -49,11 +39,16 @@ import jsprit.core.util.Coordinate;
 import jsprit.core.util.EuclideanDistanceCalculator;
 import jsprit.core.util.Locations;
 import jsprit.core.util.ManhattanDistanceCalculator;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 
@@ -128,7 +123,7 @@ public class TestCalculatesServiceInsertion {
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).setRoutingCost(costs).build();
 		
-		states = new StateManager(vrp.getTransportCosts());
+		states = new StateManager(vrp);
 		states.updateLoadStates();
 		states.updateTimeWindowStates();
 		

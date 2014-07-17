@@ -18,22 +18,17 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertTrue;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Shipment;
-import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
-import jsprit.core.problem.vehicle.Vehicle;
-import jsprit.core.problem.vehicle.VehicleFleetManager;
-import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.*;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
-import jsprit.core.problem.vehicle.VehicleType;
-import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 
 public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
@@ -56,7 +51,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
 		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
-		Vehicle vehicle = vehicleBuilder.build();
+		VehicleImpl vehicle = vehicleBuilder.build();
 		
 		/*
 		 * build shipments at the required locations, each with a capacity-demand of 1.
@@ -92,7 +87,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		final StateManager stateManager = new StateManager(vrp.getTransportCosts());
+		final StateManager stateManager = new StateManager(vrp);
 		
 
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
@@ -121,7 +116,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
 		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
-		Vehicle vehicle = vehicleBuilder.build();
+		VehicleImpl vehicle = vehicleBuilder.build();
 		
 		/*
 		 * build shipments at the required locations, each with a capacity-demand of 1.
@@ -157,7 +152,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		final StateManager stateManager = new StateManager(vrp.getTransportCosts());
+		final StateManager stateManager = new StateManager(vrp);
 
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 		constraintManager.addLoadConstraint();

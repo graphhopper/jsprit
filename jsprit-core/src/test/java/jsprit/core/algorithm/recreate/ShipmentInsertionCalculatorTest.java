@@ -251,7 +251,7 @@ public class ShipmentInsertionCalculatorTest {
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
 
-		StateManager stateManager = new StateManager(vrp.getTransportCosts());
+		StateManager stateManager = new StateManager(vrp);
 		stateManager.updateLoadStates();
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
 

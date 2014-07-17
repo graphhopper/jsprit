@@ -161,15 +161,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		
 	}
 
-    @Deprecated
-	public StateManager(VehicleRoutingTransportCosts routingCosts){
-		this.routingCosts = routingCosts;
-        nuActivities = 101;
-        activity_states = new Object[nuActivities][initialNuStates];
-        route_states = new Object[nuActivities][initialNuStates];
-		addDefaultStates();
-	}
-
     public StateManager(VehicleRoutingProblem vehicleRoutingProblem){
         this.routingCosts = vehicleRoutingProblem.getTransportCosts();
         this.vrp = vehicleRoutingProblem;
@@ -243,16 +234,14 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 * 
 	 */
 	public void clear(){
-        fill(activity_states, null);
-        fill(route_states, null);
-        fill_(vehicle_dependent_activity_states, null);
-        fill_(vehicle_dependent_route_states,null);
-//        vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][initialNuStates];
-//        vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][initialNuStates];
+        fill_twoDimArr(activity_states, null);
+        fill_twoDimArr(route_states, null);
+        fill_threeDimArr(vehicle_dependent_activity_states, null);
+        fill_threeDimArr(vehicle_dependent_route_states, null);
 		problemStates_.clear();
 	}
 
-    private void fill_(Object[][][] states, Object o) {
+    private void fill_threeDimArr(Object[][][] states, Object o) {
         for(Object[][] twoDimArr : states){
             for(Object[] oneDimArr : twoDimArr){
                 Arrays.fill(oneDimArr,o);
@@ -260,7 +249,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         }
     }
 
-    private void fill(Object[][] states, Object o) {
+    private void fill_twoDimArr(Object[][] states, Object o) {
         for(Object[] rows : states){
             Arrays.fill(rows,o);
         }

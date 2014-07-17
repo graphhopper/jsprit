@@ -18,13 +18,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.Collections;
-
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -42,9 +35,15 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.CostFactory;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by schroeder on 02.07.14.
@@ -82,7 +81,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
         route = VehicleRoute.Builder.newInstance(vehicle).addService(s1).addService(s2).addService(s3).build();
 
-        stateManager = new StateManager(routingCosts);
+        stateManager = new StateManager(mock(VehicleRoutingProblem.class));
         stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts,routingCosts,stateManager));
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
 
