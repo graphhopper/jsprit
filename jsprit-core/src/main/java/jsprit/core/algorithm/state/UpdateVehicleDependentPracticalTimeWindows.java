@@ -18,7 +18,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
 
     }
 
-    private final VehiclesToUpdate vehiclesToUpdate = new VehiclesToUpdate() {
+    private VehiclesToUpdate vehiclesToUpdate = new VehiclesToUpdate() {
 
         @Override
         public Collection<Vehicle> get(VehicleRoute route) {
@@ -48,8 +48,9 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
     }
 
     public void setVehiclesToUpdate(VehiclesToUpdate vehiclesToUpdate){
-        
+        this.vehiclesToUpdate = vehiclesToUpdate;
     }
+
     @Override
     public void begin(VehicleRoute route) {
         this.route = route;
@@ -76,5 +77,6 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
 
     @Override
     public void finish() {}
+
 }
 
