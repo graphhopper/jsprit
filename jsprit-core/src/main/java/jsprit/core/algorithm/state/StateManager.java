@@ -273,6 +273,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         return state;
 	}
 
+    public boolean hasActivityState(TourActivity act, Vehicle vehicle, StateId stateId){
+        return vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
+    }
+
     /**
      * Returns activity state of type 'type'.
      *
@@ -334,6 +338,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if(state==null) return getDefaultTypedRouteState(stateId,type);
         return state;
 	}
+
+    public boolean hasRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId) {
+        return vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
+    }
 
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type) {
         if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
