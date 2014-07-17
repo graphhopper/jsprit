@@ -122,6 +122,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private VehicleRoutingProblem vrp;
 
+    int getMaxIndexOfVehicleTypeIdentifiers(){ return nuVehicleTypeKeys; }
+
     public StateId createStateId(String name){
         if(createdStateIds.containsKey(name)) return createdStateIds.get(name);
         if(stateIndexCounter>=activity_states[0].length){

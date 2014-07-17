@@ -36,13 +36,8 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
         this.transportCosts = tpCosts;
         this.fleetManager = fleetManager;
         this.vehicleSwitchAllowed=isVehicleSwitchAllowed;
-        int maxVehicleTypeIndex = getMaxTypeIndex(fleetManager);
-        latest_arrTimes_at_prevAct = new double[maxVehicleTypeIndex];
-        location_of_prevAct = new String[maxVehicleTypeIndex];
-    }
-
-    private int getMaxTypeIndex(VehicleFleetManager fleetManager) {
-        return 0;
+        latest_arrTimes_at_prevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
+        location_of_prevAct = new String[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
     }
 
     @Override
