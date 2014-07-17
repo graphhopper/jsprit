@@ -18,15 +18,8 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.SolutionPrinter;
-import jsprit.core.algorithm.InsertionInitialSolutionFactory;
-import jsprit.core.algorithm.RemoveEmptyVehicles;
-import jsprit.core.algorithm.SearchStrategy;
-import jsprit.core.algorithm.SearchStrategyManager;
-import jsprit.core.algorithm.VariablePlusFixedSolutionCostCalculatorFactory;
-import jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import jsprit.core.algorithm.*;
 import jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import jsprit.core.algorithm.module.RuinAndRecreateModule;
 import jsprit.core.algorithm.recreate.BestInsertionBuilder;
@@ -48,6 +41,8 @@ import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.util.Solutions;
 import jsprit.instance.reader.SolomonReader;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 public class BuildAlgorithmFromScratchWithHardAndSoftConstraints {
 
@@ -99,7 +94,7 @@ public class BuildAlgorithmFromScratchWithHardAndSoftConstraints {
 		/*
 		 * manages route and activity states.
 		 */
-		StateManager stateManager = new StateManager(vrp.getTransportCosts());
+		StateManager stateManager = new StateManager(vrp);
 		/*
 		 * tells stateManager to update load states
 		 */

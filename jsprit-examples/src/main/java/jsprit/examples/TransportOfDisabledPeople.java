@@ -18,8 +18,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
@@ -44,6 +42,8 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 public class TransportOfDisabledPeople {
 	
@@ -166,7 +166,7 @@ public class TransportOfDisabledPeople {
 		//build the problem
 		VehicleRoutingProblem problem = vrpBuilder.build();
 
-		StateManager stateManager = new StateManager(problem.getTransportCosts());
+		StateManager stateManager = new StateManager(problem);
 		
 		ConstraintManager constraintManager = new ConstraintManager(problem, stateManager);
 		constraintManager.addConstraint(wheelchair_bus_passenger_pickup_constraint);

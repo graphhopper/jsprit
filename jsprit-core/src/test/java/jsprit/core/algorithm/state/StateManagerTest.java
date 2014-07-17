@@ -24,7 +24,6 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.StateFactory;
-import jsprit.core.problem.solution.route.state.StateFactory.State;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
@@ -34,20 +33,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StateManagerTest {
 	
-	@Test
-	public void whenRouteStateIsSetWithGenericMethod_itMustBeSetCorrectly(){
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().build();
-        VehicleRoute route = getRoute(mock(Vehicle.class));
-		StateManager stateManager = new StateManager(vrp);
-		StateId id = stateManager.createStateId("myState");
-		State state = StateFactory.createState(1.);
-		stateManager.putRouteState(route, id, state);
-		assertEquals(1.,stateManager.getRouteState(route, id, State.class).toDouble(),0.01);
-	}
 
     private VehicleRoute getRoute(Vehicle vehicle) {
         return VehicleRoute.Builder.newInstance(vehicle).addService(Service.Builder.newInstance("s").setLocationId("loc").build()).build();
@@ -84,16 +72,7 @@ public class StateManagerTest {
 		assertEquals(500, getCap.get(0));
 	}
 	
-	@Test
-	public void whenActivityStateIsSetWithGenericMethod_itMustBeSetCorrectly(){
-		TourActivity activity = mock(TourActivity.class);
-        when(activity.getIndex()).thenReturn(0);
-		StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
-		StateId id = stateManager.createStateId("myState");
-		State state = StateFactory.createState(1.);
-		stateManager.putActivityState(activity, id, state);
-		assertEquals(1.,stateManager.getActivityState(activity, id, State.class).toDouble(),0.01);
-	}
+
 	
 	@Test
 	public void whenActivityStateIsSetWithGenericMethodAndBoolean_itMustBeSetCorrectly(){
