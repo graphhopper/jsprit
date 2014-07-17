@@ -19,11 +19,17 @@ package jsprit.core.problem.solution.route.state;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.StateFactory.StateId;
+import jsprit.core.problem.vehicle.Vehicle;
 
 public interface RouteAndActivityStateGetter {
 
+
 	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type);
+
+    public <T> T getActivityState(TourActivity act, Vehicle vehicle, StateId stateId, Class<T> type);
 	
 	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type);
+
+    public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type);
 
 }
