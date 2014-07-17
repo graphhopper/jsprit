@@ -6,20 +6,30 @@ import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
-import jsprit.core.problem.vehicle.VehicleFleetManager;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivityVisitor, StateUpdater{
 
+    public static interface VehiclesToUpdate {
+
+        public Collection<Vehicle> get(VehicleRoute route);
+
+    }
+
+    private final VehiclesToUpdate vehiclesToUpdate = new VehiclesToUpdate() {
+
+        @Override
+        public Collection<Vehicle> get(VehicleRoute route) {
+            return Arrays.asList(route.getVehicle());
+        }
+
+    };
+
     private final StateManager stateManager;
 
     private final VehicleRoutingTransportCosts transportCosts;
-
-    private final VehicleFleetManager fleetManager;
-
-    private final boolean vehicleSwitchAllowed;
 
     private VehicleRoute route;
 
@@ -29,23 +39,21 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
 
     private Collection<Vehicle> vehicles;
 
-
-    public UpdateVehicleDependentPracticalTimeWindows(StateManager stateManager, VehicleRoutingTransportCosts tpCosts, VehicleFleetManager fleetManager, boolean isVehicleSwitchAllowed) {
+    public UpdateVehicleDependentPracticalTimeWindows(StateManager stateManager, VehicleRoutingTransportCosts tpCosts) {
         super();
         this.stateManager = stateManager;
         this.transportCosts = tpCosts;
-        this.fleetManager = fleetManager;
-        this.vehicleSwitchAllowed=isVehicleSwitchAllowed;
         latest_arrTimes_at_prevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
         location_of_prevAct = new String[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
     }
 
+    public void setVehiclesToUpdate(VehiclesToUpdate vehiclesToUpdate){
+        
+    }
     @Override
     public void begin(VehicleRoute route) {
         this.route = route;
-        vehicles = new ArrayList<Vehicle>();
-        if(vehicleSwitchAllowed) vehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
-        vehicles.add(route.getVehicle());
+        vehicles = vehiclesToUpdate.get(route);
         for(Vehicle vehicle : vehicles){
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getEndLocationId();
