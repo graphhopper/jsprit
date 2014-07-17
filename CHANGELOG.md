@@ -2,11 +2,11 @@ Change-log
 ==========
 **v1.4.0** ? in preparation
 
+<b>! Break change !</b>
+
 <em>jsprit-core</em>
-
-StateFactory.createId(String name) moved to core.algorithm.state.StateManager.createStateId(String name)
-
-constructor new StateManager(VehicleRoutingTransportCosts costs) does not exist anymore, but is new StateManager(VehicleRoutingProblem vrp)
+- StateFactory.createId(String name) moved to core.algorithm.state.StateManager.createStateId(String name)
+- constructor new StateManager(VehicleRoutingTransportCosts costs) does not exist anymore, but is new StateManager(VehicleRoutingProblem vrp)
 
 **v1.3.1** @ 2014-06-14
 
