@@ -124,6 +124,15 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     int getMaxIndexOfVehicleTypeIdentifiers(){ return nuVehicleTypeKeys; }
 
+    /**
+     * Create and returns a stateId with the specified state-name.
+     *
+     * <p>If a stateId with the specified name has already been created, it returns the created stateId.</p>
+     * <p>If the specified is equal to a name that is already used internally, it throws an IllegalStateException</p>
+     * @param name the specified name of the state
+     * @return the stateId with which a state can be identified, no matter if it is a problem, route or activity state.
+     * @throws java.lang.IllegalStateException if name of state is already used internally
+     */
     public StateId createStateId(String name){
         if(createdStateIds.containsKey(name)) return createdStateIds.get(name);
         if(stateIndexCounter>=activity_states[0].length){
@@ -163,6 +172,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		
 	}
 
+    /**
+     * Constructs the stateManager with the specified VehicleRoutingProblem.
+     *
+     * @param vehicleRoutingProblem the corresponding VehicleRoutingProblem
+     */
     public StateManager(VehicleRoutingProblem vehicleRoutingProblem){
         this.routingCosts = vehicleRoutingProblem.getTransportCosts();
         this.vrp = vehicleRoutingProblem;
@@ -183,56 +197,57 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         return maxIndex;
     }
 
+    @Deprecated
     public <T> void addDefaultProblemState(StateId stateId, Class<T> type, T defaultState){
 		defaultProblemStates_.putState(stateId, type, defaultState); 
 	}
 
+    /**
+     * Associates the specified state to the stateId. If there already exists a state value for the stateId, this old
+     * value is replaced by the new value.
+     *
+     * @param stateId the stateId which is the associated key to the problem state
+     * @param type the type of the problem state
+     * @param state the actual state value
+     * @param <T> the type of the state value
+     */
 	public <T> void putProblemState(StateId stateId, Class<T> type, T state){
-		problemStates_.putState(stateId, type, state); 
+		problemStates_.putState(stateId, type, state);
 	}
-	
+
+    /**
+     * Returns mapped state value that is associated to the specified stateId, or null if no value is associated to
+     * the specified stateId.
+     *
+     * @param stateId the stateId which is the associated key to the problem state
+     * @param type the type class of the state value
+     * @param <T>  the type
+     * @return the state value that is associated to the specified stateId or null if no value is associated
+     */
 	public <T> T getProblemState(StateId stateId, Class<T> type){
-		if(!problemStates_.containsKey(stateId)){
-			return getDefaultProblemState(stateId, type);
-		}
 		return problemStates_.getState(stateId, type);
 	}
-	
+
+    @Deprecated
 	<T> T getDefaultProblemState(StateId stateId, Class<T> type){
 		if(defaultProblemStates_.containsKey(stateId)) return defaultProblemStates_.getState(stateId, type); 
 		return null;
 	}
-	
-	/**
-	 * Generic method to add a default route state.
-	 * 
-	 * <p>for example if you want to store 'maximum weight' at route-level, the default might be zero and you
-	 * can add the default simply by coding <br>
-	 * <code>addDefaultRouteState(StateFactory.createStateId("max_weight"), Integer.class, 0)</code>
-	 * 
-	 * @param stateId for which a default state is added
-	 * @param type of state
-	 * @param defaultState default state value
-	 */
+
+    @Deprecated
 	public <T> void addDefaultRouteState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
 		defaultRouteStates_.put(stateId, type.cast(defaultState));
 	}
 	
-	/**
-	 * Generic method to add default activity state.
-	 * 
-	 * @param stateId for which a default state is added
-	 * @param type of state
-	 * @param defaultState default state value
-	 */
+	@Deprecated
 	public <T> void addDefaultActivityState(StateId stateId, Class<T> type, T defaultState){
 		if(StateFactory.isReservedId(stateId)) StateFactory.throwReservedIdException(stateId.toString());
 		defaultActivityStates_.put(stateId, type.cast(defaultState));
 	}
 	
 	/**
-	 * Clears all states.
+	 * Clears all states, i.e. set all value to null.
 	 * 
 	 */
 	public void clear(){
@@ -258,12 +273,19 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     /**
-	 * Returns activity state of type 'type'.
-	 * 
+	 * Returns associated state for the specified activity and stateId, or it returns null if no value is associated.
+     * <p>If type class is not equal to the associated type class of the requested state value, it throws a ClassCastException.</p>
+	 *
+     * @param act the activity for which a state value is associated to
+     * @param stateId the stateId for which a state value is associated to
+     * @param type the type of class of the associated state value
+     * @param <T> the type
+     * @return the state value that is associated to the specified activity and stateId, or null if no value is associated.
+     * @throws java.lang.ClassCastException if type class is not equal to the associated type class of the requested state value
 	 */
 	@Override
 	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type) {
-		if(act.getIndex()<0) return getDefaultTypedActivityState(act, stateId, type);
+//		if(act.getIndex()<0) return getDefaultTypedActivityState(act, stateId, type);
         T state;
         try{
            state = type.cast(activity_states[act.getIndex()][stateId.getIndex()]);
@@ -271,20 +293,37 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         catch (ClassCastException e){
             throw getClassCastException(e,stateId,type.toString(),activity_states[act.getIndex()][stateId.getIndex()].getClass().toString());
         }
-        if(state == null) throw new NullPointerException("state " + stateId.toString() + " of activity " + act + " is missing.");
+//        if(state == null) throw new NullPointerException("state " + stateId.toString() + " of activity " + act + " is missing.");
         return state;
 	}
 
+    /**
+     * Returns true if a state value is associated to the specified activity, vehicle and stateId.
+     *
+     * @param act the activity for which a state value is associated to
+     * @param vehicle the vehicle for which a state value is associated to
+     * @param stateId the stateId which is the associated key to the problem state
+     * @return true if a state value is associated otherwise false
+     */
     public boolean hasActivityState(TourActivity act, Vehicle vehicle, StateId stateId){
         return vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
     }
 
     /**
-     * Returns activity state of type 'type'.
-     *
+     * Returns the associated state value to the specified activity, vehicle and stateId, or null if no state value is
+     * associated.
+     * <p>If type class is not equal to the associated type class of the requested state value, it throws a ClassCastException.</p>
+     * @param act the activity for which a state value is associated to
+     * @param vehicle the vehicle for which a state value is associated to
+     * @param stateId the stateId which is the associated key to the problem state
+     * @param type the class of the associated state value
+     * @param <T> the type of the class
+     * @return the associated state value to the specified activity, vehicle and stateId, or null if no state value is
+     * associated.
+     * @throws java.lang.ClassCastException if type class is not equal to the associated type class of the requested state value
      */
     public <T> T getActivityState(TourActivity act, Vehicle vehicle, StateId stateId, Class<T> type) {
-        if(act.getIndex()<0) return getDefaultTypedActivityState(act, stateId, type);
+//        if(act.getIndex()<0) return getDefaultTypedActivityState(act, stateId, type);
         T state;
         try {
             state = type.cast(vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
@@ -293,7 +332,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             Object state_class = vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()];
             throw getClassCastException(e,stateId,type.toString(),state_class.getClass().toString());
         }
-        if(state == null) throw new NullPointerException("state " + stateId.toString() + " of activity " + act + " for vehicle " + vehicle.getId() + " is missing.");
+//        if(state == null) throw new NullPointerException("state " + stateId.toString() + " of activity " + act + " for vehicle " + vehicle.getId() + " is missing.");
         return state;
     }
 
@@ -301,13 +340,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         return new ClassCastException(e + "\n" + "state with stateId '" + stateId.toString() + "' is of " + memorizedTypeClass + ". cannot cast it to " + requestedTypeClass + ".");
     }
 
-	/**
-	 * 
-	 * @param act activity for which the state is requested
-	 * @param stateId stateId of requested state
-	 * @param type class of state value
-	 * @return state value
-	 */
+    @Deprecated
 	private <T> T getDefaultTypedActivityState(TourActivity act, StateId stateId, Class<T> type) {
 		if(defaultActivityStates_.containsKey(stateId)){
 			return type.cast(defaultActivityStates_.get(stateId));
@@ -321,15 +354,19 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		return null;
 	}
 
-	/**
-	 * Return route state of type 'type'.
-	 * 
-	 * @return route-state
-	 * @throws ClassCastException if state of route and stateId is of another type
-	 */
+    /**
+     * Returns the route state that is associated to the route and stateId, or null if no state is associated.
+     * <p>If type class is not equal to the associated type class of the requested state value, it throws a ClassCastException.</p>
+     *
+     * @param route the route which the associated route key to the route state
+     * @param stateId the stateId which is the associated key to the route state
+     * @param type the class of the associated state value
+     * @param <T> the type of the class
+     * @return the route state that is associated to the route and stateId, or null if no state is associated.
+     */
 	@Override
 	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
-        if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
+//        if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
         T state;
         try{
             state = type.cast(route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()]);
@@ -341,10 +378,29 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         return state;
 	}
 
+    /**
+     * Returns true if a state is assigned to the specified route, vehicle and stateId. Otherwise it returns false.
+     *
+     * @param route the route for which the state is requested
+     * @param vehicle the vehicle for which the state is requested
+     * @param stateId the stateId(entifier) for the state that is requested
+     * @return true if state exists and false otherwise
+     */
     public boolean hasRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId) {
         return vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
     }
 
+    /**
+     * Returns the route state that is assigned to the specified route, vehicle and stateId.
+     * <p>Returns null if no state can be found</p>
+     * @param route the route for which the state is requested
+     * @param vehicle the vehicle for which the state is requested
+     * @param stateId the stateId(entifier) for the state that is requested
+     * @param type the type class of the requested state
+     * @param <T> the type of the class
+     * @return the actual route state that is assigned to the route, vehicle and stateId
+     * @throws java.lang.ClassCastException if specified type is not equal to the memorized type
+     */
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type) {
         if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
         T state;
@@ -354,7 +410,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         catch( ClassCastException e){
             throw getClassCastException(e, stateId, type.toString(), vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
         }
-        if(state==null) throw new NullPointerException("state " + stateId.toString() + " of route " + route + " for vehicle " + vehicle.getId() + " is missing.");
         return state;
     }
 
@@ -365,22 +420,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		return null;
 	}
 
-
-	/**
-	 * Generic method to memorize state 'state' of type 'type' of act and stateId.
-	 * 
-	 * <p><b>For example: </b><br>
-	 * <code>Capacity loadAtMyActivity = Capacity.Builder.newInstance().addCapacityDimension(0,10).build();<br>
-	 * stateManager.putTypedActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class, loadAtMyActivity);</code>
-	 * <p>you can retrieve the load at myActivity by <br>
-	 * <code>Capacity load = stateManager.getActivityState(myActivity, StateFactory.createStateId("act-load"), Capacity.class);</code>
-	 * 
-	 * @param act for which a new state should be memorized
-	 * @param stateId stateId of state
-	 * @param type class of state-value
-	 * @param state state-value
-     * @deprecated use putActivityState(...) instead
-	 */
     @Deprecated
 	public <T> void putTypedActivityState(TourActivity act, StateId stateId, Class<T> type, T state){
         if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
@@ -415,6 +454,16 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         putInternalTypedActivityState(act, stateId, state);
     }
 
+    /**
+     * Associates the specified activity and stateId to the state value. If a state value is already associated to the
+     * specified activity and stateId, it is replaced by the new state value.
+     *
+     * @param act the activity for which a state value is associated to
+     * @param stateId the stateId which is the associated key to the activity state
+     * @param state the state that is associated to the activity and stateId
+     * @param <T> the type of the state
+     * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
+     */
     public <T> void putActivityState(TourActivity act, StateId stateId, T state){
         if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
                 "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
@@ -424,6 +473,17 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         putInternalTypedActivityState(act, stateId, state);
     }
 
+    /**
+     * Associates the specified activity, vehicle and stateId to the state value. If a state value is already associated to the
+     * specified activity and stateId, it is replaced by the new state value.
+     *
+     * @param act the activity for which a state value is associated to
+     * @param vehicle the vehicle for which a state value is associated to
+     * @param stateId the stateId which is the associated key to the activity state
+     * @param state the state that is associated to the activity and stateId
+     * @param <T> the type of the state
+     * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
+     */
     public <T> void putActivityState(TourActivity act, Vehicle vehicle, StateId stateId, T state){
         if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
                 "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
@@ -448,44 +508,37 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]=state;
     }
 
-	/**
-	 * Generic method to memorize state 'state' of type 'type' of route and stateId.
-	 * 
-	 * <p><b>For example:</b> <br>
-	 * <code>double totalRouteDuration = 100.0;<br>
-	 * stateManager.putTypedActivityState(myRoute, StateFactory.createStateId("route-duration"), Double.class, totalRouteDuration);</code>
-	 * <p>you can retrieve the duration of myRoute then by <br>
-	 * <code>double totalRouteDuration = stateManager.getRouteState(myRoute, StateFactory.createStateId("route-duration"), Double.class);</code> 
-	 * 
-	 * @param route for which a state needs to be memorized
-	 * @param stateId stateId of the state value to identify it
-	 * @param type type of state
-	 * @param state state value
-     * @deprecated use putRouteState(...) instead
-	 */
     @Deprecated
 	public <T> void putTypedRouteState(VehicleRoute route, StateId stateId, Class<T> type, T state){
 		putRouteState(route, stateId, state);
 	}
 
     /**
-     * Generic method to memorize state 'state' of type 'type' of route and stateId.
+     * Associates the specified route, vehicle and stateId to the state value. If a state value is already associated to the
+     * specified activity and stateId, it is replaced by the new state value.
      *
-     * <p><b>For example:</b> <br>
-     * <code>double totalRouteDuration = 100.0;<br>
-     * stateManager.putTypedActivityState(myRoute, StateFactory.createStateId("route-duration"), Double.class, totalRouteDuration);</code>
-     * <p>you can retrieve the duration of myRoute then by <br>
-     * <code>double totalRouteDuration = stateManager.getRouteState(myRoute, StateFactory.createStateId("route-duration"), Double.class);</code>
-     *
-     * @param route for which a state needs to be memorized
-     * @param stateId stateId of the state value to identify it
-     * @param state state value
+     * @param route the route for which a state value is associated to
+     * @param stateId the stateId which is the associated key to the activity state
+     * @param state the state that is associated to the activity and stateId
+     * @param <T> the type of the state
+     * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
      */
     public <T> void putRouteState(VehicleRoute route, StateId stateId, T state){
         if(stateId.getIndex()<10) StateFactory.throwReservedIdException(stateId.toString());
         putTypedInternalRouteState(route, stateId, state);
     }
 
+    /**
+     * Associates the specified route, vehicle and stateId to the state value. If a state value is already associated to the
+     * specified activity and stateId, it is replaced by the new state value.
+     *
+     * @param route the route for which a state value is associated to
+     * @param vehicle the vehicle for which a state value is associated to
+     * @param stateId the stateId which is the associated key to the activity state
+     * @param state the state that is associated to the activity and stateId
+     * @param <T> the type of the state
+     * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
+     */
     public <T> void putRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, T state){
         if(stateId.getIndex()<10) StateFactory.throwReservedIdException(stateId.toString());
         putTypedInternalRouteState(route, vehicle, stateId, state);
@@ -521,9 +574,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		if(updater instanceof RuinListener) addListener((RuinListener) updater);
 		updaters.add(updater);
 	}
-	
-	
-	
+
+    /**
+     * Returns an unmodifiable collections of stateUpdaters that have been added to this stateManager.
+     *
+     * @return an unmodifiable collections of stateUpdaters that have been added to this stateManager.
+     */
 	Collection<StateUpdater> getStateUpdaters(){
 		return Collections.unmodifiableCollection(updaters);
 	}
