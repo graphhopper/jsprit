@@ -271,7 +271,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         catch (ClassCastException e){
             throw getClassCastException(e,stateId,type.toString(),activity_states[act.getIndex()][stateId.getIndex()].getClass().toString());
         }
-        if(state == null) return getDefaultTypedActivityState(act, stateId, type);
+        if(state == null) throw new NullPointerException("state " + stateId.toString() + " of activity " + act + " is missing.");
         return state;
 	}
 
@@ -293,7 +293,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             Object state_class = vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()];
             throw getClassCastException(e,stateId,type.toString(),state_class.getClass().toString());
         }
-        if(state == null) return getDefaultTypedActivityState(act, stateId, type);
+        if(state == null) throw new NullPointerException("state " + stateId.toString() + " of activity " + act + " for vehicle " + vehicle.getId() + " is missing.");
         return state;
     }
 
@@ -337,7 +337,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         catch (ClassCastException e){
             throw getClassCastException(e,stateId,type.toString(),route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()].getClass().toString());
         }
-        if(state==null) return getDefaultTypedRouteState(stateId,type);
+        if(state==null) throw new NullPointerException("state " + stateId.toString() + " of route " + route + " is missing.");
         return state;
 	}
 
@@ -354,7 +354,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         catch( ClassCastException e){
             throw getClassCastException(e, stateId, type.toString(), vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
         }
-        if(state==null) return getDefaultTypedRouteState(stateId,type);
+        if(state==null) throw new NullPointerException("state " + stateId.toString() + " of route " + route + " for vehicle " + vehicle.getId() + " is missing.");
         return state;
     }
 
