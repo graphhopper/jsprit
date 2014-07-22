@@ -45,15 +45,15 @@ public class StateFactory {
 	
 	public final static StateId DURATION = new StateIdImpl("duration", 5);
 	
-	public final static StateId LATEST_OPERATION_START_TIME = new StateIdImpl("latest_ost", 6);
+	public final static StateId LATEST_OPERATION_START_TIME = new StateIdImpl("latest_operation_start_time", 6);
 	
-	public final static StateId EARLIEST_OPERATION_START_TIME = new StateIdImpl("earliest_ost", 7);
+	public final static StateId EARLIEST_OPERATION_START_TIME = new StateIdImpl("earliest_operation_start_time", 7);
 	
 	public final static StateId FUTURE_MAXLOAD = new StateIdImpl("future_max_load", 8);
 	
 	public final static StateId PAST_MAXLOAD = new StateIdImpl("past_max_load", 9);
 	
-	final static List<String> reservedIds = Arrays.asList("max_load","load","costs","load_at_beginning","load_at_end","duration","latest_ost","earliest_ost"
+	final static List<String> reservedIds = Arrays.asList("max_load","load","costs","load_at_beginning","load_at_end","duration","latest_operation_start_time","earliest_operation_start_time"
 			,"future_max_load","past_max_load");
 			
 
