@@ -51,18 +51,22 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	/*
 	 * default has one dimension with a value of zero
 	 */
-	private Capacity currentLoad = Capacity.Builder.newInstance().build();
+	private Capacity currentLoad;
+
+    private Capacity defaultValue;
 	
 	private VehicleRoute route;
 	
 	public UpdateLoads(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
+        defaultValue = Capacity.Builder.newInstance().build();
 	}
 	
 	@Override
 	public void begin(VehicleRoute route) {
 		currentLoad = stateManager.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+        if(currentLoad == null) currentLoad = defaultValue;
 		this.route = route;
 	}
 
@@ -103,10 +107,12 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 		if(job2insert instanceof Delivery){
 			Capacity loadAtDepot = stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+            if(loadAtDepot == null) loadAtDepot = defaultValue;
 			stateManager.putTypedInternalRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, Capacity.addup(loadAtDepot, job2insert.getSize()));
 		}
 		else if(job2insert instanceof Pickup || job2insert instanceof Service){
 			Capacity loadAtEnd = stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_END, Capacity.class);
+            if(loadAtEnd == null) loadAtEnd = defaultValue;
 			stateManager.putTypedInternalRouteState(inRoute, StateFactory.LOAD_AT_END, Capacity.addup(loadAtEnd, job2insert.getSize()));
 		}
 	}

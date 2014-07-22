@@ -38,15 +38,19 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute implement
 	private VehicleRoute route;
 	
 	private Capacity maxLoad;
+
+    private Capacity defaultValue;
 	
 	public UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(StateManager stateManager) {
 		this.stateManager = stateManager;
+        defaultValue = Capacity.Builder.newInstance().build();
 	}
 
 	@Override
 	public void begin(VehicleRoute route) {
 		this.route = route;
 		maxLoad = stateManager.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+        if(maxLoad == null) maxLoad = defaultValue;
 	}
 
 	@Override

@@ -43,16 +43,20 @@ class UpdateMaxCapacityUtilisationAtRoute implements ActivityVisitor, StateUpdat
 	
 	private VehicleRoute route;
 	
-	private Capacity maxLoad = Capacity.Builder.newInstance().build();
+	private Capacity maxLoad;
+
+    private Capacity defaultValue;
 	
 	public UpdateMaxCapacityUtilisationAtRoute(StateManager stateManager) {
 		super();
 		this.stateManager = stateManager;
+        defaultValue = Capacity.Builder.newInstance().build();
 	}
 	
 	@Override
 	public void begin(VehicleRoute route) {
 		currentLoad = stateManager.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+        if(currentLoad == null) currentLoad = defaultValue;
 		maxLoad = currentLoad;
 		this.route = route;
 	}

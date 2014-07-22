@@ -20,11 +20,7 @@ package jsprit.core.problem.constraint;
 
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.misc.JobInsertionContext;
-import jsprit.core.problem.solution.route.activity.DeliverService;
-import jsprit.core.problem.solution.route.activity.PickupService;
-import jsprit.core.problem.solution.route.activity.ServiceActivity;
-import jsprit.core.problem.solution.route.activity.Start;
-import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 
@@ -41,10 +37,13 @@ import jsprit.core.problem.solution.route.state.StateFactory;
 class ServiceLoadActivityLevelConstraint implements HardActivityStateLevelConstraint {
 	
 	private RouteAndActivityStateGetter stateManager;
+
+    private Capacity defaultValue;
 	
 	public ServiceLoadActivityLevelConstraint(RouteAndActivityStateGetter stateManager) {
 		super();
 		this.stateManager = stateManager;
+        defaultValue = Capacity.Builder.newInstance().build();
 	}
 
 	@Override
@@ -53,11 +52,15 @@ class ServiceLoadActivityLevelConstraint implements HardActivityStateLevelConstr
 		Capacity prevMaxLoad;
 		if(prevAct instanceof Start){
 			futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), StateFactory.MAXLOAD, Capacity.class);
+            if(futureMaxLoad == null) futureMaxLoad = defaultValue;
 			prevMaxLoad = stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+            if(prevMaxLoad == null) prevMaxLoad = defaultValue;
 		}
 		else{
 			futureMaxLoad = stateManager.getActivityState(prevAct, StateFactory.FUTURE_MAXLOAD, Capacity.class);
+            if(futureMaxLoad == null) futureMaxLoad = defaultValue;
 			prevMaxLoad = stateManager.getActivityState(prevAct, StateFactory.PAST_MAXLOAD, Capacity.class);
+            if(prevMaxLoad == null) prevMaxLoad = defaultValue;
 			
 		}
 		if(newAct instanceof PickupService || newAct instanceof ServiceActivity){

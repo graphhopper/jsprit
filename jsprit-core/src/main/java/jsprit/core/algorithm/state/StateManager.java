@@ -285,7 +285,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 */
 	@Override
 	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type) {
-//		if(act.getIndex()<0) return getDefaultTypedActivityState(act, stateId, type);
+		if(act.getIndex()<0) return null;
         T state;
         try{
            state = type.cast(activity_states[act.getIndex()][stateId.getIndex()]);
@@ -293,7 +293,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         catch (ClassCastException e){
             throw getClassCastException(e,stateId,type.toString(),activity_states[act.getIndex()][stateId.getIndex()].getClass().toString());
         }
-//        if(state == null) throw new NullPointerException("state " + stateId.toString() + " of activity " + act + " is missing.");
         return state;
 	}
 
@@ -323,7 +322,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @throws java.lang.ClassCastException if type class is not equal to the associated type class of the requested state value
      */
     public <T> T getActivityState(TourActivity act, Vehicle vehicle, StateId stateId, Class<T> type) {
-//        if(act.getIndex()<0) return getDefaultTypedActivityState(act, stateId, type);
+        if(act.getIndex()<0) return null;
         T state;
         try {
             state = type.cast(vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
@@ -332,7 +331,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             Object state_class = vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()];
             throw getClassCastException(e,stateId,type.toString(),state_class.getClass().toString());
         }
-//        if(state == null) throw new NullPointerException("state " + stateId.toString() + " of activity " + act + " for vehicle " + vehicle.getId() + " is missing.");
         return state;
     }
 
@@ -363,10 +361,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param type the class of the associated state value
      * @param <T> the type of the class
      * @return the route state that is associated to the route and stateId, or null if no state is associated.
+     * @throws java.lang.ClassCastException if type class is not equal to the associated type class of the requested state value
      */
 	@Override
 	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
-//        if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
+        if(route.isEmpty()) return null;
         T state;
         try{
             state = type.cast(route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()]);
@@ -374,7 +373,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         catch (ClassCastException e){
             throw getClassCastException(e,stateId,type.toString(),route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()].getClass().toString());
         }
-        if(state==null) throw new NullPointerException("state " + stateId.toString() + " of route " + route + " is missing.");
         return state;
 	}
 
@@ -402,7 +400,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @throws java.lang.ClassCastException if specified type is not equal to the memorized type
      */
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type) {
-        if(route.isEmpty()) return getDefaultTypedRouteState(stateId,type);
+        if(route.isEmpty()) return null;
         T state;
         try{
            state = type.cast(vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
@@ -413,6 +411,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         return state;
     }
 
+    @Deprecated
 	private <T> T getDefaultTypedRouteState(StateId stateId, Class<T> type) {
 		if(defaultRouteStates_.containsKey(stateId)){
 			return type.cast(defaultRouteStates_.get(stateId));

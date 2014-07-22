@@ -261,7 +261,9 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 				/**
 				 * compute cost-diff of tour with and without new activity --> insertion_costs
 				 */
-				double insertion_costs = auxilliaryPathCostCalculator.costOfPath(wholeTour, start.getEndTime(), newDriver, newVehicle) - stateManager.getRouteState(currentRoute,StateFactory.COSTS,Double.class);
+                Double currentRouteCosts = stateManager.getRouteState(currentRoute, StateFactory.COSTS, Double.class);
+                if(currentRouteCosts == null) currentRouteCosts = 0.;
+                double insertion_costs = auxilliaryPathCostCalculator.costOfPath(wholeTour, start.getEndTime(), newDriver, newVehicle) - currentRouteCosts;
 
 				/**
 				 * if better than best known, make it the best known
@@ -307,10 +309,13 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 	}
 
 	private double sumOf_prevCosts_oldVehicle(VehicleRoute vehicleRoute, TourActivity act) {
-		if(act instanceof End){
-			return stateManager.getRouteState(vehicleRoute,StateFactory.COSTS,Double.class);
+		Double prevCost;
+        if(act instanceof End){
+			prevCost = stateManager.getRouteState(vehicleRoute,StateFactory.COSTS,Double.class);
 		}
-		return stateManager.getActivityState(act,StateFactory.COSTS,Double.class);
+        else prevCost = stateManager.getActivityState(act,StateFactory.COSTS,Double.class);
+        if(prevCost == null) prevCost = 0.;
+		return prevCost;
 	}
 
 	/**

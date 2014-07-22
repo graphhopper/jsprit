@@ -64,17 +64,19 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 		 * calculates the path costs with new vehicle, c(forwardPath,newVehicle).
 		 */
 		double forwardPathCost_newVehicle = auxilliaryPathCostCalculator.costOfPath(path, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
-		double additionalCosts = forwardPathCost_newVehicle - (actCostsOld(iFacts.getRoute(), path.get(path.size()-1)) - actCostsOld(iFacts.getRoute(), prevAct));
-		
-		return additionalCosts;
-		
+		return forwardPathCost_newVehicle - (actCostsOld(iFacts.getRoute(), path.get(path.size()-1)) - actCostsOld(iFacts.getRoute(), prevAct));
 	}
 	
 	private double actCostsOld(VehicleRoute vehicleRoute, TourActivity act) {
-		if(act instanceof End){
-			return stateManager.getRouteState(vehicleRoute,StateFactory.COSTS,Double.class);
+        Double cost_at_act;
+        if(act instanceof End){
+            cost_at_act = stateManager.getRouteState(vehicleRoute, StateFactory.COSTS, Double.class);
 		}
-		return stateManager.getActivityState(act,StateFactory.COSTS,Double.class);
+        else{
+            cost_at_act = stateManager.getActivityState(act, StateFactory.COSTS, Double.class);
+        }
+        if(cost_at_act == null) cost_at_act = 0.;
+        return cost_at_act;
 	}
 	
 	private List<TourActivity> getForwardLookingPath(VehicleRoute route, int actIndex) {

@@ -80,7 +80,9 @@ public class BuildPDVRPAlgoFromScratch_IT {
 				public double getCosts(VehicleRoutingProblemSolution solution) {
 					double costs = 0.0;
 					for(VehicleRoute route : solution.getRoutes()){
-						costs += stateManager.getRouteState(route, StateFactory.COSTS, Double.class);
+                        Double cost_of_route = stateManager.getRouteState(route, StateFactory.COSTS, Double.class);
+                        if(cost_of_route == null) cost_of_route = 0.;
+                        costs += cost_of_route;
 					}
 					return costs;
 				}

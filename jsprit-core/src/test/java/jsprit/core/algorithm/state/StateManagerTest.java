@@ -125,14 +125,14 @@ public class StateManagerTest {
 	}
 	
 	@Test
-	public void whenProblemStateIsSetAndStateManagerClearedAfterwards_itReturnsDefault(){
+	public void whenProblemStateIsSetAndStateManagerClearedAfterwards_itReturnsNull(){
 		StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
 		StateId id = StateFactory.createId("problemState");
 		stateManager.addDefaultProblemState(id, Boolean.class, false);
 		stateManager.putProblemState(id, Boolean.class, true);
 		stateManager.clear();
-		boolean problemState = stateManager.getProblemState(id, Boolean.class);
-		assertFalse(problemState);
+		Boolean problemState = stateManager.getProblemState(id, Boolean.class);
+		assertNull(problemState);
 	}
 
     @Test

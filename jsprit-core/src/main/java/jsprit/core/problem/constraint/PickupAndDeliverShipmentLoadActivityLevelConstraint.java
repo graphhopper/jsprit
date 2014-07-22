@@ -40,6 +40,8 @@ import jsprit.core.problem.solution.route.state.StateFactory;
 public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements HardActivityStateLevelConstraint {
 	
 	private RouteAndActivityStateGetter stateManager;
+
+    private Capacity defaultValue;
 	
 	/**
 	 * Constructs the constraint ensuring capacity constraint at each activity.
@@ -53,6 +55,7 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 	public PickupAndDeliverShipmentLoadActivityLevelConstraint(RouteAndActivityStateGetter stateManager) {
 		super();
 		this.stateManager = stateManager;
+        defaultValue = Capacity.Builder.newInstance().build();
 	}
 	
 	/**
@@ -67,9 +70,11 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 		Capacity loadAtPrevAct;
 		if(prevAct instanceof Start){
 			loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+            if(loadAtPrevAct == null) loadAtPrevAct = defaultValue;
 		}
 		else{
 			loadAtPrevAct = stateManager.getActivityState(prevAct, StateFactory.LOAD, Capacity.class);
+            if(loadAtPrevAct == null) loadAtPrevAct = defaultValue;
 		}
 		if(newAct instanceof PickupShipment){
 			if(!Capacity.addup(loadAtPrevAct, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())){
