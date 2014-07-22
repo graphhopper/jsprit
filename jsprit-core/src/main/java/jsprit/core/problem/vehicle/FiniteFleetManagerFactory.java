@@ -30,7 +30,7 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 	/**
 	 * Constucts the factory.
 	 *
-	 * @param vehicles
+	 * @param vehicles vehicles to be added to the fleetManager
 	 */
 	public FiniteFleetManagerFactory(Collection<Vehicle> vehicles) {
 		super();
@@ -41,7 +41,7 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory{
 	 * Creates the finite fleetmanager.
 	 * 
 	 * @return VehicleFleetManager
-	 * @throws IllegalStateManager if vehicles == null or vehicles.isEmpty()
+	 * @throws java.lang.IllegalStateException if vehicles == null or vehicles.isEmpty()
 	 */
 	@Override
 	public VehicleFleetManager createFleetManager() {
