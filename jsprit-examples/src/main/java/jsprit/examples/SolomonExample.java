@@ -53,12 +53,13 @@ public class SolomonExample {
 		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
 		new SolomonReader(vrpBuilder).read("input/C101_solomon.txt");
-		
+
+
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
 		VehicleRoutingProblem vrp = vrpBuilder.build();
-		
+
 		new Plotter(vrp).plot("output/solomon_C101.png", "C101");
 		
 		/*

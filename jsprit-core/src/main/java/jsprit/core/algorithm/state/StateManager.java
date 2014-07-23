@@ -690,11 +690,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * Updates time-window states.
      */
 	public void updateTimeWindowStates() {
-		if(!updateTWs){
-			updateTWs=true;
-			addActivityVisitor(new UpdatePracticalTimeWindows(this, routingCosts));
-		}
+        updateTWs=true;
 	}
+
+    public boolean timeWindowUpdateIsActivated(){
+        return updateTWs;
+    }
 
 	
 }

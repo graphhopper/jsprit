@@ -532,7 +532,23 @@ public class VehicleRoutingAlgorithms {
 
 		//create fleetmanager
 		final VehicleFleetManager vehicleFleetManager = createFleetManager(vrp);
-			
+
+        if(stateManager.timeWindowUpdateIsActivated()){
+            UpdateVehicleDependentPracticalTimeWindows timeWindowUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,vrp.getTransportCosts());
+            timeWindowUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
+
+                @Override
+                public Collection<Vehicle> get(VehicleRoute route) {
+                    Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
+                    vehicles.add(route.getVehicle());
+                    vehicles.addAll(vehicleFleetManager.getAvailableVehicles(route.getVehicle()));
+                    return vehicles;
+                }
+
+            });
+            stateManager.addStateUpdater(timeWindowUpdater);
+        }
+
 		SolutionCostCalculator costCalculator;
 		if(solutionCostCalculator==null) costCalculator = getDefaultCostCalculator(stateManager);
 		else costCalculator = solutionCostCalculator;
