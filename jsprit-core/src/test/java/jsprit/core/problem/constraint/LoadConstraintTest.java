@@ -64,7 +64,7 @@ public class LoadConstraintTest {
         serviceRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
 
             @Override
-            public List<AbstractActivity> createActivity(Job job) {
+            public List<AbstractActivity> createActivities(Job job) {
                 return serviceProblem.copyAndGetActivities(job);
             }
 
@@ -74,7 +74,7 @@ public class LoadConstraintTest {
         VehicleRoute.Builder pdRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);
         pdRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivity(Job job) {
+            public List<AbstractActivity> createActivities(Job job) {
                 return pdProblem.copyAndGetActivities(job);
             }
         });
@@ -83,7 +83,7 @@ public class LoadConstraintTest {
         VehicleRoute.Builder shipmentRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);
         shipmentRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivity(Job job) {
+            public List<AbstractActivity> createActivities(Job job) {
                 return shipmentProblem.copyAndGetActivities(job);
             }
         });

@@ -5,10 +5,10 @@ import jsprit.core.problem.job.Job;
 import java.util.List;
 
 /**
- * Created by schroeder on 14.07.14.
+ * JobActivityFactory that creates the activities to the specified job.
  */
 public interface JobActivityFactory {
 
-    public List<AbstractActivity> createActivity(Job job);
+    public List<AbstractActivity> createActivities(Job job);
 
 }

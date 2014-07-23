@@ -54,11 +54,11 @@ public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
 
         final StateManager stateManager = new StateManager(vrp);
         stateManager.updateLoadStates();
-        stateManager.updateTimeWindowStates();
+//        stateManager.updateTimeWindowStates();
         stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 
         ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-        constraintManager.addTimeWindowConstraint();
+//        constraintManager.addTimeWindowConstraint();
         constraintManager.addLoadConstraint();
 
         VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();

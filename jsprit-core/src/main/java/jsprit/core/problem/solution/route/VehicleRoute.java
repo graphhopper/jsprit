@@ -128,7 +128,7 @@ public class VehicleRoute {
         private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
             @Override
-            public List<AbstractActivity> createActivity(Job job) {
+            public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
                 if(job instanceof Service){
                     acts.add(serviceActivityFactory.createActivity((Service) job));
@@ -241,7 +241,7 @@ public class VehicleRoute {
 		 */
         @Deprecated
 		public Builder addService(Service service, double arrTime, double endTime){
-			List<AbstractActivity> acts = jobActivityFactory.createActivity(service);
+			List<AbstractActivity> acts = jobActivityFactory.createActivities(service);
             TourActivity act = acts.get(0);
 			act.setArrTime(arrTime);
 			act.setEndTime(endTime);
@@ -272,7 +272,7 @@ public class VehicleRoute {
         @Deprecated
 		public Builder addPickup(Shipment shipment, double arrTime, double endTime){
 			if(openShipments.contains(shipment)) throw new IllegalStateException("shipment has already been added. cannot add it twice.");
-			List<AbstractActivity> acts = jobActivityFactory.createActivity(shipment);
+			List<AbstractActivity> acts = jobActivityFactory.createActivities(shipment);
             TourActivity act = acts.get(0);
 			act.setArrTime(arrTime);
 			act.setEndTime(endTime);

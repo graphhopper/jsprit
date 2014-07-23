@@ -21,6 +21,7 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
@@ -30,11 +31,13 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
 import jsprit.core.problem.job.Delivery;
+import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.DeliverService;
+import jsprit.core.problem.solution.route.activity.PickupService;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -112,7 +115,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 	public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnTheCorrectInsertionIndex(){
 		Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0, 41).setLocationId("10,10").build();
 		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 15).setLocationId("0,10").build();
-		
+
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 50).setCostPerDistance(1).build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
 		
@@ -120,11 +123,25 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
 		Inserter inserter = new Inserter(new InsertionListeners(), vehicleRoutingProblem);
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-        acts.add(new DeliverService(delivery));
-        when(vehicleRoutingProblem.copyAndGetActivities(delivery)).thenReturn(acts);
-		inserter.insertJob(delivery, new InsertionData(0,0,0,vehicle,null), route);
-		
+        {
+            List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+            acts.add(new DeliverService(delivery));
+            when(vehicleRoutingProblem.copyAndGetActivities(delivery)).thenReturn(acts);
+        }
+        {
+            List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+            acts.add(new PickupService(pickup));
+            when(vehicleRoutingProblem.copyAndGetActivities(pickup)).thenReturn(acts);
+        }
+        inserter.insertJob(delivery, new InsertionData(0,0,0,vehicle,null), route);
+
+        JobActivityFactory activityFactory = new JobActivityFactory() {
+            @Override
+            public List<AbstractActivity> createActivities(Job job) {
+                return vehicleRoutingProblem.copyAndGetActivities(job);
+            }
+        };
+
 		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
 		
 		StateManager stateManager = new StateManager(vrp);
@@ -139,7 +156,10 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
 		ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
+        serviceInsertionCalc.setJobActivityFactory(activityFactory);
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(activityFactory);
+
 		switcher.put(Pickup.class, serviceInsertionCalc);
 		switcher.put(Delivery.class, serviceInsertionCalc);
 		switcher.put(Shipment.class, insertionCalculator);

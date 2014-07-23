@@ -17,6 +17,8 @@
 package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
@@ -30,7 +32,6 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -48,7 +49,6 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 
@@ -59,9 +59,9 @@ public class TestCalculatesServiceInsertion {
 	
 	VehicleRoutingTransportCosts costs;
 	
-	Vehicle vehicle;
+	VehicleImpl vehicle;
 	
-	Vehicle newVehicle;
+	VehicleImpl newVehicle;
 
 	private Service first;
 
@@ -121,7 +121,7 @@ public class TestCalculatesServiceInsertion {
 		jobs.add(third);
 		jobs.add(second);
 		
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).setRoutingCost(costs).build();
+		final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).setRoutingCost(costs).build();
 		
 		states = new StateManager(vrp);
 		states.updateLoadStates();
@@ -134,13 +134,12 @@ public class TestCalculatesServiceInsertion {
 		VehicleRoutingActivityCosts actCosts = mock(VehicleRoutingActivityCosts.class);
 		
 		serviceInsertion = new ServiceInsertionCalculator(costs, new LocalActivityInsertionCostsCalculator(costs, actCosts), cManager);
-		
-	}
-	
-	public TourActivity getActivityMock(String id, double earliestOperationStart, double currCost){
-		TourActivity act = mock(TourActivity.class);
-		when(act.getLocationId()).thenReturn(id);
-		return act;
+		serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
+            @Override
+            public List<AbstractActivity> createActivities(Job job) {
+                return vrp.copyAndGetActivities(job);
+            }
+        });
 	}
 	
 	@Test

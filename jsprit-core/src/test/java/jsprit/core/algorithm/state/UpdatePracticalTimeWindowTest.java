@@ -73,7 +73,7 @@ public class UpdatePracticalTimeWindowTest {
 
 		route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivity(Job job) {
+            public List<AbstractActivity> createActivities(Job job) {
                 return vrp.copyAndGetActivities(job);
             }
         })

@@ -21,6 +21,7 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.*;
 import jsprit.core.problem.constraint.ConstraintManager.Priority;
@@ -34,6 +35,7 @@ import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.DeliverShipment;
+import jsprit.core.problem.solution.route.activity.PickupService;
 import jsprit.core.problem.solution.route.activity.PickupShipment;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -113,7 +115,12 @@ public class ShipmentInsertionCalculatorTest {
 	public void whenCalculatingInsertionCostsOfShipment_itShouldReturnCorrectCostValue(){
 		Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation("0,10").setDeliveryLocation("10,0").build();
 		VehicleRoute route = VehicleRoute.emptyRoute();
-		
+        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
+        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        activities.add(new PickupShipment(shipment));
+        activities.add(new DeliverShipment(shipment));
+        when(activityFactory.createActivities(shipment)).thenReturn(activities);
+        insertionCalculator.setJobActivityFactory(activityFactory);
 		InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(40.0,iData.getInsertionCost(),0.05);
 	}
@@ -125,7 +132,14 @@ public class ShipmentInsertionCalculatorTest {
 		VehicleRoute route = VehicleRoute.emptyRoute();
 		when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
         new Inserter(new InsertionListeners(), vehicleRoutingProblem).insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
-		
+
+        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
+        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        activities.add(new PickupShipment(shipment2));
+        activities.add(new DeliverShipment(shipment2));
+        when(activityFactory.createActivities(shipment2)).thenReturn(activities);
+        insertionCalculator.setJobActivityFactory(activityFactory);
+
 		InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(0.0,iData.getInsertionCost(),0.05);
 		assertEquals(1,iData.getPickupInsertionIndex());
@@ -156,7 +170,15 @@ public class ShipmentInsertionCalculatorTest {
 			}
 			
 		});
-		InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
+
+        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
+        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        activities.add(new PickupShipment(shipment2));
+        activities.add(new DeliverShipment(shipment2));
+        when(activityFactory.createActivities(shipment2)).thenReturn(activities);
+        insertionCalculator.setJobActivityFactory(activityFactory);
+
+        InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(InsertionData.createEmptyInsertionData(),iData);
 		
 	}
@@ -174,7 +196,14 @@ public class ShipmentInsertionCalculatorTest {
 		Inserter inserter = new Inserter(new InsertionListeners(),vehicleRoutingProblem );
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null),route);
-		
+
+        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
+        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        activities.add(new PickupShipment(shipment3));
+        activities.add(new DeliverShipment(shipment3));
+        when(activityFactory.createActivities(shipment3)).thenReturn(activities);
+        insertionCalculator.setJobActivityFactory(activityFactory);
+
 		InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(0.0,iData.getInsertionCost(),0.05);
 		assertEquals(0,iData.getPickupInsertionIndex());
@@ -192,8 +221,16 @@ public class ShipmentInsertionCalculatorTest {
 		Inserter inserter = new Inserter(new InsertionListeners(), vehicleRoutingProblem);
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null),route);
-		
-		InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
+
+        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
+        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        activities.add(new PickupShipment(shipment3));
+        activities.add(new DeliverShipment(shipment3));
+        when(activityFactory.createActivities(shipment3)).thenReturn(activities);
+        insertionCalculator.setJobActivityFactory(activityFactory);
+
+
+        InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
 		assertEquals(2.0,iData.getInsertionCost(),0.05);
 		assertEquals(0,iData.getPickupInsertionIndex());
 		assertEquals(1,iData.getDeliveryInsertionIndex());
@@ -215,10 +252,8 @@ public class ShipmentInsertionCalculatorTest {
 		
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
-		
-//		VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
-		
-		StateManager stateManager = new StateManager(vrp);
+
+        StateManager stateManager = new StateManager(vrp);
 		stateManager.updateLoadStates();		
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
 		
@@ -228,8 +263,14 @@ public class ShipmentInsertionCalculatorTest {
 				
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, 
 				constraintManager);
-		
-		
+
+        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
+        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        activities.add(new PickupShipment(shipment3));
+        activities.add(new DeliverShipment(shipment3));
+        when(activityFactory.createActivities(shipment3)).thenReturn(activities);
+        insertionCalculator.setJobActivityFactory(activityFactory);
+
 		InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
 		assertTrue(iData instanceof InsertionData.NoInsertionFound);
 		
@@ -269,7 +310,15 @@ public class ShipmentInsertionCalculatorTest {
 		
 //		Service service = Service.Builder.newInstance("pick", 1).setLocationId("5,5").build();
 		Pickup service = (Pickup)Pickup.Builder.newInstance("pick").addSizeDimension(0, 1).setLocationId("5,5").build();
-		InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
+
+        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
+        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        activities.add(new PickupService(service));
+        when(activityFactory.createActivities(service)).thenReturn(activities);
+        insertionCalculator.setJobActivityFactory(activityFactory);
+        serviceInsertionCalc.setJobActivityFactory(activityFactory);
+
+        InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
 //		routeActVisitor.visit(route);
 		
 		assertEquals(3, iData.getDeliveryInsertionIndex());

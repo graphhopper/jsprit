@@ -19,9 +19,7 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.algorithm.ExampleActivityCostFunction;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
-import jsprit.core.problem.AbstractVehicle;
-import jsprit.core.problem.Capacity;
-import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.*;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -46,6 +44,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -114,7 +113,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		jobs.add(second);
 		jobs.add(third);
 		
-		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).addVehicle(newVehicle).setRoutingCost(costs).build();
+		final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).addVehicle(newVehicle).setRoutingCost(costs).build();
 		
 		states = new StateManager(vrp);
 		states.updateLoadStates();
@@ -131,7 +130,12 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		serviceInsertion = new ServiceInsertionOnRouteLevelCalculator(costs,activityCosts, actInsertionCostCalculator, cManager, cManager);
 		serviceInsertion.setNuOfActsForwardLooking(4);
 		serviceInsertion.setStates(states);
-		
+        serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
+            @Override
+            public List<AbstractActivity> createActivities(Job job) {
+                return vrp.copyAndGetActivities(job);
+            }
+        });
 		
 	}
 
