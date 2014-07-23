@@ -670,7 +670,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
 		insertionListeners.informInsertionEndsListeners(vehicleRoutes);
 	}
-	
+
+    /**
+     * Updates load states.
+     */
 	public void updateLoadStates() {
 		if(!updateLoad){
 			updateLoad=true;
@@ -683,6 +686,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		}
 	}
 
+    /**
+     * Updates time-window states.
+     */
 	public void updateTimeWindowStates() {
 		if(!updateTWs){
 			updateTWs=true;
