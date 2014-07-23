@@ -18,17 +18,16 @@
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-
 import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Manager that manage hard- and soft constraints, both on route and activity level.
@@ -99,7 +98,7 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 
 	public void addTimeWindowConstraint(){
 		if(!timeWindowConstraintsSet){
-			addConstraint(new TimeWindowConstraint(stateManager, vrp.getTransportCosts()),Priority.HIGH);
+			addConstraint(new VehicleDependentTimeWindowConstraints(stateManager, vrp.getTransportCosts()),Priority.HIGH);
 			timeWindowConstraintsSet = true;
 		}
 	}
