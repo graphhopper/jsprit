@@ -107,7 +107,7 @@ public class VehicleRoutingProblem {
 		private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
             @Override
-            public List<AbstractActivity> createActivity(Job job) {
+            public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
                 if(job instanceof Service){
                     acts.add(serviceActivityFactory.createActivity((Service) job));
@@ -287,7 +287,7 @@ public class VehicleRoutingProblem {
 				Shipment shipment = (Shipment)job;
                 addShipment(shipment);
 			}
-            List<AbstractActivity> jobActs = jobActivityFactory.createActivity(job);
+            List<AbstractActivity> jobActs = jobActivityFactory.createActivities(job);
             for(AbstractActivity act : jobActs){
                 act.setIndex(activityIndexCounter);
                 incActivityIndexCounter();
@@ -739,8 +739,10 @@ public class VehicleRoutingProblem {
 
     public List<AbstractActivity> copyAndGetActivities(Job job){
         List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-        for(AbstractActivity act : activityMap.get(job)){
-            acts.add((AbstractActivity)act.duplicate());
+        if(activityMap.containsKey(job)) {
+            for (AbstractActivity act : activityMap.get(job)) {
+                acts.add((AbstractActivity) act.duplicate());
+            }
         }
         return acts;
     }
