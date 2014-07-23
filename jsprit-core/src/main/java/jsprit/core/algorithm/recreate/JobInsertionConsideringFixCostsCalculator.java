@@ -27,7 +27,6 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
-
 import org.apache.log4j.Logger;
 
 final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCostsCalculator, SoftRouteConstraint{
@@ -122,7 +121,9 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 	}
 
 	private Capacity getCurrentMaxLoadInRoute(VehicleRoute route) {
-		return stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class);
+        Capacity maxLoad = stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class);
+        if(maxLoad == null) maxLoad = Capacity.Builder.newInstance().build();
+        return  maxLoad;
 	}
 
 	@Override
