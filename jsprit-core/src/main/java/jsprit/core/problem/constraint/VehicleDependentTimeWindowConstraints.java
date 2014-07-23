@@ -61,8 +61,8 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityStateL
         else{
             //try to get latest_operation_start_time of newVehicle
             latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getNewVehicle(), StateFactory.LATEST_OPERATION_START_TIME ,Double.class);
-            if(latestArrTimeAtNextAct == null) //try to get latest_operation_start_time of currVehicle
-                latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getRoute().getVehicle(), StateFactory.LATEST_OPERATION_START_TIME ,Double.class);
+//            if(latestArrTimeAtNextAct == null) //try to get latest_operation_start_time of currVehicle
+//                latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getRoute().getVehicle(), StateFactory.LATEST_OPERATION_START_TIME ,Double.class);
             if(latestArrTimeAtNextAct == null) //otherwise set it to theoretical_latest_operation_startTime
                 latestArrTimeAtNextAct=nextAct.getTheoreticalLatestOperationStartTime();
             nextActLocation = nextAct.getLocationId();
