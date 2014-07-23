@@ -533,6 +533,12 @@ public class VehicleRoutingAlgorithms {
 		//create fleetmanager
 		final VehicleFleetManager vehicleFleetManager = createFleetManager(vrp);
 
+        String switchString = config.getString("construction.insertion.allowVehicleSwitch");
+        final boolean switchAllowed;
+        if(switchString != null){
+            switchAllowed = Boolean.parseBoolean(switchString);
+        }
+        else switchAllowed = true;
         if(stateManager.timeWindowUpdateIsActivated()){
             UpdateVehicleDependentPracticalTimeWindows timeWindowUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,vrp.getTransportCosts());
             timeWindowUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
@@ -541,7 +547,9 @@ public class VehicleRoutingAlgorithms {
                 public Collection<Vehicle> get(VehicleRoute route) {
                     Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
                     vehicles.add(route.getVehicle());
-                    vehicles.addAll(vehicleFleetManager.getAvailableVehicles(route.getVehicle()));
+                    if(switchAllowed) {
+                        vehicles.addAll(vehicleFleetManager.getAvailableVehicles(route.getVehicle()));
+                    }
                     return vehicles;
                 }
 
@@ -937,8 +945,7 @@ public class VehicleRoutingAlgorithms {
 	}
 	
 	private static InsertionStrategy createInsertionStrategy(HierarchicalConfiguration moduleConfig, VehicleRoutingProblem vrp,VehicleFleetManager vehicleFleetManager, StateManager routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager, boolean addDefaultCostCalculators) {
-		InsertionStrategy insertion = InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, routeStates, algorithmListeners, executorService, nuOfThreads, constraintManager, addDefaultCostCalculators);
-		return insertion;
+		return InsertionFactory.createInsertion(vrp, moduleConfig, vehicleFleetManager, routeStates, algorithmListeners, executorService, nuOfThreads, constraintManager, addDefaultCostCalculators);
 	}
 
 	
