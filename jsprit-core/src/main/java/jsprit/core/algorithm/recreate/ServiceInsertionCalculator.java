@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
+import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.constraint.*;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -24,7 +25,9 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.*;
+import jsprit.core.problem.solution.route.activity.End;
+import jsprit.core.problem.solution.route.activity.Start;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.CalculationUtils;
 import org.apache.log4j.Logger;
@@ -51,7 +54,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 	
 	private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
 	
-	private TourActivityFactory activityFactory;
+	private JobActivityFactory activityFactory;
 	
 	private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
@@ -63,10 +66,13 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		softActivityConstraint = constraintManager;
 		softRouteConstraint = constraintManager;
 		this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
-		activityFactory = new DefaultTourActivityFactory();
 		additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
 		logger.info("initialise " + this);
 	}
+
+    public void setJobActivityFactory(JobActivityFactory jobActivityFactory){
+        this.activityFactory = jobActivityFactory;
+    }
 	
 	@Override
 	public String toString() {
@@ -93,7 +99,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		Service service = (Service)jobToInsert;
 		int insertionIndex = InsertionData.NO_INDEX;
 		
-		TourActivity deliveryAct2Insert = activityFactory.createActivity(service);
+		TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
 		
 		Start start = Start.newInstance(newVehicle.getStartLocationId(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
 		start.setEndTime(newVehicleDepartureTime);

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
+import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
@@ -26,7 +27,10 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.*;
+import jsprit.core.problem.solution.route.activity.End;
+import jsprit.core.problem.solution.route.activity.Start;
+import jsprit.core.problem.solution.route.activity.TourActivities;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -48,7 +52,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 
 	private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
 	
-	private TourActivityFactory tourActivityFactory = new DefaultTourActivityFactory();
+	private JobActivityFactory activityFactory;
 	
 	private RouteAndActivityStateGetter stateManager;
 	
@@ -66,8 +70,8 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 	
 	private End end;
 
-	public void setTourActivityFactory(TourActivityFactory tourActivityFactory){
-		this.tourActivityFactory=tourActivityFactory;
+	public void setJobActivityFactory(JobActivityFactory jobActivityFactory){
+		this.activityFactory=jobActivityFactory;
 	}
 
 	public void setMemorySize(int memorySize) {
@@ -137,7 +141,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 		/**
 		 * some inis
 		 */
-		TourActivity serviceAct2Insert = tourActivityFactory.createActivity(service);
+		TourActivity serviceAct2Insert = activityFactory.createActivities(service).get(0);
 		int best_insertion_index = InsertionData.NO_INDEX;
 		
 		initialiseStartAndEnd(newVehicle, newVehicleDepartureTime);
@@ -147,7 +151,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 		double sumOf_prevCosts_newVehicle = 0.0;
 		double prevActDepTime_newVehicle = start.getEndTime();
 
-		boolean loopBroken = false;
+        boolean loopBroken = false;
 		/**
 		 * inserting serviceAct2Insert in route r={0,1,...,i-1,i,j,j+1,...,n(r),n(r)+1}
 		 * i=prevAct

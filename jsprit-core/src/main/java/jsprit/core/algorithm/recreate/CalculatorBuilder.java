@@ -18,6 +18,8 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import jsprit.core.algorithm.recreate.listener.InsertionListener;
+import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.job.*;
@@ -243,7 +245,7 @@ class CalculatorBuilder {
 		}
 	}
 
-	private CalculatorPlusListeners createStandardLocal(VehicleRoutingProblem vrp, RouteAndActivityStateGetter statesManager){
+	private CalculatorPlusListeners createStandardLocal(final VehicleRoutingProblem vrp, RouteAndActivityStateGetter statesManager){
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
 
 		ActivityInsertionCostsCalculator actInsertionCalc;
@@ -265,9 +267,19 @@ class CalculatorBuilder {
 			actInsertionCalc = activityInsertionCostCalculator;
 		}
 
+        JobActivityFactory activityFactory = new JobActivityFactory() {
+
+            @Override
+            public List<AbstractActivity> createActivities(Job job) {
+                return vrp.copyAndGetActivities(job);
+            }
+
+        };
 		ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
+        shipmentInsertion.setJobActivityFactory(activityFactory);
 		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
-		
+        serviceInsertion.setJobActivityFactory(activityFactory);
+
 		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
 		switcher.put(Shipment.class, shipmentInsertion);
 		switcher.put(Service.class, serviceInsertion);
@@ -289,7 +301,7 @@ class CalculatorBuilder {
 		return calcPlusListeners;
 	}
 
-	private CalculatorPlusListeners createStandardRoute(VehicleRoutingProblem vrp, RouteAndActivityStateGetter activityStates2, int forwardLooking, int solutionMemory){
+	private CalculatorPlusListeners createStandardRoute(final VehicleRoutingProblem vrp, RouteAndActivityStateGetter activityStates2, int forwardLooking, int solutionMemory){
 		ActivityInsertionCostsCalculator routeLevelCostEstimator;
 		if(activityInsertionCostCalculator == null && addDefaultCostCalc){
             RouteLevelActivityInsertionCostsEstimator routeLevelActivityInsertionCostsEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityStates2);
@@ -312,10 +324,16 @@ class CalculatorBuilder {
 		else{
 			routeLevelCostEstimator = activityInsertionCostCalculator;
 		}
-		JobInsertionCostsCalculator jobInsertionCalculator = new ServiceInsertionOnRouteLevelCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), routeLevelCostEstimator, constraintManager, constraintManager);
-		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setNuOfActsForwardLooking(forwardLooking);
-		((ServiceInsertionOnRouteLevelCalculator)jobInsertionCalculator).setMemorySize(solutionMemory);
-		((ServiceInsertionOnRouteLevelCalculator) jobInsertionCalculator).setStates(activityStates2);
+        ServiceInsertionOnRouteLevelCalculator jobInsertionCalculator = new ServiceInsertionOnRouteLevelCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), routeLevelCostEstimator, constraintManager, constraintManager);
+		jobInsertionCalculator.setNuOfActsForwardLooking(forwardLooking);
+		jobInsertionCalculator.setMemorySize(solutionMemory);
+		jobInsertionCalculator.setStates(activityStates2);
+        jobInsertionCalculator.setJobActivityFactory(new JobActivityFactory() {
+            @Override
+            public List<AbstractActivity> createActivities(Job job) {
+                return vrp.copyAndGetActivities(job);
+            }
+        });
 		
 		PenalyzeInsertionCostsWithPenaltyVehicle penalyzeInsertionCosts = new PenalyzeInsertionCostsWithPenaltyVehicle(jobInsertionCalculator);
 		

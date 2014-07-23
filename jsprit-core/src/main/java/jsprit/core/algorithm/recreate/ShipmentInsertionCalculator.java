@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
+import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.constraint.*;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -24,7 +25,9 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.*;
+import jsprit.core.problem.solution.route.activity.End;
+import jsprit.core.problem.solution.route.activity.Start;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import jsprit.core.util.CalculationUtils;
@@ -51,7 +54,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 	
 	private VehicleRoutingTransportCosts transportCosts;
 	
-	private TourShipmentActivityFactory activityFactory;
+	private JobActivityFactory activityFactory;
 	
 	private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 	
@@ -63,10 +66,13 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		this.softActivityConstraint = constraintManager;
 		this.softRouteConstraint = constraintManager;
 		this.transportCosts = routingCosts;
-		activityFactory = new DefaultShipmentActivityFactory();
 		additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
 		logger.info("initialise " + this);
 	}
+
+    public void setJobActivityFactory(JobActivityFactory activityFactory){
+        this.activityFactory = activityFactory;
+    }
 	
 	@Override
 	public String toString() {
@@ -95,8 +101,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
 		
 		Shipment shipment = (Shipment)jobToInsert;
-		TourActivity pickupShipment = activityFactory.createPickup(shipment);
-		TourActivity deliverShipment = activityFactory.createDelivery(shipment);
+		TourActivity pickupShipment = activityFactory.createActivities(shipment).get(0);
+		TourActivity deliverShipment = activityFactory.createActivities(shipment).get(1);
 		
 		int pickupInsertionIndex = InsertionData.NO_INDEX;
 		int deliveryInsertionIndex = InsertionData.NO_INDEX;
