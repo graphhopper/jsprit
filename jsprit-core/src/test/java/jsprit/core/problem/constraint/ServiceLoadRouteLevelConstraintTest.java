@@ -352,26 +352,15 @@ public class ServiceLoadRouteLevelConstraintTest {
 	
 	@Test
 	public void whenNewVehicleCapacityIsNotSufficiant2_returnFalse(){
-		Pickup service = mock(Pickup.class);
-		when(service.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
-		
-		Service serviceInRoute = createPickup("pick1",3);
-		VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle);
-		routeBuilder.addService(serviceInRoute);
-		VehicleRoute route = routeBuilder.build();
-		
-		stateManager.informInsertionStarts(Arrays.asList(route), null);
-		
-		VehicleType type = mock(VehicleType.class);
-		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
-		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getType()).thenReturn(type);
-		
-		JobInsertionContext iContext = mock(JobInsertionContext.class);
-		when(iContext.getJob()).thenReturn(service);
-		when(iContext.getRoute()).thenReturn(route);
-		when(iContext.getNewVehicle()).thenReturn(vehicle);
-		
+		Pickup service = (Pickup) createPickup("pick",2);
+        Service serviceInRoute = createPickup("pick1",3);
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,3).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocationId("loc").build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(service).addJob(serviceInRoute).build();
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(serviceInRoute).build();
+        stateManager.informInsertionStarts(Arrays.asList(route), null);
+		JobInsertionContext iContext = new JobInsertionContext(route,service,vehicle,null,0.);
+
 		assertFalse(new ServiceLoadRouteLevelConstraint(stateManager).fulfilled(iContext));
 	}
 	
