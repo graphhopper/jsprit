@@ -16,11 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.driver.Driver;
@@ -29,13 +24,18 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCostsCalculator{
 
-	private Logger logger = Logger.getLogger(VehicleTypeDependentJobInsertionCalculator.class);
+	private Logger logger = LogManager.getLogger(VehicleTypeDependentJobInsertionCalculator.class);
 	
 	private final VehicleFleetManager fleetManager;
 	

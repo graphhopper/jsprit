@@ -40,8 +40,6 @@ import jsprit.core.util.Coordinate;
 import jsprit.core.util.EuclideanDistanceCalculator;
 import jsprit.core.util.Locations;
 import jsprit.core.util.ManhattanDistanceCalculator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,12 +71,11 @@ public class TestCalculatesServiceInsertion {
 
 	private NoDriver driver;
 	
-//	private UpdateStates stateUpdater;
+    private VehicleRoutingProblem vrp;
 	
 	@Before
 	public void setup(){
-		Logger.getRootLogger().setLevel(Level.DEBUG);
-		
+
 		VehicleType t1 = VehicleTypeImpl.Builder.newInstance("t1").addCapacityDimension(0, 1000).setCostPerDistance(1.0).build();
 		vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setStartLocationId("0,0").setType(t1).build();
 		
@@ -121,7 +118,7 @@ public class TestCalculatesServiceInsertion {
 		jobs.add(third);
 		jobs.add(second);
 		
-		final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).setRoutingCost(costs).build();
+		vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).setRoutingCost(costs).build();
 		
 		states = new StateManager(vrp);
 		states.updateLoadStates();
@@ -154,7 +151,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingTheSecondJobInAnNonEmptyTourWithVehicle_itCalculatesMarginalCostChanges(){
-		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).build();
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).setJobActivityFactory(vrp.getJobActivityFactory()).addService(first).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -164,7 +161,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingThirdJobWithVehicle_itCalculatesMarginalCostChanges(){
-		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(third).build();
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).setJobActivityFactory(vrp.getJobActivityFactory()).addService(first).addService(third).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -174,7 +171,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingThirdJobWithNewVehicle_itCalculatesMarginalCostChanges(){
-		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(third).build();
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).setJobActivityFactory(vrp.getJobActivityFactory()).addService(first).addService(third).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -184,7 +181,7 @@ public class TestCalculatesServiceInsertion {
 	
 	@Test
 	public void whenInsertingASecondJobWithAVehicle_itCalculatesLocalMarginalCostChanges(){
-		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(second).build();
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).setJobActivityFactory(vrp.getJobActivityFactory()).addService(first).addService(second).build();
 		states.informInsertionStarts(Arrays.asList(route), null);
 		
 		InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
@@ -195,7 +192,7 @@ public class TestCalculatesServiceInsertion {
 	@Test
 	public void whenInsertingASecondJobWithANewVehicle_itCalculatesLocalMarginalCostChanges(){
 
-		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addService(first).addService(second).build();
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).setJobActivityFactory(vrp.getJobActivityFactory()).addService(first).addService(second).build();
 
 		states.informInsertionStarts(Arrays.asList(route), null);
 		

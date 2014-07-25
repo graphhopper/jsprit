@@ -22,7 +22,8 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 		CRITICAL, HIGH, LOW
 	}
 	
-	private static Logger log = Logger.getLogger(ConstraintManager.class);
+	private static Logger log = LogManager.getLogger(ConstraintManager.class);
 	
 	private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
 	

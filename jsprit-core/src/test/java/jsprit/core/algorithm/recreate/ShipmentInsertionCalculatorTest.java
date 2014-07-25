@@ -249,7 +249,6 @@ public class ShipmentInsertionCalculatorTest {
 		route.setVehicleAndDepartureTime(vehicle, 0.0);
 		
 		Inserter inserter = new Inserter(new InsertionListeners(), vrp);
-		
 		inserter.insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
 		inserter.insertJob(shipment2, new InsertionData(0,1,2,vehicle,null), route);
 
@@ -263,13 +262,7 @@ public class ShipmentInsertionCalculatorTest {
 				
 		ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, 
 				constraintManager);
-
-        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
-        activities.add(new PickupShipment(shipment3));
-        activities.add(new DeliverShipment(shipment3));
-        when(activityFactory.createActivities(shipment3)).thenReturn(activities);
-        insertionCalculator.setJobActivityFactory(activityFactory);
+        insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
 
 		InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
 		assertTrue(iData instanceof InsertionData.NoInsertionFound);

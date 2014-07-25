@@ -16,28 +16,24 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.util.CrowFlyCosts;
-import jsprit.core.util.EuclideanDistanceCalculator;
-import jsprit.core.util.Locations;
-import jsprit.core.util.NeighborhoodImpl;
-import jsprit.core.util.Solutions;
-
+import jsprit.core.util.*;
 import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Collection;
 
 
 class NeighborhoodThresholdInitialiser implements AlgorithmStartsListener{
 
-	private static Logger log = Logger.getLogger(NeighborhoodThresholdInitialiser.class);
+	private static Logger log = LogManager.getLogger(NeighborhoodThresholdInitialiser.class);
 	
 	private NeighborhoodImpl neighborhood;
 	

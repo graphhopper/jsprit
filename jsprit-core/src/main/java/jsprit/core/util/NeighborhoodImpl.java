@@ -16,23 +16,17 @@
  ******************************************************************************/
 package jsprit.core.util;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.vehicle.Vehicle;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
-
-
+import java.util.*;
 
 
 public class NeighborhoodImpl implements Neighborhood{
 	
-	private static Logger log = Logger.getLogger(NeighborhoodImpl.class);
+	private static Logger log = LogManager.getLogger(NeighborhoodImpl.class);
 	
 	private Set<String> neighborsToAll;
 	

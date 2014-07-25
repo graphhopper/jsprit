@@ -30,7 +30,8 @@ import jsprit.core.problem.vehicle.*;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Locations;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -127,13 +128,13 @@ public class VehicleRoutingProblem {
 
 		private Double penaltyFixedCosts = null;
 
-        private int jobIndexCounter = 0;
+        private int jobIndexCounter = 1;
 
-        private int vehicleIndexCounter = 0;
+        private int vehicleIndexCounter = 1;
 
-        private int activityIndexCounter = 0;
+        private int activityIndexCounter = 1;
 
-        private int vehicleTypeIdIndexCounter = 0;
+        private int vehicleTypeIdIndexCounter = 1;
 
         private Map<VehicleTypeKey,Integer> typeKeyIndices = new HashMap<VehicleTypeKey, Integer>();
 
@@ -161,12 +162,6 @@ public class VehicleRoutingProblem {
 			}
 			return id;
 		}
-
-        @SuppressWarnings("UnusedDeclaration")
-        public Builder setJobActivityFactory(JobActivityFactory factory){
-            this.jobActivityFactory = factory;
-            return this;
-        }
 
         private void incJobIndexCounter(){
             jobIndexCounter++;
@@ -586,7 +581,7 @@ public class VehicleRoutingProblem {
 	/**
 	 * logger logging for this class
 	 */
-	private final static Logger logger = Logger.getLogger(VehicleRoutingProblem.class);
+	private final static Logger logger = LogManager.getLogger(VehicleRoutingProblem.class);
 
 	/**
 	 * contains transportation costs, i.e. the costs traveling from location A to B
@@ -631,6 +626,15 @@ public class VehicleRoutingProblem {
     private Map<Job,List<AbstractActivity>> activityMap;
 
     private int nuActivities;
+
+    private final JobActivityFactory jobActivityFactory = new JobActivityFactory() {
+
+        @Override
+        public List<AbstractActivity> createActivities(Job job) {
+            return copyAndGetActivities(job);
+        }
+
+    };
 	
 	private VehicleRoutingProblem(Builder builder) {
 		this.jobs = builder.jobs;
@@ -736,6 +740,10 @@ public class VehicleRoutingProblem {
     }
 
     public int getNuActivities(){ return nuActivities; }
+
+    public JobActivityFactory getJobActivityFactory(){
+        return jobActivityFactory;
+    };
 
     public List<AbstractActivity> copyAndGetActivities(Job job){
         List<AbstractActivity> acts = new ArrayList<AbstractActivity>();

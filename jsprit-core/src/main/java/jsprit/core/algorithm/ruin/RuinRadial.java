@@ -16,17 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.ruin;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeSet;
-
 import jsprit.core.algorithm.ruin.distance.JobDistance;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
@@ -35,9 +24,10 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.util.RandomNumberGeneration;
 import jsprit.core.util.StopWatch;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
-
+import java.util.*;
 
 
 /**
@@ -59,7 +49,7 @@ final class RuinRadial implements RuinStrategy {
 	
 	static class NeighborhoodIterator implements Iterator<Job>{
 
-		private static Logger log = Logger.getLogger(NeighborhoodIterator.class);
+		private static Logger log = LogManager.getLogger(NeighborhoodIterator.class);
 		
 		private Iterator<ReferencedJob> jobIter;
 		
@@ -99,7 +89,7 @@ final class RuinRadial implements RuinStrategy {
 	
 	static class JobNeighborhoodsImpl implements JobNeighborhoods {
 
-		private static Logger logger = Logger.getLogger(JobNeighborhoodsImpl.class);
+		private static Logger logger = LogManager.getLogger(JobNeighborhoodsImpl.class);
 		
 		private VehicleRoutingProblem vrp;
 		
@@ -161,7 +151,7 @@ final class RuinRadial implements RuinStrategy {
 
 	static class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
-		private static Logger logger = Logger.getLogger(JobNeighborhoodsImpl.class);
+		private static Logger logger = LogManager.getLogger(JobNeighborhoodsImpl.class);
 		
 		private VehicleRoutingProblem vrp;
 		
@@ -259,7 +249,7 @@ final class RuinRadial implements RuinStrategy {
 		}
 	}
 
-	private Logger logger = Logger.getLogger(RuinRadial.class);
+	private Logger logger = LogManager.getLogger(RuinRadial.class);
 
 	private VehicleRoutingProblem vrp;
 

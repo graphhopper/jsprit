@@ -16,22 +16,22 @@
  ******************************************************************************/
 package jsprit.core.algorithm.io;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import jsprit.core.util.Resource;
-
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 
 public class AlgorithmConfigXmlReader {
 	
-	private static Logger log = Logger.getLogger(AlgorithmConfigXmlReader.class);
+	private static Logger log = LogManager.getLogger(AlgorithmConfigXmlReader.class.getName());
 	
 	private AlgorithmConfig algorithmConfig;
 	

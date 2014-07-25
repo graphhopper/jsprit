@@ -58,7 +58,8 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
@@ -354,7 +355,7 @@ public class VehicleRoutingAlgorithms {
 		
 	}
 	
-	private static Logger log = Logger.getLogger(VehicleRoutingAlgorithms.class);
+	private static Logger log = LogManager.getLogger(VehicleRoutingAlgorithms.class.getName());
 	
 	private VehicleRoutingAlgorithms(){}
 	

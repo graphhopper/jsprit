@@ -25,7 +25,8 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.RandomNumberGeneration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -68,7 +69,7 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 		
 	}
 	
-	private static Logger logger = Logger.getLogger(BestInsertionConcurrent.class);
+	private static Logger logger = LogManager.getLogger(BestInsertionConcurrent.class);
 
 	private Random random = RandomNumberGeneration.getRandom();
 	

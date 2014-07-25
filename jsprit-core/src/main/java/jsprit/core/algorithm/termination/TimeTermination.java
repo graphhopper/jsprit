@@ -16,15 +16,15 @@
  ******************************************************************************/
 package jsprit.core.algorithm.termination;
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
+import java.util.Collection;
 
 
 /**
@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  */
 public class TimeTermination implements PrematureAlgorithmTermination, AlgorithmStartsListener{
 
-	private static Logger logger = Logger.getLogger(TimeTermination.class);
+	private static Logger logger = LogManager.getLogger(TimeTermination.class);
 	
 	private double timeThreshold;
 	

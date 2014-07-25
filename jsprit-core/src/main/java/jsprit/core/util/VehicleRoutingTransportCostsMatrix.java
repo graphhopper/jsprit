@@ -16,20 +16,20 @@
  ******************************************************************************/
 package jsprit.core.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleTypeImpl.VehicleCostParams;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
- * CostMatrix that allows pre-compiled time and distance-matrices to be considered as {@link VehicleRoutingRoutingCosts}
+ * CostMatrix that allows pre-compiled time and distance-matrices to be considered as {@link VehicleRoutingTransportCosts}
  * in the {@link VehicleRoutingProblem}.
  * <p>Note that you can also use it with distance matrix only (or time matrix). But ones
  * you set a particular distance, this expects distance-entries for all relations. This counts also 
@@ -101,7 +101,7 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 	 *
 	 */
 	public static class Builder {
-		private static Logger log = Logger.getLogger(Builder.class);
+		private static Logger log = LogManager.getLogger(Builder.class);
 		
 		private boolean isSymmetric;
 		

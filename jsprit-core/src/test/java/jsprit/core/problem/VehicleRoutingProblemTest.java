@@ -549,8 +549,8 @@ public class VehicleRoutingProblemTest {
         vrpBuilder.addJob(shipment);
         vrpBuilder.build();
 
-        assertEquals(0,service.getIndex());
-        assertEquals(1,shipment.getIndex());
+        assertEquals(1,service.getIndex());
+        assertEquals(2,shipment.getIndex());
 
     }
 
@@ -564,8 +564,8 @@ public class VehicleRoutingProblemTest {
         vrpBuilder.addVehicle(veh2);
         vrpBuilder.build();
 
-        assertEquals(0,veh1.getIndex());
-        assertEquals(1,veh2.getIndex());
+        assertEquals(1,veh1.getIndex());
+        assertEquals(2,veh2.getIndex());
 
     }
 
@@ -579,8 +579,8 @@ public class VehicleRoutingProblemTest {
         vrpBuilder.addVehicle(veh2);
         vrpBuilder.build();
 
-        assertEquals(0, veh1.getVehicleTypeIdentifier().getIndex());
-        assertEquals(0, veh2.getVehicleTypeIdentifier().getIndex());
+        assertEquals(1, veh1.getVehicleTypeIdentifier().getIndex());
+        assertEquals(1, veh2.getVehicleTypeIdentifier().getIndex());
 
     }
 
@@ -594,8 +594,8 @@ public class VehicleRoutingProblemTest {
         vrpBuilder.addVehicle(veh2);
         vrpBuilder.build();
 
-        assertEquals(0,veh1.getVehicleTypeIdentifier().getIndex());
-        assertEquals(1,veh2.getVehicleTypeIdentifier().getIndex());
+        assertEquals(1,veh1.getVehicleTypeIdentifier().getIndex());
+        assertEquals(2,veh2.getVehicleTypeIdentifier().getIndex());
 
     }
 }

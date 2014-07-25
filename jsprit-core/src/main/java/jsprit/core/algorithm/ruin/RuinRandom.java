@@ -16,21 +16,16 @@
  ******************************************************************************/
 package jsprit.core.algorithm.ruin;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.util.RandomNumberGeneration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
-
+import java.util.*;
 
 
 /**
@@ -43,7 +38,7 @@ import org.apache.log4j.Logger;
 
 final class RuinRandom implements RuinStrategy {
 	
-	private Logger logger = Logger.getLogger(RuinRandom.class);
+	private Logger logger = LogManager.getLogger(RuinRandom.class);
 
 	private VehicleRoutingProblem vrp;
 

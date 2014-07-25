@@ -27,11 +27,12 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCostsCalculator, SoftRouteConstraint{
 
-	private static final Logger logger = Logger.getLogger(JobInsertionConsideringFixCostsCalculator.class);
+	private static final Logger logger = LogManager.getLogger(JobInsertionConsideringFixCostsCalculator.class);
 	
 	private final JobInsertionCostsCalculator standardServiceInsertion;
 	

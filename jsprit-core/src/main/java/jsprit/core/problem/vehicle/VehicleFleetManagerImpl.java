@@ -16,18 +16,12 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
+import java.util.*;
+
 
 class VehicleFleetManagerImpl implements VehicleFleetManager {
 	
@@ -79,7 +73,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		
 	}
 	
-	private static Logger logger = Logger.getLogger(VehicleFleetManagerImpl.class);
+	private static Logger logger = LogManager.getLogger(VehicleFleetManagerImpl.class);
 	
 	private Collection<Vehicle> vehicles;
 	

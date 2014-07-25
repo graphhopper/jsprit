@@ -37,7 +37,8 @@ import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.util.Solutions;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +51,7 @@ public class BuildPDVRPAlgoFromScratch_IT {
 	
 	VehicleRoutingAlgorithm vra;
 
-	static Logger log = Logger.getLogger(BuildPDVRPAlgoFromScratch_IT.class);
+	static Logger log = LogManager.getLogger(BuildPDVRPAlgoFromScratch_IT.class);
 	
 	@Before
 	public void setup(){

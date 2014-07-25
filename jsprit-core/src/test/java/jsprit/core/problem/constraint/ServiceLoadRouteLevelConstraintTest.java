@@ -32,7 +32,9 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -333,26 +335,18 @@ public class ServiceLoadRouteLevelConstraintTest {
 	
 	@Test
 	public void whenNewVehicleCapacityIsNotSufficiant1_returnFalse(){
-		Pickup service = mock(Pickup.class);
-		when(service.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
-		
-		Service delivery = createDelivery("del1",3);
-		VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle);
-		routeBuilder.addService(delivery);
-		VehicleRoute route = routeBuilder.build();
-		
+		final Service pickup = createPickup("pick",2);
+		final Service pickup2 = createPickup("pick2",3);
+
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,3).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocationId("loc").build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(pickup).addJob(pickup2).build();
+
+		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(pickup2).build();
+
 		stateManager.informInsertionStarts(Arrays.asList(route), null);
-		
-		VehicleType type = mock(VehicleType.class);
-		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
-		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getType()).thenReturn(type);
-		
-		JobInsertionContext iContext = mock(JobInsertionContext.class);
-		when(iContext.getJob()).thenReturn(service);
-		when(iContext.getRoute()).thenReturn(route);
-		when(iContext.getNewVehicle()).thenReturn(vehicle);
-		
+        JobInsertionContext iContext = new JobInsertionContext(route,pickup,vehicle,null,0.);
 		assertFalse(new ServiceLoadRouteLevelConstraint(stateManager).fulfilled(iContext));
 	}
 	

@@ -31,7 +31,8 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import jsprit.core.util.CalculationUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ import java.util.List;
 
 final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 
-	private static final Logger logger = Logger.getLogger(ShipmentInsertionCalculator.class);
+	private static final Logger logger = LogManager.getLogger(ShipmentInsertionCalculator.class);
 
 	private HardRouteStateLevelConstraint hardRouteLevelConstraint;
 	

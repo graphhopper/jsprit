@@ -16,16 +16,6 @@
  ******************************************************************************/
 package jsprit.core.problem.io;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.driver.Driver;
@@ -38,22 +28,22 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivityFactory;
-import jsprit.core.problem.vehicle.PenaltyVehicleType;
-import jsprit.core.problem.vehicle.Vehicle;
-import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.*;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
-import jsprit.core.problem.vehicle.VehicleType;
-import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Resource;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 public class VrpXMLReader{
 	
@@ -120,7 +110,7 @@ public class VrpXMLReader{
 	}
 	
 
-	private static Logger logger = Logger.getLogger(VrpXMLReader.class);
+	private static Logger logger = LogManager.getLogger(VrpXMLReader.class);
 	
 	private VehicleRoutingProblem.Builder vrpBuilder;
 	

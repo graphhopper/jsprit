@@ -16,18 +16,17 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
+import java.util.*;
+
+
 
 
 class InfiniteVehicles implements VehicleFleetManager{
 	
-	private static Logger logger = Logger.getLogger(InfiniteVehicles.class);
+	private static Logger logger = LogManager.getLogger(InfiniteVehicles.class);
 	
 	private Map<VehicleTypeKey,Vehicle> types = new HashMap<VehicleTypeKey, Vehicle>();
 	

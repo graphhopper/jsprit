@@ -16,23 +16,18 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
-import jsprit.core.algorithm.listener.AlgorithmEndsListener;
-import jsprit.core.algorithm.listener.AlgorithmStartsListener;
-import jsprit.core.algorithm.listener.IterationEndsListener;
-import jsprit.core.algorithm.listener.IterationStartsListener;
-import jsprit.core.algorithm.listener.SearchStrategyListener;
-import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
-import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener;
-import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners;
+import jsprit.core.algorithm.listener.*;
 import jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TourActivity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
@@ -47,7 +42,7 @@ public class VehicleRoutingAlgorithm {
 		private final String name;
 		private long counter = 0;
 		private long nextCounter = 1;
-		private static final Logger log = Logger.getLogger(Counter.class);
+		private static final Logger log = LogManager.getLogger(Counter.class);
 
 		public Counter(final String name) {
 			this.name = name;
@@ -69,10 +64,8 @@ public class VehicleRoutingAlgorithm {
 			nextCounter=1;
 		}
 	}
-	
-	public static final int NOBREAK = Integer.MAX_VALUE;
 
-	private static Logger logger = Logger.getLogger(VehicleRoutingAlgorithm.class);
+	private static Logger logger = LogManager.getLogger(VehicleRoutingAlgorithm.class);
 	
 	private VehicleRoutingProblem problem;
 	
@@ -112,16 +105,40 @@ public class VehicleRoutingAlgorithm {
 	/**
 	 * Adds solution to the collection of initial solutions.
 	 * 
-	 * @param solution
+	 * @param solution the solution to be added
 	 */
 	public void addInitialSolution(VehicleRoutingProblemSolution solution){
-		initialSolutions.add(solution);
+        verify(solution);
+        initialSolutions.add(solution);
 	}
-	
-	/**
+
+
+    private void verify(VehicleRoutingProblemSolution solution) {
+        int nuJobs = 0;
+        for(VehicleRoute route : solution.getRoutes()){
+            nuJobs += route.getTourActivities().getJobs().size();
+            if(route.getVehicle().getIndex() == 0)
+                throw new IllegalStateException("vehicle used in initial solution has no index. probably a vehicle is used that has not been added to the " +
+                        " the VehicleRoutingProblem. only use vehicles that have already been added to the problem.");
+            for(TourActivity act : route.getActivities()) {
+                if (act.getIndex() == 0) {
+                    throw new IllegalStateException("act in initial solution has no index. activities are created and associated to their job in VehicleRoutingProblem\n." +
+                            " thus if you build vehicle-routes use the jobActivityFactory from vehicle routing problem like that \n" +
+                            " VehicleRoute.Builder.newInstance(knownVehicle).setJobActivityFactory(vrp.getJobActivityFactory).addService(..)....build() \n" +
+                            " then the activities that are created to build the route are identical to the ones used in VehicleRoutingProblem");
+                }
+            }
+        }
+        if(nuJobs != problem.getJobs().values().size()){
+            logger.warn("number of jobs in initial solution (" + nuJobs + ") is not equal nuJobs in vehicle routing problem (" + problem.getJobs().values().size() + ")" +
+                    "\n this might yield unintended effects, e.g. initial solution cannot be improved anymore.");
+        }
+    }
+
+    /**
 	 * Sets premature termination.
 	 *
-	 * @param prematureAlgorithmTermination
+	 * @param prematureAlgorithmTermination the termination criterion
 	 */
 	public void setPrematureAlgorithmTermination(PrematureAlgorithmTermination prematureAlgorithmTermination){
 		this.prematureAlgorithmTermination = prematureAlgorithmTermination;

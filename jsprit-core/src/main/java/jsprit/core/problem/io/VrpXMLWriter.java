@@ -16,13 +16,6 @@
  ******************************************************************************/
 package jsprit.core.problem.io;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -34,14 +27,21 @@ import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleType;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public class VrpXMLWriter {
@@ -60,7 +60,7 @@ public class VrpXMLWriter {
 		}
 	}
 	
-	private Logger log = Logger.getLogger(VrpXMLWriter.class);
+	private Logger log = LogManager.getLogger(VrpXMLWriter.class);
 	
 	private VehicleRoutingProblem vrp;
 	
@@ -76,7 +76,7 @@ public class VrpXMLWriter {
 		this.solutions = null;
 	}
 	
-	private static Logger logger = Logger.getLogger(VrpXMLWriter.class);
+	private static Logger logger = LogManager.getLogger(VrpXMLWriter.class);
 	
 	public void write(String filename){
 		if(!filename.endsWith(".xml")) filename+=".xml";

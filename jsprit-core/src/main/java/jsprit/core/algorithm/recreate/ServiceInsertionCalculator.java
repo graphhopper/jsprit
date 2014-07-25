@@ -30,7 +30,8 @@ import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.CalculationUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Calculator that calculates the best insertion position for a {@link Service}.
@@ -40,7 +41,7 @@ import org.apache.log4j.Logger;
  */
 final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 	
-	private static final Logger logger = Logger.getLogger(ServiceInsertionCalculator.class);
+	private static final Logger logger = LogManager.getLogger(ServiceInsertionCalculator.class);
 
 	private HardRouteStateLevelConstraint hardRouteLevelConstraint;
 	

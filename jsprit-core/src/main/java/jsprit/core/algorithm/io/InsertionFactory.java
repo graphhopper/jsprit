@@ -16,10 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.io;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import jsprit.core.algorithm.recreate.BestInsertionBuilder;
 import jsprit.core.algorithm.recreate.InsertionStrategy;
@@ -28,14 +24,18 @@ import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
-
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 
 class InsertionFactory {
 	
-	private static Logger log = Logger.getLogger(InsertionFactory.class);
+	private static Logger log = LogManager.getLogger(InsertionFactory.class.getName());
 	
 	@SuppressWarnings("deprecation")
 	public static InsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 

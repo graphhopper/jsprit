@@ -16,22 +16,18 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 import jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import jsprit.core.algorithm.selector.SolutionSelector;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
-
-
-
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 
 public class SearchStrategy {
@@ -62,7 +58,7 @@ public class SearchStrategy {
 		
 	}
 	
-	private static Logger logger = Logger.getLogger(SearchStrategy.class);
+	private static Logger logger = LogManager.getLogger(SearchStrategy.class);
 	
 	private Collection<SearchStrategyModule> searchStrategyModules = new ArrayList<SearchStrategyModule>();
 	
