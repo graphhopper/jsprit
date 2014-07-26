@@ -16,15 +16,8 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
-import jsprit.analysis.toolbox.GraphStreamViewer;
-import jsprit.analysis.toolbox.Plotter;
-import jsprit.analysis.toolbox.SolutionPrinter;
+import jsprit.analysis.toolbox.*;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
-import jsprit.analysis.toolbox.StopWatch;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
@@ -39,6 +32,9 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 
 public class MultipleDepotExampleWithPenaltyVehicles {
@@ -111,7 +107,8 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		 * solve the problem
 		 */
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
-		vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
+		vra.setNuOfIterations(5000);
+        vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		

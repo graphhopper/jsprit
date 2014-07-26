@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
@@ -31,16 +29,13 @@ import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.util.Examples;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.util.Collection;
 
 
 public class PickupAndDeliveryExample2 {
 	
 	public static void main(String[] args) {
-		
-		Logger.getRootLogger().setLevel(Level.INFO);
-		
+
 		/*
 		 * some preparation - create output folder
 		 */

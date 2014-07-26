@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.examples;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
@@ -27,6 +28,7 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.StateUpdater;
+import jsprit.core.algorithm.termination.VariationCoefficientTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -108,8 +110,8 @@ public class BicycleMessenger {
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts,TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 			//make sure vehicle can manage direct path
 			double arrTime_at_nextAct_onDirectRoute = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-            double latest_arrTime_at_nextAct = stateManager.getActivityState(nextAct, latest_act_arrival_time_stateId, Double.class);
-
+            Double latest_arrTime_at_nextAct = stateManager.getActivityState(nextAct, latest_act_arrival_time_stateId, Double.class);
+            if(latest_arrTime_at_nextAct == null) latest_arrTime_at_nextAct = nextAct.getTheoreticalLatestOperationStartTime();
             if(arrTime_at_nextAct_onDirectRoute > latest_arrTime_at_nextAct){
                 //constraint can never be fulfilled anymore, thus .NOT_FULFILLED_BREAK
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;
@@ -274,10 +276,10 @@ public class BicycleMessenger {
         vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
         algorithm.setNuOfIterations(2000);
-//        VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
-//        algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
-//        algorithm.addListener(prematureAlgorithmTermination);
-//		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+        VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
+        algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
+        algorithm.addListener(prematureAlgorithmTermination);
+		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 
         //search
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();

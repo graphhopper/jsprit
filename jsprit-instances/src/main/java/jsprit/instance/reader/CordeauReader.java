@@ -17,13 +17,6 @@
 package jsprit.instance.reader;
 
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -33,9 +26,15 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
-
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -51,7 +50,7 @@ import org.apache.log4j.Logger;
  */
 public class CordeauReader {
 
-	private static Logger logger = Logger.getLogger(CordeauReader.class);
+	private static Logger logger = LogManager.getLogger(CordeauReader.class);
 	
 	private final VehicleRoutingProblem.Builder vrpBuilder;
 

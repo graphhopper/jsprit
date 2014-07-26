@@ -16,15 +16,6 @@
  ******************************************************************************/
 package jsprit.analysis.toolbox;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 import jsprit.analysis.util.BenchmarkWriter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmFactory;
@@ -35,10 +26,12 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.util.BenchmarkInstance;
 import jsprit.core.util.BenchmarkResult;
 import jsprit.core.util.Solutions;
-
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.*;
 
 
 public class ConcurrentBenchmarker {
@@ -75,7 +68,7 @@ public class ConcurrentBenchmarker {
 	public ConcurrentBenchmarker(String algorithmConfig) {
 		super();
 		this.algorithmConfig = algorithmConfig;
-		Logger.getRootLogger().setLevel(Level.ERROR);
+//		LogManager.getRootLogger().setLevel(Level.ERROR);
 	}
 	
 	public ConcurrentBenchmarker(VehicleRoutingAlgorithmFactory algorithmFactory){

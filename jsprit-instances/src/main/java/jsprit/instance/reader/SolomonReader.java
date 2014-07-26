@@ -17,11 +17,6 @@
 package jsprit.instance.reader;
 
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
@@ -30,9 +25,13 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
-
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 
 /**
@@ -53,7 +52,7 @@ public class SolomonReader {
 		this.variableCostProjectionFactor = costProjectionFactor;
 	}
 
-	private static Logger logger = Logger.getLogger(SolomonReader.class);
+	private static Logger logger = LogManager.getLogger(SolomonReader.class);
 	
 	private final VehicleRoutingProblem.Builder vrpBuilder;
 

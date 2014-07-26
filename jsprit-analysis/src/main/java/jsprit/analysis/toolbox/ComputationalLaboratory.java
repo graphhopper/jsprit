@@ -18,24 +18,18 @@
  ******************************************************************************/
 package jsprit.analysis.toolbox;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.util.BenchmarkInstance;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 
 public class ComputationalLaboratory {
 	
@@ -267,7 +261,7 @@ public class ComputationalLaboratory {
 	private int threads = Runtime.getRuntime().availableProcessors()+1;
 	
 	public ComputationalLaboratory() {
-		Logger.getRootLogger().setLevel(Level.ERROR);
+
 	}
 	
 	/**
@@ -306,9 +300,8 @@ public class ComputationalLaboratory {
 	
 	/**
 	 * Adds instance.
-	 * 
-	 * @param name
-	 * @param problem
+	 *
+	 * @param instance the instance to be added
 	 * @throws IllegalStateException if there is already an instance with the same name.
 	 */
 	public void addInstance(BenchmarkInstance instance){
@@ -319,9 +312,8 @@ public class ComputationalLaboratory {
 	
 	/**
 	 * Adds collection of instances.
-	 * 
-	 * @param name
-	 * @param problem
+	 *
+	 * @param instances collection of instances to be added
 	 * @throws IllegalStateException if there is already an instance with the same name.
 	 */
 	public void addAllInstances(Collection<BenchmarkInstance> instances){
