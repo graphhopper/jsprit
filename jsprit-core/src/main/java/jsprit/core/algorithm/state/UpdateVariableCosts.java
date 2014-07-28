@@ -32,7 +32,7 @@ import jsprit.core.util.ActivityTimeTracker;
  * 
  * <p>Thus it modifies <code>stateManager.getRouteState(route, StateTypes.COSTS)</code> and <br>
  * <code>stateManager.getActivityState(activity, StateTypes.COSTS)</code>
- * 
+ *
  */
 public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 

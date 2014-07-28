@@ -25,7 +25,6 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -39,9 +38,7 @@ import java.util.Collection;
 
 public class MultipleDepotExampleWithPenaltyVehicles {
 
-	/**
-	 * @param args
-	 */
+
 	public static void main(String[] args) {
 		/*
 		 * some preparation - create output folder
@@ -77,7 +74,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 				vehicleBuilder.setStartLocationCoordinate(depotCoord);
 				vehicleBuilder.setType(vehicleType);
 				vehicleBuilder.setLatestArrival(maxDuration);
-				Vehicle vehicle = vehicleBuilder.build();
+				VehicleImpl vehicle = vehicleBuilder.build();
 				vrpBuilder.addVehicle(vehicle);
 			}
 			depotCounter++;
