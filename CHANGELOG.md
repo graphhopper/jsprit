@@ -10,6 +10,8 @@ Change-log
 - StateId moved from core.problem.route.state.StateFactory.StateId to core.algorithm.state.StateId
 - StateFactory.createId(String name) is not accessible anymore
 - constructor new StateManager(VehicleRoutingTransportCosts costs) does not exist anymore, but is new StateManager(VehicleRoutingProblem vrp)
+- deprecated core.problem.VehicleRoutingProblem.Builder.addVehicle(Vehicle v) and added core.problem.VehicleRoutingProblem.Builder.addVehicle(AbstractVehicle v)
+- deprecated core.problem.VehicleRoutingProblem.Builder.addJob(Job j) and added core.problem.VehicleRoutingProblem.Builder.addJob(AbstractJob j) 
 
 **v1.3.1** @ 2014-06-14
 
