@@ -22,7 +22,6 @@ import jsprit.core.problem.Capacity;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory;
 
 /**
  * A {@link ReverseActivityVisitor} that looks forward in the vehicle route and determines
@@ -62,14 +61,14 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
 	@Override
 	public void begin(VehicleRoute route) {
 		this.route = route;
-		maxLoad = stateManager.getRouteState(route, StateFactory.LOAD_AT_END, Capacity.class);
+		maxLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class);
         if(maxLoad == null) maxLoad = defaultValue;
 	}
 
 	@Override
 	public void visit(TourActivity act) {
-		maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, StateFactory.LOAD, Capacity.class));
-		stateManager.putInternalTypedActivityState(act, StateFactory.FUTURE_MAXLOAD, maxLoad);
+		maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class));
+		stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MAXLOAD, maxLoad);
 		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can in every capacity dimension never be bigger than vehicleCap";
 		assert maxLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
 	}

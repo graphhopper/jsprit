@@ -24,7 +24,6 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.util.ActivityTimeTracker;
 
 
@@ -34,10 +33,6 @@ import jsprit.core.util.ActivityTimeTracker;
  * <p>Thus it modifies <code>stateManager.getRouteState(route, StateTypes.COSTS)</code> and <br>
  * <code>stateManager.getActivityState(activity, StateTypes.COSTS)</code>
  * 
- * 
- * @param activityCost
- * @param transportCost
- * @param states
  */
 public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 
@@ -94,7 +89,7 @@ public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
 
-		states.putInternalTypedActivityState(act, StateFactory.COSTS, totalOperationCost);
+		states.putInternalTypedActivityState(act, InternalStates.COSTS, totalOperationCost);
 
 		prevAct = act;
 		startTimeAtPrevAct = timeTracker.getActEndTime();
@@ -109,7 +104,7 @@ public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
 		totalOperationCost += transportCost;
 		totalOperationCost += actCost;
 		
-		states.putTypedInternalRouteState(vehicleRoute, StateFactory.COSTS, totalOperationCost);
+		states.putTypedInternalRouteState(vehicleRoute, InternalStates.COSTS, totalOperationCost);
 		
 		startTimeAtPrevAct = 0.0;
 		prevAct = null;

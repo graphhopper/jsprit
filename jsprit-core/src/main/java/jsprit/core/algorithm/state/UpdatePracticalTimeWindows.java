@@ -22,7 +22,6 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory;
 
 /**
  * Updates and memorizes latest operation start times at activities.
@@ -60,7 +59,7 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
 		double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocationId(), prevAct.getLocationId(), latestArrTimeAtPrevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
 		double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
 		
-		states.putInternalTypedActivityState(activity, StateFactory.LATEST_OPERATION_START_TIME, latestArrivalTime);
+		states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
 		
 		latestArrTimeAtPrevAct = latestArrivalTime;
 		prevAct = activity;

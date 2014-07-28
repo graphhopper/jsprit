@@ -18,11 +18,11 @@
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 
 
 /**
@@ -51,15 +51,15 @@ class ServiceLoadActivityLevelConstraint implements HardActivityStateLevelConstr
 		Capacity futureMaxLoad;
 		Capacity prevMaxLoad;
 		if(prevAct instanceof Start){
-			futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), StateFactory.MAXLOAD, Capacity.class);
+			futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXLOAD, Capacity.class);
             if(futureMaxLoad == null) futureMaxLoad = defaultValue;
-			prevMaxLoad = stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+			prevMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
             if(prevMaxLoad == null) prevMaxLoad = defaultValue;
 		}
 		else{
-			futureMaxLoad = stateManager.getActivityState(prevAct, StateFactory.FUTURE_MAXLOAD, Capacity.class);
+			futureMaxLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MAXLOAD, Capacity.class);
             if(futureMaxLoad == null) futureMaxLoad = defaultValue;
-			prevMaxLoad = stateManager.getActivityState(prevAct, StateFactory.PAST_MAXLOAD, Capacity.class);
+			prevMaxLoad = stateManager.getActivityState(prevAct, InternalStates.PAST_MAXLOAD, Capacity.class);
             if(prevMaxLoad == null) prevMaxLoad = defaultValue;
 			
 		}

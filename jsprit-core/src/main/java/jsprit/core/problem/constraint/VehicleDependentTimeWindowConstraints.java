@@ -19,12 +19,12 @@ package jsprit.core.problem.constraint;
  *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.util.CalculationUtils;
 
 
@@ -60,7 +60,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityStateL
         }
         else{
             //try to get latest_operation_start_time of newVehicle
-            latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getNewVehicle(), StateFactory.LATEST_OPERATION_START_TIME ,Double.class);
+            latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getNewVehicle(), InternalStates.LATEST_OPERATION_START_TIME ,Double.class);
 //            if(latestArrTimeAtNextAct == null) //try to get latest_operation_start_time of currVehicle
 //                latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getRoute().getVehicle(), StateFactory.LATEST_OPERATION_START_TIME ,Double.class);
             if(latestArrTimeAtNextAct == null) //otherwise set it to theoretical_latest_operation_startTime

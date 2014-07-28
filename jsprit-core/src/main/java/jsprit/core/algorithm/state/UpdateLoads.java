@@ -28,7 +28,6 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory;
 
 import java.util.Collection;
 
@@ -65,7 +64,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	
 	@Override
 	public void begin(VehicleRoute route) {
-		currentLoad = stateManager.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+		currentLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
         if(currentLoad == null) currentLoad = defaultValue;
 		this.route = route;
 	}
@@ -73,7 +72,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	@Override
 	public void visit(TourActivity act) {
 		currentLoad = Capacity.addup(currentLoad, act.getSize());
-		stateManager.putInternalTypedActivityState(act, StateFactory.LOAD, currentLoad);
+		stateManager.putInternalTypedActivityState(act, InternalStates.LOAD, currentLoad);
 		assert currentLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "currentLoad at activity must not be > vehicleCapacity";
 		assert currentLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "currentLoad at act must not be < 0 in one of the applied dimensions";
 	}
@@ -94,8 +93,8 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 				loadAtEnd = Capacity.addup(loadAtEnd, j.getSize());
 			}
 		}
-		stateManager.putTypedInternalRouteState(route, StateFactory.LOAD_AT_BEGINNING, loadAtDepot);
-		stateManager.putTypedInternalRouteState(route, StateFactory.LOAD_AT_END, loadAtEnd);
+		stateManager.putTypedInternalRouteState(route, InternalStates.LOAD_AT_BEGINNING, loadAtDepot);
+		stateManager.putTypedInternalRouteState(route, InternalStates.LOAD_AT_END, loadAtEnd);
 	}
 
 	@Override
@@ -106,14 +105,14 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 	@Override
 	public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
 		if(job2insert instanceof Delivery){
-			Capacity loadAtDepot = stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+			Capacity loadAtDepot = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
             if(loadAtDepot == null) loadAtDepot = defaultValue;
-			stateManager.putTypedInternalRouteState(inRoute, StateFactory.LOAD_AT_BEGINNING, Capacity.addup(loadAtDepot, job2insert.getSize()));
+			stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.addup(loadAtDepot, job2insert.getSize()));
 		}
 		else if(job2insert instanceof Pickup || job2insert instanceof Service){
-			Capacity loadAtEnd = stateManager.getRouteState(inRoute, StateFactory.LOAD_AT_END, Capacity.class);
+			Capacity loadAtEnd = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_END, Capacity.class);
             if(loadAtEnd == null) loadAtEnd = defaultValue;
-			stateManager.putTypedInternalRouteState(inRoute, StateFactory.LOAD_AT_END, Capacity.addup(loadAtEnd, job2insert.getSize()));
+			stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_END, Capacity.addup(loadAtEnd, job2insert.getSize()));
 		}
 	}
 

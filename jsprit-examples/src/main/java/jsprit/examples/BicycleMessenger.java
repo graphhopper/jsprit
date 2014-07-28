@@ -18,7 +18,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
@@ -26,6 +25,7 @@ import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
+import jsprit.core.algorithm.state.StateId;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.StateUpdater;
 import jsprit.core.algorithm.termination.VariationCoefficientTermination;
@@ -46,7 +46,6 @@ import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.*;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
@@ -97,9 +96,9 @@ public class BicycleMessenger {
 		//jobId map direct-distance by nearestMessenger
 		private final Map<String,Double> bestMessengers;
 
-        private final StateFactory.StateId latest_act_arrival_time_stateId;
+        private final StateId latest_act_arrival_time_stateId;
 		
-		public ThreeTimesLessThanBestDirectRouteConstraint(StateFactory.StateId latest_act_arrival_time, Map<String, Double> nearestMessengers, VehicleRoutingTransportCosts routingCosts, RouteAndActivityStateGetter stateManager) {
+		public ThreeTimesLessThanBestDirectRouteConstraint(StateId latest_act_arrival_time, Map<String, Double> nearestMessengers, VehicleRoutingTransportCosts routingCosts, RouteAndActivityStateGetter stateManager) {
 			this.bestMessengers = nearestMessengers;
 			this.routingCosts = routingCosts;
 			this.stateManager = stateManager;
@@ -194,9 +193,9 @@ public class BicycleMessenger {
 		
 		private double latest_arrTime_at_prevAct;
 
-        private final StateFactory.StateId latest_act_arrival_time_stateId;
+        private final StateId latest_act_arrival_time_stateId;
 		
-		public UpdateLatestActivityStartTimes(StateFactory.StateId latest_act_arrival_time, StateManager stateManager, VehicleRoutingTransportCosts routingCosts, Map<String, Double> bestMessengers) {
+		public UpdateLatestActivityStartTimes(StateId latest_act_arrival_time, StateManager stateManager, VehicleRoutingTransportCosts routingCosts, Map<String, Double> bestMessengers) {
 			super();
 			this.stateManager = stateManager;
 			this.routingCosts = routingCosts;
@@ -217,7 +216,7 @@ public class BicycleMessenger {
 			double potential_latest_arrTime_at_currAct =
 					latest_arrTime_at_prevAct - routingCosts.getBackwardTransportTime(currAct.getLocationId(), prevAct.getLocationId(), latest_arrTime_at_prevAct, route.getDriver(),route.getVehicle()) - currAct.getOperationTime();
 			double latest_arrTime_at_currAct = Math.min(3*timeOfNearestMessenger, potential_latest_arrTime_at_currAct);
-			stateManager.putActivityState(currAct, latest_act_arrival_time_stateId, Double.class, latest_arrTime_at_currAct);
+			stateManager.putActivityState(currAct, latest_act_arrival_time_stateId, latest_arrTime_at_currAct);
 			assert currAct.getArrTime() <= latest_arrTime_at_currAct : "this must not be since it breaks condition; actArrTime: " + currAct.getArrTime() + " latestArrTime: " + latest_arrTime_at_currAct + " vehicle: " + route.getVehicle().getId();
 			latest_arrTime_at_prevAct = latest_arrTime_at_currAct;
 			prevAct = currAct;
@@ -258,9 +257,7 @@ public class BicycleMessenger {
         //define stateManager to update the required activity-state: "latest-activity-start-time"
         StateManager stateManager = new StateManager(bicycleMessengerProblem);
         //create state
-        StateFactory.StateId latest_act_arrival_time_stateId = stateManager.createStateId("latest-act-arrival-time");
-		//default states makes it more comfortable since state has a value and cannot be null (thus u dont need to check nulls)
-		stateManager.addDefaultActivityState(latest_act_arrival_time_stateId, Double.class, Double.MAX_VALUE);
+        StateId latest_act_arrival_time_stateId = stateManager.createStateId("latest-act-arrival-time");
         //and make sure you update the activity-state "latest-activity-start-time" the way it is defined above
         stateManager.addStateUpdater(new UpdateLatestActivityStartTimes(latest_act_arrival_time_stateId, stateManager, routingCosts, nearestMessengers));
         stateManager.updateLoadStates();
@@ -279,7 +276,7 @@ public class BicycleMessenger {
         VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
         algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
         algorithm.addListener(prematureAlgorithmTermination);
-		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+//		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 
         //search
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();

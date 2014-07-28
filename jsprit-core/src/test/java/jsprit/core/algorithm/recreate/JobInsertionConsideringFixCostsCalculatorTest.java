@@ -18,20 +18,20 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class JobInsertionConsideringFixCostsCalculatorTest {
 	
@@ -67,7 +67,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
 		when(jobInsertionCosts.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE)).thenReturn(iData);
 		
 		stateGetter = mock(RouteAndActivityStateGetter.class);
-		when(stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().build());
+		when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().build());
 		
 		calc = new JobInsertionConsideringFixCostsCalculator(jobInsertionCosts, stateGetter);
 	}
@@ -213,7 +213,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
 		calc.setSolutionCompletenessRatio(0.5);
 		calc.setWeightOfFixCost(.5);
 		when(route.getVehicle()).thenReturn(oVehicle);
-		when(stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).build());
+		when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).build());
 		//(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
 		assertEquals(12.5,calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
 	}
@@ -241,7 +241,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
 		when(nVehicle.getType()).thenReturn(type);
 		
 		when(route.getVehicle()).thenReturn(oVehicle);
-		when(stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
+		when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
 		//(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
 		/*
 		 * (0.5*(100-50)+0.5*( 
@@ -266,7 +266,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
 		when(nVehicle.getType()).thenReturn(type);
 		
 		when(route.getVehicle()).thenReturn(oVehicle);
-		when(stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
+		when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
 		//(0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*(100.-50.)+0.25*12.5)*0.75*0.5 = 15.234375
 		
 		assertEquals(15.234375,calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);

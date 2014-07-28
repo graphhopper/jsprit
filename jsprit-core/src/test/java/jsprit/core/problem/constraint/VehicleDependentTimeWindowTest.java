@@ -1,5 +1,6 @@
 package jsprit.core.problem.constraint;
 
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateActivityTimes;
 import jsprit.core.algorithm.state.UpdateVehicleDependentPracticalTimeWindows;
@@ -13,7 +14,6 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.PickupService;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.*;
 import jsprit.core.util.CostFactory;
 import org.junit.Before;
@@ -120,19 +120,19 @@ public class VehicleDependentTimeWindowTest {
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3(){
         assertEquals(70.,stateManager.getActivityState(route.getActivities().get(2),
-                vehicle, StateFactory.LATEST_OPERATION_START_TIME, Double.class),0.01);
+                vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2(){
         assertEquals(60.,stateManager.getActivityState(route.getActivities().get(1),
-                vehicle, StateFactory.LATEST_OPERATION_START_TIME, Double.class),0.01);
+                vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1(){
         assertEquals(50.,stateManager.getActivityState(route.getActivities().get(0),
-                vehicle, StateFactory.LATEST_OPERATION_START_TIME, Double.class),0.01);
+                vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
     }
 
     @Test

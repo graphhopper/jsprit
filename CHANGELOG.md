@@ -45,8 +45,8 @@ and considered by the meta-heuristic [#57](https://github.com/jsprit/jsprit/issu
 - jsprit.core.problem.job.Service$Builder: Removed field demand
 - jsprit.core.problem.solution.route.activity.ServiceActivity: Removed field capacityDemand
 - jsprit.core.problem.solution.route.activity.TourActivity: Method 'public jsprit.core.problem.Capacity getSize()'  has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter: Method 'public java.lang.Object getActivityState(jsprit.core.problem.solution.route.activity.TourActivity, jsprit.core.problem.solution.route.state.StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter: Method 'public java.lang.Object getRouteState(jsprit.core.problem.solution.route.VehicleRoute, jsprit.core.problem.solution.route.state.StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
+- jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter: Method 'public java.lang.Object getActivityState(jsprit.core.problem.solution.route.activity.TourActivity, jsprit.core.algorithm.state.StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
+- jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter: Method 'public java.lang.Object getRouteState(jsprit.core.problem.solution.route.VehicleRoute, jsprit.core.algorithm.state.StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
 - jsprit.core.problem.vehicle.Vehicle: Method 'public jsprit.core.util.Coordinate getEndLocationCoordinate()' has been added to an interface <b>[potential Break Change]</b>
 - jsprit.core.problem.vehicle.Vehicle: Method 'public java.lang.String getEndLocationId()' has been added to an interface <b>[potential Break Change]</b>
 - jsprit.core.problem.vehicle.Vehicle: Method 'public jsprit.core.util.Coordinate getStartLocationCoordinate()' has been added to an interface <b>[potential Break Change]</b>

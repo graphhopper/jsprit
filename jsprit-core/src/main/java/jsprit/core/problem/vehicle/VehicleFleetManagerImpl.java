@@ -28,7 +28,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	public VehicleFleetManagerImpl newInstance(Collection<Vehicle> vehicles){
 		return new VehicleFleetManagerImpl(vehicles);
 	}
-	
+
+    @Deprecated
 	public static VehicleFleetManager createDefaultFleetManager() {
 		return new DefaultFleetManager();
 	}
@@ -46,7 +47,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		
 		private ArrayList<Vehicle> vehicleList;
 		
-		public TypeContainer(VehicleTypeKey type) {
+		public TypeContainer() {
 			super();
 			vehicleList = new ArrayList<Vehicle>();
 		}
@@ -82,8 +83,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	private Map<VehicleTypeKey,TypeContainer> typeMapOfAvailableVehicles;
 	
 	private Map<VehicleTypeKey,Vehicle> penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
-	
-//	private Map<TypeKey,TypeContainer> typeMapOfAvailablePenaltyVehicles;
+
 	
 	public VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
 		super();
@@ -128,7 +128,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		else{
 			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
 			if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
-				typeMapOfAvailableVehicles.put(typeKey, new TypeContainer(typeKey));
+				typeMapOfAvailableVehicles.put(typeKey, new TypeContainer());
 			}
 			typeMapOfAvailableVehicles.get(typeKey).add(v);
 		}

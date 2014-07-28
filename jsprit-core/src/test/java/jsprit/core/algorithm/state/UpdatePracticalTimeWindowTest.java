@@ -29,7 +29,6 @@ import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.solution.route.ReverseRouteActivityVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -86,19 +85,19 @@ public class UpdatePracticalTimeWindowTest {
 	@Test
 	public void whenVehicleRouteHasPickupAndDeliveryAndPickup_latestStartTimeOfAct3MustBeCorrect(){
 		assertEquals(50.,route.getActivities().get(2).getTheoreticalLatestOperationStartTime(),0.01);
-		assertEquals(50.,stateManager.getActivityState(route.getActivities().get(2), StateFactory.LATEST_OPERATION_START_TIME, Double.class),0.01);
+		assertEquals(50.,stateManager.getActivityState(route.getActivities().get(2), InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
 	}
 	
 	@Test
 	public void whenVehicleRouteHasPickupAndDeliveryAndPickup_latestStartTimeOfAct2MustBeCorrect(){
 		assertEquals(40.,route.getActivities().get(1).getTheoreticalLatestOperationStartTime(),0.01);
-		assertEquals(30.,stateManager.getActivityState(route.getActivities().get(1), StateFactory.LATEST_OPERATION_START_TIME, Double.class),0.01);
+		assertEquals(30.,stateManager.getActivityState(route.getActivities().get(1), InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
 	}
 	
 	@Test
 	public void whenVehicleRouteHasPickupAndDeliveryAndPickup_latestStartTimeOfAct1MustBeCorrect(){
 		assertEquals(30.,route.getActivities().get(0).getTheoreticalLatestOperationStartTime(),0.01);
-		assertEquals(10.,stateManager.getActivityState(route.getActivities().get(0), StateFactory.LATEST_OPERATION_START_TIME, Double.class),0.01);
+		assertEquals(10.,stateManager.getActivityState(route.getActivities().get(0), InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
 	}
 
 }

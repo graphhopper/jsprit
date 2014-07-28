@@ -18,12 +18,12 @@
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.util.CalculationUtils;
 
 
@@ -57,7 +57,7 @@ import jsprit.core.util.CalculationUtils;
                 }
             }
             else{
-                latestArrTimeAtNextAct = states.getActivityState(nextAct, StateFactory.LATEST_OPERATION_START_TIME, Double.class);
+                latestArrTimeAtNextAct = states.getActivityState(nextAct, InternalStates.LATEST_OPERATION_START_TIME, Double.class);
                 if(latestArrTimeAtNextAct==null) latestArrTimeAtNextAct=nextAct.getTheoreticalLatestOperationStartTime();
                 nextActLocation = nextAct.getLocationId();
             }

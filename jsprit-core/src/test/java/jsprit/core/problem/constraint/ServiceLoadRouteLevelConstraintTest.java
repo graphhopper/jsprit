@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -30,7 +31,6 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -83,9 +83,9 @@ public class ServiceLoadRouteLevelConstraintTest {
 		
 		Capacity currentLoad = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build();
 		stateGetter = mock(RouteAndActivityStateGetter.class);
-		when(stateGetter.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(currentLoad);
-		when(stateGetter.getRouteState(route, StateFactory.LOAD_AT_END, Capacity.class)).thenReturn(currentLoad);
-		when(stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class)).thenReturn(currentLoad);
+		when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(currentLoad);
+		when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(currentLoad);
+		when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(currentLoad);
 
 		constraint = new ServiceLoadRouteLevelConstraint(stateGetter);
 		
@@ -258,9 +258,9 @@ public class ServiceLoadRouteLevelConstraintTest {
 		Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
 		
 		RouteAndActivityStateGetter stateGetter = mock(RouteAndActivityStateGetter.class);
-		when(stateGetter.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
-		when(stateGetter.getRouteState(route, StateFactory.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
-		when(stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
+		when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
+		when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
+		when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
 		
 		JobInsertionContext iContext = mock(JobInsertionContext.class);
 		when(iContext.getJob()).thenReturn(service);
@@ -286,9 +286,9 @@ public class ServiceLoadRouteLevelConstraintTest {
 		Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
 		
 		RouteAndActivityStateGetter stateGetter = mock(RouteAndActivityStateGetter.class);
-		when(stateGetter.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
-		when(stateGetter.getRouteState(route, StateFactory.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
-		when(stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
+		when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
+		when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
+		when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
 		
 		JobInsertionContext iContext = mock(JobInsertionContext.class);
 		when(iContext.getJob()).thenReturn(service);
@@ -314,9 +314,9 @@ public class ServiceLoadRouteLevelConstraintTest {
 		Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
 		
 		RouteAndActivityStateGetter stateGetter = mock(RouteAndActivityStateGetter.class);
-		when(stateGetter.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
-		when(stateGetter.getRouteState(route, StateFactory.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
-		when(stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
+		when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
+		when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
+		when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
 		
 		JobInsertionContext iContext = mock(JobInsertionContext.class);
 		when(iContext.getJob()).thenReturn(service);

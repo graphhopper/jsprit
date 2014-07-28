@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
 import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
@@ -32,7 +33,6 @@ import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.solution.route.activity.TourActivities;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import org.apache.logging.log4j.LogManager;
@@ -266,7 +266,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 				/**
 				 * compute cost-diff of tour with and without new activity --> insertion_costs
 				 */
-                Double currentRouteCosts = stateManager.getRouteState(currentRoute, StateFactory.COSTS, Double.class);
+                Double currentRouteCosts = stateManager.getRouteState(currentRoute, InternalStates.COSTS, Double.class);
                 if(currentRouteCosts == null) currentRouteCosts = 0.;
                 double insertion_costs = auxilliaryPathCostCalculator.costOfPath(wholeTour, start.getEndTime(), newDriver, newVehicle) - currentRouteCosts;
 
@@ -316,9 +316,9 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 	private double sumOf_prevCosts_oldVehicle(VehicleRoute vehicleRoute, TourActivity act) {
 		Double prevCost;
         if(act instanceof End){
-			prevCost = stateManager.getRouteState(vehicleRoute,StateFactory.COSTS,Double.class);
+			prevCost = stateManager.getRouteState(vehicleRoute, InternalStates.COSTS,Double.class);
 		}
-        else prevCost = stateManager.getActivityState(act,StateFactory.COSTS,Double.class);
+        else prevCost = stateManager.getActivityState(act, InternalStates.COSTS,Double.class);
         if(prevCost == null) prevCost = 0.;
 		return prevCost;
 	}

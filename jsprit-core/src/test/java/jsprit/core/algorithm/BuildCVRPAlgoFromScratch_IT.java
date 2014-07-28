@@ -25,6 +25,7 @@ import jsprit.core.algorithm.ruin.RandomRuinStrategyFactory;
 import jsprit.core.algorithm.ruin.RuinStrategy;
 import jsprit.core.algorithm.ruin.distance.AvgServiceDistance;
 import jsprit.core.algorithm.selector.SelectBest;
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -33,7 +34,6 @@ import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.util.Solutions;
@@ -81,7 +81,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, StateFactory.COSTS,Double.class);
+					costs += stateManager.getRouteState(route, InternalStates.COSTS,Double.class);
 				}
 				return costs;
 			}

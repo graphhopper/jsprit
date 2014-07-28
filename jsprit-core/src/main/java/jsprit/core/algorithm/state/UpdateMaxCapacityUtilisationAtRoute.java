@@ -22,7 +22,6 @@ import jsprit.core.problem.Capacity;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory;
 
 /**
  * Updates load at activity level. 
@@ -55,7 +54,7 @@ class UpdateMaxCapacityUtilisationAtRoute implements ActivityVisitor, StateUpdat
 	
 	@Override
 	public void begin(VehicleRoute route) {
-		currentLoad = stateManager.getRouteState(route, StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+		currentLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
         if(currentLoad == null) currentLoad = defaultValue;
 		maxLoad = currentLoad;
 		this.route = route;
@@ -69,6 +68,6 @@ class UpdateMaxCapacityUtilisationAtRoute implements ActivityVisitor, StateUpdat
 
 	@Override
 	public void finish() {
-		stateManager.putTypedInternalRouteState(route, StateFactory.MAXLOAD, maxLoad);
+		stateManager.putTypedInternalRouteState(route, InternalStates.MAXLOAD, maxLoad);
 	}
 }

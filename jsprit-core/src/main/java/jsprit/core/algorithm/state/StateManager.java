@@ -33,8 +33,6 @@ import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
-import jsprit.core.problem.solution.route.state.StateFactory.StateId;
 import jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.*;
@@ -141,7 +139,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
             vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
         }
-        StateId id = StateFactory.createId(name,stateIndexCounter);
+        StateId id = StateFactory.createId(name, stateIndexCounter);
         incStateIndexCounter();
         createdStateIds.put(name, id);
         return id;
@@ -152,23 +150,23 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     private void addDefaultStates() {
-		defaultActivityStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
-		defaultActivityStates_.put(StateFactory.COSTS, 0.);
-		defaultActivityStates_.put(StateFactory.DURATION, 0.);
-		defaultActivityStates_.put(StateFactory.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
-		defaultActivityStates_.put(StateFactory.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultActivityStates_.put(InternalStates.LOAD, Capacity.Builder.newInstance().build());
+		defaultActivityStates_.put(InternalStates.COSTS, 0.);
+		defaultActivityStates_.put(InternalStates.DURATION, 0.);
+		defaultActivityStates_.put(InternalStates.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultActivityStates_.put(InternalStates.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
 		
-		defaultRouteStates_.put(StateFactory.LOAD, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(InternalStates.LOAD, Capacity.Builder.newInstance().build());
 		
-		defaultRouteStates_.put(StateFactory.COSTS, 0.);
-		defaultRouteStates_.put(StateFactory.DURATION, 0.);
-		defaultRouteStates_.put(StateFactory.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
-		defaultRouteStates_.put(StateFactory.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(InternalStates.COSTS, 0.);
+		defaultRouteStates_.put(InternalStates.DURATION, 0.);
+		defaultRouteStates_.put(InternalStates.FUTURE_MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(InternalStates.PAST_MAXLOAD, Capacity.Builder.newInstance().build());
 		
-		defaultRouteStates_.put(StateFactory.MAXLOAD, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(InternalStates.MAXLOAD, Capacity.Builder.newInstance().build());
 		
-		defaultRouteStates_.put(StateFactory.LOAD_AT_END, Capacity.Builder.newInstance().build());
-		defaultRouteStates_.put(StateFactory.LOAD_AT_BEGINNING, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(InternalStates.LOAD_AT_END, Capacity.Builder.newInstance().build());
+		defaultRouteStates_.put(InternalStates.LOAD_AT_BEGINNING, Capacity.Builder.newInstance().build());
 		
 	}
 
@@ -346,10 +344,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		if(defaultActivityStates_.containsKey(stateId)){
 			return type.cast(defaultActivityStates_.get(stateId));
 		}
-		if(stateId.equals(StateFactory.EARLIEST_OPERATION_START_TIME)){
+		if(stateId.equals(InternalStates.EARLIEST_OPERATION_START_TIME)){
 			return type.cast(act.getTheoreticalEarliestOperationStartTime());
 		}
-		if(stateId.equals(StateFactory.LATEST_OPERATION_START_TIME)){
+		if(stateId.equals(InternalStates.LATEST_OPERATION_START_TIME)){
 			return type.cast(act.getTheoreticalLatestOperationStartTime());
 		}
 		return null;

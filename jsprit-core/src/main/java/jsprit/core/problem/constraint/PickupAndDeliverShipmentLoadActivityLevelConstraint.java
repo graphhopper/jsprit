@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.DeliverShipment;
@@ -25,7 +26,6 @@ import jsprit.core.problem.solution.route.activity.PickupShipment;
 import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 
 
 /**
@@ -69,11 +69,11 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 		}
 		Capacity loadAtPrevAct;
 		if(prevAct instanceof Start){
-			loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), StateFactory.LOAD_AT_BEGINNING, Capacity.class);
+			loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
             if(loadAtPrevAct == null) loadAtPrevAct = defaultValue;
 		}
 		else{
-			loadAtPrevAct = stateManager.getActivityState(prevAct, StateFactory.LOAD, Capacity.class);
+			loadAtPrevAct = stateManager.getActivityState(prevAct, InternalStates.LOAD, Capacity.class);
             if(loadAtPrevAct == null) loadAtPrevAct = defaultValue;
 		}
 		if(newAct instanceof PickupShipment){

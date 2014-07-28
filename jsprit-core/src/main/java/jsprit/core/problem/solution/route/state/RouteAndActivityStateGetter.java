@@ -16,9 +16,9 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.state;
 
+import jsprit.core.algorithm.state.StateId;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory.StateId;
 import jsprit.core.problem.vehicle.Vehicle;
 
 public interface RouteAndActivityStateGetter {

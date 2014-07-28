@@ -17,6 +17,7 @@
 package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
+import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.constraint.SoftRouteConstraint;
 import jsprit.core.problem.driver.Driver;
@@ -24,7 +25,6 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import org.apache.logging.log4j.LogManager;
@@ -122,7 +122,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 	}
 
 	private Capacity getCurrentMaxLoadInRoute(VehicleRoute route) {
-        Capacity maxLoad = stateGetter.getRouteState(route, StateFactory.MAXLOAD, Capacity.class);
+        Capacity maxLoad = stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class);
         if(maxLoad == null) maxLoad = Capacity.Builder.newInstance().build();
         return  maxLoad;
 	}

@@ -51,7 +51,6 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory;
 import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -619,7 +618,7 @@ public class VehicleRoutingAlgorithms {
 			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double costs = 0.0;
 				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, StateFactory.COSTS, Double.class) + getFixedCosts(route.getVehicle());
+					costs += stateManager.getRouteState(route, InternalStates.COSTS, Double.class) + getFixedCosts(route.getVehicle());
 				}
 				return costs;
 			}
