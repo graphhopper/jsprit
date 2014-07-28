@@ -6,7 +6,8 @@ Change-log
 
 <em>jsprit-core</em>
 - StateFactory.createId(String name) moved to core.algorithm.state.StateManager.createStateId(String name)
-- StateFactory moved from core.problem.solution.route.state to core.algorithm.state
+- StateFactory moved from core.problem.solution.route.state.StateFactory to core.algorithm.state.InternalStates
+- StateId moved from core.problem.rout.state.StateFactory.StateId to core.algorithm.state.StateId
 - StateFactory.createId(String name) is not accessible anymore
 - constructor new StateManager(VehicleRoutingTransportCosts costs) does not exist anymore, but is new StateManager(VehicleRoutingProblem vrp)
 
