@@ -70,45 +70,12 @@ public class VrpXMLReader{
 			}
 		}
 	}
-	
+
+    @Deprecated
 	interface JobConfigReader {
-		
+
 		void readConfig(XMLConfiguration vrpProblem);
 	}
-	
-	static class ServiceConfigReader implements JobConfigReader{
-		
-		VehicleRoutingProblem.Builder vrpBuilder;
-		
-		public ServiceConfigReader(jsprit.core.problem.VehicleRoutingProblem.Builder vrpBuilder) {
-			super();
-			this.vrpBuilder = vrpBuilder;
-		}
-
-		@Override
-		public void readConfig(XMLConfiguration config) {
-			
-		}
-		
-	}
-	
-	
-	static class ShipmentConfigReader implements JobConfigReader{
-
-		VehicleRoutingProblem.Builder vrpBuilder;
-		
-		public ShipmentConfigReader(jsprit.core.problem.VehicleRoutingProblem.Builder vrpBuilder) {
-			super();
-			this.vrpBuilder = vrpBuilder;
-		}
-
-		@Override
-		public void readConfig(XMLConfiguration config) {
-			
-		}
-		
-	}
-	
 
 	private static Logger logger = LogManager.getLogger(VrpXMLReader.class);
 	
@@ -130,13 +97,16 @@ public class VrpXMLReader{
 	
 	private Collection<JobConfigReader> jobConfigReaders = new ArrayList<VrpXMLReader.JobConfigReader>();
 
-	
+	@Deprecated
 	public void addJobConfigReader(JobConfigReader reader){
 		jobConfigReaders.add(reader);
 	}
+
+    @Deprecated
 	public void setTourActivityFactory(TourActivityFactory tourActivityFactory){
 	}
-	
+
+    @Deprecated
 	public void setServiceBuilderFactory(ServiceBuilderFactory serviceBuilderFactory){
 		this.serviceBuilderFactory=serviceBuilderFactory;
 	}
@@ -144,7 +114,8 @@ public class VrpXMLReader{
 	/**
 	 * @param schemaValidation the schemaValidation to set
 	 */
-	public void setSchemaValidation(boolean schemaValidation) {
+	@SuppressWarnings("UnusedDeclaration")
+    public void setSchemaValidation(boolean schemaValidation) {
 		this.schemaValidation = schemaValidation;
 	}
 
@@ -403,6 +374,7 @@ public class VrpXMLReader{
 					builder.setPickupLocation(pickupCoord.toString());
 				}
 			}
+
 			//pickup-serviceTime
 			String pickupServiceTime = shipmentConfig.getString("pickup.duration");
 			if(pickupServiceTime != null) builder.setPickupServiceTime(Double.parseDouble(pickupServiceTime));
@@ -414,8 +386,7 @@ public class VrpXMLReader{
 				TimeWindow pickupTW = TimeWindow.newInstance(Double.parseDouble(pickupTWStart), Double.parseDouble(pickupTWEnd));
 				builder.setPickupTimeWindow(pickupTW);
 			}
-			
-			
+
 			//delivery-locationId
 			String deliveryLocationId = shipmentConfig.getString("delivery.locationId");
 			if(deliveryLocationId != null){
@@ -434,6 +405,7 @@ public class VrpXMLReader{
 					builder.setDeliveryLocation(deliveryCoord.toString());
 				}
 			}
+
 			//delivery-serviceTime
 			String deliveryServiceTime = shipmentConfig.getString("delivery.duration");
 			if(deliveryServiceTime != null) builder.setDeliveryServiceTime(Double.parseDouble(deliveryServiceTime));
@@ -445,8 +417,16 @@ public class VrpXMLReader{
 				TimeWindow delTW = TimeWindow.newInstance(Double.parseDouble(delTWStart), Double.parseDouble(delTWEnd));
 				builder.setDeliveryTimeWindow(delTW);
 			}
-			
-			
+
+            //read skills
+            String skillString = shipmentConfig.getString("requiredSkills");
+            if(skillString != null){
+                String cleaned = skillString.replaceAll("\\s","");
+                String[] skillTokens = cleaned.split("[,;]");
+                for(String skill : skillTokens) builder.addRequiredSkill(skill.toLowerCase());
+            }
+
+			//build shipment
 			Shipment shipment = builder.build();
 //			vrpBuilder.addJob(shipment);
 			shipmentMap.put(shipment.getId(),shipment);
@@ -515,6 +495,16 @@ public class VrpXMLReader{
 					builder.setTimeWindow(TimeWindow.newInstance(twConfig.getDouble("start"), twConfig.getDouble("end")));
 				}
 			}
+
+            //read skills
+            String skillString = serviceConfig.getString("requiredSkills");
+            if(skillString != null){
+                String cleaned = skillString.replaceAll("\\s","");
+                String[] skillTokens = cleaned.split("[,;]");
+                for(String skill : skillTokens) builder.addRequiredSkill(skill.toLowerCase());
+            }
+
+            //build service
 			Service service = builder.build();
 			serviceMap.put(service.getId(),service);
 //			vrpBuilder.addJob(service);
@@ -595,7 +585,9 @@ public class VrpXMLReader{
 			VehicleType type = types.get(typeId);
 			if(type == null) throw new IllegalStateException("vehicleType with typeId " + typeId + " is missing.");
 			builder.setType(type);
-			String locationId = vehicleConfig.getString("location.id");
+
+            //read startlocation
+            String locationId = vehicleConfig.getString("location.id");
 			if(locationId == null) {
 				locationId = vehicleConfig.getString("startLocation.id");
 			}
@@ -618,7 +610,8 @@ public class VrpXMLReader{
 				builder.setStartLocationCoordinate(coordinate);
 				
 			}
-			
+
+            //read endlocation
 			String endLocationId = vehicleConfig.getString("endLocation.id");
 			if(endLocationId != null) builder.setEndLocationId(endLocationId);
 			String endCoordX = vehicleConfig.getString("endLocation.coord[@x]");
@@ -634,15 +627,27 @@ public class VrpXMLReader{
 				builder.setEndLocationCoordinate(coordinate);
 			}
 			
-			
+			//read timeSchedule
 			String start = vehicleConfig.getString("timeSchedule.start");
 			String end = vehicleConfig.getString("timeSchedule.end");
 			if(start != null) builder.setEarliestStart(Double.parseDouble(start));
 			if(end != null) builder.setLatestArrival(Double.parseDouble(end));
-			String returnToDepot = vehicleConfig.getString("returnToDepot");
+
+			//read return2depot
+            String returnToDepot = vehicleConfig.getString("returnToDepot");
 			if(returnToDepot != null){
 				builder.setReturnToDepot(vehicleConfig.getBoolean("returnToDepot"));
 			}
+
+            //read skills
+            String skillString = vehicleConfig.getString("skills");
+            if(skillString != null){
+                String cleaned = skillString.replaceAll("\\s", "");
+                String[] skillTokens = cleaned.split("[,;]");
+                for(String skill : skillTokens) builder.addSkill(skill.toLowerCase());
+            }
+
+            //build vehicle
 			VehicleImpl vehicle = builder.build();
 			vrpBuilder.addVehicle(vehicle);
 			vehicleMap.put(vehicleId, vehicle);

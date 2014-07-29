@@ -16,25 +16,21 @@
  ******************************************************************************/
 package jsprit.core.problem.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.vehicle.Vehicle;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 
 public class VrpXMLReaderTest {
@@ -77,6 +73,42 @@ public class VrpXMLReaderTest {
 		assertEquals("vehType", v1.getType().getTypeId());
 		assertEquals(1000.0,v1.getLatestArrival(),0.01);
 	}
+
+    @Test
+    public void whenReadingVehicles_skill1ShouldBeAssigned(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Vehicle v1 = getVehicle("v1",vrp.getVehicles());
+        assertTrue(v1.getSkills().containsSkill("skill1"));
+    }
+
+    @Test
+    public void whenReadingVehicles_skill2ShouldBeAssigned(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Vehicle v1 = getVehicle("v1",vrp.getVehicles());
+        assertTrue(v1.getSkills().containsSkill("skill2"));
+    }
+
+    @Test
+    public void whenReadingVehicles_nuSkillsShouldBeCorrect(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Vehicle v1 = getVehicle("v1",vrp.getVehicles());
+        assertEquals(2, v1.getSkills().values().size());
+    }
+
+    @Test
+    public void whenReadingVehicles_nuSkillsOfV2ShouldBeCorrect(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Vehicle v = getVehicle("v2",vrp.getVehicles());
+        assertEquals(0, v.getSkills().values().size());
+    }
 	
 	private Vehicle getVehicle(String string, Collection<Vehicle> vehicles) {
 		for(Vehicle v : vehicles) if(string.equals(v.getId())) return v;
@@ -126,6 +158,42 @@ public class VrpXMLReaderTest {
 		}
 		assertEquals(2,servCounter);
 	}
+
+    @Test
+    public void whenReadingService1_skill1ShouldBeAssigned(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Service s = (Service) vrp.getJobs().get("1");
+        assertTrue(s.getRequiredSkills().containsSkill("skill1"));
+    }
+
+    @Test
+    public void whenReadingService1_skill2ShouldBeAssigned(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Service s = (Service) vrp.getJobs().get("1");
+        assertTrue(s.getRequiredSkills().containsSkill("skill2"));
+    }
+
+    @Test
+    public void whenReadingService1_nuSkillsShouldBeCorrect(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Service s = (Service) vrp.getJobs().get("1");
+        assertEquals(2,s.getRequiredSkills().values().size());
+    }
+
+    @Test
+    public void whenReadingService2_nuSkillsOfV2ShouldBeCorrect(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Service s = (Service) vrp.getJobs().get("2");
+        assertEquals(0,s.getRequiredSkills().values().size());
+    }
 	
 	@Test
 	public void whenReadingShipments_itReadsThemCorrectly(){
@@ -138,6 +206,42 @@ public class VrpXMLReaderTest {
 		}
 		assertEquals(2,shipCounter);
 	}
+
+    @Test
+    public void whenReadingShipment3_skill1ShouldBeAssigned(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Shipment s = (Shipment) vrp.getJobs().get("3");
+        assertTrue(s.getRequiredSkills().containsSkill("skill1"));
+    }
+
+    @Test
+    public void whenReadingShipment3_skill2ShouldBeAssigned(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Shipment s = (Shipment) vrp.getJobs().get("3");
+        assertTrue(s.getRequiredSkills().containsSkill("skill2"));
+    }
+
+    @Test
+    public void whenReadingShipment3_nuSkillsShouldBeCorrect(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Shipment s = (Shipment) vrp.getJobs().get("3");
+        assertEquals(2,s.getRequiredSkills().values().size());
+    }
+
+    @Test
+    public void whenReadingShipment4_nuSkillsOfV2ShouldBeCorrect(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Shipment s = (Shipment) vrp.getJobs().get("4");
+        assertEquals(0,s.getRequiredSkills().values().size());
+    }
 	
 	@Test
 	public void whenReadingServices_capOfService1IsReadCorrectly(){
@@ -465,4 +569,6 @@ public class VrpXMLReaderTest {
 		VehicleRoutingProblem vrp = builder.build();
 		assertEquals(2,vrp.getInitialVehicleRoutes().iterator().next().getActivities().size());
 	}
+
+
 }

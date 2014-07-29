@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.io;
 
+import jsprit.core.problem.Skills;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -55,8 +56,7 @@ public class VrpXMLWriter {
 		private static final long serialVersionUID = 1L;
 
 		public Document createDoc() throws ConfigurationException{
-			Document doc = createDocument();
-			return doc;
+			return createDocument();
 		}
 	}
 	
@@ -227,7 +227,11 @@ public class VrpXMLWriter {
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").duration", service.getServiceDuration());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").timeWindows.timeWindow(0).start", service.getTimeWindow().getStart());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").timeWindows.timeWindow(0).end", service.getTimeWindow().getEnd());
-			
+
+            //skills
+            String skillString = getSkillString(service);
+            xmlConfig.setProperty(shipmentPathString + "("+counter+").requiredSkills", skillString);
+
 			counter++;
 		}
 	}
@@ -265,6 +269,11 @@ public class VrpXMLWriter {
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")[@index]", i);
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")", shipment.getSize().get(i));
 			}
+
+            //skills
+            String skillString = getSkillString(shipment);
+            xmlConfig.setProperty(shipmentPathString + "("+counter+").requiredSkills", skillString);
+
 			counter++;
 		}
 	}
@@ -276,8 +285,7 @@ public class VrpXMLWriter {
 	private void writeVehiclesAndTheirTypes(XMLConfiguration xmlConfig) {
 
 		//vehicles
-		String vehiclePathString = new StringBuilder().append(Schema.VEHICLES).append(".").
-				append(Schema.VEHICLE).toString();
+		String vehiclePathString = Schema.VEHICLES + "." + Schema.VEHICLE;
 		int counter = 0;
 		for(Vehicle vehicle : vrp.getVehicles()){
 			if(vehicle.getType() instanceof PenaltyVehicleType){
@@ -299,6 +307,11 @@ public class VrpXMLWriter {
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.end", vehicle.getLatestArrival());
 
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").returnToDepot", vehicle.isReturnToDepot());
+
+            //write skills
+            String skillString = getSkillString(vehicle);
+            xmlConfig.setProperty(vehiclePathString + "("+counter+").skills", skillString);
+
 			counter++;
 		}
 
@@ -327,5 +340,24 @@ public class VrpXMLWriter {
 		
 		
 	}
+
+    private String getSkillString(Vehicle vehicle) {
+        return createSkillString(vehicle.getSkills());
+    }
+
+    private String getSkillString(Job job){
+        return createSkillString(job.getRequiredSkills());
+    }
+
+    private String createSkillString(Skills skills) {
+        if(skills.values().size() == 0) return null;
+        String skillString = null;
+        for(String skill : skills.values()){
+            if(skillString == null) skillString = skill;
+            else skillString += ", " + skill;
+        }
+        return skillString;
+    }
+
 
 }

@@ -53,8 +53,8 @@ public class SolomonSkills_IT {
             Service.Builder skillServiceBuilder = Service.Builder.newInstance(service.getId()).setServiceTime(service.getServiceDuration())
                     .setCoord(service.getCoord()).setLocationId(service.getLocationId()).setTimeWindow(service.getTimeWindow())
                     .addSizeDimension(0,service.getSize().get(0));
-            if(service.getCoord().getY()<50) skillServiceBuilder.addSkill("skill2");
-            else skillServiceBuilder.addSkill("skill1");
+            if(service.getCoord().getY()<50) skillServiceBuilder.addRequiredSkill("skill2");
+            else skillServiceBuilder.addRequiredSkill("skill1");
             skillProblemBuilder.addJob(skillServiceBuilder.build());
         }
         skillProblemBuilder.addPenaltyVehicles(3.);

@@ -35,11 +35,11 @@ public class SkillConstraintTest {
         vehicle = VehicleImpl.Builder.newInstance("v").addSkill("skill1").addSkill("skill2").addSkill("skill3").addSkill("skill4").setStartLocationId("start").setType(type).build();
         vehicle2 = VehicleImpl.Builder.newInstance("v").addSkill("skill4").addSkill("skill5").setStartLocationId("start").setType(type).build();
 
-        Service service = Service.Builder.newInstance("s").setLocationId("loc").addSkill("skill1").build();
-        Service service2 = Service.Builder.newInstance("s2").setLocationId("loc").addSkill("skill1").addSkill("skill2").addSkill("skill3").build();
+        Service service = Service.Builder.newInstance("s").setLocationId("loc").addRequiredSkill("skill1").build();
+        Service service2 = Service.Builder.newInstance("s2").setLocationId("loc").addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();
 
-        Service service3 = Service.Builder.newInstance("s3").setLocationId("loc").addSkill("skill4").addSkill("skill5").build();
-        Service service4 = Service.Builder.newInstance("s4").setLocationId("loc").addSkill("skill1").build();
+        Service service3 = Service.Builder.newInstance("s3").setLocationId("loc").addRequiredSkill("skill4").addRequiredSkill("skill5").build();
+        Service service4 = Service.Builder.newInstance("s4").setLocationId("loc").addRequiredSkill("skill1").build();
 
         vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addVehicle(vehicle2).addJob(service)
                 .addJob(service2).addJob(service3).addJob(service4).build();

@@ -60,7 +60,7 @@ public class PickupTest {
 	@Test
 	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
 		Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocationId("loc")
-				.addSkill("drill").addSkill("screwdriver").build();
+				.addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
@@ -69,7 +69,7 @@ public class PickupTest {
 	@Test
 	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
 		Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocationId("loc")
-				.addSkill("DriLl").addSkill("screwDriver").build();
+				.addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
 	}
@@ -77,7 +77,7 @@ public class PickupTest {
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
         Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocationId("loc")
-                .addSkill("screwDriver").build();
+                .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
     }

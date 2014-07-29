@@ -49,13 +49,13 @@ public class SolomonWithSkillsExample {
                 skillServiceBuilder = Service.Builder.newInstance(service.getId()+"_skill2").setServiceTime(service.getServiceDuration())
                 .setCoord(service.getCoord()).setLocationId(service.getLocationId()).setTimeWindow(service.getTimeWindow())
                         .addSizeDimension(0,service.getSize().get(0));
-                skillServiceBuilder.addSkill("skill2");
+                skillServiceBuilder.addRequiredSkill("skill2");
             }
             else {
                 skillServiceBuilder = Service.Builder.newInstance(service.getId()+"_skill1").setServiceTime(service.getServiceDuration())
                         .setCoord(service.getCoord()).setLocationId(service.getLocationId()).setTimeWindow(service.getTimeWindow())
                         .addSizeDimension(0,service.getSize().get(0));
-                skillServiceBuilder.addSkill("skill1");
+                skillServiceBuilder.addRequiredSkill("skill1");
             }
             skillProblemBuilder.addJob(skillServiceBuilder.build());
         }

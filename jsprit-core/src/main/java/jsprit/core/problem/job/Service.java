@@ -174,7 +174,7 @@ public class Service extends AbstractJob {
 			return new Service(this);
 		}
 
-        public Builder addSkill(String skill) {
+        public Builder addRequiredSkill(String skill) {
             skillBuilder.addSkill(skill);
             return this;
         }

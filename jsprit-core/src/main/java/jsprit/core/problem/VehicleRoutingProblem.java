@@ -628,8 +628,8 @@ public class VehicleRoutingProblem {
         this.nuActivities = builder.activityIndexCounter;
 		logger.info("initialise " + this);
 	}
-	
-	@Override
+
+    @Override
 	public String toString() {
 		return "[fleetSize="+fleetSize+"][#jobs="+jobs.size()+"][#vehicles="+vehicles.size()+"][#vehicleTypes="+vehicleTypes.size()+"]["+
 						"transportCost="+transportCosts+"][activityCosts="+activityCosts+"]";

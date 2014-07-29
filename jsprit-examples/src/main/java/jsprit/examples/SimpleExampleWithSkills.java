@@ -84,7 +84,7 @@ public class SimpleExampleWithSkills {
 		
 		Service service3 = Service.Builder.newInstance("3").addSizeDimension(WEIGHT_INDEX, 1).setCoord(Coordinate.newInstance(15, 7)).build();
 
-		Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX, 1).addSkill("drill").setCoord(Coordinate.newInstance(15, 13)).build();
+		Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX, 1).addRequiredSkill("drill").setCoord(Coordinate.newInstance(15, 13)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

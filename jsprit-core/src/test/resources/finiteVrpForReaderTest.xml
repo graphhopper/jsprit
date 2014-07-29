@@ -39,6 +39,7 @@
                     <start>0.0</start>
                     <end>1000.0</end>
                </timeSchedule>
+              <skills>skill1; SKill2</skills>
           </vehicle>
           <vehicle>
                <id>v2</id>
@@ -153,6 +154,7 @@
                          <end>4000.0</end>
                     </timeWindow>
                </timeWindows>
+               <requiredSkills>skill1, Skill2</requiredSkills>
           </service>
           
            <service id="2" type="service">
@@ -197,6 +199,7 @@
      		<capacity-dimensions>
                		<dimension index="0">10</dimension>
              </capacity-dimensions>
+            <requiredSkills>skill1, Skill2</requiredSkills>
      	</shipment>
      	
      	<shipment id="4">
