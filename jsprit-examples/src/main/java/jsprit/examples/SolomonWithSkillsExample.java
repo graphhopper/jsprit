@@ -8,6 +8,7 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
+import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -83,5 +84,7 @@ public class SolomonWithSkillsExample {
         SolutionPrinter.print(skillProblem, solution, SolutionPrinter.Print.VERBOSE);
 
         new Plotter(skillProblem,solution).plot("output/skill_solution","solomon_with_skills");
+
+        new VrpXMLWriter(skillProblem,solutions).write("output/solomon_with_skills");
     }
 }
