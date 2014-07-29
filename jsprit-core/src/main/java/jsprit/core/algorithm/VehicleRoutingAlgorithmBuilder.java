@@ -58,8 +58,8 @@ public class VehicleRoutingAlgorithmBuilder {
 	/**
 	 * Constructs the builder with the problem and an algorithmConfigFile. Latter is to configure and specify the ruin-and-recreate meta-heuristic.
 	 * 
-	 * @param problem
-	 * @param algorithmConfig
+	 * @param problem to solve
+	 * @param algorithmConfig config file of VehicleRoutingAlgorithm
 	 */
 	public VehicleRoutingAlgorithmBuilder(VehicleRoutingProblem problem, String algorithmConfig) {
 		this.vrp=problem;
@@ -69,9 +69,9 @@ public class VehicleRoutingAlgorithmBuilder {
 	
 	/**
 	 * Constructs the builder with the problem and an algorithmConfig. Latter is to configure and specify the ruin-and-recreate meta-heuristic.
-	 * 
-	 * @param problem
-	 * @param algorithmConfig
+	 *
+     * @param problem to solve
+     * @param algorithmConfig config file of VehicleRoutingAlgorithm
 	 */
 	public VehicleRoutingAlgorithmBuilder(VehicleRoutingProblem problem, AlgorithmConfig algorithmConfig) {
 		this.vrp=problem;
@@ -85,7 +85,7 @@ public class VehicleRoutingAlgorithmBuilder {
 	 * <p>If objective function is not set, a default function is applied (which basically minimizes 
 	 * fixed and variable transportation costs ({@link VariablePlusFixedSolutionCostCalculatorFactory}).
 	 * 
-	 * @param objectiveFunction
+	 * @param objectiveFunction to be minimized
 	 * @see VariablePlusFixedSolutionCostCalculatorFactory
 	 */
 	public void setObjectiveFunction(SolutionCostCalculator objectiveFunction) {
@@ -95,7 +95,7 @@ public class VehicleRoutingAlgorithmBuilder {
 	/**
 	 * Sets stateManager to memorize states.
 	 * 
-	 * @param stateManager
+	 * @param stateManager that memorizes your states
 	 * @see StateManager
 	 */
 	public void setStateManager(StateManager stateManager) {
@@ -105,7 +105,7 @@ public class VehicleRoutingAlgorithmBuilder {
 	/**
 	 * Adds core constraints.
 	 * 
-	 * <p>Thus, it adds vehicle-capacity and time-window constraints and their 
+	 * <p>Thus, it adds vehicle-capacity, time-window and skills constraints and their
 	 * required stateUpdater.
 	 * 
 	 */
@@ -130,8 +130,8 @@ public class VehicleRoutingAlgorithmBuilder {
 	/**
 	 * Sets state- and constraintManager. 
 	 * 
-	 * @param stateManager
-	 * @param constraintManager
+	 * @param stateManager that memorizes your states
+	 * @param constraintManager that manages your constraints
 	 * @see StateManager
 	 * @see ConstraintManager
 	 */
@@ -143,7 +143,7 @@ public class VehicleRoutingAlgorithmBuilder {
 	/**
 	 * Sets nuOfThreads.
 	 * 
-	 * @param nuOfThreads
+	 * @param nuOfThreads to be operated
 	 */
 	public void setNuOfThreads(int nuOfThreads){
 		this.nuOfThreads=nuOfThreads;
@@ -154,7 +154,7 @@ public class VehicleRoutingAlgorithmBuilder {
 	 * 
 	 * <p>If algorithmConfigFile is set, it reads the configuration.
 	 * 
-	 * @return
+	 * @return the algorithm
 	 */
 	public VehicleRoutingAlgorithm build() {
 		if(stateManager == null) stateManager = new StateManager(vrp);
@@ -167,8 +167,10 @@ public class VehicleRoutingAlgorithmBuilder {
 		if(addCoreConstraints){
 			constraintManager.addLoadConstraint();
 			constraintManager.addTimeWindowConstraint();
-			stateManager.updateLoadStates();
+			constraintManager.addSkillsConstraint();
+            stateManager.updateLoadStates();
 			stateManager.updateTimeWindowStates();
+            stateManager.updateSkillStates();
 		}
 		if(algorithmConfig==null){
 			algorithmConfig = new AlgorithmConfig();

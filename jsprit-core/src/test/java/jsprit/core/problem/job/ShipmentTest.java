@@ -18,13 +18,12 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ShipmentTest {
 	
@@ -249,4 +248,29 @@ public class ShipmentTest {
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(1,one.getSize().get(0));
 	}
+	
+	@Test
+	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
+		Shipment s = Shipment.Builder.newInstance("s").setPickupLocation("loc").setDeliveryLocation("delLoc")
+				.addSkill("drill").addSkill("screwdriver").build();
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
+	}
+	
+	@Test
+	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
+		Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocationId("loc")
+				.addSkill("DriLl").addSkill("screwDriver").build();
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
+	}
+
+    @Test
+    public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
+        Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocationId("loc")
+                .addSkill("screwDriver").build();
+        assertFalse(s.getRequiredSkills().containsSkill("drill"));
+        assertFalse(s.getRequiredSkills().containsSkill("drilL"));
+    }
 }

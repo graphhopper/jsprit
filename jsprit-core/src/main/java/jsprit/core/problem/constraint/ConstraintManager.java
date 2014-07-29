@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint, SoftActivityConstraint, SoftRouteConstraint{
 
-	public static enum Priority {
+    public static enum Priority {
 		CRITICAL, HIGH, LOW
 	}
 	
@@ -59,6 +59,8 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 	private boolean loadConstraintsSet = false;
 	
 	private boolean timeWindowConstraintsSet = false;
+
+    private boolean skillconstraintSet = false;
 	
 	public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager) {
 		this.vrp = vrp;
@@ -113,6 +115,13 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 			loadConstraintsSet=true;
 		}
 	}
+
+    public void addSkillsConstraint() {
+        if (!skillconstraintSet){
+            addConstraint(new HardSkillConstraint(stateManager));
+            skillconstraintSet=true;
+        }
+    }
 	
 //	public void add
 	

@@ -16,12 +16,6 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
-import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.assertNotNull;
-
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +23,9 @@ import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 public class ServiceTest {
 	
@@ -146,5 +143,30 @@ public class ServiceTest {
 		assertEquals(1.0,s.getTimeWindow().getStart(),0.01);
 		assertEquals(2.0,s.getTimeWindow().getEnd(),0.01);
 	}
+	
+	@Test
+	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
+		Service s = Service.Builder.newInstance("s").setLocationId("loc")
+				.addSkill("drill").addSkill("screwdriver").build();
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
+	}
+	
+	@Test
+	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
+		Service s = Service.Builder.newInstance("s").setLocationId("loc")
+				.addSkill("DriLl").addSkill("screwDriver").build();
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
+	}
+
+    @Test
+    public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
+       Service s = Service.Builder.newInstance("s").setLocationId("loc")
+                .addSkill("screwDriver").build();
+        assertFalse(s.getRequiredSkills().containsSkill("drill"));
+        assertFalse(s.getRequiredSkills().containsSkill("drilL"));
+    }
 
 }
