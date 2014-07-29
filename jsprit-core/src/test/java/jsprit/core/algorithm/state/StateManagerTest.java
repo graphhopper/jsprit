@@ -148,7 +148,6 @@ public class StateManagerTest {
 	public void whenProblemStateIsSetAndStateManagerClearedAfterwards_itReturnsNull(){
 		StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
 		StateId id = StateFactory.createId("problemState");
-		stateManager.addDefaultProblemState(id, Boolean.class, false);
 		stateManager.putProblemState(id, Boolean.class, true);
 		stateManager.clear();
 		Boolean problemState = stateManager.getProblemState(id, Boolean.class);
@@ -183,6 +182,7 @@ public class StateManagerTest {
     @Test
     public void whenCreatingAVehicleDependentRouteState_itShouldBeMemorized(){
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
+        //noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         VehicleRoute route = getRoute(vehicle);
         StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
@@ -196,6 +196,7 @@ public class StateManagerTest {
     @Test
     public void whenCreatingAVehicleDependentActivityState_itShouldBeMemorized(){
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
+        //noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
         StateId id = stateManager.createStateId("myState");
@@ -210,6 +211,7 @@ public class StateManagerTest {
     @Test
     public void whenMemorizingVehicleInfo_itShouldBeMemorized(){
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
+        //noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         VehicleRoute route = getRoute(vehicle);
         StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
