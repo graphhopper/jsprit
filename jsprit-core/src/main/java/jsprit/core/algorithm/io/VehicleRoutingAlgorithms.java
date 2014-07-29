@@ -471,7 +471,7 @@ public class VehicleRoutingAlgorithms {
 		 * define constraints
 		 */
 		//constraint manager
-		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager,vrp.getConstraints());
+		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 		constraintManager.addTimeWindowConstraint();
 		constraintManager.addLoadConstraint();
         constraintManager.addSkillsConstraint();

@@ -17,7 +17,6 @@
 package jsprit.core.problem;
 
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import jsprit.core.problem.constraint.Constraint;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.driver.Driver;
@@ -98,10 +97,10 @@ public class VehicleRoutingProblemTest {
 		VehicleTypeImpl type1 = mock(VehicleTypeImpl.class);
 		VehicleTypeImpl type2 = mock(VehicleTypeImpl.class);
 		
-		Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("yo").setType(type1).build();
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("yo").setType(type1).build();
-		Vehicle v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("yo").setType(type2).build();
-		Vehicle v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("yo").setType(type2).build();
+		VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("yo").setType(type1).build();
+		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("yo").setType(type1).build();
+		VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("yo").setType(type2).build();
+		VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("yo").setType(type2).build();
 		
 		builder.addVehicle(v1).addVehicle(v2).addVehicle(v3).addVehicle(v4);
 		
@@ -234,16 +233,7 @@ public class VehicleRoutingProblemTest {
 		assertEquals(s2,vrp.getJobs().get("s2"));
 	}
 	
-	@SuppressWarnings("deprecation")
-    @Test
-	public void whenConstraintsAdded_vrpShouldContainThem(){
-		Constraint c1 = mock(Constraint.class);
-		Constraint c2 = mock(Constraint.class);
-		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		builder.addConstraint(c1).addConstraint(c2);
-		VehicleRoutingProblem problem = builder.build();
-		assertEquals(2,problem.getConstraints().size());
-	}
+
 	
 	@Test
 	public void whenSettingActivityCosts_vrpShouldContainIt(){

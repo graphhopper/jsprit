@@ -16,20 +16,22 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.selector.SelectBest;
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 
 public class VRPWithBackhaulsExample {
@@ -56,9 +58,7 @@ public class VRPWithBackhaulsExample {
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
-//		vrpBuilder.addProblemConstraint(Constraint.DELIVERIES_FIRST);
-		vrpBuilder.addConstraint(new ServiceDeliveriesFirstConstraint());
-		
+//
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 //		SolutionPlotter.plotVrpAsPNG(vrp, "output/vrpwbh_solomon_r101.png", "pd_r101");
@@ -68,9 +68,15 @@ public class VRPWithBackhaulsExample {
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-//		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
-		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"input/algorithmConfig_solomon.xml");
+        vraBuilder.addCoreConstraints();
+        vraBuilder.addDefaultCostCalculators();
+        StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        constraintManager.addConstraint(new ServiceDeliveriesFirstConstraint(), ConstraintManager.Priority.CRITICAL);
+        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        VehicleRoutingAlgorithm vra = vraBuilder.build();
+        vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
 		 * 

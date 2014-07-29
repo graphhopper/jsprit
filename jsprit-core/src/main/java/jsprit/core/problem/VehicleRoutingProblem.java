@@ -102,9 +102,6 @@ public class VehicleRoutingProblem {
 		
 		private Set<Vehicle> uniqueVehicles = new HashSet<Vehicle>();
 
-        @Deprecated
-		private Collection<jsprit.core.problem.constraint.Constraint> constraints = new ArrayList<jsprit.core.problem.constraint.Constraint>();
-
 		private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
             @Override
@@ -501,20 +498,6 @@ public class VehicleRoutingProblem {
 		}
 		
 		/**
-		 * Adds constraint to problem.
-		 * 
-		 * @param constraint constraint to be added
-		 * @return this builder
-         * @deprecated use ConstraintManager instead
-		 */
-        @Deprecated
-		public Builder addConstraint(jsprit.core.problem.constraint.Constraint constraint){
-            //noinspection deprecation
-            constraints.add(constraint);
-			return this;
-		}
-		
-		/**
 		 * Adds penaltyVehicles, i.e. for every unique vehicle-location and type combination a penalty-vehicle is constructed having penaltyFactor times higher fixed and variable costs 
 		 * (see .addPenaltyVehicles(double penaltyFactor, double penaltyFixedCosts) if fixed costs = 0.0). 
 		 * 
@@ -615,12 +598,7 @@ public class VehicleRoutingProblem {
 	 * An enum that indicates type of fleetSize. By default, it is INFINTE
 	 */
 	private final FleetSize fleetSize;
-	
-	/**
-	 * contains all constraints
-	 */
-	private final Collection<jsprit.core.problem.constraint.Constraint> constraints;
-	
+
 	private final Locations locations;
 
     private Map<Job,List<AbstractActivity>> activityMap;
@@ -644,8 +622,6 @@ public class VehicleRoutingProblem {
 		this.initialVehicleRoutes = builder.initialRoutes;
 		this.transportCosts = builder.transportCosts;
 		this.activityCosts = builder.activityCosts;
-        //noinspection deprecation
-        this.constraints = builder.constraints;
 		this.locations = builder.getLocations();
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
@@ -719,18 +695,7 @@ public class VehicleRoutingProblem {
 	public VehicleRoutingActivityCosts getActivityCosts(){
 		return activityCosts;
 	}
-	
-	/**
-	 * Returns an unmodifiable collection of constraints.
-	 * 
-	 * @return collection of constraints
-     * @deprecated use ConstraintManager instead
-	 */
-    @Deprecated
-	public Collection<jsprit.core.problem.constraint.Constraint> getConstraints(){
-		return Collections.unmodifiableCollection(constraints);
-	}
-	
+
 	public Locations getLocations(){
 		return locations;
 	}
@@ -743,14 +708,12 @@ public class VehicleRoutingProblem {
 
     public JobActivityFactory getJobActivityFactory(){
         return jobActivityFactory;
-    };
+    }
 
     public List<AbstractActivity> copyAndGetActivities(Job job){
         List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
         if(activityMap.containsKey(job)) {
-            for (AbstractActivity act : activityMap.get(job)) {
-                acts.add((AbstractActivity) act.duplicate());
-            }
+            for (AbstractActivity act : activityMap.get(job)) acts.add((AbstractActivity) act.duplicate());
         }
         return acts;
     }

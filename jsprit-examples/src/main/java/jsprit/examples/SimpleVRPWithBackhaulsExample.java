@@ -16,14 +16,14 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.Plotter.Label;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.box.SchrimpfFactory;
+import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Delivery;
@@ -37,6 +37,8 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 
 public class SimpleVRPWithBackhaulsExample {
@@ -75,17 +77,18 @@ public class SimpleVRPWithBackhaulsExample {
 		vrpBuilder.addVehicle(vehicle);
 		
 		vrpBuilder.addJob(pickup1).addJob(pickup2).addJob(delivery1).addJob(delivery2);
-		
-		//
-		vrpBuilder.addConstraint(new ServiceDeliveriesFirstConstraint());
-		
+
 		VehicleRoutingProblem problem = vrpBuilder.build();
-		
-		/*
-		 * get the algorithm out-of-the-box. 
-		 */
-		VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
-		
+
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(problem,"input/algorithmConfig.xml");
+        vraBuilder.addCoreConstraints();
+        vraBuilder.addDefaultCostCalculators();
+        StateManager stateManager = new StateManager(problem);
+        ConstraintManager constraintManager = new ConstraintManager(problem,stateManager);
+        constraintManager.addConstraint(new ServiceDeliveriesFirstConstraint(), ConstraintManager.Priority.CRITICAL);
+        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        VehicleRoutingAlgorithm algorithm = vraBuilder.build();
+
 		/*
 		 * and search a solution
 		 */

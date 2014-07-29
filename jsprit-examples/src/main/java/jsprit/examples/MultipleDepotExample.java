@@ -16,14 +16,7 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
-import jsprit.analysis.toolbox.GraphStreamViewer;
-import jsprit.analysis.toolbox.Plotter;
-import jsprit.analysis.toolbox.SolutionPrinter;
-import jsprit.analysis.toolbox.StopWatch;
+import jsprit.analysis.toolbox.*;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
@@ -31,19 +24,18 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 
 public class MultipleDepotExample {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		/*
 		 * some preparation - create output folder
@@ -77,7 +69,7 @@ public class MultipleDepotExample {
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second,third,fourth)){
 			for(int i=0;i<nuOfVehicles;i++){
 				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type").addCapacityDimension(0, capacity).setCostPerDistance(1.0).build();
-				Vehicle vehicle = VehicleImpl.Builder.newInstance(depotCounter + "_" + (i+1) + "_vehicle").setStartLocationCoordinate(depotCoord).setType(vehicleType).build();
+				VehicleImpl vehicle = VehicleImpl.Builder.newInstance(depotCounter + "_" + (i+1) + "_vehicle").setStartLocationCoordinate(depotCoord).setType(vehicleType).build();
 				vrpBuilder.addVehicle(vehicle);
 			}
 			depotCounter++;

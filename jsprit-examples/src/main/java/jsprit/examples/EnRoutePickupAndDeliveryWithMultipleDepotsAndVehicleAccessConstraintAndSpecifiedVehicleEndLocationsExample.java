@@ -16,21 +16,20 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
+import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -38,6 +37,8 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 
 public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstraintAndSpecifiedVehicleEndLocationsExample {
@@ -66,12 +67,12 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
 		Builder vehicleBuilder1 = VehicleImpl.Builder.newInstance("v1");
 		vehicleBuilder1.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder1.setType(vehicleType);
-		Vehicle vehicle1 = vehicleBuilder1.build();
+		VehicleImpl vehicle1 = vehicleBuilder1.build();
 		
 		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("v2");
 		vehicleBuilder2.setStartLocationCoordinate(Coordinate.newInstance(30, 30)).setEndLocationCoordinate(Coordinate.newInstance(30, 19));
 		vehicleBuilder2.setType(vehicleType);
-		Vehicle vehicle2 = vehicleBuilder2.build();
+		VehicleImpl vehicle2 = vehicleBuilder2.build();
 	
 		
 		/*
@@ -119,45 +120,55 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
 		//you only have two vehicles
 		vrpBuilder.setFleetSize(FleetSize.FINITE);
 		
-		/*
-		 * add a geographic constraint determining that vehicle1 cannot go to x>15 and vehicle2 cannot go to x<15
-		 * 
-		 * switch off the geoConstraints to see the impact of this constraint on routes, or just exchange v1 and v2 to reverse the geo-constraint.
-		 */
-		HardRouteStateLevelConstraint geoClusterConstraint = new HardRouteStateLevelConstraint() {
-			
-			@Override
-			public boolean fulfilled(JobInsertionContext insertionContext) {
-				Shipment shipment2insert = ((Shipment)insertionContext.getJob()); 
-				if(insertionContext.getNewVehicle().getId().equals("v1")){
-					if(shipment2insert.getPickupCoord().getX() > 15. || shipment2insert.getDeliveryCoord().getX() > 15.){
-						return false;
-					}
-				}
-				if(insertionContext.getNewVehicle().getId().equals("v2")){
-					if(shipment2insert.getPickupCoord().getX() < 15. || shipment2insert.getDeliveryCoord().getX() < 15.){
-						return false;
-					}
-				}
-				return true;
-			}
-		};
-		//add the constraint to the problem
-		vrpBuilder.addConstraint(geoClusterConstraint);
+
+
 		//build the problem
 		VehicleRoutingProblem problem = vrpBuilder.build();
 
-		
 		/*
-		 * get a sample algorithm. 
-		 * 
+		 * add a geographic constraint determining that vehicle1 cannot go to x>15 and vehicle2 cannot go to x<15
+		 *
+		 * switch off the geoConstraints to see the impact of this constraint on routes, or just exchange v1 and v2 to reverse the geo-constraint.
+		 */
+        HardRouteStateLevelConstraint geoClusterConstraint = new HardRouteStateLevelConstraint() {
+
+            @Override
+            public boolean fulfilled(JobInsertionContext insertionContext) {
+                Shipment shipment2insert = ((Shipment)insertionContext.getJob());
+                if(insertionContext.getNewVehicle().getId().equals("v1")){
+                    if(shipment2insert.getPickupCoord().getX() > 15. || shipment2insert.getDeliveryCoord().getX() > 15.){
+                        return false;
+                    }
+                }
+                if(insertionContext.getNewVehicle().getId().equals("v2")){
+                    if(shipment2insert.getPickupCoord().getX() < 15. || shipment2insert.getDeliveryCoord().getX() < 15.){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+
+        /*
+		 * get a sample algorithm.
+		 *
 		 * Note that you need to make sure to prohibit vehicle-switching by adding the insertion-tag <vehicleSwitchAllowed>false</vehicleSwitchAllowed>.
 		 * This way you make sure that no vehicle can take over a route that is employed by another. Allowing this might make sense when dealing with
-		 * a heterogeneous fleet and you want to employ a bigger vehicle on a still existing route. However, allowing it makes constraint-checking 
+		 * a heterogeneous fleet and you want to employ a bigger vehicle on a still existing route. However, allowing it makes constraint-checking
 		 * bit more complicated and you cannot just add the above hard-constraint. Latter will be covered in another example.
-		 * 
+		 *
 		 */
-		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig_noVehicleSwitch.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(problem,"input/algorithmConfig_noVehicleSwitch.xml");
+        vraBuilder.addCoreConstraints();
+        vraBuilder.addDefaultCostCalculators();
+
+        StateManager stateManager = new StateManager(problem);
+        ConstraintManager constraintManager = new ConstraintManager(problem,stateManager);
+        constraintManager.addConstraint(geoClusterConstraint);
+
+        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        VehicleRoutingAlgorithm algorithm = vraBuilder.build();
+
 		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 //		algorithm.setNuOfIterations(30000);
 		/*

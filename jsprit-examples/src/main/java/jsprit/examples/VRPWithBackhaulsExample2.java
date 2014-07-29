@@ -16,19 +16,21 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.Plotter.Label;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.selector.SelectBest;
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 
 public class VRPWithBackhaulsExample2 {
@@ -52,11 +54,7 @@ public class VRPWithBackhaulsExample2 {
 		 */
 		new VrpXMLReader(vrpBuilder).read("input/pd_christophides_vrpnc1_vcap50.xml");
 		
-		/*
-		 * add the backhaul constraint to the problem
-		 */
-		vrpBuilder.addConstraint(new ServiceDeliveriesFirstConstraint());
-		
+
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
@@ -70,7 +68,18 @@ public class VRPWithBackhaulsExample2 {
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
+//		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
+
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"input/algorithmConfig_solomon.xml");
+        vraBuilder.addDefaultCostCalculators();
+        vraBuilder.addCoreConstraints();
+
+        StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        constraintManager.addConstraint(new ServiceDeliveriesFirstConstraint(), ConstraintManager.Priority.CRITICAL);
+
+        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        VehicleRoutingAlgorithm vra = vraBuilder.build();
 
 		/*
 		 * Solve the problem.
