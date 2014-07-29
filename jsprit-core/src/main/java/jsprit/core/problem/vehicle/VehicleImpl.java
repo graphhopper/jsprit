@@ -244,8 +244,12 @@ public class VehicleImpl extends AbstractVehicle{
 		 * @return vehicle builder
 		 */
 		public static Builder newInstance(String vehicleId){ return new Builder(vehicleId); }
-		
-	}
+
+        public Builder addSkills(Skills skills) {
+            this.skillBuilder.addAllSkills(skills.values());
+            return this;
+        }
+    }
 
 	/**
 	 * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
@@ -294,8 +298,8 @@ public class VehicleImpl extends AbstractVehicle{
 		startLocationCoord = builder.startLocationCoord;
 		endLocationId = builder.endLocationId;
 		endLocationCoord = builder.endLocationCoord;
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocationId,endLocationId,earliestDeparture,latestArrival));
         skills = builder.skills;
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocationId,endLocationId,earliestDeparture,latestArrival,skills));
 	}
 	
 	/**

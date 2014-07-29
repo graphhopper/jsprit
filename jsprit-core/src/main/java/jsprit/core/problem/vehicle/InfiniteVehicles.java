@@ -44,7 +44,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 
 	private void extractTypes(Collection<Vehicle> vehicles) {
 		for(Vehicle v : vehicles){
-			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(),v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
+			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(),v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
 			types.put(typeKey,v);
 			sortedTypes.add(typeKey);
 
@@ -81,7 +81,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
 		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival());
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills());
 		for(VehicleTypeKey key : types.keySet()){
 			if(!key.equals(thisKey)){
 				vehicles.add(types.get(key));

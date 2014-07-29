@@ -122,11 +122,11 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		}
 		String typeId = v.getType().getTypeId();
 		if(v.getType() instanceof PenaltyVehicleType){
-			VehicleTypeKey typeKey = new VehicleTypeKey(typeId, v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
+			VehicleTypeKey typeKey = new VehicleTypeKey(typeId, v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
 			penaltyVehicles.put(typeKey, v);
 		}
 		else{
-			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
+			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
 			if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
 				typeMapOfAvailableVehicles.put(typeKey, new TypeContainer());
 			}
@@ -137,7 +137,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	private void removeVehicle(Vehicle v){
 		//it might be better to introduce a class PenaltyVehicle
 		if(!(v.getType() instanceof PenaltyVehicleType)){
-			VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival());
+			VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
 			if(typeMapOfAvailableVehicles.containsKey(key)){
 				typeMapOfAvailableVehicles.get(key).remove(v);
 			}
@@ -170,7 +170,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival());
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills());
 		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
 			if(key.equals(thisKey)) continue;
 			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){

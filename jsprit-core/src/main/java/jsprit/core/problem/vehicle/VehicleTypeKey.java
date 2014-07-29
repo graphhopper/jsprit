@@ -19,6 +19,7 @@
 package jsprit.core.problem.vehicle;
 
 import jsprit.core.problem.AbstractVehicle;
+import jsprit.core.problem.Skills;
 
 /**
  * Key to identify similar vehicles
@@ -35,67 +36,51 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey{
 	public final String endLocationId;
 	public final double earliestStart;
 	public final double latestEnd;
+    public final Skills skills;
 	
-	public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd) {
+	public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills) {
 		super();
 		this.type = typeId;
 		this.startLocationId = startLocationId;
 		this.endLocationId = endLocationId;
 		this.earliestStart = earliestStart;
 		this.latestEnd = latestEnd;
+        this.skills = skills;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(earliestStart);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result
-				+ ((endLocationId == null) ? 0 : endLocationId.hashCode());
-		temp = Double.doubleToLongBits(latestEnd);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result
-				+ ((startLocationId == null) ? 0 : startLocationId.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VehicleTypeKey)) return false;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		VehicleTypeKey other = (VehicleTypeKey) obj;
-		if (Double.doubleToLongBits(earliestStart) != Double
-				.doubleToLongBits(other.earliestStart))
-			return false;
-		if (endLocationId == null) {
-			if (other.endLocationId != null)
-				return false;
-		} else if (!endLocationId.equals(other.endLocationId))
-			return false;
-		if (Double.doubleToLongBits(latestEnd) != Double
-				.doubleToLongBits(other.latestEnd))
-			return false;
-		if (startLocationId == null) {
-			if (other.startLocationId != null)
-				return false;
-		} else if (!startLocationId.equals(other.startLocationId))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
+        VehicleTypeKey that = (VehicleTypeKey) o;
 
-	@Override
+        if (Double.compare(that.earliestStart, earliestStart) != 0) return false;
+        if (Double.compare(that.latestEnd, latestEnd) != 0) return false;
+        if (!endLocationId.equals(that.endLocationId)) return false;
+        if (!skills.equals(that.skills)) return false;
+        if (!startLocationId.equals(that.startLocationId)) return false;
+        if (!type.equals(that.type)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = type.hashCode();
+        result = 31 * result + startLocationId.hashCode();
+        result = 31 * result + endLocationId.hashCode();
+        temp = Double.doubleToLongBits(earliestStart);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(latestEnd);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + skills.hashCode();
+        return result;
+    }
+
+    @Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(type).append("_").append(startLocationId).append("_").append(endLocationId)

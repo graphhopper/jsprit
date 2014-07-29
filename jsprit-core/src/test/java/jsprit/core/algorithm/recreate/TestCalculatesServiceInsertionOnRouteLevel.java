@@ -19,7 +19,10 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.algorithm.ExampleActivityCostFunction;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
-import jsprit.core.problem.*;
+import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.AbstractVehicle;
+import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -33,6 +36,7 @@ import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.CostFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +48,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 
@@ -76,11 +79,8 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 
 		
 		costs = mock(VehicleRoutingTransportCosts.class);
-		vehicle = mock(AbstractVehicle.class);
-		VehicleType type = mock(VehicleType.class);
-		
-		when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 1000).build());
 
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0,1000).build();
         vehicle = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocationId("0,0").setLatestArrival(100.).build();
         newVehicle = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocationId("0,0").setLatestArrival(100.).build();
 		driver = DriverImpl.noDriver();

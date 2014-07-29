@@ -22,7 +22,6 @@ import org.junit.Test;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 /**
  * unit tests to test vehicle dependent time-windows
@@ -52,22 +51,23 @@ public class VehicleDependentTimeWindowTest {
         routingCosts = CostFactory.createEuclideanCosts();
         vrpBuilder.setRoutingCost(routingCosts);
 
-        vehicle = VehicleImpl.Builder.newInstance("v").setType(mock(VehicleType.class)).setStartLocationId("0,0")
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
+        vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocationId("0,0")
                 .setEarliestStart(0.).setLatestArrival(100.).build();
 
-        v2 = VehicleImpl.Builder.newInstance("v2").setType(mock(VehicleType.class)).setStartLocationId("0,0")
+        v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocationId("0,0")
                 .setEarliestStart(0.).setLatestArrival(60.).build();
 
-        v3 = VehicleImpl.Builder.newInstance("v3").setType(mock(VehicleType.class)).setStartLocationId("0,0")
+        v3 = VehicleImpl.Builder.newInstance("v3").setType(type).setStartLocationId("0,0")
                 .setEarliestStart(0.).setLatestArrival(50.).build();
 
-        v4 = VehicleImpl.Builder.newInstance("v4").setType(mock(VehicleType.class)).setStartLocationId("0,0")
+        v4 = VehicleImpl.Builder.newInstance("v4").setType(type).setStartLocationId("0,0")
                 .setEarliestStart(0.).setLatestArrival(10.).build();
 
-        v5 = VehicleImpl.Builder.newInstance("v5").setType(mock(VehicleType.class)).setStartLocationId("0,0")
+        v5 = VehicleImpl.Builder.newInstance("v5").setType(type).setStartLocationId("0,0")
                 .setEarliestStart(60.).setLatestArrival(100.).build();
 
-        v6 = VehicleImpl.Builder.newInstance("v6").setType(mock(VehicleType.class)).setStartLocationId("0,0")
+        v6 = VehicleImpl.Builder.newInstance("v6").setType(type).setStartLocationId("0,0")
                 .setEndLocationId("40,0").setEarliestStart(0.).setLatestArrival(40.).build();
 
         vrpBuilder.addVehicle(vehicle).addVehicle(v2).addVehicle(v3).addVehicle(v4).addVehicle(v5).addVehicle(v6);

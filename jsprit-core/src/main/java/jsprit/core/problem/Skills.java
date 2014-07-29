@@ -81,7 +81,20 @@ public class Skills {
         return skills.contains(skill.toLowerCase());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Skills skills1 = (Skills) o;
 
+        if (skills != null ? !skills.equals(skills1.skills) : skills1.skills != null) return false;
 
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return skills != null ? skills.hashCode() : 0;
+    }
 }

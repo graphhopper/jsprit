@@ -94,8 +94,8 @@ public class VehicleRoutingProblemTest {
 	public void whenBuildingWithFourVehiclesAndTwoTypes_vrpShouldContainTheCorrectNuOfTypes(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		
-		VehicleTypeImpl type1 = mock(VehicleTypeImpl.class);
-		VehicleTypeImpl type2 = mock(VehicleTypeImpl.class);
+		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type1").build();
+		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type2").build();
 		
 		VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("yo").setType(type1).build();
 		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("yo").setType(type1).build();

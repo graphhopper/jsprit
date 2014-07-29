@@ -417,7 +417,7 @@ public class VehicleRoutingProblem {
 			Set<VehicleTypeKey> vehicleTypeKeys = new HashSet<VehicleTypeKey>();
 			List<Vehicle> uniqueVehicles = new ArrayList<Vehicle>();
 			for(Vehicle v : this.uniqueVehicles){
-				VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(),v.getStartLocationId(),v.getEndLocationId(),v.getEarliestDeparture(),v.getLatestArrival());
+				VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(),v.getStartLocationId(),v.getEndLocationId(),v.getEarliestDeparture(),v.getLatestArrival(), v.getSkills());
 				if(!vehicleTypeKeys.contains(key)){
 					uniqueVehicles.add(v);
 					vehicleTypeKeys.add(key);
@@ -439,7 +439,8 @@ public class VehicleRoutingProblem {
 				VehicleImpl penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
 						.setLatestArrival(v.getLatestArrival()).setStartLocationCoordinate(v.getStartLocationCoordinate()).setStartLocationId(v.getStartLocationId())
 						.setEndLocationId(v.getEndLocationId()).setEndLocationCoordinate(v.getEndLocationCoordinate())
-						.setReturnToDepot(v.isReturnToDepot()).setType(penType).build();
+						.addSkills(v.getSkills())
+                        .setReturnToDepot(v.isReturnToDepot()).setType(penType).build();
 				addVehicle(penVehicle);
 			}
 		}
