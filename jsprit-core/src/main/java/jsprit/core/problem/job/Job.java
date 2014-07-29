@@ -20,6 +20,7 @@ package jsprit.core.problem.job;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.HasId;
 import jsprit.core.problem.HasIndex;
+import jsprit.core.problem.Skills;
 
 /**
  * Basic interface for all jobs.
@@ -42,5 +43,6 @@ public interface Job extends HasId, HasIndex {
 	 * @return Capacity
 	 */
 	public Capacity getSize();
-	
+
+    Skills getRequiredSkills();
 }

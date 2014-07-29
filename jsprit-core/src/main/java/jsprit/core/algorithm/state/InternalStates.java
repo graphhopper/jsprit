@@ -43,5 +43,5 @@ public class InternalStates {
 	
 	public final static StateId PAST_MAXLOAD = new StateFactory.StateIdImpl("past_max_load", 9);
 
-
+    public static final StateId SKILLS = new StateFactory.StateIdImpl("skills", 10);
 }

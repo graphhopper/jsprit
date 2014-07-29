@@ -16,16 +16,14 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.solution.route.activity.TimeWindow;
+import jsprit.core.util.Coordinate;
+import org.junit.Test;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.util.Coordinate;
-
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
 
 public class ServiceTest {
 	

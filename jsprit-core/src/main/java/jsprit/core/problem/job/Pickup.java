@@ -30,24 +30,13 @@ public class Pickup extends Service {
 		/**
 		 * Returns a new instance of builder that builds a pickup.
 		 * 
-		 * @param id
+		 * @param id the id of the pickup
 		 * @return the builder
 		 */
 		public static Builder newInstance(String id){
 			return new Builder(id);
 		}
-		
-		/**
-		 * Constructs the builder.
-		 * 
-		 * @param id
-		 * @param size
-		 * @throws IllegalArgumentException if size < 0 or id is null
-		 */
-		Builder(String id, int size) {
-			super(id, size);
-		}
-		
+
 		Builder(String id) {
 			super(id);
 		}
@@ -58,7 +47,7 @@ public class Pickup extends Service {
 		 *<p>Pickup type is "pickup"
 		 *
 		 * @return pickup
-		 * @throw IllegalStateException if neither locationId nor coordinate has been set
+		 * @throws IllegalStateException if neither locationId nor coordinate has been set
 		 */
 		public Pickup build(){
 			if(locationId == null) { 
@@ -67,16 +56,12 @@ public class Pickup extends Service {
 			}
 			this.setType("pickup");
 			super.capacity = super.capacityBuilder.build();
+            super.skills = super.skillBuilder.build();
 			return new Pickup(this);
 		}
 		
 	}
-	
-	/**
-	 * Constructs the Pickup
-	 * 
-	 * @param builder
-	 */
+
 	Pickup(Builder builder) {
 		super(builder);
 	}

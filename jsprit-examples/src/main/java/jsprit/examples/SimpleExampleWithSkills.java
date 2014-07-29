@@ -21,12 +21,14 @@ import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.box.SchrimpfFactory;
+import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -66,13 +68,13 @@ public class SimpleExampleWithSkills {
 		Builder vehicleBuilder = Builder.newInstance("vehicle");
 		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
-		Vehicle vehicle = vehicleBuilder.build();
+		VehicleImpl vehicle = vehicleBuilder.build();
 
         Builder vehicle2Builder = Builder.newInstance("vehicle2");
         vehicle2Builder.setStartLocationCoordinate(Coordinate.newInstance(1, 1));
         vehicle2Builder.setType(vehicleType);
         vehicle2Builder.addSkill("drill");
-        Vehicle vehicle2 = vehicle2Builder.build();
+        VehicleImpl vehicle2 = vehicle2Builder.build();
 		
 		/*
 		 * build services at the required locations, each with a capacity-demand of 1.
@@ -94,7 +96,20 @@ public class SimpleExampleWithSkills {
 		/*
 		 * get the algorithm out-of-the-box. 
 		 */
-		VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(problem,"input/algorithmConfig.xml");
+        vraBuilder.addCoreConstraints();
+        vraBuilder.addDefaultCostCalculators();
+
+        //activate skill state update and constraints - it is NOT default
+        StateManager stateManager = new StateManager(problem);
+        stateManager.updateSkillStates();
+
+        ConstraintManager constraintManager = new ConstraintManager(problem,stateManager);
+        constraintManager.addSkillsConstraint();
+
+        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+
+		VehicleRoutingAlgorithm algorithm = vraBuilder.build();
 		
 		/*
 		 * and search a solution

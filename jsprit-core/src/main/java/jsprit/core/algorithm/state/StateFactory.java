@@ -9,7 +9,7 @@ import java.util.List;
 class StateFactory {
 
     final static List<String> reservedIds = Arrays.asList("max_load", "load", "costs", "load_at_beginning", "load_at_end", "duration", "latest_operation_start_time", "earliest_operation_start_time"
-            , "future_max_load", "past_max_load");
+            , "future_max_load", "past_max_load", "skills");
 
 
     static StateId createId(String name){

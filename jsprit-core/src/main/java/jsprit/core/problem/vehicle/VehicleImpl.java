@@ -17,6 +17,7 @@
 package jsprit.core.problem.vehicle;
 
 import jsprit.core.problem.AbstractVehicle;
+import jsprit.core.problem.Skills;
 import jsprit.core.util.Coordinate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +33,9 @@ import org.apache.logging.log4j.Logger;
 
 public class VehicleImpl extends AbstractVehicle{
 
-	/**
+
+
+    /**
 	 * Extension of {@link VehicleImpl} representing an unspecified vehicle with the id 'noVehicle'
 	 * (to avoid null).
 	 * 
@@ -58,30 +61,36 @@ public class VehicleImpl extends AbstractVehicle{
 	 *
 	 */
 	public static class Builder {
-		static Logger log = LogManager.getLogger(Builder.class.getName());
-		private String id;
+
+        static final Logger log = LogManager.getLogger(Builder.class.getName());
+
+        private String id;
 		
 		private String locationId;
+
 		private Coordinate locationCoord;
+
 		private double earliestStart = 0.0;
+
 		private double latestArrival = Double.MAX_VALUE;
 		
 		private String startLocationId;
+
 		private Coordinate startLocationCoord;
 		
 		private String endLocationId;
+
 		private Coordinate endLocationCoord;
 		
 		private boolean returnToDepot = true;
 		
 		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
-		
-		/**
-		 * Constructs the builder with the vehicleId.
-		 * 
-		 * @param id
-		 */
-		private Builder(String id) {
+
+        private Skills.Builder skillBuilder = Skills.Builder.newInstance();
+
+        private Skills skills;
+
+        private Builder(String id) {
 			super();
 			this.id = id;
 		}
@@ -89,7 +98,7 @@ public class VehicleImpl extends AbstractVehicle{
 		/**
 		 * Sets the {@link VehicleType}.<br>
 		 * 
-		 * @param type
+		 * @param type the type to be set
 		 * @throws IllegalStateException if type is null
 		 * @return this builder
 		 */
@@ -108,7 +117,7 @@ public class VehicleImpl extends AbstractVehicle{
 		 * 
 		 * <p>If returnToDepot is false, the end-location of the vehicle is endogenous.
 		 * 
-		 * @param returnToDepot
+		 * @param returnToDepot true if vehicle need to return to depot, otherwise false
 		 * @return this builder
 		 */
 		public Builder setReturnToDepot(boolean returnToDepot){
@@ -119,7 +128,7 @@ public class VehicleImpl extends AbstractVehicle{
 		/**
 		 * Sets the start-location of this vehicle.
 		 * 
-		 * @param startLocationId
+		 * @param startLocationId the location id of vehicle's start
 		 * @return this builder
 		 * @throws IllegalArgumentException if startLocationId is null
 		 */
@@ -133,7 +142,7 @@ public class VehicleImpl extends AbstractVehicle{
 		/**
 		 * Sets the start-coordinate of this vehicle.
 		 * 
-		 * @param coord
+		 * @param coord the coordinate of vehicle's start location
 		 * @return this builder
 		 */
 		public Builder setStartLocationCoordinate(Coordinate coord){
@@ -145,7 +154,7 @@ public class VehicleImpl extends AbstractVehicle{
 		/**
 		 * Sets the end-locationId of this vehicle.
 		 * 
-		 * @param endLocationId
+		 * @param endLocationId the location id of vehicle's end
 		 * @return this builder
 		 */
 		public Builder setEndLocationId(String endLocationId){
@@ -156,7 +165,7 @@ public class VehicleImpl extends AbstractVehicle{
 		/**
 		 * Sets the end-coordinate of this vehicle.
 		 * 
-		 * @param coord
+		 * @param coord the coordinate of vehicle's end location
 		 * @return this builder
 		 */
 		public Builder setEndLocationCoordinate(Coordinate coord){
@@ -167,24 +176,29 @@ public class VehicleImpl extends AbstractVehicle{
 		/**
 		 * Sets earliest-start of vehicle which should be the lower bound of the vehicle's departure times.
 		 * 
-		 * @param start
+		 * @param earliest_startTime the earliest start time / departure time of the vehicle at its start location
 		 * @return this builder
 		 */
-		public Builder setEarliestStart(double start){
-			this.earliestStart = start;
+		public Builder setEarliestStart(double earliest_startTime){
+			this.earliestStart = earliest_startTime;
 			return this;
 		}
 		
 		/**
 		 * Sets the latest arrival at vehicle's end-location which is the upper bound of the vehicle's arrival times.
 		 * 
-		 * @param arr
+		 * @param latest_arrTime the latest arrival time of the vehicle at its end location
 		 * @return this builder
 		 */
-		public Builder setLatestArrival(double arr){
-			this.latestArrival = arr;
+		public Builder setLatestArrival(double latest_arrTime){
+			this.latestArrival = latest_arrTime;
 			return this;
 		}
+
+        public Builder addSkill(String skill){
+            skillBuilder.addSkill(skill);
+            return this;
+        }
 		
 		/**
 		 * Builds and returns the vehicle.
@@ -217,15 +231,16 @@ public class VehicleImpl extends AbstractVehicle{
 				endLocationId = startLocationId;
 				endLocationCoord = startLocationCoord;
 			}
-			if( !startLocationId.equals(endLocationId) && returnToDepot == false) throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
+			if( !startLocationId.equals(endLocationId) && !returnToDepot) throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
 					"if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
-			return new VehicleImpl(this);
+			skills = skillBuilder.build();
+            return new VehicleImpl(this);
 		}
 		
 		/**
 		 * Returns new instance of vehicle builder.
 		 * 
-		 * @param vehicleId
+		 * @param vehicleId the id of the vehicle which must be a unique identifier among all vehicles
 		 * @return vehicle builder
 		 */
 		public static Builder newInstance(String vehicleId){ return new Builder(vehicleId); }
@@ -265,6 +280,8 @@ public class VehicleImpl extends AbstractVehicle{
 
 	private final String startLocationId;
 
+    private Skills skills;
+
 	private VehicleImpl(Builder builder){
 		id = builder.id;
 		type = builder.type;
@@ -278,6 +295,7 @@ public class VehicleImpl extends AbstractVehicle{
 		endLocationId = builder.endLocationId;
 		endLocationCoord = builder.endLocationCoord;
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocationId,endLocationId,earliestDeparture,latestArrival));
+        skills = builder.skills;
 	}
 	
 	/**
@@ -334,9 +352,14 @@ public class VehicleImpl extends AbstractVehicle{
 		return this.endLocationCoord;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+    @Override
+    public Skills getSkills() {
+        return skills;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -359,11 +359,11 @@ public class VehicleRoutingAlgorithms {
 	private VehicleRoutingAlgorithms(){}
 	
 	/**
-	 * Creates a {@link VehicleRoutingAlgorithm} from a AlgorithConfig based on the input vrp.
+	 * Creates a {@link jsprit.core.algorithm.VehicleRoutingAlgorithm} from a AlgorithConfig based on the input vrp.
 	 * 
-	 * @param vrp
-	 * @param algorithmConfig
-	 * @return {@link VehicleRoutingAlgorithm}
+	 * @param vrp the routing problem
+	 * @param algorithmConfig the algorithm config
+	 * @return {@link jsprit.core.algorithm.VehicleRoutingAlgorithm}
 	 */
 	public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp, final AlgorithmConfig algorithmConfig){
 		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, null);
@@ -372,9 +372,9 @@ public class VehicleRoutingAlgorithms {
 	/**
 	 * Read and creates a {@link VehicleRoutingAlgorithm} from an url.
 	 * 
-	 * @param vrp
-	 * @param configURL
-	 * @return {@link VehicleRoutingProblem}
+	 * @param vrp the routing problem
+	 * @param configURL config url
+	 * @return {@link jsprit.core.algorithm.VehicleRoutingAlgorithm}
 	 */
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final URL configURL){
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
@@ -384,11 +384,11 @@ public class VehicleRoutingAlgorithms {
 	}
 	
 	/**
-	 * Read and creates {@link VehicleRoutingAlgorithm} from config-file.
+	 * Read and creates {@link jsprit.core.problem.VehicleRoutingProblem} from config-file.
 	 * 
-	 * @param vrp
-	 * @param configFileName
-	 * @return
+	 * @param vrp the routing problem
+	 * @param configFileName the config filename (and location)
+	 * @return {@link jsprit.core.algorithm.VehicleRoutingAlgorithm}
 	 */
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final String configFileName){
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
@@ -461,7 +461,7 @@ public class VehicleRoutingAlgorithms {
 		}
 		stateManager.updateLoadStates();
 		stateManager.updateTimeWindowStates();
-        stateManager.updateSkillStates();
+//        stateManager.updateSkillStates();
 		stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
 		stateManager.addStateUpdater(new OpenRouteStateVerifier());
 		stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts()));
@@ -481,9 +481,6 @@ public class VehicleRoutingAlgorithms {
 
 	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, AlgorithmConfig config,
 			int nuOfThreads, SolutionCostCalculator solutionCostCalculator, final StateManager stateManager, ConstraintManager constraintManager, boolean addDefaultCostCalculators) {
-//		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-//		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
-//		xmlReader.read(config);
 		return readAndCreateAlgorithm(vrp, config.getXMLConfiguration(),nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators);
 	}
 	
@@ -881,49 +878,12 @@ public class VehicleRoutingAlgorithms {
 			RuinAndRecreateModule rrModule =  new RuinAndRecreateModule("ruin_and_recreate", final_insertion, ruin);
 			return rrModule;
 		}
-		if(moduleName.equals("gendreau")){
-			throw new UnsupportedOperationException("gendreau is not supported yet");
-//			int iterations = moduleConfig.getInt("iterations");
-//			double share = moduleConfig.getDouble("share");
-//			String ruinName = moduleConfig.getString("ruin[@name]");
-//			if(ruinName == null) throw new IllegalStateException("gendreau.ruin[@name] is missing. set it to \"radialRuin\" or \"randomRuin\"");
-//			String ruinId = moduleConfig.getString("ruin[@id]");
-//			if(ruinId == null) ruinId = "noId";
-//			ModKey ruinKey = makeKey(ruinName,ruinId);
-//			RuinStrategyKey stratKey = new RuinStrategyKey(ruinKey);
-//			RuinStrategy ruin = definedClasses.get(stratKey);
-//			if(ruin == null){
-//				ruin = new RadialRuinStrategyFactory(0.3, new AvgJobDistance(vrp.getTransportCosts())).createStrategy(vrp);
-//				definedClasses.put(stratKey, ruin);
-//			}
-//			
-//			String insertionName = moduleConfig.getString("insertion[@name]");
-//			if(insertionName == null) throw new IllegalStateException("gendreau.insertion[@name] is missing. set it to \"regretInsertion\" or \"bestInsertion\"");
-//			String insertionId = moduleConfig.getString("insertion[@id]");
-//			if(insertionId == null) insertionId = "noId";
-//			ModKey insertionKey = makeKey(insertionName,insertionId);
-//			InsertionStrategyKey insertionStrategyKey = new InsertionStrategyKey(insertionKey);
-//			InsertionStrategy insertion = definedClasses.get(insertionStrategyKey);
-//			if(insertion == null){
-//				List<HierarchicalConfiguration> insertionConfigs = moduleConfig.configurationsAt("insertion");
-//				if(insertionConfigs.size() != 1) throw new IllegalStateException("this should be 1");
-//				List<PrioritizedVRAListener> prioListeners = new ArrayList<PrioritizedVRAListener>();
-//				insertion = createInsertionStrategy(insertionConfigs.get(0), vrp, vehicleFleetManager, routeStates, prioListeners, executorService, nuOfThreads, constraintManager);
-//				algorithmListeners.addAll(prioListeners);
-//			}
-//			Gendreau gendreau = new Gendreau(vrp, ruin, insertion, vehicleFleetManager);
-//			gendreau.setShareOfJobsToRuin(share);
-//			gendreau.setNuOfIterations(iterations);
-//			definedClasses.put(strategyModuleKey, gendreau);
-//			return gendreau;
-		}
 		throw new NullPointerException("no module found with moduleName=" + moduleName + 
 				"\n\tcheck config whether the correct names are used" +
 				"\n\tcurrently there are following modules available: " +
 				"\n\tbestInsertion" +
 				"\n\trandomRuin" +
-				"\n\tradialRuin" + 
-				"\n\tgendreauPostOpt");
+				"\n\tradialRuin");
 	}
 
 	private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {

@@ -30,24 +30,13 @@ public class Delivery extends Service{
 		/**
 		 * Returns a new instance of builder that builds a delivery.
 		 * 
-		 * @param id
+		 * @param id the id of the delivery
 		 * @return the builder
 		 */
 		public static Builder newInstance(String id){
 			return new Builder(id);
 		}
-		
-		/**
-		 * Constructs the builder
-		 * 
-		 * @param id
-		 * @param size
-		 * @throws IllegalArgumentException if size < 0 or id is null
-		 */
-		Builder(String id, int size) {
-			super(id, size);
-		}
-		
+
 		Builder(String id) {
 			super(id);
 		}
@@ -56,7 +45,7 @@ public class Delivery extends Service{
 		 * Builds Delivery.
 		 * 
 		 * @return delivery
-		 * @throw IllegalStateException if neither locationId nor coord is set
+		 * @throws IllegalStateException if neither locationId nor coord is set
 		 */
 		public Delivery build(){
 			if(locationId == null) { 
@@ -65,16 +54,12 @@ public class Delivery extends Service{
 			}
 			this.setType("delivery");
 			super.capacity = super.capacityBuilder.build();
+            super.skills = super.skillBuilder.build();
 			return new Delivery(this);
 		}
 		
 	}
-	
-	/**
-	 * Constructs Delivery.
-	 * 
-	 * @param builder
-	 */
+
 	Delivery(Builder builder) {
 		super(builder);
 		

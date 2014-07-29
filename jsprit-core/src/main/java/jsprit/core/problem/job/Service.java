@@ -18,6 +18,7 @@ package jsprit.core.problem.job;
 
 import jsprit.core.problem.AbstractJob;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
@@ -45,7 +46,7 @@ public class Service extends AbstractJob {
 		/**
 		 * Returns a new instance of builder that builds a service.
 		 * 
-		 * @param id
+		 * @param id the id of the service
 		 * @return the builder
 		 */
 		public static Builder newInstance(String id){
@@ -67,20 +68,11 @@ public class Service extends AbstractJob {
 		protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
 		
 		protected Capacity capacity;
-		
-		/**
-		 * Constructs the builder.
-		 * 
-		 * @param id
-		 * @param size
-		 * @throws IllegalArgumentException if size < 0 or id is null
-		 */
-		Builder(String id, int size) {
-			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
-			if(id == null) throw new IllegalArgumentException("id must not be null");
-			this.id = id;
-		}
-		
+
+        protected Skills.Builder skillBuilder = Skills.Builder.newInstance();
+
+        protected Skills skills;
+
 		Builder(String id){
 			this.id = id;
 		}
@@ -90,7 +82,7 @@ public class Service extends AbstractJob {
 		 * 
 		 * <p>Currently there are {@link Service}, {@link Pickup} and {@link Delivery}.
 		 * 
-		 * @param name
+		 * @param name the name of service
 		 * @return the builder
 		 */
 		protected Builder setType(String name){
@@ -101,7 +93,7 @@ public class Service extends AbstractJob {
 		/**
 		 * Sets the location-id of this service.
 		 * 
-		 * @param locationId
+		 * @param locationId the location id of the service
 		 * @return builder
 		 */
 		public Builder setLocationId(String locationId){
@@ -112,7 +104,7 @@ public class Service extends AbstractJob {
 		/**
 		 * Sets the coordinate of this service.
 		 * 
-		 * @param coord
+		 * @param coord the coordinate of service
 		 * @return builder
 		 */
 		public Builder setCoord(Coordinate coord){
@@ -126,7 +118,7 @@ public class Service extends AbstractJob {
 		 * <p>It is understood as time that a service or its implied activity takes at the service-location, for instance
 		 * to unload goods.
 		 * 
-		 * @param serviceTime
+		 * @param serviceTime the service time / duration of service to be set
 		 * @return builder
 		 * @throws IllegalArgumentException if serviceTime < 0
 		 */
@@ -139,8 +131,8 @@ public class Service extends AbstractJob {
 		/**
 		 * Adds capacity dimension.
 		 * 
-		 * @param dimensionIndex
-		 * @param dimensionValue
+		 * @param dimensionIndex the dimension index of the capacity value
+		 * @param dimensionValue the capacity value
 		 * @return the builder
 		 * @throws IllegalArgumentException if dimensionValue < 0
 		 */
@@ -155,9 +147,9 @@ public class Service extends AbstractJob {
 		 * 
 		 * <p>The time-window indicates the time period a service/activity/operation is allowed to start. 
 		 * 
-		 * @param tw
+		 * @param tw the time-window to be set
 		 * @return builder
-		 * @throw IllegalArgumentException if timeWindow is null
+		 * @throws IllegalArgumentException if timeWindow is null
 		 */
 		public Builder setTimeWindow(TimeWindow tw){
 			if(tw == null) throw new IllegalArgumentException("time-window arg must not be null");
@@ -178,10 +170,15 @@ public class Service extends AbstractJob {
 			}
 			this.setType("service");
 			capacity = capacityBuilder.build();
+            skills = skillBuilder.build();
 			return new Service(this);
 		}
-		
-	}
+
+        public Builder addSkill(String skill) {
+            skillBuilder.addSkill(skill);
+            return this;
+        }
+    }
 	
 	
 	private final String id;
@@ -198,6 +195,8 @@ public class Service extends AbstractJob {
 	
 	private final Capacity size;
 
+    private final Skills skills;
+
 	Service(Builder builder){
 		id = builder.id;
 		locationId = builder.locationId;
@@ -206,6 +205,7 @@ public class Service extends AbstractJob {
 		timeWindow = builder.timeWindow;
 		type = builder.type;
 		size = builder.capacity;
+        skills = builder.skills;
 	}
 
 	@Override
@@ -300,5 +300,10 @@ public class Service extends AbstractJob {
 	public Capacity getSize() {
 		return size;
 	}
-	
+
+    @Override
+    public Skills getRequiredSkills() {
+        return skills;
+    }
+
 }

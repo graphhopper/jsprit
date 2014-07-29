@@ -22,7 +22,6 @@ import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.ReverseRouteActivityVisitor;
@@ -93,18 +92,16 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	private Map<StateId,Object> defaultRouteStates_ = new HashMap<StateId,Object>();
 	
 	private Map<StateId,Object> defaultActivityStates_ = new HashMap<StateId,Object>();
-	
-	private VehicleRoutingTransportCosts routingCosts;
-	
+
 	private boolean updateLoad = false;
 	
 	private boolean updateTWs = false;
 
-    private int stateIndexCounter = 10;
+    private int stateIndexCounter = 21;
 
     private Map<String,StateId> createdStateIds = new HashMap<String, StateId>();
 
-    private int initialNuStates = 20;
+    private int initialNuStates = 30;
 
     private int nuActivities;
 
@@ -176,7 +173,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param vehicleRoutingProblem the corresponding VehicleRoutingProblem
      */
     public StateManager(VehicleRoutingProblem vehicleRoutingProblem){
-        this.routingCosts = vehicleRoutingProblem.getTransportCosts();
         this.vrp = vehicleRoutingProblem;
         nuActivities = Math.max(10, vrp.getNuActivities() + 1);
         nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vrp) + 2);
@@ -704,6 +700,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     public boolean timeWindowUpdateIsActivated(){
         return updateTWs;
+    }
+
+    /**
+     * Updates skill states.
+     */
+    public void updateSkillStates() {
+        addActivityVisitor(new UpdateSkills(this));
     }
 
 	

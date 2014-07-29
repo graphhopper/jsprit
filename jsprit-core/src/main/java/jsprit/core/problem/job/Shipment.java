@@ -20,6 +20,7 @@ package jsprit.core.problem.job;
 
 import jsprit.core.problem.AbstractJob;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 
@@ -71,28 +72,19 @@ public class Shipment extends AbstractJob{
 		private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
 		
 		private Capacity capacity;
-		
-		/**
+
+        private Skills.Builder skillBuilder = Skills.Builder.newInstance();
+
+        private Skills skills;
+
+        /**
 		 * Returns new instance of this builder.
 		 * 
-		 * @param id
-		 * @return
+		 * @param id the id of the shipment which must be a unique identifier among all jobs
+		 * @return the builder
 		 */
 		public static Builder newInstance(String id){
 			return new Builder(id);
-		}
-		
-		/**
-		 * Constructs the builder
-		 * 
-		 * @param id
-		 * @param size
-		 * @throws IllegalArgumentException if size < 0 or id is null
-		 */
-		Builder(String id, int size) {
-			if(size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
-			if(id == null) throw new IllegalArgumentException("id must not be null");
-			this.id = id;
 		}
 		
 		Builder(String id){
@@ -103,20 +95,20 @@ public class Shipment extends AbstractJob{
 		/**
 		 * Sets pickup-location.
 		 * 
-		 * @param pickupLocation
+		 * @param pickupLocationId the location id of shipment's pickup
 		 * @return builder
 		 * @throws IllegalArgumentException if location is null
 		 */
-		public Builder setPickupLocation(String pickupLocation){
-			if(pickupLocation == null) throw new IllegalArgumentException("location must not be null");
-			this.pickupLocation = pickupLocation;
+		public Builder setPickupLocation(String pickupLocationId){
+			if(pickupLocationId == null) throw new IllegalArgumentException("location must not be null");
+			this.pickupLocation = pickupLocationId;
 			return this;
 		}
 		
 		/**
 		 * Sets pickup-coordinate.
 		 * 
-		 * @param pickupCoord
+		 * @param pickupCoord the coordinate of shipment's pickup location
 		 * @return builder
 		 * @throws IllegalArgumentException if pickupCoord is null
 		 */
@@ -131,7 +123,7 @@ public class Shipment extends AbstractJob{
 		 * 
 		 * <p>ServiceTime is intended to be the time the implied activity takes at the pickup-location.
 		 * 
-		 * @param serviceTime
+		 * @param serviceTime the service time / duration the pickup of the associated shipment takes
 		 * @return builder
 		 * @throws IllegalArgumentException if servicTime < 0.0
 		 */
@@ -143,11 +135,11 @@ public class Shipment extends AbstractJob{
 		
 		/**
 		 * Sets the timeWindow for the pickup, i.e. the time-period in which a pickup operation is
-		 * allowed to start.
+		 * allowed to START.
 		 * 
 		 * <p>By default timeWindow is [0.0, Double.MAX_VALUE}
 		 * 
-		 * @param timeWindow
+		 * @param timeWindow the time window within the pickup operation/activity can START
 		 * @return builder
 		 * @throws IllegalArgumentException if timeWindow is null
 		 */
@@ -160,7 +152,7 @@ public class Shipment extends AbstractJob{
 		/**
 		 * Sets the delivery-location.
 		 * 
-		 * @param deliveryLocation
+		 * @param deliveryLocation the delivery location id
 		 * @return builder
 		 * @throws IllegalArgumentException if location is null
 		 */
@@ -173,7 +165,7 @@ public class Shipment extends AbstractJob{
 		/**
 		 * Sets delivery-coord.
 		 * 
-		 * @param deliveryCoord
+		 * @param deliveryCoord the coordinate of shipment's delivery location
 		 * @return builder
 		 * @throws IllegalArgumentException if coord is null;
 		 */
@@ -188,7 +180,7 @@ public class Shipment extends AbstractJob{
 		 * 
 		 * <p>ServiceTime is intended to be the time the implied activity takes at the delivery-location.
 		 * 
-		 * @param deliveryServiceTime
+		 * @param deliveryServiceTime the service time / duration of shipment's delivery
 		 * @return builder
 		 * @throws IllegalArgumentException if serviceTime < 0.0
 		 */
@@ -204,7 +196,7 @@ public class Shipment extends AbstractJob{
 		 * 
 		 * <p>By default timeWindow is [0.0, Double.MAX_VALUE}
 		 * 
-		 * @param timeWindow
+		 * @param timeWindow the time window within the associated delivery is allowed to START
 		 * @return builder
 		 * @throws IllegalArgumentException if timeWindow is null
 		 */
@@ -217,8 +209,8 @@ public class Shipment extends AbstractJob{
 		/**
 		 * Adds capacity dimension.
 		 * 
-		 * @param dimensionIndex
-		 * @param dimensionValue
+		 * @param dimensionIndex the dimension index of the corresponding capacity value
+		 * @param dimensionValue the capacity value
 		 * @return builder
 		 * @throws IllegalArgumentException if dimVal < 0
 		 */
@@ -246,11 +238,16 @@ public class Shipment extends AbstractJob{
 				deliveryLocation = deliveryCoord.toString();
 			}
 			capacity = capacityBuilder.build();
+            skills = skillBuilder.build();
 			return new Shipment(this);
 		}
 
-		
-	}
+
+        public Builder addSkill(String skill) {
+            skillBuilder.addSkill(skill);
+            return this;
+        }
+    }
 	
 	private final String id;
 	
@@ -272,12 +269,8 @@ public class Shipment extends AbstractJob{
 	
 	private final Capacity capacity;
 
-	
-	/**
-	 * Constructs the shipment.
-	 * 
-	 * @param builder
-	 */
+    private final Skills skills;
+
 	Shipment(Builder builder){
 		this.id = builder.id;
 		this.pickupLocation = builder.pickupLocation;
@@ -289,6 +282,7 @@ public class Shipment extends AbstractJob{
 		this.deliveryServiceTime = builder.deliveryServiceTime;
 		this.deliveryTimeWindow = builder.deliveryTimeWindow;
 		this.capacity = builder.capacity;
+        this.skills = builder.skills;
 	}
 	
 	@Override
@@ -405,5 +399,10 @@ public class Shipment extends AbstractJob{
 		return capacity;
 	}
 
-	
+    @Override
+    public Skills getRequiredSkills() {
+        return skills;
+    }
+
+
 }

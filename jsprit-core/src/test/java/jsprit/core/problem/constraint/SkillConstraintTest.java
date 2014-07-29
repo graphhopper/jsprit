@@ -1,13 +1,13 @@
 package jsprit.core.problem.constraint;
 
 import jsprit.core.algorithm.state.StateManager;
-import jsprit.core.algorithm.state.UpdateSkills;
-import jsprit.core.problem.Skills;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,115 +15,72 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 public class SkillConstraintTest {
 
     private HardRouteStateLevelConstraint skillConstraint;
 
-    private StateManager stateManager;
-
     private VehicleRoute route;
 
-    private Vehicle vehicle;
+    private VehicleImpl vehicle;
+
+    private VehicleImpl vehicle2;
+
+    private VehicleRoutingProblem vrp;
 
     @Before
     public void doBefore(){
-        vehicle = mock(Vehicle.class);
-        Service service = mock(Service.class);
-        Service service2 = mock(Service.class);
-        Service service3 = mock(Service.class);
-        when(service.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill1").build());
-        when(service2.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill1").addSkill("skill2")
-                .addSkill("skill3").build());
-        when(service3.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill4")
-                .addSkill("skill5").build());
-        route = VehicleRoute.Builder.newInstance(vehicle).addService(service).addService(service2).addService(service3).build();
-        stateManager = new StateManager(mock(VehicleRoutingTransportCosts.class));
-        stateManager.addStateUpdater(new UpdateSkills(stateManager));
-        stateManager.update(route);
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("t").build();
+        vehicle = VehicleImpl.Builder.newInstance("v").addSkill("skill1").addSkill("skill2").addSkill("skill3").addSkill("skill4").setStartLocationId("start").setType(type).build();
+        vehicle2 = VehicleImpl.Builder.newInstance("v").addSkill("skill4").addSkill("skill5").setStartLocationId("start").setType(type).build();
+
+        Service service = Service.Builder.newInstance("s").setLocationId("loc").addSkill("skill1").build();
+        Service service2 = Service.Builder.newInstance("s2").setLocationId("loc").addSkill("skill1").addSkill("skill2").addSkill("skill3").build();
+
+        Service service3 = Service.Builder.newInstance("s3").setLocationId("loc").addSkill("skill4").addSkill("skill5").build();
+        Service service4 = Service.Builder.newInstance("s4").setLocationId("loc").addSkill("skill1").build();
+
+        vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addVehicle(vehicle2).addJob(service)
+                .addJob(service2).addJob(service3).addJob(service4).build();
+
+        route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).addService(service2).build();
+
+        StateManager stateManager = new StateManager(vrp);
+        stateManager.updateSkillStates();
+        stateManager.informInsertionStarts(Arrays.asList(route),null);
+
         skillConstraint = new HardSkillConstraint(stateManager);
     }
 
     @Test
-    public void whenJobToBeInsertedRequiresSkillsThatVehicleDoesNotHave_itShouldReturnFalse(){
-        Service s4 = mock(Service.class);
-        when(s4.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill5").build());
-        when(vehicle.getSkills()).thenReturn(Skills.Builder.newInstance()
-                .addAllSkills(Arrays.asList("skill1","skill2","skill3","skill4")).build());
-        JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle,route.getDriver(),0.);
-        assertFalse(skillConstraint.fulfilled(insertionContext));
-    }
-
-    @Test
-    public void whenJobToBeInsertedRequiresSkillsThatVehicle2DoesNotHave_itShouldReturnFalse(){
-        Service s4 = mock(Service.class);
-        when(s4.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill5").build());
-        Vehicle vehicle2 = mock(Vehicle.class);
-        when(vehicle2.getSkills()).thenReturn(Skills.Builder.newInstance()
-                .addAllSkills(Arrays.asList("skill1","skill2","skill3","skill4")).build());
-        JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle2,route.getDriver(),0.);
+    public void whenJobToBeInsertedRequiresSkillsThatNewVehicleDoesNotHave_itShouldReturnFalse(){
+        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s3"),vehicle,route.getDriver(),0.);
         assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
     public void whenJobToBeInsertedRequiresSkillsThatVehicleHave_itShouldReturnTrue(){
-        Service s4 = mock(Service.class);
-        when(s4.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill4").build());
-        when(vehicle.getSkills()).thenReturn(Skills.Builder.newInstance()
-                .addAllSkills(Arrays.asList("skill1","skill2","skill3","skill4","skill5")).build());
-        JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle,route.getDriver(),0.);
-        assertTrue(skillConstraint.fulfilled(insertionContext));
-    }
-
-    @Test
-    public void whenJobToBeInsertedRequiresSkillsThatVehicle2Have_itShouldReturnTrue(){
-        Service s4 = mock(Service.class);
-        when(s4.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill4").build());
-        Vehicle vehicle2 = mock(Vehicle.class);
-        when(vehicle2.getSkills()).thenReturn(Skills.Builder.newInstance()
-                .addAllSkills(Arrays.asList("skill1","skill2","skill3","skill4","skill5")).build());
-        JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle2,route.getDriver(),0.);
+        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s4"),vehicle,route.getDriver(),0.);
         assertTrue(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
     public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave_itShouldReturnFalse(){
-        Service s4 = mock(Service.class);
-        when(s4.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill4").build());
-        when(vehicle.getSkills()).thenReturn(Skills.Builder.newInstance()
-                .addAllSkills(Arrays.asList("skill1","skill2","skill6","skill4")).build());
-        JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle,route.getDriver(),0.);
+        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s3"),vehicle2,route.getDriver(),0.);
+        assertFalse(skillConstraint.fulfilled(insertionContext));
+    }
+
+    @Test
+    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave2_itShouldReturnFalse(){
+        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s4"),vehicle2,route.getDriver(),0.);
         assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
     public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesHave_itShouldReturnTrue(){
-        Service s4 = mock(Service.class);
-        when(s4.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill4").build());
-        when(vehicle.getSkills()).thenReturn(Skills.Builder.newInstance()
-                .addAllSkills(Arrays.asList("skill1","skill2","skill3","skill4","skill5")).build());
-        JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle,route.getDriver(),0.);
+        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s4"),vehicle,route.getDriver(),0.);
         assertTrue(skillConstraint.fulfilled(insertionContext));
     }
 
-    @Test
-    public void whenNoSkillsAreRequired_itShouldReturnTrue(){
-        Service s4 = mock(Service.class);
-        when(s4.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().build());
-        when(vehicle.getSkills()).thenReturn(Skills.Builder.newInstance().build());
-        JobInsertionContext insertionContext = new JobInsertionContext(VehicleRoute.emptyRoute(),s4,vehicle,route.getDriver(),0.);
-        assertTrue(skillConstraint.fulfilled(insertionContext));
-    }
-
-    @Test
-    public void whenSkillsIsRequiredWhichVehicleDoesNotHave_itShouldReturnFalse(){
-        Service s4 = mock(Service.class);
-        when(s4.getRequiredSkills()).thenReturn(Skills.Builder.newInstance().addSkill("skill1").build());
-        when(vehicle.getSkills()).thenReturn(Skills.Builder.newInstance().build());
-        JobInsertionContext insertionContext = new JobInsertionContext(VehicleRoute.emptyRoute(),s4,vehicle,route.getDriver(),0.);
-        assertFalse(skillConstraint.fulfilled(insertionContext));
-    }
 }

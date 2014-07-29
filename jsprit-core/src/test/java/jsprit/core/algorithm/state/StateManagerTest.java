@@ -159,7 +159,7 @@ public class StateManagerTest {
     public void whenCreatingNewState_itShouldHaveAnIndex(){
         StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
         StateId stateId = stateManager.createStateId("foo-state");
-        assertEquals(10,stateId.getIndex());
+        assertEquals(21,stateId.getIndex());
     }
 
     @Test
@@ -167,8 +167,8 @@ public class StateManagerTest {
         StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-foo-state");
-        assertEquals(10,fooState.getIndex());
-        assertEquals(11,foofooState.getIndex());
+        assertEquals(21,fooState.getIndex());
+        assertEquals(22,foofooState.getIndex());
     }
 
     @Test
@@ -176,8 +176,8 @@ public class StateManagerTest {
         StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-state");
-        assertEquals(10, fooState.getIndex());
-        assertEquals(10, foofooState.getIndex());
+        assertEquals(21, fooState.getIndex());
+        assertEquals(21, foofooState.getIndex());
     }
 
     @Test

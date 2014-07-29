@@ -4,10 +4,9 @@ import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.solution.route.state.StateFactory;
 
 /**
- * Created by schroeder on 01.07.14.
+ * Update to update required skills on route
  */
 public class UpdateSkills implements StateUpdater, ActivityVisitor{
 
@@ -38,6 +37,6 @@ public class UpdateSkills implements StateUpdater, ActivityVisitor{
     @Override
     public void finish() {
         Skills skills = skillBuilder.build();
-        statesManager.putTypedInternalRouteState(route, StateFactory.SKILLS, Skills.class, skills);
+        statesManager.putTypedInternalRouteState(route, InternalStates.SKILLS, skills);
     }
 }

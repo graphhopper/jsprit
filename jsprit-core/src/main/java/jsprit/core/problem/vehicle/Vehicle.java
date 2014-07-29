@@ -18,6 +18,7 @@ package jsprit.core.problem.vehicle;
 
 import jsprit.core.problem.HasId;
 import jsprit.core.problem.HasIndex;
+import jsprit.core.problem.Skills;
 import jsprit.core.util.Coordinate;
 
 /**
@@ -86,4 +87,6 @@ public interface Vehicle extends HasId, HasIndex {
 	public abstract Coordinate getEndLocationCoordinate();
 
     public abstract VehicleTypeKey getVehicleTypeIdentifier();
+
+    public abstract Skills getSkills();
 }
