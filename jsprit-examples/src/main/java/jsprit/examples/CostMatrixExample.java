@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -27,13 +25,14 @@ import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Solutions;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 
 /**
@@ -44,9 +43,6 @@ import jsprit.util.Examples;
  */
 public class CostMatrixExample {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		/*
 		 * some preparation - create output folder
@@ -54,7 +50,7 @@ public class CostMatrixExample {
 		Examples.createOutputFolder();
 		
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).setCostPerDistance(1).setCostPerTime(2).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("0").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("0").setType(type).build();
 		
 		Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocationId("1").build();
 		Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocationId("2").build();

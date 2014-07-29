@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jsprit.core.util;
 
-import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -29,8 +28,8 @@ import java.util.Map;
 
 
 /**
- * CostMatrix that allows pre-compiled time and distance-matrices to be considered as {@link VehicleRoutingTransportCosts}
- * in the {@link VehicleRoutingProblem}.
+ * CostMatrix that allows pre-compiled time and distance-matrices to be considered as {@link jsprit.core.problem.cost.VehicleRoutingTransportCosts}
+ * in the {@link jsprit.core.problem.VehicleRoutingProblem}.
  * <p>Note that you can also use it with distance matrix only (or time matrix). But ones
  * you set a particular distance, this expects distance-entries for all relations. This counts also 
  * for a particular time. If the method getTransportCosts(...) is then invoked for a relation, where no distance can be found, an 
@@ -39,8 +38,7 @@ import java.util.Map;
  *
  */
 public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRoutingTransportCosts {
-
-	static class RelationKey {
+    static class RelationKey {
 		
 		static RelationKey newKey(String from, String to){
 			return new RelationKey(from, to);
@@ -116,8 +114,8 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 		/**
 		 * Creates a new builder returning the matrix-builder.
 		 * <p>If you want to consider symmetric matrices, set isSymmetric to true.
-		 * @param isSymmetric
-		 * @return
+		 * @param isSymmetric true if matrix is symmetric, false otherwise
+		 * @return builder
 		 */
 		public static Builder newInstance(boolean isSymmetric){
 			return new Builder(isSymmetric);
@@ -129,10 +127,10 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 		
 		/**
 		 * Adds a transport-distance for a particular relation.
-		 * @param from
-		 * @param to
-		 * @param distance
-		 * @return
+		 * @param from from loactionId
+		 * @param to to locationId
+		 * @param distance the distance to be added
+		 * @return builder
 		 */
 		public Builder addTransportDistance(String from, String to, double distance){
 			RelationKey key = RelationKey.newKey(from, to);
@@ -150,10 +148,10 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 		
 		/**
 		 * Adds transport-time for a particular relation.
-		 * @param from
-		 * @param to
-		 * @param time
-		 * @return
+		 * @param from from locationId
+		 * @param to to locationId
+		 * @param time the time to be added
+		 * @return builder
 		 */
 		public Builder addTransportTime(String from, String to, double time){
 			RelationKey key = RelationKey.newKey(from, to);
@@ -171,7 +169,7 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 		
 		/**
 		 * Builds the matrix.
-		 * @return
+		 * @return matrix
 		 */
 		public VehicleRoutingTransportCostsMatrix build(){
 			return new VehicleRoutingTransportCostsMatrix(this);
@@ -226,9 +224,9 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 	/**
 	 * Returns the distance fromId to toId.
 	 * 
-	 * @param fromId
-	 * @param toId
-	 * @return
+	 * @param fromId from locationId
+	 * @param toId to locationId
+	 * @return the distance from fromId to toId
 	 * @throws IllegalStateException if distance of fromId -> toId is not found 
 	 */
 	public double getDistance(String fromId, String toId) {
