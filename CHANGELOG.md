@@ -5,7 +5,7 @@ Change-log
 <b>! Break change !</b>
 
 - migrated from log4j1x to log4j2
-- new feature: skills can now be included easily
+- new feature: skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java)
 - countless improvements of javadocs
 
 <em>jsprit-core</em>
