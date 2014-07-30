@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.Plotter.Label;
 import jsprit.analysis.toolbox.SolutionPrinter;
@@ -34,12 +32,12 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 
+import java.util.Collection;
+
 
 public class MultipleDepotWithInitialRoutesExample {
 
-	/**
-	 * @param args
-	 */
+
 	public static void main(String[] args) {
 		/*
 		 * some preparation - create output folder
