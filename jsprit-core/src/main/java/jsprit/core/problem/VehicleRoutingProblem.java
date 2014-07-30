@@ -288,25 +288,43 @@ public class VehicleRoutingProblem {
 		}
 
 
-		@SuppressWarnings("deprecation")
+
         public Builder addInitialVehicleRoute(VehicleRoute route){
-			addVehicle(route.getVehicle());
-			for(Job job : route.getTourActivities().getJobs()){
-				jobsInInitialRoutes.add(job.getId());
-				if(job instanceof Service) {
-					tentative_coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
-				}
-				if(job instanceof Shipment){
-					Shipment shipment = (Shipment)job;
-					tentative_coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
-					tentative_coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
-				}
-			}
+			addVehicle((AbstractVehicle)route.getVehicle());
+            for(TourActivity act : route.getActivities()){
+                AbstractActivity abstractAct = (AbstractActivity) act;
+                abstractAct.setIndex(activityIndexCounter);
+                incActivityIndexCounter();
+                if(act instanceof TourActivity.JobActivity) {
+                    Job job = ((TourActivity.JobActivity) act).getJob();
+                    jobsInInitialRoutes.add(job.getId());
+                    registerLocation(job);
+                    registerJobAndActivity(abstractAct, job);
+                }
+            }
 			initialRoutes.add(route);
 			return this;
 		}
-		
-		public Builder addInitialVehicleRoutes(Collection<VehicleRoute> routes){
+
+        private void registerLocation(Job job) {
+            if (job instanceof Service) tentative_coordinates.put(((Service) job).getLocationId(), ((Service) job).getCoord());
+            if (job instanceof Shipment) {
+                Shipment shipment = (Shipment) job;
+                tentative_coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
+                tentative_coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
+            }
+        }
+
+        private void registerJobAndActivity(AbstractActivity abstractAct, Job job) {
+            if(activityMap.containsKey(job)) activityMap.get(job).add(abstractAct);
+            else{
+                List<AbstractActivity> actList = new ArrayList<AbstractActivity>();
+                actList.add(abstractAct);
+                activityMap.put(job,actList);
+            }
+        }
+
+        public Builder addInitialVehicleRoutes(Collection<VehicleRoute> routes){
 			for(VehicleRoute r : routes){
 				addInitialVehicleRoute(r);
 			}
