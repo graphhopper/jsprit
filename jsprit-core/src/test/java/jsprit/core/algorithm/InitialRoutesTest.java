@@ -19,14 +19,24 @@ import static org.junit.Assert.assertTrue;
 public class InitialRoutesTest {
 
     @Test
-    public void whenReading_thereShouldBeNoDuplicates(){
+    public void whenReading_jobMapShouldOnlyContainJob2(){
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         assertEquals(1,vrp.getJobs().size());
+        assertTrue(vrp.getJobs().containsKey("2"));
+    }
 
+    @Test
+    public void whenReading_thereShouldBeOnlyOneActAssociatedToJob2(){
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+
+        assertEquals(1,vrp.getActivities(vrp.getJobs().get("2")).size());
     }
 
     @Test

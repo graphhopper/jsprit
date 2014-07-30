@@ -52,7 +52,8 @@ public class SearchStrategy {
 			return accepted;
 		}
 
-		public String getStrategyName() {
+		@SuppressWarnings("UnusedDeclaration")
+        public String getStrategyName() {
 			return strategyName;
 		}
 		
@@ -90,10 +91,12 @@ public class SearchStrategy {
 		return Collections.unmodifiableCollection(searchStrategyModules);
 	}
 
-	public SolutionSelector getSolutionSelector() {
+	@SuppressWarnings("UnusedDeclaration")
+    public SolutionSelector getSolutionSelector() {
 		return solutionSelector;
 	}
 
+    @SuppressWarnings("UnusedDeclaration")
 	public SolutionAcceptor getSolutionAcceptor() {
 		return solutionAcceptor;
 	}
@@ -106,33 +109,37 @@ public class SearchStrategy {
 	/**
 	 * Runs the search-strategy and its according modules, and returns DiscoveredSolution.
 	 * 
-	 * <p>This involves three basic steps: 1) Selecting a solution from solutions (input parameter) according to {@link SolutionSelector}, 2) running the modules 
-	 * ({@link SearchStrategyModule}) on the selectedSolution and 3) accepting the new solution according to {@link SolutionAcceptor}. 
+	 * <p>This involves three basic steps: 1) Selecting a solution from solutions (input parameter) according to {@link jsprit.core.algorithm.selector.SolutionSelector}, 2) running the modules
+	 * ({@link jsprit.core.algorithm.SearchStrategyModule}) on the selectedSolution and 3) accepting the new solution according to {@link jsprit.core.algorithm.acceptor.SolutionAcceptor}.
 	 * <p> Note that after 1) the selected solution is copied, thus the original solution is not modified.
 	 * <p> Note also that 3) modifies the input parameter solutions by adding, removing, replacing the existing solutions or whatever is defined in the solutionAcceptor.
 	 *  
-	 * @param vrp
+	 * @param vrp the underlying vehicle routing problem
 	 * @param solutions which will be modified 
-	 * @return discoveredSolutin 
-	 * @see SolutionSelector, SearchStrategyModule, SolutionAcceptor 
+	 * @return discoveredSolution
 	 */
-	public DiscoveredSolution run(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions){
+	@SuppressWarnings("UnusedParameters")
+    public DiscoveredSolution run(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions){
 		VehicleRoutingProblemSolution solution = solutionSelector.selectSolution(solutions);
-		if(solution == null) throw new IllegalStateException("solution is null. check solutionSelector to return an appropiate solution.");
+		if(solution == null) throw new IllegalStateException(getErrMsg());
 		VehicleRoutingProblemSolution lastSolution = VehicleRoutingProblemSolution.copyOf(solution);
 		for(SearchStrategyModule module : searchStrategyModules){
-			VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(lastSolution);
-			lastSolution = newSolution;
+            lastSolution = module.runAndGetSolution(lastSolution);
 		}
 		double costs = solutionCostCalculator.getCosts(lastSolution);
 		lastSolution.setCost(costs);
 		boolean solutionAccepted = solutionAcceptor.acceptSolution(solutions, lastSolution);
-		DiscoveredSolution discoveredSolution = new DiscoveredSolution(lastSolution, solutionAccepted, getName());
-		return discoveredSolution;
+		return new DiscoveredSolution(lastSolution, solutionAccepted, getName());
 	}
 
-	
-	public void addModule(SearchStrategyModule module){
+    private String getErrMsg() {
+        return "solution is null. check solutionSelector to return an appropriate solution. " +
+                "\nfigure out whether you start with an initial solution. either you set it manually by algorithm.addInitialSolution(...)"
+               + " or let the algorithm create an initial solution for you. then add the <construction>...</construction> xml-snippet to your algorithm's config file.";
+    }
+
+
+    public void addModule(SearchStrategyModule module){
 		if(module == null) throw new IllegalStateException("module to be added is null.");
 		searchStrategyModules.add(module);
 		logger.info("module added [module="+module+"][#modules="+searchStrategyModules.size()+"]");
