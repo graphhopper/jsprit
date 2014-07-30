@@ -64,7 +64,8 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 	}
 
 	private void getInitialVehicleIds() {
-		for(VehicleRoute initialRoute : vrp.getInitialVehicleRoutes()){
+        Collection<VehicleRoute> initialVehicleRoutes = vrp.getInitialVehicleRoutes();
+        for(VehicleRoute initialRoute : initialVehicleRoutes){
 			initialVehicleIds.add(initialRoute.getVehicle().getId());
 		}
 	}
