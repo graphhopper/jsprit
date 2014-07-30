@@ -60,7 +60,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 		this.insertionCalculator = jobInsertionCalc;
 		this.vrp = vrp;
 		getInitialVehicleIds();
-		logger.info("inialise " + this);
+		logger.info("initialise " + this);
 	}
 
 	private void getInitialVehicleIds() {
@@ -77,7 +77,8 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 	/**
 	 * @return the vehicleSwitchAllowed
 	 */
-	public boolean isVehicleSwitchAllowed() {
+	@SuppressWarnings("UnusedDeclaration")
+    public boolean isVehicleSwitchAllowed() {
 		return vehicleSwitchAllowed;
 	}
 
@@ -124,8 +125,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 	}
 
 	private boolean isVehicleWithInitialRoute(Vehicle selectedVehicle) {
-		if(initialVehicleIds.contains(selectedVehicle.getId())) return true;
-		return false;
+		return initialVehicleIds.contains(selectedVehicle.getId());
 	}
 
 }

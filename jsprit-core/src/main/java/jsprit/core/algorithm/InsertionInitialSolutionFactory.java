@@ -60,8 +60,7 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
 	}
 
 	private List<Job> getUnassignedJobs(VehicleRoutingProblem vrp) {
-		List<Job> jobs = new ArrayList<Job>(vrp.getJobs().values());
-		return jobs;
+		return new ArrayList<Job>(vrp.getJobs().values());
 	}
 
 }

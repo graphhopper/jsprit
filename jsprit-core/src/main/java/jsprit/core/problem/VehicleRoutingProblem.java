@@ -672,9 +672,18 @@ public class VehicleRoutingProblem {
 	public Map<String, Job> getJobs() {
 		return Collections.unmodifiableMap(jobs);
 	}
-	
+
+    /**
+     * Returns a copy of initial vehicle routes.
+     *
+     * @return copied collection of initial vehicle routes
+     */
 	public Collection<VehicleRoute> getInitialVehicleRoutes(){
-		return Collections.unmodifiableCollection(initialVehicleRoutes);
+		Collection<VehicleRoute> copiedInitialRoutes = new ArrayList<VehicleRoute>();
+        for(VehicleRoute route : initialVehicleRoutes){
+            copiedInitialRoutes.add(VehicleRoute.copyOf(route));
+        }
+        return copiedInitialRoutes;
 	}
 
 	/**
