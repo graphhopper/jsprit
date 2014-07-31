@@ -746,7 +746,7 @@ public class VehicleRoutingAlgorithms {
 	
 	private static SolutionSelector getSelector(HierarchicalConfiguration strategyConfig, VehicleRoutingProblem vrp, Set<PrioritizedVRAListener> algorithmListeners, TypedMap definedSelectors) {
 		String selectorName = strategyConfig.getString("selector[@name]");
-		if(selectorName == null) throw new IllegalStateException("no solutionSelector defined. define either \"selectRandom\" or \"selectBest\"");
+		if(selectorName == null) throw new IllegalStateException("no solutionSelector defined. define either \"selectRandomly\" or \"selectBest\"");
 		String selectorId = strategyConfig.getString("selector[@id]");
 		if(selectorId == null) selectorId="noId";
 		ModKey modKey = makeKey(selectorName,selectorId);
@@ -755,7 +755,7 @@ public class VehicleRoutingAlgorithms {
 		if(definedSelector != null) {
 			return definedSelector;
 		}
-		if(selectorName.equals("selectRandom")){
+		if(selectorName.equals("selectRandomly")){
 			SelectRandomly selector = SelectRandomly.getInstance();
 			definedSelectors.put(selectorKey, selector);
 			return selector;
@@ -765,7 +765,7 @@ public class VehicleRoutingAlgorithms {
 			definedSelectors.put(selectorKey, selector);
 			return selector;
 		}
-		throw new IllegalStateException("solutionSelector is not know. Currently, it only knows \"selectRandom\" and \"selectBest\"");
+		throw new IllegalStateException("solutionSelector is not know. Currently, it only knows \"selectRandomly\" and \"selectBest\"");
 	}
 	
 	private static ModKey makeKey(String name, String id){
