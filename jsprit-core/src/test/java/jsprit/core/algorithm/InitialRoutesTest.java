@@ -1,6 +1,7 @@
 package jsprit.core.algorithm;
 
 
+import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -10,16 +11,20 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.PickupShipment;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
+import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import org.junit.Test;
 
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class InitialRoutesTest {
 
@@ -240,5 +245,49 @@ public class InitialRoutesTest {
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
 
         assertTrue(hasActivityIn(solution.getRoutes().iterator().next(), "2"));
+    }
+
+    @Test
+    public void maxCapacityShouldNotBeExceeded(){
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("veh").setStartLocationCoordinate(Coordinate.newInstance(0, 0)).setType(type).setStartLocationId("start").build();
+
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation("pick").setDeliveryLocation("del").setPickupCoord(Coordinate.newInstance(10, 0))
+                .setDeliveryCoord(Coordinate.newInstance(0, 10)).addSizeDimension(0, 100).build();
+
+        Shipment another_shipment = Shipment.Builder.newInstance("another_s").setPickupLocation("pick").setDeliveryLocation("del").setPickupCoord(Coordinate.newInstance(10, 0))
+                .setDeliveryCoord(Coordinate.newInstance(0, 10)).addSizeDimension(0, 50).build();
+
+        VehicleRoute iniRoute = VehicleRoute.Builder.newInstance(vehicle).addPickup(shipment).addDelivery(shipment).build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).addJob(another_shipment)
+                .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addInitialVehicleRoute(iniRoute).build();
+
+        VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
+        vra.setNuOfIterations(10);
+
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+        assertFalse(secondActIsPickup(solutions));
+
+    }
+
+    @Test
+    public void whenReadingProblemFromFile_maxCapacityShouldNotBeExceeded(){
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes_2.xml");
+        VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrpBuilder.build());
+        vra.setNuOfIterations(10);
+
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+        assertFalse(secondActIsPickup(solutions));
+
+    }
+
+    private boolean secondActIsPickup(Collection<VehicleRoutingProblemSolution> solutions) {
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
+        TourActivity secondAct = solution.getRoutes().iterator().next().getActivities().get(1);
+        return secondAct instanceof PickupShipment;
     }
 }
