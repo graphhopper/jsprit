@@ -22,12 +22,10 @@ import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.instance.reader.SolomonReader;
 import jsprit.util.Examples;
 
@@ -67,10 +65,8 @@ public class SolomonExample {
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-//		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
-		
-//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+
 		/*
 		 * Solve the problem.
 		 * 
@@ -83,13 +79,7 @@ public class SolomonExample {
 		 */
 		VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 
-        for(VehicleRoute r : solution.getRoutes()){
-            System.out.println(r.getStart() + ";" + r.getStart().getIndex());
-            for(TourActivity act : r.getActivities()){
-                System.out.println(act + ";" + act.getIndex());
-            }
-            System.out.println(r.getEnd() + ";" + r.getEnd().getIndex());
-        }
+
 		/*
 		 * print solution
 		 */
@@ -101,10 +91,7 @@ public class SolomonExample {
 		Plotter plotter = new Plotter(vrp,solution);
 //		plotter.setBoundingBox(30, 0, 50, 20);
 		plotter.plot("output/solomon_C101_solution.png", "C101");
-//		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_solution.png","C101");
-		
-//		GraphStream.display(vrp,100);
-		
+
 		new GraphStreamViewer(vrp,solution).setCameraView(30, 30, 0.25).labelWith(Label.ID).setRenderDelay(100).display();
 		
 	}

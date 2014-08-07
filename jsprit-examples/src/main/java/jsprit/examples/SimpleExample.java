@@ -16,9 +16,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.io.File;
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.SolutionPrinter;
@@ -36,6 +33,9 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
+
+import java.io.File;
+import java.util.Collection;
 
 
 public class SimpleExample {
