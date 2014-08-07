@@ -368,6 +368,9 @@ public class VehicleRoutingAlgorithms {
 	public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp, final AlgorithmConfig algorithmConfig){
 		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, null);
 	}
+	public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final AlgorithmConfig algorithmConfig){
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),nThreads, null);
+	}
 	
 	/**
 	 * Read and creates a {@link VehicleRoutingAlgorithm} from an url.
@@ -381,6 +384,12 @@ public class VehicleRoutingAlgorithms {
 		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
 		xmlReader.read(configURL);
 		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),0, null);
+	}
+	public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final URL configURL){
+		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
+		AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
+		xmlReader.read(configURL);
+		return createAlgo(vrp,algorithmConfig.getXMLConfiguration(),nThreads, null);
 	}
 	
 	/**
