@@ -18,20 +18,19 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.Collection;
-
 import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
 import jsprit.core.algorithm.listener.IterationStartsListener;
 import jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class VehicleRoutingAlgorithmTest {
 	
@@ -42,6 +41,14 @@ public class VehicleRoutingAlgorithmTest {
 		algorithm.setNuOfIterations(50);
 		assertEquals(50,algorithm.getNuOfIterations());
 	}
+
+    @Test
+    public void whenSettingIterationsWithMaxIterations_itIsSetCorrectly(){
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
+                mock(SearchStrategyManager.class));
+        algorithm.setMaxIterations(50);
+        assertEquals(50,algorithm.getMaxIterations());
+    }
 	
 	private static class CountIterations implements IterationStartsListener {
 
@@ -57,7 +64,21 @@ public class VehicleRoutingAlgorithmTest {
 		}
 		
 	}
-	
+
+    @Test
+    public void whenSettingIterationsWithMaxIterations_iterAreExecutedCorrectly(){
+        SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
+                stratManager);
+        when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
+        when(stratManager.getProbabilities()).thenReturn(Arrays.asList(1.0));
+        algorithm.setMaxIterations(1000);
+        CountIterations counter = new CountIterations();
+        algorithm.addListener(counter);
+        algorithm.searchSolutions();
+        assertEquals(1000,counter.getCountIterations());
+    }
+
 	@Test
 	public void whenSettingIterations_iterAreExecutedCorrectly(){
 		SearchStrategyManager stratManager = mock(SearchStrategyManager.class); 

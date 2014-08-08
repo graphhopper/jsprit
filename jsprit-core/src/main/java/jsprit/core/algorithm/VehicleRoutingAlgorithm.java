@@ -37,8 +37,8 @@ import java.util.Collection;
  *
  */
 public class VehicleRoutingAlgorithm {
-	
-	private static class Counter {
+
+    private static class Counter {
 		private final String name;
 		private long counter = 0;
 		private long nextCounter = 1;
@@ -69,7 +69,7 @@ public class VehicleRoutingAlgorithm {
 	
 	private VehicleRoutingProblem problem;
 	
-	private int nOfIterations = 100;
+	private int maxIterations = 100;
 	
 	private Counter counter = new Counter("iterations ");
 	
@@ -168,12 +168,12 @@ public class VehicleRoutingAlgorithm {
 		logger.info("algorithm starts");
 		double now = System.currentTimeMillis();
 		verify();
-		int nuOfIterationsThisAlgoIsRunning = nOfIterations;
+		int nuOfIterationsThisAlgoIsRunning = maxIterations;
 		counter.reset();
 		Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
 		algorithmStarts(problem,solutions);
 		logger.info("iterations start");
-		for(int i=0;i<nOfIterations;i++){
+		for(int i=0;i< maxIterations;i++){
 			iterationStarts(i+1,problem,solutions);
 			counter.incCounter();
 			SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
@@ -203,9 +203,11 @@ public class VehicleRoutingAlgorithm {
 	 * Returns the number of iterations.
 	 * 
 	 * @return iterations
+     * @deprecated use .getMaxIterations() instead
 	 */
+    @Deprecated
 	public int getNuOfIterations(){
-		return nOfIterations;
+		return maxIterations;
 	}
 	
 	/**
@@ -245,8 +247,34 @@ public class VehicleRoutingAlgorithm {
 		algoListeners.algorithmStarts(problem, this, solutions);
 	}
 
+    /**
+     * Sets max number of iterations.
+     *
+     * @param maxIterations max number of iteration the algorithm runs
+     */
+    public void setMaxIterations(int maxIterations) {
+        this.maxIterations = maxIterations;
+        logger.info("set maxIterations to " + this.maxIterations);
+    }
+
+    /**
+     * Gets max number of iterations.
+     *
+     * @return max number of iterations
+     */
+    public int getMaxIterations() {
+        return maxIterations;
+    }
+
+    /**
+     * Sets max number of iterations.
+     *
+     * @param nOfIterations max number of iteration the algorithm runs
+     * @deprecated use .setMaxIterations(int maxIterations) instead
+     */
+    @Deprecated
 	public void setNuOfIterations(int nOfIterations) {
-		this.nOfIterations = nOfIterations;
+		this.maxIterations = nOfIterations;
 		logger.info("set nuOfIterations to " + nOfIterations);
 	}
 
