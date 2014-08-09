@@ -272,7 +272,7 @@ public class BicycleMessenger {
         vraBuilder.addDefaultCostCalculators();
         vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
-        algorithm.setMaxIterations(2000);
+        algorithm.setMaxIterations(5000);
         VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
 //        algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
 //        algorithm.addListener(prematureAlgorithmTermination);

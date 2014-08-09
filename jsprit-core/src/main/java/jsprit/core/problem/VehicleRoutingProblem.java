@@ -526,7 +526,9 @@ public class VehicleRoutingProblem {
 		 * 
 		 * @param penaltyFactor penaltyFactor of penaltyVehicle
 		 * @return this builder
+         * @deprecated since 1.3.2-SNAPSHOT bad job list replaces penalty vehicles
 		 */
+        @Deprecated
 		public Builder addPenaltyVehicles(double penaltyFactor){
 			this.addPenaltyVehicles = true;
 			this.penaltyFactor = penaltyFactor;
@@ -543,7 +545,9 @@ public class VehicleRoutingProblem {
 		 * @param penaltyFactor the penaltyFactor of penaltyVehicle
 		 * @param penaltyFixedCosts which is an absolute penaltyValue (in contrary to penaltyFactor)
 		 * @return this builder
+         * @deprecated since 1.3.2-SNAPSHOT bad job list replaces penalty vehicles
 		 */
+        @Deprecated
 		public Builder addPenaltyVehicles(double penaltyFactor, double penaltyFixedCosts){
 			this.addPenaltyVehicles = true;
 			this.penaltyFactor = penaltyFactor;

@@ -52,7 +52,7 @@ public class VariablePlusFixedSolutionCostCalculatorFactory {
 					c += stateManager.getRouteState(r, InternalStates.COSTS, Double.class);
 					c += getFixedCosts(r.getVehicle());
 				}
-                c += solution.getBadJobs().size() * c * .1;
+                c += solution.getBadJobs().size() * c * .05;
 				return c;
 			}
 
