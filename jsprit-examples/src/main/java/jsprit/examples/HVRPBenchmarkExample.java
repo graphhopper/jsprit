@@ -18,8 +18,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
@@ -33,6 +31,8 @@ import jsprit.core.util.Solutions;
 import jsprit.instance.reader.VrphGoldenReader;
 import jsprit.instance.reader.VrphGoldenReader.VrphType;
 import jsprit.util.Examples;
+
+import java.util.Collection;
 
 /**
  * Shows how to benchmark the algorithm on different classical HVRP and FSM instances.
@@ -57,7 +57,7 @@ public class HVRPBenchmarkExample {
 		//read modified Golden-instance, you can find all relevant instances in jsprit-instances/instances/vrph
 		//you can build various problems, see VrphType doc for more details
 		new VrphGoldenReader(vrpBuilder, VrphType.HVRPFD).read("input/cn_14mix.txt");
-		vrpBuilder.addPenaltyVehicles(10.0);
+//		vrpBuilder.addPenaltyVehicles(10.0);
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		//try also input//jsprit-examples/input/algorithmConfig_considerFixedCosts_routeLevel.xml

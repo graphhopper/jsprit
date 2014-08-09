@@ -18,8 +18,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import java.util.Collection;
-
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.analysis.toolbox.SolutionPrinter.Print;
@@ -34,6 +32,8 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
+
+import java.util.Collection;
 
 /**
  * customers (id,x,y,demand)
@@ -113,7 +113,7 @@ public class HVRPExample {
 		vrpBuilder.addVehicle(vehicle3_1);
 		
 		//add penaltyVehicles to allow invalid solutions temporarily
-		vrpBuilder.addPenaltyVehicles(5, 1000);
+//		vrpBuilder.addPenaltyVehicles(5, 1000);
 		
 		//set fleetsize finite
 		vrpBuilder.setFleetSize(FleetSize.FINITE);
