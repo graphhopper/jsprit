@@ -85,12 +85,8 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 	
 	private JobInsertionCostsCalculator bestInsertionCostCalculator;
 
-	private boolean minVehiclesFirst = false;
-	
 	private int nuOfBatches;
-	
-	private ExecutorService executor;
-	
+
 	private ExecutorCompletionService<Insertion> completionService;
 
 	public void setRandom(Random random) {
@@ -100,11 +96,10 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 	public BestInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, ExecutorService executorService, int nuOfBatches, VehicleRoutingProblem vehicleRoutingProblem) {
 		super();
 		this.insertionsListeners = new InsertionListeners();
-		this.executor = executorService;
 		this.nuOfBatches = nuOfBatches;
 		inserter = new Inserter(insertionsListeners, vehicleRoutingProblem);
 		bestInsertionCostCalculator = jobInsertionCalculator;
-		completionService = new ExecutorCompletionService<Insertion>(executor);
+		completionService = new ExecutorCompletionService<Insertion>(executorService);
 		logger.info("initialise " + this);
 	}
 
@@ -116,17 +111,14 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 	@Override
 	public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
 		insertionsListeners.informInsertionStarts(vehicleRoutes,unassignedJobs);
-		List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
+        List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
+        List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
 		Collections.shuffle(unassignedJobList, random);
-		
-		List<Batch> batches = distributeRoutes(vehicleRoutes,nuOfBatches);
-		
-		for(final Job unassignedJob : unassignedJobList){			
-			
-			Insertion bestInsertion = null;
+        List<Batch> batches = distributeRoutes(vehicleRoutes,nuOfBatches);
+        for(final Job unassignedJob : unassignedJobList){
+            Insertion bestInsertion = null;
 			double bestInsertionCost = Double.MAX_VALUE;
-			
-			for(final Batch batch : batches){
+            for(final Batch batch : batches){
 				completionService.submit(new Callable<Insertion>() {
 					
 					@Override
@@ -135,21 +127,18 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 					}
 					
 				});
-				
-			}
-			
-			try{
-				for(int i=0;i<batches.size();i++){
-					Future<Insertion> futureIData = completionService.take();
-					Insertion insertion = futureIData.get();
-					if(insertion == null) continue;
-					if(insertion.getInsertionData().getInsertionCost() < bestInsertionCost){
-						bestInsertion = insertion;
-						bestInsertionCost = insertion.getInsertionData().getInsertionCost();
-					}
-				}
-			}
-			catch(InterruptedException e){
+            }
+            try {
+                for (int i = 0; i < batches.size(); i++) {
+                    Future<Insertion> futureIData = completionService.take();
+                    Insertion insertion = futureIData.get();
+                    if (insertion == null) continue;
+                    if (insertion.getInsertionData().getInsertionCost() < bestInsertionCost) {
+                        bestInsertion = insertion;
+                        bestInsertionCost = insertion.getInsertionData().getInsertionCost();
+                    }
+                }
+            } catch(InterruptedException e){
 				Thread.currentThread().interrupt();
 			} 
 			catch (ExecutionException e) {
@@ -157,43 +146,18 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 				logger.error(e.getCause().toString());
 				System.exit(1);
 			}
-			
-			if(!minVehiclesFirst){
-				VehicleRoute newRoute = VehicleRoute.emptyRoute();
-				InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
-				if(newIData.getInsertionCost() < bestInsertionCost){
-					bestInsertion = new Insertion(newRoute,newIData);
-					bestInsertionCost = newIData.getInsertionCost();
-					vehicleRoutes.add(newRoute);
-					batches.get(random.nextInt(batches.size())).routes.add(newRoute);
-				}
-			}	
-			
-			if(bestInsertion == null){
-				VehicleRoute newRoute = VehicleRoute.emptyRoute();
-				InsertionData bestI = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
-				if(bestI instanceof InsertionData.NoInsertionFound){
-					throw new IllegalStateException(getErrorMsg(unassignedJob));
-				}
-				else{
-					bestInsertion = new Insertion(newRoute,bestI);
-					vehicleRoutes.add(newRoute);
-				}
-			}
-//			logger.info("insert " + unassignedJob + " pickup@" + bestInsertion.getInsertionData().getPickupInsertionIndex() + " delivery@" + bestInsertion.getInsertionData().getDeliveryInsertionIndex());
-			inserter.insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
+            VehicleRoute newRoute = VehicleRoute.emptyRoute();
+            InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
+            if(newIData.getInsertionCost() < bestInsertionCost){
+                bestInsertion = new Insertion(newRoute,newIData);
+                vehicleRoutes.add(newRoute);
+                batches.get(random.nextInt(batches.size())).routes.add(newRoute);
+            }
+            if(bestInsertion == null) badJobs.add(unassignedJob);
+            else inserter.insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
 		}
 		insertionsListeners.informInsertionEndsListeners(vehicleRoutes);
-        return null;
-	}
-
-	private String getErrorMsg(Job unassignedJob) {
-		return "given the vehicles, could not insert job\n" +
-				"\t" + unassignedJob + 
-				"\n\tthis might have the following reasons:\n" + 
-				"\t- no vehicle has the capacity to transport the job [check whether there is at least one vehicle that is capable to transport the job]\n" +
-				"\t- the time-window cannot be met, even in a commuter tour the time-window is missed [check whether it is possible to reach the time-window on the shortest path or make hard time-windows soft]\n" +
-				"\t- if you deal with finite vehicles, and the available vehicles are already fully employed, no vehicle can be found anymore to transport the job [add penalty-vehicles]";
+        return badJobs;
 	}
 
 	@Override

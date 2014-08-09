@@ -269,6 +269,7 @@ public class BicycleMessenger {
 
         //create your algorithm
         VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(bicycleMessengerProblem,"input/algorithmConfig_open.xml");
+//        vraBuilder.setNuOfThreads(2);
         vraBuilder.addDefaultCostCalculators();
         vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
