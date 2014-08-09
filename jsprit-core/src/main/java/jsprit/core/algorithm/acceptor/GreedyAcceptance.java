@@ -16,9 +16,9 @@
  ******************************************************************************/
 package jsprit.core.algorithm.acceptor;
 
-import java.util.Collection;
-
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import java.util.Collection;
 
 
 
@@ -48,12 +48,6 @@ public class GreedyAcceptance implements SolutionAcceptor{
 				if (worstSolution == null) worstSolution = s;
 				else if (s.getCost() > worstSolution.getCost()) worstSolution = s;
 			}
-//			if(newSolution.getRoutes().size() < worstSolution.getRoutes().size()){
-//				solutions.remove(worstSolution);
-//				solutions.add(newSolution);
-//				solutionAccepted = true;
-//			}
-//			else 
 			if(newSolution.getCost() < worstSolution.getCost()){
 				solutions.remove(worstSolution);
 				solutions.add(newSolution);

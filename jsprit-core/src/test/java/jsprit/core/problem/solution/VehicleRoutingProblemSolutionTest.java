@@ -18,14 +18,17 @@
  ******************************************************************************/
 package jsprit.core.problem.solution;
 
+import jsprit.core.problem.job.Job;
+import jsprit.core.problem.solution.route.VehicleRoute;
+import org.junit.Test;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
-import jsprit.core.problem.solution.route.VehicleRoute;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import org.junit.Test;
 
 public class VehicleRoutingProblemSolutionTest {
 	
@@ -50,5 +53,43 @@ public class VehicleRoutingProblemSolutionTest {
 		sol.setCost(20.0);
 		assertEquals(20.0,sol.getCost(),0.01);
 	}
+
+    @Test
+    public void sizeOfBadJobsShouldBeCorrect(){
+        Job badJob = mock(Job.class);
+        List<Job> badJobs = new ArrayList<Job>();
+        badJobs.add(badJob);
+        VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), badJobs, 10.0);
+        assertEquals(1,sol.getBadJobs().size());
+    }
+
+    @Test
+    public void sizeOfBadJobsShouldBeCorrect_2(){
+        Job badJob = mock(Job.class);
+        List<Job> badJobs = new ArrayList<Job>();
+        badJobs.add(badJob);
+        VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
+        sol.getBadJobs().addAll(badJobs);
+        assertEquals(1, sol.getBadJobs().size());
+    }
+
+    @Test
+    public void badJobsShouldBeCorrect(){
+        Job badJob = mock(Job.class);
+        List<Job> badJobs = new ArrayList<Job>();
+        badJobs.add(badJob);
+        VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), badJobs, 10.0);
+        assertEquals(badJob,sol.getBadJobs().iterator().next());
+    }
+
+    @Test
+    public void badJobsShouldBeCorrect_2() {
+        Job badJob = mock(Job.class);
+        List<Job> badJobs = new ArrayList<Job>();
+        badJobs.add(badJob);
+        VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
+        sol.getBadJobs().addAll(badJobs);
+        assertEquals(badJob, sol.getBadJobs().iterator().next());
+    }
 
 }

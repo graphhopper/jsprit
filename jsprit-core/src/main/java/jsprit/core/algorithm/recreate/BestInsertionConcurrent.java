@@ -114,7 +114,7 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 	}
 
 	@Override
-	public void insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
+	public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
 		insertionsListeners.informInsertionStarts(vehicleRoutes,unassignedJobs);
 		List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
 		Collections.shuffle(unassignedJobList, random);
@@ -184,6 +184,7 @@ final class BestInsertionConcurrent implements InsertionStrategy{
 			inserter.insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
 		}
 		insertionsListeners.informInsertionEndsListeners(vehicleRoutes);
+        return null;
 	}
 
 	private String getErrorMsg(Job unassignedJob) {

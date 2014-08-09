@@ -117,7 +117,8 @@ public class SearchStrategy {
 	 * @param vrp the underlying vehicle routing problem
 	 * @param solutions which will be modified 
 	 * @return discoveredSolution
-	 */
+     * @throws java.lang.IllegalStateException if selector cannot select any solution
+     */
 	@SuppressWarnings("UnusedParameters")
     public DiscoveredSolution run(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions){
 		VehicleRoutingProblemSolution solution = solutionSelector.selectSolution(solutions);

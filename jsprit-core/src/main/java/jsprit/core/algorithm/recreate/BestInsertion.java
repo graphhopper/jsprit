@@ -34,11 +34,11 @@ import java.util.*;
 
 
 /**
- * 
+ * Best insertion that insert the job where additional costs are minimal.
+ *
  * @author stefan schroeder
  * 
  */
-
 final class BestInsertion implements InsertionStrategy{
 	
 	class Insertion {
@@ -79,8 +79,6 @@ final class BestInsertion implements InsertionStrategy{
 	
 	private JobInsertionCostsCalculator bestInsertionCostCalculator;
 
-	private boolean minVehiclesFirst = false;
-
 	public void setRandom(Random random) {
 		this.random = random;
 	}
@@ -99,9 +97,10 @@ final class BestInsertion implements InsertionStrategy{
 	}
 
 	@Override
-	public void insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
+	public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
 		insertionsListeners.informInsertionStarts(vehicleRoutes,unassignedJobs);
-		List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
+        List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
+        List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
 		Collections.shuffle(unassignedJobList, random);
 		for(Job unassignedJob : unassignedJobList){			
 			Insertion bestInsertion = null;
@@ -116,41 +115,20 @@ final class BestInsertion implements InsertionStrategy{
 					bestInsertionCost = iData.getInsertionCost();
 				}
 			}
-			if(!minVehiclesFirst){
-				VehicleRoute newRoute = VehicleRoute.emptyRoute();
-				InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
-				if(newIData.getInsertionCost() < bestInsertionCost){
-					bestInsertion = new Insertion(newRoute,newIData);
-					vehicleRoutes.add(newRoute);
-				}
-			}			
-			if(bestInsertion == null){
-				VehicleRoute newRoute = VehicleRoute.emptyRoute();
-				InsertionData bestI = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
-				if(bestI instanceof InsertionData.NoInsertionFound){
-					throw new NoSolutionFoundException(getErrorMsg(unassignedJob));
-				}
-				else{
-					bestInsertion = new Insertion(newRoute,bestI);
-					vehicleRoutes.add(newRoute);
-				}
-			}
-//			logger.info("insert " + unassignedJob + " pickup@" + bestInsertion.getInsertionData().getPickupInsertionIndex() + " delivery@" + bestInsertion.getInsertionData().getDeliveryInsertionIndex());
-			inserter.insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
-		}
+            VehicleRoute newRoute = VehicleRoute.emptyRoute();
+            InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
+            if(newIData.getInsertionCost() < bestInsertionCost){
+                bestInsertion = new Insertion(newRoute,newIData);
+                vehicleRoutes.add(newRoute);
+            }
+            if(bestInsertion == null) badJobs.add(unassignedJob);
+            else inserter.insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
+        }
 		insertionsListeners.informInsertionEndsListeners(vehicleRoutes);
+        return badJobs;
 	}
 
-	private String getErrorMsg(Job unassignedJob) {
-		return "given the vehicles, could not insert job\n" +
-				"\t" + unassignedJob + 
-				"\n\tthis might have the following reasons:\n" + 
-				"\t- no vehicle has the capacity to transport the job [check whether there is at least one vehicle that is capable to transport the job]\n" +
-				"\t- the time-window cannot be met, even in a commuter tour the time-window is missed [check whether it is possible to reach the time-window on the shortest path or make hard time-windows soft]\n" +
-				"\t- if you deal with finite vehicles, and the available vehicles are already fully employed, no vehicle can be found anymore to transport the job [add penalty-vehicles]";
-	}
-
-	@Override
+    @Override
 	public void removeListener(InsertionListener insertionListener) {
 		insertionsListeners.removeListener(insertionListener);
 	}

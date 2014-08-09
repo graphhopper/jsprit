@@ -23,6 +23,7 @@ import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+import jsprit.core.problem.vehicle.Vehicle;
 
 /**
  * Default objective function which is the sum of all fixed vehicle and variable
@@ -43,16 +44,23 @@ public class VariablePlusFixedSolutionCostCalculatorFactory {
 
 	public SolutionCostCalculator createCalculator(){
 		return new SolutionCostCalculator() {
-			
+
 			@Override
 			public double getCosts(VehicleRoutingProblemSolution solution) {
 				double c = 0.0;
-				for(VehicleRoute r : solution.getRoutes()){
-					c += stateManager.getRouteState(r, InternalStates.COSTS,Double.class);
-					c += r.getVehicle().getType().getVehicleCostParams().fix;
+                for(VehicleRoute r : solution.getRoutes()){
+					c += stateManager.getRouteState(r, InternalStates.COSTS, Double.class);
+					c += getFixedCosts(r.getVehicle());
 				}
+                c += solution.getBadJobs().size() * c * .1;
 				return c;
 			}
+
+            private double getFixedCosts(Vehicle vehicle) {
+                if(vehicle == null) return 0.0;
+                if(vehicle.getType() == null) return 0.0;
+                return vehicle.getType().getVehicleCostParams().fix;
+            }
 		};
 	}
 

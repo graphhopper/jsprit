@@ -620,25 +620,8 @@ public class VehicleRoutingAlgorithms {
 	}
 
 	private static SolutionCostCalculator getDefaultCostCalculator(final StateManager stateManager) {
-		SolutionCostCalculator calc = new SolutionCostCalculator() {
-			
-			@Override
-			public double getCosts(VehicleRoutingProblemSolution solution) {
-				double costs = 0.0;
-				for(VehicleRoute route : solution.getRoutes()){
-					costs += stateManager.getRouteState(route, InternalStates.COSTS, Double.class) + getFixedCosts(route.getVehicle());
-				}
-				return costs;
-			}
-
-			private double getFixedCosts(Vehicle vehicle) {
-				if(vehicle == null) return 0.0;
-				if(vehicle.getType() == null) return 0.0;
-				return vehicle.getType().getVehicleCostParams().fix;
-			}
-		};
-		return calc;
-	}
+		return new VariablePlusFixedSolutionCostCalculatorFactory(stateManager).createCalculator();
+    }
 
 	private static VehicleFleetManager createFleetManager(final VehicleRoutingProblem vrp) {
 		if(vrp.getFleetSize().equals(FleetSize.INFINITE)){

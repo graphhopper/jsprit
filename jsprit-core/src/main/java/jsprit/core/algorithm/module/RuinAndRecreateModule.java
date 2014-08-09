@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.module;
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.SearchStrategyModule;
 import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import jsprit.core.algorithm.recreate.InsertionStrategy;
@@ -26,6 +24,10 @@ import jsprit.core.algorithm.ruin.RuinStrategy;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class RuinAndRecreateModule implements SearchStrategyModule{
@@ -46,7 +48,12 @@ public class RuinAndRecreateModule implements SearchStrategyModule{
 	@Override
 	public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
 		Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
-		insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobs);
+        Set<Job> ruinedJobSet = new HashSet<Job>();
+        ruinedJobSet.addAll(ruinedJobs);
+        ruinedJobSet.addAll(vrpSolution.getBadJobs());
+		Collection<Job> badJobs = insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobSet);
+        vrpSolution.getBadJobs().clear();
+        vrpSolution.getBadJobs().addAll(badJobs);
 		return vrpSolution;
 
 	}
