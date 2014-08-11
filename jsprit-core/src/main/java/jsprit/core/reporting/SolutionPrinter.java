@@ -77,10 +77,10 @@ public class SolutionPrinter {
 		System.out.printf("| indicator     | value    |%n");
 		System.out.format("+---------------+----------+%n");
 		
-		System.out.format(leftAlign, "nJobs", problem.getJobs().values().size());
+		System.out.format(leftAlign, "noJobs", problem.getJobs().values().size());
 		Jobs jobs = getNuOfJobs(problem);
-		System.out.format(leftAlign, "nServices",jobs.nServices);
-		System.out.format(leftAlign, "nShipments",jobs.nShipments);
+		System.out.format(leftAlign, "noServices",jobs.nServices);
+		System.out.format(leftAlign, "noShipments",jobs.nShipments);
 		System.out.format(leftAlign, "fleetsize",problem.getFleetSize().toString());
 		System.out.format("+--------------------------+%n");
 		
@@ -92,7 +92,8 @@ public class SolutionPrinter {
 		System.out.printf("| indicator     | value                                    |%n");
 		System.out.format("+---------------+------------------------------------------+%n");
 		System.out.format(leftAlignSolution, "costs",solution.getCost());
-		System.out.format(leftAlignSolution, "nVehicles",solution.getRoutes().size());
+		System.out.format(leftAlignSolution, "noVehicles",solution.getRoutes().size());
+        System.out.format(leftAlignSolution, "unassgndJobs", solution.getUnassignedJobs().size());
 		System.out.format("+----------------------------------------------------------+%n");
 		
 		if(print.equals(Print.VERBOSE)){
@@ -130,6 +131,14 @@ public class SolutionPrinter {
         }
         System.out.format("+*:=PenaltyVehicle+%n");
         System.out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
+        System.out.format("+----------------+%n");
+        System.out.format("| unassignedJobs |%n");
+        System.out.format("+----------------+%n");
+        String unassignedJobAlgin = "| %-14s |%n";
+        for(Job j : solution.getUnassignedJobs()){
+            System.out.format(unassignedJobAlgin,j.getId());
+        }
+        System.out.format("+----------------+%n");
 	}
 
     private static String getVehicleString(VehicleRoute route) {

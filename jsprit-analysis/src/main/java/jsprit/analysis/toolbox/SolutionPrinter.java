@@ -30,8 +30,10 @@ import jsprit.core.problem.vehicle.PenaltyVehicleType;
  * Printer to print the details of a vehicle-routing-problem solution.
  * 
  * @author stefan schroeder
+ * @deprecated use jsprit.core.reporting.SolutionPrinter instead
  *
  */
+@Deprecated
 public class SolutionPrinter {
 	
 	/**
@@ -93,7 +95,7 @@ public class SolutionPrinter {
 		System.out.format("+---------------+------------------------------------------+%n");
 		System.out.format(leftAlignSolution, "costs",solution.getCost());
 		System.out.format(leftAlignSolution, "nVehicles",solution.getRoutes().size());
-        System.out.format(leftAlignSolution, "badJobs", solution.getUnassignedJobs().size());
+        System.out.format(leftAlignSolution, "unassignedJobs", solution.getUnassignedJobs().size());
 		System.out.format("+----------------------------------------------------------+%n");
 		
 		if(print.equals(Print.VERBOSE)){
