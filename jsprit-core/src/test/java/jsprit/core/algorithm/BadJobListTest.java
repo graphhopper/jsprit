@@ -1,6 +1,5 @@
-package jsprit.core.algorithm.state;
+package jsprit.core.algorithm;
 
-import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
