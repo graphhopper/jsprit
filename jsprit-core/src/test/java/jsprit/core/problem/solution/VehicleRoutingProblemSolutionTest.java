@@ -60,7 +60,7 @@ public class VehicleRoutingProblemSolutionTest {
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), badJobs, 10.0);
-        assertEquals(1,sol.getBadJobs().size());
+        assertEquals(1,sol.getUnassignedJobs().size());
     }
 
     @Test
@@ -69,8 +69,8 @@ public class VehicleRoutingProblemSolutionTest {
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
-        sol.getBadJobs().addAll(badJobs);
-        assertEquals(1, sol.getBadJobs().size());
+        sol.getUnassignedJobs().addAll(badJobs);
+        assertEquals(1, sol.getUnassignedJobs().size());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class VehicleRoutingProblemSolutionTest {
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), badJobs, 10.0);
-        assertEquals(badJob,sol.getBadJobs().iterator().next());
+        assertEquals(badJob,sol.getUnassignedJobs().iterator().next());
     }
 
     @Test
@@ -88,8 +88,8 @@ public class VehicleRoutingProblemSolutionTest {
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
-        sol.getBadJobs().addAll(badJobs);
-        assertEquals(badJob, sol.getBadJobs().iterator().next());
+        sol.getUnassignedJobs().addAll(badJobs);
+        assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
     }
 
 }

@@ -31,8 +31,8 @@ public class BadJobListTest {
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        assertTrue(!solution.getBadJobs().contains(job1));
-        assertTrue(solution.getBadJobs().contains(job2));
+        assertTrue(!solution.getUnassignedJobs().contains(job1));
+        assertTrue(solution.getUnassignedJobs().contains(job2));
     }
 
     @Test
@@ -50,8 +50,8 @@ public class BadJobListTest {
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        assertTrue(!solution.getBadJobs().contains(job1));
-        assertTrue(solution.getBadJobs().contains(job2));
+        assertTrue(!solution.getUnassignedJobs().contains(job1));
+        assertTrue(solution.getUnassignedJobs().contains(job2));
     }
 
 }

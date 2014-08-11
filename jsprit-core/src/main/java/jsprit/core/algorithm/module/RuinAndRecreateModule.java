@@ -50,10 +50,10 @@ public class RuinAndRecreateModule implements SearchStrategyModule{
 		Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
         Set<Job> ruinedJobSet = new HashSet<Job>();
         ruinedJobSet.addAll(ruinedJobs);
-        ruinedJobSet.addAll(vrpSolution.getBadJobs());
-		Collection<Job> badJobs = insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobSet);
-        vrpSolution.getBadJobs().clear();
-        vrpSolution.getBadJobs().addAll(badJobs);
+        ruinedJobSet.addAll(vrpSolution.getUnassignedJobs());
+		Collection<Job> unassignedJobs = insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobSet);
+        vrpSolution.getUnassignedJobs().clear();
+        vrpSolution.getUnassignedJobs().addAll(unassignedJobs);
 		return vrpSolution;
 
 	}

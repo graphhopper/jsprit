@@ -93,7 +93,7 @@ public class SolutionPrinter {
 		System.out.format("+---------------+------------------------------------------+%n");
 		System.out.format(leftAlignSolution, "costs",solution.getCost());
 		System.out.format(leftAlignSolution, "nVehicles",solution.getRoutes().size());
-        System.out.format(leftAlignSolution, "badJobs", solution.getBadJobs().size());
+        System.out.format(leftAlignSolution, "badJobs", solution.getUnassignedJobs().size());
 		System.out.format("+----------------------------------------------------------+%n");
 		
 		if(print.equals(Print.VERBOSE)){
@@ -132,7 +132,7 @@ public class SolutionPrinter {
 		System.out.format("+*:=PenaltyVehicle+%n");
 		System.out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
         System.out.format("+*:=badJobs+%n");
-        for(Job j : solution.getBadJobs()){
+        for(Job j : solution.getUnassignedJobs()){
             System.out.println(j.getId());
         }
 	}

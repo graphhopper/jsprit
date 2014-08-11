@@ -43,7 +43,7 @@ public class VehicleRoutingProblemSolution {
 	
 	private final Collection<VehicleRoute> routes;
 
-    private Collection<Job> badJobs = new ArrayList<Job>();
+    private Collection<Job> unassignedJobs = new ArrayList<Job>();
 
 	private double cost;
 
@@ -54,7 +54,7 @@ public class VehicleRoutingProblemSolution {
 			routes.add(route);
 		}
 		this.cost = solution.getCost();
-        badJobs.addAll(solution.getBadJobs());
+        unassignedJobs.addAll(solution.getUnassignedJobs());
 	}
 	
 	/**
@@ -73,12 +73,14 @@ public class VehicleRoutingProblemSolution {
      * Constructs a solution with a number of {@link VehicleRoute}s, bad jobs and their corresponding aggregate cost value.
      *
      * @param routes routes being part of the solution
+     * @param unassignedJobs jobs that could not be assigned to any vehicle
      * @param cost total costs of solution
+     *
      */
-    public VehicleRoutingProblemSolution(Collection<VehicleRoute> routes, Collection<Job> badJobs, double cost) {
+    public VehicleRoutingProblemSolution(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, double cost) {
         super();
         this.routes = routes;
-        this.badJobs = badJobs;
+        this.unassignedJobs = unassignedJobs;
         this.cost = cost;
     }
 
@@ -114,8 +116,8 @@ public class VehicleRoutingProblemSolution {
      *
      * @return bad jobs
      */
-    public Collection<Job> getBadJobs(){
-        return badJobs;
+    public Collection<Job> getUnassignedJobs(){
+        return unassignedJobs;
     }
 
 }
