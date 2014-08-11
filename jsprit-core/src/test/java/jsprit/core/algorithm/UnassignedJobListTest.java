@@ -14,7 +14,7 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertTrue;
 
-public class BadJobListTest {
+public class UnassignedJobListTest {
 
     @Test
     public void job2ShouldBeInBadJobList_dueToTimeWindow(){
