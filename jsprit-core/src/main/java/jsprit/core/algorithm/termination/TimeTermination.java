@@ -28,51 +28,57 @@ import java.util.Collection;
 
 
 /**
- * Breaks algorithm prematurely based on specified time.
+ * Terminates algorithm prematurely based on specified time.
  * 
- * <p>Note, TimeBreaker must be registered as AlgorithmListener <br>
- * <code>agorithm.getAlgorithmListeners().addListener(this);</code>
+ * <p>Note, TimeTermination must be registered as AlgorithmListener <br>
+ * TimeTermination will be activated by:<br>
+ *
+ * <code>algorithm.setPrematureAlgorithmTermination(this);</code><br>
+ * <code>algorithm.addListener(this);</code>
  * 
- * @author stefan
+ * @author stefan schroeder
  *
  */
 public class TimeTermination implements PrematureAlgorithmTermination, AlgorithmStartsListener{
 
 	private static Logger logger = LogManager.getLogger(TimeTermination.class);
 	
-	private double timeThreshold;
+	private final double timeThreshold;
 	
 	private double startTime;
 	
 	/**
-	 * Constructs TimeBreaker that breaks algorithm prematurely based on specified time.
-	 * 
-	 * <p>Note, TimeBreaker must be registered as AlgorithmListener <br>
-	 * <code>agorithm.addListener(this);</code>
-	 * 
-	 * @author stefan
+	 * Constructs TimeTermination that terminates algorithm prematurely based on specified time.
 	 *
+     * @param timeThreshold_in_seconds the computation time after which the algorithm terminates
 	 */
-	public TimeTermination(double time_in_seconds) {
+	public TimeTermination(double timeThreshold_in_seconds) {
 		super();
-		this.timeThreshold = time_in_seconds;
+		this.timeThreshold = timeThreshold_in_seconds;
 		logger.info("initialise " + this);
 	}
 	
 	@Override
 	public String toString() {
-		return "[name=TimeBreaker][timeThreshold="+timeThreshold+"]";
+		return "[name=TimeTermination][timeThreshold="+timeThreshold+"]";
 	}
 
 	@Override
 	public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
-		if((System.currentTimeMillis() - startTime)/1000.0 > timeThreshold) return true;
-		return false;
+		return ( ( now() - startTime ) / 1000.0 > timeThreshold );
 	}
+
+    void start(double startTime){
+        this.startTime = startTime;
+    }
+
+    private double now(){
+        return System.currentTimeMillis();
+    }
 	
 	@Override
-	public void informAlgorithmStarts(VehicleRoutingProblem problem,VehicleRoutingAlgorithm algorithm,Collection<VehicleRoutingProblemSolution> solutions) {
-		startTime = System.currentTimeMillis();
+	public void informAlgorithmStarts(VehicleRoutingProblem problem,VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
+		start(System.currentTimeMillis());
 	}
 
 }

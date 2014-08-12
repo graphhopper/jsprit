@@ -18,8 +18,18 @@ package jsprit.core.algorithm.termination;
 
 import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
 
+/**
+ * Basic interface for prematureTermination.
+ *
+ */
 public interface PrematureAlgorithmTermination {
-	
+
+    /**
+     * Returns true if algorithm should terminate, false otherwise.
+     *
+     * @param discoveredSolution the discovered solution
+     * @return true if algorithm should terminate, false otherwise
+     */
 	public boolean isPrematureBreak(DiscoveredSolution discoveredSolution);
 
 }
