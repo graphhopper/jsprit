@@ -32,6 +32,8 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 [Abraham Gausachs](https://github.com/agausachs)<br>
 [Subhamay Das](http://www.linkedin.com/profile/view?id=10203174)
 
+##[Acknowledgement](https://github.com/jsprit/jsprit/wiki/Acknowledgement)
+
 ##About
 The jsprit-project is created and maintained by [Stefan Schröder](https://github.com/oblonski). It is motivated by two issues. 
 
