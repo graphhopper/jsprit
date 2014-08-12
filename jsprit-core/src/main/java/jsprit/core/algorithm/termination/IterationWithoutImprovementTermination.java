@@ -20,33 +20,44 @@ import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+ * Terminates algorithm prematurely based on iterations without any improvement (i.e. new solution acceptance).
+ *
+ * <p>Termination will be activated by:<br>
+ *
+ * <code>algorithm.setPrematureAlgorithmTermination(this);</code><br>
+ *
+ * @author stefan schroeder
+ *
+ */
 public class IterationWithoutImprovementTermination implements PrematureAlgorithmTermination{
 
 	private static Logger log = LogManager.getLogger(IterationWithoutImprovementTermination.class);
 	
-	private int nuOfIterationWithoutImprovement;
+	private int noIterationWithoutImprovement;
 	
 	private int iterationsWithoutImprovement = 0;
-	
-	public IterationWithoutImprovementTermination(int nuOfIterationsWithoutImprovement){
-		this.nuOfIterationWithoutImprovement=nuOfIterationsWithoutImprovement;
+
+    /**
+     * Constructs termination.
+     *
+     * @param noIterationsWithoutImprovement previous iterations without any improvement
+     */
+	public IterationWithoutImprovementTermination(int noIterationsWithoutImprovement){
+		this.noIterationWithoutImprovement =noIterationsWithoutImprovement;
 		log.info("initialise " + this);
 	}
 	
 	@Override
 	public String toString() {
-		return "[name=IterationWithoutImprovementBreaker][iterationsWithoutImprovement="+nuOfIterationWithoutImprovement+"]";
+		return "[name=IterationWithoutImprovementBreaker][iterationsWithoutImprovement="+ noIterationWithoutImprovement +"]";
 	}
 	
 	@Override
 	public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
 		if(discoveredSolution.isAccepted()) iterationsWithoutImprovement = 0;
 		else iterationsWithoutImprovement++;
-		if(iterationsWithoutImprovement > nuOfIterationWithoutImprovement){
-			return true;
-		}
-		return false;
+		return (iterationsWithoutImprovement > noIterationWithoutImprovement);
 	}
 
 	
