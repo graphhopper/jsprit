@@ -47,7 +47,7 @@ import java.util.Collection;
  */
 public class VariationCoefficientTermination implements PrematureAlgorithmTermination, IterationStartsListener, AlgorithmStartsListener, IterationEndsListener{
 
-	private static Logger logger = LogManager.getLogger(VariationCoefficientTermination.class);
+	private final static Logger logger = LogManager.getLogger(VariationCoefficientTermination.class);
 	
 	private final int noIterations;
 	
