@@ -33,73 +33,70 @@ import java.util.Collection;
 
 
 /**
- * Breaks algorithm prematurely based on variationCoefficient.
+ * Terminates algorithm prematurely based on variationCoefficient (http://en.wikipedia.org/wiki/Coefficient_of_variation).
  * 
- * <p>Note that this must be registered in algorithm<br>
- * <code>algorithm.getAlgorithmListeners().addListener(this);</code>
+ * <p>Note, that this must be registered as AlgorithmListener <br>
+ * It will be activated by:<br>
+ *
+ * <code>algorithm.setPrematureAlgorithmTermination(this);</code><br>
+ * <code>algorithm.addListener(this);</code>
+ *
  * 
- * 
- * @author stefan
+ * @author stefan schroeder
  *
  */
 public class VariationCoefficientTermination implements PrematureAlgorithmTermination, IterationStartsListener, AlgorithmStartsListener, IterationEndsListener{
 
 	private static Logger logger = LogManager.getLogger(VariationCoefficientTermination.class);
 	
-	private int nuOfIterations;
+	private final int noIterations;
 	
-	private double variationCoefficientThreshold;
+	private final double variationCoefficientThreshold;
 	
 	private int currentIteration;
 	
 	private double[] solutionValues;
 	
 	private VehicleRoutingProblemSolution lastAccepted = null;
-	
-	/**
-	 * Breaks algorithm prematurely based on variationCoefficient.
-	 * 
-	 * <p>Note that this must be registered in algorithm<br>
-	 * <code>algorithm.getAlgorithmListeners().addListener(this);</code>
-	 * 
-	 * 
-	 * @author stefan
-	 *
-	 */
-	public VariationCoefficientTermination(int nuOfIterations, double variationCoefficientThreshold) {
+
+    /**
+     * Constructs termination.
+     *
+     * @param noIterations size of the sample, i.e. number previous solutions values to take into account. If for example
+     *                     noIterations = 10 then every 10th iteration the variationCoefficient will be calculated with the
+     *                     last 10 solution values.
+     * @param variationCoefficientThreshold the threshold used to terminate the algorithm. If the calculated variationCoefficient
+     *                                      is smaller than the specified threshold, the algorithm terminates.
+     */
+	public VariationCoefficientTermination(int noIterations, double variationCoefficientThreshold) {
 		super();
-		this.nuOfIterations = nuOfIterations;
+		this.noIterations = noIterations;
 		this.variationCoefficientThreshold = variationCoefficientThreshold;
-		solutionValues = new double[nuOfIterations];
+		solutionValues = new double[noIterations];
 		logger.info("initialise " + this);
 	}
 	
 	@Override
 	public String toString() {
-		return "[name=VariationCoefficientBreaker][variationCoefficientThreshold="+variationCoefficientThreshold+"][iterations="+nuOfIterations+"]";
+		return "[name=VariationCoefficientBreaker][variationCoefficientThreshold="+variationCoefficientThreshold+"][iterations="+ noIterations +"]";
 	}
 
 	@Override
 	public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
 		if(discoveredSolution.isAccepted()){
 			lastAccepted = discoveredSolution.getSolution();
-			solutionValues[currentIteration]=discoveredSolution.getSolution().getCost();
+			solutionValues[currentIteration] = discoveredSolution.getSolution().getCost();
 		}
 		else{
 			if(lastAccepted != null){
-				solutionValues[currentIteration]=lastAccepted.getCost();
+				solutionValues[currentIteration] = lastAccepted.getCost();
 			} 
-			else solutionValues[currentIteration]=Integer.MAX_VALUE; 
+			else solutionValues[currentIteration] = Integer.MAX_VALUE;
 		}
-		if(lastAccepted !=null) {
-//			logger.info(lastAccepted.getCost());
-//			logger.info("inArr,"+(currentIteration)+","+solutionValues[currentIteration]);
-		}
-		if(currentIteration == (nuOfIterations-1)){
+		if(currentIteration == (noIterations - 1)){
 			double mean = StatUtils.mean(solutionValues);
 			double stdDev = new StandardDeviation(true).evaluate(solutionValues, mean);
-			double variationCoefficient = stdDev/mean;
-//			logger.info("[mean="+mean+"][stdDev="+stdDev+"][variationCoefficient="+variationCoefficient+"]");
+			double variationCoefficient = stdDev / mean;
 			if(variationCoefficient < variationCoefficientThreshold){
 				return true;
 			}
@@ -108,7 +105,7 @@ public class VariationCoefficientTermination implements PrematureAlgorithmTermin
 	}
 	
 	private void reset(){
-		currentIteration=0;
+		currentIteration = 0;
 	}
 
 	@Override
@@ -118,7 +115,7 @@ public class VariationCoefficientTermination implements PrematureAlgorithmTermin
 
 	@Override
 	public void informIterationEnds(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-		if(currentIteration == (nuOfIterations-1)){
+		if(currentIteration == (noIterations - 1)){
 			reset();
 		}
 		else{
@@ -130,7 +127,5 @@ public class VariationCoefficientTermination implements PrematureAlgorithmTermin
 	public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 		if(lastAccepted == null) lastAccepted = Solutions.bestOf(solutions);
 	}
-
-	
 
 }
