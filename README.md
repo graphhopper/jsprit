@@ -39,10 +39,14 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 ####Mailing List: 
 In the [mailing list](https://groups.google.com/group/jsprit-mailing-list) you can discuss jsprit related issues and you will probably get answers to your questions.
 
+####Issue Tracker:
+For bugs, feature requests or similar use the [issue tracker](https://github.com/jsprit/jsprit/issues).
+
 ####Email: 
 If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, send an email to:
 
 info@jspr.it
+
 
 ##About
 The jsprit-project is created and maintained by [Stefan Schröder](https://github.com/oblonski). It is motivated by two issues. 
