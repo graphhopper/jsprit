@@ -34,6 +34,16 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 ##[Acknowledgement](https://github.com/jsprit/jsprit/wiki/Acknowledgement)
 
+##[Contact]
+
+####Mailing List: 
+In the [mailing list](https://groups.google.com/group/jsprit-mailing-list) you can discuss jsprit related issue and you probably get help for your questions.
+
+####Email: 
+If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, email at:
+
+info@jspr.it
+
 ##About
 The jsprit-project is created and maintained by [Stefan Schröder](https://github.com/oblonski). It is motivated by two issues. 
 
@@ -43,6 +53,3 @@ Second, it is motivated by my PhD-project at [KIT](http://www.kit.edu/english/in
 
 It is mainly inspired by my research group at [KIT-ECON](http://netze.econ.kit.edu/21.php), and by a great open-source project called [MATSim](http://www.matsim.org) and its developers.
 
-If you have questions or if you use jsprit, it would be great you give feedback and let me know your experience:
-
-Email: info@jspr.it
