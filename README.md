@@ -40,7 +40,7 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 In the [mailing list](https://groups.google.com/group/jsprit-mailing-list) you can discuss jsprit related issues and you will probably get answers to your questions.
 
 ####Email: 
-If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, email at:
+If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, send an email to:
 
 info@jspr.it
 
