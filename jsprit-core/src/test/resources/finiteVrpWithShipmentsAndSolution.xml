@@ -81,6 +81,19 @@
                     </timeWindow>
                </timeWindows>
           </service>
+
+         <service id="4" type="service">
+             <locationId>i(3,9)</locationId>
+             <coord x="10.0" y="10.0"/>
+             <capacity-demand>1</capacity-demand>
+             <duration>0.0</duration>
+             <timeWindows>
+                 <timeWindow>
+                     <start>0.0</start>
+                     <end>4000.0</end>
+                 </timeWindow>
+             </timeWindows>
+         </service>
      </services>
      
      <shipments>
@@ -143,6 +156,9 @@
                          <end>100.0</end>
                     </route>
                </routes>
+              <unassignedJobs>
+                  <job id="4"/>
+              </unassignedJobs>
           </solution>
      </solutions>
     

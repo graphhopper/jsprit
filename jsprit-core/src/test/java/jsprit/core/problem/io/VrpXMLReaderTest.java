@@ -21,7 +21,13 @@ import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.activity.DeliverShipment;
+import jsprit.core.problem.solution.route.activity.PickupService;
+import jsprit.core.problem.solution.route.activity.PickupShipment;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.util.Solutions;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -570,5 +576,47 @@ public class VrpXMLReaderTest {
 		assertEquals(2,vrp.getInitialVehicleRoutes().iterator().next().getActivities().size());
 	}
 
+    @Test
+    public void testRead_ifReaderIsCalled_itReadsSuccessfullyV2(){
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        new VrpXMLReader(vrpBuilder, solutions).read("src/test/resources/finiteVrpWithShipmentsAndSolution.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        assertEquals(4,vrp.getJobs().size());
+        assertEquals(1,solutions.size());
 
+        assertEquals(1,solutions.get(0).getRoutes().size());
+        List<TourActivity> activities = solutions.get(0).getRoutes().iterator().next().getTourActivities().getActivities();
+        assertEquals(4,activities.size());
+        assertTrue(activities.get(0) instanceof PickupService);
+        assertTrue(activities.get(1) instanceof PickupService);
+        assertTrue(activities.get(2) instanceof PickupShipment);
+        assertTrue(activities.get(3) instanceof DeliverShipment);
+    }
+
+    @Test
+    public void testRead_ifReaderIsCalled_itReadsSuccessfully(){
+        new VrpXMLReader(VehicleRoutingProblem.Builder.newInstance(), new ArrayList<VehicleRoutingProblemSolution>()).read("src/test/resources/lui-shen-solution.xml");
+        assertTrue(true);
+    }
+
+
+    @Test
+    public void unassignedJobShouldBeRead(){
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        new VrpXMLReader(vrpBuilder, solutions).read("src/test/resources/finiteVrpWithShipmentsAndSolution.xml");
+
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
+        assertEquals(1,solution.getUnassignedJobs().size());
+        assertEquals("4",solution.getUnassignedJobs().iterator().next().getId());
+    }
+
+    @Test
+    public void solutionListShouldBeEmpty(){
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        new VrpXMLReader(vrpBuilder, solutions).read("src/test/resources/finiteVrpforReaderTest.xml");
+        assertTrue(solutions.isEmpty());
+    }
 }
