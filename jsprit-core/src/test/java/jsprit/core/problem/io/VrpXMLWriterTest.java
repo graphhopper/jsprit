@@ -21,15 +21,20 @@ import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
+import jsprit.core.util.Solutions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -864,5 +869,69 @@ public class VrpXMLWriterTest {
 		
 		assertEquals(2,newVrp.getInitialVehicleRoutes().iterator().next().getActivities().size());
 	}
+
+    @Test
+    public void solutionWithoutUnassignedJobsShouldBeWrittenCorrectly(){
+        Builder builder = VehicleRoutingProblem.Builder.newInstance();
+
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+        builder.addVehicle(v1);
+
+        Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocationId("loc").setServiceTime(2.0).build();
+        Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocationId("loc2").setServiceTime(4.0).build();
+
+        VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+
+        VehicleRoute route = VehicleRoute.Builder.newInstance(v1).addService(s1).addService(s2).build();
+        List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
+        routes.add(route);
+        VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(routes,10.);
+        List<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        solutions.add(solution);
+
+        new VrpXMLWriter(vrp, solutions).write(infileName);
+
+        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<VehicleRoutingProblemSolution>();
+        new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
+
+        assertEquals(1, solutionsToRead.size());
+        assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(),0.01);
+        assertTrue(Solutions.bestOf(solutionsToRead).getUnassignedJobs().isEmpty());
+    }
+
+    @Test
+    public void solutionWithUnassignedJobsShouldBeWrittenCorrectly(){
+        Builder builder = VehicleRoutingProblem.Builder.newInstance();
+
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("loc").setType(type1).build();
+        builder.addVehicle(v1);
+
+        Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocationId("loc").setServiceTime(2.0).build();
+        Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocationId("loc2").setServiceTime(4.0).build();
+
+        VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+
+        VehicleRoute route = VehicleRoute.Builder.newInstance(v1).addService(s1).build();
+        List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
+        routes.add(route);
+        VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(routes,10.);
+        solution.getUnassignedJobs().add(s2);
+        List<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        solutions.add(solution);
+
+        new VrpXMLWriter(vrp, solutions).write(infileName);
+
+        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<VehicleRoutingProblemSolution>();
+        new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
+
+        assertEquals(1, solutionsToRead.size());
+        assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(),0.01);
+        assertEquals(1, Solutions.bestOf(solutionsToRead).getUnassignedJobs().size());
+        assertEquals("2", Solutions.bestOf(solutionsToRead).getUnassignedJobs().iterator().next().getId());
+    }
 
 }

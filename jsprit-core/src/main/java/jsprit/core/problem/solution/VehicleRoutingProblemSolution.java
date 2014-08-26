@@ -16,10 +16,11 @@
  ******************************************************************************/
 package jsprit.core.problem.solution;
 
+import jsprit.core.problem.job.Job;
+import jsprit.core.problem.solution.route.VehicleRoute;
+
 import java.util.ArrayList;
 import java.util.Collection;
-
-import jsprit.core.problem.solution.route.VehicleRoute;
 
 
 /**
@@ -29,20 +30,20 @@ import jsprit.core.problem.solution.route.VehicleRoute;
  *
  */
 public class VehicleRoutingProblemSolution {
-	
-	public static double NO_COST_YET = -9999.0;
-	
+
 	/**
 	 * Makes a deep copy of the solution to be copied.
 	 * 
-	 * @param solution2copy
-	 * @return
+	 * @param solution2copy solution to be copied
+	 * @return solution
 	 */
 	public static VehicleRoutingProblemSolution copyOf(VehicleRoutingProblemSolution solution2copy){
 		 return new VehicleRoutingProblemSolution(solution2copy);
 	}
 	
 	private final Collection<VehicleRoute> routes;
+
+    private Collection<Job> unassignedJobs = new ArrayList<Job>();
 
 	private double cost;
 
@@ -53,19 +54,35 @@ public class VehicleRoutingProblemSolution {
 			routes.add(route);
 		}
 		this.cost = solution.getCost();
+        unassignedJobs.addAll(solution.getUnassignedJobs());
 	}
 	
 	/**
 	 * Constructs a solution with a number of {@link VehicleRoute}s and their corresponding aggregate cost value.
 	 * 
-	 * @param routes
-	 * @param cost
+	 * @param routes routes being part of the solution
+	 * @param cost total costs of solution
 	 */
 	public VehicleRoutingProblemSolution(Collection<VehicleRoute> routes, double cost) {
 		super();
 		this.routes = routes;
 		this.cost = cost;
 	}
+
+    /**
+     * Constructs a solution with a number of {@link VehicleRoute}s, bad jobs and their corresponding aggregate cost value.
+     *
+     * @param routes routes being part of the solution
+     * @param unassignedJobs jobs that could not be assigned to any vehicle
+     * @param cost total costs of solution
+     *
+     */
+    public VehicleRoutingProblemSolution(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, double cost) {
+        super();
+        this.routes = routes;
+        this.unassignedJobs = unassignedJobs;
+        this.cost = cost;
+    }
 
 	/**
 	 * Returns a collection of vehicle-routes.
@@ -88,10 +105,19 @@ public class VehicleRoutingProblemSolution {
 	/**
 	 * Sets the costs of this solution.
 	 * 
-	 * @param cost
+	 * @param cost the cost to assigned to this solution
 	 */
 	public void setCost(double cost){
 		this.cost = cost;
 	}
+
+    /**
+     * Returns bad jobs, i.e. jobs that are not assigned to any vehicle route.
+     *
+     * @return bad jobs
+     */
+    public Collection<Job> getUnassignedJobs(){
+        return unassignedJobs;
+    }
 
 }

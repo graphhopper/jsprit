@@ -16,14 +16,14 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.algorithm.listener.SearchStrategyListener;
+import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
+import jsprit.core.util.RandomNumberGeneration;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import jsprit.core.algorithm.listener.SearchStrategyListener;
-import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
-import jsprit.core.util.RandomNumberGeneration;
 
 
 
@@ -55,8 +55,9 @@ public class SearchStrategyManager {
 	
 	/**
 	 * adds a new search strategy. the probability must be within [0,1].
-	 * @param strategy
-	 * @param probability
+	 * @param strategy strategy to be added
+	 * @param probability probability of corresponding strategy to be added
+     * @throws java.lang.IllegalStateException if strategy is null OR prob > 1. OR prob < 0.
 	 */
 	public void addStrategy(SearchStrategy strategy, double probability){
 		if(strategy == null){
@@ -76,6 +77,12 @@ public class SearchStrategyManager {
 		}
 	}
 
+    /**
+     * Returns search strategy that has been randomly selected.
+     *
+     * @return selected search strategy
+     * @throws java.lang.IllegalStateException if randomNumberGenerator is null OR no search strategy can be found
+     */
 	public SearchStrategy getRandomStrategy() {
 		if(random == null) throw new IllegalStateException("randomizer is null. make sure you set random object correctly");
 		double randomFig = random.nextDouble();

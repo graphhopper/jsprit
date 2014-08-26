@@ -16,18 +16,17 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.recreate.listener.InsertionListener;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 
-
+import java.util.Collection;
 
 
 
 /**
- * 
+ * Basic interface for insertion strategies
+ *
  * @author stefan schroeder
  * 
  */
@@ -35,14 +34,13 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 public interface InsertionStrategy {
 
 	/**
-	 * Assigns the unassigned jobs to service-providers
-	 * 
-	 * @param vehicleRoutes
-	 * @param unassignedJobs
-	 */
-	public void insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);
-	
-	public void addListener(InsertionListener insertionListener);
+	 * Inserts unassigned jobs into vehicle routes.
+	 *  @param vehicleRoutes existing vehicle routes
+	 * @param unassignedJobs jobs to be inserted
+     */
+	public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);
+
+    public void addListener(InsertionListener insertionListener);
 	
 	public void removeListener(InsertionListener insertionListener);
 	

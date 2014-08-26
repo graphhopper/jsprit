@@ -281,7 +281,18 @@
 									 		</xs:sequence>
 									 	</xs:complexType>
 									</xs:element>
-								</xs:sequence>
+								    <xs:element name="unassignedJobs" minOccurs="0" maxOccurs="1">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="job" minOccurs="0" maxOccurs="unbounded">
+                                                    <xs:complexType>
+                                                        <xs:attribute name="id" type="xs:string" use="required"/>
+                                                    </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                        </xs:complexType>
+								    </xs:element>
+                                </xs:sequence>
 							
 							</xs:complexType>
 						

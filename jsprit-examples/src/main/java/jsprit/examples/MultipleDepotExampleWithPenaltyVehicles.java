@@ -16,8 +16,9 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import jsprit.analysis.toolbox.*;
-import jsprit.analysis.toolbox.SolutionPrinter.Print;
+import jsprit.analysis.toolbox.GraphStreamViewer;
+import jsprit.analysis.toolbox.Plotter;
+import jsprit.analysis.toolbox.StopWatch;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
@@ -28,6 +29,7 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
@@ -59,7 +61,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		 * 
 		 * each with 14 vehicles each with a capacity of 500 and a maximum duration of 310
 		 */
-		int nuOfVehicles = 14;
+		int nuOfVehicles = 13;
 		int capacity = 500;
 		double maxDuration = 310;
 		Coordinate firstDepotCoord = Coordinate.newInstance(-33, 33);
@@ -68,7 +70,8 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		int depotCounter = 1;
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second)){
 			for(int i=0;i<nuOfVehicles;i++){
-				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type").addCapacityDimension(0, capacity).setCostPerDistance(1.0).build();
+				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type")
+                        .addCapacityDimension(0, capacity).setFixedCost(100.).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
 				vehicleBuilder.setStartLocationCoordinate(depotCoord);
@@ -83,7 +86,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		/*
 		 * define penalty-type with the same id, but other higher fixed and variable costs
 		 */
-		vrpBuilder.addPenaltyVehicles(3, 50);
+//		vrpBuilder.addPenaltyVehicles(3, 50);
 		
 		/*
 		 * define problem with finite fleet
@@ -104,12 +107,12 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		 * solve the problem
 		 */
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
-		vra.setNuOfIterations(5000);
+		vra.setMaxIterations(1);
         vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
-		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
-		SolutionPrinter.print(vrp,Solutions.bestOf(solutions),Print.VERBOSE);
+		SolutionPrinter.print(vrp, Solutions.bestOf(solutions), jsprit.core.reporting.SolutionPrinter.Print.VERBOSE);
 
 		new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/p08_solution.png", "p08");
 		

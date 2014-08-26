@@ -16,12 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
 import jsprit.core.algorithm.SearchStrategy;
 import jsprit.core.algorithm.SearchStrategyModule;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -42,10 +36,15 @@ import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class TestAlgorithmReader {
@@ -242,5 +241,19 @@ public class TestAlgorithmReader {
 		}
 		assertEquals(3, nOfModules);
 	}
+
+    @Test
+    public void readerTest_whenReadingAlgoWithSchemaValidation_itReadsCorrectly(){
+        AlgorithmConfig algoConfig = new AlgorithmConfig();
+        new AlgorithmConfigXmlReader(algoConfig).read("src/test/resources/algorithmConfig.xml");
+
+    }
+
+    @Test
+    public void readerTest_whenReadingAlgoWithSchemaValidationWithoutIterations_itReadsCorrectly(){
+        AlgorithmConfig algoConfig = new AlgorithmConfig();
+        new AlgorithmConfigXmlReader(algoConfig).read("src/test/resources/algorithmConfig_withoutIterations.xml");
+
+    }
 	
 }

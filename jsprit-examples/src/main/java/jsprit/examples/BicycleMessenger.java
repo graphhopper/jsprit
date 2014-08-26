@@ -245,7 +245,7 @@ public class BicycleMessenger {
 		VehicleRoutingTransportCosts routingCosts = new CrowFlyCosts(problemBuilder.getLocations()); //which is the default VehicleRoutingTransportCosts in builder above
         problemBuilder.setRoutingCost(routingCosts);
         //finally build the problem
-        problemBuilder.addPenaltyVehicles(20.0,50000);
+//        problemBuilder.addPenaltyVehicles(20.0,50000);
         VehicleRoutingProblem bicycleMessengerProblem = problemBuilder.build();
 
         /*
@@ -269,13 +269,14 @@ public class BicycleMessenger {
 
         //create your algorithm
         VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(bicycleMessengerProblem,"input/algorithmConfig_open.xml");
+//        vraBuilder.setNuOfThreads(2);
         vraBuilder.addDefaultCostCalculators();
         vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
-        algorithm.setNuOfIterations(2000);
+        algorithm.setMaxIterations(5000);
         VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
-        algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
-        algorithm.addListener(prematureAlgorithmTermination);
+//        algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
+//        algorithm.addListener(prematureAlgorithmTermination);
 //		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 
         //search
@@ -294,7 +295,8 @@ public class BicycleMessenger {
 		
 		//and the problem as well as the solution
 		Plotter plotter1 = new Plotter(bicycleMessengerProblem, Solutions.bestOf(solutions));
-		plotter1.plotShipments(false);
+		plotter1.setLabel(Plotter.Label.ID);
+        plotter1.plotShipments(false);
 //		plotter1.setBoundingBox(5000, 45500, 25000, 66500);
 		plotter1.plot("output/bicycleMessengerSolution.png", "bicycleMessenger");
 		

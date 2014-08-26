@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -51,8 +52,8 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
 		logger.info("create initial solution.");
 		List<VehicleRoute> vehicleRoutes = new ArrayList<VehicleRoute>();
 		vehicleRoutes.addAll(vrp.getInitialVehicleRoutes());
-		insertion.insertJobs(vehicleRoutes, getUnassignedJobs(vrp));
-		VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(vehicleRoutes, Double.MAX_VALUE);
+		Collection<Job> badJobs = insertion.insertJobs(vehicleRoutes, getUnassignedJobs(vrp));
+		VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(vehicleRoutes, badJobs, Double.MAX_VALUE);
 		double costs = solutionCostsCalculator.getCosts(solution);
 		solution.setCost(costs);
 		logger.info("creation done");

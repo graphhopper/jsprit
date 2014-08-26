@@ -20,10 +20,7 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
-import jsprit.core.problem.job.Delivery;
-import jsprit.core.problem.job.Pickup;
-import jsprit.core.problem.job.Service;
-import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.job.*;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -304,7 +301,16 @@ public class VrpXMLReader{
 				}
 				routes.add(routeBuilder.build());
 			}
-			VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(routes, cost);
+            VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(routes, cost);
+            List<HierarchicalConfiguration> unassignedJobConfigs = solutionConfig.configurationsAt("unassignedJobs.job");
+            for(HierarchicalConfiguration unassignedJobConfig : unassignedJobConfigs){
+                String jobId = unassignedJobConfig.getString("[@id]");
+                Job job = getShipment(jobId);
+                if(job == null) job = getService(jobId);
+                if(job == null) throw new IllegalStateException("cannot find unassignedJob with id " + jobId);
+                solution.getUnassignedJobs().add(job);
+            }
+
 			solutions.add(solution);
 		}
 	}
