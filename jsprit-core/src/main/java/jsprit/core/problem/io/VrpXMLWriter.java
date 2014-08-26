@@ -203,6 +203,11 @@ public class VrpXMLWriter {
 				xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").end", route.getEnd().getArrTime());
 				routeCounter++;
 			}
+            int unassignedJobCounter = 0;
+            for(Job unassignedJob : solution.getUnassignedJobs()){
+                xmlConfig.setProperty(solutionPath + "(" + counter + ").unassignedJobs.job(" + unassignedJobCounter + ")[@id]", unassignedJob.getId());
+                unassignedJobCounter++;
+            }
 			counter++;
 		}
 	}
