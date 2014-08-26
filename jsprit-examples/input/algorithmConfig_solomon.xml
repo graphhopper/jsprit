@@ -17,7 +17,7 @@
 
 			<searchStrategy name="randomRuinAndRecreate">
 				<selector name="selectBest"/>
-	  			<acceptor name="acceptNewRemoveWorst"/> 
+	  			<acceptor name="greedyAcceptance"/>
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="randomRuin">
@@ -31,7 +31,7 @@
 			
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="acceptNewRemoveWorst"/> 
+				<acceptor name="greedyAcceptance"/>
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="radialRuin">
