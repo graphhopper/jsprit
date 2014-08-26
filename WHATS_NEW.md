@@ -1,4 +1,4 @@
-Change-log
+WHATS NEW
 ==========
 **v1.4.0** ? in preparation
 
