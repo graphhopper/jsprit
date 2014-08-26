@@ -1,47 +1,42 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.examples;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-
-import jsprit.analysis.toolbox.SolutionPrinter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
-import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Solutions;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix.Builder;
 import jsprit.util.Examples;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Collection;
 
 
 
@@ -56,16 +51,16 @@ public class RefuseCollectionExample {
 
 	static class RelationKey {
 		
-		static RelationKey newKey(String from, String to){
-			int fromInt = Integer.parseInt(from);
-			int toInt = Integer.parseInt(to);
-			if(fromInt < toInt){
-				return new RelationKey(from, to);
-			}
-			else {
-				return new RelationKey(to, from);
-			}
-		}
+//		static RelationKey newKey(String from, String to){
+//			int fromInt = Integer.parseInt(from);
+//			int toInt = Integer.parseInt(to);
+//			if(fromInt < toInt){
+//				return new RelationKey(from, to);
+//			}
+//			else {
+//				return new RelationKey(to, from);
+//			}
+//		}
 		
 		final String from;
 		final String to;
@@ -114,43 +109,39 @@ public class RefuseCollectionExample {
 		}
 	}
 	
-	static class RoutingCosts implements VehicleRoutingTransportCosts {
+//	static class RoutingCosts implements VehicleRoutingTransportCosts {
+//
+//		private Map<RelationKey,Integer> distances;
+//
+//		public RoutingCosts(Map<RelationKey, Integer> distances) {
+//			super();
+//			this.distances = distances;
+//		}
+//
+//		@Override
+//		public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+//			return getTransportCost(fromId, toId, departureTime, driver, vehicle);
+//		}
+//
+//		@Override
+//		public double getBackwardTransportTime(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
+//			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
+//		}
+//
+//		@Override
+//		public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
+//			if(fromId.equals(toId)) return 0.0;
+//			RelationKey key = RelationKey.newKey(fromId, toId);
+//			return distances.get(key);
+//		}
+//
+//		@Override
+//		public double getBackwardTransportCost(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
+//			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
+//		}
+//
+//	}
 
-		private Map<RelationKey,Integer> distances;
-		
-		public RoutingCosts(Map<RelationKey, Integer> distances) {
-			super();
-			this.distances = distances;
-		}
-
-		@Override
-		public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, departureTime, driver, vehicle);
-		}
-
-		@Override
-		public double getBackwardTransportTime(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-		}
-
-		@Override
-		public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-			if(fromId.equals(toId)) return 0.0;
-			RelationKey key = RelationKey.newKey(fromId, toId);
-			return distances.get(key);
-		}
-
-		@Override
-		public double getBackwardTransportCost(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-		}
-		
-	}
-	
-	/**
-	 * @param args
-	 * @throws IOException 
-	 */
 	public static void main(String[] args) throws IOException {
 		/*
 		 * some preparation - create output folder
@@ -167,7 +158,7 @@ public class RefuseCollectionExample {
 		VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
 		vehicleBuilder.setStartLocationId("1");
 		vehicleBuilder.setType(bigType);
-		Vehicle bigVehicle = vehicleBuilder.build();
+		VehicleImpl bigVehicle = vehicleBuilder.build();
 		
 		/*
 		 * start building the problem
@@ -202,9 +193,9 @@ public class RefuseCollectionExample {
 	}
 
 
-	private static void readDemandQuantities(VehicleRoutingProblem.Builder vrpBuilder) throws FileNotFoundException, IOException {
+	private static void readDemandQuantities(VehicleRoutingProblem.Builder vrpBuilder) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(new File("input/RefuseCollectionExample_Quantities")));
-		String line = null;
+		String line;
 		boolean firstLine = true;
 		while((line = reader.readLine()) != null){
 			if(firstLine) {
@@ -227,7 +218,7 @@ public class RefuseCollectionExample {
 
 	private static void readDistances(Builder matrixBuilder) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(new File("input/RefuseCollectionExample_Distances")));
-		String line = null;
+		String line;
 		boolean firstLine = true;
 		while((line = reader.readLine()) != null){
 			if(firstLine) {

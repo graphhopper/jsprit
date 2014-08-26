@@ -1,34 +1,29 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.examples;
 
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
-import jsprit.analysis.toolbox.SolutionPrinter;
-import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.state.StateId;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.StateUpdater;
-import jsprit.core.algorithm.termination.VariationCoefficientTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -47,6 +42,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.*;
+import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Solutions;
@@ -274,7 +270,7 @@ public class BicycleMessenger {
         vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
         algorithm.setMaxIterations(5000);
-        VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
+//        VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
 //        algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
 //        algorithm.addListener(prematureAlgorithmTermination);
 //		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
@@ -285,7 +281,7 @@ public class BicycleMessenger {
 		//this is just to ensure that solution meet the above constraints
 		validateSolution(Solutions.bestOf(solutions), bicycleMessengerProblem, nearestMessengers);
 
-        SolutionPrinter.print(bicycleMessengerProblem, Solutions.bestOf(solutions), Print.VERBOSE);
+        SolutionPrinter.print(bicycleMessengerProblem, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
 
 		//you may want to plot the problem
 		Plotter plotter = new Plotter(bicycleMessengerProblem);
@@ -316,12 +312,12 @@ public class BicycleMessenger {
 		for(VehicleRoute route : bestOf.getRoutes()){
 			for(TourActivity act : route.getActivities()){ 
 				if(act.getArrTime() > 3*nearestMessengers.get(((JobActivity)act).getJob().getId())){
-					SolutionPrinter.print(bicycleMessengerProblem, bestOf, Print.VERBOSE);
+					SolutionPrinter.print(bicycleMessengerProblem, bestOf, SolutionPrinter.Print.VERBOSE);
 					throw new IllegalStateException("three times less than ... constraint broken. this must not be. act.getArrTime(): " + act.getArrTime() + " allowed: " + 3*nearestMessengers.get(((JobActivity)act).getJob().getId())); 
 				}
 			}
 			if(route.getVehicle().getType() instanceof PenaltyVehicleType){
-				SolutionPrinter.print(bicycleMessengerProblem, bestOf, Print.VERBOSE);
+				SolutionPrinter.print(bicycleMessengerProblem, bestOf, SolutionPrinter.Print.VERBOSE);
 				throw new IllegalStateException("penaltyVehicle in solution. if there is a valid solution, this should not be");
 			}
 		}

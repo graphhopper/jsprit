@@ -1,28 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.examples;
 
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
-import jsprit.analysis.toolbox.SolutionPrinter;
-import jsprit.analysis.toolbox.SolutionPrinter.Print;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.state.StateManager;
@@ -34,11 +30,11 @@ import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
@@ -80,22 +76,22 @@ public class TransportOfDisabledPeople {
 		Builder vehicleBuilder1 = VehicleImpl.Builder.newInstance("wheelchair_bus");
 		vehicleBuilder1.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder1.setType(vehicleType_wheelchair);
-		Vehicle vehicle1 = vehicleBuilder1.build();
+		VehicleImpl vehicle1 = vehicleBuilder1.build();
 		
 		Builder vehicleBuilder1_2 = VehicleImpl.Builder.newInstance("wheelchair_bus_2");
 		vehicleBuilder1_2.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
 		vehicleBuilder1_2.setType(vehicleType_wheelchair);
-		Vehicle vehicle1_2 = vehicleBuilder1_2.build();
+		VehicleImpl vehicle1_2 = vehicleBuilder1_2.build();
 		
 		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("passenger_bus");
 		vehicleBuilder2.setStartLocationCoordinate(Coordinate.newInstance(30, 30)).setEndLocationCoordinate(Coordinate.newInstance(30, 19));
 		vehicleBuilder2.setType(vehicleType_solelypassenger);
-		Vehicle vehicle2 = vehicleBuilder2.build();
+		VehicleImpl vehicle2 = vehicleBuilder2.build();
 		
 		Builder vehicleBuilder2_2 = VehicleImpl.Builder.newInstance("passenger_bus_2");
 		vehicleBuilder2_2.setStartLocationCoordinate(Coordinate.newInstance(30, 30)).setEndLocationCoordinate(Coordinate.newInstance(30, 19));
 		vehicleBuilder2_2.setType(vehicleType_solelypassenger);
-		Vehicle vehicle2_2 = vehicleBuilder2_2.build();
+		VehicleImpl vehicle2_2 = vehicleBuilder2_2.build();
 	
 		
 		/*
@@ -206,7 +202,7 @@ public class TransportOfDisabledPeople {
 		/*
 		 * print nRoutes and totalCosts of bestSolution
 		 */
-		SolutionPrinter.print(problem,bestSolution,Print.VERBOSE);
+		SolutionPrinter.print(problem, bestSolution, SolutionPrinter.Print.VERBOSE);
 		
 		/*
 		 * plot problem without solution
