@@ -8,8 +8,22 @@ WHATS NEW
 <b> SKILLS </b>
 
 Skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java).
-It lets you assign hard requirements to jobs and vehicles/drivers. For example, a technician requires a screwdriver to serve customer A or
-your vehicle requires a loading bridge to unload freight at customer B etc.. You can add an arbitrary number of skills to jobs and vehicles.
+It lets you assign hard requirements to jobs and vehicles/drivers. For example, your vehicle requires a loading bridge to unload freight at customer A or 
+a technician requires a screwdriver, a hammer and an electric drill to serve customer A. 
+You assign latter skills to your customer as follows:
+
+<pre><code>Service service = Service.Builder.newInstance(serviceId).addRequiredSkill("screwdriver")
+    .addRequiredSkill("hammer").addRequiredSkill("electric-drill"). ... .build();
+</code></pre>
+
+Assign these skills to your technician as well:
+ 
+<pre><code>VehicleImpl skilled_technician = VehicleImpl.Builder.newInstance(technicianId).addSkill("screwdriver")
+    .addSkill("hammer").addSkill("electric-drill"). ... .build();
+</code></pre> 
+
+
+Note that you can add an arbitrary number of skills to jobs and vehicles.
 
 To enable the algorithm to consider skills, you need to use <code>core.algorithm.VehicleRoutingAlgorithmBuilder</code> as follows:
 
