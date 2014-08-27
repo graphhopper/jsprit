@@ -18,6 +18,8 @@ It is lightweight, flexible and easy-to-use, and based on a single all-purpose <
 Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as 
 reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](https://github.com/jsprit/jsprit/wiki/features)
 
+##[Whats New](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
+
 ##Documentation
 
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
