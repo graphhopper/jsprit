@@ -54,7 +54,7 @@ Note that jsprit uses a "soft" approach to deal with unassigned jobs, i.e. each 
 If you omit penalyzing them, you probably end up with a solution consisting solely of unassigned jobs (the less the better in terms of total costs). 
 This, however, easily enables you to define objective functions that maximizes profits.
 
-Thus, if you already use your own custom objective function, you need to manually adapt it and add penalties for unassigned jobs.
+<b>Thus, if you already use your own custom objective function, you need to manually adapt it and add penalties for unassigned jobs.</b>
 
 ------------------------------
 
