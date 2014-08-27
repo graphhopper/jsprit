@@ -56,20 +56,6 @@ This, however, easily enables you to define objective functions that maximizes p
 
 Thus, if you already use your own custom objective function, you need to manually adapt it and add penalties for unassigned jobs.
 
-<b> STATEMANAGER </b>
-
-- StateFactory.createId(String name) moved to core.algorithm.state.StateManager.createStateId(String name)
-- StateFactory moved from core.problem.solution.route.state.StateFactory to core.algorithm.state.InternalStates
-- StateId moved from core.problem.route.state.StateFactory.StateId to core.algorithm.state.StateId
-- StateFactory.createId(String name) is not accessible anymore
-- constructor new StateManager(VehicleRoutingTransportCosts costs) does not exist anymore, but is new StateManager(VehicleRoutingProblem vrp)
-- StateManager.addDefault... methods do not exists anymore. Client must now decide what to do when state does not exist.
-- deprecated core.problem.VehicleRoutingProblem.Builder.addVehicle(Vehicle v) and added core.problem.VehicleRoutingProblem.Builder.addVehicle(AbstractVehicle v)
-- deprecated core.problem.VehicleRoutingProblem.Builder.addJob(Job j) and added core.problem.VehicleRoutingProblem.Builder.addJob(AbstractJob j)
-
-<b> LOGGER </b>
-- migrated from log4j1x to log4j2
-
 ------------------------------
 
 <b>2014-08-20</b> jsprit has a mailing list (https://groups.google.com/group/jsprit-mailing-list)
