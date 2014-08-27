@@ -49,7 +49,7 @@ A solution can now consists of assigned and unassigned jobs. There are various r
 demand exceeds available capacity, the job cannot be served within driver's operation time or the job is just too costly to 
 serve it with your own fleet.
  
-Note that jsprit uses "soft" approach to deal with unassigned jobs, i.e. each unassigned job will be penalyzed in the objective function 
+Note that jsprit uses a "soft" approach to deal with unassigned jobs, i.e. each unassigned job will be penalyzed in the objective function 
 (see default objective https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/VariablePlusFixedSolutionCostCalculatorFactory.java [line 55]). 
 If you omit penalyzing them, you probably end up with a solution consisting solely of unassigned jobs (the less the better in terms of total costs). 
 This, however, easily enables you to define objective functions that maximizes profits.
