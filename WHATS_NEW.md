@@ -3,7 +3,7 @@ WHATS NEW
 
 ------------------------------
 
-<b>date to be determined</b> new release **v1.4.0**
+<b>2014-09-?</b> new release **v1.4.0**
 
 <b> SKILLS </b>
 
