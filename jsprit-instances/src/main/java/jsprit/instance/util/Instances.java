@@ -1,36 +1,32 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.instance.util;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.util.BenchmarkInstance;
 import jsprit.instance.reader.ChristofidesReader;
 import jsprit.instance.reader.CordeauReader;
 import jsprit.instance.reader.SolomonReader;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 
 public class Instances {
@@ -48,12 +44,14 @@ public class Instances {
 		for(int i=0;i<12;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/p"+  getInstanceNu(i+1);
-			new CordeauReader(builder,true).read(file);
+			new CordeauReader(builder).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("p" + getInstanceNu(i+1), p, getBestKnown(file), null));
 		}
 		return instances;
 	}
+
+
 	
 	private static double getBestKnown(String file) {
 		try {
@@ -91,7 +89,7 @@ public class Instances {
 		for(int i=0;i<10;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/pr"+  getInstanceNu(i+1);
-			new CordeauReader(builder,true).read(file);
+			new CordeauReader(builder).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("pr" + getInstanceNu(i+1), p, getBestKnown(file),null));
 		}
