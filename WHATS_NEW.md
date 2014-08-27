@@ -33,10 +33,10 @@ vraBuilder.addCoreConstraints();
 vraBuilder.addDefaultCostCalculators();
            
 StateManager stateManager = new StateManager(skillProblem);
-stateManager.updateSkillStates();
+<b>stateManager.updateSkillStates();</b>
 
 ConstraintManager constraintManager = new ConstraintManager(skillProblem,stateManager);
-constraintManager.addSkillsConstraint();
+<b>constraintManager.addSkillsConstraint();</b>
 
 VehicleRoutingAlgorithm vra = vraBuilder.build();
 </code></pre>
