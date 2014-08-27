@@ -33,7 +33,7 @@ public class Instances {
 
 	/**
 	 * Returns a collection of {@link BenchmarkInstance} which are Cordeau's p instances.
-	 * <p>Note that this assumes that within the folder 'inputFolder' 12 p-instances are located with their original name, i.e. p01,p02,...,p12.
+	 * <p>Note that this assumes that within the folder 'inputFolder' 23 p-instances are located with their original name, i.e. p01,p02,...,p23.
 	 * <p>It also assumes that solution files are also located in inputFolder ending with .res
 	 * 
 	 * @param inputFolder where cordeau's p instances are located. It must end without '/' such as instances/cordeau. 
@@ -41,7 +41,7 @@ public class Instances {
 	 */
 	public static Collection<BenchmarkInstance> getAllCordeauP(String inputFolder){
 		Collection<BenchmarkInstance> instances = new ArrayList<BenchmarkInstance>();
-		for(int i=0;i<12;i++){
+		for(int i=0;i<23;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/p"+  getInstanceNu(i+1);
 			new CordeauReader(builder).read(file);
