@@ -62,7 +62,7 @@ Thus, if you already use your own custom objective function, you need to manuall
 
 ------------------------------
 
-<b>2014-08-15</b> YourKit supports jsprit with its full-featured Java Profiler. 
+<b>2014-08-15</b> [YourKit](http://www.yourkit.com/home/) supports jsprit with its full-featured Java Profiler. 
 
 ------------------------------
 
