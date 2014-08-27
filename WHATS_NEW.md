@@ -52,3 +52,8 @@ Thus, if you already use your own custom objective function, you need to manuall
 
 <b> LOGGER </b>
 - migrated from log4j1x to log4j2
+
+<b>2014-08-20</b> jsprit has a mailing list (https://groups.google.com/group/jsprit-mailing-list)
+
+<b>2014-08-10</b> jsprit uses Travis for continuous integration (https://travis-ci.org/jsprit/jsprit) 
+
