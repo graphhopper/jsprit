@@ -4,7 +4,27 @@ WHATS NEW
 
 <b> SKILLS </b>
 
-- new feature: skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java)
+Skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java).
+It lets you assign hard requirements to jobs and vehicles/drivers. For example, a technician requires a screwdriver to serve customer A or
+your vehicle requires a loading bridge to unload freight at customer B etc.. You can add an arbitrary number of skills to jobs and vehicles.
+
+To enable the algorithm to consider skills, you need to use <code>core.algorithm.VehicleRoutingAlgorithmBuilder</code> as follows:
+
+<pre><code>
+VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(skillProblem,yourConfig);
+vraBuilder.addCoreConstraints();
+vraBuilder.addDefaultCostCalculators();
+           
+StateManager stateManager = new StateManager(skillProblem);
+stateManager.updateSkillStates();
+
+ConstraintManager constraintManager = new ConstraintManager(skillProblem,stateManager);
+constraintManager.addSkillsConstraint();
+
+VehicleRoutingAlgorithm vra = vraBuilder.build();
+</code></pre>
+
+
 
 <b> UNASSIGNED JOB LIST</b>
 
