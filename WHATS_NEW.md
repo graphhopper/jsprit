@@ -3,7 +3,7 @@ WHATS NEW
 
 ------------------------------
 
-<b>?</b> new release **v1.4.0**
+<b>date to be determined</b> new release **v1.4.0**
 
 <b> SKILLS </b>
 
@@ -59,6 +59,10 @@ Thus, if you already use your own custom objective function, you need to manuall
 ------------------------------
 
 <b>2014-08-20</b> jsprit has a mailing list (https://groups.google.com/group/jsprit-mailing-list)
+
+------------------------------
+
+<b>2014-08-15</b> YourKit supports jsprit with its full-featured Java Profiler. 
 
 ------------------------------
 
