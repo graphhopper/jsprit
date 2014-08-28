@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -101,11 +101,7 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	}
 	
 	/**
-	 * 
-	 * @param solutionMemory
-	 * @param alpha
-	 * @param nOfWarmupIterations
-	 * @Deprecated use <code>new SchrimpfAcceptance(solutionMemory,alpha)</code> instead. if you want to determine ini-threshold with a
+	 * @deprecated use <code>new SchrimpfAcceptance(solutionMemory,alpha)</code> instead. if you want to determine ini-threshold with a
 	 * random walk and the algorithm 'randomWalk.xml' use SchrimpfInitialThresholdGenerator.class instead.
 	 */
 	@Deprecated
@@ -130,7 +126,11 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 				if(worst == null) worst = solutionInMemory;
 				else if(solutionInMemory.getCost() > worst.getCost()) worst = solutionInMemory;
 			}
-			if(newSolution.getCost() < worst.getCost() + threshold){
+            if(worst == null){
+                solutions.add(newSolution);
+                solutionAccepted = true;
+            }
+			else if(newSolution.getCost() < worst.getCost() + threshold){
 				solutions.remove(worst);
 				solutions.add(newSolution);
 				solutionAccepted = true;
@@ -141,17 +141,17 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	
 	@Override
 	public String toString() {
-		return "[name=schrimpfAcceptanceFunction][alpha="+alpha+"][warmup=" + nOfRandomWalks + "]";
+		return "[name=SchrimpfAcceptance][alpha="+alpha+"][warmup=" + nOfRandomWalks + "]";
 	}
 	
 	private double getThreshold(int iteration) {
 		double scheduleVariable = (double) iteration / (double) nOfTotalIterations;
-		double currentThreshold = initialThreshold * Math.exp(-1. * Math.log(2) * scheduleVariable / alpha);
-		return currentThreshold;
+		return initialThreshold * Math.exp(-1. * Math.log(2) * scheduleVariable / alpha);
 	}
 
 
-	public double getInitialThreshold(){
+	@SuppressWarnings("UnusedDeclaration")
+    public double getInitialThreshold(){
 		return initialThreshold;
 	}
 	
@@ -177,39 +177,39 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 		logger.info("prepare schrimpfAcceptanceFunction, i.e. determine initial threshold");
 		logger.info("start random-walk (see randomWalk.xml)");
 		double now = System.currentTimeMillis();
-		this.nOfTotalIterations = algorithm.getNuOfIterations();
-		
+		this.nOfTotalIterations = algorithm.getMaxIterations();
+
 		/*
 		 * randomWalk to determine standardDev
 		 */
 		final double[] results = new double[nOfRandomWalks];
-		
+
 		URL resource = Resource.getAsURL("randomWalk.xml");
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		new AlgorithmConfigXmlReader(algorithmConfig).read(resource);
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.createAlgorithm(problem, algorithmConfig);
-		vra.setNuOfIterations(nOfRandomWalks);
+		vra.setMaxIterations(nOfRandomWalks);
 		vra.getAlgorithmListeners().addListener(new IterationEndsListener() {
-			
+
 			@Override
 			public void informIterationEnds(int iteration, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 				double result = Solutions.bestOf(solutions).getCost();
 //				logger.info("result="+result);
 				results[iteration-1] = result;
 			}
-			
+
 		});
 		vra.searchSolutions();
-		
+
 		StandardDeviation dev = new StandardDeviation();
 		double standardDeviation = dev.evaluate(results);
 		initialThreshold = standardDeviation / 2;
-		
+
 		logger.info("warmup done");
 		logger.info("total time: " + ((System.currentTimeMillis()-now)/1000.0) + "s");
 		logger.info("initial threshold: " + initialThreshold);
 		logger.info("---------------------------------------------------------------------");
-		
+
 	}
 
 	private void reset() {
