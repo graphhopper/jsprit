@@ -17,21 +17,13 @@
 package jsprit.core.algorithm.acceptor;
 
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.io.AlgorithmConfig;
-import jsprit.core.algorithm.io.AlgorithmConfigXmlReader;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.listener.AlgorithmStartsListener;
-import jsprit.core.algorithm.listener.IterationEndsListener;
 import jsprit.core.algorithm.listener.IterationStartsListener;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.util.Resource;
-import jsprit.core.util.Solutions;
-import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URL;
 import java.util.Collection;
 
 
@@ -81,38 +73,21 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	
 	private final double alpha;
 	
-	private int nOfTotalIterations = 1000;
+	private int maxIterations = 1000;
 	
 	private int currentIteration = 0;
 	
 	private double initialThreshold = 0.0;
-
-	private int nOfRandomWalks;
 	
 	private final int solutionMemory;
-	
-	private boolean determineInitialThreshold = true;
+
 	
 	public SchrimpfAcceptance(int solutionMemory, double alpha){
 		this.alpha = alpha;
 		this.solutionMemory = solutionMemory;
-		determineInitialThreshold = false;
 		logger.info("initialise " + this);
 	}
-	
-	/**
-	 * @deprecated use <code>new SchrimpfAcceptance(solutionMemory,alpha)</code> instead. if you want to determine ini-threshold with a
-	 * random walk and the algorithm 'randomWalk.xml' use SchrimpfInitialThresholdGenerator.class instead.
-	 */
-	@Deprecated
-	public SchrimpfAcceptance(int solutionMemory, double alpha, int nOfWarmupIterations) {
-		super();
-		this.alpha = alpha;
-		this.nOfRandomWalks = nOfWarmupIterations;
-		this.solutionMemory = solutionMemory;
-		logger.info("initialise " + this);
-	}
-	
+
 	@Override
 	public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution) {
 		boolean solutionAccepted = false;
@@ -141,11 +116,11 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	
 	@Override
 	public String toString() {
-		return "[name=SchrimpfAcceptance][alpha="+alpha+"][warmup=" + nOfRandomWalks + "]";
+		return "[name=SchrimpfAcceptance][alpha="+alpha+"]";
 	}
 	
 	private double getThreshold(int iteration) {
-		double scheduleVariable = (double) iteration / (double) nOfTotalIterations;
+		double scheduleVariable = (double) iteration / (double) maxIterations;
 		return initialThreshold * Math.exp(-1. * Math.log(2) * scheduleVariable / alpha);
 	}
 
@@ -163,53 +138,12 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	 */
 	public void setInitialThreshold(double initialThreshold) {
 		this.initialThreshold = initialThreshold;
-		determineInitialThreshold=false;
 	}
 
 	@Override
 	public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
-		if(!determineInitialThreshold){
-			logger.info("skip threshold initialization from here");
-			return;
-		}
-		reset();
-		logger.info("---------------------------------------------------------------------");
-		logger.info("prepare schrimpfAcceptanceFunction, i.e. determine initial threshold");
-		logger.info("start random-walk (see randomWalk.xml)");
-		double now = System.currentTimeMillis();
-		this.nOfTotalIterations = algorithm.getMaxIterations();
-
-		/*
-		 * randomWalk to determine standardDev
-		 */
-		final double[] results = new double[nOfRandomWalks];
-
-		URL resource = Resource.getAsURL("randomWalk.xml");
-		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-		new AlgorithmConfigXmlReader(algorithmConfig).read(resource);
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.createAlgorithm(problem, algorithmConfig);
-		vra.setMaxIterations(nOfRandomWalks);
-		vra.getAlgorithmListeners().addListener(new IterationEndsListener() {
-
-			@Override
-			public void informIterationEnds(int iteration, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-				double result = Solutions.bestOf(solutions).getCost();
-//				logger.info("result="+result);
-				results[iteration-1] = result;
-			}
-
-		});
-		vra.searchSolutions();
-
-		StandardDeviation dev = new StandardDeviation();
-		double standardDeviation = dev.evaluate(results);
-		initialThreshold = standardDeviation / 2;
-
-		logger.info("warmup done");
-		logger.info("total time: " + ((System.currentTimeMillis()-now)/1000.0) + "s");
-		logger.info("initial threshold: " + initialThreshold);
-		logger.info("---------------------------------------------------------------------");
-
+        reset();
+        this.maxIterations = algorithm.getMaxIterations();
 	}
 
 	private void reset() {
