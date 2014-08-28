@@ -61,9 +61,7 @@ import java.util.Collection;
  * Journal of Computational Physics, 159(2):139 – 171, 2000. ISSN 0021-9991. doi: 10.1006/jcph.1999. 6413. 
  * URL http://www.sciencedirect.com/science/article/ pii/S0021999199964136
  * 
- * <p>Probably the determination of the initial threshold will be separated from the threshold-acceptance
- * function (25.02.14 stefan)
- * 
+ *
  * @author schroeder
  *
  */
