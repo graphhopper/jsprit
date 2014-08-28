@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -23,6 +23,7 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.util.Solutions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,10 +53,8 @@ public class VehicleRoutingAlgorithm {
 			long i = counter++;
 			long n = nextCounter;
 			if (i >= n) {
-				if (nextCounter==n) {
-					nextCounter=n*2;
-					log.info(this.name + n);
-				}
+                nextCounter=n*2;
+                log.info(this.name + n);
 			}
 		}
 
@@ -65,20 +64,20 @@ public class VehicleRoutingAlgorithm {
 		}
 	}
 
-	private static Logger logger = LogManager.getLogger(VehicleRoutingAlgorithm.class);
-	
-	private VehicleRoutingProblem problem;
-	
-	private int maxIterations = 100;
-	
-	private Counter counter = new Counter("iterations ");
-	
-	private SearchStrategyManager searchStrategyManager;
-	
-	private VehicleRoutingAlgorithmListeners algoListeners = new VehicleRoutingAlgorithmListeners();
-	
-	private Collection<VehicleRoutingProblemSolution> initialSolutions;
-	
+	private final static Logger logger = LogManager.getLogger(VehicleRoutingAlgorithm.class);
+
+    private final Counter counter = new Counter("iterations ");
+
+    private final VehicleRoutingProblem problem;
+
+    private final SearchStrategyManager searchStrategyManager;
+
+    private final VehicleRoutingAlgorithmListeners algoListeners = new VehicleRoutingAlgorithmListeners();
+
+    private final Collection<VehicleRoutingProblemSolution> initialSolutions;
+
+    private int maxIterations = 100;
+
 	private PrematureAlgorithmTermination prematureAlgorithmTermination = new PrematureAlgorithmTermination() {
 		
 		@Override
@@ -87,6 +86,8 @@ public class VehicleRoutingAlgorithm {
 		}
 		
 	};
+
+    private VehicleRoutingProblemSolution bestEver = null;
 	
 	public VehicleRoutingAlgorithm(VehicleRoutingProblem problem, SearchStrategyManager searchStrategyManager) {
 		super();
@@ -168,34 +169,47 @@ public class VehicleRoutingAlgorithm {
 		logger.info("algorithm starts");
 		double now = System.currentTimeMillis();
 		verify();
-		int nuOfIterationsThisAlgoIsRunning = maxIterations;
+		int noIterationsThisAlgoIsRunning = maxIterations;
 		counter.reset();
 		Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
 		algorithmStarts(problem,solutions);
-		logger.info("iterations start");
+        bestEver = Solutions.bestOf(solutions);
+        logger.info("iterations start");
 		for(int i=0;i< maxIterations;i++){
 			iterationStarts(i+1,problem,solutions);
 			counter.incCounter();
 			SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
 			DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
+            memorizeIfBestEver(discoveredSolution);
 			selectedStrategy(strategy.getName(),problem, solutions);
 			if(prematureAlgorithmTermination.isPrematureBreak(discoveredSolution)){
 				logger.info("premature break at iteration "+ (i+1));
-				nuOfIterationsThisAlgoIsRunning = (i+1);
+				noIterationsThisAlgoIsRunning = (i+1);
 				break;
 			}
 			iterationEnds(i+1,problem,solutions);
 		}
-		logger.info("iterations end at " + nuOfIterationsThisAlgoIsRunning + " iterations");
-		algorithmEnds(problem,solutions);
+		logger.info("iterations end at " + noIterationsThisAlgoIsRunning + " iterations");
+		addBestEver(solutions);
+        algorithmEnds(problem, solutions);
 		logger.info("total time: " + ((System.currentTimeMillis()-now)/1000.0) + "s");
 		logger.info("done");
 		logger.info("------------------------------------------------");
 		return solutions;
 	}
-	
-	
-	private void selectedStrategy(String name, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+
+    private void addBestEver(Collection<VehicleRoutingProblemSolution> solutions) {
+        if(bestEver != null) solutions.add(bestEver);
+    }
+
+    private void memorizeIfBestEver(DiscoveredSolution discoveredSolution) {
+        if(discoveredSolution == null) return;
+        if(bestEver == null) bestEver = discoveredSolution.getSolution();
+        else if(discoveredSolution.getSolution().getCost() < bestEver.getCost()) bestEver = discoveredSolution.getSolution();
+    }
+
+
+    private void selectedStrategy(String name, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 		algoListeners.selectedStrategy(name,problem, solutions);
 	}
 
