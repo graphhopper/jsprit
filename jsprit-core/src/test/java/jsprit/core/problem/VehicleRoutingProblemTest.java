@@ -140,23 +140,7 @@ public class VehicleRoutingProblemTest {
 		assertEquals(s2,vrp.getJobs().get("s2"));
 	}
 
-    @Test
-    public void whenServicesAreAdded_vrpShouldContainThemV2(){
-        Service s1 = mock(Service.class);
-        when(s1.getId()).thenReturn("s1");
-        Service s2 = mock(Service.class);
-        when(s2.getId()).thenReturn("s2");
-
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        vrpBuilder.addJob(s1).addJob(s2);
-
-        VehicleRoutingProblem vrp = vrpBuilder.build();
-
-        assertEquals(2,vrp.getJobs().size());
-        assertEquals(s1,vrp.getJobs().get("s1"));
-        assertEquals(s2,vrp.getJobs().get("s2"));
-    }
-	
+   	
 	@Test
 	public void whenPickupsAreAdded_vrpShouldContainThem(){
 		Pickup s1 = mock(Pickup.class);
