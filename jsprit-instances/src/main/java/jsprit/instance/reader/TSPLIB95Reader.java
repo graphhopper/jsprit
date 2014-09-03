@@ -98,6 +98,7 @@ public class TSPLIB95Reader {
                 }
             }
         }
+        close(reader);
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE);
         for(Integer depotId : depotIds){
             VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("typeId").addCapacityDimension(0,capacity).build();
@@ -112,6 +113,15 @@ public class TSPLIB95Reader {
             vrpBuilder.addJob(service);
         }
 
+    }
+
+    private void close(BufferedReader reader) {
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ;
     }
 
     private String getLine(BufferedReader reader) {

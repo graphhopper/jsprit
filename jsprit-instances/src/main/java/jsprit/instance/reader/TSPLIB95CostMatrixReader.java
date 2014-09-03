@@ -56,6 +56,15 @@ public class TSPLIB95CostMatrixReader {
                 fromIndex++;
             }
         }
+        close(reader);
+    }
+
+    private void close(BufferedReader reader) {
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private String getLine(BufferedReader reader) {
