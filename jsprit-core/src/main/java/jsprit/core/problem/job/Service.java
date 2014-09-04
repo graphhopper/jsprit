@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -35,15 +35,19 @@ import jsprit.core.util.Coordinate;
  */
 public class Service extends AbstractJob {
 
-	/**
+
+
+    /**
 	 * Builder that builds a service.
 	 * 
 	 * @author schroeder
 	 *
 	 */
 	public static class Builder {
-		
-		/**
+
+
+
+        /**
 		 * Returns a new instance of builder that builds a service.
 		 * 
 		 * @param id the id of the service
@@ -72,6 +76,8 @@ public class Service extends AbstractJob {
         protected Skills.Builder skillBuilder = Skills.Builder.newInstance();
 
         protected Skills skills;
+
+        private String name = "no-name";
 
 		Builder(String id){
 			this.id = id;
@@ -178,6 +184,11 @@ public class Service extends AbstractJob {
             skillBuilder.addSkill(skill);
             return this;
         }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
     }
 	
 	
@@ -197,6 +208,8 @@ public class Service extends AbstractJob {
 
     private final Skills skills;
 
+    private final String name;
+
 	Service(Builder builder){
 		id = builder.id;
 		locationId = builder.locationId;
@@ -206,6 +219,7 @@ public class Service extends AbstractJob {
 		type = builder.type;
 		size = builder.capacity;
         skills = builder.skills;
+        name = builder.name;
 	}
 
 	@Override
@@ -304,6 +318,11 @@ public class Service extends AbstractJob {
     @Override
     public Skills getRequiredSkills() {
         return skills;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 }

@@ -47,7 +47,25 @@ public class VrpXMLReaderTest {
 	public void doBefore(){
 		inFileName = "src/test/resources/finiteVrpForReaderTest.xml";
 	}
-	
+
+    @Test
+    public void shouldReadNameOfService(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Service s = (Service) vrp.getJobs().get("1");
+        assertTrue(s.getName().equals("cleaning"));
+    }
+
+    @Test
+    public void shouldReadNameOfShipment(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(inFileName);
+        VehicleRoutingProblem vrp = builder.build();
+        Shipment s = (Shipment) vrp.getJobs().get("3");
+        assertTrue(s.getName().equals("deliver-smth"));
+    }
+
 	@Test
 	public void whenReadingVrp_problemTypeIsReadCorrectly(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -482,7 +500,7 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
-		assertEquals("i(9,9)",s.getDeliveryLocation());
+		assertEquals("i(9,9)",s.getDeliveryLocationId());
 	}
 	
 	@Test
@@ -491,7 +509,7 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
-		assertEquals("i(3,9)",s.getPickupLocation());
+		assertEquals("i(3,9)",s.getPickupLocationId());
 	}
 	
 	@Test
@@ -500,7 +518,7 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("4");
-		assertEquals("[x=10.0][y=10.0]",s.getPickupLocation());
+		assertEquals("[x=10.0][y=10.0]",s.getPickupLocationId());
 	}
 	
 	@Test
@@ -509,7 +527,7 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("4");
-		assertEquals("[x=10.0][y=0.0]",s.getDeliveryLocation());
+		assertEquals("[x=10.0][y=0.0]",s.getDeliveryLocationId());
 	}
 	
 	@Test

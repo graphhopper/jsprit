@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -361,11 +361,15 @@ public class VrpXMLReader{
 					builder.addSizeDimension(index, value);
 				}
 			}
-			
+
+            //name
+            String name = shipmentConfig.getString("name");
+            if(name != null) builder.setName(name);
+
 			//pickup-locationId
 			String pickupLocationId = shipmentConfig.getString("pickup.locationId");
 			if(pickupLocationId != null){
-				builder.setPickupLocation(pickupLocationId);
+				builder.setPickupLocationId(pickupLocationId);
 			}
 			
 			//pickup-coord
@@ -377,7 +381,7 @@ public class VrpXMLReader{
 				}
 				else{
 //					vrpBuilder.addLocation(pickupCoord.toString(),pickupCoord);
-					builder.setPickupLocation(pickupCoord.toString());
+					builder.setPickupLocationId(pickupCoord.toString());
 				}
 			}
 
@@ -396,7 +400,7 @@ public class VrpXMLReader{
 			//delivery-locationId
 			String deliveryLocationId = shipmentConfig.getString("delivery.locationId");
 			if(deliveryLocationId != null){
-				builder.setDeliveryLocation(deliveryLocationId);
+				builder.setDeliveryLocationId(deliveryLocationId);
 			}
 			
 			//delivery-coord
@@ -408,7 +412,7 @@ public class VrpXMLReader{
 				}
 				else{
 //					vrpBuilder.addLocation(deliveryCoord.toString(),deliveryCoord);
-					builder.setDeliveryLocation(deliveryCoord.toString());
+					builder.setDeliveryLocationId(deliveryCoord.toString());
 				}
 			}
 
@@ -479,6 +483,11 @@ public class VrpXMLReader{
 					builder.addSizeDimension(index, value);
 				}
 			}
+
+            //name
+            String name = serviceConfig.getString("name");
+            if(name != null) builder.setName(name);
+
 			String serviceLocationId = serviceConfig.getString("locationId");
 			if(serviceLocationId != null) builder.setLocationId(serviceLocationId);
 			Coordinate serviceCoord = getCoord(serviceConfig,"");

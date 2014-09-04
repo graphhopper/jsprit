@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.problem.job;
 
@@ -43,7 +41,9 @@ import jsprit.core.util.Coordinate;
  */
 public class Shipment extends AbstractJob{
 
-	/**
+
+
+    /**
 	 * Builder that builds the shipment.
 	 * 
 	 * @author schroeder
@@ -77,6 +77,8 @@ public class Shipment extends AbstractJob{
 
         private Skills skills;
 
+        private String name = "no-name";
+
         /**
 		 * Returns new instance of this builder.
 		 * 
@@ -91,14 +93,29 @@ public class Shipment extends AbstractJob{
 			if(id == null) throw new IllegalArgumentException("id must not be null");
 			this.id = id;
 		}
-		
+
+        /**
+         * Sets pickup-location id.
+         *
+         * @param pickupLocationId the location id of shipment's pickup
+         * @return builder
+         * @throws IllegalArgumentException if location is null
+         */
+        public Builder setPickupLocationId(String pickupLocationId){
+            if(pickupLocationId == null) throw new IllegalArgumentException("location must not be null");
+            this.pickupLocation = pickupLocationId;
+            return this;
+        }
+
 		/**
-		 * Sets pickup-location.
+		 * Sets pickup-location id.
 		 * 
 		 * @param pickupLocationId the location id of shipment's pickup
 		 * @return builder
 		 * @throws IllegalArgumentException if location is null
+         * @deprecated use .setPickupLocationId(locationId) instead
 		 */
+        @Deprecated
 		public Builder setPickupLocation(String pickupLocationId){
 			if(pickupLocationId == null) throw new IllegalArgumentException("location must not be null");
 			this.pickupLocation = pickupLocationId;
@@ -148,14 +165,29 @@ public class Shipment extends AbstractJob{
 			this.pickupTimeWindow = timeWindow;
 			return this;
 		}
-			
-		/**
+
+        /**
+         * Sets the delivery-location.
+         *
+         * @param deliveryLocationId the delivery location id
+         * @return builder
+         * @throws IllegalArgumentException if location is null
+         */
+        public Builder setDeliveryLocationId(String deliveryLocationId){
+            if(deliveryLocationId == null) throw new IllegalArgumentException("delivery location must not be null");
+            this.deliveryLocation = deliveryLocationId;
+            return this;
+        }
+
+        /**
 		 * Sets the delivery-location.
 		 * 
 		 * @param deliveryLocation the delivery location id
 		 * @return builder
 		 * @throws IllegalArgumentException if location is null
+         * @deprecated use .setDeliveryLocationId(deliveryLocationId)
 		 */
+        @Deprecated
 		public Builder setDeliveryLocation(String deliveryLocation){
 			if(deliveryLocation == null) throw new IllegalArgumentException("delivery location must not be null");
 			this.deliveryLocation = deliveryLocation;
@@ -247,6 +279,11 @@ public class Shipment extends AbstractJob{
             skillBuilder.addSkill(skill);
             return this;
         }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
     }
 	
 	private final String id;
@@ -271,6 +308,8 @@ public class Shipment extends AbstractJob{
 
     private final Skills skills;
 
+    private String name;
+
 	Shipment(Builder builder){
 		this.id = builder.id;
 		this.pickupLocation = builder.pickupLocation;
@@ -283,6 +322,7 @@ public class Shipment extends AbstractJob{
 		this.deliveryTimeWindow = builder.deliveryTimeWindow;
 		this.capacity = builder.capacity;
         this.skills = builder.skills;
+        this.name = builder.name;
 	}
 	
 	@Override
@@ -294,10 +334,21 @@ public class Shipment extends AbstractJob{
 	 * Returns the pickup-location.
 	 * 
 	 * @return pickup-location
+     * @deprecated use .getPickupLocationId() instead
 	 */
+    @Deprecated
 	public String getPickupLocation() {
 		return pickupLocation;
 	}
+
+    /**
+     * Returns the pickup-location.
+     *
+     * @return pickup-location
+     */
+    public String getPickupLocationId() {
+        return pickupLocation;
+    }
 
 	/**
 	 * Returns the pickup-coordinate.
@@ -323,10 +374,21 @@ public class Shipment extends AbstractJob{
 	 * Returns delivery-location.
 	 * 
 	 * @return delivery-location
+     * @deprecated use .getDeliveryLocationId() instead
 	 */
+    @Deprecated
 	public String getDeliveryLocation() {
 		return deliveryLocation;
 	}
+
+    /**
+     * Returns delivery-location.
+     *
+     * @return delivery-location
+     */
+    public String getDeliveryLocationId() {
+        return deliveryLocation;
+    }
 
 	/**
 	 * Returns coordinate of the delivery.
@@ -402,6 +464,11 @@ public class Shipment extends AbstractJob{
     @Override
     public Skills getRequiredSkills() {
         return skills;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 

@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3schools.com" 
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (C) 2014  Stefan Schroeder
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 3.0 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3schools.com"
 	xmlns="http://www.w3schools.com" elementFormDefault="qualified">
 
 <xs:element name="problem">
@@ -124,6 +141,7 @@
 								<xs:all>
 									<xs:element name="locationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="capacity-demand" type="xs:integer" minOccurs="0" maxOccurs="1" default="0"/>
 									<xs:element name="capacity-dimensions" minOccurs="0" maxOccurs="1">
 										<xs:complexType>
@@ -163,7 +181,7 @@
 					<xs:sequence>
 						<xs:element name="shipment" minOccurs="0" maxOccurs="unbounded">
 							<xs:complexType>
-								<xs:sequence>
+								<xs:all>
 									<xs:element name="pickup" minOccurs="1" maxOccurs="1">
 										<xs:complexType>
 											<xs:all>
@@ -213,7 +231,8 @@
 										</xs:complexType>
 									</xs:element>
                                     <xs:element name="requiredSkills" type="xs:string" minOccurs="0" maxOccurs="1"/>
-								</xs:sequence>
+                                    <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+								</xs:all>
 								<xs:attribute name="id" type="xs:string" use="required" />
 							</xs:complexType>
 						</xs:element>
