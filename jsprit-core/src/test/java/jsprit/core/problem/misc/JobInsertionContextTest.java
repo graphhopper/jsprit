@@ -88,7 +88,7 @@ public class JobInsertionContextTest {
 
     @Test
     public void relatedActivityContextShouldBeAssigned(){
-        context.setRelatedActivityContext(mock(JobInsertionContext.ActivityContext.class));
+        context.setRelatedActivityContext(mock(ActivityContext.class));
         assertNotNull(context.getRelatedActivityContext());
     }
 

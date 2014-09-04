@@ -23,6 +23,7 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.misc.ActivityContext;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.End;
@@ -115,7 +116,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		
 		End end = End.newInstance(newVehicle.getEndLocationId(), 0.0, newVehicle.getLatestArrival());
 
-        JobInsertionContext.ActivityContext pickupContext = new JobInsertionContext.ActivityContext();
+        ActivityContext pickupContext = new ActivityContext();
 
 		TourActivity prevAct = start;
 		double prevActEndTime = newVehicleDepartureTime;
