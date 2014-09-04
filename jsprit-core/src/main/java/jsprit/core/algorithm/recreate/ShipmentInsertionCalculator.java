@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -29,7 +29,6 @@ import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
-import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import jsprit.core.util.CalculationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -87,32 +86,37 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 	 */
 	@Override
 	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
-		if(jobToInsert == null) throw new IllegalStateException("jobToInsert is missing.");
-		if(newVehicle == null || newVehicle instanceof NoVehicle) throw new IllegalStateException("newVehicle is missing.");
-		if(!(jobToInsert instanceof Shipment)) throw new IllegalStateException("jobToInsert should be of type Shipment!");
-		
-		JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
-		if(!hardRouteLevelConstraint.fulfilled(insertionContext)){
+        JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
+        Shipment shipment = (Shipment)jobToInsert;
+        TourActivity pickupShipment = activityFactory.createActivities(shipment).get(0);
+        TourActivity deliverShipment = activityFactory.createActivities(shipment).get(1);
+        insertionContext.getAssociatedActivities().add(pickupShipment);
+        insertionContext.getAssociatedActivities().add(deliverShipment);
+
+        /*
+        check hard route constraints
+         */
+        if(!hardRouteLevelConstraint.fulfilled(insertionContext)){
 			return InsertionData.createEmptyInsertionData();
 		}
-		
-		double bestCost = bestKnownCosts;
-		
-		double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
-		additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
-		
-		Shipment shipment = (Shipment)jobToInsert;
-		TourActivity pickupShipment = activityFactory.createActivities(shipment).get(0);
-		TourActivity deliverShipment = activityFactory.createActivities(shipment).get(1);
-		
-		int pickupInsertionIndex = InsertionData.NO_INDEX;
+        /*
+        check soft route constraints
+         */
+        double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
+
+        double bestCost = bestKnownCosts;
+        additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
+
+        int pickupInsertionIndex = InsertionData.NO_INDEX;
 		int deliveryInsertionIndex = InsertionData.NO_INDEX;
 		
 		Start start = Start.newInstance(newVehicle.getStartLocationId(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
 		start.setEndTime(newVehicleDepartureTime);
 		
 		End end = End.newInstance(newVehicle.getEndLocationId(), 0.0, newVehicle.getLatestArrival());
-		
+
+        JobInsertionContext.ActivityContext pickupContext = new JobInsertionContext.ActivityContext();
+
 		TourActivity prevAct = start;
 		double prevActEndTime = newVehicleDepartureTime;
 		boolean pickupShipmentLoopBroken = false;
@@ -135,7 +139,13 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 			TourActivity prevAct_deliveryLoop = pickupShipment;
 			double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), pickupShipment.getLocationId(), prevActEndTime, newDriver, newVehicle);
 			double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);
-			double prevActEndTime_deliveryLoop = shipmentPickupEndTime;
+
+            pickupContext.setArrivalTime(shipmentPickupArrTime);
+            pickupContext.setEndTime(shipmentPickupEndTime);
+            pickupContext.setInsertionIndex(i);
+            insertionContext.setRelatedActivityContext(pickupContext);
+
+            double prevActEndTime_deliveryLoop = shipmentPickupEndTime;
 			boolean deliverShipmentLoopBroken = false;
 			//deliverShipmentLoop
 			for(int j=i;j<activities.size();j++){
@@ -188,8 +198,13 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), pickupShipment.getLocationId(), prevActEndTime, newDriver, newVehicle);
 				double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);
 				double prevActEndTime_deliveryLoop = shipmentPickupEndTime;
-				
-				ConstraintsStatus deliverShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, end, prevActEndTime_deliveryLoop);
+
+                pickupContext.setArrivalTime(shipmentPickupArrTime);
+                pickupContext.setEndTime(shipmentPickupEndTime);
+                pickupContext.setInsertionIndex(activities.size());
+                insertionContext.setRelatedActivityContext(pickupContext);
+
+                ConstraintsStatus deliverShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, end, prevActEndTime_deliveryLoop);
 				if(deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)){
 					double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, end, prevActEndTime_deliveryLoop);
 					double deliveryAIC = calculate(insertionContext,prevAct_deliveryLoop,deliverShipment,end,prevActEndTime_deliveryLoop);

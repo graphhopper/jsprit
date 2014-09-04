@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -88,20 +88,29 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 	@Override
 	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
 		JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
-		if(!hardRouteLevelConstraint.fulfilled(insertionContext)){
+        Service service = (Service)jobToInsert;
+        int insertionIndex = InsertionData.NO_INDEX;
+        TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
+        insertionContext.getAssociatedActivities().add(deliveryAct2Insert);
+
+        /*
+        check hard constraints at route level
+         */
+        if(!hardRouteLevelConstraint.fulfilled(insertionContext)){
 			return InsertionData.createEmptyInsertionData();
 		}
+
+        /*
+        check soft constraints at route level
+         */
+        double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
+
 		double bestCost = bestKnownCosts;
-		
-		//from job2insert induced costs at route level
-		double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
-		additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
-		
-		Service service = (Service)jobToInsert;
-		int insertionIndex = InsertionData.NO_INDEX;
-		
-		TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
-		
+        additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
+
+        /*
+        generate new start and end for new vehicle
+         */
 		Start start = Start.newInstance(newVehicle.getStartLocationId(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
 		start.setEndTime(newVehicleDepartureTime);
 		End end = End.newInstance(newVehicle.getEndLocationId(), 0.0, newVehicle.getLatestArrival());
