@@ -1,34 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.analysis.toolbox;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
@@ -42,13 +28,15 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
-
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 
@@ -359,21 +347,21 @@ public class GraphStreamViewer {
 
 	private void renderShipment(Graph g, Shipment shipment, Label label, boolean renderShipments) {
 
-		Node n1 = g.addNode(makeId(shipment.getId(),shipment.getPickupLocation()));
+		Node n1 = g.addNode(makeId(shipment.getId(),shipment.getPickupLocationId()));
 		if(label.equals(Label.ID)) n1.addAttribute("ui.label", shipment.getId());
 		n1.addAttribute("x", shipment.getPickupCoord().getX());
 		n1.addAttribute("y", shipment.getPickupCoord().getY());
 		n1.setAttribute("ui.class", "pickup");
 
-		Node n2 = g.addNode(makeId(shipment.getId(),shipment.getDeliveryLocation()));
+		Node n2 = g.addNode(makeId(shipment.getId(),shipment.getDeliveryLocationId()));
 		if(label.equals(Label.ID)) n2.addAttribute("ui.label", shipment.getId());
 		n2.addAttribute("x", shipment.getDeliveryCoord().getX());
 		n2.addAttribute("y", shipment.getDeliveryCoord().getY());
 		n2.setAttribute("ui.class", "delivery");
 
 		if(renderShipments){
-			Edge s = g.addEdge(shipment.getId(), makeId(shipment.getId(),shipment.getPickupLocation()),
-					makeId(shipment.getId(),shipment.getDeliveryLocation()), true);
+			Edge s = g.addEdge(shipment.getId(), makeId(shipment.getId(),shipment.getPickupLocationId()),
+					makeId(shipment.getId(),shipment.getDeliveryLocationId()), true);
 			s.addAttribute("ui.class", "shipment");
 		}
 

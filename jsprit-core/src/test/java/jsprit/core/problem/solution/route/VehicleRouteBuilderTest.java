@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.problem.solution.route;
 
@@ -115,7 +113,7 @@ public class VehicleRouteBuilderTest {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(s.getSize()).thenReturn(capacity);
 		when(s2.getSize()).thenReturn(capacity);
-		when(s2.getDeliveryLocation()).thenReturn("delLoc");
+		when(s2.getDeliveryLocationId()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
@@ -125,7 +123,7 @@ public class VehicleRouteBuilderTest {
 		builder.addDelivery(s);
 		builder.addDelivery(s2);
 		VehicleRoute route = builder.build();
-		assertEquals(route.getEnd().getLocationId(), s2.getDeliveryLocation());
+		assertEquals(route.getEnd().getLocationId(), s2.getDeliveryLocationId());
 	}
 	
 	@Test
@@ -135,7 +133,7 @@ public class VehicleRouteBuilderTest {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(s.getSize()).thenReturn(capacity);
 		when(s2.getSize()).thenReturn(capacity);
-		when(s2.getDeliveryLocation()).thenReturn("delLoc");
+		when(s2.getDeliveryLocationId()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
@@ -158,7 +156,7 @@ public class VehicleRouteBuilderTest {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(s.getSize()).thenReturn(capacity);
 		when(s2.getSize()).thenReturn(capacity);
-		when(s2.getDeliveryLocation()).thenReturn("delLoc");
+		when(s2.getDeliveryLocationId()).thenReturn("delLoc");
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		when(vehicle.getStartLocationId()).thenReturn("vehLoc");

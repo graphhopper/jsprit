@@ -111,8 +111,8 @@ public class VehicleRoutingProblemTest {
 
 	@Test
 	public void whenShipmentsAreAdded_vrpShouldContainThem(){
-		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation("foofoo").setDeliveryLocation("foo").build();
-		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 100).setPickupLocation("foofoo").setDeliveryLocation("foo").build();
+		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocationId("foofoo").setDeliveryLocationId("foo").build();
+		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 100).setPickupLocationId("foofoo").setDeliveryLocationId("foo").build();
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addJob(s);
 		vrpBuilder.addJob(s2);
@@ -534,7 +534,7 @@ public class VehicleRoutingProblemTest {
     @Test
     public void whenAddingTwoJobs_theyShouldHaveProperIndeces(){
         Service service = Service.Builder.newInstance("myService").setLocationId("loc").build();
-        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation("pick").setDeliveryLocation("del").build();
+        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocationId("pick").setDeliveryLocationId("del").build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service);
         vrpBuilder.addJob(shipment);

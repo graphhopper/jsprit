@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -265,8 +265,8 @@ public class VehicleRoutingProblem {
 			}
 			else if(job instanceof Shipment){
 				Shipment shipment = (Shipment)job;
-				tentative_coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
-				tentative_coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
+				tentative_coordinates.put(shipment.getPickupLocationId(), shipment.getPickupCoord());
+				tentative_coordinates.put(shipment.getDeliveryLocationId(), shipment.getDeliveryCoord());
 			}
 		}
 
@@ -310,8 +310,8 @@ public class VehicleRoutingProblem {
             if (job instanceof Service) tentative_coordinates.put(((Service) job).getLocationId(), ((Service) job).getCoord());
             if (job instanceof Shipment) {
                 Shipment shipment = (Shipment) job;
-                tentative_coordinates.put(shipment.getPickupLocation(), shipment.getPickupCoord());
-                tentative_coordinates.put(shipment.getDeliveryLocation(), shipment.getDeliveryCoord());
+                tentative_coordinates.put(shipment.getPickupLocationId(), shipment.getPickupCoord());
+                tentative_coordinates.put(shipment.getDeliveryLocationId(), shipment.getDeliveryCoord());
             }
         }
 
@@ -333,8 +333,8 @@ public class VehicleRoutingProblem {
 		
 		private void addShipment(Shipment job) {
 			if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
-			tentative_coordinates.put(job.getPickupLocation(), job.getPickupCoord());
-			tentative_coordinates.put(job.getDeliveryLocation(), job.getDeliveryCoord());
+			tentative_coordinates.put(job.getPickupLocationId(), job.getPickupCoord());
+			tentative_coordinates.put(job.getDeliveryLocationId(), job.getDeliveryCoord());
 			jobs.put(job.getId(),job);
 		}
 

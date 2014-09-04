@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2014  Stefan Schroeder
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package jsprit.core.algorithm;
 
 
@@ -252,10 +269,10 @@ public class InitialRoutesTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("veh").setStartLocationCoordinate(Coordinate.newInstance(0, 0)).setType(type).setStartLocationId("start").build();
 
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation("pick").setDeliveryLocation("del").setPickupCoord(Coordinate.newInstance(10, 0))
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocationId("pick").setDeliveryLocationId("del").setPickupCoord(Coordinate.newInstance(10, 0))
                 .setDeliveryCoord(Coordinate.newInstance(0, 10)).addSizeDimension(0, 100).build();
 
-        Shipment another_shipment = Shipment.Builder.newInstance("another_s").setPickupLocation("pick").setDeliveryLocation("del").setPickupCoord(Coordinate.newInstance(10, 0))
+        Shipment another_shipment = Shipment.Builder.newInstance("another_s").setPickupLocationId("pick").setDeliveryLocationId("del").setPickupCoord(Coordinate.newInstance(10, 0))
                 .setDeliveryCoord(Coordinate.newInstance(0, 10)).addSizeDimension(0, 50).build();
 
         VehicleRoute iniRoute = VehicleRoute.Builder.newInstance(vehicle).addPickup(shipment).addDelivery(shipment).build();

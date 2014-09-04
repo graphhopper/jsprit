@@ -340,8 +340,8 @@ public class BicycleMessenger {
 	
 	static double getTimeOfDirectRoute(Job job, Vehicle v, VehicleRoutingTransportCosts routingCosts) {
 		Shipment envelope = (Shipment) job;
-		return routingCosts.getTransportTime(v.getStartLocationId(), envelope.getPickupLocation(), 0.0, DriverImpl.noDriver(), v) +
-				routingCosts.getTransportTime(envelope.getPickupLocation(), envelope.getDeliveryLocation(), 0.0, DriverImpl.noDriver(), v);
+		return routingCosts.getTransportTime(v.getStartLocationId(), envelope.getPickupLocationId(), 0.0, DriverImpl.noDriver(), v) +
+				routingCosts.getTransportTime(envelope.getPickupLocationId(), envelope.getDeliveryLocationId(), 0.0, DriverImpl.noDriver(), v);
 	}
 
 	private static void readEnvelopes(Builder problemBuilder) throws IOException {

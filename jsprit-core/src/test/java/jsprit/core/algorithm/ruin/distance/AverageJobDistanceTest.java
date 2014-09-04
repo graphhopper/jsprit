@@ -1,34 +1,31 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.algorithm.ruin.distance;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Locations;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class AverageJobDistanceTest {
@@ -55,15 +52,15 @@ public class AverageJobDistanceTest {
 	
 	@Test
 	public void distanceOfTwoEqualShipmentsShouldBeSmallerThanAnyOtherDistance(){
-		Shipment s1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
-		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
+		Shipment s1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocationId("0,0").setDeliveryLocationId("10,10").build();
+		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocationId("0,0").setDeliveryLocationId("10,10").build();
 		
 		double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
 		
 		for(int i=0;i<10;i++){
 			for(int j=0;j<10;j++){
-				Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation(i+","+j).build();
-				Shipment other2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation("0,0").setDeliveryLocation("10,10").build();
+				Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocationId("0,0").setDeliveryLocationId(i + "," + j).build();
+				Shipment other2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocationId("0,0").setDeliveryLocationId("10,10").build();
 				double dist2 = new AvgServiceAndShipmentDistance(routingCosts).getDistance(other1, other2);
 				System.out.println("("+i+","+j+"), dist=" + dist + ", dist2=" + dist2);
 				assertTrue(dist<=dist2+dist2*0.001);

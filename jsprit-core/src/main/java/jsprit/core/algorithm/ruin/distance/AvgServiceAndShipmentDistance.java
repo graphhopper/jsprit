@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -74,16 +74,16 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
 	}
 
 	private double calcDist(Service i, Shipment j) {
-		double c_ij1 = calcDist(i.getLocationId(),i.getCoord(),j.getPickupLocation(),j.getPickupCoord());
-		double c_ij2 = calcDist(i.getLocationId(),i.getCoord(),j.getDeliveryLocation(),j.getDeliveryCoord());
+		double c_ij1 = calcDist(i.getLocationId(),i.getCoord(),j.getPickupLocationId(),j.getPickupCoord());
+		double c_ij2 = calcDist(i.getLocationId(),i.getCoord(),j.getDeliveryLocationId(),j.getDeliveryCoord());
 		return (c_ij1 + c_ij2)/2.0;
 	}
 	
 	private double calcDist(Shipment i, Shipment j) {
-		double c_i1j1 = calcDist(i.getPickupLocation(),i.getPickupCoord(),j.getPickupLocation(),j.getPickupCoord());
-		double c_i1j2 = calcDist(i.getPickupLocation(),i.getPickupCoord(),j.getDeliveryLocation(),j.getDeliveryCoord());
-		double c_i2j1 = calcDist(i.getDeliveryLocation(),i.getDeliveryCoord(),j.getPickupLocation(),j.getPickupCoord());
-		double c_i2j2 = calcDist(i.getDeliveryLocation(),i.getDeliveryCoord(),j.getDeliveryLocation(),j.getDeliveryCoord());
+		double c_i1j1 = calcDist(i.getPickupLocationId(),i.getPickupCoord(),j.getPickupLocationId(),j.getPickupCoord());
+		double c_i1j2 = calcDist(i.getPickupLocationId(),i.getPickupCoord(),j.getDeliveryLocationId(),j.getDeliveryCoord());
+		double c_i2j1 = calcDist(i.getDeliveryLocationId(),i.getDeliveryCoord(),j.getPickupLocationId(),j.getPickupCoord());
+		double c_i2j2 = calcDist(i.getDeliveryLocationId(),i.getDeliveryCoord(),j.getDeliveryLocationId(),j.getDeliveryCoord());
 		return (c_i1j1 + c_i1j2 + c_i2j1 + c_i2j2)/4.0;
 	}
 

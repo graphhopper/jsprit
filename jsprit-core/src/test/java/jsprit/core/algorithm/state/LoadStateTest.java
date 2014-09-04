@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2014  Stefan Schroeder
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package jsprit.core.algorithm.state;
 
 import jsprit.core.problem.AbstractActivity;
@@ -52,8 +69,8 @@ public class LoadStateTest {
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder shipmentProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Shipment shipment1 = Shipment.Builder.newInstance("s1").addSizeDimension(0,10).setPickupLocation("pick").setDeliveryLocation("del").build();
-        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0,5).setPickupLocation("pick").setDeliveryLocation("del").build();
+        Shipment shipment1 = Shipment.Builder.newInstance("s1").addSizeDimension(0,10).setPickupLocationId("pick").setDeliveryLocationId("del").build();
+        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0,5).setPickupLocationId("pick").setDeliveryLocationId("del").build();
         shipmentProblemBuilder.addJob(shipment1).addJob(shipment2).build();
         final VehicleRoutingProblem shipmentProblem = shipmentProblemBuilder.build();
 

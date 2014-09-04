@@ -50,18 +50,7 @@ import java.util.Collection;
 public class RefuseCollectionExample {
 
 	static class RelationKey {
-		
-//		static RelationKey newKey(String from, String to){
-//			int fromInt = Integer.parseInt(from);
-//			int toInt = Integer.parseInt(to);
-//			if(fromInt < toInt){
-//				return new RelationKey(from, to);
-//			}
-//			else {
-//				return new RelationKey(to, from);
-//			}
-//		}
-		
+
 		final String from;
 		final String to;
 		
@@ -108,39 +97,6 @@ public class RefuseCollectionExample {
 			return true;
 		}
 	}
-	
-//	static class RoutingCosts implements VehicleRoutingTransportCosts {
-//
-//		private Map<RelationKey,Integer> distances;
-//
-//		public RoutingCosts(Map<RelationKey, Integer> distances) {
-//			super();
-//			this.distances = distances;
-//		}
-//
-//		@Override
-//		public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-//			return getTransportCost(fromId, toId, departureTime, driver, vehicle);
-//		}
-//
-//		@Override
-//		public double getBackwardTransportTime(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
-//			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-//		}
-//
-//		@Override
-//		public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-//			if(fromId.equals(toId)) return 0.0;
-//			RelationKey key = RelationKey.newKey(fromId, toId);
-//			return distances.get(key);
-//		}
-//
-//		@Override
-//		public double getBackwardTransportCost(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
-//			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
-//		}
-//
-//	}
 
 	public static void main(String[] args) throws IOException {
 		/*
