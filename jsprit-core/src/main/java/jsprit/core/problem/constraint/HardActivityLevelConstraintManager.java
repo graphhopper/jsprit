@@ -1,42 +1,40 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.problem.constraint;
+
+import jsprit.core.problem.constraint.ConstraintManager.Priority;
+import jsprit.core.problem.misc.JobInsertionContext;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import jsprit.core.problem.constraint.ConstraintManager.Priority;
-import jsprit.core.problem.misc.JobInsertionContext;
-import jsprit.core.problem.solution.route.activity.TourActivity;
 
+class HardActivityLevelConstraintManager implements HardActivityConstraint {
 
-class HardActivityLevelConstraintManager implements HardActivityStateLevelConstraint {
-
-	private Collection<HardActivityStateLevelConstraint> criticalConstraints = new ArrayList<HardActivityStateLevelConstraint>();
+	private Collection<HardActivityConstraint> criticalConstraints = new ArrayList<HardActivityConstraint>();
 	
-	private Collection<HardActivityStateLevelConstraint> highPrioConstraints = new ArrayList<HardActivityStateLevelConstraint>();
+	private Collection<HardActivityConstraint> highPrioConstraints = new ArrayList<HardActivityConstraint>();
 	
-	private Collection<HardActivityStateLevelConstraint> lowPrioConstraints = new ArrayList<HardActivityStateLevelConstraint>();
+	private Collection<HardActivityConstraint> lowPrioConstraints = new ArrayList<HardActivityConstraint>();
 	
-	public void addConstraint(HardActivityStateLevelConstraint constraint, Priority priority){
+	public void addConstraint(HardActivityConstraint constraint, Priority priority){
 		if(priority.equals(Priority.CRITICAL)){
 			criticalConstraints.add(constraint);
 		}
@@ -48,14 +46,14 @@ class HardActivityLevelConstraintManager implements HardActivityStateLevelConstr
 		}
 	}
 	
-	Collection<HardActivityStateLevelConstraint> getCriticalConstraints(){ return Collections.unmodifiableCollection(criticalConstraints); }
+	Collection<HardActivityConstraint> getCriticalConstraints(){ return Collections.unmodifiableCollection(criticalConstraints); }
 	
-	Collection<HardActivityStateLevelConstraint> getHighPrioConstraints(){ return Collections.unmodifiableCollection(highPrioConstraints); }
+	Collection<HardActivityConstraint> getHighPrioConstraints(){ return Collections.unmodifiableCollection(highPrioConstraints); }
 	
-	Collection<HardActivityStateLevelConstraint> getLowPrioConstraints(){ return Collections.unmodifiableCollection(lowPrioConstraints); }
+	Collection<HardActivityConstraint> getLowPrioConstraints(){ return Collections.unmodifiableCollection(lowPrioConstraints); }
 	
-	Collection<HardActivityStateLevelConstraint> getAllConstraints(){
-		List<HardActivityStateLevelConstraint> c = new ArrayList<HardActivityStateLevelConstraint>();
+	Collection<HardActivityConstraint> getAllConstraints(){
+		List<HardActivityConstraint> c = new ArrayList<HardActivityConstraint>();
 		c.addAll(criticalConstraints);
 		c.addAll(highPrioConstraints);
 		c.addAll(lowPrioConstraints);
@@ -65,7 +63,7 @@ class HardActivityLevelConstraintManager implements HardActivityStateLevelConstr
 	@Override
 	public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 		ConstraintsStatus notFulfilled = null;
-		for(HardActivityStateLevelConstraint c : criticalConstraints){
+		for(HardActivityConstraint c : criticalConstraints){
 			ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
 			if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)){
 				return status;
@@ -78,7 +76,7 @@ class HardActivityLevelConstraintManager implements HardActivityStateLevelConstr
 		}
 		if(notFulfilled != null) return notFulfilled;
 		
-		for(HardActivityStateLevelConstraint c : highPrioConstraints){
+		for(HardActivityConstraint c : highPrioConstraints){
 			ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
 			if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)){
 				return status;
@@ -91,7 +89,7 @@ class HardActivityLevelConstraintManager implements HardActivityStateLevelConstr
 		}
 		if(notFulfilled != null) return notFulfilled;
 		
-		for(HardActivityStateLevelConstraint constraint : lowPrioConstraints){
+		for(HardActivityConstraint constraint : lowPrioConstraints){
 			ConstraintsStatus status = constraint.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
 			if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK) || status.equals(ConstraintsStatus.NOT_FULFILLED)){
 				return status;

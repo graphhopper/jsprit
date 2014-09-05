@@ -18,7 +18,7 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.constraint.*;
-import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
+import jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
@@ -43,9 +43,9 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 	
 	private static final Logger logger = LogManager.getLogger(ServiceInsertionCalculator.class);
 
-	private HardRouteStateLevelConstraint hardRouteLevelConstraint;
+	private HardRouteConstraint hardRouteLevelConstraint;
 	
-	private HardActivityStateLevelConstraint hardActivityLevelConstraint;
+	private HardActivityConstraint hardActivityLevelConstraint;
 	
 	private SoftRouteConstraint softRouteConstraint;
 	

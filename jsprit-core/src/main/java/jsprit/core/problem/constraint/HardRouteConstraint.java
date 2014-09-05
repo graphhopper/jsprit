@@ -18,29 +18,21 @@ package jsprit.core.problem.constraint;
 
 import jsprit.core.problem.misc.JobInsertionContext;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+/**
+ * Hard constraint that evaluates whether a new job (insertionContext.getJob()) can be inserted
+ * existing route (insertionContext.getRoute()).
+ */
+public interface HardRouteConstraint extends HardConstraint{
 
-
-class HardRouteLevelConstraintManager implements HardRouteConstraint {
-
-	private Collection<HardRouteConstraint> hardConstraints = new ArrayList<HardRouteConstraint>();
-	
-	public void addConstraint(HardRouteConstraint constraint){
-		hardConstraints.add(constraint);
-	}
-	
-	Collection<HardRouteConstraint> getConstraints(){ return Collections.unmodifiableCollection(hardConstraints); }
-
-	@Override
-	public boolean fulfilled(JobInsertionContext insertionContext) {
-		for(HardRouteConstraint constraint : hardConstraints){
-			if(!constraint.fulfilled(insertionContext)){
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * Returns whether a job can be inserted in route.
+     *
+     * @param insertionContext provides context information about inserting a new job, i.e. the new job (<code>insertionContext.getJob()</code>),
+     *                         the route where the new job should be inserted (<code>insertionContext.getRoute()</code>), the new vehicle that
+     *                         should operate the route plus the new job (<code>insertionContext.getNewVehicle()</code>) and the new departure
+     *                         time at this vehicle's start location (<code>insertionContext.getNewDepartureTime()</code>).
+     * @return true if constraint is met, false otherwise
+     */
+	public boolean fulfilled(JobInsertionContext insertionContext);
 	
 }

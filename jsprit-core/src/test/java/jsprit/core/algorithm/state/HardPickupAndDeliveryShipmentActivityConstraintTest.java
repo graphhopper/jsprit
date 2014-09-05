@@ -18,7 +18,7 @@ package jsprit.core.algorithm.state;
 
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.constraint.HardActivityStateLevelConstraint.ConstraintsStatus;
+import jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import jsprit.core.problem.constraint.PickupAndDeliverShipmentLoadActivityLevelConstraint;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;

@@ -25,7 +25,7 @@ import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
+import jsprit.core.problem.constraint.HardRouteConstraint;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -130,7 +130,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
 		 *
 		 * switch off the geoConstraints to see the impact of this constraint on routes, or just exchange v1 and v2 to reverse the geo-constraint.
 		 */
-        HardRouteStateLevelConstraint geoClusterConstraint = new HardRouteStateLevelConstraint() {
+        HardRouteConstraint geoClusterConstraint = new HardRouteConstraint() {
 
             @Override
             public boolean fulfilled(JobInsertionContext insertionContext) {

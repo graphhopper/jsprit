@@ -28,8 +28,8 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
-import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
+import jsprit.core.problem.constraint.HardActivityConstraint;
+import jsprit.core.problem.constraint.HardRouteConstraint;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.DriverImpl;
 import jsprit.core.problem.job.Job;
@@ -83,7 +83,7 @@ public class BicycleMessenger {
 	 * @author stefan
 	 *
 	 */
-	static class ThreeTimesLessThanBestDirectRouteConstraint implements HardActivityStateLevelConstraint {
+	static class ThreeTimesLessThanBestDirectRouteConstraint implements HardActivityConstraint {
 
 		private final VehicleRoutingTransportCosts routingCosts;
 		
@@ -145,7 +145,7 @@ public class BicycleMessenger {
 	 * @author schroeder
 	 *
 	 */
-	static class IgnoreMessengerThatCanNeverMeetTimeRequirements implements HardRouteStateLevelConstraint {
+	static class IgnoreMessengerThatCanNeverMeetTimeRequirements implements HardRouteConstraint {
 
 		private final Map<String,Double> bestMessengers;
 		

@@ -27,7 +27,7 @@ import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.StateUpdater;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
+import jsprit.core.problem.constraint.HardActivityConstraint;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -93,7 +93,7 @@ public class AdditionalDistanceConstraintExample {
         }
     }
 
-    static class DistanceConstraint implements HardActivityStateLevelConstraint {
+    static class DistanceConstraint implements HardActivityConstraint {
 
         private final StateManager stateManager;
 

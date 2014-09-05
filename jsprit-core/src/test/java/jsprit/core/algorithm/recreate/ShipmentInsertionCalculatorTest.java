@@ -70,7 +70,7 @@ public class ShipmentInsertionCalculatorTest {
 		
 	};
 	
-	HardActivityStateLevelConstraint hardActivityLevelConstraint = new HardActivityStateLevelConstraint() {
+	HardActivityConstraint hardActivityLevelConstraint = new HardActivityConstraint() {
 		
 		@Override
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
@@ -78,7 +78,7 @@ public class ShipmentInsertionCalculatorTest {
 		}
 	};
 	
-	HardRouteStateLevelConstraint hardRouteLevelConstraint = new HardRouteStateLevelConstraint(){
+	HardRouteConstraint hardRouteLevelConstraint = new HardRouteConstraint(){
 
 		@Override
 		public boolean fulfilled(JobInsertionContext insertionContext) {
@@ -103,7 +103,7 @@ public class ShipmentInsertionCalculatorTest {
         vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
 	}
 
-	private void createInsertionCalculator(HardRouteStateLevelConstraint hardRouteLevelConstraint) {
+	private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
 		ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
 		constraintManager.addConstraint(hardRouteLevelConstraint);
 		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
@@ -160,7 +160,7 @@ public class ShipmentInsertionCalculatorTest {
 		VehicleRoute route = VehicleRoute.emptyRoute();
         when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
 		new Inserter(new InsertionListeners(), vehicleRoutingProblem).insertJob(shipment, new InsertionData(0,0,0,vehicle,null), route);
-		createInsertionCalculator(new HardRouteStateLevelConstraint() {
+		createInsertionCalculator(new HardRouteConstraint() {
 			
 			@Override
 			public boolean fulfilled(JobInsertionContext insertionContext) {

@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
@@ -36,7 +34,7 @@ import java.util.List;
  * @author schroeder
  *
  */
-public class ConstraintManager implements HardActivityStateLevelConstraint, HardRouteStateLevelConstraint, SoftActivityConstraint, SoftRouteConstraint{
+public class ConstraintManager implements HardActivityConstraint, HardRouteConstraint, SoftActivityConstraint, SoftRouteConstraint{
 
     public static enum Priority {
 		CRITICAL, HIGH, LOW
@@ -76,12 +74,12 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 	private void resolveConstraints(Collection<jsprit.core.problem.constraint.Constraint> constraints) {
 		for(jsprit.core.problem.constraint.Constraint c : constraints){
 			boolean constraintTypeKnown = false;
-			if(c instanceof HardActivityStateLevelConstraint) {
-				actLevelConstraintManager.addConstraint((HardActivityStateLevelConstraint) c, Priority.HIGH);
+			if(c instanceof HardActivityConstraint) {
+				actLevelConstraintManager.addConstraint((HardActivityConstraint) c, Priority.HIGH);
 				constraintTypeKnown = true;
 			}
-			if(c instanceof HardRouteStateLevelConstraint) {
-				routeLevelConstraintManager.addConstraint((HardRouteStateLevelConstraint) c);
+			if(c instanceof HardRouteConstraint) {
+				routeLevelConstraintManager.addConstraint((HardRouteConstraint) c);
 				constraintTypeKnown = true;
 			}
 			if(c instanceof SoftRouteConstraint){
@@ -125,11 +123,11 @@ public class ConstraintManager implements HardActivityStateLevelConstraint, Hard
 	
 //	public void add
 	
-	public void addConstraint(HardActivityStateLevelConstraint actLevelConstraint, Priority priority){
+	public void addConstraint(HardActivityConstraint actLevelConstraint, Priority priority){
 		actLevelConstraintManager.addConstraint(actLevelConstraint,priority);
 	}
 	
-	public void addConstraint(HardRouteStateLevelConstraint routeLevelConstraint){
+	public void addConstraint(HardRouteConstraint routeLevelConstraint){
 		routeLevelConstraintManager.addConstraint(routeLevelConstraint);
 	}
 	

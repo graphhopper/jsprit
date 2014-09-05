@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
@@ -24,8 +22,8 @@ import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
-import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
+import jsprit.core.problem.constraint.HardActivityConstraint;
+import jsprit.core.problem.constraint.HardRouteConstraint;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
@@ -66,7 +64,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		
 	};
 	
-	HardActivityStateLevelConstraint hardActivityLevelConstraint = new HardActivityStateLevelConstraint() {
+	HardActivityConstraint hardActivityLevelConstraint = new HardActivityConstraint() {
 		
 		@Override
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
@@ -74,7 +72,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		}
 	};
 	
-	HardRouteStateLevelConstraint hardRouteLevelConstraint = new HardRouteStateLevelConstraint(){
+	HardRouteConstraint hardRouteLevelConstraint = new HardRouteConstraint(){
 
 		@Override
 		public boolean fulfilled(JobInsertionContext insertionContext) {
@@ -101,7 +99,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
         vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
 	}
 
-	private void createInsertionCalculator(HardRouteStateLevelConstraint hardRouteLevelConstraint) {
+	private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
 		ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
 		constraintManager.addConstraint(hardRouteLevelConstraint);
 		insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);

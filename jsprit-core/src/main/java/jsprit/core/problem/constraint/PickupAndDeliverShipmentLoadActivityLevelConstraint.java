@@ -35,7 +35,7 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
  * @author schroeder
  *
  */
-public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements HardActivityStateLevelConstraint {
+public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements HardActivityConstraint {
 	
 	private RouteAndActivityStateGetter stateManager;
 

@@ -26,7 +26,7 @@ import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardRouteStateLevelConstraint;
+import jsprit.core.problem.constraint.HardRouteConstraint;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -143,7 +143,7 @@ public class TransportOfDisabledPeople {
 		 * 
 		 * wheelchair-bus can only pickup passenger where x<15
 		 */
-		HardRouteStateLevelConstraint wheelchair_bus_passenger_pickup_constraint = new HardRouteStateLevelConstraint() {
+		HardRouteConstraint wheelchair_bus_passenger_pickup_constraint = new HardRouteConstraint() {
 			
 			@Override
 			public boolean fulfilled(JobInsertionContext insertionContext) {

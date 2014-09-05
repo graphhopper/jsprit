@@ -25,7 +25,7 @@ import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardActivityStateLevelConstraint;
+import jsprit.core.problem.constraint.HardActivityConstraint;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -39,6 +39,8 @@ import jsprit.core.util.Solutions;
 
 import java.util.Collection;
 
+//import jsprit.core.problem.constraint.HardActivityStateLevelConstraint; //v1.3.1
+
 //import jsprit.core.problem.solution.route.state.StateFactory;  //v1.3.1
 
 public class MultipleProductsWithLoadConstraintExample {
@@ -47,7 +49,8 @@ public class MultipleProductsWithLoadConstraintExample {
 
     static final int APPLES_DIMENSION_INDEX = 1;
 
-    static class BananasFirst implements HardActivityStateLevelConstraint {
+//    static class BananasFirst implements HardActivityStateLevelConstraint { //v1.3.1
+    static class BananasFirst implements HardActivityConstraint {
 
         @Override
         public ConstraintsStatus fulfilled(JobInsertionContext jobInsertionContext, TourActivity prevActivity, TourActivity newActivity, TourActivity nextActivity, double departureTimeAtPrevActivity) {
@@ -65,7 +68,8 @@ public class MultipleProductsWithLoadConstraintExample {
         }
     }
 
-    static class NoBananasANDApplesConstraint implements HardActivityStateLevelConstraint {
+    //static class NoBananasANDApplesConstraint implements HardActivityStateLevelConstraint { //v1.3.1
+    static class NoBananasANDApplesConstraint implements HardActivityConstraint {
 
         private StateManager stateManager;
 
