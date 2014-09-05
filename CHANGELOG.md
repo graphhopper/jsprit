@@ -18,6 +18,7 @@ Change-log
 - StateManager.addDefault... methods do not exists anymore. Client must now decide what to do when state does not exist.
 - deprecated core.problem.VehicleRoutingProblem.Builder.addVehicle(Vehicle v) and added core.problem.VehicleRoutingProblem.Builder.addVehicle(AbstractVehicle v)
 - deprecated core.problem.VehicleRoutingProblem.Builder.addJob(Job j) and added core.problem.VehicleRoutingProblem.Builder.addJob(AbstractJob j) 
+- this [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/MultipleProductsWithLoadConstraintExample.java) might make migrating from v1.3.1 to v1.4 easier (since both versions are implemented - v1.3.1 was commented out) 
 
 - bugfix [#107](https://github.com/jsprit/jsprit/issues/107)
 - bugfix [#109](https://github.com/jsprit/jsprit/issues/109)
