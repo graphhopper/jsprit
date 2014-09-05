@@ -62,9 +62,13 @@ You can now retrieve additional information about related activities from JobIns
 
 If one deals with shipments then two activities will be inserted: pickupShipment and deliverShipment.
 
-If you implement
+If you implement core.problem.constraint.SoftActivityContraint and core.problem.constraint.HardActivityStateLevelConstraint and thus
 
 <code>public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);</code>
+
+and
+
+<code>public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);</code>
  
 you can now retrieve additional information from iFacts. If newAct is "deliverShipment" then
 
@@ -72,7 +76,7 @@ you can now retrieve additional information from iFacts. If newAct is "deliverSh
 
 provides arrivalTime, endTime and potentialInsertionIndex of the related "pickupShipment" (see javadoc of ActivityContext).
 
-This allows you to easily implement LIFO and FIFO constraints.
+This allows you to easily implement LIFO and FIFO constraints (since you now know where the pickup activity will be inserted).
 
 
 
