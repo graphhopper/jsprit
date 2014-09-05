@@ -56,6 +56,26 @@ This, however, easily enables you to define objective functions that maximizes p
 
 <b>Thus, if you already use your own custom objective function, you need to manually adapt it and add penalties for unassigned jobs.</b>
 
+<b> LIFO and FIFO CONSTRAINTS </b>
+
+You can now retrieve additional information about related activities from JobInsertionContext (see https://github.com/jsprit/jsprit/issues/127).
+
+If one deals with shipments then two activities will be inserted: pickupShipment and deliverShipment.
+
+If you implement
+
+<code>public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);</code>
+ 
+you can now retrieve additional information from iFacts. If newAct is "deliverShipment" then
+
+<code>iFacts.getRelatedActivityContext();</code>
+
+provides arrivalTime, endTime and potentialInsertionIndex of the related "pickupShipment" (see javadoc of ActivityContext).
+
+This allows you to easily implement LIFO and FIFO constraints.
+
+
+
 ------------------------------
 
 <b>2014-08-20</b> jsprit has a mailing list (https://groups.google.com/group/jsprit-mailing-list)
