@@ -10,6 +10,8 @@ Change-log
 - countless improvements of javadocs
 
 <em>jsprit-core</em>
+- renaming of core.problem.constraint.HardActivityStateLevelConstraint into HardActivityConstraint
+- renaming of core.problem.constraint.HardRouteStateLevelConstraint into HardRouteConstraint
 - StateFactory.createId(String name) moved to core.algorithm.state.StateManager.createStateId(String name)
 - StateFactory moved from core.problem.solution.route.state.StateFactory to core.algorithm.state.InternalStates
 - StateId moved from core.problem.route.state.StateFactory.StateId to core.algorithm.state.StateId
@@ -18,12 +20,15 @@ Change-log
 - StateManager.addDefault... methods do not exists anymore. Client must now decide what to do when state does not exist.
 - deprecated core.problem.VehicleRoutingProblem.Builder.addVehicle(Vehicle v) and added core.problem.VehicleRoutingProblem.Builder.addVehicle(AbstractVehicle v)
 - deprecated core.problem.VehicleRoutingProblem.Builder.addJob(Job j) and added core.problem.VehicleRoutingProblem.Builder.addJob(AbstractJob j) 
+- <b>this [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/MultipleProductsWithLoadConstraintExample.java) might make migrating from v1.3.1 to v1.4 easier (since both versions are implemented - v1.3.1 was commented out) </b>
 
 - bugfix [#107](https://github.com/jsprit/jsprit/issues/107)
 - bugfix [#109](https://github.com/jsprit/jsprit/issues/109)
 - bugfix [#111](https://github.com/jsprit/jsprit/issues/111)
 - bugfix [#112](https://github.com/jsprit/jsprit/issues/112)
 - bugfix [#114](https://github.com/jsprit/jsprit/issues/114)
+- bugfix [#126](https://github.com/jsprit/jsprit/issues/126)
+- bugfix [#128](https://github.com/jsprit/jsprit/issues/128)
 
 **v1.3.1** @ 2014-06-14
 

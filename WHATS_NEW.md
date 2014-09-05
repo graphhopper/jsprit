@@ -5,6 +5,8 @@ WHATS NEW
 
 <b>2014-09-?</b> new release **v1.4.0**
 
+v1.4 breaks your code! Look at [changelog](https://github.com/jsprit/jsprit/blob/master/CHANGELOG.md) to migrate from v1.3.1 to v1.4.
+
 <b> SKILLS </b>
 
 Skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java).
@@ -55,6 +57,30 @@ If you omit penalyzing them, you probably end up with a solution consisting sole
 This, however, easily enables you to define objective functions that maximizes profits.
 
 <b>Thus, if you already use your own custom objective function, you need to manually adapt it and add penalties for unassigned jobs.</b>
+
+<b> LIFO and FIFO CONSTRAINTS </b>
+
+You can now retrieve additional information about related activities from JobInsertionContext (see https://github.com/jsprit/jsprit/issues/127).
+
+If one deals with shipments then two activities will be inserted: pickupShipment and deliverShipment.
+
+If you implement core.problem.constraint.SoftActivityContraint and core.problem.constraint.HardActivityStateLevelConstraint and thus
+
+<code>public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);</code>
+
+and
+
+<code>public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);</code>
+ 
+you can now retrieve additional information from iFacts. If newAct is "deliverShipment" then
+
+<code>iFacts.getRelatedActivityContext();</code>
+
+provides arrivalTime, endTime and potentialInsertionIndex of the related "pickupShipment" (see javadoc of ActivityContext).
+
+This allows you to easily implement LIFO and FIFO constraints (since you now know where the pickup activity will be inserted).
+
+
 
 ------------------------------
 
