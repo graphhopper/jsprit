@@ -10,6 +10,8 @@ Change-log
 - countless improvements of javadocs
 
 <em>jsprit-core</em>
+- renaming of core.problem.constraint.HardActivityStateLevelConstraint into HardActivityConstraint
+- renaming of core.problem.constraint.HardRouteStateLevelConstraint into HardRouteConstraint
 - StateFactory.createId(String name) moved to core.algorithm.state.StateManager.createStateId(String name)
 - StateFactory moved from core.problem.solution.route.state.StateFactory to core.algorithm.state.InternalStates
 - StateId moved from core.problem.route.state.StateFactory.StateId to core.algorithm.state.StateId
