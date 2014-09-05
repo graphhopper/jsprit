@@ -24,6 +24,8 @@ Change-log
 - bugfix [#111](https://github.com/jsprit/jsprit/issues/111)
 - bugfix [#112](https://github.com/jsprit/jsprit/issues/112)
 - bugfix [#114](https://github.com/jsprit/jsprit/issues/114)
+- bugfix [#126](https://github.com/jsprit/jsprit/issues/126)
+- bugfix [#128](https://github.com/jsprit/jsprit/issues/128)
 
 **v1.3.1** @ 2014-06-14
 
