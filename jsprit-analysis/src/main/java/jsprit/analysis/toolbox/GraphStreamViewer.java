@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.analysis.toolbox;
 
+
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -28,6 +29,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.util.Time;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -88,7 +90,7 @@ public class GraphStreamViewer {
 					"}" ;
 
 	public static enum Label {
-		NO_LABEL, ID, ACTIVITY
+		NO_LABEL, ID, JOB_NAME, ARRIVAL_TIME, DEPARTURE_TIME, ACTIVITY
 	}
 	
 	private static class Center {
@@ -160,10 +162,10 @@ public class GraphStreamViewer {
 	 * 
 	 * <p>a zoomFactor < 1 zooms in and > 1 out.
 	 * 
-	 * @param centerX
-	 * @param centerY
-	 * @param zoomFactor
-	 * @return
+	 * @param centerX x coordinate of center
+	 * @param centerY y coordinate of center
+	 * @param zoomFactor zoom factor
+	 * @return the viewer
 	 */
 	public GraphStreamViewer setCameraView(double centerX, double centerY, double zoomFactor){
 		center = new Center(centerX,centerY);
@@ -278,7 +280,7 @@ public class GraphStreamViewer {
         
         Font font = Font.decode("couriernew");
 
-        JLabel jobs = new JLabel(new String("jobs"));
+        JLabel jobs = new JLabel("jobs");
         jobs.setFont(font);
         jobs.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 
@@ -288,22 +290,22 @@ public class GraphStreamViewer {
         nJobs.setBorder(BorderFactory.createEmptyBorder());
         nJobs.setBackground(new Color(230,230,230));
         
-        JLabel costs = new JLabel(new String("costs"));
+        JLabel costs = new JLabel("costs");
         costs.setFont(font);
         costs.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 
-        JFormattedTextField costsVal = new JFormattedTextField(new Double(getSolutionCosts()));
+        JFormattedTextField costsVal = new JFormattedTextField(getSolutionCosts());
         costsVal.setFont(font);
         costsVal.setEditable(false);
         costsVal.setBorder(BorderFactory.createEmptyBorder());
         costsVal.setBackground(new Color(230,230,230));
         
-        JLabel vehicles = new JLabel(new String("routes"));
+        JLabel vehicles = new JLabel("routes");
         vehicles.setFont(font);
         vehicles.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 //        vehicles.setForeground(Color.DARK_GRAY);
         
-        JFormattedTextField vehVal = new JFormattedTextField(getNuRoutes());
+        JFormattedTextField vehVal = new JFormattedTextField(getNoRoutes());
         vehVal.setFont(font);
         vehVal.setEditable(false);
         vehVal.setBorder(BorderFactory.createEmptyBorder());
@@ -335,13 +337,13 @@ public class GraphStreamViewer {
 		return panel;
 	}
 
-	private Integer getNuRoutes() {
-		if(solution!=null) return Integer.valueOf(solution.getRoutes().size());
+	private Integer getNoRoutes() {
+		if(solution!=null) return solution.getRoutes().size();
 		return 0;
 	}
 
 	private Double getSolutionCosts() {
-		if(solution!=null) return Double.valueOf(solution.getCost());
+		if(solution!=null) return solution.getCost();
 		return 0.0;
 	}
 
@@ -373,9 +375,8 @@ public class GraphStreamViewer {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		};
-
-	}
+		}
+    }
 
 	private void renderService(Graph g, Service service, Label label) {
 		Node n = g.addNode(makeId(service.getId(),service.getLocationId()));
@@ -387,7 +388,7 @@ public class GraphStreamViewer {
 	}
 
 	private String makeId(String id, String locationId) {
-		return new StringBuffer().append(id).append("_").append(locationId).toString();
+		return id + "_" + locationId;
 	}
 
 	private void renderVehicle(Graph g, Vehicle vehicle, Label label) {
@@ -414,16 +415,29 @@ public class GraphStreamViewer {
 	private void renderRoute(Graph g, VehicleRoute route, int routeId, long renderDelay_in_ms, Label label) {
 		int vehicle_edgeId = 1;
 		String prevIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getStartLocationId());
-		if(label.equals(Label.ACTIVITY)){
+		if(label.equals(Label.ACTIVITY) || label.equals(Label.JOB_NAME)){
 			Node n = g.getNode(prevIdentifier);
 			n.addAttribute("ui.label", "start");
 		}
 		for(TourActivity act : route.getActivities()){
-			String currIdentifier = makeId(((JobActivity)act).getJob().getId(),act.getLocationId());
+            Job job = ((JobActivity) act).getJob();
+            String currIdentifier = makeId(job.getId(),act.getLocationId());
 			if(label.equals(Label.ACTIVITY)){
 				Node actNode = g.getNode(currIdentifier);
 				actNode.addAttribute("ui.label", act.getName());
 			}
+            else if(label.equals(Label.JOB_NAME)){
+                Node actNode = g.getNode(currIdentifier);
+                actNode.addAttribute("ui.label", job.getName());
+            }
+            else if(label.equals(Label.ARRIVAL_TIME)){
+                Node actNode = g.getNode(currIdentifier);
+                actNode.addAttribute("ui.label", Time.parseSecondsToTime(act.getArrTime()));
+            }
+            else if(label.equals(Label.DEPARTURE_TIME)){
+                Node actNode = g.getNode(currIdentifier);
+                actNode.addAttribute("ui.label", Time.parseSecondsToTime(act.getEndTime()));
+            }
 			g.addEdge(makeEdgeId(routeId,vehicle_edgeId), prevIdentifier, currIdentifier, true);
 			if(act instanceof PickupActivity) g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
 			else if (act instanceof DeliveryActivity) g.getNode(currIdentifier).addAttribute("ui.class", "deliveryInRoute");

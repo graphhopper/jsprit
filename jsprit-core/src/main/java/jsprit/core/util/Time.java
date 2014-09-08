@@ -1,25 +1,46 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.util;
 
 public class Time {
 
+    /**
+     * Parses seconds to this time format: hh:mm:ss {AM|PM}
+     *
+     * @param seconds seconds
+     * @return time string
+     */
+    public static String parseSecondsToTime(double seconds){
+        int hours = (int)Math.floor(seconds / 3600.);
+        int min = (int)Math.floor((seconds - hours * 3600.) / 60.);
+        int secs = (int)(seconds - (hours * 3600. + min * 60.));
+        String dayTime = "AM";
+        if(hours > 12) {
+            dayTime = "PM";
+            hours -= 12;
+        }
+        String hourString = "0" + hours;
+        if(hours > 9) hourString = "" + hours;
+        String minString = "" + min;
+        if(min < 10) minString = "0" + min;
+        String secString = "" + secs;
+        if(secs < 10) secString = "0" + secs;
+        return hourString + ":" + minString + ":" + secString + " " + dayTime;
+    }
 	/**
 	 * Parse time to seconds.
 	 * 
@@ -32,7 +53,7 @@ public class Time {
 	 * 6:00 PM --> 6*3600. + 12.*3600. 
 	 * 6:00:12 --> 6*3600. + 12.
 	 *  
-	 * @return
+	 * @return seconds
 	 */
 	public static double parseTimeToSeconds(String timeString){
 		if(timeString.substring(0, 1).matches("\\D")) throw new IllegalArgumentException("timeString must start with digit [0-9]");
