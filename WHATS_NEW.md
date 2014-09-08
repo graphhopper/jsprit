@@ -3,7 +3,7 @@ WHATS NEW
 
 ------------------------------
 
-<b>2014-09-?</b> new release **v1.4.0**
+<b>2014-09-08</b> new release **v1.4**
 
 v1.4 breaks your code! Look at [changelog](https://github.com/jsprit/jsprit/blob/master/CHANGELOG.md) to migrate from v1.3.1 to v1.4.
 
