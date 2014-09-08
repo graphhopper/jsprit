@@ -1,6 +1,6 @@
 Change-log
 ==========
-**v1.4.0** ? in preparation
+**v1.4** @ 2014-09-08
 
 <b>! Break change !</b>
 
