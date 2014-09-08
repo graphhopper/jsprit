@@ -4,6 +4,7 @@ Change-log
 
 <b>! Break change !</b>
 
+- [detailed changelog](https://github.com/jsprit/misc-rep/blob/master/changelog_1.3.1_to_1.4.txt)
 - migrated from log4j1x to log4j2
 - new feature: skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java)
 - new feature: unassigned job list 
