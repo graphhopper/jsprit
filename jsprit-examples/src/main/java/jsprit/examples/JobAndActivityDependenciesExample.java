@@ -256,7 +256,7 @@ public class JobAndActivityDependenciesExample {
 
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"input/algorithm.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"input/algorithmConfig.xml");
         vraBuilder.addDefaultCostCalculators();
         vraBuilder.addCoreConstraints();
 
