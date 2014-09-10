@@ -43,6 +43,17 @@ import java.util.Collection;
 
 //import jsprit.core.problem.solution.route.state.StateFactory;  //v1.3.1
 
+
+/**
+ * Illustrates a VRP with multiple products.
+ *
+ * It has the hard requirements that no two different products can be transported in the same vehicle at the same time.
+ * This might be important if products require different temperatures. For example, if a vehicle transports
+ * apples then no bananas can be loaded (and the other way around). Once all apples have been unloaded, bananas can
+ * be loaded.
+ *
+ * See also the discussion here: https://groups.google.com/forum/#!topic/jsprit-mailing-list/2JQqY4loC0U
+ */
 public class MultipleProductsWithLoadConstraintExample {
 
     static final int BANANAS_DIMENSION_INDEX = 0;
