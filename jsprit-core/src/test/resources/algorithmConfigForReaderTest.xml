@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Copyright (C) 2014  Stefan Schroeder
   ~
@@ -23,38 +22,27 @@
 	<maxIterations>2000</maxIterations>
 
     <terminationCriteria>
-        <termination basedOn="time">
-            <time>12.</time>
-        </termination>
         <termination basedOn="iterations">
-            <iterations>100</iterations>
-        </termination>
-        <termination basedOn="variationCoefficient">
-            <threshold>0.1</threshold>
             <iterations>100</iterations>
         </termination>
     </terminationCriteria>
 
 	<construction>
-		<insertion name="bestInsertion"/>	
+		<insertion name="bestInsertion"/>
 	</construction>
 	
 	<strategy>
 		<memory>1</memory>
 		<searchStrategies>
-			<searchStrategy name="radialRuinAndRecreate">
+			<searchStrategy name="randomRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="schrimpfAcceptance">
-					<alpha>0.1</alpha>
-					<warmup>20</warmup>
-				</acceptor>
-					
+	  			<acceptor name="acceptNewRemoveWorst"/> 
 				<modules>
 					<module name="ruin_and_recreate">
 						<ruin name="randomRuin">
 							<share>0.5</share>
 						</ruin>
-						<insertion name="bestInsertion"/>					
+						<insertion name="bestInsertion"/>						
 					</module>
 					
 				</modules>
@@ -63,11 +51,10 @@
 			
 			<searchStrategy name="radialRuinAndRecreate">
 				<selector name="selectBest"/>
-				<acceptor name="schrimpfAcceptance"/>
-					
+				<acceptor name="acceptNewRemoveWorst"/> 
 				<modules>
 					<module name="ruin_and_recreate">
-						<ruin id="1" name="radialRuin">
+						<ruin name="radialRuin">
 							<share>0.3</share>
 						</ruin>
 						<insertion name="bestInsertion"/>					
@@ -76,7 +63,6 @@
 				</modules>
 				<probability>0.5</probability>
 			</searchStrategy>
-			
 		</searchStrategies>		
 	</strategy>
 	

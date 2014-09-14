@@ -39,6 +39,25 @@ import java.util.Collection;
  */
 public class VehicleRoutingAlgorithm {
 
+    private static class TerminationManager implements PrematureAlgorithmTermination {
+
+        private Collection<PrematureAlgorithmTermination> terminationCriteria = new ArrayList<PrematureAlgorithmTermination>();
+
+        void addTermination(PrematureAlgorithmTermination termination){
+            terminationCriteria.add(termination);
+        }
+
+        @Override
+        public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
+            for(PrematureAlgorithmTermination termination : terminationCriteria){
+                if(termination.isPrematureBreak(discoveredSolution)){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     private static class Counter {
 		private final String name;
 		private long counter = 0;
@@ -86,6 +105,8 @@ public class VehicleRoutingAlgorithm {
 		}
 		
 	};
+
+    private TerminationManager terminationManager = new TerminationManager();
 
     private VehicleRoutingProblemSolution bestEver = null;
 	
@@ -142,8 +163,14 @@ public class VehicleRoutingAlgorithm {
 	 * @param prematureAlgorithmTermination the termination criterion
 	 */
 	public void setPrematureAlgorithmTermination(PrematureAlgorithmTermination prematureAlgorithmTermination){
-		this.prematureAlgorithmTermination = prematureAlgorithmTermination;
+		terminationManager = new TerminationManager();
+        terminationManager.addTermination(prematureAlgorithmTermination);
+//        this.prematureAlgorithmTermination = prematureAlgorithmTermination;
 	}
+
+    public void addTerminationCriterion(PrematureAlgorithmTermination terminationCriterion){
+        terminationManager.addTermination(terminationCriterion);
+    }
 
 	/**
 	 * Gets the {@link SearchStrategyManager}.
@@ -182,7 +209,8 @@ public class VehicleRoutingAlgorithm {
 			DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
             memorizeIfBestEver(discoveredSolution);
 			selectedStrategy(strategy.getName(),problem, solutions);
-			if(prematureAlgorithmTermination.isPrematureBreak(discoveredSolution)){
+//			if(prematureAlgorithmTermination.isPrematureBreak(discoveredSolution)){
+            if(terminationManager.isPrematureBreak(discoveredSolution)){
 				logger.info("premature break at iteration "+ (i+1));
 				noIterationsThisAlgoIsRunning = (i+1);
 				break;

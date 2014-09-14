@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -26,6 +26,7 @@ import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.AcceptorKey;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.RuinStrategyKey;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.SelectorKey;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.StrategyModuleKey;
+import jsprit.core.algorithm.listener.IterationEndsListener;
 import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import jsprit.core.algorithm.ruin.RuinStrategy;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
@@ -36,6 +37,7 @@ import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import junit.framework.Assert;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +66,43 @@ public class TestAlgorithmReader {
 		new VrpXMLReader(vrpBuilder,solutions).read("src/test/resources/finiteVrp.xml");
 		vrp = vrpBuilder.build();
 	}
+
+    @Test
+    public void itShouldReadMaxIterations(){
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp,"src/test/resources/algorithmConfigForReaderTest.xml");
+        Assert.assertEquals(2000,vra.getMaxIterations());
+    }
+
+    static class IterationCounter implements IterationEndsListener {
+
+        int iterations = 0;
+
+        @Override
+        public void informIterationEnds(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+            iterations = i;
+        }
+
+    }
+
+    @Test
+    public void whenSettingPrematureBreak_itShouldReadTermination(){
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp,"src/test/resources/algorithmConfigForReaderTest2.xml");
+        IterationCounter iCounter = new IterationCounter();
+        vra.addListener(iCounter);
+        vra.searchSolutions();
+        Assert.assertEquals(100,iCounter.iterations);
+    }
+
+    @Test
+    public void itShouldReadTermination(){
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp,"src/test/resources/algorithmConfigForReaderTest.xml");
+        IterationCounter iCounter = new IterationCounter();
+        vra.addListener(iCounter);
+        vra.searchSolutions();
+        Assert.assertEquals(100,iCounter.iterations);
+    }
+
+
 	
 	@Test
 	public void testTypedMap(){
