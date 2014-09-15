@@ -5,7 +5,7 @@ Change-log
 <b>! Break change !</b>
 
 - [detailed changelog](https://github.com/jsprit/misc-rep/blob/master/changelog_1.3.1_to_1.4.txt)
-- migrated from log4j1x to log4j2
+- migrated from log4j1x to log4j2 (if you do not use Maven, see how the dependencies changed: [https://github.com/jsprit/jsprit/wiki/jsprit-core](https://github.com/jsprit/jsprit/wiki/jsprit-core)
 - new feature: skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java)
 - new feature: unassigned job list 
 - countless improvements of javadocs
