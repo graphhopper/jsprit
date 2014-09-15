@@ -99,7 +99,7 @@ public class TestAlgorithmReader {
         IterationCounter iCounter = new IterationCounter();
         vra.addListener(iCounter);
         vra.searchSolutions();
-        Assert.assertEquals(100,iCounter.iterations);
+        Assert.assertEquals(25,iCounter.iterations);
     }
 
 

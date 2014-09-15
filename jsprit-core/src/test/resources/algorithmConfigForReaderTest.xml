@@ -25,6 +25,9 @@
         <termination basedOn="iterations">
             <iterations>100</iterations>
         </termination>
+        <termination basedOn="iterations">
+            <iterations>25</iterations>
+        </termination>
     </terminationCriteria>
 
 	<construction>

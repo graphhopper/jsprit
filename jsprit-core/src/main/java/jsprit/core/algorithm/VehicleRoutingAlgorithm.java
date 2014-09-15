@@ -97,15 +97,6 @@ public class VehicleRoutingAlgorithm {
 
     private int maxIterations = 100;
 
-	private PrematureAlgorithmTermination prematureAlgorithmTermination = new PrematureAlgorithmTermination() {
-		
-		@Override
-		public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
-			return false;
-		}
-		
-	};
-
     private TerminationManager terminationManager = new TerminationManager();
 
     private VehicleRoutingProblemSolution bestEver = null;
@@ -158,7 +149,8 @@ public class VehicleRoutingAlgorithm {
     }
 
     /**
-	 * Sets premature termination.
+	 * Sets premature termination and overrides existing termination criteria. If existing ones should not be
+     * overridden use <code>.addTerminationCriterion(...)</code>.
 	 *
 	 * @param prematureAlgorithmTermination the termination criterion
 	 */
@@ -168,6 +160,12 @@ public class VehicleRoutingAlgorithm {
 //        this.prematureAlgorithmTermination = prematureAlgorithmTermination;
 	}
 
+    /**
+     * Adds a termination criterion to the collection of already specified termination criteria. If one
+     * of the termination criteria is fulfilled, the algorithm terminates prematurely.
+     *
+     * @param terminationCriterion the termination criterion
+     */
     public void addTerminationCriterion(PrematureAlgorithmTermination terminationCriterion){
         terminationManager.addTermination(terminationCriterion);
     }

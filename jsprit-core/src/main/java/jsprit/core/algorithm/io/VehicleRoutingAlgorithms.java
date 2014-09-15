@@ -18,7 +18,6 @@ package jsprit.core.algorithm.io;
 
 
 import jsprit.core.algorithm.*;
-import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
 import jsprit.core.algorithm.acceptor.*;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.*;
 import jsprit.core.algorithm.listener.AlgorithmEndsListener;
@@ -606,8 +605,16 @@ public class VehicleRoutingAlgorithms {
 		metaAlgorithm.getSearchStrategyManager().addSearchStrategyModuleListener(new VehicleSwitched(vehicleFleetManager));
 		
 		//define prematureBreak
-		PrematureAlgorithmTermination prematureAlgoBreaker = getPrematureBreaker(config,algorithmListeners);
-		metaAlgorithm.setPrematureAlgorithmTermination(prematureAlgoBreaker);
+		PrematureAlgorithmTermination prematureAlgorithmTermination = getPrematureTermination(config, algorithmListeners);
+		if(prematureAlgorithmTermination != null) metaAlgorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
+        else{
+            List<HierarchicalConfiguration> terminationCriteria = config.configurationsAt("terminationCriteria.termination");
+            for(HierarchicalConfiguration terminationConfig : terminationCriteria){
+                PrematureAlgorithmTermination termination = getTerminationCriterion(terminationConfig, algorithmListeners);
+                if(termination != null) metaAlgorithm.addTerminationCriterion(termination);
+            }
+        }
+
 		
 		//misc
 //		algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new SolutionVerifier()));
@@ -634,17 +641,48 @@ public class VehicleRoutingAlgorithms {
 				"makes sure your config file contains one of these options");
 	}
 
-	private static PrematureAlgorithmTermination getPrematureBreaker(XMLConfiguration config, Set<PrioritizedVRAListener> algorithmListeners) {
+    private static PrematureAlgorithmTermination getTerminationCriterion(HierarchicalConfiguration config, Set<PrioritizedVRAListener> algorithmListeners) {
+        String basedOn = config.getString("[@basedOn]");
+        if(basedOn == null){
+            log.info("set default prematureBreak, i.e. no premature break at all.");
+            return null;
+        }
+        if(basedOn.equals("iterations")){
+            log.info("set prematureBreak based on iterations");
+            String iter = config.getString("iterations");
+            if(iter == null) throw new IllegalStateException("iterations is missing");
+            int iterations = Integer.valueOf(iter);
+            return new IterationWithoutImprovementTermination(iterations);
+        }
+        if(basedOn.equals("time")){
+            log.info("set prematureBreak based on time");
+            String timeString = config.getString("time");
+            if(timeString == null) throw new IllegalStateException("time is missing");
+            double time = Double.valueOf(timeString);
+            TimeTermination timeBreaker = new TimeTermination(time);
+            algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, timeBreaker));
+            return timeBreaker;
+        }
+        if(basedOn.equals("variationCoefficient")){
+            log.info("set prematureBreak based on variation coefficient");
+            String thresholdString = config.getString("threshold");
+            String iterationsString = config.getString("iterations");
+            if(thresholdString == null) throw new IllegalStateException("threshold is missing");
+            if(iterationsString == null) throw new IllegalStateException("iterations is missing");
+            double threshold = Double.valueOf(thresholdString);
+            int iterations = Integer.valueOf(iterationsString);
+            VariationCoefficientTermination variationCoefficientBreaker = new VariationCoefficientTermination(iterations, threshold);
+            algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, variationCoefficientBreaker));
+            return variationCoefficientBreaker;
+        }
+        throw new IllegalStateException("prematureBreak basedOn " + basedOn + " is not defined");
+    }
+
+	private static PrematureAlgorithmTermination getPrematureTermination(XMLConfiguration config, Set<PrioritizedVRAListener> algorithmListeners) {
 		String basedOn = config.getString("prematureBreak[@basedOn]");
 		if(basedOn == null){
 			log.info("set default prematureBreak, i.e. no premature break at all.");
-			return new PrematureAlgorithmTermination() {
-
-				@Override
-				public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
-					return false;
-				}
-			};
+			return null;
 		}
 		if(basedOn.equals("iterations")){
 			log.info("set prematureBreak based on iterations");

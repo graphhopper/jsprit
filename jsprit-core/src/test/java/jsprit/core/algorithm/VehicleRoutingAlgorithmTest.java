@@ -143,4 +143,43 @@ public class VehicleRoutingAlgorithmTest {
         assertEquals(50,counter.getCountIterations());
     }
 
+    @Test
+    public void whenAddingPrematureTwoTerminationCriteria_itIsExecutedCorrectly(){
+        SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),stratManager);
+        when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
+        when(stratManager.getProbabilities()).thenReturn(Arrays.asList(1.0));
+        algorithm.setMaxIterations(1000);
+        PrematureAlgorithmTermination termination = new PrematureAlgorithmTermination() {
+
+            private int nuOfIterations = 1;
+
+            @Override
+            public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
+                if(nuOfIterations == 50) return true;
+                nuOfIterations++;
+                return false;
+            }
+
+        };
+        PrematureAlgorithmTermination termination2 = new PrematureAlgorithmTermination() {
+
+            private int nuOfIterations = 1;
+
+            @Override
+            public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
+                if(nuOfIterations == 25) return true;
+                nuOfIterations++;
+                return false;
+            }
+
+        };
+        CountIterations counter = new CountIterations();
+        algorithm.addListener(counter);
+        algorithm.addTerminationCriterion(termination);
+        algorithm.addTerminationCriterion(termination2);
+        algorithm.searchSolutions();
+        assertEquals(25,counter.getCountIterations());
+    }
+
 }
