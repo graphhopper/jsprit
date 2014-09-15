@@ -22,19 +22,6 @@
 	
 	<maxIterations>2000</maxIterations>
 
-    <terminationCriteria>
-        <termination basedOn="time">
-            <time>12.</time>
-        </termination>
-        <termination basedOn="iterations">
-            <iterations>100</iterations>
-        </termination>
-        <termination basedOn="variationCoefficient">
-            <threshold>0.1</threshold>
-            <iterations>100</iterations>
-        </termination>
-    </terminationCriteria>
-
 	<construction>
 		<insertion name="bestInsertion"/>	
 	</construction>
