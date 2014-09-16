@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -21,7 +21,6 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
@@ -81,7 +80,7 @@ public class SolomonReader {
 		int vehicleCapacity = 0;
 		
 		int counter = 0;
-		String line = null;
+		String line;
 		while((line = readLine(reader)) != null){
 			line = line.replace("\r", "");
 			line = line.trim();
@@ -92,7 +91,8 @@ public class SolomonReader {
 				continue;
 			}
 			if(counter > 9){
-				Coordinate coord = makeCoord(tokens[1],tokens[2]);
+				if(tokens.length < 7) continue;
+                Coordinate coord = makeCoord(tokens[1],tokens[2]);
 				String customerId = tokens[0];
 				int demand = Integer.parseInt(tokens[3]);
 				double start = Double.parseDouble(tokens[4])*timeProjectionFactor;
@@ -101,13 +101,10 @@ public class SolomonReader {
 				if(counter == 10){
 					VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("solomonType").addCapacityDimension(0, vehicleCapacity);
 					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(fixedCostPerVehicle);
-					
 					VehicleTypeImpl vehicleType = typeBuilder.build();
-		
-					Vehicle vehicle = VehicleImpl.Builder.newInstance("solomonVehicle").setEarliestStart(start).setLatestArrival(end)
+
+					VehicleImpl vehicle = VehicleImpl.Builder.newInstance("solomonVehicle").setEarliestStart(start).setLatestArrival(end)
 							.setStartLocationId(customerId).setStartLocationCoordinate(coord).setType(vehicleType).build();
-					
-//					vrpBuilder.addVehicleType(vehicleType);
 					vrpBuilder.addVehicle(vehicle);
 					
 				}
