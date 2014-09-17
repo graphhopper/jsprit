@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class FigliozziReaderTest {
+public class FigliozziTest {
 
     @Test
     public void factoryShouldReturnCorrectSpeedDistribution(){
@@ -35,8 +35,8 @@ public class FigliozziReaderTest {
     }
 
     @Test
-    public void whenAskingForTD1b_factoryShouldReturnCorrectSpeedDistribution(){
-        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1b);
+    public void whenAskingForTD2a_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2a);
         Assert.assertEquals(speedValues.get(0),1.,0.01);
         Assert.assertEquals(speedValues.get(1),2.,0.01);
         Assert.assertEquals(speedValues.get(2),1.5,0.01);
@@ -44,8 +44,8 @@ public class FigliozziReaderTest {
     }
 
     @Test
-    public void whenAskingForTD1c_factoryShouldReturnCorrectSpeedDistribution(){
-        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1c);
+    public void whenAskingForTD3a_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3a);
         Assert.assertEquals(speedValues.get(0),1.,0.01);
         Assert.assertEquals(speedValues.get(1),2.5,0.01);
         Assert.assertEquals(speedValues.get(2),1.75,0.01);
