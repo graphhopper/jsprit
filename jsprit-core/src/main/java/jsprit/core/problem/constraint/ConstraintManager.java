@@ -167,5 +167,6 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 	public double getCosts(JobInsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 		return softActivityConstraintManager.getCosts(iFacts, prevAct, newAct, nextAct, prevActDepTime);
 	}
+
 	
 }

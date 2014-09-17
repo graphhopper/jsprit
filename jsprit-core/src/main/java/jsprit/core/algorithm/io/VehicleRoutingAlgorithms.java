@@ -54,6 +54,7 @@ import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
+import jsprit.core.util.ActivityTimeTracker;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.logging.log4j.LogManager;
@@ -546,6 +547,7 @@ public class VehicleRoutingAlgorithms {
             switchAllowed = Boolean.parseBoolean(switchString);
         }
         else switchAllowed = true;
+        ActivityTimeTracker.ActivityPolicy activityPolicy;
         if(stateManager.timeWindowUpdateIsActivated()){
             UpdateVehicleDependentPracticalTimeWindows timeWindowUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,vrp.getTransportCosts());
             timeWindowUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
@@ -562,7 +564,13 @@ public class VehicleRoutingAlgorithms {
 
             });
             stateManager.addStateUpdater(timeWindowUpdater);
+            activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
         }
+        else{
+            activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_ARRIVED;
+        }
+        stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(),activityPolicy));
+        stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager, activityPolicy));
 
 		SolutionCostCalculator costCalculator;
 		if(solutionCostCalculator==null) costCalculator = getDefaultCostCalculator(stateManager);

@@ -18,7 +18,9 @@
 package jsprit.core.algorithm;
 
 
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -47,5 +49,62 @@ public class DeactivateTimeWindowsTest {
 
         VehicleRoute route = Solutions.bestOf(solutions).getRoutes().iterator().next();
         Assert.assertEquals(20., route.getActivities().get(0).getEndTime(), 0.01);
+    }
+
+    @Test
+    public void whenNotActivatingViaStateManager_activityTimesShouldConsiderTimeWindows(){
+        Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(20, 0))
+                .setTimeWindow(TimeWindow.newInstance(40,50)).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
+        vraBuilder.addDefaultCostCalculators();
+        StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        VehicleRoutingAlgorithm vra = vraBuilder.build(); //this should ignore any constraints
+        vra.setMaxIterations(10);
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+        VehicleRoute route = Solutions.bestOf(solutions).getRoutes().iterator().next();
+        Assert.assertEquals(20., route.getActivities().get(0).getEndTime(), 0.01);
+    }
+
+    @Test
+    public void activityTimesShouldConsiderTimeWindows(){
+        Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(20, 0))
+                .setTimeWindow(TimeWindow.newInstance(40,50)).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
+        vraBuilder.addCoreConstraints();
+        vraBuilder.addDefaultCostCalculators();
+        VehicleRoutingAlgorithm vra = vraBuilder.build(); //this should ignore any constraints
+        vra.setMaxIterations(10);
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+        VehicleRoute route = Solutions.bestOf(solutions).getRoutes().iterator().next();
+        Assert.assertEquals(40., route.getActivities().get(0).getEndTime(), 0.01);
+    }
+
+    @Test
+    public void whenActivatingViaStateManager_activityTimesShouldConsiderTimeWindows(){
+        Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(20, 0))
+                .setTimeWindow(TimeWindow.newInstance(40,50)).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
+        vraBuilder.addDefaultCostCalculators();
+        StateManager stateManager = new StateManager(vrp);
+        stateManager.updateTimeWindowStates();
+        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        constraintManager.addTimeWindowConstraint();
+        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        VehicleRoutingAlgorithm vra = vraBuilder.build(); //this should ignore any constraints
+        vra.setMaxIterations(10);
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+        VehicleRoute route = Solutions.bestOf(solutions).getRoutes().iterator().next();
+        Assert.assertEquals(40., route.getActivities().get(0).getEndTime(), 0.01);
     }
 }
