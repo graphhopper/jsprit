@@ -303,7 +303,6 @@ public class TestVehicleRoute {
 
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("pickup"));
-        System.out.println(act.getName());
         assertTrue(act instanceof PickupService);
         assertTrue(((TourActivity.JobActivity)act).getJob() instanceof Pickup);
 
@@ -318,7 +317,6 @@ public class TestVehicleRoute {
 
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("delivery"));
-        System.out.println(act.getName());
         assertTrue(act instanceof DeliverService);
         assertTrue(((TourActivity.JobActivity)act).getJob() instanceof Delivery);
 
