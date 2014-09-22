@@ -34,7 +34,7 @@ public class Figliozzi {
 
         public static enum SpeedDistribution {
 
-            TD1a, TD1b, TD1c, TD2a, TD2b, TD2c, TD3a, TD3b, TD3c, TD1d, TD2d, TD3d, TD4, TD5, TD6
+            TD1a, TD1b, TD1c, TD2a, TD2b, TD2c, TD3a, TD3b, TD3c, TD1d, TD2d, TD3d, TD4, TD5, TD6, CLASSIC
 
         }
 
@@ -67,6 +67,8 @@ public class Figliozzi {
                 case TD4: speedValues = Arrays.asList(1.1,0.85,1.1,0.85,1.1); break;
                 case TD5: speedValues = Arrays.asList(1.2,0.8,1.,0.8,1.2); break;
                 case TD6: speedValues = Arrays.asList(1.2,0.7,1.2,0.7,1.2); break;
+
+                case CLASSIC: speedValues = Arrays.asList(1.,1.,1.,1.,1.); break;
             }
             return speedValues;
         }
