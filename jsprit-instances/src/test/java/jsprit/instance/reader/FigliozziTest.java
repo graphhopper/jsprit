@@ -74,6 +74,105 @@ public class FigliozziTest {
     }
 
     @Test
+    public void whenAskingForTD1b_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1b);
+        Assert.assertEquals(speedValues.get(0),1.6,0.01);
+        Assert.assertEquals(speedValues.get(1),1.,0.01);
+        Assert.assertEquals(speedValues.get(2),1.05,0.01);
+        Assert.assertEquals(speedValues.get(3),1.,0.01);
+        Assert.assertEquals(speedValues.get(4),1.6,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenAskingForTD2b_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2b);
+        Assert.assertEquals(speedValues.get(0),2.,0.01);
+        Assert.assertEquals(speedValues.get(1),1.,0.01);
+        Assert.assertEquals(speedValues.get(2),1.5,0.01);
+        Assert.assertEquals(speedValues.get(3),1.,0.01);
+        Assert.assertEquals(speedValues.get(4),2.,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenAskingForTD3b_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3b);
+        Assert.assertEquals(speedValues.get(0),2.5,0.01);
+        Assert.assertEquals(speedValues.get(1),1.,0.01);
+        Assert.assertEquals(speedValues.get(2),1.75,0.01);
+        Assert.assertEquals(speedValues.get(3),1.,0.01);
+        Assert.assertEquals(speedValues.get(4),2.5,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenAskingForTD1c_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1c);
+        Assert.assertEquals(speedValues.get(0),1.6,0.01);
+        Assert.assertEquals(speedValues.get(1),1.6,0.01);
+        Assert.assertEquals(speedValues.get(2),1.05,0.01);
+        Assert.assertEquals(speedValues.get(3),1.,0.01);
+        Assert.assertEquals(speedValues.get(4),1.,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenAskingForTD2c_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2c);
+        Assert.assertEquals(speedValues.get(0),2.,0.01);
+        Assert.assertEquals(speedValues.get(1),2.,0.01);
+        Assert.assertEquals(speedValues.get(2),1.5,0.01);
+        Assert.assertEquals(speedValues.get(3),1.,0.01);
+        Assert.assertEquals(speedValues.get(4),1.,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenAskingForTD3c_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3c);
+        Assert.assertEquals(speedValues.get(0),2.5,0.01);
+        Assert.assertEquals(speedValues.get(1),2.5,0.01);
+        Assert.assertEquals(speedValues.get(2),1.75,0.01);
+        Assert.assertEquals(speedValues.get(3),1.,0.01);
+        Assert.assertEquals(speedValues.get(4),1.,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenAskingForTD1d_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1d);
+        Assert.assertEquals(speedValues.get(0),1.,0.01);
+        Assert.assertEquals(speedValues.get(1),1.,0.01);
+        Assert.assertEquals(speedValues.get(2),1.05,0.01);
+        Assert.assertEquals(speedValues.get(3),1.6,0.01);
+        Assert.assertEquals(speedValues.get(4),1.6,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenAskingForTD2d_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2d);
+        Assert.assertEquals(speedValues.get(0),1.,0.01);
+        Assert.assertEquals(speedValues.get(1),1.,0.01);
+        Assert.assertEquals(speedValues.get(2),1.5,0.01);
+        Assert.assertEquals(speedValues.get(3),2.,0.01);
+        Assert.assertEquals(speedValues.get(4),2.,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenAskingForTD3d_factoryShouldReturnCorrectSpeedDistribution(){
+        List<Double> speedValues = Figliozzi.TimeDependentTransportCostsFactory.createSpeedValues(Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3d);
+        Assert.assertEquals(speedValues.get(0),1.,0.01);
+        Assert.assertEquals(speedValues.get(1),1.,0.01);
+        Assert.assertEquals(speedValues.get(2),1.75,0.01);
+        Assert.assertEquals(speedValues.get(3),2.5,0.01);
+        Assert.assertEquals(speedValues.get(4),2.5,0.01);
+        Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
     public void whenConstantTimeDistribution_forwardTimeShouldBeCalculate100(){
         Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.CLASSIC,100);
         Assert.assertEquals(100., tdCosts.getTransportTime("from", "to", 0., null, null), 0.01);
