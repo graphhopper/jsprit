@@ -18,12 +18,33 @@
 package jsprit.instance.reader;
 
 
+import jsprit.core.util.Coordinate;
+import jsprit.core.util.Locations;
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
 public class FigliozziTest {
+
+    Locations locations;
+
+    @Before
+    public void doBefore(){
+        final Coordinate from = Coordinate.newInstance(0,0);
+        final Coordinate to = Coordinate.newInstance(100,0);
+
+        locations = new Locations(){
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return from;
+                if(id.equals("to")) return to;
+                return null;
+            }
+        };
+    }
 
     @Test
     public void factoryShouldReturnCorrectSpeedDistribution(){
@@ -50,5 +71,96 @@ public class FigliozziTest {
         Assert.assertEquals(speedValues.get(1),2.5,0.01);
         Assert.assertEquals(speedValues.get(2),1.75,0.01);
         Assert.assertEquals(5,speedValues.size());
+    }
+
+    @Test
+    public void whenConstantTimeDistribution_forwardTimeShouldBeCalculate100(){
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.CLASSIC,100);
+        Assert.assertEquals(100., tdCosts.getTransportTime("from", "to", 0., null, null), 0.01);
+    }
+
+    @Test
+    public void whenTimeDistributionTD1a_forwardTimeShouldBeCalculate100(){
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1a,100);
+        /*
+        100
+        (0,20) - 1. --> 20
+        (20,40) 1.6 = s/t --> t = s / 1.6 = 20 * 1.6 = 32 : 52 --> 40
+        (40,60) 1.05 = 21 : 73 --> 60
+        (60,80) 1.6 = 20 * 1.6 = 32 --> 27 / 1.6 = 16.875 + 73 = -- 16.875
+
+         20
+
+         */
+        Assert.assertEquals(76.875,tdCosts.getTransportTime("from","to",0.,null,null),0.01);
+    }
+
+    @Test
+    public void whenTimeDistributionTD2a_forwardTimeShouldBeCalculate100(){
+        //(1.,2.,1.5,2.,1.)
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2a,100);
+        /*
+        100
+        (0,20) - 1. --> 20 dist, 20 time
+        (20,40) 2. = 20 --> 40 dist, 20 time : 60 dist, 40 time
+        (40,60) 1.5 = 30 dist, 20 time : 90 dist, 60 time
+        (60,80) 2. = 10 dist, 5 time : 100 dist, 65 time
+
+         20
+
+         */
+        Assert.assertEquals(65.,tdCosts.getTransportTime("from","to",0.,null,null),0.01);
+    }
+
+    @Test
+    public void whenTimeDistributionTD3a_forwardTimeShouldBeCalculate100(){
+        //(1.,2.5,1.75,2.5,1.)
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3a,100);
+        /*
+        100
+        (0,20) - 1. --> 20 dist, 20 time
+        (20,40) 2.5 = 20 --> 50 dist, 20 time : 70 dist, 40 time
+        (40,60) 1.75 = 30 dist, 17.1428571429 time : 100 dist, 57.1428571429 time
+        */
+        Assert.assertEquals(57.1428571429,tdCosts.getTransportTime("from","to",0.,null,null),0.01);
+    }
+
+    @Test
+    public void whenTimeDistributionTD2a_backwardTimeShouldBeCalculate100(){
+        //(1.,2.,1.5,2.,1.)
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2a,100);
+        /*
+        100
+        (0,20) - 1. --> 20 dist, 20 time
+        (20,40) 2. = 20 --> 40 dist, 20 time : 60 dist, 40 time
+        (40,60) 1.5 = 30 dist, 20 time : 90 dist, 60 time
+        (60,80) 2. = 10 dist, 5 time : 100 dist, 65 time
+
+         20
+
+         */
+        Assert.assertEquals(65.,tdCosts.getBackwardTransportTime("from", "to", 100., null, null),0.01);
+    }
+
+    @Test
+    public void whenTimeDistributionTD1a_backwardTimeShouldBeCalculate100(){
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1a,100);
+        /*
+        100
+        (0,20) - 1. --> 20
+        (20,40) 1.6 = s/t --> t = s / 1.6 = 20 * 1.6 = 32 : 52 --> 40
+        (40,60) 1.05 = 21 : 73 --> 60
+        (60,80) 1.6 = 20 * 1.6 = 32 --> 27 / 1.6 = 16.875 + 73 = -- 16.875
+
+         20
+
+         */
+        Assert.assertEquals(76.875,tdCosts.getBackwardTransportTime("from", "to", 100., null, null),0.01);
+    }
+
+    @Test
+    public void backwardTimeShouldBeCalculatedCorrectly(){
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.CLASSIC,100);
+        Assert.assertEquals(100.,tdCosts.getBackwardTransportTime("from","to",100.,null,null),0.01);
     }
 }
