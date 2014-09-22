@@ -309,11 +309,39 @@ public class TestVehicleRoute {
     }
 
     @Test
+    public void whenAddingPickup_itShouldBeAdded(){
+
+        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").setLocationId("pickLoc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("startLoc").build();
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addPickup(pickup).build();
+
+        TourActivity act = route.getActivities().get(0);
+        assertTrue(act.getName().equals("pickup"));
+        assertTrue(act instanceof PickupService);
+        assertTrue(((TourActivity.JobActivity)act).getJob() instanceof Pickup);
+
+    }
+
+    @Test
     public void whenAddingDelivery_itShouldBeTreatedAsDelivery(){
 
         Delivery delivery = (Delivery) Delivery.Builder.newInstance("delivery").setLocationId("deliveryLoc").build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("startLoc").build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addService(delivery).build();
+
+        TourActivity act = route.getActivities().get(0);
+        assertTrue(act.getName().equals("delivery"));
+        assertTrue(act instanceof DeliverService);
+        assertTrue(((TourActivity.JobActivity)act).getJob() instanceof Delivery);
+
+    }
+
+    @Test
+    public void whenAddingDelivery_itShouldBeAdded(){
+
+        Delivery delivery = (Delivery) Delivery.Builder.newInstance("delivery").setLocationId("deliveryLoc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("startLoc").build();
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addDelivery(delivery).build();
 
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("delivery"));

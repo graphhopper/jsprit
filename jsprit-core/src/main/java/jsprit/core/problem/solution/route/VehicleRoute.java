@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -20,9 +20,7 @@ import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.driver.DriverImpl;
-import jsprit.core.problem.job.Job;
-import jsprit.core.problem.job.Service;
-import jsprit.core.problem.job.Shipment;
+import jsprit.core.problem.job.*;
 import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
@@ -149,6 +147,7 @@ public class VehicleRoute {
 		 * 
 		 * @param serviceActivityFactory the factory to create serviceActivities
 		 */
+        @Deprecated
 		public Builder setServiceActivityFactory(TourActivityFactory serviceActivityFactory) {
 			this.serviceActivityFactory = serviceActivityFactory;
             return this;
@@ -161,6 +160,7 @@ public class VehicleRoute {
 		 * 
 		 * @param shipmentActivityFactory the factory to create shipmentActivities
 		 */
+        @Deprecated
 		public Builder setShipmentActivityFactory(TourShipmentActivityFactory shipmentActivityFactory) {
 			this.shipmentActivityFactory = shipmentActivityFactory;
             return this;
@@ -220,68 +220,55 @@ public class VehicleRoute {
 		 * @return this builder
 		 * @throws IllegalArgumentException if service is null
 		 */
-		@SuppressWarnings("deprecation")
         public Builder addService(Service service){
 			if(service == null) throw new IllegalArgumentException("service must not be null");
-			addService(service,0.0,0.0);
-			return this;
-		}
-		
-		/**
-		 * Adds a service with specified activity arrival- and endTime.  
-		 * 
-		 * <p>This implies that for this service a serviceActivity is created with {@link TourActivityFactory} and added to the sequence of tourActivities.
-		 * 
-		 * <p>Basically this activity is then scheduled with an activity arrival and activity endTime.
-		 * 
-		 * @param service to be added
-		 * @param arrTime at service activity
-		 * @param endTime of service activity
-		 * @return builder
-		 */
-        @Deprecated
-		public Builder addService(Service service, double arrTime, double endTime){
-			List<AbstractActivity> acts = jobActivityFactory.createActivities(service);
+            List<AbstractActivity> acts = jobActivityFactory.createActivities(service);
             TourActivity act = acts.get(0);
-			act.setArrTime(arrTime);
-			act.setEndTime(endTime);
-			tourActivities.addActivity(act);
+            tourActivities.addActivity(act);
 			return this;
 		}
-		
-		/**
+
+        /**
+         * Adds a pickup to this route.
+         *
+         * @param pickup pickup to be added
+         * @return the builder
+         */
+        public Builder addPickup(Pickup pickup){
+            if(pickup == null) throw new IllegalArgumentException("pickup must not be null");
+            addService(pickup);
+            return this;
+        }
+
+        /**
+         * Adds a delivery to this route.
+         *
+         * @param delivery delivery to be added
+         * @return the builder
+         */
+        public Builder addDelivery(Delivery delivery){
+            if(delivery == null) throw new IllegalArgumentException("delivery must not be null");
+            addService(delivery);
+            return this;
+        }
+
+        /**
 		 * Adds a the pickup of the specified shipment.
 		 * 
 		 * @param shipment to be picked up and added to this route
 		 * @throws IllegalStateException if method has already been called with the specified shipment.
 		 * @return the builder
 		 */
-		@SuppressWarnings("deprecation")
         public Builder addPickup(Shipment shipment){
-			addPickup(shipment,0.,0.);
-			return this;
-		}
-		
-		/**
-		 * Adds a the pickup of the specified shipment at specified arrival and end-time.
-		 * 
-		 * @param shipment to be picked up and added to this route
-		 * @throws IllegalStateException if method has already been called with the specified shipment.
-		 * @return builder
-		 */
-        @Deprecated
-		public Builder addPickup(Shipment shipment, double arrTime, double endTime){
-			if(openShipments.contains(shipment)) throw new IllegalStateException("shipment has already been added. cannot add it twice.");
+            if(openShipments.contains(shipment)) throw new IllegalStateException("shipment has already been added. cannot add it twice.");
 			List<AbstractActivity> acts = jobActivityFactory.createActivities(shipment);
             TourActivity act = acts.get(0);
-			act.setArrTime(arrTime);
-			act.setEndTime(endTime);
 			tourActivities.addActivity(act);
 			openShipments.add(shipment);
             openActivities.put(shipment,acts.get(1));
-			return this;
+            return this;
 		}
-		
+
 		/**
 		 * Adds a the delivery of the specified shipment.
 		 * 
@@ -289,31 +276,16 @@ public class VehicleRoute {
 		 * @throws IllegalStateException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
 		 * @return builder
 		 */
-		@SuppressWarnings("deprecation")
         public Builder addDelivery(Shipment shipment){
-			addDelivery(shipment,0.,0.);
-			return this;
-		}
-		
-		/**
-		 * Adds a the delivery of the specified shipment at a specified arrival and endTime.
-		 * 
-		 * @param shipment to be delivered and added to this route
-		 * @throws IllegalStateException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
-		 * @return the builder
-		 */
-        @Deprecated
-		public Builder addDelivery(Shipment shipment, double arrTime, double endTime){
-			if(openShipments.contains(shipment)){
+            if(openShipments.contains(shipment)){
 				TourActivity act = openActivities.get(shipment);
-				act.setArrTime(arrTime);
-				act.setEndTime(endTime);
 				tourActivities.addActivity(act);
 				openShipments.remove(shipment);
 			}
 			else{ throw new IllegalStateException("cannot deliver shipment. shipment " + shipment + " needs to be picked up first."); }
-			return this;
+            return this;
 		}
+
 		
 		/**
 		 * Builds the route.
