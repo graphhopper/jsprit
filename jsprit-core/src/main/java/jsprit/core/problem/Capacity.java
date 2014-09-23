@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.problem;
 
@@ -33,8 +31,8 @@ public class Capacity {
 	 * 
 	 * <p>Note that this assumes that capacity dimension can be added up.
 	 * 
-	 * @param cap1
-	 * @param cap2
+	 * @param cap1 capacity to be added up
+	 * @param cap2 capacity to be added up
 	 * @return new capacity
 	 * @throws NullPointerException if one of the args is null
 
@@ -49,20 +47,20 @@ public class Capacity {
 	}
 	
 	/**
-	 * Subtracts cap2substract from cap and returns the resulting Capacity.
+	 * Subtracts cap2subtract from cap and returns the resulting Capacity.
 	 * 
-	 * @param cap
-	 * @param cap2substract
+	 * @param cap capacity to be subtracted from
+	 * @param cap2subtract capacity to subtract
 	 * @return new capacity
 	 * @throws NullPointerException if one of the args is null
 	 * @throws IllegalStateException if number of capacityDimensions of cap1 and cap2 are different (i.e. <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>).
 	 *  
 	 */
-	public static Capacity subtract(Capacity cap, Capacity cap2substract){
-		if(cap==null || cap2substract==null) throw new NullPointerException("arguments must not be null");
+	public static Capacity subtract(Capacity cap, Capacity cap2subtract){
+		if(cap==null || cap2subtract==null) throw new NullPointerException("arguments must not be null");
 		Capacity.Builder capacityBuilder= Capacity.Builder.newInstance();
-		for(int i=0;i<Math.max(cap.getNuOfDimensions(),cap2substract.getNuOfDimensions());i++){
-			int dimValue = cap.get(i)-cap2substract.get(i);
+		for(int i=0;i<Math.max(cap.getNuOfDimensions(),cap2subtract.getNuOfDimensions());i++){
+			int dimValue = cap.get(i)-cap2subtract.get(i);
 			capacityBuilder.addDimension(i, dimValue);
 		}
 		return capacityBuilder.build();
@@ -71,7 +69,7 @@ public class Capacity {
 	/**
 	 * Returns the inverted capacity, i.e. it multiplies all capacity dimensions with -1.
 	 * 
-	 * @param cap2invert
+	 * @param cap2invert capacity to be inverted
 	 * @return inverted capacity
 	 * @throws NullPointerException if one of the args is null
 	 */
@@ -91,9 +89,9 @@ public class Capacity {
 	 * 
 	 * <p>If both nominator.get(i) and denominator.get(i) equal to 0, dimension i is ignored.
 	 * <p>If both capacities are have only dimensions with dimensionVal=0, it returns 0.0
-	 * @param numerator
-	 * @param denominator
-	 * @return
+	 * @param numerator the numerator
+	 * @param denominator the denominator
+	 * @return quotient
 	 * @throws IllegalStateException if numerator.get(i) != 0 and denominator.get(i) == 0 
 	 */
 	public static double divide(Capacity numerator, Capacity denominator){
@@ -118,8 +116,8 @@ public class Capacity {
 	/**
 	 * Makes a deep copy of Capacity.
 	 * 
-	 * @param capacity
-	 * @return
+	 * @param capacity capacity to be copied
+	 * @return copy
 	 */
 	public static Capacity copyOf(Capacity capacity){
 		if(capacity == null) return null;
@@ -156,9 +154,9 @@ public class Capacity {
 		 * <p>Note that it automatically resizes dimensions according to index, i.e. if index=7 there are 8 dimensions.
 		 * New dimensions then are initialized with 0
 		 * 
-		 * @param index
-		 * @param dimValue
-		 * @return
+		 * @param index dimensionIndex
+		 * @param dimValue dimensionValue
+		 * @return this builder
 		 */
 		public Builder addDimension(int index, int dimValue){
 			if(index < dimensions.length){
@@ -197,7 +195,7 @@ public class Capacity {
 	/**
 	 * copy constructor
 	 * 
-	 * @param capacity
+	 * @param capacity capacity to be copied
 	 */
 	Capacity(Capacity capacity){
 		this.dimensions = new int[capacity.getNuOfDimensions()];
@@ -213,19 +211,21 @@ public class Capacity {
 	/**
 	 * Returns the number of specified capacity dimensions.
 	 * 
-	 * @return
+	 * @return noDimensions
 	 */
 	public int getNuOfDimensions(){
 		return dimensions.length;
 	}
+
+
 	
 	/**
 	 * Returns value of capacity-dimension with specified index.
 	 * 
 	 * <p>If capacity dimension does not exist, it returns 0 (rather than IndexOutOfBoundsException).
 	 * 
-	 * @param index
-	 * @return
+	 * @param index dimension index of the capacity value to be retrieved
+	 * @return the according dimension value
 	 */
 	public int get(int index){
 		if(index<dimensions.length) return dimensions[index];
@@ -235,8 +235,8 @@ public class Capacity {
 	/**
 	 * Returns true if this capacity is less or equal than the capacity toCompare, i.e. if none of the capacity dimensions > than the corresponding dimension in toCompare.
 	 * 
-	 * @param toCompare
-	 * @return
+	 * @param toCompare the capacity to compare
+	 * @return true if this capacity is less or equal than toCompare
 	 * @throws NullPointerException if one of the args is null
 	 */
 	public boolean isLessOrEqual(Capacity toCompare){
@@ -250,8 +250,8 @@ public class Capacity {
 	/**
 	 * Returns true if this capacity is greater or equal than the capacity toCompare
 	 * 
-	 * @param toCompare
-	 * @return
+	 * @param toCompare the capacity to compare
+	 * @return true if this capacity is greater or equal than toCompare
 	 * @throws NullPointerException if one of the args is null
 	 
 	 */
@@ -265,20 +265,19 @@ public class Capacity {
 	
 	@Override
 	public String toString() {
-		StringBuilder sBuilder = new StringBuilder();
-		sBuilder.append("[nuOfDimensions="+getNuOfDimensions()+"]");
-		for(int i=0;i<getNuOfDimensions();i++){
-			sBuilder.append("[[dimIndex="+i+"][dimValue="+dimensions[i]+"]]");
-		}
-		return sBuilder.toString();
+        String string = "[noDimensions="+getNuOfDimensions()+"]";
+        for(int i=0;i<getNuOfDimensions();i++){
+            string += "[[dimIndex="+i+"][dimValue="+dimensions[i]+"]]";
+        }
+        return string;
 	}
 
 	/**
 	 * Return the maximum, i.e. the maximum of each capacity dimension.
 	 * 
-	 * @param cap1
-	 * @param cap2
-	 * @return
+	 * @param cap1 first capacity to compare
+	 * @param cap2 second capacity to compare
+	 * @return capacity maximum of each capacity dimension
 	 */
 	public static Capacity max(Capacity cap1, Capacity cap2) {
 		if(cap1 == null || cap2 == null) throw new IllegalArgumentException("arg must not be null");
