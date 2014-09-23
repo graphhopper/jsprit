@@ -262,4 +262,211 @@ public class FigliozziTest {
         Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.CLASSIC,100);
         Assert.assertEquals(100.,tdCosts.getBackwardTransportTime("from","to",100.,null,null),0.01);
     }
+
+    @Test
+    public void whenTD1a_distanceShouldBe25PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(125.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1a,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD1b_distanceShouldBe25PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(125.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1b,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD1c_distanceShouldBe25PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(125.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1c,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD1d_distanceShouldBe25PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(125.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD1d,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD2a_distanceShouldBe50PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(150.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2a,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD2b_distanceShouldBe50PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(150.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2b,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD2c_distanceShouldBe50PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(150.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2c,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD2d_distanceShouldBe50PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(150.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD2d,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD3a_distanceShouldBe75PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(175.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3a,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD3b_distanceShouldBe75PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(175.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3b,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD3c_distanceShouldBe75PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(175.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3c,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
+
+    @Test
+    public void whenTD3d_distanceShouldBe75PercentMore(){
+        Locations locations = new Locations() {
+
+            @Override
+            public Coordinate getCoord(String id) {
+                if(id.equals("from")) return Coordinate.newInstance(0,0);
+                if(id.equals("to")) return Coordinate.newInstance(175.,0);
+                return null;
+            }
+
+        };
+        Figliozzi.TDCosts tdCosts = Figliozzi.TimeDependentTransportCostsFactory.createCosts(locations, Figliozzi.TimeDependentTransportCostsFactory.SpeedDistribution.TD3d,100);
+        double time = tdCosts.getTransportTime("from","to",0.,null,null);
+        Assert.assertEquals(100.,time,0.01);
+    }
 }
+
+
+
