@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -90,7 +90,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	
 	private boolean updateTWs = false;
 
-    private int stateIndexCounter = 21;
+    private final int initialNoStates = 21;
+
+    private int stateIndexCounter;
 
     private Map<String,StateId> createdStateIds = new HashMap<String, StateId>();
 
@@ -144,14 +146,15 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param vehicleRoutingProblem the corresponding VehicleRoutingProblem
      */
     public StateManager(VehicleRoutingProblem vehicleRoutingProblem){
-        int initialNuStates = 30;
+        stateIndexCounter = initialNoStates;
+        int initialStateArrayLength = 30;
         this.vrp = vehicleRoutingProblem;
         nuActivities = Math.max(10, vrp.getNuActivities() + 1);
         nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vrp) + 2);
-        activity_states = new Object[nuActivities][initialNuStates];
-        route_states = new Object[nuActivities][initialNuStates];
-        vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][initialNuStates];
-        vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][initialNuStates];
+        activity_states = new Object[nuActivities][initialStateArrayLength];
+        route_states = new Object[nuActivities][initialStateArrayLength];
+        vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
+        vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
     }
 
     private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
@@ -224,6 +227,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param <T> the type
      * @return the state value that is associated to the specified activity and stateId, or null if no value is associated.
      * @throws java.lang.ClassCastException if type class is not equal to the associated type class of the requested state value
+     * @throws java.lang.IllegalStateException if <code>act.getIndex()==0</code> since this suggests that act has no index at all
 	 */
 	@Override
 	public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type) {
@@ -246,6 +250,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param vehicle the vehicle for which a state value is associated to
      * @param stateId the stateId which is the associated key to the problem state
      * @return true if a state value is associated otherwise false
+     * @throws java.lang.IllegalStateException if <code>act.getIndex()==0</code> since this suggests that act has no index at all
      */
     public boolean hasActivityState(TourActivity act, Vehicle vehicle, StateId stateId){
         if(act.getIndex() == 0) throw new IllegalStateException("activity index is 0. this should not be.");
@@ -264,10 +269,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @return the associated state value to the specified activity, vehicle and stateId, or null if no state value is
      * associated.
      * @throws java.lang.ClassCastException if type class is not equal to the associated type class of the requested state value
+     * @throws java.lang.IllegalStateException if <code>act.getIndex()==0</code> since this suggests that act has no index at all
      */
     public <T> T getActivityState(TourActivity act, Vehicle vehicle, StateId stateId, Class<T> type) {
         if(act.getIndex() == 0) throw new IllegalStateException("activity index is 0. this should not be.");
-        if(act.getIndex()<0) return null;
+        if(act.getIndex() < 0) return null; //act.getIndex() < 0 indicates that act is either Start (-1) or End (-2)
         T state;
         try {
             state = type.cast(vehicle_dependent_activity_states[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
@@ -293,6 +299,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param <T> the type of the class
      * @return the route state that is associated to the route and stateId, or null if no state is associated.
      * @throws java.lang.ClassCastException if type class is not equal to the associated type class of the requested state value
+     * @throws java.lang.IllegalStateException if <code>!route.isEmpty()</code> and <code>act(0).getIndex()==0</code> since this suggests that act has no index at all
      */
 	@Override
 	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
@@ -332,6 +339,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param <T> the type of the class
      * @return the actual route state that is assigned to the route, vehicle and stateId
      * @throws java.lang.ClassCastException if specified type is not equal to the memorized type
+     * @throws java.lang.IllegalStateException if <code>!route.isEmpty()</code> and <code>act(0).getIndex()==0</code> since this suggests that act has no index at all
      */
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type) {
         if(route.isEmpty()) return null;
@@ -355,11 +363,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param stateId the stateId which is the associated key to the activity state
      * @param state the state that is associated to the activity and stateId
      * @param <T> the type of the state
-     * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
+     * @throws java.lang.IllegalStateException if <code>act.getIndex() == 0</code>
+     *          || stateId.getIndex < noInternalStates
+     *
      */
     public <T> void putActivityState(TourActivity act, StateId stateId, T state){
         if(act.getIndex() == 0) throw new IllegalStateException("activity index is 0. this should not be.");
-        if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
+        if(stateId.getIndex() < initialNoStates) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
                 "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
                 " does not assign indeces thus do not use it anymore, but use\n " +
                 "stateManager.createStateId(name)\n" +
@@ -376,11 +386,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param stateId the stateId which is the associated key to the activity state
      * @param state the state that is associated to the activity and stateId
      * @param <T> the type of the state
-     * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
+     * @throws java.lang.IllegalStateException if <code>act.getIndex() == 0</code>
+     *          || stateId.getIndex < noInternalStates
      */
     public <T> void putActivityState(TourActivity act, Vehicle vehicle, StateId stateId, T state){
         if(act.getIndex() == 0) throw new IllegalStateException("activity index is 0. this should not be.");
-        if(stateId.getIndex()<10) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
+        if(stateId.getIndex() < initialNoStates) throw new IllegalStateException("either you use a reserved stateId that is applied\n" +
                 "internally or your stateId has been created without index, e.g. StateFactory.createId(stateName)\n" +
                 " does not assign indeces thus do not use it anymore, but use\n " +
                 "stateManager.createStateId(name)\n" +
@@ -407,7 +418,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
      */
     public <T> void putRouteState(VehicleRoute route, StateId stateId, T state){
-        if(stateId.getIndex()<10) StateFactory.throwReservedIdException(stateId.toString());
+        if(stateId.getIndex() < initialNoStates) StateFactory.throwReservedIdException(stateId.toString());
         putTypedInternalRouteState(route, stateId, state);
     }
 
@@ -420,11 +431,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param stateId the stateId which is the associated key to the activity state
      * @param state the state that is associated to the activity and stateId
      * @param <T> the type of the state
-     * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
+     * @throws java.lang.IllegalStateException if <code>vehicle.getIndex() == 0</code> || <code>stateId.getIndex() < noInternalStates</code>
      */
     public <T> void putRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, T state){
         if(vehicle.getIndex() == 0) throw new IllegalStateException("vehicle index is 0. this should not be.");
-        if(stateId.getIndex()<10) StateFactory.throwReservedIdException(stateId.toString());
+        if(stateId.getIndex() < initialNoStates) StateFactory.throwReservedIdException(stateId.toString());
         putTypedInternalRouteState(route, vehicle, stateId, state);
     }
 
