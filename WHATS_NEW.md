@@ -5,7 +5,7 @@ WHATS NEW
 
 <b>2014-09-25</b> new release **v1.4.1**
 
-It contains a critical bugfix (see [#134](https://github.com/jsprit/jsprit/issues/134)).
+It contains a fix of a critical bug (see [#134](https://github.com/jsprit/jsprit/issues/134)).
 
 ------------------------------
 
