@@ -108,6 +108,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private Object[][][] vehicle_dependent_route_states;
 
+    private Map<VehicleRoute,Object[]> route_state_map;
+
+    private Map<VehicleRoute,Object[][]> vehicle_dependent_route_state_map;
+
     private VehicleRoutingProblem vrp;
 
     int getMaxIndexOfVehicleTypeIdentifiers(){ return nuVehicleTypeKeys; }
@@ -155,6 +159,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         route_states = new Object[nuActivities][initialStateArrayLength];
         vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
         vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
+        route_state_map = new HashMap<VehicleRoute, Object[]>();
+        vehicle_dependent_route_state_map = new HashMap<VehicleRoute, Object[][]>();
     }
 
     private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
@@ -304,14 +310,19 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	@Override
 	public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
         if(route.isEmpty()) return null;
-        T state;
-        int index_of_first_act = route.getActivities().get(0).getIndex();
-        if(index_of_first_act == 0) throw new IllegalStateException("first activity in route has no index. this should not be.");
+        T state = null;
+
+//        int index_of_first_act = route.getActivities().get(0).getIndex();
+//        if(index_of_first_act == 0) throw new IllegalStateException("first activity in route has no index. this should not be.");
         try{
-            state = type.cast(route_states[index_of_first_act][stateId.getIndex()]);
+            if(route_state_map.containsKey(route)) {
+                state = type.cast(route_state_map.get(route)[stateId.getIndex()]);
+            }
+//            state = type.cast(route_states[index_of_first_act][stateId.getIndex()]);
         }
         catch (ClassCastException e){
-            throw getClassCastException(e,stateId,type.toString(),route_states[index_of_first_act][stateId.getIndex()].getClass().toString());
+            throw getClassCastException(e,stateId,type.toString(),route_state_map.get(route)[stateId.getIndex()].getClass().toString());
+//            throw getClassCastException(e,stateId,type.toString(),route_states[index_of_first_act][stateId.getIndex()].getClass().toString());
         }
         return state;
 	}
@@ -326,7 +337,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     @SuppressWarnings("UnusedDeclaration")
     public boolean hasRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId) {
-        return vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
+        if(!vehicle_dependent_route_state_map.containsKey(route)) return false;
+        return vehicle_dependent_route_state_map.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
+//        return vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
     }
 
     /**
@@ -343,14 +356,17 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type) {
         if(route.isEmpty()) return null;
-        int index_of_first_act = route.getActivities().get(0).getIndex();
-        if(index_of_first_act == 0) throw new IllegalStateException("first activity in route has no index. this should not be.");
-        T state;
+//        int index_of_first_act = route.getActivities().get(0).getIndex();
+//        if(index_of_first_act == 0) throw new IllegalStateException("first activity in route has no index. this should not be.");
+        T state = null;
         try{
-           state = type.cast(vehicle_dependent_route_states[index_of_first_act][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+            if(vehicle_dependent_route_state_map.containsKey(route)){
+                state = type.cast(vehicle_dependent_route_state_map.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+            }
+//           state = type.cast(vehicle_dependent_route_states[index_of_first_act][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
         }
         catch( ClassCastException e){
-            throw getClassCastException(e, stateId, type.toString(), vehicle_dependent_route_states[index_of_first_act][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
+            throw getClassCastException(e, stateId, type.toString(), vehicle_dependent_route_state_map.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
         }
         return state;
     }
@@ -415,7 +431,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param stateId the stateId which is the associated key to the activity state
      * @param state the state that is associated to the activity and stateId
      * @param <T> the type of the state
-     * @throws java.lang.IllegalStateException if stateId is equall to a stateId that is already used internally.
+     * @throws java.lang.IllegalStateException if stateId is equal to a stateId that is already used internally.
      */
     public <T> void putRouteState(VehicleRoute route, StateId stateId, T state){
         if(stateId.getIndex() < initialNoStates) StateFactory.throwReservedIdException(stateId.toString());
@@ -441,12 +457,20 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     <T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, T state){
         if(route.isEmpty()) return;
-        route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()] = state;
+        if(!route_state_map.containsKey(route)){
+            route_state_map.put(route,new Object[stateIndexCounter]);
+        }
+        route_state_map.get(route)[stateId.getIndex()] = state;
+//        route_states[route.getActivities().get(0).getIndex()][stateId.getIndex()] = state;
     }
 
     <T> void putTypedInternalRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, T state){
         if(route.isEmpty()) return;
-        vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
+        if(!vehicle_dependent_route_state_map.containsKey(route)){
+            vehicle_dependent_route_state_map.put(route,new Object[nuVehicleTypeKeys][stateIndexCounter]);
+        }
+        vehicle_dependent_route_state_map.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
+//        vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
     }
 
 	/**
