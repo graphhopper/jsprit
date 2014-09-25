@@ -104,9 +104,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private Object[][][] vehicle_dependent_activity_states;
 
-    private Object[][] route_states;
-
-    private Object[][][] vehicle_dependent_route_states;
+//    private Object[][] route_states;
+//
+//    private Object[][][] vehicle_dependent_route_states;
 
     private Map<VehicleRoute,Object[]> route_state_map;
 
@@ -129,9 +129,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if(createdStateIds.containsKey(name)) return createdStateIds.get(name);
         if(stateIndexCounter>=activity_states[0].length){
             activity_states = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
-            route_states = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
+//            route_states = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
             vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
-            vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
+//            vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
         }
         StateId id = StateFactory.createId(name, stateIndexCounter);
         incStateIndexCounter();
@@ -156,9 +156,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         nuActivities = Math.max(10, vrp.getNuActivities() + 1);
         nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vrp) + 2);
         activity_states = new Object[nuActivities][initialStateArrayLength];
-        route_states = new Object[nuActivities][initialStateArrayLength];
+//        route_states = new Object[nuActivities][initialStateArrayLength];
         vehicle_dependent_activity_states = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
-        vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
+//        vehicle_dependent_route_states = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
         route_state_map = new HashMap<VehicleRoute, Object[]>();
         vehicle_dependent_route_state_map = new HashMap<VehicleRoute, Object[][]>();
     }
@@ -203,10 +203,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 	 */
 	public void clear(){
         fill_twoDimArr(activity_states, null);
-        fill_twoDimArr(route_states, null);
+//        fill_twoDimArr(route_states, null);
         fill_threeDimArr(vehicle_dependent_activity_states, null);
-        fill_threeDimArr(vehicle_dependent_route_states, null);
+//        fill_threeDimArr(vehicle_dependent_route_states, null);
 		problemStates_.clear();
+        route_state_map.clear();
+        vehicle_dependent_route_state_map.clear();
 	}
 
     private void fill_threeDimArr(Object[][][] states, Object o) {

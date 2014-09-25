@@ -107,7 +107,7 @@ public class MultipleDepotExampleWithPenaltyVehicles {
 		 * solve the problem
 		 */
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
-		vra.setMaxIterations(2000);
+		vra.setMaxIterations(10000);
         vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
 //		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
