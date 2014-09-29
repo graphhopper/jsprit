@@ -288,7 +288,12 @@ public class VehicleRoutingProblem {
 		}
 
 
-
+        /**
+         * Adds an initial vehicle route.
+         *
+         * @param route initial route
+         * @return the builder
+         */
         public Builder addInitialVehicleRoute(VehicleRoute route){
 			addVehicle((AbstractVehicle)route.getVehicle());
             for(TourActivity act : route.getActivities()){
@@ -324,6 +329,12 @@ public class VehicleRoutingProblem {
             }
         }
 
+        /**
+         * Adds a collection of initial vehicle routes.
+         *
+         * @param routes initial routes
+         * @return the builder
+         */
         public Builder addInitialVehicleRoutes(Collection<VehicleRoute> routes){
 			for(VehicleRoute r : routes){
 				addInitialVehicleRoute(r);
