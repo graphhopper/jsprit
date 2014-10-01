@@ -739,20 +739,37 @@ public class VehicleRoutingProblem {
 		return activityCosts;
 	}
 
+    /**
+     * @return returns all location, i.e. from vehicles and jobs.
+     */
 	public Locations getLocations(){
 		return locations;
 	}
 
+    /**
+     * @param job for which the corresponding activities needs to be returned
+     * @return associated activities
+     */
     public List<AbstractActivity> getActivities(Job job){
         return Collections.unmodifiableList(activityMap.get(job));
     }
 
+    /**
+     * @return total number of activities
+     */
     public int getNuActivities(){ return nuActivities; }
 
+    /**
+     * @return factory that creates the activities associated to a job
+     */
     public JobActivityFactory getJobActivityFactory(){
         return jobActivityFactory;
     }
 
+    /**
+     * @param job for which the corresponding activities needs to be returned
+     * @return a copy of the activities that are associated to the specified job
+     */
     public List<AbstractActivity> copyAndGetActivities(Job job){
         List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
         if(activityMap.containsKey(job)) {
