@@ -22,11 +22,14 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.analysis.SolutionAnalyser;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.reporting.SolutionPrinter;
 import jsprit.util.Examples;
 
@@ -58,7 +61,7 @@ public class VRPWithBackhaulsExample2 {
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
-		VehicleRoutingProblem vrp = vrpBuilder.build();
+		final VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		new Plotter(vrp).plot("output/vrpwbh_christophides_vrpnc1.png", "pd_vrpnc1");
 		
@@ -105,9 +108,40 @@ public class VRPWithBackhaulsExample2 {
 		Plotter plotter = new Plotter(vrp, solution);
 		plotter.setLabel(Label.SIZE);
 		plotter.plot("output/vrpwbh_christophides_vrpnc1_solution.png","vrpwbh_vrpnc1");
-	
-		
-		
-	}
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution.getRoutes(),stateManager, new SolutionAnalyser.DistanceCalculator() {
+
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+
+        });
+
+        for(VehicleRoute route : solution.getRoutes()){
+            System.out.println("------");
+            System.out.println("vehicleId: " + route.getVehicle().getId());
+            System.out.println("vehicleCapacity: " + route.getVehicle().getType().getCapacityDimensions() + " maxLoad: " + analyser.getMaxLoad(route));
+            System.out.println("totalDistance: " + analyser.getDistance(route));
+            System.out.println("waitingTime: " + analyser.getWaitingTime(route));
+            System.out.println("load@beginning: " + analyser.getLoadAtBeginning(route));
+            System.out.println("load@end: " + analyser.getLoadAtEnd(route));
+            System.out.println("operationTime: " + analyser.getOperationTime(route));
+            System.out.println("serviceTime: " + analyser.getServiceTime(route));
+            System.out.println("transportTime: " + analyser.getTransportTime(route));
+
+            System.out.println("dist@" + route.getStart().getLocationId() + ": " + analyser.getDistanceAtActivity(route.getStart(),route));
+            for(TourActivity act : route.getActivities()){
+                System.out.println("--");
+                System.out.println("actType: " + act.getName() + " demand: " + act.getSize());
+                System.out.println("dist@" + act.getLocationId() + ": " + analyser.getDistanceAtActivity(act,route));
+                System.out.println("load(before)@" + act.getLocationId() + ": " + analyser.getLoadJustBeforeActivity(act,route));
+                System.out.println("load(after)@" + act.getLocationId() + ": " + analyser.getLoadRightAfterActivity(act, route));
+            }
+            System.out.println("--");
+            System.out.println("dist@" + route.getEnd().getLocationId() + ": " + analyser.getDistanceAtActivity(route.getEnd(),route));
+        }
+
+    }
 
 }

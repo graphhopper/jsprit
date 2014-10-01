@@ -33,8 +33,6 @@ import jsprit.core.util.ActivityTimeTracker;
  */
 public class UpdateActivityTimes implements ActivityVisitor, StateUpdater{
 
-
-
     private ActivityTimeTracker timeTracker;
 	
 	private VehicleRoute route;
