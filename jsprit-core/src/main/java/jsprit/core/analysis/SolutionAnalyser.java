@@ -71,7 +71,7 @@ public class SolutionAnalyser {
 //
 //    }
 
-    private static class SumUpWaitingTimes implements StateUpdater, ActivityVisitor {
+    private static class SumUpActivityTimes implements StateUpdater, ActivityVisitor {
 
         private StateId waiting_time_id;
 
@@ -97,7 +97,7 @@ public class SolutionAnalyser {
 
         double prevActDeparture;
 
-        private SumUpWaitingTimes(StateId waiting_time_id, StateId transport_time_id, StateId service_time_id, StateId too_late_id, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy) {
+        private SumUpActivityTimes(StateId waiting_time_id, StateId transport_time_id, StateId service_time_id, StateId too_late_id, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy) {
             this.waiting_time_id = waiting_time_id;
             this.transport_time_id = transport_time_id;
             this.service_time_id = service_time_id;
@@ -139,6 +139,7 @@ public class SolutionAnalyser {
         @Override
         public void finish() {
             sum_transport_time += route.getEnd().getArrTime() - prevActDeparture;
+            sum_too_late += Math.max(0, route.getEnd().getArrTime() - route.getEnd().getTheoreticalLatestOperationStartTime());
             stateManager.putRouteState(route,transport_time_id,sum_transport_time);
             stateManager.putRouteState(route,waiting_time_id,sum_waiting_time);
             stateManager.putRouteState(route,service_time_id,sum_service_time);
@@ -305,7 +306,7 @@ public class SolutionAnalyser {
 //        if(stateManager.timeWindowUpdateIsActivated()){
 //            activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
 //        }
-        stateManager.addStateUpdater(new SumUpWaitingTimes(waiting_time_id, transport_time_id, service_time_id,too_late_id , stateManager, activityPolicy));
+        stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id,too_late_id , stateManager, activityPolicy));
         stateManager.addStateUpdater(new DistanceUpdater(distance_id,stateManager,distanceCalculator));
 //        hardRouteConstraints = getHardRouteConstraints(constraintManager);
 //        hardActivityConstraints = getHardActivityConstrains(constraintManager);

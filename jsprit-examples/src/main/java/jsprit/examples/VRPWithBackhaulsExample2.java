@@ -135,8 +135,11 @@ public class VRPWithBackhaulsExample2 {
             System.out.println("capViolationOnRoute: " + analyser.getCapacityViolation(route));
             System.out.println("capViolation@beginning: " + analyser.getCapacityViolationAtBeginning(route));
             System.out.println("capViolation@end: " + analyser.getCapacityViolationAtEnd(route));
+            System.out.println("timeWindowViolationOnRoute: " + analyser.getTimeWindowViolation(route));
+
 
             System.out.println("dist@" + route.getStart().getLocationId() + ": " + analyser.getDistanceAtActivity(route.getStart(),route));
+            System.out.println("timeWindowViolation@"  + route.getStart().getLocationId() + ": " + analyser.getTimeWindowViolationAtActivity(route.getStart(), route));
             for(TourActivity act : route.getActivities()){
                 System.out.println("--");
                 System.out.println("actType: " + act.getName() + " demand: " + act.getSize());
@@ -146,9 +149,11 @@ public class VRPWithBackhaulsExample2 {
                 System.out.println("tooLate@" + act.getLocationId() + ": " + analyser.getLateArrivalTimesAtActivity(act, route));
                 System.out.println("transportCosts@" + act.getLocationId() + ": " + analyser.getVariableTransportCostsAtActivity(act,route));
                 System.out.println("capViolation(after)@" + act.getLocationId() + ": " + analyser.getCapacityViolationAfterActivity(act,route));
+                System.out.println("timeWindowViolation@"  + act.getLocationId() + ": " + analyser.getTimeWindowViolationAtActivity(act,route));
             }
             System.out.println("--");
             System.out.println("dist@" + route.getEnd().getLocationId() + ": " + analyser.getDistanceAtActivity(route.getEnd(),route));
+            System.out.println("timeWindowViolation@"  + route.getEnd().getLocationId() + ": " + analyser.getTimeWindowViolationAtActivity(route.getEnd(),route));
         }
 
     }
