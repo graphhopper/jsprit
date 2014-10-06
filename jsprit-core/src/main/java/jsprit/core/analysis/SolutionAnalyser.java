@@ -17,25 +17,20 @@
 
 package jsprit.core.analysis;
 
-import jsprit.core.algorithm.state.InternalStates;
-import jsprit.core.algorithm.state.StateId;
-import jsprit.core.algorithm.state.StateManager;
-import jsprit.core.algorithm.state.StateUpdater;
+import jsprit.core.algorithm.state.*;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.constraint.HardActivityConstraint;
-import jsprit.core.problem.constraint.HardRouteConstraint;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.ActivityVisitor;
-import jsprit.core.problem.solution.route.activity.End;
-import jsprit.core.problem.solution.route.activity.Start;
-import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.util.ActivityTimeTracker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -51,25 +46,87 @@ public class SolutionAnalyser {
 
     }
 
-//    public static class ViolatedRouteConstraints {
-//
-//        private List<HardRouteConstraint> hardRouteConstraints = new ArrayList<HardRouteConstraint>();
-//
-//        public List<HardRouteConstraint> getHardRouteConstraints() {
-//            return hardRouteConstraints;
-//        }
-//
-//    }
-//
-//    public static class ViolatedActivityConstraints {
-//
-//        private List<HardActivityConstraint> hardConstraints = new ArrayList<HardActivityConstraint>();
-//
-//        public List<HardActivityConstraint> getHardActivityConstraints() {
-//            return hardConstraints;
-//        }
-//
-//    }
+    private static class BackhaulAndShipmentUpdater implements StateUpdater, ActivityVisitor {
+
+        private final StateId backhaul_id;
+
+        private final StateId shipment_id;
+
+        private final StateManager stateManager;
+
+        private Map<String,PickupShipment> openShipments;
+
+        private VehicleRoute route;
+
+        private Boolean shipmentConstraintOnRouteViolated;
+
+        private Boolean backhaulConstraintOnRouteViolated;
+
+        private boolean pickupOccured;
+
+        private BackhaulAndShipmentUpdater(StateId backhaul_id, StateId shipment_id, StateManager stateManager) {
+            this.stateManager = stateManager;
+            this.backhaul_id = backhaul_id;
+            this.shipment_id = shipment_id;
+        }
+
+        @Override
+        public void begin(VehicleRoute route) {
+            this.route = route;
+            openShipments = new HashMap<String, PickupShipment>();
+            pickupOccured = false;
+            shipmentConstraintOnRouteViolated = false;
+            backhaulConstraintOnRouteViolated = false;
+        }
+
+        @Override
+        public void visit(TourActivity activity) {
+            //shipment
+            if(activity instanceof PickupShipment){
+                openShipments.put(((PickupShipment) activity).getJob().getId(),(PickupShipment)activity);
+            }
+            else if(activity instanceof DeliverShipment){
+                String jobId = ((DeliverShipment) activity).getJob().getId();
+                if(!openShipments.containsKey(jobId)){
+                    //deliverShipment without pickupShipment
+                    stateManager.putActivityState(activity,shipment_id,true);
+                    shipmentConstraintOnRouteViolated = true;
+                }
+                else {
+                    PickupShipment removed = openShipments.remove(jobId);
+                    stateManager.putActivityState(removed,shipment_id,false);
+                    stateManager.putActivityState(activity,shipment_id,false);
+                }
+            }
+            else stateManager.putActivityState(activity,shipment_id,false);
+
+            //backhaul
+            if(activity instanceof DeliverService && pickupOccured){
+                stateManager.putActivityState(activity,backhaul_id,true);
+                backhaulConstraintOnRouteViolated = true;
+            }
+            else{
+                if(activity instanceof PickupService || activity instanceof ServiceActivity || activity instanceof PickupShipment){
+                    pickupOccured = true;
+                    stateManager.putActivityState(activity,backhaul_id,false);
+                }
+                else stateManager.putActivityState(activity,backhaul_id,false);
+            }
+        }
+
+        @Override
+        public void finish() {
+            //shipment
+            //pickups without deliveries
+            for(TourActivity act : openShipments.values()){
+                stateManager.putActivityState(act,shipment_id,true);
+                shipmentConstraintOnRouteViolated = true;
+            }
+            stateManager.putRouteState(route,shipment_id,shipmentConstraintOnRouteViolated);
+            //backhaul
+            stateManager.putRouteState(route,backhaul_id,backhaulConstraintOnRouteViolated);
+        }
+    }
 
     private static class SumUpActivityTimes implements StateUpdater, ActivityVisitor {
 
@@ -190,76 +247,13 @@ public class SolutionAnalyser {
         }
     }
 
-//    private static class ConstraintViolationUpdater implements StateUpdater, ActivityVisitor {
-//
-//        private ConstraintManager constraintManager;
-//
-//        private StateManager stateManager;
-//
-//        private StateId violated_route_constraints_id;
-//
-//        private VehicleRoute route;
-//
-//        private List<HardRouteConstraint> hardRouteConstraints;
-//
-//        private Set<String> examinedJobs = new HashSet<String>();
-//
-////        ViolatedRouteConstraints violatedRouteConstraints = new ViolatedRouteConstraints();
-//
-//        private ConstraintViolationUpdater(ConstraintManager constraintManager, StateManager stateManager, StateId violated_route_constraints_id) {
-//            this.constraintManager = constraintManager;
-//            this.stateManager = stateManager;
-//            this.violated_route_constraints_id = violated_route_constraints_id;
-//            hardRouteConstraints = getHardRouteConstraints(constraintManager);
-//        }
-//
-//        private List<HardRouteConstraint> getHardRouteConstraints(ConstraintManager constraintManager) {
-//            List<HardRouteConstraint> constraints = new ArrayList<HardRouteConstraint>();
-//            for(Constraint c : constraintManager.getConstraints()){
-//                if(c instanceof HardRouteConstraint){
-//                    constraints.add((HardRouteConstraint) c);
-//                }
-//            }
-//            return constraints;
-//        }
-//
-//        @Override
-//        public void begin(VehicleRoute route) {
-//            this.route = route;
-//            examinedJobs.clear();
-////            violatedRouteConstraints.getHardRouteConstraints().clear();
-//        }
-//
-//        @Override
-//        public void visit(TourActivity activity) {
-//            //hard route constraints
-//            if(activity instanceof TourActivity.JobActivity){
-//                Job job = ((TourActivity.JobActivity) activity).getJob();
-//                if(!examinedJobs.contains(job.getId())){
-//                    examinedJobs.add(job.getId());
-//                    JobInsertionContext iContext = new JobInsertionContext(route,job,route.getVehicle(),route.getDriver(),route.getDepartureTime());
-//                    for(HardRouteConstraint hardRouteConstraint : hardRouteConstraints){
-//                        boolean fulfilled = hardRouteConstraint.fulfilled(iContext);
-//                        if(!fulfilled) violatedRouteConstraints.getHardRouteConstraints().add(hardRouteConstraint);
-//                    }
-//                }
-//            }
-//
-//        }
-//
-//        @Override
-//        public void finish() {
-//            stateManager.putRouteState(route,violated_route_constraints_id,violatedRouteConstraints);
-//        }
-//    }
+    private static final Logger log = LogManager.getLogger(SolutionAnalyser.class);
 
     private VehicleRoutingProblem vrp;
 
     private List<VehicleRoute> routes;
 
     private StateManager stateManager;
-
-    private ConstraintManager constraintManager;
 
     private DistanceCalculator distanceCalculator;
 
@@ -273,17 +267,14 @@ public class SolutionAnalyser {
 
     private final StateId too_late_id;
 
-//    private final StateId violated_constraint_id;
+    private final StateId shipment_id;
+
+    private final StateId backhaul_id;
 
     private ActivityTimeTracker.ActivityPolicy activityPolicy;
 
-    private List<HardRouteConstraint> hardRouteConstraints;
-
-    private List<HardActivityConstraint> hardActivityConstraints;
 
     private final VehicleRoutingProblemSolution working_solution;
-
-//    private final VehicleRoutingProblemSolution original_solution;
 
     public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, DistanceCalculator distanceCalculator) {
         this.vrp = vrp;
@@ -294,108 +285,29 @@ public class SolutionAnalyser {
         this.stateManager.updateTimeWindowStates();
         this.stateManager.updateLoadStates();
         this.stateManager.updateSkillStates();
-        this.constraintManager = new ConstraintManager(vrp,stateManager);
+        activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
+        this.stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(),activityPolicy));
+        this.stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(),vrp.getTransportCosts(),stateManager));
         this.distanceCalculator = distanceCalculator;
         waiting_time_id = stateManager.createStateId("waiting-time");
         transport_time_id = stateManager.createStateId("transport-time");
         service_time_id = stateManager.createStateId("service-time");
         distance_id = stateManager.createStateId("distance");
         too_late_id = stateManager.createStateId("too-late");
-//        violated_constraint_id = stateManager.createStateId("violated-constraints");
-        activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
-//        if(stateManager.timeWindowUpdateIsActivated()){
-//            activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
-//        }
+        shipment_id = stateManager.createStateId("shipment");
+        backhaul_id = stateManager.createStateId("backhaul");
         stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id,too_late_id , stateManager, activityPolicy));
         stateManager.addStateUpdater(new DistanceUpdater(distance_id,stateManager,distanceCalculator));
-//        hardRouteConstraints = getHardRouteConstraints(constraintManager);
-//        hardActivityConstraints = getHardActivityConstrains(constraintManager);
+        stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id,shipment_id,stateManager));
         refreshStates();
     }
 
-//    private List<HardActivityConstraint> getHardActivityConstrains(ConstraintManager constraintManager) {
-//        List<HardActivityConstraint> constraints = new ArrayList<HardActivityConstraint>();
-//        for(Constraint c : constraintManager.getConstraints()){
-//            if(c instanceof HardActivityConstraint){
-//                constraints.add((HardActivityConstraint) c);
-//            }
-//        }
-//        return constraints;
-//    }
 
     private void refreshStates(){
         stateManager.clear();
         stateManager.informInsertionStarts(routes,null);
-//        checkConstraintViolation();
     }
 
-//    private void checkConstraintViolation() {
-//        for(VehicleRoute route : routes){
-//            Set<HardRouteConstraint> unique = new HashSet<HardRouteConstraint>();
-//            Set<String> examinedJobIds = new HashSet<String>();
-//            TourActivity actBeforePrevAct = route.getStart();
-//            TourActivity prevAct = null;
-//            JobInsertionContext prevJobInsertionContext = null;
-//            for(TourActivity act : route.getActivities()){
-//                if(prevAct == null){
-//                    prevAct = act;
-//                    prevJobInsertionContext = createContext(route,act);
-//                    continue;
-//                }
-//                //examine hard route constraints
-//                if(!examinedJobIds.contains(prevJobInsertionContext.getJob().getId())){
-//                    examinedJobIds.add(prevJobInsertionContext.getJob().getId());
-//                    for(HardRouteConstraint hardRouteConstraint : hardRouteConstraints){
-//                        boolean fulfilled = hardRouteConstraint.fulfilled(prevJobInsertionContext);
-//                        if(!fulfilled) unique.add(hardRouteConstraint);
-//                    }
-//                }
-//
-//                //exmaine hard activity constraints
-//                examineActivityConstraints(prevJobInsertionContext, actBeforePrevAct, prevAct, act);
-//
-//                actBeforePrevAct = prevAct;
-//                prevAct = act;
-//                prevJobInsertionContext = createContext(route,act);
-//            }
-//            examineActivityConstraints(prevJobInsertionContext,actBeforePrevAct,prevAct,route.getEnd());
-//
-////            ViolatedRouteConstraints violatedRouteConstraints = new ViolatedRouteConstraints();
-////            violatedRouteConstraints.getHardRouteConstraints().addAll(unique);
-////            stateManager.putRouteState(route, violated_constraint_id,violatedRouteConstraints);
-//        }
-//    }
-
-//    private void examineActivityConstraints(JobInsertionContext prevJobInsertionContext, TourActivity actBeforePrevAct, TourActivity prevAct, TourActivity act) {
-//        ViolatedActivityConstraints violatedActivityConstraints = new ViolatedActivityConstraints();
-//        for(HardActivityConstraint activityConstraint : hardActivityConstraints){
-//            HardActivityConstraint.ConstraintsStatus status =
-//                    activityConstraint.fulfilled(prevJobInsertionContext,actBeforePrevAct,prevAct,act,actBeforePrevAct.getEndTime());
-//            if(!status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED)){
-//                violatedActivityConstraints.getHardActivityConstraints().add(activityConstraint);
-//            }
-//        }
-//        stateManager.putActivityState(prevAct, violated_constraint_id,violatedActivityConstraints);
-//    }
-
-//    private JobInsertionContext createContext(VehicleRoute route, TourActivity act) {
-//        if(act instanceof TourActivity.JobActivity){
-//            return new JobInsertionContext(route,((TourActivity.JobActivity) act).getJob(),route.getVehicle(),route.getDriver(),route.getDepartureTime());
-//        }
-//        throw new IllegalStateException("act not a job activity. this should not be currently");
-//    }
-//
-//    private List<HardRouteConstraint> getHardRouteConstraints(ConstraintManager constraintManager) {
-//        List<HardRouteConstraint> constraints = new ArrayList<HardRouteConstraint>();
-//        for(Constraint c : constraintManager.getConstraints()){
-//            if(c instanceof HardRouteConstraint){
-//                constraints.add((HardRouteConstraint) c);
-//            }
-//        }
-//        return constraints;
-//    }
-
-//
 //
 //    public void informRouteChanged(VehicleRoute route){
 //        update(route);
@@ -408,6 +320,7 @@ public class SolutionAnalyser {
      * @return load at start location of specified route
      */
     public Capacity getLoadAtBeginning(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING,Capacity.class);
     }
 
@@ -416,6 +329,7 @@ public class SolutionAnalyser {
      * @return load at end location of specified route
      */
     public Capacity getLoadAtEnd(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route, InternalStates.LOAD_AT_END,Capacity.class);
     }
 
@@ -424,6 +338,7 @@ public class SolutionAnalyser {
      * @return max load of specified route, i.e. for each capacity dimension the max value.
      */
     public Capacity getMaxLoad(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route, InternalStates.MAXLOAD,Capacity.class);
     }
 
@@ -435,9 +350,18 @@ public class SolutionAnalyser {
      * Returns null if no load can be found.
      */
     public Capacity getLoadRightAfterActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
         if(activity instanceof Start) return getLoadAtBeginning(route);
         if(activity instanceof End) return getLoadAtEnd(route);
+        verifyThatRouteContainsAct(activity, route);
         return stateManager.getActivityState(activity, InternalStates.LOAD, Capacity.class);
+    }
+
+    private void verifyThatRouteContainsAct(TourActivity activity, VehicleRoute route) {
+        if(!route.getTourActivities().hasActivity(activity)){
+            throw new IllegalStateException("specified route does not contain specified activity " + activity);
+        }
     }
 
     /**
@@ -446,8 +370,11 @@ public class SolutionAnalyser {
      * route. If act is End, it returns the load atEnd of specified route.
      */
     public Capacity getLoadJustBeforeActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
         if(activity instanceof Start) return getLoadAtBeginning(route);
         if(activity instanceof End) return getLoadAtEnd(route);
+        verifyThatRouteContainsAct(activity, route);
         Capacity afterAct = stateManager.getActivityState(activity, InternalStates.LOAD,Capacity.class);
         if(afterAct != null && activity.getSize() != null){
             return Capacity.subtract(afterAct, activity.getSize());
@@ -461,6 +388,7 @@ public class SolutionAnalyser {
      * @return the capacity violation on this route, i.e. maxLoad - vehicleCapacity
      */
     public Capacity getCapacityViolation(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         Capacity maxLoad = getMaxLoad(route);
         return Capacity.max(Capacity.Builder.newInstance().build(),Capacity.subtract(maxLoad,route.getVehicle().getType().getCapacityDimensions()));
     }
@@ -472,6 +400,7 @@ public class SolutionAnalyser {
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
     public Capacity getCapacityViolationAtBeginning(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         Capacity atBeginning = getLoadAtBeginning(route);
         return Capacity.max(Capacity.Builder.newInstance().build(),Capacity.subtract(atBeginning,route.getVehicle().getType().getCapacityDimensions()));
     }
@@ -483,6 +412,7 @@ public class SolutionAnalyser {
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
     public Capacity getCapacityViolationAtEnd(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         Capacity atEnd = getLoadAtEnd(route);
         return Capacity.max(Capacity.Builder.newInstance().build(),Capacity.subtract(atEnd,route.getVehicle().getType().getCapacityDimensions()));
     }
@@ -495,6 +425,8 @@ public class SolutionAnalyser {
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
     public Capacity getCapacityViolationAfterActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
         Capacity afterAct = getLoadRightAfterActivity(activity,route);
         return Capacity.max(Capacity.Builder.newInstance().build(),Capacity.subtract(afterAct,route.getVehicle().getType().getCapacityDimensions()));
     }
@@ -504,6 +436,7 @@ public class SolutionAnalyser {
      * @return time violation of route, i.e. sum of individual activity time window violations.
      */
     public Double getTimeWindowViolation(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route,too_late_id,Double.class);
     }
 
@@ -513,27 +446,48 @@ public class SolutionAnalyser {
      * @return time violation of activity
      */
     public Double getTimeWindowViolationAtActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
         return Math.max(0,activity.getArrTime()-activity.getTheoreticalLatestOperationStartTime());
     }
 
     public Boolean skillConstraintIsViolated(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return null;
     }
 
     public Boolean skillConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
+        verifyThatRouteContainsAct(activity, route);
         return null;
     }
 
     public Boolean backhaulConstraintIsViolated(VehicleRoute route){
-        return null;
+        return stateManager.getRouteState(route,backhaul_id,Boolean.class);
+    }
+
+    public Boolean backhaulConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(activity instanceof Start) return false;
+        if(activity instanceof End) return false;
+        verifyThatRouteContainsAct(activity, route);
+        return stateManager.getActivityState(activity,backhaul_id,Boolean.class);
     }
 
     public Boolean shipmentConstraintIsViolated(VehicleRoute route){
-        return null;
+        if(route == null) throw new IllegalStateException("route is missing.");
+        return stateManager.getRouteState(route,shipment_id,Boolean.class);
     }
 
     public Boolean shipmentConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
-        return null;
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(activity instanceof Start) return false;
+        if(activity instanceof End) return false;
+        verifyThatRouteContainsAct(activity, route);
+        return stateManager.getActivityState(activity,shipment_id,Boolean.class);
     }
 
 
@@ -543,6 +497,7 @@ public class SolutionAnalyser {
      * @return operation time of this route, i.e. endTime - startTime of specified route
      */
     public Double getOperationTime(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return route.getEnd().getArrTime() - route.getStart().getEndTime();
     }
 
@@ -552,6 +507,7 @@ public class SolutionAnalyser {
      * Returns null if no waiting time value exists for the specified route
      */
     public Double getWaitingTime(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route, waiting_time_id, Double.class);
     }
 
@@ -560,6 +516,7 @@ public class SolutionAnalyser {
      * @return total transport time of specified route. Returns null if no time value exists for the specified route.
      */
     public Double getTransportTime(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route, transport_time_id, Double.class);
     }
 
@@ -568,6 +525,7 @@ public class SolutionAnalyser {
      * @return total service time of specified route. Returns null if no time value exists for specified route.
      */
     public Double getServiceTime(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route, service_time_id, Double.class);
     }
 
@@ -577,6 +535,8 @@ public class SolutionAnalyser {
      * vrp.getTransportCosts().getTransportCost(fromId,toId,...)
      */
     public Double getVariableTransportCosts(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+
         return stateManager.getRouteState(route,InternalStates.COSTS,Double.class);
     }
 
@@ -585,26 +545,10 @@ public class SolutionAnalyser {
      * @return fixed costs of route, i.e. fixed costs of employed vehicle on this route.
      */
     public Double getFixedCosts(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return route.getVehicle().getType().getVehicleCostParams().fix;
     }
 
-//    public ViolatedRouteConstraints getViolatedHardConstraints(VehicleRoute route){
-//        return stateManager.getRouteState(route, violated_constraint_id,ViolatedRouteConstraints.class);
-//    }
-
-//    public Map<SoftRouteConstraint,Double> getViolatedSoftConstraints(VehicleRoute route){
-//        return null;
-//    }
-
-//    public ViolatedActivityConstraints getViolatedHardConstraintsAtActivity(TourActivity activity, VehicleRoute route){
-//        if(activity instanceof Start) return new ViolatedActivityConstraints();
-//        if(activity instanceof End) return new ViolatedActivityConstraints();
-//        return stateManager.getActivityState(activity,violated_constraint_id,ViolatedActivityConstraints.class);
-//    }
-
-//    public Map<SoftRouteConstraint,Double> getViolatedSoftConstraint(VehicleRoute route){
-//        return null;
-//    }
 
     /**
      * @param activity to get the variable transport costs from
@@ -613,8 +557,11 @@ public class SolutionAnalyser {
      * If activity is start, it returns 0.. If it is end, it returns .getVariableTransportCosts(route).
      */
     public Double getVariableTransportCostsAtActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
         if(activity instanceof Start) return 0.;
         if(activity instanceof End) return getVariableTransportCosts(route);
+        verifyThatRouteContainsAct(activity, route);
         return stateManager.getActivityState(activity,InternalStates.COSTS,Double.class);
     }
 
@@ -624,6 +571,8 @@ public class SolutionAnalyser {
      * @return waiting time at activity
      */
     public Double getWaitingTimeAtActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
         double waitingTime = 0.;
         if(activityPolicy.equals(ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)){
             waitingTime = Math.max(0,activity.getTheoreticalEarliestOperationStartTime()-activity.getArrTime());
@@ -636,6 +585,8 @@ public class SolutionAnalyser {
      * @return time too late
      */
     public Double getLateArrivalTimesAtActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
         double tooLate = 0.;
         if(activityPolicy.equals(ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)){
             tooLate = Math.max(0,activity.getArrTime()-activity.getTheoreticalLatestOperationStartTime());
@@ -648,6 +599,7 @@ public class SolutionAnalyser {
      * @return time too late, i.e. sum of late time of activities
      */
     public Double getLateArrivalTimes(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route,too_late_id,Double.class);
     }
 
@@ -656,6 +608,7 @@ public class SolutionAnalyser {
      * @return total distance of route
      */
     public Double getDistance(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route, distance_id, Double.class);
     }
 
@@ -664,8 +617,11 @@ public class SolutionAnalyser {
      * @return distance at activity
      */
     public Double getDistanceAtActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        if(activity == null) throw new IllegalStateException("activity is missing.");
         if(activity instanceof Start) return 0.;
         if(activity instanceof End) return getDistance(route);
+        verifyThatRouteContainsAct(activity, route);
         return stateManager.getActivityState(activity, distance_id, Double.class);
     }
 

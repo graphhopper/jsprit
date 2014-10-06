@@ -18,12 +18,8 @@
 package jsprit.core.analysis;
 
 
-import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
-import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
@@ -38,11 +34,11 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.ManhattanCosts;
-import jsprit.core.util.Solutions;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import static org.junit.Assert.*;
@@ -53,9 +49,6 @@ public class SolutionAnalyserTest {
 
     private VehicleRoutingProblemSolution solution;
 
-    private StateManager stateManager;
-
-    private ConstraintManager constraintManager;
 
     private SolutionAnalyser.DistanceCalculator distanceCalculator;
 
@@ -93,18 +86,13 @@ public class SolutionAnalyserTest {
         vrpBuilder.setRoutingCost(new ManhattanCosts(vrpBuilder.getLocations()));
         vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
-        vraBuilder.addDefaultCostCalculators();
-        vraBuilder.addCoreConstraints();
-        stateManager = new StateManager(vrp);
-        stateManager.updateLoadStates();
-        constraintManager = new ConstraintManager(vrp,stateManager);
-        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        VehicleRoute route1 = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
+                .addService(s1).addPickup(shipment1).addDelivery(shipment1).addService(s2).build();
 
-        VehicleRoutingAlgorithm vra = vraBuilder.build();
-        vra.setMaxIterations(100);
-        solution = Solutions.bestOf(vra.searchSolutions());
+        VehicleRoute route2 = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
+                .addService(s3).addPickup(shipment2).addDelivery(shipment2).addService(s4).build();
 
+        solution = new VehicleRoutingProblemSolution(Arrays.asList(route1,route2),42);
     }
 
     @Test
@@ -243,21 +231,6 @@ public class SolutionAnalyserTest {
         VehicleRoute route = solution.getRoutes().iterator().next();
         Assert.assertEquals(5, analyser.getLoadRightAfterActivity(route.getEnd(), route).get(0));
     }
-
-    @Test
-    public void whatShouldHappenWithAllActStatistics_IfSpecifiedActIsNotInVehicleRoute(){
-        /*
-        there might be the need to add .containsActivity(act) to VehicleRoute
-         */
-        Assert.assertTrue(false);
-    }
-
-    @Test
-    public void whatShouldHappenWithAllActStatistics_IfSpecifiedActIsNull(){
-        Assert.assertTrue(false);
-    }
-
-
 
     @Test
     public void loadBeforeActivity_ofStartActOfRoute1ShouldWork(){
@@ -732,11 +705,6 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         Assert.assertEquals(42.*2., analyser.getVariableTransportCostsAtActivity(route.getEnd(), route), 0.01);
-    }
-
-    @Test
-    public void whatShouldHappenIf_Route_or_Activity_isEmpty_or_notPartOfRoute(){
-        assertFalse(true);
     }
 
     @Test
@@ -1265,8 +1233,460 @@ public class SolutionAnalyserTest {
     }
 
     @Test
-    public void testRealViolation(){
-        assertFalse(true);
+    public void backhaulViolation_shouldWorkWhenViolated(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolated(route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtStart_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getStart(), route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtAct1_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(0),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtAct2_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(1),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtAct3_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(2),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtAct4_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(3),route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtAct5_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(4),route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtAct6_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(5),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtAct7_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(6),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtAct8_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(7),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void backhaulViolationAtEnd_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getEnd(),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtStart_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.shipmentConstraintIsViolatedAtActivity(route.getStart(), route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtAct1_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(0),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtAct2_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(1),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtAct3_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(2),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtAct4_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(3),route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtAct5_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(4),route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtAct6_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(5),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtAct7_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(6),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtAct8_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(7),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtEnd_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getEnd(),route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolation_shouldWork(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violation = analyser.shipmentConstraintIsViolated(route);
+        assertFalse(violation);
+    }
+
+    @Test
+    public void shipmentViolation_shouldWorkWhenViolated(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+        TourActivity deliverShipment = route.getActivities().get(2);
+        route.getTourActivities().removeActivity(deliverShipment);
+//        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+
+        Boolean violation = analyser.shipmentConstraintIsViolated(route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtActivity_shouldWorkWhenRemovingDelivery(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+        TourActivity deliverShipment = route.getActivities().get(2);
+        route.getTourActivities().removeActivity(deliverShipment);
+//        assertFalse(route.getTourActivities().hasActivity(pickupShipment));
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+
+        Boolean violation = analyser.shipmentConstraintIsViolatedAtActivity(route.getActivities().get(1), route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void shipmentViolation_shouldWorkWhenRemovingDelivery(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+        TourActivity deliverShipment = route.getActivities().get(2);
+        route.getTourActivities().removeActivity(deliverShipment);
+        assertFalse(route.getTourActivities().hasActivity(deliverShipment));
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+
+        Boolean violation = analyser.shipmentConstraintIsViolated(route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void shipmentViolationAtActivity_shouldWorkWhenRemovingPickup(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+        TourActivity pickupShipment = route.getActivities().get(1);
+        route.getTourActivities().removeActivity(pickupShipment);
+        assertFalse(route.getTourActivities().hasActivity(pickupShipment));
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+
+        Boolean violation = analyser.shipmentConstraintIsViolatedAtActivity(route.getActivities().get(1),route);
+        assertTrue(violation);
+    }
+
+    @Test
+    public void shipmentViolationOnRoute_shouldWorkWhenRemovingPickup(){
+        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+        TourActivity pickupShipment = route.getActivities().get(1);
+        route.getTourActivities().removeActivity(pickupShipment);
+        assertFalse(route.getTourActivities().hasActivity(pickupShipment));
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+
+        Boolean violation = analyser.shipmentConstraintIsViolated(route);
+        assertTrue(violation);
     }
 
 
@@ -1316,68 +1736,32 @@ public class SolutionAnalyserTest {
         vrpBuilder.setRoutingCost(new ManhattanCosts(vrpBuilder.getLocations()));
         vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
-        vraBuilder.addDefaultCostCalculators();
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
+                .addPickup(s3)
+                .addPickup(shipment2).addDelivery(shipment2)
+                .addDelivery(s4)
+                .addDelivery(s2)
+                .addPickup(shipment1).addDelivery(shipment1)
+                .addPickup(s1)
+                .build();
 
-        //adds updater
-        stateManager = new StateManager(vrp);
-        stateManager.updateLoadStates();
-        stateManager.updateTimeWindowStates();
-
-        //but no constraints to simulate violation
-        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
-
-        VehicleRoutingAlgorithm vra = vraBuilder.build();
-        vra.setMaxIterations(100);
-        solution = Solutions.bestOf(vra.searchSolutions());
+        solution = new VehicleRoutingProblemSolution(Arrays.asList(route),300);
+//        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
+//        vraBuilder.addDefaultCostCalculators();
+//
+//        //adds updater
+//        StateManager stateManager = new StateManager(vrp);
+//        stateManager.updateLoadStates();
+//        stateManager.updateTimeWindowStates();
+//
+//        //but no constraints to simulate violation
+//        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+//        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+//
+//        VehicleRoutingAlgorithm vra = vraBuilder.build();
+//        vra.setMaxIterations(100);
+//        solution = Solutions.bestOf(vra.searchSolutions());
 
     }
-//
-//    public void simulateTW_and_LoadConstraint(){
-//        constraintManager.addLoadConstraint();
-//        constraintManager.addTimeWindowConstraint();
-//    }
-
-//    @Test
-//    public void violatedConstraint_shouldReturnTWandCapConstraints(){
-//        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-//
-//        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
-//
-//        simulateTW_and_LoadConstraint();
-//
-//        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
-//            @Override
-//            public double getDistance(String fromLocationId, String toLocationId) {
-//                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
-//            }
-//        });
-//        VehicleRoute route = solution.getRoutes().iterator().next();
-//        List<HardRouteConstraint> violatedConstraints = analyser.getViolatedHardConstraints(route).getHardRouteConstraints();
-////        Assert.assertEquals(2,violatedConstraints.size());
-//        for(HardRouteConstraint c : violatedConstraints) System.out.println("violated: " + c.getClass().toString());
-//    }
-//
-//    @Test
-//    public void violatedActivityConstraint_shouldWorkForAct1(){
-//        buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-//
-//        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
-//
-//        simulateTW_and_LoadConstraint();
-//
-//        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
-//            @Override
-//            public double getDistance(String fromLocationId, String toLocationId) {
-//                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
-//            }
-//        });
-//
-//        VehicleRoute route = solution.getRoutes().iterator().next();
-//        List<HardActivityConstraint> violatedConstraints = analyser.getViolatedHardConstraintsAtActivity(route.getActivities().get(0),route).getHardActivityConstraints();
-////        Assert.assertEquals(2,violatedConstraints.size());
-//        for(HardActivityConstraint c : violatedConstraints) System.out.println("violated: " + c.getClass().toString());
-//    }
 
 }
