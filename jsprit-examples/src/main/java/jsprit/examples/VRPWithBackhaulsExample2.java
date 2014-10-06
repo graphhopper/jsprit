@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.examples;
 
-import jsprit.analysis.toolbox.Plotter;
-import jsprit.analysis.toolbox.Plotter.Label;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.selector.SelectBest;
@@ -63,7 +61,7 @@ public class VRPWithBackhaulsExample2 {
 		 */
 		final VehicleRoutingProblem vrp = vrpBuilder.build();
 		
-		new Plotter(vrp).plot("output/vrpwbh_christophides_vrpnc1.png", "pd_vrpnc1");
+//		new Plotter(vrp).plot("output/vrpwbh_christophides_vrpnc1.png", "pd_vrpnc1");
 		
 		
 		/*
@@ -83,6 +81,8 @@ public class VRPWithBackhaulsExample2 {
 
         vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
         VehicleRoutingAlgorithm vra = vraBuilder.build();
+
+
 
 		/*
 		 * Solve the problem.
@@ -105,11 +105,11 @@ public class VRPWithBackhaulsExample2 {
 		 * Plot solution. 
 		 */
 //		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/pd_solomon_r101_solution.png","pd_r101");
-		Plotter plotter = new Plotter(vrp, solution);
-		plotter.setLabel(Label.SIZE);
-		plotter.plot("output/vrpwbh_christophides_vrpnc1_solution.png","vrpwbh_vrpnc1");
+//		Plotter plotter = new Plotter(vrp, solution);
+//		plotter.setLabel(Label.SIZE);
+//		plotter.plot("output/vrpwbh_christophides_vrpnc1_solution.png","vrpwbh_vrpnc1");
 
-        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution.getRoutes(),stateManager, new SolutionAnalyser.DistanceCalculator() {
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new SolutionAnalyser.DistanceCalculator() {
 
             @Override
             public double getDistance(String fromLocationId, String toLocationId) {
@@ -129,6 +129,12 @@ public class VRPWithBackhaulsExample2 {
             System.out.println("operationTime: " + analyser.getOperationTime(route));
             System.out.println("serviceTime: " + analyser.getServiceTime(route));
             System.out.println("transportTime: " + analyser.getTransportTime(route));
+            System.out.println("lateArrival: " + analyser.getLateArrivalTimes(route));
+            System.out.println("transportCosts: " + analyser.getVariableTransportCosts(route));
+            System.out.println("fixedCosts: " + analyser.getFixedCosts(route));
+            System.out.println("capViolationOnRoute: " + analyser.getCapacityViolation(route));
+            System.out.println("capViolation@beginning: " + analyser.getCapacityViolationAtBeginning(route));
+            System.out.println("capViolation@end: " + analyser.getCapacityViolationAtEnd(route));
 
             System.out.println("dist@" + route.getStart().getLocationId() + ": " + analyser.getDistanceAtActivity(route.getStart(),route));
             for(TourActivity act : route.getActivities()){
@@ -137,6 +143,9 @@ public class VRPWithBackhaulsExample2 {
                 System.out.println("dist@" + act.getLocationId() + ": " + analyser.getDistanceAtActivity(act,route));
                 System.out.println("load(before)@" + act.getLocationId() + ": " + analyser.getLoadJustBeforeActivity(act,route));
                 System.out.println("load(after)@" + act.getLocationId() + ": " + analyser.getLoadRightAfterActivity(act, route));
+                System.out.println("tooLate@" + act.getLocationId() + ": " + analyser.getLateArrivalTimesAtActivity(act, route));
+                System.out.println("transportCosts@" + act.getLocationId() + ": " + analyser.getVariableTransportCostsAtActivity(act,route));
+                System.out.println("capViolation(after)@" + act.getLocationId() + ": " + analyser.getCapacityViolationAfterActivity(act,route));
             }
             System.out.println("--");
             System.out.println("dist@" + route.getEnd().getLocationId() + ": " + analyser.getDistanceAtActivity(route.getEnd(),route));

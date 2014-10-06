@@ -80,7 +80,7 @@ public class SimpleExample {
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);
 		vrpBuilder.addJob(service1).addJob(service2).addJob(service3).addJob(service4);
-		
+
 		VehicleRoutingProblem problem = vrpBuilder.build();
 		
 		/*
