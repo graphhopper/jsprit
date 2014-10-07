@@ -58,18 +58,31 @@ public class SolutionAnalyserTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setType(type)
-                .setStartLocationCoordinate(Coordinate.newInstance(-5, 0)).build();
+                .setStartLocationCoordinate(Coordinate.newInstance(-5, 0))
+                .addSkill("skill1").addSkill("skill2")
+                .build();
 
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setType(type)
                 .setStartLocationCoordinate(Coordinate.newInstance(5, 0)).build();
 
         Service s1 = Service.Builder.newInstance("s1")
                 .setTimeWindow(TimeWindow.newInstance(10, 20))
-                .setCoord(Coordinate.newInstance(-10, 1)).addSizeDimension(0, 2).build();
-        Service s2 = Service.Builder.newInstance("s2").setCoord(Coordinate.newInstance(-10, 10)).addSizeDimension(0,3).build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupCoord(Coordinate.newInstance(-15, 2))
-                .setDeliveryCoord(Coordinate.newInstance(-16, 5)).addSizeDimension(0,10)
-                .setPickupServiceTime(20.).setDeliveryServiceTime(20.).build();
+                .setCoord(Coordinate.newInstance(-10, 1)).addSizeDimension(0, 2)
+                .addRequiredSkill("skill1")
+                .build();
+        Service s2 = Service.Builder.newInstance("s2")
+                .setCoord(Coordinate.newInstance(-10, 10))
+                .addSizeDimension(0,3)
+                .addRequiredSkill("skill2").addRequiredSkill("skill1")
+                .build();
+        Shipment shipment1 = Shipment.Builder.newInstance("ship1")
+                .setPickupCoord(Coordinate.newInstance(-15, 2))
+                .setDeliveryCoord(Coordinate.newInstance(-16, 5))
+                .addSizeDimension(0,10)
+                .setPickupServiceTime(20.)
+                .setDeliveryServiceTime(20.)
+                .addRequiredSkill("skill3")
+                .build();
 
         Service s3 = Service.Builder.newInstance("s3")
                 .setTimeWindow(TimeWindow.newInstance(10, 20))
@@ -93,6 +106,63 @@ public class SolutionAnalyserTest {
                 .addService(s3).addPickup(shipment2).addDelivery(shipment2).addService(s4).build();
 
         solution = new VehicleRoutingProblemSolution(Arrays.asList(route1,route2),42);
+    }
+
+    public void buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore(){
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
+
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setType(type)
+                .setStartLocationCoordinate(Coordinate.newInstance(-5, 0))
+                .setLatestArrival(150.)
+                .build();
+
+        Pickup s1 = (Pickup) Pickup.Builder.newInstance("s1")
+                .setTimeWindow(TimeWindow.newInstance(10, 20))
+                .setCoord(Coordinate.newInstance(-10, 1))
+                .addSizeDimension(0, 10)
+                .build();
+        Delivery s2 = (Delivery) Delivery.Builder.newInstance("s2")
+                .setCoord(Coordinate.newInstance(-10, 10))
+                .setTimeWindow(TimeWindow.newInstance(10, 20))
+                .addSizeDimension(0, 20)
+                .build();
+        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupCoord(Coordinate.newInstance(-15, 2)).setDeliveryCoord(Coordinate.newInstance(-16, 5))
+                .addSizeDimension(0, 15)
+                .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
+                .setPickupTimeWindow(TimeWindow.newInstance(10,20)).setDeliveryTimeWindow(TimeWindow.newInstance(10,20))
+                .build();
+
+        Pickup s3 = (Pickup) Pickup.Builder.newInstance("s3")
+                .setTimeWindow(TimeWindow.newInstance(10, 20))
+                .setCoord(Coordinate.newInstance(10, 1))
+                .addSizeDimension(0, 10)
+                .build();
+        Delivery s4 = (Delivery) Delivery.Builder.newInstance("s4").setCoord(Coordinate.newInstance(10, 10))
+                .addSizeDimension(0, 20)
+                .setTimeWindow(TimeWindow.newInstance(10, 20))
+                .build();
+        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupCoord(Coordinate.newInstance(15, 2))
+                .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
+                .setDeliveryCoord(Coordinate.newInstance(16, 5))
+                .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
+                .addSizeDimension(0, 15).build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle)
+                .addJob(s1)
+                .addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
+        vrpBuilder.setRoutingCost(new ManhattanCosts(vrpBuilder.getLocations()));
+        vrp = vrpBuilder.build();
+
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
+                .addPickup(s3)
+                .addPickup(shipment2).addDelivery(shipment2)
+                .addDelivery(s4)
+                .addDelivery(s2)
+                .addPickup(shipment1).addDelivery(shipment1)
+                .addPickup(s1)
+                .build();
+
+        solution = new VehicleRoutingProblemSolution(Arrays.asList(route),300);
     }
 
     @Test
@@ -1689,79 +1759,117 @@ public class SolutionAnalyserTest {
         assertTrue(violation);
     }
 
-
-
-    public void buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore(){
-        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
-
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setType(type)
-                .setStartLocationCoordinate(Coordinate.newInstance(-5, 0))
-                .setLatestArrival(150.)
-                .build();
-
-        Pickup s1 = (Pickup) Pickup.Builder.newInstance("s1")
-                .setTimeWindow(TimeWindow.newInstance(10, 20))
-                .setCoord(Coordinate.newInstance(-10, 1))
-                .addSizeDimension(0, 10)
-                .build();
-        Delivery s2 = (Delivery) Delivery.Builder.newInstance("s2")
-                .setCoord(Coordinate.newInstance(-10, 10))
-                .setTimeWindow(TimeWindow.newInstance(10, 20))
-                .addSizeDimension(0, 20)
-                .build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupCoord(Coordinate.newInstance(-15, 2)).setDeliveryCoord(Coordinate.newInstance(-16, 5))
-                .addSizeDimension(0, 15)
-                .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
-                .setPickupTimeWindow(TimeWindow.newInstance(10,20)).setDeliveryTimeWindow(TimeWindow.newInstance(10,20))
-                .build();
-
-        Pickup s3 = (Pickup) Pickup.Builder.newInstance("s3")
-                .setTimeWindow(TimeWindow.newInstance(10, 20))
-                .setCoord(Coordinate.newInstance(10, 1))
-                .addSizeDimension(0, 10)
-                .build();
-        Delivery s4 = (Delivery) Delivery.Builder.newInstance("s4").setCoord(Coordinate.newInstance(10, 10))
-                .addSizeDimension(0, 20)
-                .setTimeWindow(TimeWindow.newInstance(10, 20))
-                .build();
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupCoord(Coordinate.newInstance(15, 2))
-                .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
-                .setDeliveryCoord(Coordinate.newInstance(16, 5))
-                .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
-                .addSizeDimension(0, 15).build();
-
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle)
-                .addJob(s1)
-                .addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
-        vrpBuilder.setRoutingCost(new ManhattanCosts(vrpBuilder.getLocations()));
-        vrp = vrpBuilder.build();
-
-        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
-                .addPickup(s3)
-                .addPickup(shipment2).addDelivery(shipment2)
-                .addDelivery(s4)
-                .addDelivery(s2)
-                .addPickup(shipment1).addDelivery(shipment1)
-                .addPickup(s1)
-                .build();
-
-        solution = new VehicleRoutingProblemSolution(Arrays.asList(route),300);
-//        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
-//        vraBuilder.addDefaultCostCalculators();
-//
-//        //adds updater
-//        StateManager stateManager = new StateManager(vrp);
-//        stateManager.updateLoadStates();
-//        stateManager.updateTimeWindowStates();
-//
-//        //but no constraints to simulate violation
-//        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-//        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
-//
-//        VehicleRoutingAlgorithm vra = vraBuilder.build();
-//        vra.setMaxIterations(100);
-//        solution = Solutions.bestOf(vra.searchSolutions());
-
+    @Test
+    public void skillViolationOnRoute_shouldWorkWhenViolated(){
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violated = analyser.skillConstraintIsViolated(route);
+        assertTrue(violated);
     }
+
+    @Test
+    public void skillViolationAtStart_shouldWork(){
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getStart(), route);
+        assertFalse(violated);
+    }
+
+    @Test
+    public void skillViolationAtAct1_shouldWork(){
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getActivities().get(0),route);
+        assertFalse(violated);
+    }
+
+    @Test
+    public void skillViolationAtAct2_shouldWork(){
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getActivities().get(1),route);
+        assertTrue(violated);
+    }
+
+    @Test
+    public void skillViolationAtAct3_shouldWork(){
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getActivities().get(2),route);
+        assertTrue(violated);
+    }
+
+    @Test
+    public void skillViolationAtAct4_shouldWork(){
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getActivities().get(3),route);
+        assertFalse(violated);
+    }
+
+    @Test
+    public void skillViolationAtEnd_shouldWork(){
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        VehicleRoute route = solution.getRoutes().iterator().next();
+        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getEnd(),route);
+        assertFalse(violated);
+    }
+
+
+
+    @Test
+    public void skillViolationOnRoute_shouldWorkWhenNotViolated(){
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+
+        Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
+        iterator.next();
+        VehicleRoute route = iterator.next();
+        Boolean violated = analyser.skillConstraintIsViolated(route);
+        assertFalse(violated);
+    }
+
+
+
+
 
 }

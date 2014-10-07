@@ -27,10 +27,7 @@ import jsprit.core.util.ActivityTimeTracker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -247,6 +244,48 @@ public class SolutionAnalyser {
         }
     }
 
+    private static class SkillUpdater implements StateUpdater, ActivityVisitor {
+
+        private StateManager stateManager;
+
+        private StateId skill_id;
+
+        private VehicleRoute route;
+
+        private boolean skillConstraintViolatedOnRoute;
+
+        private SkillUpdater(StateManager stateManager, StateId skill_id) {
+            this.stateManager = stateManager;
+            this.skill_id = skill_id;
+        }
+
+        @Override
+        public void begin(VehicleRoute route) {
+            this.route = route;
+            skillConstraintViolatedOnRoute = false;
+        }
+
+        @Override
+        public void visit(TourActivity activity) {
+            boolean violatedAtActivity = false;
+            if(activity instanceof TourActivity.JobActivity){
+                Set<String> requiredForActivity = ((TourActivity.JobActivity) activity).getJob().getRequiredSkills().values();
+                for(String skill : requiredForActivity){
+                    if(!route.getVehicle().getSkills().containsSkill(skill)){
+                        violatedAtActivity = true;
+                        skillConstraintViolatedOnRoute = true;
+                    }
+                }
+            }
+            stateManager.putActivityState(activity,skill_id,violatedAtActivity);
+        }
+
+        @Override
+        public void finish() {
+            stateManager.putRouteState(route,skill_id, skillConstraintViolatedOnRoute);
+        }
+    }
+
     private static final Logger log = LogManager.getLogger(SolutionAnalyser.class);
 
     private VehicleRoutingProblem vrp;
@@ -271,16 +310,14 @@ public class SolutionAnalyser {
 
     private final StateId backhaul_id;
 
+    private final StateId skill_id;
+
     private ActivityTimeTracker.ActivityPolicy activityPolicy;
 
 
-    private final VehicleRoutingProblemSolution working_solution;
-
     public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, DistanceCalculator distanceCalculator) {
         this.vrp = vrp;
-//        this.original_solution = VehicleRoutingProblemSolution.copyOf(solution);
-        this.working_solution = solution;
-        this.routes = new ArrayList<VehicleRoute>(working_solution.getRoutes());
+        this.routes = new ArrayList<VehicleRoute>(solution.getRoutes());
         this.stateManager = new StateManager(vrp);
         this.stateManager.updateTimeWindowStates();
         this.stateManager.updateLoadStates();
@@ -296,9 +333,11 @@ public class SolutionAnalyser {
         too_late_id = stateManager.createStateId("too-late");
         shipment_id = stateManager.createStateId("shipment");
         backhaul_id = stateManager.createStateId("backhaul");
+        skill_id = stateManager.createStateId("skills-violated");
         stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id,too_late_id , stateManager, activityPolicy));
         stateManager.addStateUpdater(new DistanceUpdater(distance_id,stateManager,distanceCalculator));
         stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id,shipment_id,stateManager));
+        stateManager.addStateUpdater(new SkillUpdater(stateManager,skill_id));
         refreshStates();
     }
 
@@ -437,7 +476,7 @@ public class SolutionAnalyser {
      */
     public Double getTimeWindowViolation(VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
-        return stateManager.getRouteState(route,too_late_id,Double.class);
+        return stateManager.getRouteState(route, too_late_id, Double.class);
     }
 
     /**
@@ -448,25 +487,56 @@ public class SolutionAnalyser {
     public Double getTimeWindowViolationAtActivity(TourActivity activity, VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         if(activity == null) throw new IllegalStateException("activity is missing.");
-        return Math.max(0,activity.getArrTime()-activity.getTheoreticalLatestOperationStartTime());
+        return Math.max(0, activity.getArrTime() - activity.getTheoreticalLatestOperationStartTime());
     }
 
+    /**
+     * @param route to check skill constraint
+     * @return true if skill constraint is violated, i.e. if vehicle does not have the required skills to conduct all
+     * activities on the specified route. Returns null if route is null or skill state cannot be found.
+     */
     public Boolean skillConstraintIsViolated(VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
-        return null;
+        return stateManager.getRouteState(route, skill_id, Boolean.class);
     }
 
+    /**
+     * @param activity to check skill constraint
+     * @param route that must contain specified activity
+     * @return true if vehicle does not have the skills to conduct specified activity, false otherwise. Returns null
+     * if specified route or activity is null or if route does not contain specified activity or if skill state connot be
+     * found. If specified activity is Start or End, it returns false.
+     */
     public Boolean skillConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(activity instanceof Start) return false;
+        if(activity instanceof End) return false;
         verifyThatRouteContainsAct(activity, route);
-        return null;
+        return stateManager.getActivityState(activity, skill_id, Boolean.class);
     }
 
+    /**
+     * Returns true if backhaul constraint is violated (false otherwise). Backhaul constraint is violated if either a
+     * pickupService, serviceActivity (which is basically modeled as pickupService) or a pickupShipment occur before
+     * a deliverService activity or - to put it in other words - if a depot bounded delivery occurs after a pickup, thus
+     * the backhaul ensures depot bounded delivery activities first.
+     *
+     * @param route to check backhaul constraint
+     * @return true if backhaul constraint for specified route is violated. returns null if route is null or no backhaul
+     * state can be found. In latter case try routeChanged(route).
+     */
     public Boolean backhaulConstraintIsViolated(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route,backhaul_id,Boolean.class);
     }
 
+    /**
+     * @param activity to check backhaul violation
+     * @param route that must contain the specified activity
+     * @return true if backhaul constraint is violated, false otherwise. Null if either specified route or activity is null.
+     * Null if specified route does not contain specified activity.
+     */
     public Boolean backhaulConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         if(activity == null) throw new IllegalStateException("activity is missing.");
@@ -476,11 +546,28 @@ public class SolutionAnalyser {
         return stateManager.getActivityState(activity,backhaul_id,Boolean.class);
     }
 
+    /**
+     * Returns true, if shipment constraint is violated. Two activities are associated to a shipment: pickupShipment
+     * and deliverShipment. If both shipments are not in the same route OR deliverShipment occurs before pickupShipment
+     * then the shipment constraint is violated.
+     *
+     * @param route to check the shipment constraint.
+     * @return true if violated, false otherwise. Null if no state can be found or specified route is null.
+     */
     public Boolean shipmentConstraintIsViolated(VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route,shipment_id,Boolean.class);
     }
 
+    /**
+     * Returns true if shipment constraint is violated, i.e. if activity is deliverShipment but no pickupShipment can be
+     * found before OR activity is pickupShipment and no deliverShipment can be found afterwards.
+     *
+     * @param activity to check the shipment constraint
+     * @param route that must contain specified activity
+     * @return true if shipment constraint is violated, false otherwise. If activity is either Start or End, it returns
+     * false. Returns null if either specified activity or route is null or route does not containt activity.
+     */
     public Boolean shipmentConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         if(activity == null) throw new IllegalStateException("activity is missing.");
