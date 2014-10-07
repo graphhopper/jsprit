@@ -17,9 +17,11 @@
 
 package jsprit.core.analysis;
 
+import jsprit.core.algorithm.VariablePlusFixedSolutionCostCalculatorFactory;
 import jsprit.core.algorithm.state.*;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.*;
@@ -27,14 +29,14 @@ import jsprit.core.util.ActivityTimeTracker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
- *
+ * Calculates a set of statistics for a solution.
  */
 public class SolutionAnalyser {
-
-
 
 
     public static interface DistanceCalculator {
@@ -290,34 +292,66 @@ public class SolutionAnalyser {
 
     private VehicleRoutingProblem vrp;
 
-    private List<VehicleRoute> routes;
-
     private StateManager stateManager;
 
     private DistanceCalculator distanceCalculator;
 
-    private final StateId waiting_time_id;
+    private StateId waiting_time_id;
 
-    private final StateId transport_time_id;
+    private StateId transport_time_id;
 
-    private final StateId service_time_id;
+    private StateId service_time_id;
 
-    private final StateId distance_id;
+    private StateId distance_id;
 
-    private final StateId too_late_id;
+    private StateId too_late_id;
 
-    private final StateId shipment_id;
+    private StateId shipment_id;
 
-    private final StateId backhaul_id;
+    private StateId backhaul_id;
 
-    private final StateId skill_id;
+    private StateId skill_id;
 
     private ActivityTimeTracker.ActivityPolicy activityPolicy;
 
+    private final SolutionCostCalculator solutionCostCalculator;
+
+    private Double tp_distance;
+    private Double tp_time;
+    private Double waiting_time;
+    private Double service_time;
+    private Double operation_time;
+    private Double tw_violation;
+    private Capacity cap_violation;
+    private Double fixed_costs;
+    private Double variable_transport_costs;
+    private Boolean hasSkillConstraintViolation;
+    private Boolean hasBackhaulConstraintViolation;
+    private Boolean hasShipmentConstraintViolation;
+
+    private Double total_costs;
+
+    private VehicleRoutingProblemSolution solution;
 
     public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, DistanceCalculator distanceCalculator) {
         this.vrp = vrp;
-        this.routes = new ArrayList<VehicleRoute>(solution.getRoutes());
+        this.solution = solution;
+        this.distanceCalculator = distanceCalculator;
+        initialise();
+        this.solutionCostCalculator = new VariablePlusFixedSolutionCostCalculatorFactory(stateManager).createCalculator();
+        refreshStates();
+    }
+
+    public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, SolutionCostCalculator solutionCostCalculator, DistanceCalculator distanceCalculator) {
+        this.vrp = vrp;
+        this.solution = solution;
+        this.distanceCalculator = distanceCalculator;
+        this.solutionCostCalculator = solutionCostCalculator;
+        initialise();
+        refreshStates();
+    }
+
+    private void initialise() {
         this.stateManager = new StateManager(vrp);
         this.stateManager.updateTimeWindowStates();
         this.stateManager.updateLoadStates();
@@ -325,7 +359,6 @@ public class SolutionAnalyser {
         activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
         this.stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(),activityPolicy));
         this.stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(),vrp.getTransportCosts(),stateManager));
-        this.distanceCalculator = distanceCalculator;
         waiting_time_id = stateManager.createStateId("waiting-time");
         transport_time_id = stateManager.createStateId("transport-time");
         service_time_id = stateManager.createStateId("service-time");
@@ -338,21 +371,54 @@ public class SolutionAnalyser {
         stateManager.addStateUpdater(new DistanceUpdater(distance_id,stateManager,distanceCalculator));
         stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id,shipment_id,stateManager));
         stateManager.addStateUpdater(new SkillUpdater(stateManager,skill_id));
-        refreshStates();
     }
 
 
     private void refreshStates(){
         stateManager.clear();
-        stateManager.informInsertionStarts(routes,null);
+        stateManager.informInsertionStarts(solution.getRoutes(),null);
+        clearSolutionIndicators();
+        recalculateSolutionIndicators();
     }
 
-//
-//    public void informRouteChanged(VehicleRoute route){
-//        update(route);
-//    }
-//
-//
+    private void recalculateSolutionIndicators() {
+        for(VehicleRoute route : solution.getRoutes()){
+            tp_distance += getDistance(route);
+            tp_time += getTransportTime(route);
+            waiting_time += getWaitingTime(route);
+            service_time += getServiceTime(route);
+            operation_time += getOperationTime(route);
+            tw_violation += getTimeWindowViolation(route);
+            cap_violation = Capacity.addup(cap_violation,getCapacityViolation(route));
+            fixed_costs += getFixedCosts(route);
+            variable_transport_costs += getVariableTransportCosts(route);
+            if(hasSkillConstraintViolation(route)) hasSkillConstraintViolation = true;
+            if(hasShipmentConstraintViolation(route)) hasShipmentConstraintViolation = true;
+            if(hasBackhaulConstraintViolation(route)) hasBackhaulConstraintViolation = true;
+        }
+        total_costs = solutionCostCalculator.getCosts(this.solution);
+    }
+
+    private void clearSolutionIndicators() {
+        tp_distance = 0.;
+        tp_time = 0.;
+        waiting_time = 0.;
+        service_time = 0.;
+        operation_time = 0.;
+        tw_violation = 0.;
+        cap_violation = Capacity.Builder.newInstance().build();
+        fixed_costs = 0.;
+        variable_transport_costs = 0.;
+        total_costs = 0.;
+        hasBackhaulConstraintViolation = false;
+        hasShipmentConstraintViolation = false;
+        hasSkillConstraintViolation = false;
+    }
+
+    public void informSolutionChanged(VehicleRoutingProblemSolution newSolution){
+        this.solution = newSolution;
+        refreshStates();
+    }
 
     /**
      * @param route to get the load at beginning from
@@ -495,7 +561,7 @@ public class SolutionAnalyser {
      * @return true if skill constraint is violated, i.e. if vehicle does not have the required skills to conduct all
      * activities on the specified route. Returns null if route is null or skill state cannot be found.
      */
-    public Boolean skillConstraintIsViolated(VehicleRoute route){
+    public Boolean hasSkillConstraintViolation(VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route, skill_id, Boolean.class);
     }
@@ -507,7 +573,7 @@ public class SolutionAnalyser {
      * if specified route or activity is null or if route does not contain specified activity or if skill state connot be
      * found. If specified activity is Start or End, it returns false.
      */
-    public Boolean skillConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
+    public Boolean hasSkillConstraintViolationAtActivity(TourActivity activity, VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         if(activity == null) throw new IllegalStateException("activity is missing.");
         if(activity instanceof Start) return false;
@@ -526,7 +592,7 @@ public class SolutionAnalyser {
      * @return true if backhaul constraint for specified route is violated. returns null if route is null or no backhaul
      * state can be found. In latter case try routeChanged(route).
      */
-    public Boolean backhaulConstraintIsViolated(VehicleRoute route){
+    public Boolean hasBackhaulConstraintViolation(VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route,backhaul_id,Boolean.class);
     }
@@ -537,7 +603,7 @@ public class SolutionAnalyser {
      * @return true if backhaul constraint is violated, false otherwise. Null if either specified route or activity is null.
      * Null if specified route does not contain specified activity.
      */
-    public Boolean backhaulConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
+    public Boolean hasBackhaulConstraintViolationAtActivity(TourActivity activity, VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         if(activity == null) throw new IllegalStateException("activity is missing.");
         if(activity instanceof Start) return false;
@@ -554,7 +620,7 @@ public class SolutionAnalyser {
      * @param route to check the shipment constraint.
      * @return true if violated, false otherwise. Null if no state can be found or specified route is null.
      */
-    public Boolean shipmentConstraintIsViolated(VehicleRoute route){
+    public Boolean hasShipmentConstraintViolation(VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         return stateManager.getRouteState(route,shipment_id,Boolean.class);
     }
@@ -568,7 +634,7 @@ public class SolutionAnalyser {
      * @return true if shipment constraint is violated, false otherwise. If activity is either Start or End, it returns
      * false. Returns null if either specified activity or route is null or route does not containt activity.
      */
-    public Boolean shipmentConstraintIsViolatedAtActivity(TourActivity activity, VehicleRoute route){
+    public Boolean hasShipmentConstraintViolationAtActivity(TourActivity activity, VehicleRoute route){
         if(route == null) throw new IllegalStateException("route is missing.");
         if(activity == null) throw new IllegalStateException("activity is missing.");
         if(activity instanceof Start) return false;
@@ -668,29 +734,6 @@ public class SolutionAnalyser {
     }
 
     /**
-     * @param activity to get the late arrival times from
-     * @return time too late
-     */
-    public Double getLateArrivalTimesAtActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
-        double tooLate = 0.;
-        if(activityPolicy.equals(ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)){
-            tooLate = Math.max(0,activity.getArrTime()-activity.getTheoreticalLatestOperationStartTime());
-        }
-        return tooLate;
-    }
-
-    /**
-     * @param route to get the late arrival times from
-     * @return time too late, i.e. sum of late time of activities
-     */
-    public Double getLateArrivalTimes(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        return stateManager.getRouteState(route,too_late_id,Double.class);
-    }
-
-    /**
      * @param route to get the distance from
      * @return total distance of route
      */
@@ -712,36 +755,102 @@ public class SolutionAnalyser {
         return stateManager.getActivityState(activity, distance_id, Double.class);
     }
 
+    /**
+     * @return total distance for specified solution
+     */
+    public Double getDistance(){
+        return tp_distance;
+    }
+
+    /**
+     * @return total operation time for specified solution
+     */
+    public Double getOperationTime(){
+       return operation_time;
+    }
+
+    /**
+     * @return total waiting time for specified solution
+     */
+    public Double getWaitingTime(){
+        return waiting_time;
+    }
+
+    /**
+     * @return total transportation time
+     */
+    public Double getTransportTime(){
+        return tp_time;
+    }
+
+    /**
+     * @return total time window violation for specified solution
+     */
+    public Double getTimeWindowViolation(){
+        return tw_violation;
+    }
+
+    /**
+     * @return total capacity violation for specified solution
+     */
+    public Capacity getCapacityViolation(){
+        return cap_violation;
+    }
+
+    /**
+     * @return total service time for specified solution
+     */
+    public Double getServiceTime(){
+        return service_time;
+    }
+
+    /**
+     * @return total fixed costs for specified solution
+     */
+    public Double getFixedCosts(){
+        return fixed_costs;
+    }
+
+    /**
+     * @return total variable transport costs for specified solution
+     */
+    public Double getVariableTransportCosts(){
+        return variable_transport_costs;
+    }
+
+    /**
+     * @return total costs defined by solutionCostCalculator
+     */
+    public Double getTotalCosts(){
+        return total_costs;
+    }
+
+    /**
+     * @return true if at least one route in specified solution has shipment constraint violation
+     */
+    public Boolean hasShipmentConstraintViolation(){
+        return hasShipmentConstraintViolation;
+    }
+
+    /**
+     * @return true if at least one route in specified solution has backhaul constraint violation
+     */
+    public Boolean hasBackhaulConstraintViolation(){
+        return hasBackhaulConstraintViolation;
+    }
+
+    /**
+     * @return true if at least one route in specified solution has skill constraint violation
+     */
+    public Boolean hasSkillConstraintViolation(){
+        return hasSkillConstraintViolation;
+    }
 
 
 
-//    /**
-//     * @return total distance
-//     */
-//    public double getDistance(){
-//
-//    }
-//
-//    /**
-//     * @return total operation time
-//     */
-//    public double getOperationTime(){
-//
-//    }
-//
-//    /**
-//     * @return total waiting time
-//     */
-//    public double getWaitingTime(){
-//
-//    }
-//
-//    /**
-//     * @return total transportation time
-//     */
-//    public double getTransportationTime(){
-//
-//    }
+
+
+
 
 }
 

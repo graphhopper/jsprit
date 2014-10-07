@@ -600,7 +600,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Assert.assertEquals(0, analyser.getLateArrivalTimesAtActivity(route.getStart(), route), 0.01);
+        Assert.assertEquals(0, analyser.getTimeWindowViolationAtActivity(route.getStart(), route), 0.01);
     }
 
     @Test
@@ -612,7 +612,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Assert.assertEquals(0., analyser.getLateArrivalTimesAtActivity(route.getActivities().get(0), route), 0.01);
+        Assert.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(0), route), 0.01);
     }
 
     @Test
@@ -624,7 +624,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Assert.assertEquals(0., analyser.getLateArrivalTimesAtActivity(route.getActivities().get(1), route), 0.01);
+        Assert.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(1), route), 0.01);
     }
 
     @Test
@@ -636,7 +636,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Assert.assertEquals(0., analyser.getLateArrivalTimesAtActivity(route.getActivities().get(2), route), 0.01);
+        Assert.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(2), route), 0.01);
     }
 
     @Test
@@ -648,7 +648,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Assert.assertEquals(0., analyser.getLateArrivalTimesAtActivity(route.getActivities().get(3), route), 0.01);
+        Assert.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(3), route), 0.01);
     }
 
     @Test
@@ -660,7 +660,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Assert.assertEquals(0., analyser.getLateArrivalTimesAtActivity(route.getEnd(), route), 0.01);
+        Assert.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getEnd(), route), 0.01);
     }
 
     @Test
@@ -672,7 +672,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Assert.assertEquals(0., analyser.getLateArrivalTimes(route), 0.01);
+        Assert.assertEquals(0., analyser.getTimeWindowViolation(route), 0.01);
     }
 
     @Test
@@ -1308,7 +1308,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolated(route);
+        Boolean violation = analyser.hasBackhaulConstraintViolation(route);
         assertTrue(violation);
     }
 
@@ -1324,7 +1324,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getStart(), route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getStart(), route);
         assertFalse(violation);
     }
 
@@ -1341,7 +1341,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(0),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(0), route);
         assertFalse(violation);
     }
 
@@ -1357,7 +1357,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(1),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(1), route);
         assertFalse(violation);
     }
 
@@ -1373,7 +1373,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(2),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(2), route);
         assertFalse(violation);
     }
 
@@ -1389,7 +1389,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(3),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(3), route);
         assertTrue(violation);
     }
 
@@ -1405,7 +1405,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(4),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(4), route);
         assertTrue(violation);
     }
 
@@ -1421,7 +1421,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(5),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(5), route);
         assertFalse(violation);
     }
 
@@ -1437,7 +1437,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(6),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(6), route);
         assertFalse(violation);
     }
 
@@ -1453,7 +1453,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(7),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(7), route);
         assertFalse(violation);
     }
 
@@ -1469,7 +1469,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getEnd(),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getEnd(), route);
         assertFalse(violation);
     }
 
@@ -1485,7 +1485,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.shipmentConstraintIsViolatedAtActivity(route.getStart(), route);
+        Boolean violation = analyser.hasShipmentConstraintViolationAtActivity(route.getStart(), route);
         assertFalse(violation);
     }
 
@@ -1501,7 +1501,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(0),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(0), route);
         assertFalse(violation);
     }
 
@@ -1517,7 +1517,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(1),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(1), route);
         assertFalse(violation);
     }
 
@@ -1533,7 +1533,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(2),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(2), route);
         assertFalse(violation);
     }
 
@@ -1549,7 +1549,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(3),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(3), route);
         assertTrue(violation);
     }
 
@@ -1565,7 +1565,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(4),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(4), route);
         assertTrue(violation);
     }
 
@@ -1581,7 +1581,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(5),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(5), route);
         assertFalse(violation);
     }
 
@@ -1597,7 +1597,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(6),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(6), route);
         assertFalse(violation);
     }
 
@@ -1613,7 +1613,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getActivities().get(7),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(7), route);
         assertFalse(violation);
     }
 
@@ -1629,7 +1629,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.backhaulConstraintIsViolatedAtActivity(route.getEnd(),route);
+        Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getEnd(), route);
         assertFalse(violation);
     }
 
@@ -1645,7 +1645,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violation = analyser.shipmentConstraintIsViolated(route);
+        Boolean violation = analyser.hasShipmentConstraintViolation(route);
         assertFalse(violation);
     }
 
@@ -1665,7 +1665,7 @@ public class SolutionAnalyserTest {
             }
         });
 
-        Boolean violation = analyser.shipmentConstraintIsViolated(route);
+        Boolean violation = analyser.hasShipmentConstraintViolation(route);
         assertTrue(violation);
     }
 
@@ -1686,7 +1686,7 @@ public class SolutionAnalyserTest {
             }
         });
 
-        Boolean violation = analyser.shipmentConstraintIsViolatedAtActivity(route.getActivities().get(1), route);
+        Boolean violation = analyser.hasShipmentConstraintViolationAtActivity(route.getActivities().get(1), route);
         assertTrue(violation);
     }
 
@@ -1707,7 +1707,7 @@ public class SolutionAnalyserTest {
             }
         });
 
-        Boolean violation = analyser.shipmentConstraintIsViolated(route);
+        Boolean violation = analyser.hasShipmentConstraintViolation(route);
         assertTrue(violation);
     }
 
@@ -1728,7 +1728,7 @@ public class SolutionAnalyserTest {
             }
         });
 
-        Boolean violation = analyser.shipmentConstraintIsViolatedAtActivity(route.getActivities().get(1),route);
+        Boolean violation = analyser.hasShipmentConstraintViolationAtActivity(route.getActivities().get(1), route);
         assertTrue(violation);
     }
 
@@ -1749,7 +1749,7 @@ public class SolutionAnalyserTest {
             }
         });
 
-        Boolean violation = analyser.shipmentConstraintIsViolated(route);
+        Boolean violation = analyser.hasShipmentConstraintViolation(route);
         assertTrue(violation);
     }
 
@@ -1762,7 +1762,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violated = analyser.skillConstraintIsViolated(route);
+        Boolean violated = analyser.hasSkillConstraintViolation(route);
         assertTrue(violated);
     }
 
@@ -1775,7 +1775,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getStart(), route);
+        Boolean violated = analyser.hasSkillConstraintViolationAtActivity(route.getStart(), route);
         assertFalse(violated);
     }
 
@@ -1788,7 +1788,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getActivities().get(0),route);
+        Boolean violated = analyser.hasSkillConstraintViolationAtActivity(route.getActivities().get(0), route);
         assertFalse(violated);
     }
 
@@ -1801,7 +1801,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getActivities().get(1),route);
+        Boolean violated = analyser.hasSkillConstraintViolationAtActivity(route.getActivities().get(1), route);
         assertTrue(violated);
     }
 
@@ -1814,7 +1814,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getActivities().get(2),route);
+        Boolean violated = analyser.hasSkillConstraintViolationAtActivity(route.getActivities().get(2), route);
         assertTrue(violated);
     }
 
@@ -1827,7 +1827,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getActivities().get(3),route);
+        Boolean violated = analyser.hasSkillConstraintViolationAtActivity(route.getActivities().get(3), route);
         assertFalse(violated);
     }
 
@@ -1840,7 +1840,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Boolean violated = analyser.skillConstraintIsViolatedAtActivity(route.getEnd(),route);
+        Boolean violated = analyser.hasSkillConstraintViolationAtActivity(route.getEnd(), route);
         assertFalse(violated);
     }
 
@@ -1858,7 +1858,7 @@ public class SolutionAnalyserTest {
         Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
         iterator.next();
         VehicleRoute route = iterator.next();
-        Boolean violated = analyser.skillConstraintIsViolated(route);
+        Boolean violated = analyser.hasSkillConstraintViolation(route);
         assertFalse(violated);
     }
 
