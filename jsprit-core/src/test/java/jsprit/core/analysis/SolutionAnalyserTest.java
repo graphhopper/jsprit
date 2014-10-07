@@ -591,12 +591,6 @@ public class SolutionAnalyserTest {
     }
 
 
-
-    @Test
-    public void whatHappensWhenUserSpecifiedOwnEndTime_stateManagerShouldNotOverwriteThis(){
-        assertFalse(true);
-    }
-
     @Test
     public void lateArrivalTimes_atStartActOfRoute1ShouldWork(){
         SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
