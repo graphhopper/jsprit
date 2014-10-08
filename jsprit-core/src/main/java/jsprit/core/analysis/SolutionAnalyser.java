@@ -38,11 +38,102 @@ import java.util.Set;
  */
 public class SolutionAnalyser {
 
+    private final static String PICKUP_COUNT = "pickup-count";
+
+    private final static String PICKUP_COUNT_AT_BEGINNING = "pickup-count-at-beginning";
+
+    private final static String DELIVERY_COUNT = "delivery-count";
+
+    private final static String DELIVERY_COUNT_AT_END = "delivery-count-at-end";
+
+    private final static String LOAD_PICKED = "load-picked";
+
+    private final static String LOAD_DELIVERED = "load-delivered";
 
     public static interface DistanceCalculator {
 
         public double getDistance(String fromLocationId, String toLocationId);
 
+    }
+
+    private static class LoadAndActivityCounter implements StateUpdater, ActivityVisitor {
+
+        private final StateManager stateManager;
+
+        private int pickupCounter;
+
+        private int pickupAtBeginningCounter;
+
+        private int deliveryCounter;
+
+        private int deliverAtEndCounter;
+
+        private Capacity pickedUp;
+
+        private Capacity delivered;
+
+        private StateId pickup_count_id;
+
+        private StateId pickup_at_beginning_count_id;
+
+        private StateId delivery_count_id;
+
+        private StateId delivery_at_end_count_id;
+
+        private StateId load_picked_id;
+
+        private StateId load_delivered_id;
+
+        private VehicleRoute route;
+
+        private LoadAndActivityCounter(StateManager stateManager) {
+            this.stateManager = stateManager;
+            pickup_count_id = stateManager.createStateId(PICKUP_COUNT);
+            delivery_count_id = stateManager.createStateId(DELIVERY_COUNT);
+            load_picked_id = stateManager.createStateId(LOAD_PICKED);
+            load_delivered_id = stateManager.createStateId(LOAD_DELIVERED);
+            pickup_at_beginning_count_id = stateManager.createStateId(PICKUP_COUNT_AT_BEGINNING);
+            delivery_at_end_count_id = stateManager.createStateId(DELIVERY_COUNT_AT_END);
+        }
+
+        @Override
+        public void begin(VehicleRoute route) {
+            this.route = route;
+            pickupCounter = 0;
+            pickupAtBeginningCounter = 0;
+            deliveryCounter = 0;
+            deliverAtEndCounter = 0;
+            pickedUp = Capacity.Builder.newInstance().build();
+            delivered = Capacity.Builder.newInstance().build();
+        }
+
+        @Override
+        public void visit(TourActivity activity) {
+            if(activity instanceof PickupActivity){
+                pickupCounter++;
+                pickedUp = Capacity.addup(pickedUp, ((PickupActivity) activity).getJob().getSize());
+                if(activity instanceof PickupService){
+                    deliverAtEndCounter++;
+                }
+            }
+            else if(activity instanceof  DeliveryActivity){
+                deliveryCounter++;
+                delivered = Capacity.addup(delivered, ((DeliveryActivity) activity).getJob().getSize());
+                if(activity instanceof DeliverService){
+                    pickupAtBeginningCounter++;
+                }
+            }
+        }
+
+        @Override
+        public void finish() {
+            stateManager.putRouteState(route,pickup_count_id,pickupCounter);
+            stateManager.putRouteState(route,delivery_count_id,deliveryCounter);
+            stateManager.putRouteState(route,load_picked_id,pickedUp);
+            stateManager.putRouteState(route,load_delivered_id,delivered);
+            stateManager.putRouteState(route,pickup_at_beginning_count_id,pickupAtBeginningCounter);
+            stateManager.putRouteState(route,delivery_at_end_count_id,deliverAtEndCounter);
+        }
     }
 
     private static class BackhaulAndShipmentUpdater implements StateUpdater, ActivityVisitor {
@@ -328,6 +419,15 @@ public class SolutionAnalyser {
     private Boolean hasSkillConstraintViolation;
     private Boolean hasBackhaulConstraintViolation;
     private Boolean hasShipmentConstraintViolation;
+    private Integer noPickups;
+    private Integer noPickupsAtBeginning;
+    private Integer noDeliveries;
+    private Integer noDeliveriesAtEnd;
+    private Capacity pickupLoad;
+    private Capacity pickupLoadAtBeginning;
+    private Capacity deliveryLoad;
+    private Capacity deliveryLoadAtEnd;
+
 
     private Double total_costs;
 
@@ -371,6 +471,7 @@ public class SolutionAnalyser {
         stateManager.addStateUpdater(new DistanceUpdater(distance_id,stateManager,distanceCalculator));
         stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id,shipment_id,stateManager));
         stateManager.addStateUpdater(new SkillUpdater(stateManager,skill_id));
+        stateManager.addStateUpdater(new LoadAndActivityCounter(stateManager));
     }
 
 
@@ -395,6 +496,14 @@ public class SolutionAnalyser {
             if(hasSkillConstraintViolation(route)) hasSkillConstraintViolation = true;
             if(hasShipmentConstraintViolation(route)) hasShipmentConstraintViolation = true;
             if(hasBackhaulConstraintViolation(route)) hasBackhaulConstraintViolation = true;
+            noPickups += getNumberOfPickups(route);
+            noPickupsAtBeginning += getNumberOfPickupsAtBeginning(route);
+            noDeliveries += getNumberOfDeliveries(route);
+            noDeliveriesAtEnd += getNumberOfDeliveriesAtEnd(route);
+            pickupLoad = Capacity.addup(pickupLoad,getLoadPickedUp(route));
+            pickupLoadAtBeginning = Capacity.addup(pickupLoadAtBeginning,getLoadAtBeginning(route));
+            deliveryLoad = Capacity.addup(deliveryLoad,getLoadDelivered(route));
+            deliveryLoadAtEnd = Capacity.addup(deliveryLoadAtEnd,getLoadAtEnd(route));
         }
         total_costs = solutionCostCalculator.getCosts(this.solution);
     }
@@ -413,6 +522,14 @@ public class SolutionAnalyser {
         hasBackhaulConstraintViolation = false;
         hasShipmentConstraintViolation = false;
         hasSkillConstraintViolation = false;
+        noPickups = 0;
+        noPickupsAtBeginning = 0;
+        noDeliveries = 0;
+        noDeliveriesAtEnd = 0;
+        pickupLoad = Capacity.Builder.newInstance().build();
+        pickupLoadAtBeginning = Capacity.Builder.newInstance().build();
+        deliveryLoad = Capacity.Builder.newInstance().build();
+        deliveryLoadAtEnd = Capacity.Builder.newInstance().build();
     }
 
     public void informSolutionChanged(VehicleRoutingProblemSolution newSolution){
@@ -486,6 +603,42 @@ public class SolutionAnalyser {
         }
         else if(afterAct != null) return afterAct;
         else return null;
+    }
+
+    /**
+     * @param route to get number of pickups from
+     * @return number of pickups picked up on specified route (without load at beginning)
+     */
+    public Integer getNumberOfPickups(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        return stateManager.getRouteState(route,stateManager.createStateId(PICKUP_COUNT),Integer.class);
+    }
+
+    /**
+     * @param route to get number of deliveries from
+     * @return number of deliveries delivered on specified route (without load at end)
+     */
+    public Integer getNumberOfDeliveries(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        return stateManager.getRouteState(route,stateManager.createStateId(DELIVERY_COUNT),Integer.class);
+    }
+
+    /**
+     * @param route to get the picked load from
+     * @return picked load (without load at beginning)
+     */
+    public Capacity getLoadPickedUp(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        return stateManager.getRouteState(route,stateManager.createStateId(LOAD_PICKED),Capacity.class);
+    }
+
+    /**
+     * @param route to get delivered load from
+     * @return delivered laod (without load at end)
+     */
+    public Capacity getLoadDelivered(VehicleRoute route){
+        if(route == null) throw new IllegalStateException("route is missing.");
+        return stateManager.getRouteState(route,stateManager.createStateId(LOAD_DELIVERED),Capacity.class);
     }
 
     /**
@@ -754,6 +907,82 @@ public class SolutionAnalyser {
         verifyThatRouteContainsAct(activity, route);
         return stateManager.getActivityState(activity, distance_id, Double.class);
     }
+
+    /**
+     * @return number of pickups in specified solution (without load at beginning of each route)
+     */
+    public Integer getNumberOfPickups(){
+        return noPickups;
+    }
+
+    /**
+     * @param route to get the number of pickups at beginning from
+     * @return number of pickups at beginning
+     */
+    public Integer getNumberOfPickupsAtBeginning(VehicleRoute route){
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        return stateManager.getRouteState(route,stateManager.createStateId(PICKUP_COUNT_AT_BEGINNING),Integer.class);
+    }
+
+    /**
+     * @return number of pickups in specified solution at beginning of each route
+     */
+    public Integer getNumberOfPickupsAtBeginning(){
+        return noPickupsAtBeginning;
+    }
+
+    /**
+     * @return number of deliveries in specified solution (without load at end of each route)
+     */
+    public Integer getNumberOfDeliveries(){
+        return noDeliveries;
+    }
+
+    /**
+     * @return number of deliveries in specified solution at end of each route
+     */
+    public Integer getNumberOfDeliveriesAtEnd(){
+        return noDeliveriesAtEnd;
+    }
+
+    /**
+     * @param route to get the number of deliveries at end from
+     * @return number of deliveries at end of specified route
+     */
+    public Integer getNumberOfDeliveriesAtEnd(VehicleRoute route){
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        return stateManager.getRouteState(route,stateManager.createStateId(DELIVERY_COUNT_AT_END),Integer.class);
+    }
+
+    /**
+     * @return load picked up in solution (without load at beginning of each route)
+     */
+    public Capacity getLoadPickedUp(){
+        return pickupLoad;
+    }
+
+    /**
+     * @return load picked up in solution at beginning of each route
+     */
+    public Capacity getLoadAtBeginning(){
+        return pickupLoadAtBeginning;
+    }
+
+    /**
+     * @return load delivered in solution (without load at end of each route)
+     */
+    public Capacity getLoadDelivered(){
+        return deliveryLoad;
+    }
+
+    /**
+     * @return load delivered in solution at end of each route
+     */
+    public Capacity getLoadAtEnd(){
+        return deliveryLoadAtEnd;
+    }
+
+
 
     /**
      * @return total distance for specified solution

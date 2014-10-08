@@ -21,6 +21,7 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.analysis.SolutionAnalyser;
+import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
@@ -157,6 +158,15 @@ public class VRPWithBackhaulsExample2 {
 
         System.out.println("-----");
         System.out.println("aggreate solution stats");
+        System.out.println("total freight moved: " + Capacity.addup(analyser.getLoadAtBeginning(),analyser.getLoadPickedUp()));
+        System.out.println("total no. picks at beginning: " + analyser.getNumberOfPickupsAtBeginning());
+        System.out.println("total no. picks on routes: " + analyser.getNumberOfPickups());
+        System.out.println("total picked load at beginnnig: " + analyser.getLoadAtBeginning());
+        System.out.println("total picked load on routes: " + analyser.getLoadPickedUp());
+        System.out.println("total no. deliveries at end: " + analyser.getNumberOfDeliveriesAtEnd());
+        System.out.println("total no. deliveries on routes: " + analyser.getNumberOfDeliveries());
+        System.out.println("total delivered load at end: " + analyser.getLoadAtEnd());
+        System.out.println("total delivered load on routes: " + analyser.getLoadDelivered());
         System.out.println("total tp_distance: " + analyser.getDistance());
         System.out.println("total tp_time: " + analyser.getTransportTime());
         System.out.println("total waiting_time: " + analyser.getWaitingTime());
