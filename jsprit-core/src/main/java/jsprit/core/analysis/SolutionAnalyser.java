@@ -532,6 +532,11 @@ public class SolutionAnalyser {
         deliveryLoadAtEnd = Capacity.Builder.newInstance().build();
     }
 
+    /**
+     * Sets the specified solution and calculates all necessary indicators again.
+     *
+     * @param newSolution to be analysed
+     */
     public void informSolutionChanged(VehicleRoutingProblemSolution newSolution){
         this.solution = newSolution;
         refreshStates();
