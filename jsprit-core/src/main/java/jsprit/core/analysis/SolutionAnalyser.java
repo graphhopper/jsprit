@@ -547,7 +547,7 @@ public class SolutionAnalyser {
      * @return load at start location of specified route
      */
     public Capacity getLoadAtBeginning(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING,Capacity.class);
     }
 
@@ -556,7 +556,7 @@ public class SolutionAnalyser {
      * @return load at end location of specified route
      */
     public Capacity getLoadAtEnd(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, InternalStates.LOAD_AT_END,Capacity.class);
     }
 
@@ -565,7 +565,7 @@ public class SolutionAnalyser {
      * @return max load of specified route, i.e. for each capacity dimension the max value.
      */
     public Capacity getMaxLoad(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, InternalStates.MAXLOAD,Capacity.class);
     }
 
@@ -577,8 +577,8 @@ public class SolutionAnalyser {
      * Returns null if no load can be found.
      */
     public Capacity getLoadRightAfterActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         if(activity instanceof Start) return getLoadAtBeginning(route);
         if(activity instanceof End) return getLoadAtEnd(route);
         verifyThatRouteContainsAct(activity, route);
@@ -587,7 +587,7 @@ public class SolutionAnalyser {
 
     private void verifyThatRouteContainsAct(TourActivity activity, VehicleRoute route) {
         if(!route.getTourActivities().hasActivity(activity)){
-            throw new IllegalStateException("specified route does not contain specified activity " + activity);
+            throw new IllegalArgumentException("specified route does not contain specified activity " + activity);
         }
     }
 
@@ -597,8 +597,8 @@ public class SolutionAnalyser {
      * route. If act is End, it returns the load atEnd of specified route.
      */
     public Capacity getLoadJustBeforeActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         if(activity instanceof Start) return getLoadAtBeginning(route);
         if(activity instanceof End) return getLoadAtEnd(route);
         verifyThatRouteContainsAct(activity, route);
@@ -615,7 +615,7 @@ public class SolutionAnalyser {
      * @return number of pickups picked up on specified route (without load at beginning)
      */
     public Integer getNumberOfPickups(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route,stateManager.createStateId(PICKUP_COUNT),Integer.class);
     }
 
@@ -624,7 +624,7 @@ public class SolutionAnalyser {
      * @return number of deliveries delivered on specified route (without load at end)
      */
     public Integer getNumberOfDeliveries(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route,stateManager.createStateId(DELIVERY_COUNT),Integer.class);
     }
 
@@ -633,7 +633,7 @@ public class SolutionAnalyser {
      * @return picked load (without load at beginning)
      */
     public Capacity getLoadPickedUp(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route,stateManager.createStateId(LOAD_PICKED),Capacity.class);
     }
 
@@ -642,7 +642,7 @@ public class SolutionAnalyser {
      * @return delivered laod (without load at end)
      */
     public Capacity getLoadDelivered(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route,stateManager.createStateId(LOAD_DELIVERED),Capacity.class);
     }
 
@@ -651,7 +651,7 @@ public class SolutionAnalyser {
      * @return the capacity violation on this route, i.e. maxLoad - vehicleCapacity
      */
     public Capacity getCapacityViolation(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         Capacity maxLoad = getMaxLoad(route);
         return Capacity.max(Capacity.Builder.newInstance().build(),Capacity.subtract(maxLoad,route.getVehicle().getType().getCapacityDimensions()));
     }
@@ -663,7 +663,7 @@ public class SolutionAnalyser {
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
     public Capacity getCapacityViolationAtBeginning(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         Capacity atBeginning = getLoadAtBeginning(route);
         return Capacity.max(Capacity.Builder.newInstance().build(),Capacity.subtract(atBeginning,route.getVehicle().getType().getCapacityDimensions()));
     }
@@ -675,7 +675,7 @@ public class SolutionAnalyser {
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
     public Capacity getCapacityViolationAtEnd(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         Capacity atEnd = getLoadAtEnd(route);
         return Capacity.max(Capacity.Builder.newInstance().build(),Capacity.subtract(atEnd,route.getVehicle().getType().getCapacityDimensions()));
     }
@@ -688,8 +688,8 @@ public class SolutionAnalyser {
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
     public Capacity getCapacityViolationAfterActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         Capacity afterAct = getLoadRightAfterActivity(activity,route);
         return Capacity.max(Capacity.Builder.newInstance().build(),Capacity.subtract(afterAct,route.getVehicle().getType().getCapacityDimensions()));
     }
@@ -699,7 +699,7 @@ public class SolutionAnalyser {
      * @return time violation of route, i.e. sum of individual activity time window violations.
      */
     public Double getTimeWindowViolation(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, too_late_id, Double.class);
     }
 
@@ -709,8 +709,8 @@ public class SolutionAnalyser {
      * @return time violation of activity
      */
     public Double getTimeWindowViolationAtActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         return Math.max(0, activity.getArrTime() - activity.getTheoreticalLatestOperationStartTime());
     }
 
@@ -720,7 +720,7 @@ public class SolutionAnalyser {
      * activities on the specified route. Returns null if route is null or skill state cannot be found.
      */
     public Boolean hasSkillConstraintViolation(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, skill_id, Boolean.class);
     }
 
@@ -732,8 +732,8 @@ public class SolutionAnalyser {
      * found. If specified activity is Start or End, it returns false.
      */
     public Boolean hasSkillConstraintViolationAtActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         if(activity instanceof Start) return false;
         if(activity instanceof End) return false;
         verifyThatRouteContainsAct(activity, route);
@@ -751,7 +751,7 @@ public class SolutionAnalyser {
      * state can be found. In latter case try routeChanged(route).
      */
     public Boolean hasBackhaulConstraintViolation(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route,backhaul_id,Boolean.class);
     }
 
@@ -762,8 +762,8 @@ public class SolutionAnalyser {
      * Null if specified route does not contain specified activity.
      */
     public Boolean hasBackhaulConstraintViolationAtActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         if(activity instanceof Start) return false;
         if(activity instanceof End) return false;
         verifyThatRouteContainsAct(activity, route);
@@ -779,7 +779,7 @@ public class SolutionAnalyser {
      * @return true if violated, false otherwise. Null if no state can be found or specified route is null.
      */
     public Boolean hasShipmentConstraintViolation(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route,shipment_id,Boolean.class);
     }
 
@@ -793,8 +793,8 @@ public class SolutionAnalyser {
      * false. Returns null if either specified activity or route is null or route does not containt activity.
      */
     public Boolean hasShipmentConstraintViolationAtActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         if(activity instanceof Start) return false;
         if(activity instanceof End) return false;
         verifyThatRouteContainsAct(activity, route);
@@ -808,7 +808,7 @@ public class SolutionAnalyser {
      * @return operation time of this route, i.e. endTime - startTime of specified route
      */
     public Double getOperationTime(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return route.getEnd().getArrTime() - route.getStart().getEndTime();
     }
 
@@ -818,7 +818,7 @@ public class SolutionAnalyser {
      * Returns null if no waiting time value exists for the specified route
      */
     public Double getWaitingTime(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, waiting_time_id, Double.class);
     }
 
@@ -827,7 +827,7 @@ public class SolutionAnalyser {
      * @return total transport time of specified route. Returns null if no time value exists for the specified route.
      */
     public Double getTransportTime(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, transport_time_id, Double.class);
     }
 
@@ -836,7 +836,7 @@ public class SolutionAnalyser {
      * @return total service time of specified route. Returns null if no time value exists for specified route.
      */
     public Double getServiceTime(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, service_time_id, Double.class);
     }
 
@@ -846,7 +846,7 @@ public class SolutionAnalyser {
      * vrp.getTransportCosts().getTransportCost(fromId,toId,...)
      */
     public Double getVariableTransportCosts(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
 
         return stateManager.getRouteState(route,InternalStates.COSTS,Double.class);
     }
@@ -856,7 +856,7 @@ public class SolutionAnalyser {
      * @return fixed costs of route, i.e. fixed costs of employed vehicle on this route.
      */
     public Double getFixedCosts(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return route.getVehicle().getType().getVehicleCostParams().fix;
     }
 
@@ -868,8 +868,8 @@ public class SolutionAnalyser {
      * If activity is start, it returns 0.. If it is end, it returns .getVariableTransportCosts(route).
      */
     public Double getVariableTransportCostsAtActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         if(activity instanceof Start) return 0.;
         if(activity instanceof End) return getVariableTransportCosts(route);
         verifyThatRouteContainsAct(activity, route);
@@ -882,8 +882,8 @@ public class SolutionAnalyser {
      * @return waiting time at activity
      */
     public Double getWaitingTimeAtActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         double waitingTime = 0.;
         if(activityPolicy.equals(ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)){
             waitingTime = Math.max(0,activity.getTheoreticalEarliestOperationStartTime()-activity.getArrTime());
@@ -896,7 +896,7 @@ public class SolutionAnalyser {
      * @return total distance of route
      */
     public Double getDistance(VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
         return stateManager.getRouteState(route, distance_id, Double.class);
     }
 
@@ -905,8 +905,8 @@ public class SolutionAnalyser {
      * @return distance at activity
      */
     public Double getDistanceAtActivity(TourActivity activity, VehicleRoute route){
-        if(route == null) throw new IllegalStateException("route is missing.");
-        if(activity == null) throw new IllegalStateException("activity is missing.");
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
         if(activity instanceof Start) return 0.;
         if(activity instanceof End) return getDistance(route);
         verifyThatRouteContainsAct(activity, route);
