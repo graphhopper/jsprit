@@ -22,6 +22,7 @@ import jsprit.analysis.toolbox.Plotter.Label;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.selector.SelectBest;
+import jsprit.core.analysis.SolutionAnalyser;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -56,7 +57,7 @@ public class PickupAndDeliveryExample {
 		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
 		
-		VehicleRoutingProblem vrp = vrpBuilder.build();
+		final VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		new Plotter(vrp).plot("output/pd_solomon_r101.png", "pd_r101");
 		
@@ -93,9 +94,25 @@ public class PickupAndDeliveryExample {
 		Plotter plotter = new Plotter(vrp, solution);
 		plotter.setLabel(Label.SIZE);
 		plotter.plot("output/pd_solomon_r101_solution.png","pd_r101");
-	
-		
-		
-	}
+
+        //some stats
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution,new SolutionAnalyser.DistanceCalculator() {
+
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+
+        });
+
+        System.out.println("tp_distance: " + analyser.getDistance());
+        System.out.println("tp_time: " + analyser.getTransportTime());
+        System.out.println("waiting: " + analyser.getWaitingTime());
+        System.out.println("service: " + analyser.getServiceTime());
+        System.out.println("#picks: " + analyser.getNumberOfPickups());
+        System.out.println("#deliveries: " + analyser.getNumberOfDeliveries());
+
+
+    }
 
 }
