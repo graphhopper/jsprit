@@ -8,7 +8,7 @@ It has a new feature to analyze your VehicleRoutingProblemSolution.
 
 jsprit.core.analysis.SolutionAnalyzer provides a way to easily calculate statistics for your solution such as loadAfterActivity, loadBeforeActivity, pickedLoadOnRoute, deliveredLoadOnRoute, loadAtBeginningOfRoute, loadAtEnd, waitingTimeOnRoute and waitingTimeOnSolution, totalTransportTime and distance, etc.. Additionally, you can check whether jsprit's default constraints are violated or not. This might be important if you change your solution ex-post by removing a job etc.. 
 
-<strong>Note that this feature is sponsored by [opendoorlogistics](http://www.opendoorlogistics.com).</strong> Thank you Phillip.
+<strong>Note that this feature is sponsored by [opendoorlogistics](http://www.opendoorlogistics.com).</strong>
 
 
 ------------------------------
