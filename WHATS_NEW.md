@@ -6,7 +6,7 @@ WHATS NEW
 
 It has a new feature to analyse your VehicleRoutingProblemSolution. 
 
-jsprit.core.analysis.SolutionAnalszer provides a way to easily calculate statistics for your solution such as loadAfterActivity, loadBeforeActivity, pickedLoadOnRoute, deliveredLoadOnRoute, loadAtBeginningOfRoute, loadAtEnd, waitingTimeOnRoute and waitingTimeOnSolution, totalTransportTime and distance, etc.. Additionally, you can check whether jsprit's default constraints are violated or not. This might be important if you change your solution ex-post by removing a job etc.. Look at this example to see a (incomplete) list of what can be calculated out-of-the-box now: [VRPWithBackhauls - SolutionAnalyser](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/VRPWithBackhaulsExample2.java)
+jsprit.core.analysis.SolutionAnalszer provides a way to easily calculate statistics for your solution such as load after activity, load before activity, picked load on route, delivered load on route, load at beginning of route, load at end, waiting time on route and total waiting time in solution, total transport time and distance and many more. Additionally, you can check whether jsprit's default constraints are violated or not. This might be important if you change your solution ex-post by removing a job etc.. Look at this example to see a (incomplete) list of what can be calculated out-of-the-box now: [VRPWithBackhauls - SolutionAnalyser](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/VRPWithBackhaulsExample2.java)
 
 <strong>Note that this feature is sponsored by [Open Door Logistics](http://www.opendoorlogistics.com).</strong>
 
