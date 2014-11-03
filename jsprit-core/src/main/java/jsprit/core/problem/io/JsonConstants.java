@@ -1,9 +1,32 @@
+/*******************************************************************************
+ * Copyright (C) 2014  Stefan Schroeder
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package jsprit.core.problem.io;
 
 /**
  * Created by stefan on 03.11.14.
  */
 public class JsonConstants {
+
+    public static final String SERVICES = "services";
+
+    public static final String FLEET = "fleet_size";
+
+    public static final String VEHICLES = "vehicles";
 
     public static class Address {
 
@@ -41,5 +64,14 @@ public class JsonConstants {
 
         public static final String TIME_WINDOW = "time_window";
 
+    }
+
+    public static class Vehicle {
+
+        public static final String ID = "id";
+
+        public static final String START_ADDRESS = "start_address";
+
+        public static final String END_ADDRESS = "end_address";
     }
 }
