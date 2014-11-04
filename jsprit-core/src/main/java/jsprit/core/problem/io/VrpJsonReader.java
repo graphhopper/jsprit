@@ -21,9 +21,12 @@ package jsprit.core.problem.io;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.job.Job;
+import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.util.Coordinate;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +71,38 @@ public class VrpJsonReader {
             vehicleBuilder.setType(type);
             vehicleBuilder.setEarliestStart(vehicleNode.path(JsonConstants.Vehicle.EARLIEST_START).asDouble());
             vehicleBuilder.setLatestArrival(vehicleNode.path(JsonConstants.Vehicle.LATEST_END).asDouble());
-            vehicleBuilder.setStartLocationId(vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.ID).asText());
+
+            String startLocationId = vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.ID).asText();
+            vehicleBuilder.setStartLocationId(startLocationId);
+            String endLocationId = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.ID).asText();
+            if(!startLocationId.equals(endLocationId)){
+                vehicleBuilder.setEndLocationId(endLocationId);
+            }
+            {
+                Double lon = vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.LON).asDouble();
+                Double lat = vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.LAT).asDouble();
+                if (lon != null && lat != null) {
+                    vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(lon, lat));
+                }
+            }
+            {
+                Double lon = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.LON).asDouble();
+                Double lat = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.LAT).asDouble();
+                if (lon != null && lat != null) {
+                    vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(lon, lat));
+                }
+            }
+
+            JsonNode skillsNode = vehicleNode.path(JsonConstants.Vehicle.SKILLS);
+            Iterator<JsonNode> skill_iterator = skillsNode.iterator();
+            while(skill_iterator.hasNext()){
+                JsonNode skillNode = skill_iterator.next();
+                String skill = skillNode.asText();
+                vehicleBuilder.addSkill(skill);
+            }
+
+            VehicleImpl vehicle = vehicleBuilder.build();
+            vrpBuilder.addVehicle(vehicle);
 
         }
     }
@@ -100,6 +134,14 @@ public class VrpJsonReader {
         String fleetsize = root.path(JsonConstants.FLEET).asText();
         if(fleetsize.equals("INFINITE")) vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE);
         else vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
+    }
+
+    public static void main(String[] args) {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpJsonReader(vrpBuilder).read("output/vrp.json");
+        VehicleRoutingProblem problem = vrpBuilder.build();
+        for(Job j : problem.getJobs().values()) System.out.println(j);
+        for(Vehicle v : problem.getVehicles()) System.out.println(v);
     }
 
 
