@@ -89,7 +89,7 @@ public class VrpJsonReader {
                 Double lon = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.LON).asDouble();
                 Double lat = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.LAT).asDouble();
                 if (lon != null && lat != null) {
-                    vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(lon, lat));
+                    vehicleBuilder.setEndLocationCoordinate(Coordinate.newInstance(lon, lat));
                 }
             }
 
