@@ -315,7 +315,9 @@ public class VehicleImpl extends AbstractVehicle{
                 "[startLocationCoordinate=" + startLocationCoord + "]" +
                 "[endLocationId=" + endLocationId+"]" +
                 "[endLocationCoordinate=" + endLocationCoord + "]" +
-                "[isReturnToDepot=" + isReturnToDepot() + "]";
+                "[isReturnToDepot=" + isReturnToDepot() + "]" +
+                "[skills="+ skills + "]";
+
 	}
 
 	@Override
