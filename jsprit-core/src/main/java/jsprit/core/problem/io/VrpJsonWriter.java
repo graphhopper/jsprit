@@ -47,9 +47,9 @@ public class VrpJsonWriter {
         this.vrp = vrp;
     }
 
-    public void write(String filename){
+    public void write(String jsonfile){
         try {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(filename));
+            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonfile));
             jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
             jsonGenerator.writeStartObject();
 
