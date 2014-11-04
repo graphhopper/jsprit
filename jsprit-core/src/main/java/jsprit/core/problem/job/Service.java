@@ -277,7 +277,7 @@ public class Service extends AbstractJob {
 	 */
 	@Override
 	public String toString() {
-		return "[id=" + id + "][type="+type+"][locationId=" + locationId + "][coord="+coord+"][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
+		return "[id=" + id + "][name="+name+"][type="+type+"][locationId=" + locationId + "][coord="+coord+"][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
 	}
 
 
