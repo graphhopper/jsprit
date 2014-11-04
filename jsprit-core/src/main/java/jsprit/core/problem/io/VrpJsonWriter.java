@@ -57,10 +57,6 @@ public class VrpJsonWriter {
             writeVehicles(jsonGenerator);
             writeVehicleTypes(jsonGenerator);
             writeServices(jsonGenerator);
-
-
-
-
             jsonGenerator.writeEndObject();
 
             jsonGenerator.flush();
@@ -115,6 +111,7 @@ public class VrpJsonWriter {
                     jsonGenerator.writeNumberField(JsonConstants.Address.LON, vehicle.getStartLocationCoordinate().getX());
                     jsonGenerator.writeNumberField(JsonConstants.Address.LAT,vehicle.getStartLocationCoordinate().getY());
                 jsonGenerator.writeEndObject();
+                jsonGenerator.writeBooleanField(JsonConstants.Vehicle.RETURN_TO_DEPOT,vehicle.isReturnToDepot());
                 if(!(vehicle.getStartLocationCoordinate().equals(vehicle.getEndLocationCoordinate())
                         && vehicle.getStartLocationId().equals(vehicle.getEndLocationId()))){
                     jsonGenerator.writeObjectFieldStart(JsonConstants.Vehicle.END_ADDRESS);
@@ -206,8 +203,10 @@ public class VrpJsonWriter {
                 .setType(type)
                 .build();
 
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0,0))
-                .setType(type2).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
+                .setType(type2)
+                .setReturnToDepot(false)
+                .build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2)
                 .addVehicle(v1).addVehicle(v2).build();
         new VrpJsonWriter(vrp).write("output/vrp.json");

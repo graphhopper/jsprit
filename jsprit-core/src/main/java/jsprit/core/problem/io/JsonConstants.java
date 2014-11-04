@@ -86,6 +86,8 @@ public class JsonConstants {
 
         public static final String TYPE_ID = "type_id";
 
+        public static final String RETURN_TO_DEPOT = "return_to_depot";
+
         public static class Type {
 
             public static final String ID = "id";

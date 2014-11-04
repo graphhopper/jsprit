@@ -22,6 +22,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
+import jsprit.core.problem.job.Service;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -48,55 +50,116 @@ public class VrpJsonReader {
     }
 
     public void read(String jsonFile){
+        JsonNode root = buildTree_and_getRoot(jsonFile);
+        setFleetSize(root);
+        parse_and_map_vehicle_types(root);
+        parse_vehicles(root);
+        parse_services(root);
+    }
 
+    private JsonNode buildTree_and_getRoot(String jsonFile){
+        JsonNode node = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode root = objectMapper.readTree(new File(jsonFile));
-            setFleetSize(root);
-            parse_and_map_vehicle_types(root);
-            parse_vehicles(root);
-
+            node = objectMapper.readTree(new File(jsonFile));
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
+        }
+        return node;
+    }
+
+    private void parse_services(JsonNode root) {
+        JsonNode services = root.path(JsonConstants.SERVICES);
+        for(JsonNode serviceNode : services){
+            JsonNode jobIdNode = serviceNode.path(JsonConstants.Job.ID);
+            if(jobIdNode.isMissingNode()){
+                throw new IllegalStateException("service-id is missing");
+            }
+            Service.Builder serviceBuilder = Service.Builder.newInstance(jobIdNode.asText());
+
+            JsonNode addressIdNode = serviceNode.path(JsonConstants.Job.ADDRESS).path(JsonConstants.Address.ID);
+            boolean either_locationId_or_coord = false;
+            if(!addressIdNode.isMissingNode()){
+                serviceBuilder.setLocationId(addressIdNode.asText());
+                either_locationId_or_coord = true;
+            }
+            {
+                Double lon = serviceNode.path(JsonConstants.Job.ADDRESS).path(JsonConstants.Address.LON).asDouble();
+                Double lat = serviceNode.path(JsonConstants.Job.ADDRESS).path(JsonConstants.Address.LAT).asDouble();
+                if (lon != null && lat != null) {
+                    serviceBuilder.setCoord(Coordinate.newInstance(lon, lat));
+                    either_locationId_or_coord = true;
+                }
+            }
+            if(!either_locationId_or_coord) throw new IllegalStateException("location missing. either locationId or locationCoordinate is required");
+
+            serviceBuilder.setName(serviceNode.path(JsonConstants.Job.NAME).asText());
+            serviceBuilder.setServiceTime(serviceNode.path(JsonConstants.Job.SERVICE_DURATION).asDouble());
+
+            Double tw_start = serviceNode.path(JsonConstants.Job.TIME_WINDOW).path(JsonConstants.TimeWindow.START).asDouble();
+            Double tw_end = serviceNode.path(JsonConstants.Job.TIME_WINDOW).path(JsonConstants.TimeWindow.END).asDouble();
+            if(tw_start != null && tw_end != null){
+                serviceBuilder.setTimeWindow(TimeWindow.newInstance(tw_start,tw_end));
+            }
+
+            JsonNode sizeNode = serviceNode.path(JsonConstants.Job.SIZE);
+            int size_index = 0;
+            for(JsonNode sizeValNode : sizeNode){
+                int size_value = sizeValNode.intValue();
+                serviceBuilder.addSizeDimension(size_index,size_value);
+                size_index++;
+            }
+
+            JsonNode reqSkills = serviceNode.path(JsonConstants.Job.SKILLS);
+            for(JsonNode skillNode : reqSkills){
+                serviceBuilder.addRequiredSkill(skillNode.asText());
+            }
+
+            vrpBuilder.addJob(serviceBuilder.build());
         }
     }
 
     private void parse_vehicles(JsonNode root) {
         JsonNode vehicles = root.path(JsonConstants.VEHICLES);
-        Iterator<JsonNode> vehicle_iterator = vehicles.iterator();
-        while(vehicle_iterator.hasNext()){
-            JsonNode vehicleNode = vehicle_iterator.next();
+
+        for(JsonNode vehicleNode : vehicles){
+//            JsonNode vehicleNode = vehicle_iterator.next();
             VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleNode.path(JsonConstants.Vehicle.ID).asText());
             VehicleType type = vehicle_type_map.get(vehicleNode.path(JsonConstants.Vehicle.TYPE_ID).asText());
             vehicleBuilder.setType(type);
-            vehicleBuilder.setEarliestStart(vehicleNode.path(JsonConstants.Vehicle.EARLIEST_START).asDouble());
-            vehicleBuilder.setLatestArrival(vehicleNode.path(JsonConstants.Vehicle.LATEST_END).asDouble());
+
+            JsonNode earliestStartNode = vehicleNode.path(JsonConstants.Vehicle.EARLIEST_START);
+            if(!earliestStartNode.isMissingNode()) vehicleBuilder.setEarliestStart(earliestStartNode.asDouble());
+
+            JsonNode latestEndNode = vehicleNode.path(JsonConstants.Vehicle.LATEST_END);
+            if(!latestEndNode.isMissingNode()) vehicleBuilder.setLatestArrival(latestEndNode.asDouble());
 
             String startLocationId = vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.ID).asText();
             vehicleBuilder.setStartLocationId(startLocationId);
-            String endLocationId = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.ID).asText();
-            if(!startLocationId.equals(endLocationId)){
-                vehicleBuilder.setEndLocationId(endLocationId);
-            }
-            {
-                Double lon = vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.LON).asDouble();
-                Double lat = vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.LAT).asDouble();
-                if (lon != null && lat != null) {
-                    vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(lon, lat));
+            JsonNode endAddressId = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.ID);
+            if(!endAddressId.isMissingNode()){
+                if(!startLocationId.equals(endAddressId.asText())){
+                    vehicleBuilder.setEndLocationId(endAddressId.asText());
                 }
             }
             {
-                Double lon = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.LON).asDouble();
-                Double lat = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.LAT).asDouble();
-                if (lon != null && lat != null) {
-                    vehicleBuilder.setEndLocationCoordinate(Coordinate.newInstance(lon, lat));
+                JsonNode lonNode = vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.LON);
+                JsonNode latNode = vehicleNode.path(JsonConstants.Vehicle.START_ADDRESS).path(JsonConstants.Address.LAT);
+                if (!lonNode.isMissingNode() && !latNode.isMissingNode()) {
+                    vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(lonNode.asDouble(), latNode.asDouble()));
+                }
+            }
+            {
+                JsonNode lonNode = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.LON);
+                JsonNode latNode = vehicleNode.path(JsonConstants.Vehicle.END_ADDRESS).path(JsonConstants.Address.LAT);
+                if (!lonNode.isMissingNode() && !latNode.isMissingNode()) {
+                    vehicleBuilder.setEndLocationCoordinate(Coordinate.newInstance(lonNode.asDouble(), latNode.asDouble()));
                 }
             }
 
             JsonNode skillsNode = vehicleNode.path(JsonConstants.Vehicle.SKILLS);
-            Iterator<JsonNode> skill_iterator = skillsNode.iterator();
-            while(skill_iterator.hasNext()){
-                JsonNode skillNode = skill_iterator.next();
+            for(JsonNode skillNode : skillsNode){
                 String skill = skillNode.asText();
                 vehicleBuilder.addSkill(skill);
             }
@@ -109,9 +172,7 @@ public class VrpJsonReader {
 
     private void parse_and_map_vehicle_types(JsonNode root) {
         JsonNode types = root.path(JsonConstants.VEHICLE_TYPES);
-        Iterator<JsonNode> typeIterator = types.iterator();
-        while(typeIterator.hasNext()){
-            JsonNode typeNode = typeIterator.next();
+        for(JsonNode typeNode : types){
             VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance(typeNode.path(JsonConstants.Vehicle.Type.ID).asText());
             typeBuilder.setFixedCost(typeNode.path(JsonConstants.Vehicle.Type.FIXED_COSTS).asDouble());
             typeBuilder.setCostPerDistance(typeNode.path(JsonConstants.Vehicle.Type.DISTANCE).asDouble());
