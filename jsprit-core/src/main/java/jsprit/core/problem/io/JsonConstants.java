@@ -28,6 +28,8 @@ public class JsonConstants {
 
     public static final String VEHICLES = "vehicles";
 
+    public static final String VEHICLE_TYPES = "vehicle_types";
+
     public static class Address {
 
         public static String ID = "id";
@@ -73,5 +75,28 @@ public class JsonConstants {
         public static final String START_ADDRESS = "start_address";
 
         public static final String END_ADDRESS = "end_address";
+
+        public static final String EARLIEST_START = "earliest_start";
+
+        public static final String LATEST_END = "latest_end";
+
+        public static final String SKILLS = "skills";
+
+        public static final String CAPACITY = "capacity";
+
+        public static final String TYPE_ID = "type_id";
+
+        public static class Type {
+
+            public static final String ID = "id";
+
+            public static final String CAPACITY = "capacity";
+
+            public static final String FIXED_COSTS = "fixed_costs";
+
+            public static final String DISTANCE = "distance_dependent_costs";
+
+            public static final String TIME = "time_dependent_costs";
+        }
     }
 }

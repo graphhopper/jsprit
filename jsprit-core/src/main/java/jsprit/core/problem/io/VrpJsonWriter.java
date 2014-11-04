@@ -26,10 +26,15 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by stefan on 03.11.14.
@@ -50,7 +55,7 @@ public class VrpJsonWriter {
 
             jsonGenerator.writeStringField(JsonConstants.FLEET,vrp.getFleetSize().toString());
             writeVehicles(jsonGenerator);
-//            writeVehicleTypes(jsonGenerator);
+            writeVehicleTypes(jsonGenerator);
             writeServices(jsonGenerator);
 
 
@@ -64,6 +69,39 @@ public class VrpJsonWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void writeVehicleTypes(JsonGenerator jsonGenerator) {
+        try {
+            jsonGenerator.writeArrayFieldStart(JsonConstants.VEHICLE_TYPES);
+            Collection<VehicleType> types = getTypes(vrp.getVehicles());
+
+            for(VehicleType type : types){
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeStringField(JsonConstants.Vehicle.Type.ID, type.getTypeId());
+
+                jsonGenerator.writeArrayFieldStart(JsonConstants.Vehicle.Type.CAPACITY);
+                for(int i=0;i<type.getCapacityDimensions().getNuOfDimensions();i++){
+                    jsonGenerator.writeNumber(type.getCapacityDimensions().get(i));
+                }
+                jsonGenerator.writeEndArray();
+
+                jsonGenerator.writeNumberField(JsonConstants.Vehicle.Type.FIXED_COSTS, type.getVehicleCostParams().fix);
+                jsonGenerator.writeNumberField(JsonConstants.Vehicle.Type.DISTANCE, type.getVehicleCostParams().perDistanceUnit);
+                jsonGenerator.writeNumberField(JsonConstants.Vehicle.Type.TIME, type.getVehicleCostParams().perTimeUnit);
+
+                jsonGenerator.writeEndObject();
+            }
+            jsonGenerator.writeEndArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Collection<VehicleType> getTypes(Collection<Vehicle> vehicles) {
+        Set<VehicleType> types = new HashSet<VehicleType>();
+        for(Vehicle v : vehicles) types.add(v.getType());
+        return types;
     }
 
     private void writeVehicles(JsonGenerator jsonGenerator) {
@@ -85,7 +123,16 @@ public class VrpJsonWriter {
                     jsonGenerator.writeNumberField(JsonConstants.Address.LAT,vehicle.getEndLocationCoordinate().getY());
                     jsonGenerator.writeEndObject();
                 }
+                jsonGenerator.writeNumberField(JsonConstants.Vehicle.EARLIEST_START,vehicle.getEarliestDeparture());
+                jsonGenerator.writeNumberField(JsonConstants.Vehicle.LATEST_END,vehicle.getLatestArrival());
 
+                jsonGenerator.writeStringField(JsonConstants.Vehicle.TYPE_ID,vehicle.getType().getTypeId());
+
+                jsonGenerator.writeArrayFieldStart(JsonConstants.Vehicle.SKILLS);
+                for(String skill : vehicle.getSkills().values()){
+                    jsonGenerator.writeString(skill);
+                }
+                jsonGenerator.writeEndArray();
                 jsonGenerator.writeEndObject();
             }
             jsonGenerator.writeEndArray();
@@ -148,11 +195,19 @@ public class VrpJsonWriter {
                 .setServiceTime(100.)
                 .setTimeWindow(TimeWindow.newInstance(10, 20))
                 .addRequiredSkill("screw-driver").build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0,0))
-                .setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(12, 12)).build();
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("small").addCapacityDimension(0,10).addCapacityDimension(2,400)
+                .setCostPerTime(20.).build();
+
+        VehicleType type2 = VehicleTypeImpl.Builder.newInstance("medium").addCapacityDimension(0,1000).addCapacityDimension(2,4000)
+                .setCostPerTime(200.).setFixedCost(1000.).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
+                .setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(12, 12))
+                .addSkill("screw-driver")
+                .setType(type)
+                .build();
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0,0))
-                .build();
+                .setType(type2).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2)
                 .addVehicle(v1).addVehicle(v2).build();
         new VrpJsonWriter(vrp).write("output/vrp.json");
