@@ -1,5 +1,9 @@
 Change-log
 ==========
+**v1.4.2** @ 2014-10-14
+
+new feature: core.analysis.SolutionAnalyser
+
 **v1.4.1** @ 2014-09-25
 - bugfix [#131](https://github.com/jsprit/jsprit/issues/131)
 - bugfix [#134](https://github.com/jsprit/jsprit/issues/134)
