@@ -21,9 +21,12 @@ import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import jsprit.core.analysis.SolutionAnalyser;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
+import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
@@ -46,15 +49,27 @@ public class VrpJsonWriter {
 
     private final VehicleRoutingProblem vrp;
 
+    private final VehicleRoutingProblemSolution solution;
+
+    private SolutionAnalyser solutionAnalyzer;
+
     public VrpJsonWriter(VehicleRoutingProblem vrp) {
         this.vrp = vrp;
+        this.solution = null;
+    }
+
+    public VrpJsonWriter(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, SolutionAnalyser.DistanceCalculator distanceCalculator){
+        this.vrp = vrp;
+        this.solution = solution;
+        this.solutionAnalyzer = new SolutionAnalyser(vrp,solution,distanceCalculator);
     }
 
     public String toString(){
         StringWriter stringWriter = new StringWriter();
         try {
             JsonGenerator jsonGenerator = new JsonFactory().createGenerator(stringWriter);
-            write(jsonGenerator);
+            if(solution == null) writeProblem(jsonGenerator);
+            else writeSolution(jsonGenerator);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -62,17 +77,49 @@ public class VrpJsonWriter {
         return stringWriter.toString();
     }
 
+
+
     public void write(File jsonFile){
         try {
             JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonFile), JsonEncoding.UTF8);
-            write(jsonGenerator);
+            if(solution == null) writeProblem(jsonGenerator);
+            else writeSolution(jsonGenerator);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-    private void write(JsonGenerator jsonGenerator) throws IOException {
+    private void writeSolution(JsonGenerator jsonGenerator) throws IOException {
+        jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+        jsonGenerator.writeStartObject();
+        writeSolution_(jsonGenerator);
+        jsonGenerator.writeEndObject();
+        jsonGenerator.flush();
+        jsonGenerator.close();
+    }
+
+    private void writeSolution_(JsonGenerator jsonGenerator) {
+        try {
+            jsonGenerator.writeNumberField(JsonConstants.Solution.COSTS,solution.getCost());
+            jsonGenerator.writeNumberField(JsonConstants.Solution.FIXED_COSTS,solutionAnalyzer.getFixedCosts());
+            jsonGenerator.writeNumberField(JsonConstants.Solution.VARIABLE_COSTS, solutionAnalyzer.getVariableTransportCosts());
+            jsonGenerator.writeNumberField(JsonConstants.Solution.DISTANCE,solutionAnalyzer.getDistance());
+            jsonGenerator.writeNumberField(JsonConstants.Solution.TIME, solutionAnalyzer.getTransportTime());
+            jsonGenerator.writeNumberField(JsonConstants.Solution.NO_ROUTES,solution.getRoutes().size());
+            jsonGenerator.writeNumberField(JsonConstants.Solution.NO_UNASSIGNED,solution.getUnassignedJobs().size());
+            jsonGenerator.writeArrayFieldStart(JsonConstants.Solution.ROUTES);
+            for(VehicleRoute route : solution.getRoutes()){
+//                jsonGenerator.writeNumberField(JsonConstants.Solution.FIXED_COSTS,solutionAnalyzer.getCosgetCo(route));
+            }
+            jsonGenerator.writeEndArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void writeProblem(JsonGenerator jsonGenerator) throws IOException {
         jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField(JsonConstants.FLEET,vrp.getFleetSize().toString());

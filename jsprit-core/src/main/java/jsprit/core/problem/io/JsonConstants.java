@@ -30,6 +30,56 @@ public class JsonConstants {
 
     public static final String VEHICLE_TYPES = "vehicle_types";
 
+    public static class Solution {
+
+        public static final String COSTS = "costs";
+
+        public static final String DISTANCE = "distance";
+
+        public static final String TIME = "time";
+
+        public static final String ROUTES = "routes";
+
+        public static final String NO_ROUTES = "no_routes";
+
+        public static final String NO_UNASSIGNED = "no_unassigned_jobs";
+
+        public static final String FIXED_COSTS = "fixed_costs";
+
+        public static final String VARIABLE_COSTS = "variable_costs";
+
+        public static class Route {
+
+            public static final String COSTS = "costs";
+
+            public static final String DISTANCE = "distance";
+
+            public static final String TIME = "time";
+
+            public static final String VEHICLE_ID = "vehicle_id";
+
+            public static final String START_TIME = "start_time";
+
+            public static final String END_TIME = "end_time";
+
+            public static final String ACTIVITY = "act";
+
+            public static class Activity {
+
+                public static final String TYPE = "type";
+
+                public static final String SERVICE_ID = "job_id";
+
+                public static final String ARR_TIME = "arr_time";
+
+                public static final String END_TIME = "end_time";
+
+            }
+
+        }
+
+    }
+
     public static class Address {
 
         public static String ID = "id";
