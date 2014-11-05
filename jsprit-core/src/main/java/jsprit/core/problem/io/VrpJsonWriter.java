@@ -34,6 +34,7 @@ import jsprit.core.util.Coordinate;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,23 +50,38 @@ public class VrpJsonWriter {
         this.vrp = vrp;
     }
 
-    public void write(File jsonFile){
+    public String toString(){
+        StringWriter stringWriter = new StringWriter();
         try {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonFile), JsonEncoding.UTF8);
-            jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField(JsonConstants.FLEET,vrp.getFleetSize().toString());
-            writeVehicles(jsonGenerator);
-            writeVehicleTypes(jsonGenerator);
-            writeServices(jsonGenerator);
-            jsonGenerator.writeEndObject();
-
-            jsonGenerator.flush();
-            jsonGenerator.close();
+            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(stringWriter);
+            write(jsonGenerator);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
+        return stringWriter.toString();
+    }
+
+    public void write(File jsonFile){
+        try {
+            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonFile), JsonEncoding.UTF8);
+            write(jsonGenerator);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private void write(JsonGenerator jsonGenerator) throws IOException {
+        jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeStringField(JsonConstants.FLEET,vrp.getFleetSize().toString());
+        writeVehicles(jsonGenerator);
+        writeVehicleTypes(jsonGenerator);
+        writeServices(jsonGenerator);
+        jsonGenerator.writeEndObject();
+        jsonGenerator.flush();
+        jsonGenerator.close();
     }
 
     private void writeVehicleTypes(JsonGenerator jsonGenerator) {
@@ -212,6 +228,7 @@ public class VrpJsonWriter {
                 .build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2)
                 .addVehicle(v1).addVehicle(v2).build();
-        new VrpJsonWriter(vrp).write(new File("output/vrp.json"));
+//        new VrpJsonWriter(vrp).write(new File("output/vrp.json"));
+        System.out.println(new VrpJsonWriter(vrp).toString());
     }
 }
