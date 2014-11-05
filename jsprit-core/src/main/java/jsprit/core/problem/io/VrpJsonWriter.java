@@ -17,6 +17,7 @@
 
 package jsprit.core.problem.io;
 
+import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -30,6 +31,7 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
@@ -47,9 +49,9 @@ public class VrpJsonWriter {
         this.vrp = vrp;
     }
 
-    public void write(String jsonFile){
+    public void write(File jsonFile){
         try {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonFile));
+            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonFile), JsonEncoding.UTF8);
             jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField(JsonConstants.FLEET,vrp.getFleetSize().toString());
@@ -201,6 +203,7 @@ public class VrpJsonWriter {
                 .setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(12, 12))
                 .addSkill("screw-driver")
                 .setType(type)
+                .setLatestArrival(1000.)
                 .build();
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
@@ -209,6 +212,6 @@ public class VrpJsonWriter {
                 .build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2)
                 .addVehicle(v1).addVehicle(v2).build();
-        new VrpJsonWriter(vrp).write("output/vrp.json");
+        new VrpJsonWriter(vrp).write(new File("output/vrp.json"));
     }
 }
