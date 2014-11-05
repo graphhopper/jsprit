@@ -47,12 +47,11 @@ public class VrpJsonWriter {
         this.vrp = vrp;
     }
 
-    public void write(String jsonfile){
+    public void write(String jsonFile){
         try {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonfile));
+            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonFile));
             jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
             jsonGenerator.writeStartObject();
-
             jsonGenerator.writeStringField(JsonConstants.FLEET,vrp.getFleetSize().toString());
             writeVehicles(jsonGenerator);
             writeVehicleTypes(jsonGenerator);
@@ -61,9 +60,9 @@ public class VrpJsonWriter {
 
             jsonGenerator.flush();
             jsonGenerator.close();
-
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -146,7 +145,8 @@ public class VrpJsonWriter {
                 if(!(job instanceof Service)) continue;
                 Service service = (Service)job;
                 jsonGenerator.writeStartObject();
-                jsonGenerator.writeStringField(JsonConstants.Job.ID,service.getId());
+                jsonGenerator.writeStringField(JsonConstants.Job.ID, service.getId());
+                jsonGenerator.writeStringField(JsonConstants.Job.TYPE,service.getType());
                 jsonGenerator.writeStringField(JsonConstants.Job.NAME,service.getName());
                 jsonGenerator.writeObjectFieldStart(JsonConstants.Job.ADDRESS);
                 jsonGenerator.writeStringField(JsonConstants.Address.ID, service.getLocationId());
