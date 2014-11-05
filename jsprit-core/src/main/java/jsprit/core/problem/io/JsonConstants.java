@@ -47,8 +47,6 @@ public class JsonConstants {
         public static final String END = "end";
     }
 
-    public static String JOB = "job";
-
     public static class Job {
 
         public static final String SIZE = "size";
