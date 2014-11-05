@@ -64,6 +64,12 @@ public class JsonConstants {
 
             public static final String ACTIVITY = "act";
 
+            public static final String FIXED_COSTS = "fixed_costs";
+
+            public static final String VARIABLE_COSTS = "variable_costs";
+
+            public static final String NO_ACTIVITIES = "no_activities";
+
             public static class Activity {
 
                 public static final String TYPE = "type";

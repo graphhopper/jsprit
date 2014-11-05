@@ -21,6 +21,8 @@ import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.analysis.SolutionAnalyser;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
@@ -28,11 +30,13 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
+import jsprit.core.util.Solutions;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -110,7 +114,22 @@ public class VrpJsonWriter {
             jsonGenerator.writeNumberField(JsonConstants.Solution.NO_UNASSIGNED,solution.getUnassignedJobs().size());
             jsonGenerator.writeArrayFieldStart(JsonConstants.Solution.ROUTES);
             for(VehicleRoute route : solution.getRoutes()){
-//                jsonGenerator.writeNumberField(JsonConstants.Solution.FIXED_COSTS,solutionAnalyzer.getCosgetCo(route));
+                jsonGenerator.writeNumberField(JsonConstants.Solution.Route.FIXED_COSTS,solutionAnalyzer.getFixedCosts(route));
+                jsonGenerator.writeNumberField(JsonConstants.Solution.Route.VARIABLE_COSTS,solutionAnalyzer.getVariableTransportCosts(route));
+                jsonGenerator.writeNumberField(JsonConstants.Solution.Route.NO_ACTIVITIES,route.getActivities().size());
+                jsonGenerator.writeNumberField(JsonConstants.Solution.Route.START_TIME,route.getStart().getEndTime());
+                for(TourActivity act : route.getActivities()) {
+                    jsonGenerator.writeObjectFieldStart(JsonConstants.Solution.Route.ACTIVITY);
+                    jsonGenerator.writeStringField(JsonConstants.Solution.Route.Activity.TYPE,act.getName());
+                    if(act instanceof TourActivity.JobActivity){
+                        jsonGenerator.writeStringField(JsonConstants.Solution.Route.Activity.SERVICE_ID,((TourActivity.JobActivity) act).getJob().getId());
+                    }
+                    else throw new IllegalStateException("act of class " + act.getClass().toString() + " not supported.");
+                    jsonGenerator.writeNumberField(JsonConstants.Solution.Route.Activity.ARR_TIME, act.getArrTime());
+                    jsonGenerator.writeNumberField(JsonConstants.Solution.Route.Activity.END_TIME,act.getEndTime());
+                    jsonGenerator.writeEndObject();
+                }
+                jsonGenerator.writeNumberField(JsonConstants.Solution.Route.END_TIME, route.getEnd().getArrTime());
             }
             jsonGenerator.writeEndArray();
         } catch (IOException e) {
@@ -248,19 +267,18 @@ public class VrpJsonWriter {
     public static void main(String[] args) {
         Service service = Service.Builder.newInstance("s1").setLocationId("s1_loc").setCoord(Coordinate.newInstance(40, 10))
                 .addSizeDimension(0, 20).addSizeDimension(1, 40)
-                .setServiceTime(100.)
-                .setTimeWindow(TimeWindow.newInstance(10, 20))
-                .addRequiredSkill("drilling-machine")
-                .addRequiredSkill("screw-driver").build();
+                .setServiceTime(1.)
+                .addRequiredSkill("joo")
+                .build();
         Service service2 = Service.Builder.newInstance("s2").setLocationId("s2_loc").setCoord(Coordinate.newInstance(40, 10))
-                .addSizeDimension(0, 20).addSizeDimension(1, 40)
-                .setServiceTime(100.)
-                .setTimeWindow(TimeWindow.newInstance(10, 20))
+                .addSizeDimension(0, 10).addSizeDimension(1, 30)
+                .setServiceTime(2.)
+                .setTimeWindow(TimeWindow.newInstance(10, 200))
                 .addRequiredSkill("screw-driver").build();
-        VehicleType type = VehicleTypeImpl.Builder.newInstance("small").addCapacityDimension(0,10).addCapacityDimension(2,400)
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("small").addCapacityDimension(0,100).addCapacityDimension(1,400)
                 .setCostPerTime(20.).build();
 
-        VehicleType type2 = VehicleTypeImpl.Builder.newInstance("medium").addCapacityDimension(0,1000).addCapacityDimension(2,4000)
+        VehicleType type2 = VehicleTypeImpl.Builder.newInstance("medium").addCapacityDimension(0,1000).addCapacityDimension(1,4000)
                 .setCostPerTime(200.).setFixedCost(1000.).build();
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
                 .setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(12, 12))
@@ -272,10 +290,24 @@ public class VrpJsonWriter {
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
                 .setType(type2)
                 .setReturnToDepot(false)
+                .addSkill("joo")
                 .build();
-        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2)
+
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2)
                 .addVehicle(v1).addVehicle(v2).build();
-//        new VrpJsonWriter(vrp).write(new File("output/vrp.json"));
-        System.out.println(new VrpJsonWriter(vrp).toString());
+        new VrpJsonWriter(vrp).write(new File("output/vrp.json"));
+//        System.out.println(new VrpJsonWriter(vrp).toString());
+
+        VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
+        VehicleRoutingProblemSolution solutions = Solutions.bestOf(vra.searchSolutions());
+
+        new VrpJsonWriter(vrp,solutions,new SolutionAnalyser.DistanceCalculator() {
+
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        }).write(new File("output/vrp-solution.json"));
+
     }
 }
