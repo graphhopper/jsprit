@@ -470,7 +470,7 @@ public class VehicleRoutingAlgorithms {
 		}
 		stateManager.updateLoadStates();
 		stateManager.updateTimeWindowStates();
-//        stateManager.updateSkillStates();
+        stateManager.updateSkillStates();
 		stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
 		stateManager.addStateUpdater(new OpenRouteStateVerifier());
 		stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts()));
@@ -483,7 +483,7 @@ public class VehicleRoutingAlgorithms {
 		ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 		constraintManager.addTimeWindowConstraint();
 		constraintManager.addLoadConstraint();
-//        constraintManager.addSkillsConstraint();
+        constraintManager.addSkillsConstraint();
 		
 		return readAndCreateAlgorithm(vrp, config, nuOfThreads, null, stateManager, constraintManager, true);	
 	}
