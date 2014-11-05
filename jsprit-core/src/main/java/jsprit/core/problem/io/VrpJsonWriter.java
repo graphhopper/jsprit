@@ -26,6 +26,7 @@ import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.analysis.SolutionAnalyser;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
+import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -112,8 +113,10 @@ public class VrpJsonWriter {
             jsonGenerator.writeNumberField(JsonConstants.Solution.TIME, solutionAnalyzer.getTransportTime());
             jsonGenerator.writeNumberField(JsonConstants.Solution.NO_ROUTES,solution.getRoutes().size());
             jsonGenerator.writeNumberField(JsonConstants.Solution.NO_UNASSIGNED,solution.getUnassignedJobs().size());
+
             jsonGenerator.writeArrayFieldStart(JsonConstants.Solution.ROUTES);
             for(VehicleRoute route : solution.getRoutes()){
+                jsonGenerator.writeStartObject();
                 jsonGenerator.writeNumberField(JsonConstants.Solution.Route.FIXED_COSTS,solutionAnalyzer.getFixedCosts(route));
                 jsonGenerator.writeNumberField(JsonConstants.Solution.Route.VARIABLE_COSTS,solutionAnalyzer.getVariableTransportCosts(route));
                 jsonGenerator.writeNumberField(JsonConstants.Solution.Route.NO_ACTIVITIES,route.getActivities().size());
@@ -130,8 +133,16 @@ public class VrpJsonWriter {
                     jsonGenerator.writeEndObject();
                 }
                 jsonGenerator.writeNumberField(JsonConstants.Solution.Route.END_TIME, route.getEnd().getArrTime());
+                jsonGenerator.writeEndObject();
             }
             jsonGenerator.writeEndArray();
+            //unassigned jobs
+            jsonGenerator.writeArrayFieldStart(JsonConstants.Solution.Route.UNASSIGNED);
+            for(Job j : solution.getUnassignedJobs()){
+               jsonGenerator.writeString(j.getId());
+            }
+            jsonGenerator.writeEndArray();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -268,9 +279,9 @@ public class VrpJsonWriter {
         Service service = Service.Builder.newInstance("s1").setLocationId("s1_loc").setCoord(Coordinate.newInstance(40, 10))
                 .addSizeDimension(0, 20).addSizeDimension(1, 40)
                 .setServiceTime(1.)
-                .addRequiredSkill("joo")
+                .addRequiredSkill("joo-foo")
                 .build();
-        Service service2 = Service.Builder.newInstance("s2").setLocationId("s2_loc").setCoord(Coordinate.newInstance(40, 10))
+        Pickup service2 = (Pickup) Pickup.Builder.newInstance("pickup2").setLocationId("s2_loc").setCoord(Coordinate.newInstance(40, 10))
                 .addSizeDimension(0, 10).addSizeDimension(1, 30)
                 .setServiceTime(2.)
                 .setTimeWindow(TimeWindow.newInstance(10, 200))
@@ -280,6 +291,7 @@ public class VrpJsonWriter {
 
         VehicleType type2 = VehicleTypeImpl.Builder.newInstance("medium").addCapacityDimension(0,1000).addCapacityDimension(1,4000)
                 .setCostPerTime(200.).setFixedCost(1000.).build();
+
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("startLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
                 .setEndLocationId("endLoc").setEndLocationCoordinate(Coordinate.newInstance(12, 12))
                 .addSkill("screw-driver")

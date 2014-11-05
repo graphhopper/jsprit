@@ -70,6 +70,8 @@ public class JsonConstants {
 
             public static final String NO_ACTIVITIES = "no_activities";
 
+            public static final String UNASSIGNED = "unassigned_jobs";
+
             public static class Activity {
 
                 public static final String TYPE = "type";
