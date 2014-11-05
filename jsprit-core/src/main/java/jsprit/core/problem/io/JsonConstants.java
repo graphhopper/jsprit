@@ -69,6 +69,8 @@ public class JsonConstants {
         public static final String PICKUP = "pickup";
 
         public static final String DELIVERY = "delivery";
+
+        public static final String SERVICE = "service";
     }
 
     public static class Vehicle {

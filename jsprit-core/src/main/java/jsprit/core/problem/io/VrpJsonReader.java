@@ -58,19 +58,40 @@ public class VrpJsonReader {
      * @throws java.lang.IllegalStateException if there is a service without id and proper location spec OR
      * if there is a vehicle without id and proper location spec OR if there is a vehicle type without id
      */
-    public void read(String jsonFile){
-        JsonNode root = buildTree_and_getRoot(jsonFile);
+    public void read(File jsonFile){
+        JsonNode root = buildTree_and_getRoot_fromFile(jsonFile);
+        parse(root);
+    }
+
+    public void read(String jsonContent){
+        JsonNode root = buildTree_and_getRoot_fromContent(jsonContent);
+        parse(root);
+    }
+
+    private void parse(JsonNode root) {
         setFleetSize(root);
         parse_and_map_vehicle_types(root);
         parse_vehicles(root);
         parse_services(root);
     }
 
-    private JsonNode buildTree_and_getRoot(String jsonFile){
+    private JsonNode buildTree_and_getRoot_fromContent(String jsonContent){
         JsonNode node = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            node = objectMapper.readTree(new File(jsonFile));
+            node = objectMapper.readTree(jsonContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return node;
+    }
+
+    private JsonNode buildTree_and_getRoot_fromFile(File jsonFile){
+        JsonNode node = null;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            node = objectMapper.readTree(jsonFile);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -93,6 +114,7 @@ public class VrpJsonReader {
 
             Service.Builder serviceBuilder;
             if(typeNode.isMissingNode()) serviceBuilder = Service.Builder.newInstance(jobIdNode.asText());
+            else if(typeNode.asText().equals(JsonConstants.Job.SERVICE)) serviceBuilder = Service.Builder.newInstance(jobIdNode.asText());
             else if(typeNode.asText().equals(JsonConstants.Job.PICKUP)) serviceBuilder = Pickup.Builder.newInstance(jobIdNode.asText());
             else if(typeNode.asText().equals(JsonConstants.Job.DELIVERY)) serviceBuilder = Delivery.Builder.newInstance(jobIdNode.asText());
             else throw new IllegalStateException("type of service ("+typeNode.asText()+") is not supported");
@@ -244,7 +266,7 @@ public class VrpJsonReader {
 
     public static void main(String[] args) {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpJsonReader(vrpBuilder).read("output/vrp.json");
+        new VrpJsonReader(vrpBuilder).read(new File("output/vrp.json"));
         VehicleRoutingProblem problem = vrpBuilder.build();
         for(Job j : problem.getJobs().values()) System.out.println(j);
         for(Vehicle v : problem.getVehicles()) System.out.println(v);
