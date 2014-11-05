@@ -66,6 +66,11 @@ public class JsonConstants {
 
         public static final String TIME_WINDOW = "time_window";
 
+        public static final String TYPE = "type";
+
+        public static final String PICKUP = "pickup";
+
+        public static final String DELIVERY = "delivery";
     }
 
     public static class Vehicle {
