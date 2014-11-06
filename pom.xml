@@ -85,6 +85,8 @@
   	<junit.version>4.10</junit.version>
   	<mockito.version>1.9.5</mockito.version>
   	<logger.version>2.0</logger.version>
+    <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+
   </properties>
   
   <build>
