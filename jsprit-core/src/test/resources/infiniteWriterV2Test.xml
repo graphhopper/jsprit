@@ -35,12 +35,12 @@
           </type>
      </vehicleTypes>
      <services>
-          <service id="2" type="service">
-               <locationId>loc2</locationId>
+          <service id="1" type="service">
+               <locationId>loc</locationId>
                <capacity-dimensions>
                     <dimension index="0">1</dimension>
                </capacity-dimensions>
-               <duration>4.0</duration>
+               <duration>2.0</duration>
                <timeWindows>
                     <timeWindow>
                          <start>0.0</start>
@@ -48,12 +48,12 @@
                     </timeWindow>
                </timeWindows>
           </service>
-          <service id="1" type="service">
-               <locationId>loc</locationId>
+          <service id="2" type="service">
+               <locationId>loc2</locationId>
                <capacity-dimensions>
                     <dimension index="0">1</dimension>
                </capacity-dimensions>
-               <duration>2.0</duration>
+               <duration>4.0</duration>
                <timeWindows>
                     <timeWindow>
                          <start>0.0</start>
