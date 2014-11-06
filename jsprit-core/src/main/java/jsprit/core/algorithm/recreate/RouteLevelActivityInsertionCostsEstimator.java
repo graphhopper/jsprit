@@ -56,7 +56,7 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 		int actIndex;
 		if(prevAct instanceof Start) actIndex = 0;
 		else actIndex = iFacts.getRoute().getTourActivities().getActivities().indexOf(nextAct);
-		if(nuOfActivities2LookForward > 0){ path.addAll(getForwardLookingPath(iFacts.getRoute(),actIndex)); }
+		if(nuOfActivities2LookForward > 0 && !(nextAct instanceof End)){ path.addAll(getForwardLookingPath(iFacts.getRoute(),actIndex)); }
 
 		/*
 		 * calculates the path costs with new vehicle, c(forwardPath,newVehicle).
