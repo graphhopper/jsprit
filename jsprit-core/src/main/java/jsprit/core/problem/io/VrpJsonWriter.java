@@ -310,7 +310,11 @@ public class VrpJsonWriter {
         new VrpJsonWriter(vrp).write(new File("output/vrp.json"));
 //        System.out.println(new VrpJsonWriter(vrp).toString());
 
-        VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
+        VehicleRoutingProblem.Builder vrpBuilder_ = VehicleRoutingProblem.Builder.newInstance();
+        new VrpJsonReader(vrpBuilder_).read("output/vpr.json");
+        VehicleRoutingProblem vrp_ = vrpBuilder_.build();
+
+        VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp_);
         VehicleRoutingProblemSolution solutions = Solutions.bestOf(vra.searchSolutions());
 
         new VrpJsonWriter(vrp,solutions,new SolutionAnalyser.DistanceCalculator() {

@@ -32,7 +32,9 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -91,7 +93,12 @@ public class VrpJsonReader {
         JsonNode node = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            node = objectMapper.readTree(jsonFile);
+            String jsonContent = "";
+            BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
+            String line;
+            while((line = reader.readLine()) != null) jsonContent += line;
+            reader.close();
+            node = objectMapper.readTree(jsonContent);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
