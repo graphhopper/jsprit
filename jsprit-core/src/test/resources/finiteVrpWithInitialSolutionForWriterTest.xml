@@ -6,6 +6,23 @@
      </problemType>
      <vehicles>
           <vehicle>
+               <id>v3</id>
+               <typeId>vehType2</typeId>
+               <startLocation>
+                    <id>startLoc</id>
+                    <coord x="10.0" y="100.0"/>
+               </startLocation>
+               <endLocation>
+                    <id>endLoc</id>
+                    <coord x="1000.0" y="2000.0"/>
+               </endLocation>
+               <timeSchedule>
+                    <start>0.0</start>
+                    <end>1000.0</end>
+               </timeSchedule>
+               <returnToDepot>true</returnToDepot>
+          </vehicle>
+          <vehicle>
                <id>v2</id>
                <typeId>vehType2</typeId>
                <startLocation>
@@ -23,7 +40,7 @@
                <returnToDepot>false</returnToDepot>
           </vehicle>
           <vehicle>
-               <id>v3</id>
+               <id>v4</id>
                <typeId>vehType2</typeId>
                <startLocation>
                     <id>startLoc</id>
@@ -42,23 +59,6 @@
           <vehicle>
                <id>v5</id>
                <typeId>vehType3</typeId>
-               <startLocation>
-                    <id>startLoc</id>
-                    <coord x="10.0" y="100.0"/>
-               </startLocation>
-               <endLocation>
-                    <id>endLoc</id>
-                    <coord x="1000.0" y="2000.0"/>
-               </endLocation>
-               <timeSchedule>
-                    <start>0.0</start>
-                    <end>1000.0</end>
-               </timeSchedule>
-               <returnToDepot>true</returnToDepot>
-          </vehicle>
-          <vehicle>
-               <id>v4</id>
-               <typeId>vehType2</typeId>
                <startLocation>
                     <id>startLoc</id>
                     <coord x="10.0" y="100.0"/>
@@ -137,20 +137,6 @@
           </type>
      </vehicleTypes>
      <services>
-          <service id="2" type="service">
-               <locationId>i(3,9)</locationId>
-               <coord x="10.0" y="10.0"/>
-               <capacity-dimensions>
-                    <dimension index="0">1</dimension>
-               </capacity-dimensions>
-               <duration>0.0</duration>
-               <timeWindows>
-                    <timeWindow>
-                         <start>0.0</start>
-                         <end>4000.0</end>
-                    </timeWindow>
-               </timeWindows>
-          </service>
           <service id="1" type="service">
                <locationId>j(1,5)</locationId>
                <coord x="10.0" y="10.0"/>
@@ -158,6 +144,20 @@
                     <dimension index="0">1</dimension>
                </capacity-dimensions>
                <duration>10.0</duration>
+               <timeWindows>
+                    <timeWindow>
+                         <start>0.0</start>
+                         <end>4000.0</end>
+                    </timeWindow>
+               </timeWindows>
+          </service>
+          <service id="2" type="service">
+               <locationId>i(3,9)</locationId>
+               <coord x="10.0" y="10.0"/>
+               <capacity-dimensions>
+                    <dimension index="0">1</dimension>
+               </capacity-dimensions>
+               <duration>0.0</duration>
                <timeWindows>
                     <timeWindow>
                          <start>0.0</start>

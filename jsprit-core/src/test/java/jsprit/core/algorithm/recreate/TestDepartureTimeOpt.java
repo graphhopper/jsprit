@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 
+
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -36,9 +37,10 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-
+@Ignore
 public class TestDepartureTimeOpt {
 	
 	@Test

@@ -217,7 +217,12 @@ class CalculatorBuilder {
 			addInsertionListeners(withFixed.getInsertionListener());
 		}
 		if(timeScheduling){
-			baseCalculator = new CalculatesServiceInsertionWithTimeScheduling(baseCalculator,timeSlice,neighbors);
+//			baseCalculator = new CalculatesServiceInsertionWithTimeSchedulingInSlices(baseCalculator,timeSlice,neighbors);
+            CalculatesServiceInsertionWithTimeScheduling wts = new CalculatesServiceInsertionWithTimeScheduling(baseCalculator,timeSlice,neighbors);
+            CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(wts);
+            calcPlusListeners.getInsertionListener().add(new CalculatesServiceInsertionWithTimeScheduling.KnowledgeInjection(wts));
+            addInsertionListeners(calcPlusListeners.getInsertionListener());
+            baseCalculator = calcPlusListeners.getCalculator();
 		}
 		return createFinalInsertion(fleetManager, baseCalculator, states);
 	}
