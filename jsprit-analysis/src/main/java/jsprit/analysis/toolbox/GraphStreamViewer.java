@@ -27,7 +27,6 @@ import jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import jsprit.core.problem.solution.route.activity.PickupActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
-import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.Time;
 import org.graphstream.graph.Edge;
@@ -44,7 +43,7 @@ import java.awt.*;
 
 public class GraphStreamViewer {
 
-	protected static String styleSheet =
+	 public static String STYLESHEET =
 			"node {" +
 					"	size: 10px, 10px;" +
 					"   fill-color: #6CC644;" +
@@ -79,6 +78,13 @@ public class GraphStreamViewer {
 					"	size: 10px, 10px;"  +
 					" 	shape: box;" +
 					"}" +
+                    "node.removed {" +
+                    " 	fill-color: #BD2C00;" +
+                    "	size: 10px, 10px;"  +
+                    " 	stroke-mode: plain;" +
+                    "	stroke-color: #333;" +
+                    "   stroke-width: 2.0;" +
+                    "}" +
 					
 					"edge {" +
 					"	fill-color: #333;" +
@@ -175,57 +181,72 @@ public class GraphStreamViewer {
 	
 	public void display(){
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-		
-		JFrame jframe = new JFrame();
-		
-		JPanel basicPanel = new JPanel();
-		basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
-		
-		//result-panel
-		JPanel resultPanel = createResultPanel();
-		//graphstream-panel
-		Graph g = new MultiGraph("g");
-		g.addAttribute("ui.quality");
-		g.addAttribute("ui.antialias");
-		g.addAttribute("ui.stylesheet", styleSheet);
 
-		JPanel graphStreamPanel = new JPanel();
-		graphStreamPanel.setPreferredSize(new Dimension((int)(800*scaling),(int)(460*scaling)));
-		graphStreamPanel.setBackground(Color.WHITE);
-		
-		JPanel graphStreamBackPanel = new JPanel();
-		graphStreamBackPanel.setPreferredSize(new Dimension((int)(700*scaling),(int)(450*scaling)));
-		graphStreamBackPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-		graphStreamBackPanel.setBackground(Color.WHITE);
-		
-		Viewer viewer = new Viewer(g,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD); 
-		View view = viewer.addDefaultView(false);
-		view.setPreferredSize(new Dimension((int)(698*scaling),(int)(440*scaling)));
-			
-		graphStreamBackPanel.add(view);	
-		graphStreamPanel.add(graphStreamBackPanel);
-		
-		//setup basicPanel
-		basicPanel.add(resultPanel);
-		basicPanel.add(graphStreamPanel);
-//		basicPanel.add(legendPanel);
-		
-		//put it together
-		jframe.add(basicPanel);
-		
-		//conf jframe
-		jframe.setSize((int)(800*scaling),(int)(580*scaling));
-		jframe.setLocationRelativeTo(null);
-		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jframe.setVisible(true);
-		jframe.pack();
-		jframe.setTitle("jsprit - GraphStream");
-		
-		//start rendering graph
-		render(g,view);
+        Graph g = createMultiGraph("g");
+
+        View view = createEmbeddedView(g);
+
+        JFrame jframe = createJFrame(view);
+
+        render(g,view);
 	}
 
-	private void render(Graph g, View view) {
+    public JFrame createJFrame(View view) {
+        JFrame jframe = new JFrame();
+        JPanel basicPanel = new JPanel();
+        basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
+
+        //result-panel
+        JPanel resultPanel = createResultPanel();
+        //graphstream-panel
+
+
+        JPanel graphStreamPanel = new JPanel();
+        graphStreamPanel.setPreferredSize(new Dimension((int)(800*scaling),(int)(460*scaling)));
+        graphStreamPanel.setBackground(Color.WHITE);
+
+        JPanel graphStreamBackPanel = new JPanel();
+        graphStreamBackPanel.setPreferredSize(new Dimension((int)(700*scaling),(int)(450*scaling)));
+        graphStreamBackPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+        graphStreamBackPanel.setBackground(Color.WHITE);
+
+        graphStreamBackPanel.add(view);
+        graphStreamPanel.add(graphStreamBackPanel);
+
+        //setup basicPanel
+        basicPanel.add(resultPanel);
+        basicPanel.add(graphStreamPanel);
+//		basicPanel.add(legendPanel);
+
+        //put it together
+        jframe.add(basicPanel);
+
+        //conf jframe
+        jframe.setSize((int)(800*scaling),(int)(580*scaling));
+        jframe.setLocationRelativeTo(null);
+        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jframe.setVisible(true);
+        jframe.pack();
+        jframe.setTitle("jsprit - GraphStream");
+        return jframe;
+    }
+
+    public View createEmbeddedView(Graph g) {
+        Viewer viewer = new Viewer(g,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        View view = viewer.addDefaultView(false);
+        view.setPreferredSize(new Dimension((int)(698*scaling),(int)(440*scaling)));
+        return view;
+    }
+
+    public Graph createMultiGraph(String name) {
+        Graph g = new MultiGraph(name);
+        g.addAttribute("ui.quality");
+        g.addAttribute("ui.antialias");
+        g.addAttribute("ui.stylesheet", STYLESHEET);
+        return g;
+    }
+
+    private void render(Graph g, View view) {
 		if(center != null){
 			view.resizeFrame(view.getWidth(), view.getHeight());
 			view.getCamera().setViewCenter(center.x, center.y, 0);
@@ -284,7 +305,10 @@ public class GraphStreamViewer {
         jobs.setFont(font);
         jobs.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 
-        JFormattedTextField nJobs = new JFormattedTextField(this.vrp.getJobs().values().size());
+        int noJobs = 0;
+        if(this.vrp != null) noJobs = this.vrp.getJobs().values().size();
+
+        JFormattedTextField nJobs = new JFormattedTextField(noJobs);
         nJobs.setFont(font);
         nJobs.setEditable(false);
         nJobs.setBorder(BorderFactory.createEmptyBorder());
@@ -393,8 +417,7 @@ public class GraphStreamViewer {
 
 	private void renderVehicle(Graph g, Vehicle vehicle, Label label) {
 		String nodeId = makeId(vehicle.getId(),vehicle.getStartLocationId());
-		if(vehicle.getType() instanceof PenaltyVehicleType) nodeId = makeId("pen_"+vehicle.getId(),vehicle.getStartLocationId());
-		Node vehicleStart = g.addNode(nodeId);
+        Node vehicleStart = g.addNode(nodeId);
 		if(label.equals(Label.ID)) vehicleStart.addAttribute("ui.label", "depot");
 //		if(label.equals(Label.ACTIVITY)) n.addAttribute("ui.label", "start");
 		vehicleStart.addAttribute("x", vehicle.getStartLocationCoordinate().getX());

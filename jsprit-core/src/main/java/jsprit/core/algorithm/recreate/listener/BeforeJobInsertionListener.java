@@ -20,7 +20,7 @@ import jsprit.core.algorithm.recreate.InsertionData;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 
-interface BeforeJobInsertionListener extends InsertionListener{
+public interface BeforeJobInsertionListener extends InsertionListener{
 
 	public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route);
 
