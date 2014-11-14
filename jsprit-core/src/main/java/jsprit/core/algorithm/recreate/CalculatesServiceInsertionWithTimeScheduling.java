@@ -64,6 +64,9 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsC
                 departureTime = departureTimeKnowledge.get(RandomNumberGeneration.getRandom().nextInt(departureTimeKnowledge.size()));
             }
         }
+        else if(!currentRoute.getVehicle().getId().equals(newVehicle.getId())){
+            departureTime = currentRoute.getDepartureTime();
+        }
 
         InsertionData insertionData = jic.getInsertionData(currentRoute, jobToInsert, newVehicle, departureTime, newDriver, bestKnownScore);
 //        if(!(insertionData instanceof NoInsertionFound) && insertionData.getVehicleDepartureTime() < 28000){
