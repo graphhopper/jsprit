@@ -43,6 +43,22 @@ import java.awt.*;
 
 public class GraphStreamViewer {
 
+
+    public static Graph createMultiGraph(String name, String style){
+        Graph g = new MultiGraph(name);
+        g.addAttribute("ui.quality");
+        g.addAttribute("ui.antialias");
+        g.addAttribute("ui.stylesheet", style);
+        return g;
+    }
+
+    public static View createEmbeddedView(Graph graph, double scaling){
+        Viewer viewer = new Viewer(graph,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        View view = viewer.addDefaultView(false);
+        view.setPreferredSize(new Dimension((int)(698*scaling),(int)(440*scaling)));
+        return view;
+    }
+
 	 public static String STYLESHEET =
 			"node {" +
 					"	size: 10px, 10px;" +
@@ -184,14 +200,14 @@ public class GraphStreamViewer {
 
         Graph g = createMultiGraph("g");
 
-        View view = createEmbeddedView(g);
+        View view = createEmbeddedView(g,scaling);
 
-        JFrame jframe = createJFrame(view);
+        JFrame jframe = createJFrame(view,scaling);
 
         render(g,view);
 	}
 
-    public JFrame createJFrame(View view) {
+    private JFrame createJFrame(View view, double scaling) {
         JFrame jframe = new JFrame();
         JPanel basicPanel = new JPanel();
         basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
@@ -231,19 +247,8 @@ public class GraphStreamViewer {
         return jframe;
     }
 
-    public View createEmbeddedView(Graph g) {
-        Viewer viewer = new Viewer(g,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-        View view = viewer.addDefaultView(false);
-        view.setPreferredSize(new Dimension((int)(698*scaling),(int)(440*scaling)));
-        return view;
-    }
-
-    public Graph createMultiGraph(String name) {
-        Graph g = new MultiGraph(name);
-        g.addAttribute("ui.quality");
-        g.addAttribute("ui.antialias");
-        g.addAttribute("ui.stylesheet", STYLESHEET);
-        return g;
+    private Graph createMultiGraph(String name) {
+        return GraphStreamViewer.createMultiGraph(name,STYLESHEET);
     }
 
     private void render(Graph g, View view) {

@@ -1,9 +1,27 @@
+/*******************************************************************************
+ * Copyright (C) 2014  Stefan Schroeder
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package jsprit.analysis.toolbox;
 
 import jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import jsprit.core.algorithm.recreate.InsertionData;
 import jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
 import jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
+import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
@@ -17,52 +35,37 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.stream.file.FileSinkDGS;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-/**
- * Created by stefan on 14.11.14.
- */
-public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
 
 
-    static class Edges {
+public class GraphStreamEventWriter implements RuinListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
 
-        String inEdgeId;
+    public static final int BEFORE_RUIN_RENDER_SOLUTION = 2;
 
-        String outEdgeId;
+    public static final int RUIN = 0;
 
-        Edges(String inEdgeId, String outEdgeId) {
-            this.inEdgeId = inEdgeId;
-            this.outEdgeId = outEdgeId;
-        }
-    }
+    public static final int RECREATE = 1;
 
-    private File outfile;
+    public static final int CLEAR_SOLUTION = 3;
 
     private FileWriter writer;
 
-    private Map<String,Edges> in_out_edges = new HashMap<String,Edges>();
-
     private Graph graph;
 
-    private VehicleRoutingProblem vrp;
-
-    private boolean notInitialized = true;
+    private FileSinkDGS fileSink;
 
     public GraphStreamEventWriter(VehicleRoutingProblem vrp, File outfile) {
-        this.outfile = outfile;
-        this.vrp = vrp;
         graph = new MultiGraph("g");
         try {
             writer = new FileWriter(outfile);
-            writeHead();
+            fileSink = new FileSinkDGS();
+            fileSink.begin(writer);
+            graph.addSink(fileSink);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,16 +73,16 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
     }
 
     public GraphStreamEventWriter(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution initialSolution, File outfile) {
-        this.outfile = outfile;
-        this.vrp = vrp;
-        graph = new MultiGraph("g");
-        try {
-            writer = new FileWriter(outfile);
-            writeHead();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        initialiseGraph(vrp,initialSolution);
+//        this.outfile = outfile;
+//        this.vrp = vrp;
+//        graph = new MultiGraph("g");
+//        try {
+//            writer = new FileWriter(outfile);
+//            writeHead();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        initialiseGraph(vrp,initialSolution);
     }
 
     private void initialiseGraph(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution initialSolution) {
@@ -88,6 +91,7 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
 
     @Override
     public void ruinStarts(Collection<VehicleRoute> routes) {
+        fileSink.stepBegins(graph.getId(),0,BEFORE_RUIN_RENDER_SOLUTION);
         for(VehicleRoute route : routes){
             String prevNode = makeStartId(route.getVehicle());
             for(TourActivity act : route.getActivities()){
@@ -98,18 +102,7 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
             String lastNode = makeEndId(route.getVehicle());
             addEdge(prevNode+"_"+lastNode,prevNode,lastNode);
         }
-    }
-
-    private void removeNode(Node node) {
-        graph.removeNode(node);
-        String eventString = "dn " + node.getId() + "\n";
-        System.out.print(eventString);
-        try {
-            writer.write(eventString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        fileSink.stepBegins(graph.getId(),0,RUIN);
     }
 
     @Override
@@ -119,12 +112,9 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
 
     @Override
     public void removed(Job job, VehicleRoute fromRoute) {
-        System.out.println("remove job " + job.getId());
         String nodeId = job.getId();
         Node node = graph.getNode(nodeId);
-
         markRemoved(node);
-
         Edge entering = node.getEnteringEdge(0);
         removeEdge(entering.getId());
         Edge leaving = node.getLeavingEdge(0);
@@ -139,11 +129,6 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
 
     private void markRemoved(Node node) {
         node.setAttribute("ui.class","removed");
-        try {
-            writer.write("cn " + node.getId() + " ui.class:removed\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private String makeEdgeId(Node from, Node to) {
@@ -153,15 +138,11 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
     @Override
     public void informAlgorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
         try {
+            fileSink.end();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void writeHead() throws IOException {
-        writer.write("DGS004\n");
-        writer.write("null 0 0\n");
     }
 
     private void initialiseGraph(VehicleRoutingProblem problem) {
@@ -176,23 +157,18 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
     }
 
     private void addVehicle(Vehicle vehicle) {
-        try {
-            String startId = makeStartId(vehicle);
-            String startNodeEventString = "an " + startId + " x:" + vehicle.getStartLocationCoordinate().getX() + " y:"
-                    + vehicle.getStartLocationCoordinate().getY() + " ui.class:depot\n";
-            System.out.print(startNodeEventString);
-            writer.write(startNodeEventString);
-            graph.addNode(startId);
-            String endId = makeEndId(vehicle);
-            if(!startId.equals(endId)){
-                String endNodeEventString = "an " + endId + " x:" + vehicle.getEndLocationCoordinate().getX() + " y:"
-                        + vehicle.getEndLocationCoordinate().getY() + " ui.class:depot\n";
-                System.out.print(endNodeEventString);
-                writer.write( endNodeEventString);
-                graph.addNode(endId);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        String startId = makeStartId(vehicle);
+        Node node = graph.addNode(startId);
+        node.addAttribute("x",vehicle.getStartLocationCoordinate().getX());
+        node.addAttribute("y",vehicle.getStartLocationCoordinate().getY());
+        node.addAttribute("ui.class","depot");
+
+        String endId = makeEndId(vehicle);
+        if(!startId.equals(endId)){
+            Node endNode = graph.addNode(endId);
+            endNode.addAttribute("x",vehicle.getEndLocationCoordinate().getX());
+            endNode.addAttribute("y",vehicle.getEndLocationCoordinate().getY());
+            endNode.addAttribute("ui.class","depot");
         }
     }
 
@@ -206,18 +182,14 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
     }
 
     private void addService(Service service) {
-        try {
-            String eventString = "an " + service.getId() + " x:" + service.getCoord().getX() + " y:" + service.getCoord().getY() + "\n";
-            System.out.print(eventString);
-            writer.write(eventString);
-            graph.addNode(service.getId());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Node serviceNode = graph.addNode(service.getId());
+        serviceNode.addAttribute("x", service.getCoord().getX());
+        serviceNode.addAttribute("y", service.getCoord().getY());
     }
 
     @Override
     public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
+        fileSink.stepBegins(graph.getId(),0,CLEAR_SOLUTION);
         for(VehicleRoute route : vehicleRoutes){
             String prevNode = makeStartId(route.getVehicle());
             for(TourActivity act : route.getActivities()){
@@ -232,7 +204,6 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
 
     @Override
     public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
-        System.out.println("insert job " + job.getId());
         markInserted(job);
         boolean vehicleSwitch = false;
         if(!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
@@ -241,7 +212,6 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
             }
         }
         if(vehicleSwitch && !route.getActivities().isEmpty()){
-            System.out.println("switch vehicle " + route.getVehicle().getId() + " --> " + data.getSelectedVehicle().getId());
             String oldStart = makeStartId(route.getVehicle());
             String firstAct = ((TourActivity.JobActivity)route.getActivities().get(0)).getJob().getId();
             String oldEnd = makeEndId(route.getVehicle());
@@ -281,22 +251,10 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
 
     private void markInserted(Job job) {
         graph.getNode(job.getId()).removeAttribute("ui.class");
-        try {
-            writer.write("cn " + job.getId() + " -ui.class\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void removeEdge(String edgeId) {
-        try {
-            String eventString = "de " + edgeId + "\n";
-            System.out.print(eventString);
-            writer.write(eventString);
-            graph.removeEdge(edgeId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        graph.removeEdge(edgeId);
     }
 
     private boolean isFirst(InsertionData data, VehicleRoute route) {
@@ -308,14 +266,11 @@ public class GraphStreamEventWriter implements RuinListener, BeforeJobInsertionL
     }
 
     private void addEdge(String edgeId, String fromNode, String toNode)  {
-        try {
-            String eventString = "ae " + edgeId + " " + fromNode + " > " + toNode + "\n";
-            System.out.print(eventString);
-            writer.write(eventString);
-            graph.addEdge(edgeId,fromNode,toNode,true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        graph.addEdge(edgeId,fromNode,toNode,true);
     }
 
+    @Override
+    public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
+        fileSink.stepBegins(graph.getId(),0,RECREATE);
+    }
 }
