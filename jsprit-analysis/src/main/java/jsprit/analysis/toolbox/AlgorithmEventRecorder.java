@@ -18,6 +18,7 @@
 package jsprit.analysis.toolbox;
 
 import jsprit.core.algorithm.listener.AlgorithmEndsListener;
+import jsprit.core.algorithm.listener.IterationStartsListener;
 import jsprit.core.algorithm.recreate.InsertionData;
 import jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
 import jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
@@ -31,6 +32,7 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.util.Solutions;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -43,7 +45,13 @@ import java.io.IOException;
 import java.util.Collection;
 
 
-public class GraphStreamEventWriter implements RuinListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
+public class AlgorithmEventRecorder implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
+
+
+
+    public static enum RecordPolicy {
+        RECORD_AND_WRITE
+    }
 
     public static final int BEFORE_RUIN_RENDER_SOLUTION = 2;
 
@@ -53,13 +61,21 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
 
     public static final int CLEAR_SOLUTION = 3;
 
+    public static final int RENDER_FINAL_SOLUTION = 4;
+
     private FileWriter writer;
 
     private Graph graph;
 
     private FileSinkDGS fileSink;
 
-    public GraphStreamEventWriter(VehicleRoutingProblem vrp, File outfile) {
+    private int start_recording_at = 0;
+
+    private int end_recording_at = Integer.MAX_VALUE;
+
+    private int currentIteration = 0;
+
+    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, File outfile) {
         graph = new MultiGraph("g");
         try {
             writer = new FileWriter(outfile);
@@ -72,7 +88,12 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
         initialiseGraph(vrp);
     }
 
-    public GraphStreamEventWriter(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution initialSolution, File outfile) {
+    public void setRecordingRange(int startIteration, int endIteration){
+        this.start_recording_at = startIteration;
+        this.end_recording_at = endIteration;
+    }
+
+    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution initialSolution, File outfile) {
 //        this.outfile = outfile;
 //        this.vrp = vrp;
 //        graph = new MultiGraph("g");
@@ -91,7 +112,13 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
 
     @Override
     public void ruinStarts(Collection<VehicleRoute> routes) {
+        if(!record()) return;
         fileSink.stepBegins(graph.getId(),0,BEFORE_RUIN_RENDER_SOLUTION);
+        recordRoutes(routes);
+        fileSink.stepBegins(graph.getId(),0,RUIN);
+    }
+
+    private void recordRoutes(Collection<VehicleRoute> routes) {
         for(VehicleRoute route : routes){
             String prevNode = makeStartId(route.getVehicle());
             for(TourActivity act : route.getActivities()){
@@ -102,7 +129,10 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
             String lastNode = makeEndId(route.getVehicle());
             addEdge(prevNode+"_"+lastNode,prevNode,lastNode);
         }
-        fileSink.stepBegins(graph.getId(),0,RUIN);
+    }
+
+    private boolean record() {
+        return currentIteration >= start_recording_at && currentIteration <= end_recording_at;
     }
 
     @Override
@@ -112,6 +142,7 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
 
     @Override
     public void removed(Job job, VehicleRoute fromRoute) {
+        if(!record()) return;
         String nodeId = job.getId();
         Node node = graph.getNode(nodeId);
         markRemoved(node);
@@ -137,12 +168,20 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
 
     @Override
     public void informAlgorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
+        fileSink.stepBegins(graph.getId(),0,BEFORE_RUIN_RENDER_SOLUTION);
+        recordRoutes(solution.getRoutes());
         try {
             fileSink.end();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+        currentIteration = i;
     }
 
     private void initialiseGraph(VehicleRoutingProblem problem) {
@@ -189,6 +228,7 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
 
     @Override
     public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
+        if(!record()) return;
         fileSink.stepBegins(graph.getId(),0,CLEAR_SOLUTION);
         for(VehicleRoute route : vehicleRoutes){
             String prevNode = makeStartId(route.getVehicle());
@@ -204,6 +244,7 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
 
     @Override
     public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
+        if(!record()) return;
         markInserted(job);
         boolean vehicleSwitch = false;
         if(!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
@@ -271,6 +312,7 @@ public class GraphStreamEventWriter implements RuinListener, InsertionStartsList
 
     @Override
     public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
+        if(!record()) return;
         fileSink.stepBegins(graph.getId(),0,RECREATE);
     }
 }
