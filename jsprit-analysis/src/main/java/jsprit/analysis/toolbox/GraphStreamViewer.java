@@ -33,94 +33,137 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.stream.Sink;
-import org.graphstream.stream.file.FileSinkImages;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 
 public class GraphStreamViewer {
 
-    private static class EmptySink implements Sink {
+    public static class StyleSheets {
 
-        @Override
-        public void graphAttributeAdded(String sourceId, long timeId, String attribute, Object value) {
+        public static String BLUE_FOREST =
+                "graph { fill-color: #141F2E; }" +
+                        "node {" +
+                        "	size: 7px, 7px;" +
+                        "   fill-color: #A0FFA0;" +
+                        "	text-alignment: at-right;" +
+                        " 	stroke-mode: plain;" +
+                        "	stroke-color: #999;" +
+                        "	stroke-width: 1.0;" +
+                        "	text-font: couriernew;" +
+                        " 	text-offset: 2,-5;" +
+                        "	text-size: 8;" +
+                        "}" +
+                        "node.pickup {" +
+                        " 	fill-color: #6CC644;" +
+                        "}" +
+                        "node.delivery {" +
+                        " 	fill-color: #f93;" +
+                        "}" +
+                        "node.pickupInRoute {" +
+                        "	fill-color: #6CC644;" +
+                        " 	stroke-mode: plain;" +
+                        "	stroke-color: #333;" +
+                        "   stroke-width: 2.0;" +
+                        "}" +
+                        "node.deliveryInRoute {" +
+                        " 	fill-color: #f93;" +
+                        " 	stroke-mode: plain;" +
+                        "	stroke-color: #333;" +
+                        "   stroke-width: 2.0;" +
+                        "}" +
+                        "node.depot {" +
+                        " 	fill-color: #BD2C00;" +
+                        "	size: 10px, 10px;"  +
+                        " 	shape: box;" +
+                        "}" +
+                        "node.removed {" +
+                        " 	fill-color: #FF8080;" +
+                        "	size: 10px, 10px;"  +
+                        " 	stroke-mode: plain;" +
+                        "	stroke-color: #CCF;" +
+                        "   stroke-width: 2.0;" +
+                        "   shadow-mode: gradient-radial;" +
+                        "   shadow-width: 10px; shadow-color: #EEF, #000; shadow-offset: 0px;" +
+                        "}" +
 
-        }
+                        "edge {" +
+                        "	fill-color: #D3D3D3;" +
+                        "	arrow-size: 6px,3px;" +
+                        "}" +
+//                    "edge.inserted {" +
+//                    "	fill-color: #A0FFA0;" +
+//                    "	arrow-size: 6px,3px;" +
+//                    "   shadow-mode: gradient-radial;" +
+//                    "   shadow-width: 10px; shadow-color: #EEF, #000; shadow-offset: 0px;" +
+//                    "}" +
+//                    "edge.removed {" +
+//                    "	fill-color: #FF0000;" +
+//                    "	arrow-size: 6px,3px;" +
+//                    "   shadow-mode: gradient-radial;" +
+//                    "   shadow-width: 10px; shadow-color: #EEF, #000; shadow-offset: 0px;" +
+//                    "}" +
+                        "edge.shipment {" +
+                        "	fill-color: #999;" +
+                        "	arrow-size: 6px,3px;" +
+                        "}" ;
 
-        @Override
-        public void graphAttributeChanged(String sourceId, long timeId, String attribute, Object oldValue, Object newValue) {
 
-        }
+        public static String SIMPLE_WHITE =
+                "node {" +
+                        "	size: 10px, 10px;" +
+                        "   fill-color: #6CC644;" +
+                        "	text-alignment: at-right;" +
+                        " 	stroke-mode: plain;" +
+                        "	stroke-color: #999;" +
+                        "	stroke-width: 1.0;" +
+                        "	text-font: couriernew;" +
+                        " 	text-offset: 2,-5;" +
+                        "	text-size: 8;" +
+                        "}" +
+                        "node.pickup {" +
+                        " 	fill-color: #6CC644;" +
+                        "}" +
+                        "node.delivery {" +
+                        " 	fill-color: #f93;" +
+                        "}" +
+                        "node.pickupInRoute {" +
+                        "	fill-color: #6CC644;" +
+                        " 	stroke-mode: plain;" +
+                        "	stroke-color: #333;" +
+                        "   stroke-width: 2.0;" +
+                        "}" +
+                        "node.deliveryInRoute {" +
+                        " 	fill-color: #f93;" +
+                        " 	stroke-mode: plain;" +
+                        "	stroke-color: #333;" +
+                        "   stroke-width: 2.0;" +
+                        "}" +
+                        "node.depot {" +
+                        " 	fill-color: #BD2C00;" +
+                        "	size: 10px, 10px;"  +
+                        " 	shape: box;" +
+                        "}" +
+                        "node.removed {" +
+                        " 	fill-color: #BD2C00;" +
+                        "	size: 10px, 10px;"  +
+                        " 	stroke-mode: plain;" +
+                        "	stroke-color: #333;" +
+                        "   stroke-width: 2.0;" +
+                        "}" +
 
-        @Override
-        public void graphAttributeRemoved(String sourceId, long timeId, String attribute) {
+                        "edge {" +
+                        "	fill-color: #333;" +
+                        "	arrow-size: 6px,3px;" +
+                        "}" +
+                        "edge.shipment {" +
+                        "	fill-color: #999;" +
+                        "	arrow-size: 6px,3px;" +
+                        "}" ;
 
-        }
-
-        @Override
-        public void nodeAttributeAdded(String sourceId, long timeId, String nodeId, String attribute, Object value) {
-
-        }
-
-        @Override
-        public void nodeAttributeChanged(String sourceId, long timeId, String nodeId, String attribute, Object oldValue, Object newValue) {
-
-        }
-
-        @Override
-        public void nodeAttributeRemoved(String sourceId, long timeId, String nodeId, String attribute) {
-
-        }
-
-        @Override
-        public void edgeAttributeAdded(String sourceId, long timeId, String edgeId, String attribute, Object value) {
-
-        }
-
-        @Override
-        public void edgeAttributeChanged(String sourceId, long timeId, String edgeId, String attribute, Object oldValue, Object newValue) {
-
-        }
-
-        @Override
-        public void edgeAttributeRemoved(String sourceId, long timeId, String edgeId, String attribute) {
-
-        }
-
-        @Override
-        public void nodeAdded(String sourceId, long timeId, String nodeId) {
-
-        }
-
-        @Override
-        public void nodeRemoved(String sourceId, long timeId, String nodeId) {
-
-        }
-
-        @Override
-        public void edgeAdded(String sourceId, long timeId, String edgeId, String fromNodeId, String toNodeId, boolean directed) {
-
-        }
-
-        @Override
-        public void edgeRemoved(String sourceId, long timeId, String edgeId) {
-
-        }
-
-        @Override
-        public void graphCleared(String sourceId, long timeId) {
-
-        }
-
-        @Override
-        public void stepBegins(String sourceId, long timeId, double step) {
-
-        }
     }
 
     public static Graph createMultiGraph(String name, String style){
@@ -222,11 +265,6 @@ public class GraphStreamViewer {
 	
 	private double scaling = 1.0;
 
-    private boolean createImageByEvent = false;
-
-    private File imageDirectory;
-
-    Sink fsi = new EmptySink();
 
 	public GraphStreamViewer(VehicleRoutingProblem vrp) {
 		super();
@@ -243,12 +281,6 @@ public class GraphStreamViewer {
 		this.label=label;
 		return this;
 	}
-
-    public GraphStreamViewer createImagesByEvent(boolean createImanges, File outDirectory){
-        createImageByEvent = true;
-        imageDirectory = outDirectory;
-        return this;
-    }
 
 	public GraphStreamViewer setRenderDelay(long ms){
 		this.renderDelay_in_ms=ms;
@@ -294,20 +326,6 @@ public class GraphStreamViewer {
         View view = createEmbeddedView(g,scaling);
 
         JFrame jframe = createJFrame(view,scaling);
-
-        Sink fsi;
-        if(createImageByEvent){
-            FileSinkImages.OutputPolicy outputPolicy = FileSinkImages.OutputPolicy.BY_ELEMENT_EVENT;
-            String prefix = "screenshot_";
-            FileSinkImages.OutputType type = FileSinkImages.OutputType.PNG;
-            FileSinkImages.Resolution resolution = FileSinkImages.Resolutions.HD720;
-            fsi = new FileSinkImages( type, resolution );
-            ((FileSinkImages)fsi).setStyleSheet(STYLESHEET);
-            ((FileSinkImages)fsi).setOutputPolicy(outputPolicy);
-            ((FileSinkImages)fsi).setLayoutPolicy(FileSinkImages.LayoutPolicy.NO_LAYOUT);
-            ((FileSinkImages)fsi).setQuality(FileSinkImages.Quality.HIGH);
-            ((FileSinkImages)fsi).setRenderer(FileSinkImages.RendererType.SCALA);
-        }
 
         render(g, view);
 	}
@@ -391,10 +409,6 @@ public class GraphStreamViewer {
     private void alignCamera(View view) {
         view.getCamera().setViewCenter(center.x, center.y, 0);
         view.getCamera().setViewPercent(zoomFactor);
-        if(fsi instanceof FileSinkImages){
-            ((FileSinkImages) fsi).setViewCenter(center.x, center.y);
-            ((FileSinkImages) fsi).setViewPercent(zoomFactor);
-        }
     }
 
     private JLabel createEmptyLabel() {
