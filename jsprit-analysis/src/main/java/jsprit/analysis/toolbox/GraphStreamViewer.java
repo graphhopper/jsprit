@@ -33,16 +33,95 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.stream.Sink;
+import org.graphstream.stream.file.FileSinkImages;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
 
 import javax.swing.*;
 import java.awt.*;
-
+import java.io.File;
 
 
 public class GraphStreamViewer {
 
+    private static class EmptySink implements Sink {
+
+        @Override
+        public void graphAttributeAdded(String sourceId, long timeId, String attribute, Object value) {
+
+        }
+
+        @Override
+        public void graphAttributeChanged(String sourceId, long timeId, String attribute, Object oldValue, Object newValue) {
+
+        }
+
+        @Override
+        public void graphAttributeRemoved(String sourceId, long timeId, String attribute) {
+
+        }
+
+        @Override
+        public void nodeAttributeAdded(String sourceId, long timeId, String nodeId, String attribute, Object value) {
+
+        }
+
+        @Override
+        public void nodeAttributeChanged(String sourceId, long timeId, String nodeId, String attribute, Object oldValue, Object newValue) {
+
+        }
+
+        @Override
+        public void nodeAttributeRemoved(String sourceId, long timeId, String nodeId, String attribute) {
+
+        }
+
+        @Override
+        public void edgeAttributeAdded(String sourceId, long timeId, String edgeId, String attribute, Object value) {
+
+        }
+
+        @Override
+        public void edgeAttributeChanged(String sourceId, long timeId, String edgeId, String attribute, Object oldValue, Object newValue) {
+
+        }
+
+        @Override
+        public void edgeAttributeRemoved(String sourceId, long timeId, String edgeId, String attribute) {
+
+        }
+
+        @Override
+        public void nodeAdded(String sourceId, long timeId, String nodeId) {
+
+        }
+
+        @Override
+        public void nodeRemoved(String sourceId, long timeId, String nodeId) {
+
+        }
+
+        @Override
+        public void edgeAdded(String sourceId, long timeId, String edgeId, String fromNodeId, String toNodeId, boolean directed) {
+
+        }
+
+        @Override
+        public void edgeRemoved(String sourceId, long timeId, String edgeId) {
+
+        }
+
+        @Override
+        public void graphCleared(String sourceId, long timeId) {
+
+        }
+
+        @Override
+        public void stepBegins(String sourceId, long timeId, double step) {
+
+        }
+    }
 
     public static Graph createMultiGraph(String name, String style){
         Graph g = new MultiGraph(name);
@@ -143,6 +222,12 @@ public class GraphStreamViewer {
 	
 	private double scaling = 1.0;
 
+    private boolean createImageByEvent = false;
+
+    private File imageDirectory;
+
+    Sink fsi = new EmptySink();
+
 	public GraphStreamViewer(VehicleRoutingProblem vrp) {
 		super();
 		this.vrp = vrp;
@@ -158,6 +243,12 @@ public class GraphStreamViewer {
 		this.label=label;
 		return this;
 	}
+
+    public GraphStreamViewer createImagesByEvent(boolean createImanges, File outDirectory){
+        createImageByEvent = true;
+        imageDirectory = outDirectory;
+        return this;
+    }
 
 	public GraphStreamViewer setRenderDelay(long ms){
 		this.renderDelay_in_ms=ms;
@@ -204,7 +295,21 @@ public class GraphStreamViewer {
 
         JFrame jframe = createJFrame(view,scaling);
 
-        render(g,view);
+        Sink fsi;
+        if(createImageByEvent){
+            FileSinkImages.OutputPolicy outputPolicy = FileSinkImages.OutputPolicy.BY_ELEMENT_EVENT;
+            String prefix = "screenshot_";
+            FileSinkImages.OutputType type = FileSinkImages.OutputType.PNG;
+            FileSinkImages.Resolution resolution = FileSinkImages.Resolutions.HD720;
+            fsi = new FileSinkImages( type, resolution );
+            ((FileSinkImages)fsi).setStyleSheet(STYLESHEET);
+            ((FileSinkImages)fsi).setOutputPolicy(outputPolicy);
+            ((FileSinkImages)fsi).setLayoutPolicy(FileSinkImages.LayoutPolicy.NO_LAYOUT);
+            ((FileSinkImages)fsi).setQuality(FileSinkImages.Quality.HIGH);
+            ((FileSinkImages)fsi).setRenderer(FileSinkImages.RendererType.SCALA);
+        }
+
+        render(g, view);
 	}
 
     private JFrame createJFrame(View view, double scaling) {
@@ -254,8 +359,7 @@ public class GraphStreamViewer {
     private void render(Graph g, View view) {
 		if(center != null){
 			view.resizeFrame(view.getWidth(), view.getHeight());
-			view.getCamera().setViewCenter(center.x, center.y, 0);
-			view.getCamera().setViewPercent(zoomFactor);
+            alignCamera(view);
 		}
 
 		for(Vehicle vehicle : vrp.getVehicles()){
@@ -284,7 +388,16 @@ public class GraphStreamViewer {
 		
 	}
 
-	private JLabel createEmptyLabel() {
+    private void alignCamera(View view) {
+        view.getCamera().setViewCenter(center.x, center.y, 0);
+        view.getCamera().setViewPercent(zoomFactor);
+        if(fsi instanceof FileSinkImages){
+            ((FileSinkImages) fsi).setViewCenter(center.x, center.y);
+            ((FileSinkImages) fsi).setViewPercent(zoomFactor);
+        }
+    }
+
+    private JLabel createEmptyLabel() {
 		JLabel emptyLabel1 = new JLabel();
         emptyLabel1.setPreferredSize(new Dimension((int)(40*scaling),(int)(25*scaling)));
 		return emptyLabel1;
