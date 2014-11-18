@@ -41,10 +41,12 @@ import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.stream.file.FileSinkDGS;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 
 public class AlgorithmEventRecorder implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
@@ -56,10 +58,6 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
         rec.initialiseGraph(vrp);
         rec.addRoutes(solution.getRoutes());
         rec.finish();
-    }
-
-    public static enum RecordPolicy {
-        RECORD_AND_WRITE
     }
 
     public static final int BEFORE_RUIN_RENDER_SOLUTION = 2;
@@ -78,6 +76,10 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
 
     private FileSinkDGS fileSink;
 
+    private FileOutputStream fos;
+
+    private GZIPOutputStream gzipOs;
+
     private int start_recording_at = 0;
 
     private int end_recording_at = Integer.MAX_VALUE;
@@ -86,13 +88,19 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
 
     private VehicleRoutingProblem vrp;
 
-    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, File outfile) {
+    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, File dgsFile) {
         this.vrp = vrp;
         graph = new MultiGraph("g");
         try {
-            writer = new FileWriter(outfile);
+            fos = new FileOutputStream(dgsFile);
             fileSink = new FileSinkDGS();
-            fileSink.begin(writer);
+            if(dgsFile.getName().endsWith("gz")){
+                gzipOs = new GZIPOutputStream(fos);
+                fileSink.begin(gzipOs);
+            }
+            else{
+                fileSink.begin(fos);
+            }
             graph.addSink(fileSink);
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,31 +108,14 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
         initialiseGraph(vrp);
     }
 
-    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, File outfile, boolean renderShipments) {
+    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, File dgsFile, boolean renderShipments) {
         this.renderShipments = renderShipments;
-        new AlgorithmEventRecorder(vrp,outfile);
+        new AlgorithmEventRecorder(vrp,dgsFile);
     }
 
     public void setRecordingRange(int startIteration, int endIteration){
         this.start_recording_at = startIteration;
         this.end_recording_at = endIteration;
-    }
-
-    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution initialSolution, File outfile) {
-//        this.outfile = outfile;
-//        this.vrp = vrp;
-//        graph = new MultiGraph("g");
-//        try {
-//            writer = new FileWriter(outfile);
-//            writeHead();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        initialiseGraph(vrp,initialSolution);
-    }
-
-    private void initialiseGraph(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution initialSolution) {
-
     }
 
     @Override
@@ -292,7 +283,8 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
     private void finish() {
         try {
             fileSink.end();
-            writer.close();
+            fos.close();
+            if(gzipOs != null) gzipOs.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
