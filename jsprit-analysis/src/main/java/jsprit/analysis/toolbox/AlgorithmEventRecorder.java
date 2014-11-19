@@ -42,13 +42,14 @@ import org.graphstream.stream.file.FileSinkDGS;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-
+/**
+ * Writes out what happens when algorithm searches (in graphstream dgs-file).
+ */
 public class AlgorithmEventRecorder implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
 
     private boolean renderShipments = false;
@@ -69,8 +70,6 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
     public static final int CLEAR_SOLUTION = 3;
 
     public static final int RENDER_FINAL_SOLUTION = 4;
-
-    private FileWriter writer;
 
     private Graph graph;
 
