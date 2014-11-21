@@ -26,7 +26,10 @@ import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.job.*;
+import jsprit.core.problem.job.Delivery;
+import jsprit.core.problem.job.Job;
+import jsprit.core.problem.job.Service;
+import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
@@ -50,12 +53,12 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Writes out what happens when algorithm searches (in graphstream dgs-file).
  */
-public class AlgorithmEventRecorder implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
+public class AlgorithmEventsRecorder implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
 
     private boolean renderShipments = false;
 
     public static void writeSolution(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, File outfile){
-        AlgorithmEventRecorder rec = new AlgorithmEventRecorder(vrp,outfile);
+        AlgorithmEventsRecorder rec = new AlgorithmEventsRecorder(vrp,outfile);
         rec.initialiseGraph(vrp);
         rec.addRoutes(solution.getRoutes());
         rec.finish();
@@ -87,7 +90,7 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
 
     private VehicleRoutingProblem vrp;
 
-    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, File dgsFile) {
+    public AlgorithmEventsRecorder(VehicleRoutingProblem vrp, File dgsFile) {
         this.vrp = vrp;
         graph = new MultiGraph("g");
         try {
@@ -107,9 +110,9 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
         initialiseGraph(vrp);
     }
 
-    public AlgorithmEventRecorder(VehicleRoutingProblem vrp, File dgsFile, boolean renderShipments) {
+    public AlgorithmEventsRecorder(VehicleRoutingProblem vrp, File dgsFile, boolean renderShipments) {
         this.renderShipments = renderShipments;
-        new AlgorithmEventRecorder(vrp,dgsFile);
+        new AlgorithmEventsRecorder(vrp,dgsFile);
     }
 
     public void setRecordingRange(int startIteration, int endIteration){
@@ -329,11 +332,11 @@ public class AlgorithmEventRecorder implements RuinListener, IterationStartsList
     }
 
     private void markService(Service service) {
-        if(service instanceof Pickup){
-            markPickup(service.getId());
-        }
-        else if(service instanceof Delivery){
+        if(service instanceof Delivery){
             markDelivery(service.getId());
+        }
+        else {
+            markPickup(service.getId());
         }
     }
 
