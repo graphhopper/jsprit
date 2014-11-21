@@ -589,7 +589,7 @@ public class VehicleRoutingAlgorithms {
 			SolutionAcceptor acceptor = getAcceptor(strategyConfig,vrp,algorithmListeners,definedClasses,solutionMemory);
 			SolutionSelector selector = getSelector(strategyConfig,vrp,algorithmListeners,definedClasses);
 			
-			SearchStrategy strategy = new SearchStrategy(selector, acceptor, costCalculator);
+			SearchStrategy strategy = new SearchStrategy(name, selector, acceptor, costCalculator);
 			strategy.setName(name);
 			List<HierarchicalConfiguration> modulesConfig = strategyConfig.configurationsAt("modules.module");
 			for(HierarchicalConfiguration moduleConfig : modulesConfig){

@@ -1,25 +1,24 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm.io;
 
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
-import jsprit.core.algorithm.recreate.BestInsertionBuilder;
+import jsprit.core.algorithm.recreate.InsertionBuilder;
 import jsprit.core.algorithm.recreate.InsertionStrategy;
-import jsprit.core.algorithm.recreate.listener.InsertionListener;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
@@ -28,7 +27,6 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -39,19 +37,17 @@ class InsertionFactory {
 	
 	@SuppressWarnings("deprecation")
 	public static InsertionStrategy createInsertion(VehicleRoutingProblem vrp, HierarchicalConfiguration config, 
-			VehicleFleetManager vehicleFleetManager, StateManager routeStates, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager, boolean addDefaultCostCalculators){
+			VehicleFleetManager vehicleFleetManager, StateManager stateManager, List<PrioritizedVRAListener> algorithmListeners, ExecutorService executorService, int nuOfThreads, ConstraintManager constraintManager, boolean addDefaultCostCalculators){
 
 		if(config.containsKey("[@name]")){
 			String insertionName = config.getString("[@name]");
 			if(!insertionName.equals("bestInsertion") && !insertionName.equals("regretInsertion")){
-				new IllegalStateException(insertionName + " is not supported. use either \"bestInsertion\" or \"regretInsertion\"");
+				throw new IllegalStateException(insertionName + " is not supported. use either \"bestInsertion\" or \"regretInsertion\"");
 			}
-			InsertionStrategy insertionStrategy = null;
-			List<InsertionListener> insertionListeners = new ArrayList<InsertionListener>();
-			List<PrioritizedVRAListener> algoListeners = new ArrayList<PrioritizedVRAListener>();
-	
-			BestInsertionBuilder iBuilder = new BestInsertionBuilder(vrp, vehicleFleetManager, routeStates, constraintManager);
-			
+
+
+            InsertionBuilder iBuilder = new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager);
+
 			if(executorService != null){
 				iBuilder.setConcurrentMode(executorService, nuOfThreads);
 			}
@@ -105,16 +101,11 @@ class InsertionFactory {
 			if(allowVehicleSwitch != null){
 				iBuilder.setAllowVehicleSwitch(Boolean.parseBoolean(allowVehicleSwitch));
 			}
-			if(insertionName.equals("bestInsertion")){		
-				insertionStrategy = iBuilder.build();
-			}
-			else throw new IllegalStateException("currently only 'bestInsertion' is supported");
-			
-			for(InsertionListener l : insertionListeners) insertionStrategy.addListener(l);
 
-			algorithmListeners.addAll(algoListeners);
-			
-			return insertionStrategy;
+            if(insertionName.equals("regretInsertion")){
+                iBuilder.setInsertionStrategy(InsertionBuilder.Strategy.REGRET);
+            }
+			return iBuilder.build();
 		}
 		else throw new IllegalStateException("cannot create insertionStrategy, since it has no name.");
 	}
