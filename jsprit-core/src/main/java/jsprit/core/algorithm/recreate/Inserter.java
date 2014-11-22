@@ -153,6 +153,7 @@ class Inserter {
 			vehicleRoute.setVehicleAndDepartureTime(insertionData.getSelectedVehicle(), insertionData.getVehicleDepartureTime());
 		}
 		jobInsertionHandler.handleJobInsertion(job, insertionData, vehicleRoute);
+
 		insertionListeners.informJobInserted(job, vehicleRoute, insertionData.getInsertionCost(), insertionData.getAdditionalTime());
 	}
 }
