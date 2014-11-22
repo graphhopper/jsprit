@@ -193,7 +193,6 @@ public class VehicleRoutingAlgorithm {
 		logger.info("------------------------------------------------");
 		logger.info("algorithm starts");
 		double now = System.currentTimeMillis();
-		verify();
 		int noIterationsThisAlgoIsRunning = maxIterations;
 		counter.reset();
 		Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
@@ -248,17 +247,7 @@ public class VehicleRoutingAlgorithm {
 	public int getNuOfIterations(){
 		return maxIterations;
 	}
-	
-	/**
-	 * Asserts that the sum of probabilities of the searchStrategies is equal to 1.0.
-	 */
-	private void verify() {
-		double sum = 0.0;
-		for(Double prob : searchStrategyManager.getProbabilities()){
-			sum += prob;
-		}
-		if(sum < 1.0*0.99 || sum > 1.0*1.01) throw new IllegalStateException("sum of probabilities is not 1.0, but is "+ sum + ". make sure that the sum of the probability of each searchStrategy is 1.0");
-	}
+
 
 	private void algorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 		algoListeners.algorithmEnds(problem, solutions);
