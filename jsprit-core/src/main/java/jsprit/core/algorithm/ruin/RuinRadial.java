@@ -1,28 +1,25 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm.ruin;
 
 import jsprit.core.algorithm.ruin.distance.JobDistance;
-import jsprit.core.algorithm.ruin.listener.RuinListener;
-import jsprit.core.algorithm.ruin.listener.RuinListeners;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.util.RandomNumberGeneration;
 import jsprit.core.util.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +36,7 @@ import java.util.*;
  * @author stefan
  *
  */
-final class RuinRadial implements RuinStrategy {
+final class RuinRadial extends AbstractRuinStrategy {
 	
 	static interface JobNeighborhoods {
 		
@@ -255,15 +252,8 @@ final class RuinRadial implements RuinStrategy {
 
 	private double fractionOfAllNodes2beRuined;
 
-	private Random random = RandomNumberGeneration.getRandom();
-
-	private RuinListeners ruinListeners;
-	
 	private JobNeighborhoods jobNeighborhoods;
-	
-	public void setRandom(Random random) {
-		this.random = random;
-	}
+
 
 	/**
 	 * Constructs RuinRadial.
@@ -276,7 +266,6 @@ final class RuinRadial implements RuinStrategy {
 		super();
 		this.vrp = vrp;
 		this.fractionOfAllNodes2beRuined = fraction2beRemoved;
-		ruinListeners = new RuinListeners();
 		int nJobsToMemorize = (int) Math.ceil(vrp.getJobs().values().size()*fraction2beRemoved);
 		JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, nJobsToMemorize);
 		jobNeighborhoodsImpl.initialise();
@@ -294,7 +283,7 @@ final class RuinRadial implements RuinStrategy {
 	 * the neighborhood plus the randomly selected job from the number of vehicleRoutes. All removed jobs are then returned as a collection.
 	 */
 	@Override
-	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
+	public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes) {
 		if(vehicleRoutes.isEmpty()){
 			return Collections.emptyList();
 		}
@@ -303,16 +292,14 @@ final class RuinRadial implements RuinStrategy {
 			return Collections.emptyList();
 		}
 		Job randomJob = pickRandomJob();
-		Collection<Job> unassignedJobs = ruin(vehicleRoutes,randomJob,nOfJobs2BeRemoved);
-		return unassignedJobs;
+		return ruin(vehicleRoutes,randomJob,nOfJobs2BeRemoved);
 	}
 	
 	/**
 	 * Removes targetJob and its neighborhood and returns the removed jobs.
 	 */
-	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved){
-		ruinListeners.ruinStarts(vehicleRoutes);
-		List<Job> unassignedJobs = new ArrayList<Job>();
+	public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved){
+        List<Job> unassignedJobs = new ArrayList<Job>();
 		int nNeighbors = nOfJobs2BeRemoved - 1;
 		removeJob(targetJob,vehicleRoutes);
 		unassignedJobs.add(targetJob);
@@ -322,46 +309,18 @@ final class RuinRadial implements RuinStrategy {
 			removeJob(job,vehicleRoutes);
 			unassignedJobs.add(job);
 		}
-		ruinListeners.ruinEnds(vehicleRoutes, unassignedJobs);
-		return unassignedJobs;
-	}
-	
-	private void removeJob(Job job, Collection<VehicleRoute> vehicleRoutes) {
-		boolean removed = false;
-		for (VehicleRoute route : vehicleRoutes) {
-			removed = route.getTourActivities().removeJob(job);; 
-			if (removed) {
-				ruinListeners.removed(job,route);
-				break;
-			}
-		}
+        return unassignedJobs;
 	}
 
 	private Job pickRandomJob() {
 		int totNuOfJobs = vrp.getJobs().values().size();
 		int randomIndex = random.nextInt(totNuOfJobs);
-		Job job = new ArrayList<Job>(vrp.getJobs().values()).get(randomIndex);
-		return job;
-	}
+		return new ArrayList<Job>(vrp.getJobs().values()).get(randomIndex);
+    }
 
 	private int getNuOfJobs2BeRemoved() {
 		return (int) Math.ceil(vrp.getJobs().values().size()
 				* fractionOfAllNodes2beRuined);
-	}
-
-	@Override
-	public void addListener(RuinListener ruinListener) {
-		ruinListeners.addListener(ruinListener);
-	}
-
-	@Override
-	public void removeListener(RuinListener ruinListener) {
-		ruinListeners.removeListener(ruinListener);
-	}
-
-	@Override
-	public Collection<RuinListener> getListeners() {
-		return ruinListeners.getListeners();
 	}
 
 
