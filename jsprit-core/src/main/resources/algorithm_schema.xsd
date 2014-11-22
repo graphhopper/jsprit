@@ -226,7 +226,7 @@
 
 
 <xs:complexType name="insertionType">
-	<xs:sequence>
+	<xs:all>
 		<xs:element name="level" minOccurs="0" maxOccurs="1">
 			<xs:complexType>
 				<xs:simpleContent>
@@ -258,8 +258,8 @@
 			</xs:complexType>
 			
 		</xs:element>
-			
-	</xs:sequence>
+
+	</xs:all>
 	<xs:attribute name="name" use="required">
 		<xs:simpleType>
 			<xs:restriction base="xs:string">

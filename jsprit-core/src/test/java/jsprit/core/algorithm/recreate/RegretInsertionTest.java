@@ -1,0 +1,174 @@
+/*******************************************************************************
+ * Copyright (C) 2014  Stefan Schroeder
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
+package jsprit.core.algorithm.recreate;
+
+import jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
+import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.driver.Driver;
+import jsprit.core.problem.job.Job;
+import jsprit.core.problem.job.Service;
+import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.util.Coordinate;
+import junit.framework.Assert;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class RegretInsertionTest {
+
+    @Test
+    public void noRoutesShouldBeCorrect(){
+        Service s1 = Service.Builder.newInstance("s1").setCoord(Coordinate.newInstance(0,10)).build();
+        Service s2 = Service.Builder.newInstance("s2").setCoord(Coordinate.newInstance(0,5)).build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
+
+        JobInsertionCostsCalculator calculator = getCalculator(vrp);
+        RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
+        Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
+
+        regretInsertion.insertJobs(routes,vrp.getJobs().values());
+        Assert.assertEquals(1,routes.size());
+    }
+
+    @Test
+    public void noJobsInRouteShouldBeCorrect(){
+        Service s1 = Service.Builder.newInstance("s1").setCoord(Coordinate.newInstance(0,10)).build();
+        Service s2 = Service.Builder.newInstance("s2").setCoord(Coordinate.newInstance(0,5)).build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
+
+        JobInsertionCostsCalculator calculator = getCalculator(vrp);
+        RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
+        Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
+
+        regretInsertion.insertJobs(routes,vrp.getJobs().values());
+        Assert.assertEquals(2, routes.iterator().next().getActivities().size());
+    }
+
+    @Test
+    public void s1ShouldBeAddedFirst(){
+        Service s1 = Service.Builder.newInstance("s1").setCoord(Coordinate.newInstance(0,10)).build();
+        Service s2 = Service.Builder.newInstance("s2").setCoord(Coordinate.newInstance(0,5)).build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
+
+        JobInsertionCostsCalculator calculator = getCalculator(vrp);
+        RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
+        Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
+
+        CkeckJobSequence position = new CkeckJobSequence(1, s1);
+        regretInsertion.addListener(position);
+        regretInsertion.insertJobs(routes,vrp.getJobs().values());
+        Assert.assertTrue(position.isCorrect());
+    }
+
+
+
+    static class CkeckJobSequence implements BeforeJobInsertionListener {
+
+        int atPosition;
+
+        Job job;
+
+        int positionCounter = 1;
+
+        boolean correct = false;
+
+        CkeckJobSequence(int atPosition, Job job) {
+            this.atPosition = atPosition;
+            this.job = job;
+        }
+
+        @Override
+        public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
+            if(job == this.job && atPosition == positionCounter){
+                correct = true;
+            }
+            positionCounter++;
+        }
+
+        public boolean isCorrect() {
+            return correct;
+        }
+    }
+
+    private JobInsertionCostsCalculator getCalculator(final VehicleRoutingProblem vrp) {
+        return new JobInsertionCostsCalculator() {
+
+            @Override
+            public InsertionData getInsertionData(VehicleRoute currentRoute, Job newJob, Vehicle newVehicle, double newVehicleDepartureTime, Driver newDriver, double bestKnownCosts) {
+                Service service = (Service)newJob;
+                Vehicle vehicle = vrp.getVehicles().iterator().next();
+                InsertionData iData = null;
+                if(currentRoute.isEmpty()){
+                    double mc = getCost(service.getLocationId(), vehicle.getStartLocationId());
+                    iData = new InsertionData(2*mc,-1,0,vehicle,newDriver);
+                }
+                else {
+                    double best = Double.MAX_VALUE;
+                    int bestIndex = 0;
+                    int index = 0;
+                    TourActivity prevAct = currentRoute.getStart();
+                    for (TourActivity act : currentRoute.getActivities()) {
+                        double mc = getMarginalCost(service, prevAct, act);
+                        if (mc < best) {
+                            best = mc;
+                            bestIndex = index;
+                        }
+                        index++;
+                        prevAct = act;
+                    }
+                    double mc = getMarginalCost(service, prevAct, currentRoute.getEnd());
+                    if (mc < best) {
+                        best = mc;
+                        bestIndex = index;
+                    }
+                    iData = new InsertionData(best,-1,bestIndex,vehicle,newDriver);
+                }
+                return iData;
+            }
+
+            private double getMarginalCost(Service service, TourActivity prevAct, TourActivity act) {
+                double prev_new = getCost(prevAct.getLocationId(),service.getLocationId());
+                double new_act = getCost(service.getLocationId(),act.getLocationId());
+                double prev_act = getCost(prevAct.getLocationId(),act.getLocationId());
+                return prev_new + new_act - prev_act;
+            }
+
+            private double getCost(String loc1, String loc2) {
+                return vrp.getTransportCosts().getTransportCost(loc1,loc2,0.,null,null);
+            }
+        };
+
+//        LocalActivityInsertionCostsCalculator local = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(),vrp.getActivityCosts());
+//        StateManager stateManager = new StateManager(vrp);
+//        ConstraintManager manager = new ConstraintManager(vrp,stateManager);
+//        ServiceInsertionCalculator calculator = new ServiceInsertionCalculator(vrp.getTransportCosts(), local, manager);
+//        calculator.setJobActivityFactory(vrp.getJobActivityFactory());
+//        return calculator;
+    }
+
+}
