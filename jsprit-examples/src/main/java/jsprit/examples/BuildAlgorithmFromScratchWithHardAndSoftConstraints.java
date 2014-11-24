@@ -164,10 +164,10 @@ public class BuildAlgorithmFromScratchWithHardAndSoftConstraints {
 		 */
 		SolutionCostCalculator solutionCostCalculator = new VariablePlusFixedSolutionCostCalculatorFactory(stateManager).createCalculator();
 		
-		SearchStrategy firstStrategy = new SearchStrategy(new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
+		SearchStrategy firstStrategy = new SearchStrategy("random",new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
 		firstStrategy.addModule(new RuinAndRecreateModule("randomRuinAndBestInsertion", iStrategy, randomRuin));
 		
-		SearchStrategy secondStrategy = new SearchStrategy(new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
+		SearchStrategy secondStrategy = new SearchStrategy("radial",new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
 		secondStrategy.addModule(new RuinAndRecreateModule("radialRuinAndBestInsertion", iStrategy, radialRuin));
 		
 		/*
