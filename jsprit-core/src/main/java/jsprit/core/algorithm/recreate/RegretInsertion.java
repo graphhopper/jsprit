@@ -20,8 +20,8 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
+import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.vehicle.Vehicle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -111,6 +111,8 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
         private double depotDistance_param = + 0.1;
 
+        private double minTimeWindowScore = - 100000;
+
         public DefaultScorer(VehicleRoutingProblem vrp) {
             this.vrp = vrp;
         }
@@ -121,24 +123,50 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
         @Override
         public double score(InsertionData best, Job job) {
-
-            double avgDepotDistance = getAvgDistance(best.getSelectedVehicle(),job);
-
-            return Math.max(tw_param * (((Service)job).getTimeWindow().getEnd() - ((Service)job).getTimeWindow().getStart()),-100000) +
-                    depotDistance_param * avgDepotDistance;
+            double score;
+            if(job instanceof Service){
+                score = scoreService(best, job);
+            }
+            else if(job instanceof Shipment){
+                score = scoreShipment(best,job);
+            }
+            else throw new IllegalStateException("not supported");
+            return score;
         }
 
-        private double getAvgDistance(Vehicle vehicle, Job job) {
-            double distance = vrp.getTransportCosts().getTransportCost(vehicle.getStartLocationId(),((Service)job).getLocationId(),0.,null,vehicle);
-            if(vehicle.isReturnToDepot() && !vehicle.getStartLocationId().equals(vehicle.getEndLocationId())){
-                distance = (distance + vrp.getTransportCosts().getTransportCost(vehicle.getEndLocationId(),((Service)job).getLocationId(),0.,null,vehicle))/2.;
-            }
-            return distance;
+        private double scoreShipment(InsertionData best, Job job) {
+            Shipment shipment = (Shipment)job;
+            double maxDepotDistance_1 = Math.max(
+                    getDistance(best.getSelectedVehicle().getStartLocationId(),shipment.getPickupLocationId()),
+                    getDistance(best.getSelectedVehicle().getStartLocationId(),shipment.getDeliveryLocationId())
+            );
+            double maxDepotDistance_2 = Math.max(
+                    getDistance(best.getSelectedVehicle().getEndLocationId(),shipment.getPickupLocationId()),
+                    getDistance(best.getSelectedVehicle().getEndLocationId(),shipment.getDeliveryLocationId())
+            );
+            double maxDepotDistance = Math.max(maxDepotDistance_1,maxDepotDistance_2);
+            double minTimeToOperate = Math.min(shipment.getPickupTimeWindow().getEnd()-shipment.getPickupTimeWindow().getStart(),
+                    shipment.getDeliveryTimeWindow().getEnd()-shipment.getDeliveryTimeWindow().getStart());
+            return Math.max(tw_param * minTimeToOperate,minTimeWindowScore) + depotDistance_param * maxDepotDistance;
+        }
+
+        private double scoreService(InsertionData best, Job job) {
+            double maxDepotDistance = Math.max(
+                    getDistance(best.getSelectedVehicle().getStartLocationId(), ((Service) job).getLocationId()),
+                    getDistance(best.getSelectedVehicle().getEndLocationId(), ((Service) job).getLocationId())
+            );
+            return Math.max(tw_param * (((Service)job).getTimeWindow().getEnd() - ((Service)job).getTimeWindow().getStart()),minTimeWindowScore) +
+                    depotDistance_param * maxDepotDistance;
+        }
+
+
+        private double getDistance(String loc1, String loc2) {
+            return vrp.getTransportCosts().getTransportCost(loc1,loc2,0.,null,null);
         }
 
 		@Override
 		public String toString() {
-			return "[name=timeWindowScorer][scoringParam="+tw_param+"]";
+			return "[name=defaultScorer][twParam="+tw_param+"][depotDistanceParam=" + depotDistance_param + "]";
 		}
 
 	}

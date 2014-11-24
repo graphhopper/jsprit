@@ -22,6 +22,7 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
+import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -85,6 +86,50 @@ public class RegretInsertionTest {
         Assert.assertTrue(position.isCorrect());
     }
 
+    @Test
+    public void shipment1ShouldBeAddedFirst(){
+        Shipment s1 = Shipment.Builder.newInstance("s1")
+                .setPickupLocationId("pick1")
+                .setPickupCoord(Coordinate.newInstance(-1, 10))
+                .setDeliveryCoord(Coordinate.newInstance(1, 10))
+                .setDeliveryLocationId("del1")
+                .build();
+
+        Shipment s2 = Shipment.Builder.newInstance("s2")
+                .setPickupCoord(Coordinate.newInstance(-1,20))
+                .setDeliveryCoord(Coordinate.newInstance(1, 20))
+                .setPickupLocationId("pick2")
+                .setDeliveryLocationId("del2")
+                .build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
+
+        JobInsertionCostsCalculator calculator = getShipmentCalculator(vrp);
+        RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
+        Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
+
+        CkeckJobSequence position = new CkeckJobSequence(1, s2);
+        regretInsertion.addListener(position);
+        regretInsertion.insertJobs(routes,vrp.getJobs().values());
+        Assert.assertTrue(position.isCorrect());
+    }
+
+    private JobInsertionCostsCalculator getShipmentCalculator(final VehicleRoutingProblem vrp) {
+        return new JobInsertionCostsCalculator() {
+
+            @Override
+            public InsertionData getInsertionData(VehicleRoute currentRoute, Job newJob, Vehicle newVehicle, double newVehicleDepartureTime, Driver newDriver, double bestKnownCosts) {
+                Vehicle vehicle = vrp.getVehicles().iterator().next();
+                if(newJob.getId().equals("s1")){
+                    return new InsertionData(10,0,0,vehicle,newDriver);
+                }
+                else{
+                    return new InsertionData(20,0,0,vehicle,newDriver);
+                }
+            }
+        };
+    }
 
 
     static class CkeckJobSequence implements BeforeJobInsertionListener {

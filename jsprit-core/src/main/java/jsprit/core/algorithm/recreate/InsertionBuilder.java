@@ -167,7 +167,12 @@ public class InsertionBuilder {
             }
         }
         else if(strategy.equals(Strategy.REGRET)){
-            insertion = new RegretInsertion(costCalculator, vrp);
+            if (executor == null) {
+                insertion = new RegretInsertion(costCalculator, vrp);
+            }
+            else {
+                insertion = new RegretInsertionConcurrent(costCalculator,vrp,executor);
+            }
         }
         else throw new IllegalStateException("you should never get here");
         for(InsertionListener l : iListeners) insertion.addListener(l);
