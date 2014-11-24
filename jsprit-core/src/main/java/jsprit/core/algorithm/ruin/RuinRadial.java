@@ -292,7 +292,7 @@ final class RuinRadial extends AbstractRuinStrategy {
 			return Collections.emptyList();
 		}
 		Job randomJob = pickRandomJob();
-		return ruin(vehicleRoutes,randomJob,nOfJobs2BeRemoved);
+		return ruinRoutes(vehicleRoutes, randomJob, nOfJobs2BeRemoved);
 	}
 	
 	/**

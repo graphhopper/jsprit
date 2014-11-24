@@ -51,7 +51,9 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
 
     public abstract Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes);
 
+
     @Override
+    @Deprecated
     public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved){
         ruinListeners.ruinStarts(vehicleRoutes);
         Collection<Job> unassigned = ruinRoutes(vehicleRoutes, targetJob, nOfJobs2BeRemoved);
@@ -59,6 +61,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
         return unassigned;
     }
 
+    @Deprecated
     public abstract Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved);
 
     @Override
@@ -76,15 +79,17 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
         return ruinListeners.getListeners();
     }
 
-    protected void removeJob(Job job, Collection<VehicleRoute> vehicleRoutes) {
+    protected boolean removeJob(Job job, Collection<VehicleRoute> vehicleRoutes) {
         for (VehicleRoute route : vehicleRoutes) {
-            if (removeJob(job, route)) break;
+            if (removeJob(job, route)) {
+                return true;
+            }
         }
+        return false;
     }
 
     protected boolean removeJob(Job job, VehicleRoute route) {
-        boolean removed;
-        removed = route.getTourActivities().removeJob(job);
+        boolean removed = route.getTourActivities().removeJob(job);
         if (removed) {
             ruinListeners.removed(job,route);
             return true;

@@ -76,20 +76,21 @@ final class RuinRandom extends AbstractRuinStrategy {
 	 */
 	@Override
 	public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
-        List<Job> unassignedJobs = new ArrayList<Job>();
-		if(targetJob != null){
-			boolean removed = false;
-			for (VehicleRoute route : vehicleRoutes) {
-				removed = removeJob(targetJob,route);
-				if (removed) {
-					nOfJobs2BeRemoved--;
-					unassignedJobs.add(targetJob);
-					break;
-				}
-			}
-		}
-		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
-        return unassignedJobs;
+        throw new IllegalStateException("not supported");
+//        List<Job> unassignedJobs = new ArrayList<Job>();
+//		if(targetJob != null){
+//			boolean removed = false;
+//			for (VehicleRoute route : vehicleRoutes) {
+//				removed = removeJob(targetJob,route);
+//				if (removed) {
+//					nOfJobs2BeRemoved--;
+//					unassignedJobs.add(targetJob);
+//					break;
+//				}
+//			}
+//		}
+//		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
+//        return unassignedJobs;
 	}
 
 	public void setRuinFraction(double fractionOfAllNodes2beRuined) {
