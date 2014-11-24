@@ -297,7 +297,9 @@ final class RuinRadial extends AbstractRuinStrategy {
 	
 	/**
 	 * Removes targetJob and its neighborhood and returns the removed jobs.
+     * @deprecated will be private
 	 */
+    @Deprecated
 	public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved){
         List<Job> unassignedJobs = new ArrayList<Job>();
 		int nNeighbors = nOfJobs2BeRemoved - 1;
