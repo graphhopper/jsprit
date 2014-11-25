@@ -83,6 +83,13 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         }
     }
 
+    static class BadJob extends ScoredJob {
+
+        BadJob(Job job) {
+            super(job, 0., null, null, false);
+        }
+    }
+
 	/**
 	 * Scorer to include other impacts on score such as time-window length or distance to depot.
 	 *
@@ -216,25 +223,24 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
-            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList);
-            Job handledJob;
-            if(bestScoredJob == null){
-                handledJob = unassignedJobList.get(0);
-                badJobs.add(handledJob);
-            }
-            else {
+            List<Job> badJobList = new ArrayList<Job>();
+            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
+            if(bestScoredJob != null){
                 if(bestScoredJob.isNewRoute()){
                     routes.add(bestScoredJob.getRoute());
                 }
                 insertJob(bestScoredJob.getJob(),bestScoredJob.getInsertionData(),bestScoredJob.getRoute());
-                handledJob = bestScoredJob.getJob();
+                jobs.remove(bestScoredJob.getJob());
             }
-            jobs.remove(handledJob);
+            for(Job bad : badJobList) {
+                jobs.remove(bad);
+                badJobs.add(bad);
+            }
         }
         return badJobs;
     }
 
-    private ScoredJob nextJob(Collection<VehicleRoute> routes, List<Job> unassignedJobList) {
+    private ScoredJob nextJob(Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobs) {
         ScoredJob bestScoredJob = null;
         double bestScore = -1 * Double.MAX_VALUE;
 
@@ -277,7 +283,10 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                     secondBest = iData;
                 }
             }
-
+            if(best == null){
+                badJobs.add(unassignedJob);
+                continue;
+            }
             double score = score(unassignedJob, best, secondBest);
             if (score > bestScore) {
                 if(bestRoute == emptyRoute){
@@ -292,9 +301,6 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
 
     private double score(Job unassignedJob, InsertionData best, InsertionData secondBest) {
-		if(best == null){
-			throw new IllegalStateException("cannot insert job " +  unassignedJob.getId());
-		}
         double score;
 		if(secondBest == null){
 			score = best.getInsertionCost() + scoringFunction.score(best,unassignedJob);

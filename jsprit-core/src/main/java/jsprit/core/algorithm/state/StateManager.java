@@ -46,7 +46,6 @@ import java.util.*;
  */
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 
-
     static class States_ {
 		
 		private Map<StateId,Object> states = new HashMap<StateId,Object>();
@@ -103,10 +102,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     private Object[][] activity_states;
 
     private Object[][][] vehicle_dependent_activity_states;
-
-//    private Object[][] route_states;
-//
-//    private Object[][][] vehicle_dependent_route_states;
 
     private Map<VehicleRoute,Object[]> route_state_map;
 
@@ -496,6 +491,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 		updaters.add(updater);
 	}
 
+    public void addAllStateUpdater(Collection<StateUpdater> updaters){
+        for(StateUpdater u : updaters) addStateUpdater(u);
+    }
+
     /**
      * Returns an unmodifiable collections of stateUpdaters that have been added to this stateManager.
      *
@@ -618,5 +617,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         addActivityVisitor(new UpdateSkills(this));
     }
 
-	
+	public void addCoreUpdater(){
+
+    }
 }

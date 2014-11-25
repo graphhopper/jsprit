@@ -124,8 +124,15 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
     public void ruinStarts(Collection<VehicleRoute> routes) {
         if(!record()) return;
         fileSink.stepBegins(graph.getId(),0,BEFORE_RUIN_RENDER_SOLUTION);
+        markAllNodesAsInserted();
         addRoutes(routes);
         fileSink.stepBegins(graph.getId(),0,RUIN);
+    }
+
+    private void markAllNodesAsInserted() {
+        for(Job j : vrp.getJobs().values()){
+            markInserted(j);
+        }
     }
 
     private void addRoutes(Collection<VehicleRoute> routes) {

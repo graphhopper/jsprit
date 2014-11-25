@@ -473,8 +473,8 @@ public class VehicleRoutingAlgorithms {
         stateManager.updateSkillStates();
 		stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
 		stateManager.addStateUpdater(new OpenRouteStateVerifier());
-		stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts()));
-		stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+//		stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts()));
+//		stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 
 		/*
 		 * define constraints

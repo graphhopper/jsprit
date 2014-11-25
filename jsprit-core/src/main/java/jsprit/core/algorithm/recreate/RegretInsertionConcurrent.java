@@ -93,25 +93,24 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
-            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList);
-            Job handledJob;
-            if(bestScoredJob == null){
-                handledJob = unassignedJobList.get(0);
-                badJobs.add(handledJob);
-            }
-            else {
+            List<Job> badJobList = new ArrayList<Job>();
+            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
+            if(bestScoredJob != null){
                 if(bestScoredJob.isNewRoute()){
                     routes.add(bestScoredJob.getRoute());
                 }
                 insertJob(bestScoredJob.getJob(),bestScoredJob.getInsertionData(),bestScoredJob.getRoute());
-                handledJob = bestScoredJob.getJob();
+                jobs.remove(bestScoredJob.getJob());
             }
-            jobs.remove(handledJob);
+            for(Job j : badJobList) {
+                jobs.remove(j);
+                badJobs.add(j);
+            }
         }
         return badJobs;
     }
 
-    private ScoredJob nextJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList) {
+    private ScoredJob nextJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList) {
         ScoredJob bestScoredJob = null;
 
         for (final Job unassignedJob : unassignedJobList) {
@@ -129,7 +128,8 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
             for(int i=0; i < unassignedJobList.size(); i++){
                 Future<ScoredJob> fsj = completionService.take();
                 ScoredJob sJob = fsj.get();
-                if(sJob == null){
+                if(sJob instanceof RegretInsertion.BadJob){
+                    badJobList.add(sJob.getJob());
                     continue;
                 }
                 if(bestScoredJob == null){
@@ -191,7 +191,9 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
                 secondBest = iData;
             }
         }
-
+        if(best == null){
+            return new RegretInsertion.BadJob(unassignedJob);
+        }
         double score = score(unassignedJob, best, secondBest);
         ScoredJob scoredJob;
         if(bestRoute == emptyRoute){
