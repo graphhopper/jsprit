@@ -22,6 +22,12 @@ package jsprit.core.util;
  */
 public class GreatCircleDistanceCalculator {
 
+    public enum DistanceUnit {
+
+        Meter, Kilometer
+
+    }
+
     private static final double R = 6372.8; // km
 
     /**
@@ -36,7 +42,7 @@ public class GreatCircleDistanceCalculator {
      * @param coord2 - to coord
      * @return great circle distance
      */
-    public  static double calculateDistance(Coordinate coord1, Coordinate coord2){
+    public  static double calculateDistance(Coordinate coord1, Coordinate coord2, DistanceUnit unit){
         double lon1 = coord1.getX();
         double lon2 = coord2.getX();
         double lat1 = coord1.getY();
@@ -49,7 +55,11 @@ public class GreatCircleDistanceCalculator {
 
         double a = Math.sin(delta_Lat / 2) * Math.sin(delta_Lat / 2) + Math.sin(delta_Lon / 2) * Math.sin(delta_Lon / 2) * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.asin(Math.sqrt(a));
-        return R * c;
+        double distance = R * c;
+        if(unit.equals(DistanceUnit.Meter)){
+            distance = distance * 1000.;
+        }
+        return distance;
     }
 
 }
