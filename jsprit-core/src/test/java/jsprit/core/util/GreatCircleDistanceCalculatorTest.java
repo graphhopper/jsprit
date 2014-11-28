@@ -35,10 +35,26 @@ public class GreatCircleDistanceCalculatorTest {
 
         double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
                 Coordinate.newInstance(lon1,lat1),
-                Coordinate.newInstance(lon2,lat2)
+                Coordinate.newInstance(lon2,lat2),
+                GreatCircleDistanceCalculator.DistanceUnit.Kilometer
         );
         Assert.assertEquals(600,greatCircle,30.);
     }
 
+    @Test
+    public void testMeter(){
+        double lon1 = 8.3858333;
+        double lat1 = 49.0047222;
+
+        double lon2 = 12.1333333;
+        double lat2 = 54.0833333;
+
+        double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
+                Coordinate.newInstance(lon1,lat1),
+                Coordinate.newInstance(lon2,lat2),
+                GreatCircleDistanceCalculator.DistanceUnit.Meter
+        );
+        Assert.assertEquals(600000,greatCircle,30000.);
+    }
 
 }
