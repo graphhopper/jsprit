@@ -30,9 +30,9 @@ import jsprit.core.problem.vehicle.Vehicle;
 
 public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCosts {
 
-	public double speed = 1.;
+	private double speed = 1.;
 
-    public double detour = 1.;
+    private double detour = 1.;
 
     public void setSpeed(double speed) {
         this.speed = speed;
