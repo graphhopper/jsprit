@@ -21,11 +21,13 @@ import jsprit.core.algorithm.VariablePlusFixedSolutionCostCalculatorFactory;
 import jsprit.core.algorithm.state.*;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.util.ActivityTimeTracker;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -280,6 +282,8 @@ public class SolutionAnalyser {
             prevActDeparture = activity.getEndTime();
             //service time
             sum_service_time += activity.getOperationTime();
+            
+            stateManager.putActivityState(activity, transport_time_id, sum_transport_time);
 
         }
 
@@ -292,6 +296,65 @@ public class SolutionAnalyser {
             stateManager.putRouteState(route,service_time_id,sum_service_time);
             stateManager.putRouteState(route,too_late_id,sum_too_late);
         }
+    }
+    
+    private static class LastTransportUpdater  implements StateUpdater, ActivityVisitor{
+        private final StateManager stateManager;
+        private final VehicleRoutingTransportCosts transportCost;
+        private final DistanceCalculator distanceCalculator;
+        private final StateId last_transport_distance_id;
+        private final StateId last_transport_time_id;
+        private final StateId last_transport_cost_id;
+        private TourActivity prevAct;
+        private double prevActDeparture;
+        private VehicleRoute route;
+
+        
+        private LastTransportUpdater(StateManager stateManager,VehicleRoutingTransportCosts transportCost, DistanceCalculator distanceCalculator, StateId last_distance_id, StateId last_time_id, StateId last_cost_id) {
+			this.stateManager = stateManager;
+			this.transportCost = transportCost;
+			this.distanceCalculator = distanceCalculator;
+			this.last_transport_distance_id = last_distance_id;
+			this.last_transport_time_id = last_time_id;
+			this.last_transport_cost_id = last_cost_id;
+		}
+
+		@Override
+		public void begin(VehicleRoute route) {
+			this.route = route;
+	        this.prevAct = route.getStart();
+	        this.prevActDeparture = route.getDepartureTime();	        
+		}
+
+		@Override
+		public void visit(TourActivity activity) {
+            stateManager.putActivityState(activity,last_transport_distance_id,distance(activity));
+            stateManager.putActivityState(activity,last_transport_time_id,transportTime(activity));
+        	stateManager.putActivityState(activity, last_transport_cost_id, transportCost(activity));
+        	
+            prevAct = activity;
+            prevActDeparture = activity.getEndTime();            
+		}
+
+		private double transportCost(TourActivity activity) {
+			return transportCost.getTransportCost(prevAct.getLocationId(), activity.getLocationId(), prevActDeparture, route.getDriver(), route.getVehicle());
+		}
+
+		private double transportTime(TourActivity activity) {
+			return activity.getArrTime() - prevActDeparture;
+		}
+
+		private double distance(TourActivity activity) {
+			return distanceCalculator.getDistance(prevAct.getLocationId(),activity.getLocationId());
+		}
+
+		@Override
+		public void finish() {
+	        stateManager.putRouteState(route,last_transport_distance_id,distance(route.getEnd()));
+	        stateManager.putRouteState(route,last_transport_time_id,transportTime(route.getEnd()));
+	        stateManager.putRouteState(route, last_transport_cost_id, transportCost(route.getEnd()));
+		}
+    	
     }
 
     private static class DistanceUpdater implements StateUpdater, ActivityVisitor {
@@ -402,6 +465,13 @@ public class SolutionAnalyser {
     private StateId backhaul_id;
 
     private StateId skill_id;
+    
+    private StateId last_transport_distance_id;
+    
+    private StateId last_transport_time_id;
+    
+    private StateId last_transport_cost_id;   
+    
 
     private ActivityTimeTracker.ActivityPolicy activityPolicy;
 
@@ -467,11 +537,16 @@ public class SolutionAnalyser {
         shipment_id = stateManager.createStateId("shipment");
         backhaul_id = stateManager.createStateId("backhaul");
         skill_id = stateManager.createStateId("skills-violated");
+        last_transport_cost_id = stateManager.createStateId("last-transport-cost");
+        last_transport_distance_id = stateManager.createStateId("last-transport-distance");
+        last_transport_time_id = stateManager.createStateId("last-transport-time");
+        
         stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id,too_late_id , stateManager, activityPolicy));
         stateManager.addStateUpdater(new DistanceUpdater(distance_id,stateManager,distanceCalculator));
         stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id,shipment_id,stateManager));
         stateManager.addStateUpdater(new SkillUpdater(stateManager,skill_id));
         stateManager.addStateUpdater(new LoadAndActivityCounter(stateManager));
+        stateManager.addStateUpdater(new LastTransportUpdater(stateManager,vrp.getTransportCosts(), distanceCalculator, last_transport_distance_id, last_transport_time_id, last_transport_cost_id));
     }
 
 
@@ -876,6 +951,61 @@ public class SolutionAnalyser {
         return stateManager.getActivityState(activity,InternalStates.COSTS,Double.class);
     }
 
+    /**
+     * 
+     * @param activity to get the transport time from
+     * @param route where the activity should be part of
+     * @return transport time at the activity, i.e. the total time spent driving since the start of the route to the specified activity.
+     */
+    public Double getTransportTimeAtActivity(TourActivity activity, VehicleRoute route){
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
+        if(activity instanceof Start) return 0.;
+        if(activity instanceof End) return getTransportTime(route);
+        verifyThatRouteContainsAct(activity, route);
+        return stateManager.getActivityState(activity,transport_time_id,Double.class);
+    }
+ 
+    /**
+     * 
+     * @param activity to get the last transport time from
+     * @param route where the activity should be part of
+     * @return The transport time from the previous activity to this one.
+     */
+    public Double getLastTransportTimeAtActivity(TourActivity activity, VehicleRoute route){
+    	return getLastTransport(activity, route, last_transport_time_id);
+    }
+
+    /**
+     * 
+     * @param activity to get the last transport distance from
+     * @param route where the activity should be part of
+     * @return The transport distance from the previous activity to this one.
+     */
+    public Double getLastTransportDistanceAtActivity(TourActivity activity, VehicleRoute route){
+    	return getLastTransport(activity, route, last_transport_distance_id);
+    }
+    
+    /**
+     * 
+     * @param activity to get the last transport cost from
+     * @param route where the activity should be part of
+     * @return The transport cost from the previous activity to this one.
+     */
+    public Double getLastTransportCostAtActivity(TourActivity activity, VehicleRoute route){
+    	return getLastTransport(activity, route, last_transport_cost_id);
+    }
+    
+    
+    private Double getLastTransport(TourActivity activity, VehicleRoute route, StateId id){
+        if(route == null) throw new IllegalArgumentException("route is missing.");
+        if(activity == null) throw new IllegalArgumentException("activity is missing.");
+        if(activity instanceof Start) return 0.;
+        if(activity instanceof End) return stateManager.getRouteState(route, id, Double.class);
+        verifyThatRouteContainsAct(activity, route);
+        return stateManager.getActivityState(activity,id,Double.class);
+    }
+    
     /**
      * @param activity to get the waiting from
      * @param route where activity should be part of
