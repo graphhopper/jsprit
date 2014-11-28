@@ -80,7 +80,7 @@ public class RegretInsertionTest {
         RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
-        CkeckJobSequence position = new CkeckJobSequence(1, s1);
+        CkeckJobSequence position = new CkeckJobSequence(2, s1);
         regretInsertion.addListener(position);
         regretInsertion.insertJobs(routes,vrp.getJobs().values());
         Assert.assertTrue(position.isCorrect());
@@ -109,7 +109,7 @@ public class RegretInsertionTest {
         RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
-        CkeckJobSequence position = new CkeckJobSequence(1, s2);
+        CkeckJobSequence position = new CkeckJobSequence(2, s2);
         regretInsertion.addListener(position);
         regretInsertion.insertJobs(routes,vrp.getJobs().values());
         Assert.assertTrue(position.isCorrect());

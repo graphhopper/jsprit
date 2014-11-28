@@ -53,8 +53,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     private final ExecutorCompletionService<ScoredJob> completionService;
 
-
-	/**
+    /**
 	 * Sets the scoring function.
 	 *
 	 * <p>By default, the this.TimeWindowScorer is used.
@@ -118,7 +117,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
                 @Override
                 public ScoredJob call() throws Exception {
-                    return getScoredJob(routes, unassignedJob);
+                    return RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
                 }
 
             });
@@ -152,71 +151,10 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         return bestScoredJob;
     }
 
-    private ScoredJob getScoredJob(Collection<VehicleRoute> routes, Job unassignedJob) {
-        InsertionData best = null;
-        InsertionData secondBest = null;
-        VehicleRoute bestRoute = null;
-
-        double benchmark = Double.MAX_VALUE;
-        for (VehicleRoute route : routes) {
-            if (secondBest != null) {
-                benchmark = secondBest.getInsertionCost();
-            }
-            InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
-            if (iData instanceof InsertionData.NoInsertionFound) continue;
-            if (best == null) {
-                best = iData;
-                bestRoute = route;
-            } else if (iData.getInsertionCost() < best.getInsertionCost()) {
-                secondBest = best;
-                best = iData;
-                bestRoute = route;
-            } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
-                secondBest = iData;
-            }
-        }
-
-        VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
-        InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
-        if (!(iData instanceof InsertionData.NoInsertionFound)) {
-//                iData = new InsertionData(iData.getInsertionCost()*1000.,iData.getPickupInsertionIndex(),iData.getDeliveryInsertionIndex(),iData.getSelectedVehicle(),iData.getSelectedDriver());
-            if (best == null) {
-                best = iData;
-                bestRoute = emptyRoute;
-            } else if (iData.getInsertionCost() < best.getInsertionCost()) {
-                secondBest = best;
-                best = iData;
-                bestRoute = emptyRoute;
-            } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
-                secondBest = iData;
-            }
-        }
-        if(best == null){
-            return new RegretInsertion.BadJob(unassignedJob);
-        }
-        double score = score(unassignedJob, best, secondBest);
-        ScoredJob scoredJob;
-        if(bestRoute == emptyRoute){
-            scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, true);
-        }
-        else scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, false);
-        return scoredJob;
-    }
 
 
-    private double score(Job unassignedJob, InsertionData best, InsertionData secondBest) {
-		if(best == null){
-			throw new IllegalStateException("cannot insert job " +  unassignedJob.getId());
-		}
-        double score;
-		if(secondBest == null){
-			score = best.getInsertionCost() + scoringFunction.score(best,unassignedJob);
-		}
-        else{
-            score = (secondBest.getInsertionCost()-best.getInsertionCost()) + scoringFunction.score(best,unassignedJob);
-        }
-		return score;
-    }
+
+
 
 
 }
