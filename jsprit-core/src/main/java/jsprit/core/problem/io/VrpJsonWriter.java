@@ -39,10 +39,7 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -82,11 +79,8 @@ public class VrpJsonWriter {
         return stringWriter.toString();
     }
 
-
-
-    public void write(File jsonFile){
+    public void addTo(JsonGenerator jsonGenerator){
         try {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonFile), JsonEncoding.UTF8);
             if(solution == null) writeProblem(jsonGenerator);
             else writeSolution(jsonGenerator);
         } catch (IOException e) {
@@ -95,17 +89,41 @@ public class VrpJsonWriter {
         }
     }
 
-    private void writeSolution(JsonGenerator jsonGenerator) throws IOException {
-        jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
-        jsonGenerator.writeStartObject();
-        writeSolution_(jsonGenerator);
-        jsonGenerator.writeEndObject();
-        jsonGenerator.flush();
-        jsonGenerator.close();
+    public void write(Writer writer){
+        try {
+            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(writer);
+            jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+            jsonGenerator.writeStartObject();
+            if(solution == null) writeProblem(jsonGenerator);
+            else writeSolution(jsonGenerator);
+            jsonGenerator.writeEndObject();
+            jsonGenerator.flush();
+            jsonGenerator.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
-    private void writeSolution_(JsonGenerator jsonGenerator) {
+    public void write(File jsonFile){
         try {
+            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(new FileOutputStream(jsonFile), JsonEncoding.UTF8);
+            jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+            jsonGenerator.writeStartObject();
+            if(solution == null) writeProblem(jsonGenerator);
+            else writeSolution(jsonGenerator);
+            jsonGenerator.writeEndObject();
+            jsonGenerator.flush();
+            jsonGenerator.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private void writeSolution(JsonGenerator jsonGenerator) {
+        try {
+            jsonGenerator.writeObjectFieldStart(JsonConstants.SOLUTION);
             jsonGenerator.writeNumberField(JsonConstants.Solution.COSTS,solution.getCost());
             jsonGenerator.writeNumberField(JsonConstants.Solution.FIXED_COSTS,solutionAnalyzer.getFixedCosts());
             jsonGenerator.writeNumberField(JsonConstants.Solution.VARIABLE_COSTS, solutionAnalyzer.getVariableTransportCosts());
@@ -142,6 +160,7 @@ public class VrpJsonWriter {
                jsonGenerator.writeString(j.getId());
             }
             jsonGenerator.writeEndArray();
+            jsonGenerator.writeEndObject();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,15 +169,12 @@ public class VrpJsonWriter {
     }
 
     private void writeProblem(JsonGenerator jsonGenerator) throws IOException {
-        jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField(JsonConstants.FLEET,vrp.getFleetSize().toString());
+        jsonGenerator.writeObjectFieldStart(JsonConstants.PROBLEM);
+        jsonGenerator.writeStringField(JsonConstants.FLEET, vrp.getFleetSize().toString());
         writeVehicles(jsonGenerator);
         writeVehicleTypes(jsonGenerator);
         writeServices(jsonGenerator);
         jsonGenerator.writeEndObject();
-        jsonGenerator.flush();
-        jsonGenerator.close();
     }
 
     private void writeVehicleTypes(JsonGenerator jsonGenerator) {
@@ -275,7 +291,7 @@ public class VrpJsonWriter {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Service service = Service.Builder.newInstance("s1").setLocationId("s1_loc").setCoord(Coordinate.newInstance(40, 10))
                 .addSizeDimension(0, 20).addSizeDimension(1, 40)
                 .setServiceTime(1.)
@@ -311,19 +327,32 @@ public class VrpJsonWriter {
 //        System.out.println(new VrpJsonWriter(vrp).toString());
 
         VehicleRoutingProblem.Builder vrpBuilder_ = VehicleRoutingProblem.Builder.newInstance();
-        new VrpJsonReader(vrpBuilder_).read("output/vpr.json");
+        new VrpJsonReader(vrpBuilder_).read(new File("output/vrp.json"));
         VehicleRoutingProblem vrp_ = vrpBuilder_.build();
 
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp_);
         VehicleRoutingProblemSolution solutions = Solutions.bestOf(vra.searchSolutions());
 
+        FileWriter fileWriter = new FileWriter(new File("output/vrp-solution.json"));
+        JsonGenerator jsonGenerator = new JsonFactory().createGenerator(fileWriter);
+        jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeObjectFieldStart("meta-info");
+        jsonGenerator.writeStringField("distance-unit", "m");
+        jsonGenerator.writeStringField("time-unit","sec");
+        jsonGenerator.writeEndObject();
         new VrpJsonWriter(vrp,solutions,new SolutionAnalyser.DistanceCalculator() {
 
             @Override
             public double getDistance(String fromLocationId, String toLocationId) {
                 return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
             }
-        }).write(new File("output/vrp-solution.json"));
+        }).addTo(jsonGenerator);
+        jsonGenerator.writeEndObject();
+        jsonGenerator.flush();
+        jsonGenerator.close();
+        fileWriter.close();
+//                .write(new File("output/vrp-solution.json"));
 
     }
 }

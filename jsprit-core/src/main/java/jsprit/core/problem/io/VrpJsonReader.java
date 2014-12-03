@@ -32,7 +32,6 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -70,18 +69,18 @@ public class VrpJsonReader {
         parse(root);
     }
 
-    private void parse(JsonNode root) {
-        setFleetSize(root);
-        parse_and_map_vehicle_types(root);
-        parse_vehicles(root);
-        parse_services(root);
+    public void parse(JsonNode problemRoot) {
+        setFleetSize(problemRoot);
+        parse_and_map_vehicle_types(problemRoot);
+        parse_vehicles(problemRoot);
+        parse_services(problemRoot);
     }
 
     private JsonNode buildTree_and_getRoot_fromContent(String jsonContent){
         JsonNode node = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            node = objectMapper.readTree(jsonContent);
+            node = objectMapper.readTree(jsonContent).path(JsonConstants.PROBLEM);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -93,12 +92,7 @@ public class VrpJsonReader {
         JsonNode node = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            String jsonContent = "";
-            BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
-            String line;
-            while((line = reader.readLine()) != null) jsonContent += line;
-            reader.close();
-            node = objectMapper.readTree(jsonContent);
+            node = objectMapper.readTree(new FileReader(jsonFile)).path(JsonConstants.PROBLEM);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

@@ -22,6 +22,10 @@ package jsprit.core.problem.io;
  */
 public class JsonConstants {
 
+    public static final String PROBLEM = "vrp";
+
+    public static final String SOLUTION = "solution";
+
     public static final String SERVICES = "services";
 
     public static final String FLEET = "fleet_size";
@@ -164,4 +168,6 @@ public class JsonConstants {
             public static final String TIME = "time_dependent_costs";
         }
     }
+
+
 }
