@@ -51,7 +51,7 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
 
     private Locations locations;
 
-    private GreatCircleDistanceCalculator.DistanceUnit distanceUnit = GreatCircleDistanceCalculator.DistanceUnit.Kilometer;
+    private DistanceUnit distanceUnit = DistanceUnit.Kilometer;
 
 	public GreatCircleCosts(Locations locations) {
 		super();
@@ -59,7 +59,7 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
 	}
 
 
-    public GreatCircleCosts(Locations locations, GreatCircleDistanceCalculator.DistanceUnit distanceUnit) {
+    public GreatCircleCosts(Locations locations, DistanceUnit distanceUnit) {
         super();
         this.locations = locations;
         this.distanceUnit = distanceUnit;

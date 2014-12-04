@@ -36,7 +36,7 @@ public class GreatCircleDistanceCalculatorTest {
         double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
                 Coordinate.newInstance(lon1,lat1),
                 Coordinate.newInstance(lon2,lat2),
-                GreatCircleDistanceCalculator.DistanceUnit.Kilometer
+                DistanceUnit.Kilometer
         );
         Assert.assertEquals(600,greatCircle,30.);
     }
@@ -52,7 +52,7 @@ public class GreatCircleDistanceCalculatorTest {
         double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
                 Coordinate.newInstance(lon1,lat1),
                 Coordinate.newInstance(lon2,lat2),
-                GreatCircleDistanceCalculator.DistanceUnit.Meter
+                DistanceUnit.Meter
         );
         Assert.assertEquals(600000,greatCircle,30000.);
     }

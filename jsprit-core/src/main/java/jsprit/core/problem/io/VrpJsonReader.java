@@ -33,7 +33,6 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,7 +68,7 @@ public class VrpJsonReader {
         parse(root);
     }
 
-    public void parse(JsonNode problemRoot) {
+    private void parse(JsonNode problemRoot) {
         setFleetSize(problemRoot);
         parse_and_map_vehicle_types(problemRoot);
         parse_vehicles(problemRoot);
@@ -92,7 +91,7 @@ public class VrpJsonReader {
         JsonNode node = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            node = objectMapper.readTree(new FileReader(jsonFile)).path(JsonConstants.PROBLEM);
+            node = objectMapper.readTree(jsonFile).path(JsonConstants.PROBLEM);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

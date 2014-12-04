@@ -34,6 +34,15 @@ public class JsonConstants {
 
     public static final String VEHICLE_TYPES = "vehicle_types";
 
+    public static final String META = "meta-info";
+
+    public static class MetaInfo {
+
+        public static final String DISTANCE_UNIT = "distance-unit";
+
+        public static final String TIME_UNIT = "time-unit";
+    }
+
     public static class Solution {
 
         public static final String COSTS = "costs";

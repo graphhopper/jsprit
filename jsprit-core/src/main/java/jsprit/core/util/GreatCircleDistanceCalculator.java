@@ -22,12 +22,6 @@ package jsprit.core.util;
  */
 public class GreatCircleDistanceCalculator {
 
-    public enum DistanceUnit {
-
-        Meter, Kilometer
-
-    }
-
     private static final double R = 6372.8; // km
 
     /**
