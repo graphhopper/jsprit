@@ -32,7 +32,7 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 ##[Contributors](https://github.com/jsprit/jsprit/graphs/contributors)
 [Pierre-David Bélanger](https://github.com/pierredavidbelanger)<br>
 [Abraham Gausachs](https://github.com/agausachs)<br>
-[Subhamay Das](http://www.linkedin.com/profile/view?id=10203174)
+[Subhamay Das](http://www.linkedin.com/profile/view?id=10203174)<br>
 [Philip Welch](http://www.opendoorlogistics.com)
 
 ##[Acknowledgement](https://github.com/jsprit/jsprit/wiki/Acknowledgement)
