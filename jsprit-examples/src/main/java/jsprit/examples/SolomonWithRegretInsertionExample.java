@@ -67,8 +67,8 @@ public class SolomonWithRegretInsertionExample {
 		 * 
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, 2, "input/algorithmConfig_greedyWithRegret.xml");
-        vra.setMaxIterations(50);
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_greedyWithRegret.xml");
+        vra.setMaxIterations(2);
 
         AlgorithmEventsRecorder eventsRecorder = new AlgorithmEventsRecorder(vrp,new File("output/events.dgs.gz"));
         eventsRecorder.setRecordingRange(0,50);

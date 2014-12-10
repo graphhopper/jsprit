@@ -54,7 +54,7 @@
 						<ruin name="radialRuin">
 							<share>0.3</share>
 						</ruin>
-						<insertion name="bestInsertion"/>
+						<insertion name="regretInsertion"/>
 					</module>
 				</modules>
 				<probability>0.5</probability>
