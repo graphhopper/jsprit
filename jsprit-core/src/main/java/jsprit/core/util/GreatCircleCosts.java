@@ -69,7 +69,7 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
 	public double getTransportCost(String fromId, String toId, double time,Driver driver, Vehicle vehicle) {
         double distance;
         try {
-            distance = calculateDistance(fromId, toId);
+            distance = getDistance(fromId, toId);
         } catch (NullPointerException e) {
             throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
         }
@@ -84,10 +84,10 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
 
 	@Override
 	public double getTransportTime(String fromId, String toId, double time, Driver driver, Vehicle vehicle) {
-		return calculateDistance(fromId, toId) / speed;
+		return getDistance(fromId, toId) / speed;
 	}
 
-	private double calculateDistance(String fromId, String toId) {
+    public double getDistance(String fromId, String toId) {
 		Coordinate fromCoordinate = locations.getCoord(fromId);
         Coordinate toCoordinate = locations.getCoord(toId);
         return GreatCircleDistanceCalculator.calculateDistance(fromCoordinate, toCoordinate, distanceUnit) * detour;
