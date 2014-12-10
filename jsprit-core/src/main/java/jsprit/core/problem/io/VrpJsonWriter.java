@@ -72,6 +72,8 @@ public class VrpJsonWriter {
             JsonGenerator jsonGenerator = new JsonFactory().createGenerator(stringWriter);
             if(solution == null) writeProblem(jsonGenerator);
             else writeSolution(jsonGenerator);
+            jsonGenerator.flush();
+            jsonGenerator.close();
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
