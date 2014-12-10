@@ -135,10 +135,14 @@ public class PrettyAlgorithmBuilder {
     }
 
     private void searchSchrimpfAndRegister(VehicleRoutingAlgorithm vra) {
+        boolean schrimpfAdded = false;
         for(SearchStrategy strategy : vra.getSearchStrategyManager().getStrategies()){
             SolutionAcceptor acceptor = strategy.getSolutionAcceptor();
             if(acceptor instanceof SchrimpfAcceptance){
-                vra.addListener((SchrimpfAcceptance)acceptor);
+                if(!schrimpfAdded) {
+                    vra.addListener((SchrimpfAcceptance) acceptor);
+                    schrimpfAdded = true;
+                }
             }
         }
     }

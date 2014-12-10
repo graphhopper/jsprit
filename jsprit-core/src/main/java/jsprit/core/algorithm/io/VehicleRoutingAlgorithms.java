@@ -612,6 +612,9 @@ public class VehicleRoutingAlgorithms {
                 if(termination != null) metaAlgorithm.addTerminationCriterion(termination);
             }
         }
+        for(PrioritizedVRAListener l : algorithmListeners){
+            metaAlgorithm.getAlgorithmListeners().add(l);
+        }
         return metaAlgorithm;
 	}
 

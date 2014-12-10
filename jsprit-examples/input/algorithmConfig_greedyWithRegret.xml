@@ -32,7 +32,7 @@
 		<memory>1</memory>
 		<searchStrategies>
 
-			<searchStrategy name="randomRuinAndRecreate">
+			<searchStrategy name="randomRR">
 				<selector name="selectBest"/>
 	  			<acceptor name="greedyAcceptance"/>
 				<modules>
@@ -40,13 +40,13 @@
 						<ruin name="randomRuin">
 							<share>0.5</share>
 						</ruin>
-						<insertion name="bestInsertion"/>
+						<insertion name="regretInsertion"/>
 					</module>
 				</modules>
 				<probability>0.5</probability>
 			</searchStrategy>
 			
-			<searchStrategy name="radialRuinAndRecreate">
+			<searchStrategy name="radialRR">
 				<selector name="selectBest"/>
 				<acceptor name="greedyAcceptance"/>
 				<modules>
@@ -54,7 +54,7 @@
 						<ruin name="radialRuin">
 							<share>0.3</share>
 						</ruin>
-						<insertion name="bestInsertion"/>
+						<insertion name="regretInsertion"/>
 					</module>
 				</modules>
 				<probability>0.5</probability>

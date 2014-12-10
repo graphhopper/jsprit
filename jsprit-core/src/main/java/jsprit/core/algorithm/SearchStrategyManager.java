@@ -70,7 +70,7 @@ public class SearchStrategyManager {
             throw new IllegalStateException("strategy is null. make sure adding a valid strategy.");
         }
         if(id2index.keySet().contains(strategy.getId())){
-            throw new IllegalStateException("strategyId " + strategy.getId() + " already in use");
+            throw new IllegalStateException("strategyId " + strategy.getId() + " already in use. replace strateId in your config file or code with a unique strategy id");
         }
         if(weight < 0.0){
 			throw new IllegalStateException("weight is lower than zero.");
