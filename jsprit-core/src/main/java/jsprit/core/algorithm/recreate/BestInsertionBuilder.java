@@ -126,7 +126,7 @@ public class BestInsertionBuilder {
 	public InsertionStrategy build() {
 		List<InsertionListener> iListeners = new ArrayList<InsertionListener>();
 		List<PrioritizedVRAListener> algorithmListeners = new ArrayList<PrioritizedVRAListener>();
-		CalculatorBuilder calcBuilder = new CalculatorBuilder(iListeners, algorithmListeners);
+		JobInsertionCostsCalculatorBuilder calcBuilder = new JobInsertionCostsCalculatorBuilder(iListeners, algorithmListeners);
 		if(local){
 			calcBuilder.setLocalLevel(addDefaultCostCalc);
 		}
@@ -134,7 +134,7 @@ public class BestInsertionBuilder {
 			calcBuilder.setRouteLevel(forwaredLooking, memory, addDefaultCostCalc);
 		}
 		calcBuilder.setConstraintManager(constraintManager);
-		calcBuilder.setStates(stateManager);
+		calcBuilder.setStateManager(stateManager);
 		calcBuilder.setVehicleRoutingProblem(vrp);
 		calcBuilder.setVehicleFleetManager(fleetManager);
 		calcBuilder.setActivityInsertionCostsCalculator(actInsertionCostsCalculator);

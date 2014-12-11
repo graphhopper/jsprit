@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -34,7 +34,7 @@ import java.util.List;
 
 
 
-class CalculatorBuilder {
+public class JobInsertionCostsCalculatorBuilder {
 
 	private static class CalculatorPlusListeners {
 
@@ -104,7 +104,7 @@ class CalculatorBuilder {
 	 * @param insertionListeners
 	 * @param algorithmListeners
 	 */
-	public CalculatorBuilder(List<InsertionListener> insertionListeners, List<PrioritizedVRAListener> algorithmListeners) {
+	public JobInsertionCostsCalculatorBuilder(List<InsertionListener> insertionListeners, List<PrioritizedVRAListener> algorithmListeners) {
 		super();
 		this.insertionListeners = insertionListeners;
 		this.algorithmListeners = algorithmListeners;
@@ -112,12 +112,12 @@ class CalculatorBuilder {
 
 	/**
 	 * Sets activityStates. MUST be set.
-	 * @param states TODO
+	 * @param stateManager TODO
 	 * 
 	 * @return
 	 */
-	public CalculatorBuilder setStates(RouteAndActivityStateGetter states){
-		this.states = states;
+	public JobInsertionCostsCalculatorBuilder setStateManager(RouteAndActivityStateGetter stateManager){
+		this.states = stateManager;
 		return this;
 	}
 
@@ -127,7 +127,7 @@ class CalculatorBuilder {
 	 * @param vehicleRoutingProblem
 	 * @return
 	 */
-	public CalculatorBuilder setVehicleRoutingProblem(VehicleRoutingProblem vehicleRoutingProblem){
+	public JobInsertionCostsCalculatorBuilder setVehicleRoutingProblem(VehicleRoutingProblem vehicleRoutingProblem){
 		this.vrp = vehicleRoutingProblem;
 		return this;
 	}
@@ -138,7 +138,7 @@ class CalculatorBuilder {
 	 * @param fleetManager
 	 * @return
 	 */
-	public CalculatorBuilder setVehicleFleetManager(VehicleFleetManager fleetManager){
+	public JobInsertionCostsCalculatorBuilder setVehicleFleetManager(VehicleFleetManager fleetManager){
 		this.fleetManager = fleetManager;
 		return this;
 	}
@@ -149,13 +149,15 @@ class CalculatorBuilder {
 	 * <p>Insertion of a job and job-activity is evaluated based on the previous and next activity.
 	 * @param addDefaultCostCalc TODO
 	 */
-	public void setLocalLevel(boolean addDefaultCostCalc){
+	public JobInsertionCostsCalculatorBuilder setLocalLevel(boolean addDefaultCostCalc){
 		local = true;
 		this.addDefaultCostCalc  = addDefaultCostCalc;
+        return this;
 	}
 	
-	public void setActivityInsertionCostsCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
+	public JobInsertionCostsCalculatorBuilder setActivityInsertionCostsCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
 		this.activityInsertionCostCalculator = activityInsertionCostsCalculator;
+        return this;
 	}
 
 	/**
@@ -165,10 +167,11 @@ class CalculatorBuilder {
 	 * @param memory
 	 * @param addDefaultMarginalCostCalc TODO
 	 */
-	public void setRouteLevel(int forwardLooking, int memory, boolean addDefaultMarginalCostCalc){
+	public JobInsertionCostsCalculatorBuilder setRouteLevel(int forwardLooking, int memory, boolean addDefaultMarginalCostCalc){
 		local = false;
 		this.forwardLooking = forwardLooking;
 		this.memory = memory;
+        return this;
 	}
 
 	/**
@@ -177,15 +180,17 @@ class CalculatorBuilder {
 	 * 
 	 * @param weightOfFixedCosts
 	 */
-	public void considerFixedCosts(double weightOfFixedCosts){
+	public JobInsertionCostsCalculatorBuilder considerFixedCosts(double weightOfFixedCosts){
 		considerFixedCost = true;
-		this.weightOfFixedCost = weightOfFixedCosts; 
+		this.weightOfFixedCost = weightOfFixedCosts;
+        return this;
 	}
 	
-	public void experimentalTimeScheduler(double timeSlice, int neighbors){
+	public JobInsertionCostsCalculatorBuilder experimentalTimeScheduler(double timeSlice, int neighbors){
 		timeScheduling = true;
 		this.timeSlice = timeSlice;
 		this.neighbors = neighbors;
+        return this;
 	}
 
 	/**
@@ -196,7 +201,7 @@ class CalculatorBuilder {
 	 */
 	public JobInsertionCostsCalculator build(){
 		if(vrp == null) throw new IllegalStateException("vehicle-routing-problem is null, but it must be set (this.setVehicleRoutingProblem(vrp))");
-		if(states == null) throw new IllegalStateException("states is null, but is must be set (this.setStates(states))");
+		if(states == null) throw new IllegalStateException("states is null, but is must be set (this.setStateManager(states))");
 		if(fleetManager == null) throw new IllegalStateException("fleetManager is null, but it must be set (this.setVehicleFleetManager(fleetManager))");
 		JobInsertionCostsCalculator baseCalculator = null;
 		CalculatorPlusListeners standardLocal = null;
@@ -352,12 +357,14 @@ class CalculatorBuilder {
 		return vehicleTypeDependentJobInsertionCalculator;
 	}
 
-	public void setConstraintManager(ConstraintManager constraintManager) {
+	public JobInsertionCostsCalculatorBuilder setConstraintManager(ConstraintManager constraintManager) {
 		this.constraintManager = constraintManager;
+        return this;
 	}
 
-	public void setAllowVehicleSwitch(boolean allowVehicleSwitch) {
-		this.allowVehicleSwitch = allowVehicleSwitch;
+	public JobInsertionCostsCalculatorBuilder setAllowVehicleSwitch(boolean allowVehicleSwitch) {
+        this.allowVehicleSwitch = allowVehicleSwitch;
+        return this;
 	}
 
 }
