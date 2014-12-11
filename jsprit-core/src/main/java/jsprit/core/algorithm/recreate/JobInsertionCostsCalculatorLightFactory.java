@@ -22,6 +22,8 @@ import jsprit.core.algorithm.recreate.listener.InsertionListener;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
+import jsprit.core.problem.job.Job;
+import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import java.util.List;
 /**
  * Created by schroeder on 11.12.14.
  */
-public class JobInsertionCostsCalculatorFactory {
+public class JobInsertionCostsCalculatorLightFactory {
 
     /**
      * Returns standard insertion calculator, i.e. the calculator that identifies best insertion positions for the
@@ -42,13 +44,20 @@ public class JobInsertionCostsCalculatorFactory {
      * @param constraintManager constraint manager
      * @return insertion calculator
      */
-    public static JobInsertionCostsCalculator createStandardCalculator(VehicleRoutingProblem vrp, VehicleFleetManager fleetManager, StateManager stateManager, ConstraintManager constraintManager){
+    public static JobInsertionCostsCalculatorLight createStandardCalculator(VehicleRoutingProblem vrp, VehicleFleetManager fleetManager, StateManager stateManager, ConstraintManager constraintManager){
         List<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener> al = new ArrayList<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener>();
         List<InsertionListener> il = new ArrayList<InsertionListener>();
         JobInsertionCostsCalculatorBuilder builder = new JobInsertionCostsCalculatorBuilder(il,al);
         builder.setVehicleRoutingProblem(vrp).setConstraintManager(constraintManager).setStateManager(stateManager).setVehicleFleetManager(fleetManager);
-        JobInsertionCostsCalculator calculator = builder.build();
-        return calculator;
+        final JobInsertionCostsCalculator calculator = builder.build();
+        return new JobInsertionCostsCalculatorLight() {
+
+            @Override
+            public InsertionData getInsertionData(Job unassignedJob, VehicleRoute route, double bestKnownCosts) {
+                return calculator.getInsertionData(route,unassignedJob,AbstractInsertionStrategy.NO_NEW_VEHICLE_YET,AbstractInsertionStrategy.NO_NEW_DEPARTURE_TIME_YET,AbstractInsertionStrategy.NO_NEW_DRIVER_YET,bestKnownCosts);
+            }
+
+        };
     }
 
 }
