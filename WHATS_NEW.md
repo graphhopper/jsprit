@@ -5,7 +5,7 @@ WHATS NEW
 
 jsprit made a big step towards analysing and designing your own ruin and recreation strategies.
 
-First, it is now possible to record and view each and every algorithm step which allows you to visualize the search, e.g. neighborhoods
+First, it is now possible to record and view each and every algorithm step which allows you to visualise the search, e.g. neighborhoods
 and the emergence of new structures. It is as easy as importing the corresponding classes from jsprit-analysis and coding the following lines:
 
 <pre><code>AlgorithmEventsRecorder recorder = new AlgorithmEventsRecorder(vrp,"output/events.dgs.gz"); 
@@ -22,10 +22,10 @@ viewer.setRecreationDelay(4); //lets you slow down recreation vis (in ms)
 viewer.display("output/events.dgs.gz");
 </code></pre>
 
-It is not only beautiful, but it allows you to immediately analyze your own strategies which brings us to the second improvement.
+It is not only beautiful, but it allows you to understand why jsprit can find and cannot find certain solutions, and it allows you to immediately analyze your own strategies which brings us to the second improvement.
 
 With <code>AbstractRuinStrategy</code> and <code>AbstractInsertionStrategy</code> it is easy to implement your own strategies. The 
-abstract classes do all the non-intuitive stuff (such as informing listeners that a job has been inserted etc.) for you and you can focus on your strategies.
+abstract classes do all the non-intuitive and tricky stuff (such as informing listeners that a job has been inserted etc.) for you and you can focus on your strategies.
 
 With the <code>PrettyAlgorithmBuilder</code> you can finally build your algorithm, basically just by adding your strategies. All
 other things that need to be done to wire up the components of your algorithm does the builder for you.
