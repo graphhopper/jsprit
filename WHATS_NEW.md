@@ -41,7 +41,7 @@ the strategy's weight and all other weights (i.e. prob(i) = weight(i) / sumOfAll
 now require a unique id. Latter might break your code if (and only if) you already build your algorithm from scratch. This [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/BuildAlgorithmFromScratch.java)
 illustrates a few of the outlined features.
 
-Another new feature which is worth to mention is a new InsertionStrategy called [RegretInsertion](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertion.java). It is much less myopic than BestInsertion since it scores all jobs before inserting them.
+Another new feature which is worth to mention is a new insertion strategy called [RegretInsertion](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertion.java). It is much less myopic than BestInsertion since it scores all jobs before inserting them.
 The one with the highest score will be inserted first. The scoring function is based on opportunity costs, i.e. it compares the best insertion alternative with the second best.
 If the difference between both is high, the job will be preferred, i.e. it will be inserted earlier than later. The scoring function comes with default parameters. However, you
 can replace params or overwrite the whole scoring function with your own (which currently means that you need to build your algorithm from scratch).
