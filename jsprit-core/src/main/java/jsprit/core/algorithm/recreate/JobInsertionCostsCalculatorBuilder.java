@@ -290,17 +290,13 @@ public class JobInsertionCostsCalculatorBuilder {
 		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
         serviceInsertion.setJobActivityFactory(activityFactory);
 
-		JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
+        JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
 		switcher.put(Shipment.class, shipmentInsertion);
 		switcher.put(Service.class, serviceInsertion);
 		switcher.put(Pickup.class, serviceInsertion);
 		switcher.put(Delivery.class, serviceInsertion);
-		
-		PenalyzeInsertionCostsWithPenaltyVehicle penalyzeInsertionCosts = new PenalyzeInsertionCostsWithPenaltyVehicle(switcher);
-		
-		CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(penalyzeInsertionCosts);
-		
-		return calcPlusListeners;
+
+		return new CalculatorPlusListeners(switcher);
 	}
 
 	private CalculatorPlusListeners createCalculatorConsideringFixedCosts(VehicleRoutingProblem vrp, JobInsertionCostsCalculator baseCalculator, RouteAndActivityStateGetter activityStates2, double weightOfFixedCosts){
@@ -344,11 +340,7 @@ public class JobInsertionCostsCalculatorBuilder {
                 return vrp.copyAndGetActivities(job);
             }
         });
-		
-		PenalyzeInsertionCostsWithPenaltyVehicle penalyzeInsertionCosts = new PenalyzeInsertionCostsWithPenaltyVehicle(jobInsertionCalculator);
-		
-		CalculatorPlusListeners calcPlusListener = new CalculatorPlusListeners(penalyzeInsertionCosts);
-		return calcPlusListener;
+        return new CalculatorPlusListeners(jobInsertionCalculator);
 	}
 
 	private JobInsertionCostsCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCostsCalculator baseCalc, RouteAndActivityStateGetter activityStates2){

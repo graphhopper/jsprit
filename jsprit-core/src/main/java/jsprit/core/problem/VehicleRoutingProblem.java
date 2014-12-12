@@ -26,7 +26,10 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
 import jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.vehicle.*;
+import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.problem.vehicle.VehicleTypeKey;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Locations;
@@ -119,12 +122,6 @@ public class VehicleRoutingProblem {
 
         };
 
-        private boolean addPenaltyVehicles = false;
-
-		private double penaltyFactor = 1.0;
-
-		private Double penaltyFixedCosts = null;
-
         private int jobIndexCounter = 1;
 
         private int vehicleIndexCounter = 1;
@@ -140,25 +137,6 @@ public class VehicleRoutingProblem {
         private final DefaultShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
 
         private final DefaultTourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
-
-		/**
-		 * Create a location (i.e. coordinate) and returns the key of the location which is Coordinate.toString().
-		 *  
-		 * @param x x-coordinate of location
-		 * @param y y-coordinate of location
-		 * @return locationId
-		 * @see Coordinate
-		 */
-		@SuppressWarnings("UnusedDeclaration")
-        @Deprecated
-		public String createLocation(double x, double y){
-			Coordinate coordinate = new Coordinate(x, y);
-			String id = coordinate.toString();
-			if(!tentative_coordinates.containsKey(id)){
-				tentative_coordinates.put(id, coordinate);
-			}
-			return id;
-		}
 
         private void incJobIndexCounter(){
             jobIndexCounter++;
@@ -426,56 +404,14 @@ public class VehicleRoutingProblem {
 				logger.warn("set routing costs crowFlyDistance.");
 				transportCosts = new CrowFlyCosts(getLocations());
 			}
-			if(addPenaltyVehicles){
-				if(fleetSize.equals(FleetSize.INFINITE)){
-					logger.warn("penaltyType and FleetSize.INFINITE does not make sense. thus no penalty-types are added.");
-				}
-				else{
-					addPenaltyVehicles();
-				}
-			}
-			for(Job job : tentativeJobs.values())
+            for(Job job : tentativeJobs.values())
                 if (!jobsInInitialRoutes.contains(job.getId())) {
                     addJobToFinalJobMapAndCreateActivities(job);
                 }
 			return new VehicleRoutingProblem(this);
 		}
 
-
-        private void addPenaltyVehicles() {
-			Set<VehicleTypeKey> vehicleTypeKeys = new HashSet<VehicleTypeKey>();
-			List<Vehicle> uniqueVehicles = new ArrayList<Vehicle>();
-			for(Vehicle v : this.uniqueVehicles){
-				VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(),v.getStartLocationId(),v.getEndLocationId(),v.getEarliestDeparture(),v.getLatestArrival(), v.getSkills());
-				if(!vehicleTypeKeys.contains(key)){
-					uniqueVehicles.add(v);
-					vehicleTypeKeys.add(key);
-				}
-			}
-			for(Vehicle v : uniqueVehicles){
-				double fixed = v.getType().getVehicleCostParams().fix * penaltyFactor;
-				if(penaltyFixedCosts!=null){
-					fixed = penaltyFixedCosts;
-				}
-				VehicleTypeImpl t = VehicleTypeImpl.Builder.newInstance(v.getType().getTypeId())
-						.setCostPerDistance(penaltyFactor*v.getType().getVehicleCostParams().perDistanceUnit)
-						.setCostPerTime(penaltyFactor*v.getType().getVehicleCostParams().perTimeUnit)
-						.setFixedCost(fixed)
-						.setCapacityDimensions(v.getType().getCapacityDimensions())
-						.build();
-				PenaltyVehicleType penType = new PenaltyVehicleType(t,penaltyFactor);
-				String vehicleId = v.getId();
-				VehicleImpl penVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(v.getEarliestDeparture())
-						.setLatestArrival(v.getLatestArrival()).setStartLocationCoordinate(v.getStartLocationCoordinate()).setStartLocationId(v.getStartLocationId())
-						.setEndLocationId(v.getEndLocationId()).setEndLocationCoordinate(v.getEndLocationCoordinate())
-						.addSkills(v.getSkills())
-                        .setReturnToDepot(v.isReturnToDepot()).setType(penType).build();
-				addVehicle(penVehicle);
-			}
-		}
-
-
-		@SuppressWarnings("UnusedDeclaration")
+        @SuppressWarnings("UnusedDeclaration")
         public Builder addLocation(String locationId, Coordinate coordinate) {
 			tentative_coordinates.put(locationId, coordinate);
 			return this;
@@ -526,47 +462,8 @@ public class VehicleRoutingProblem {
 		public Collection<VehicleType> getAddedVehicleTypes(){
 			return Collections.unmodifiableCollection(vehicleTypes);
 		}
-		
-		/**
-		 * Adds penaltyVehicles, i.e. for every unique vehicle-location and type combination a penalty-vehicle is constructed having penaltyFactor times higher fixed and variable costs 
-		 * (see .addPenaltyVehicles(double penaltyFactor, double penaltyFixedCosts) if fixed costs = 0.0). 
-		 * 
-		 * <p>This only makes sense for FleetSize.FINITE. Thus, penaltyVehicles are only added if is FleetSize.FINITE.
-		 * <p>The id of penaltyVehicles is constructed as follows vehicleId = "penaltyVehicle" + "_" + {locationId} + "_" + {typeId}. 
-		 * <p>By default: no penalty-vehicles are added
-		 * 
-		 * @param penaltyFactor penaltyFactor of penaltyVehicle
-		 * @return this builder
-         * @deprecated since 1.3.2-SNAPSHOT bad job list replaces penalty vehicles
-		 */
-        @Deprecated
-		public Builder addPenaltyVehicles(double penaltyFactor){
-			this.addPenaltyVehicles = true;
-			this.penaltyFactor = penaltyFactor;
-			return this;
-		}
-		
-		/**
-		 * Adds penaltyVehicles, i.e. for every unique vehicle-location and type combination a penalty-vehicle is constructed having penaltyFactor times higher fixed and variable costs. 
-		 * <p>This method takes penaltyFixedCosts as absolute value in contrary to the method without penaltyFixedCosts where fixedCosts is the product of penaltyFactor and typeFixedCosts.
-		 * <p>This only makes sense for FleetSize.FINITE. Thus, penaltyVehicles are only added if is FleetSize.FINITE.
-		 * <p>The id of penaltyVehicles is constructed as follows vehicleId = "penaltyVehicle" + "_" + {locationId} + "_" + {typeId}. 
-		 * <p>By default: no penalty-vehicles are added
-		 * 
-		 * @param penaltyFactor the penaltyFactor of penaltyVehicle
-		 * @param penaltyFixedCosts which is an absolute penaltyValue (in contrary to penaltyFactor)
-		 * @return this builder
-         * @deprecated since 1.3.2-SNAPSHOT bad job list replaces penalty vehicles
-		 */
-        @Deprecated
-		public Builder addPenaltyVehicles(double penaltyFactor, double penaltyFixedCosts){
-			this.addPenaltyVehicles = true;
-			this.penaltyFactor = penaltyFactor;
-			this.penaltyFixedCosts  = penaltyFixedCosts;
-			return this;
-		}
-		
-		/**
+
+        /**
          * Returns an unmodifiable collection of already added jobs.
          *
          * @return collection of jobs
