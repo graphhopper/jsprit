@@ -38,7 +38,9 @@ according to its recorded success). You do that by informing the strategy manage
 
 This comes with two changes. Strategy probabilities are now strategy weights (and do not need to be smaller than 1) and the probability of choosing a strategy is simply a function of
 the strategy's weight and all other weights (i.e. prob(i) = weight(i) / sumOfAllWeights). The second change is that strategies
-now require a unique id. Latter might break your code if (and only if) you already build your algorithm from scratch. This [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/BuildAlgorithmFromScratch.java)
+now require a unique id. Latter might break your code if (and only if) you already build your algorithm from scratch. 
+
+This [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/BuildAlgorithmFromScratch.java)
 illustrates a few of the outlined features.
 
 Another new feature which is worth to mention is a new insertion strategy called [RegretInsertion](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertion.java). It is much less myopic than BestInsertion since it scores all jobs before inserting them.
