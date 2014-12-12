@@ -28,7 +28,7 @@ With <code>AbstractRuinStrategy</code> and <code>AbstractInsertionStrategy</code
 abstract classes do all the non-intuitive stuff (such as informing listeners that a job has been inserted etc.) for you and you can focus on your strategies.
 
 With the <code>PrettyAlgorithmBuilder</code> you can finally build your algorithm, basically just by adding your strategies. All
-other things that needs to be done to wire up the components of your algorithm does the builder for you.
+other things that need to be done to wire up the components of your algorithm does the builder for you.
 
 A third improvement in this regards is that you can switch on and off certain strategies or just change their weights in the course of the search (which allow you to adapt your strategies e.g. 
 according to its recorded success). You do that by informing the strategy manager to change a strategy's weight much like this:
