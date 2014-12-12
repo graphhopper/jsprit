@@ -1,7 +1,7 @@
 WHATS NEW
 ==========
 ------------------------------
-<b>2014-12-14</b> new release **v1.5**
+<b>2014-12-12</b> new release **v1.5**
 
 jsprit made a big step towards analysing and designing your own ruin and recreation strategies.
 
