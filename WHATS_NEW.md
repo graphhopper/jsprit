@@ -49,7 +49,7 @@ Note, that this strategy will have a significant impact on the computational per
  likely to wait forever. However, since it is a bit more 'intelligent' you do not need as many iterations. It is also recommended to use the [concurrent mode](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertionConcurrent.java) since RegretInsertion
   is best suited for concurrent calculation.
 
-Last, you can use spherical coordinates (i.e. longitude and latitude) since [GreatCircleCosts](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/util/GreatCircleCosts.java) knows how to calculate great circle distance and time. It approximates distance
+Last, you can use spherical coordinates (i.e. longitude and latitude) since [GreatCircleCosts](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/util/GreatCircleCosts.java) knows how to calculate great circle distance. It approximates distance
  based on the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula). If you want to approximate real networks, you can set a detour factor and a speed value.
 
 
