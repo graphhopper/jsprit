@@ -1,6 +1,58 @@
 WHATS NEW
 ==========
 ------------------------------
+<b>2014-12-14</b> new release **v1.5**
+
+jsprit made a big step towards analysing and designing your own ruin and recreation strategies.
+
+First, it is now possible to record and view each and every algorithm step which allows you to visualize the search, e.g. neighborhoods
+and the emergence of new structures. It is as easy as importing the corresponding classes from jsprit-analysis and coding the following lines:
+
+<pre><code>AlgorithmEventsRecorder recorder = new AlgorithmEventsRecorder(vrp,"output/events.dgs.gz"); 
+recorder.setRecordingRange(0,100); //lets you specify the iterations you want to record
+vehicleRoutingAlgorithm.addListener(recorder);
+</code></pre>
+
+The output consists of many redundant stuff, thus it is best suited for zipping. If you do not want to zip, omit 'gz'. To view
+the events, do the following after running the algorithm:
+
+<pre><code>AlgorithmEventsViewer viewer = new AlgorithmEventsViewer();
+viewer.setRuinDelay(8); //lets you slow down ruin vis (in ms)
+viewer.setRecreationDelay(4); //lets you slow down recreation vis (in ms)
+viewer.display("output/events.dgs.gz");
+</code></pre>
+
+It is not only beautiful, but it allows you to immediately analyze your own strategies which brings us to the second improvement.
+
+With <code>AbstractRuinStrategy</code> and <code>AbstractInsertionStrategy</code> it is easy to implement your own strategies. The 
+abstract classes do all the non-intuitive stuff (such as informing listeners that a job has been inserted etc.) for you and you can focus on your strategies.
+
+With the <code>PrettyAlgorithmBuilder</code> you can finally build your algorithm, basically just by adding your strategies. All
+other things that needs to be done to wire up the components of your algorithm does the builder for you.
+
+A third improvement in this regards is that you can switch on and off certain strategies or just change their weights in the course of the search (which allow you to adapt your strategies e.g. 
+according to its recorded success). You do that by informing the strategy manager to change a strategy's weight much like this:
+
+<pre><code>vra.getSearchStrategyManager().informStrategyWeightChanged(strategyId, 0.); //which is basically switching off the strategy
+</code></pre>
+
+This comes with two changes. Strategy probabilities are now strategy weights (and do not need to be smaller than 1) and the probability of choosing a strategy is simply a function of
+the strategy's weight and all other weights (i.e. prob(i) = weight(i) / sumOfAllWeights). The second change is that strategies
+now require a unique id. Latter might break your code if (and only if) you already build your algorithm from scratch.
+
+Another new feature which is worth to mention is a new InsertionStrategy called [RegretInsertion](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertion.java). It is much less myopic than BestInsertion since it scores all jobs before inserting them.
+The one with the highest score will be inserted first. The scoring function is based on opportunity costs, i.e. it compares the best insertion alternative with the second best.
+If the difference between both is high, the job will be preferred, i.e. it will be inserted earlier than later. The scoring function comes with default parameter. However, you
+can replace params or overwrite the whole scoring function with your own (which currently means that you need to build your algorithm from scratch).
+Note, that this strategy will have a significant impact on the computational performance. If you run it with the same no. of iterations as you run BestInsertion, you are 
+ likely to wait forever. However, since it is a bit more 'intelligent' you do not need as many iterations. It is also recommended to use the [concurrent mode](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertionConcurrent.java) since RegretInsertion
+  is best suited for concurrent calculation.
+
+Last, you can use spherical coordinates (i.e. longitude and latitude) since [GreatCircleCosts](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/util/GreatCircleCosts.java) knows how to calculate great circle distance and time. It approximates distance
+ based on the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula). If you want to approximate real networks, you can set a detour factor and a speed value.
+
+
+------------------------------
 
 <b>2014-10-14</b> new release **v1.4.2**
 

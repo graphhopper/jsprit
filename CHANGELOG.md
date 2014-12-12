@@ -1,5 +1,13 @@
 Change-log
 ==========
+**v1.5** @ 2014-12-12
+<b>! Break change !</b> 
+(only if you already build your algorithm from scratch since strategies now need to have unique ids)
+
+new features: see [Whats new](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
+
+- [detailed changelog](https://github.com/jsprit/misc-rep/blob/master/changelog_1.4.2_to_1.5.txt)
+
 **v1.4.2** @ 2014-10-14
 
 new feature: core.analysis.SolutionAnalyser

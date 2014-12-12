@@ -57,13 +57,6 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     private boolean renderShipments = false;
 
-    public static void writeSolution(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, File outfile){
-        AlgorithmEventsRecorder rec = new AlgorithmEventsRecorder(vrp,outfile);
-        rec.initialiseGraph(vrp);
-        rec.addRoutes(solution.getRoutes());
-        rec.finish();
-    }
-
     public static final int BEFORE_RUIN_RENDER_SOLUTION = 2;
 
     public static final int RUIN = 0;
@@ -90,10 +83,11 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     private VehicleRoutingProblem vrp;
 
-    public AlgorithmEventsRecorder(VehicleRoutingProblem vrp, File dgsFile) {
+    public AlgorithmEventsRecorder(VehicleRoutingProblem vrp, String dgsFileLocation) {
         this.vrp = vrp;
         graph = new MultiGraph("g");
         try {
+            File dgsFile = new File(dgsFileLocation);
             fos = new FileOutputStream(dgsFile);
             fileSink = new FileSinkDGS();
             if(dgsFile.getName().endsWith("gz")){
@@ -110,9 +104,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         initialiseGraph(vrp);
     }
 
-    public AlgorithmEventsRecorder(VehicleRoutingProblem vrp, File dgsFile, boolean renderShipments) {
+    public AlgorithmEventsRecorder(VehicleRoutingProblem vrp, String dgsFileLocation, boolean renderShipments) {
         this.renderShipments = renderShipments;
-        new AlgorithmEventsRecorder(vrp,dgsFile);
+        new AlgorithmEventsRecorder(vrp, dgsFileLocation);
     }
 
     public void setRecordingRange(int startIteration, int endIteration){

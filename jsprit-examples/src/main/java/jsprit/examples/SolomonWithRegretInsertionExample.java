@@ -30,7 +30,6 @@ import jsprit.core.reporting.SolutionPrinter;
 import jsprit.instance.reader.SolomonReader;
 import jsprit.util.Examples;
 
-import java.io.File;
 import java.util.Collection;
 
 
@@ -70,7 +69,7 @@ public class SolomonWithRegretInsertionExample {
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_greedyWithRegret.xml");
         vra.setMaxIterations(2);
 
-        AlgorithmEventsRecorder eventsRecorder = new AlgorithmEventsRecorder(vrp,new File("output/events.dgs.gz"));
+        AlgorithmEventsRecorder eventsRecorder = new AlgorithmEventsRecorder(vrp,"output/events.dgs.gz");
         eventsRecorder.setRecordingRange(0,50);
         vra.addListener(eventsRecorder);
 

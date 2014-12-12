@@ -73,7 +73,7 @@ public class CircleExample {
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         //only works with latest snapshot: 1.4.3
-        AlgorithmEventsRecorder eventsRecorder = new AlgorithmEventsRecorder(vrp,new File("output/events.dgs.gz"));
+        AlgorithmEventsRecorder eventsRecorder = new AlgorithmEventsRecorder(vrp,"output/events.dgs.gz");
         eventsRecorder.setRecordingRange(0,50);
 
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
