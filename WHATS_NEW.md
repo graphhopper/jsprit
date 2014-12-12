@@ -43,7 +43,7 @@ illustrates a few of the outlined features.
 
 Another new feature which is worth to mention is a new InsertionStrategy called [RegretInsertion](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertion.java). It is much less myopic than BestInsertion since it scores all jobs before inserting them.
 The one with the highest score will be inserted first. The scoring function is based on opportunity costs, i.e. it compares the best insertion alternative with the second best.
-If the difference between both is high, the job will be preferred, i.e. it will be inserted earlier than later. The scoring function comes with default parameter. However, you
+If the difference between both is high, the job will be preferred, i.e. it will be inserted earlier than later. The scoring function comes with default parameters. However, you
 can replace params or overwrite the whole scoring function with your own (which currently means that you need to build your algorithm from scratch).
 Note, that this strategy will have a significant impact on the computational performance. If you run it with the same no. of iterations as you run BestInsertion, you are 
  likely to wait forever. However, since it is a bit more 'intelligent' you do not need as many iterations. It is also recommended to use the [concurrent mode](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertionConcurrent.java) since RegretInsertion
