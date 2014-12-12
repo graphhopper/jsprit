@@ -30,7 +30,7 @@ abstract classes do all the non-intuitive and tricky stuff (such as informing li
 With the <code>PrettyAlgorithmBuilder</code> you can finally build your algorithm, basically just by adding your strategies. All
 other things that need to be done to wire up the components of your algorithm does the builder for you.
 
-A third improvement in this regards is that you can switch on and off certain strategies or just change their weights in the course of the search (which allow you to adapt your strategies e.g. 
+A third improvement in this regard is that you can switch on and off certain strategies or just change their weights in the course of the search (which allow you to adapt your strategies e.g. 
 according to its recorded success). You do that by informing the strategy manager to change a strategy's weight much like this:
 
 <pre><code>vra.getSearchStrategyManager().informStrategyWeightChanged(strategyId, 0.); //which is basically switching off the strategy
