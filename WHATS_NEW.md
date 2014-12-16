@@ -5,7 +5,7 @@ WHATS NEW
 
 jsprit made a big step towards analysing and designing your own ruin and recreation strategies.
 
-First, it is now possible to record and view each and every algorithm step which allows you to visualize the search, e.g. neighborhoods
+First, it is now possible to record and view each and every algorithm step which allows you to visualise the search, e.g. neighborhoods
 and the emergence of new structures. It is as easy as importing the corresponding classes from jsprit-analysis and coding the following lines:
 
 <pre><code>AlgorithmEventsRecorder recorder = new AlgorithmEventsRecorder(vrp,"output/events.dgs.gz"); 
@@ -22,15 +22,15 @@ viewer.setRecreationDelay(4); //lets you slow down recreation vis (in ms)
 viewer.display("output/events.dgs.gz");
 </code></pre>
 
-It is not only beautiful, but it allows you to immediately analyze your own strategies which brings us to the second improvement.
+It is not only beautiful, but it allows you to understand why jsprit can find and cannot find certain solutions, and it allows you to immediately analyze your own strategies which brings us to the second improvement.
 
 With <code>AbstractRuinStrategy</code> and <code>AbstractInsertionStrategy</code> it is easy to implement your own strategies. The 
-abstract classes do all the non-intuitive stuff (such as informing listeners that a job has been inserted etc.) for you and you can focus on your strategies.
+abstract classes do all the non-intuitive and tricky stuff (such as informing listeners that a job has been inserted etc.) for you and you can focus on your strategies.
 
 With the <code>PrettyAlgorithmBuilder</code> you can finally build your algorithm, basically just by adding your strategies. All
-other things that needs to be done to wire up the components of your algorithm does the builder for you.
+other things that need to be done to wire up the components of your algorithm does the builder for you.
 
-A third improvement in this regards is that you can switch on and off certain strategies or just change their weights in the course of the search (which allow you to adapt your strategies e.g. 
+A third improvement in this regard is that you can switch on and off certain strategies or just change their weights in the course of the search (which allow you to adapt your strategies e.g. 
 according to its recorded success). You do that by informing the strategy manager to change a strategy's weight much like this:
 
 <pre><code>vra.getSearchStrategyManager().informStrategyWeightChanged(strategyId, 0.); //which is basically switching off the strategy
@@ -38,18 +38,20 @@ according to its recorded success). You do that by informing the strategy manage
 
 This comes with two changes. Strategy probabilities are now strategy weights (and do not need to be smaller than 1) and the probability of choosing a strategy is simply a function of
 the strategy's weight and all other weights (i.e. prob(i) = weight(i) / sumOfAllWeights). The second change is that strategies
-now require a unique id. Latter might break your code if (and only if) you already build your algorithm from scratch. This [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/BuildAlgorithmFromScratch.java)
+now require a unique id. Latter might break your code if (and only if) you already build your algorithm from scratch. 
+
+This [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/BuildAlgorithmFromScratch.java)
 illustrates a few of the outlined features.
 
-Another new feature which is worth to mention is a new InsertionStrategy called [RegretInsertion](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertion.java). It is much less myopic than BestInsertion since it scores all jobs before inserting them.
+Another new feature which is worth to mention is a new insertion strategy called [RegretInsertion](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertion.java). It is much less myopic than BestInsertion since it scores all jobs before inserting them.
 The one with the highest score will be inserted first. The scoring function is based on opportunity costs, i.e. it compares the best insertion alternative with the second best.
-If the difference between both is high, the job will be preferred, i.e. it will be inserted earlier than later. The scoring function comes with default parameter. However, you
+If the difference between both is high, the job will be preferred, i.e. it will be inserted earlier than later. The scoring function comes with default parameters. However, you
 can replace params or overwrite the whole scoring function with your own (which currently means that you need to build your algorithm from scratch).
 Note, that this strategy will have a significant impact on the computational performance. If you run it with the same no. of iterations as you run BestInsertion, you are 
  likely to wait forever. However, since it is a bit more 'intelligent' you do not need as many iterations. It is also recommended to use the [concurrent mode](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/algorithm/recreate/RegretInsertionConcurrent.java) since RegretInsertion
   is best suited for concurrent calculation.
 
-Last, you can use spherical coordinates (i.e. longitude and latitude) since [GreatCircleCosts](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/util/GreatCircleCosts.java) knows how to calculate great circle distance and time. It approximates distance
+Last, you can use spherical coordinates (i.e. longitude and latitude) since [GreatCircleCosts](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/util/GreatCircleCosts.java) knows how to calculate great circle distance. It approximates distance
  based on the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula). If you want to approximate real networks, you can set a detour factor and a speed value.
 
 

@@ -2,7 +2,8 @@ Change-log
 ==========
 **v1.5** @ 2014-12-12
 <b>! Break change !</b> 
-(only if you already build your algorithm from scratch since strategies now need to have unique ids)
+
+It only breaks your code if you already build your algorithm from scratch since strategies now need to have unique ids. just add a unique id to the SearchStrategy constructor. 
 
 new features: see [Whats new](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
 
