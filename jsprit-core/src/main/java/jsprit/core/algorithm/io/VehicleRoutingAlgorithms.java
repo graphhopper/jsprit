@@ -658,7 +658,7 @@ public class VehicleRoutingAlgorithms {
             log.info("set prematureBreak based on time");
             String timeString = config.getString("time");
             if(timeString == null) throw new IllegalStateException("time is missing");
-            double time = Double.valueOf(timeString);
+            long time = Long.parseLong(timeString);
             TimeTermination timeBreaker = new TimeTermination(time);
             algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, timeBreaker));
             return timeBreaker;
@@ -695,7 +695,7 @@ public class VehicleRoutingAlgorithms {
 			log.info("set prematureBreak based on time");
 			String timeString = config.getString("prematureBreak.time");
 			if(timeString == null) throw new IllegalStateException("prematureBreak.time is missing");
-			double time = Double.valueOf(timeString);
+			long time = Long.parseLong(timeString);
 			TimeTermination timeBreaker = new TimeTermination(time);
 			algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, timeBreaker));
 			return timeBreaker;

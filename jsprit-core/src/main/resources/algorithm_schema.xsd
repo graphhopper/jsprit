@@ -151,7 +151,7 @@
 
 <xs:group name="pBreak_time_group">
 	<xs:sequence>
-		<xs:element name="time" type="xs:double" minOccurs="1" maxOccurs="1"/>
+		<xs:element name="time" type="xs:long" minOccurs="1" maxOccurs="1"/>
 	</xs:sequence>	
 </xs:group>
 
