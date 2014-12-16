@@ -18,6 +18,7 @@ package jsprit.core.problem.job;
 
 import jsprit.core.problem.AbstractJob;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
@@ -79,6 +80,10 @@ public class Shipment extends AbstractJob{
 
         private String name = "no-name";
 
+        private Location pickupLocation_;
+
+        private Location deliveryLocation_;
+
         /**
 		 * Returns new instance of this builder.
 		 * 
@@ -100,10 +105,23 @@ public class Shipment extends AbstractJob{
          * @param pickupLocationId the location id of shipment's pickup
          * @return builder
          * @throws IllegalArgumentException if location is null
+         * @deprecated use .setLocation(..) instead
          */
+        @Deprecated
         public Builder setPickupLocationId(String pickupLocationId){
             if(pickupLocationId == null) throw new IllegalArgumentException("location must not be null");
             this.pickupLocation = pickupLocationId;
+            return this;
+        }
+
+        /**
+         * Sets pickup location.
+         *
+         * @param pickupLocation pickup location
+         * @return builder
+         */
+        public Builder setPickupLocation(Location pickupLocation){
+            this.pickupLocation_ = pickupLocation;
             return this;
         }
 
@@ -128,7 +146,9 @@ public class Shipment extends AbstractJob{
 		 * @param pickupCoord the coordinate of shipment's pickup location
 		 * @return builder
 		 * @throws IllegalArgumentException if pickupCoord is null
+         * @deprecated use .setLocation(..) instead and add coordinate to location obj.
 		 */
+        @Deprecated
 		public Builder setPickupCoord(Coordinate pickupCoord){
 			if(pickupCoord == null) throw new IllegalArgumentException("coord must not be null");
 			this.pickupCoord = pickupCoord;
@@ -172,10 +192,23 @@ public class Shipment extends AbstractJob{
          * @param deliveryLocationId the delivery location id
          * @return builder
          * @throws IllegalArgumentException if location is null
+         * @deprecated use .setDeliveryLocation instead
          */
+        @Deprecated
         public Builder setDeliveryLocationId(String deliveryLocationId){
             if(deliveryLocationId == null) throw new IllegalArgumentException("delivery location must not be null");
             this.deliveryLocation = deliveryLocationId;
+            return this;
+        }
+
+        /**
+         * Sets delivery location.
+         *
+         * @param deliveryLocation delivery location
+         * @return builder
+         */
+        public Builder setDeliveryLocation(Location deliveryLocation){
+            this.deliveryLocation_ = deliveryLocation;
             return this;
         }
 
@@ -186,6 +219,7 @@ public class Shipment extends AbstractJob{
 		 * @return builder
 		 * @throws IllegalArgumentException if location is null
          * @deprecated use .setDeliveryLocationId(deliveryLocationId)
+         *
 		 */
         @Deprecated
 		public Builder setDeliveryLocation(String deliveryLocation){
@@ -200,7 +234,9 @@ public class Shipment extends AbstractJob{
 		 * @param deliveryCoord the coordinate of shipment's delivery location
 		 * @return builder
 		 * @throws IllegalArgumentException if coord is null;
+         * @deprecated use .setDeliveryLocation(..) instead and add coordinate to location obj
 		 */
+        @Deprecated
 		public Builder setDeliveryCoord(Coordinate deliveryCoord){
 			if(deliveryCoord == null) throw new IllegalArgumentException("coord must not be null");
 			this.deliveryCoord = deliveryCoord;
@@ -261,13 +297,15 @@ public class Shipment extends AbstractJob{
 		 * is set
 		 */
 		public Shipment build(){
-			if(pickupLocation == null) { 
-				if(pickupCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
-				pickupLocation = pickupCoord.toString();
-			}
-			if(deliveryLocation == null) { 
-				if(deliveryCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
-				deliveryLocation = deliveryCoord.toString();
+			if(pickupLocation_ == null) {
+                this.pickupLocation_ = Location.Builder.newInstance().setCoordinate(pickupCoord).setId(pickupLocation).build();
+//                if(pickupCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
+//				pickupLocation = pickupCoord.toString();
+            }
+			if(deliveryLocation_ == null) {
+				this.deliveryLocation_ = Location.Builder.newInstance().setCoordinate(deliveryCoord).setId(deliveryLocation).build();
+//                if(deliveryCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
+//				deliveryLocation = deliveryCoord.toString();
 			}
 			capacity = capacityBuilder.build();
             skills = skillBuilder.build();
@@ -287,16 +325,8 @@ public class Shipment extends AbstractJob{
     }
 	
 	private final String id;
-	
-	private final String pickupLocation;
-	
-	private final Coordinate pickupCoord;
-	
+
 	private final double pickupServiceTime;
-	
-	private final String deliveryLocation;
-	
-	private final Coordinate deliveryCoord;
 
 	private final double deliveryServiceTime;
 
@@ -308,21 +338,23 @@ public class Shipment extends AbstractJob{
 
     private final Skills skills;
 
-    private String name;
+    private final String name;
+
+    private final Location pickupLocation_;
+
+    private final Location deliveryLocation_;
 
 	Shipment(Builder builder){
 		this.id = builder.id;
-		this.pickupLocation = builder.pickupLocation;
-		this.pickupCoord = builder.pickupCoord;
 		this.pickupServiceTime = builder.pickupServiceTime;
 		this.pickupTimeWindow = builder.pickupTimeWindow;
-		this.deliveryLocation = builder.deliveryLocation;
-		this.deliveryCoord = builder.deliveryCoord;
 		this.deliveryServiceTime = builder.deliveryServiceTime;
 		this.deliveryTimeWindow = builder.deliveryTimeWindow;
 		this.capacity = builder.capacity;
         this.skills = builder.skills;
         this.name = builder.name;
+        this.pickupLocation_ = builder.pickupLocation_;
+        this.deliveryLocation_ = builder.deliveryLocation_;
 	}
 	
 	@Override
@@ -330,34 +362,29 @@ public class Shipment extends AbstractJob{
 		return id;
 	}
 
-	/**
-	 * Returns the pickup-location.
-	 * 
-	 * @return pickup-location
-     * @deprecated use .getPickupLocationId() instead
-	 */
-    @Deprecated
-	public String getPickupLocation() {
-		return pickupLocation;
-	}
-
     /**
      * Returns the pickup-location.
      *
      * @return pickup-location
+     * @deprecated use .getLocation().getId() instead
      */
+    @Deprecated
     public String getPickupLocationId() {
-        return pickupLocation;
+        return pickupLocation_.getId();
     }
 
 	/**
 	 * Returns the pickup-coordinate.
 	 * 
 	 * @return coordinate of the pickup
+     * @deprecated use .getLocation(..).getCoordinate() instead
 	 */
+    @Deprecated
 	public Coordinate getPickupCoord() {
-		return pickupCoord;
+		return pickupLocation_.getCoordinate();
 	}
+
+    public Location getPickupLocation(){ return pickupLocation_; }
 
 	/**
 	 * Returns the pickup service-time.
@@ -370,34 +397,29 @@ public class Shipment extends AbstractJob{
 		return pickupServiceTime;
 	}
 
-	/**
-	 * Returns delivery-location.
-	 * 
-	 * @return delivery-location
-     * @deprecated use .getDeliveryLocationId() instead
-	 */
-    @Deprecated
-	public String getDeliveryLocation() {
-		return deliveryLocation;
-	}
-
     /**
      * Returns delivery-location.
      *
      * @return delivery-location
+     * @deprecated use .getLocation().getId() instead
      */
+    @Deprecated
     public String getDeliveryLocationId() {
-        return deliveryLocation;
+        return deliveryLocation_.getId();
     }
 
 	/**
 	 * Returns coordinate of the delivery.
 	 * 
 	 * @return coordinate of delivery
+     * @deprecated use .getLocation().getCoordinate() instead
 	 */
+    @Deprecated
 	public Coordinate getDeliveryCoord() {
-		return deliveryCoord;
+		return deliveryLocation_.getCoordinate();
 	}
+
+    public Location getDeliveryLocation() { return deliveryLocation_; }
 
 	/**
 	 * Returns service-time of delivery.

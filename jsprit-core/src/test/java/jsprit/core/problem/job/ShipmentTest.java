@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
 import org.junit.Test;
@@ -91,6 +92,7 @@ public class ShipmentTest {
 	public void whenPickupLocationIdIsSet_itShouldBeDoneCorrectly(){
 		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
 		assertEquals("pickLoc",s.getPickupLocationId());
+        assertEquals("pickLoc",s.getPickupLocation().getId());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -104,6 +106,8 @@ public class ShipmentTest {
 		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").setPickupCoord(Coordinate.newInstance(1, 2)).build();
 		assertEquals(1.0,s.getPickupCoord().getX(),0.01);
 		assertEquals(2.0,s.getPickupCoord().getY(),0.01);
+        assertEquals(1.0,s.getPickupLocation().getCoordinate().getX(),0.01);
+        assertEquals(2.0,s.getPickupLocation().getCoordinate().getY(),0.01);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -116,6 +120,7 @@ public class ShipmentTest {
 	public void whenDeliveryLocationIdIsSet_itShouldBeDoneCorrectly(){
 		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
 		assertEquals("delLoc",s.getDeliveryLocationId());
+        assertEquals("delLoc",s.getDeliveryLocation().getId());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -129,6 +134,8 @@ public class ShipmentTest {
 		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").setDeliveryCoord(Coordinate.newInstance(1, 2)).build();
 		assertEquals(1.0,s.getDeliveryCoord().getX(),0.01);
 		assertEquals(2.0,s.getDeliveryCoord().getY(),0.01);
+        assertEquals(1.0,s.getDeliveryLocation().getCoordinate().getX(),0.01);
+        assertEquals(2.0,s.getDeliveryLocation().getCoordinate().getY(),0.01);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -276,5 +283,15 @@ public class ShipmentTest {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocationId("loc").setDeliveryLocationId("del")
                 .setName("name").build();
         assertEquals("name",s.getName());
+    }
+
+    @Test
+    public void whenSettingLocation_itShouldWork(){
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("loc").build())
+                .setDeliveryLocation(Location.Builder.newInstance().setId("del").build()).build();
+        assertEquals("loc", s.getPickupLocationId());
+        assertEquals("loc", s.getPickupLocation().getId());
+        assertEquals("del",s.getDeliveryLocation().getId());
+        assertEquals("del",s.getDeliveryLocationId());
     }
 }

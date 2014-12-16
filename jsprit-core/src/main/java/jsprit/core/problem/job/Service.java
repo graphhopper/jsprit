@@ -18,6 +18,7 @@ package jsprit.core.problem.job;
 
 import jsprit.core.problem.AbstractJob;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
@@ -34,6 +35,7 @@ import jsprit.core.util.Coordinate;
  *
  */
 public class Service extends AbstractJob {
+
 
 
 
@@ -79,6 +81,8 @@ public class Service extends AbstractJob {
 
         private String name = "no-name";
 
+        protected Location location;
+
 		Builder(String id){
 			this.id = id;
 		}
@@ -101,18 +105,33 @@ public class Service extends AbstractJob {
 		 * 
 		 * @param locationId the location id of the service
 		 * @return builder
+         * @deprecated use .setLocation(..) instead
 		 */
+        @Deprecated
 		public Builder setLocationId(String locationId){
 			this.locationId = locationId;
 			return this;
 		}
+
+        /**
+         * Sets location
+         *
+         * @param location location
+         * @return builder
+         */
+        public Builder setLocation(Location location){
+            this.location = location;
+            return this;
+        }
 		
 		/**
 		 * Sets the coordinate of this service.
 		 * 
 		 * @param coord the coordinate of service
 		 * @return builder
+         * @deprecated use .setLocation(..) instead and add coordinate ot Location obj
 		 */
+        @Deprecated
 		public Builder setCoord(Coordinate coord){
 			this.coord = coord;
 			return this;
@@ -170,10 +189,14 @@ public class Service extends AbstractJob {
 		 * @throws IllegalStateException if neither locationId nor coordinate is set.
 		 */
 		public Service build(){
-			if(locationId == null) { 
-				if(coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
-				locationId = coord.toString();
-			}
+			if(location == null) {
+                location = Location.Builder.newInstance().setCoordinate(coord).setId(locationId).build();
+//                if (locationId == null) {
+//                    if (coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
+//                    locationId = coord.toString();
+//                }
+//
+            }
 			this.setType("service");
 			capacity = capacityBuilder.build();
             skills = skillBuilder.build();
@@ -193,13 +216,9 @@ public class Service extends AbstractJob {
 	
 	
 	private final String id;
-
-	private final String locationId;
 	
 	private final String type;
 
-	private final Coordinate coord;
-	
 	private final double serviceTime;
 
 	private final TimeWindow timeWindow;
@@ -210,16 +229,17 @@ public class Service extends AbstractJob {
 
     private final String name;
 
+    private final Location location;
+
 	Service(Builder builder){
 		id = builder.id;
-		locationId = builder.locationId;
-		coord = builder.coord;
-		serviceTime = builder.serviceTime;
+        serviceTime = builder.serviceTime;
 		timeWindow = builder.timeWindow;
 		type = builder.type;
 		size = builder.capacity;
         skills = builder.skills;
         name = builder.name;
+        location = builder.location;
 	}
 
 	@Override
@@ -231,19 +251,33 @@ public class Service extends AbstractJob {
 	 * Returns the location-id of this service.
 	 * 
 	 * @return String that indicates the location
+     * @deprecated use .getLocation().getId() instead
 	 */
+    @Deprecated
 	public String getLocationId() {
-		return locationId;
+		return location.getId();
 	}
+
+//    public AbstractLocation getLocation()
 	
 	/**
 	 * Returns the coordinate of this service.
 	 * 
 	 * @return {@link Coordinate}
+     * @deprecated use .getLocation().getCoordinate() instead
 	 */
-	public Coordinate getCoord(){
-		return coord;
-	}
+    @Deprecated
+	public Coordinate getCoord(){ return location.getCoordinate(); }
+
+    /**
+     * Returns location.
+     *
+     * @return location
+     */
+    public Location getLocation(){
+        return location;
+    }
+
 
 	/**
 	 * Returns the service-time/duration a service takes at service-location.
@@ -277,7 +311,7 @@ public class Service extends AbstractJob {
 	 */
 	@Override
 	public String toString() {
-		return "[id=" + id + "][name="+name+"][type="+type+"][locationId=" + locationId + "][coord="+coord+"][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
+		return "[id=" + id + "][name="+name+"][type="+type+"][location=" + location + "][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
 	}
 
 
