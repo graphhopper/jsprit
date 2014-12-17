@@ -35,10 +35,8 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
-import jsprit.core.util.EuclideanDistanceCalculator;
 import jsprit.core.util.ManhattanCosts;
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -218,7 +216,7 @@ public class SolutionAnalyserTest {
 	private void testTransportCosts(TransportCostsTestType type) {
 		SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
             @Override
-            public double getDistance(String fromLocationId, String toLocationId) {
+            public double getDistance(Location fromLocationId, Location toLocationId) {
                 return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
             }
         });
