@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -19,10 +19,7 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.algorithm.ExampleActivityCostFunction;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
-import jsprit.core.problem.AbstractActivity;
-import jsprit.core.problem.AbstractVehicle;
-import jsprit.core.problem.JobActivityFactory;
-import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.*;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -90,13 +87,13 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
             VehicleRoutingTransportCosts routingCosts = CostFactory.createManhattanCosts();
 
             @Override
-            public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+            public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
                 return 0;
             }
 
             @Override
-            public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-                double tpCosts = routingCosts.getTransportCost(fromId,toId,departureTime,driver,vehicle);
+            public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+                double tpCosts = routingCosts.getTransportCost(from, to,departureTime,driver,vehicle);
                 if(vehicle.getId().equals("v1")) return tpCosts;
                 return 2. * tpCosts;
             }

@@ -22,6 +22,7 @@ import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.analysis.SolutionAnalyser;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
@@ -113,8 +114,8 @@ public class VRPWithBackhaulsExample2 {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new SolutionAnalyser.DistanceCalculator() {
 
             @Override
-            public double getDistance(String fromLocationId, String toLocationId) {
-                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            public double getDistance(Location from, Location to) {
+                return vrp.getTransportCosts().getTransportCost(from, to,0.,null,null);
             }
 
         });

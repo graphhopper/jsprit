@@ -1,24 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.util;
-
-import java.util.Collection;
 
 import jsprit.core.algorithm.state.UpdateActivityTimes;
 import jsprit.core.problem.cost.TransportTime;
@@ -28,6 +24,8 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.RouteActivityVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+
+import java.util.Collection;
 
 public class RouteUtils {
 	
@@ -60,11 +58,11 @@ public class RouteUtils {
 			TourActivity lastact = r.getStart();
 			double lastActDepTime = r.getDepartureTime();
 			for(TourActivity act : r.getActivities()){
-				tpTime += transportTimes.getTransportTime(lastact.getLocationId(), act.getLocationId(), lastActDepTime, DriverImpl.noDriver(), r.getVehicle());
+				tpTime += transportTimes.getTransportTime(lastact.getLocation(), act.getLocation(), lastActDepTime, DriverImpl.noDriver(), r.getVehicle());
 				lastact=act;
 				lastActDepTime=act.getEndTime();
 			}
-			tpTime+=transportTimes.getTransportTime(lastact.getLocationId(), r.getEnd().getLocationId(), lastActDepTime, DriverImpl.noDriver(), r.getVehicle());
+			tpTime+=transportTimes.getTransportTime(lastact.getLocation(), r.getEnd().getLocation(), lastActDepTime, DriverImpl.noDriver(), r.getVehicle());
 		}
 		return tpTime;
 	}

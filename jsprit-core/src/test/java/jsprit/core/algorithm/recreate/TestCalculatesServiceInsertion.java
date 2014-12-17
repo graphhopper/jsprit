@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -19,6 +19,7 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
@@ -98,13 +99,13 @@ public class TestCalculatesServiceInsertion {
 		costs = new AbstractForwardVehicleRoutingTransportCosts() {
 			
 			@Override
-			public double getTransportTime(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-				return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId));
+			public double getTransportTime(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
+				return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
 			}
 			
 			@Override
-			public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-				return vehicle.getType().getVehicleCostParams().perDistanceUnit*ManhattanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId));
+			public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+				return vehicle.getType().getVehicleCostParams().perDistanceUnit*ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
 			}
 		};
 
@@ -231,13 +232,13 @@ public class TestCalculatesServiceInsertion {
 		AbstractForwardVehicleRoutingTransportCosts routingCosts = new AbstractForwardVehicleRoutingTransportCosts() {
 			
 			@Override
-			public double getTransportTime(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-				return getTransportCost(fromId, toId, departureTime, driver, vehicle);
+			public double getTransportTime(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
+				return getTransportCost(from, to, departureTime, driver, vehicle);
 			}
 			
 			@Override
-			public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-				return EuclideanDistanceCalculator.calculateDistance(coords.get(fromId), coords.get(toId));
+			public double getTransportCost(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
+				return EuclideanDistanceCalculator.calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
 			}
 		};
 		Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setStartLocationId("oldV").build();

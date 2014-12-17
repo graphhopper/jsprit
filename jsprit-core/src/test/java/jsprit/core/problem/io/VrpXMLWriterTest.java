@@ -152,6 +152,7 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         Shipment s1_read = (Shipment) readVrp.getJobs().get("1");
         assertTrue(s1_read.getName().equals("cleaning"));
+        assertEquals(1,s1_read.getPickupLocation().getIndex());
     }
 	
 	@Test

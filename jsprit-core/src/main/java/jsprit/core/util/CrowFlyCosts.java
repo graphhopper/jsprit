@@ -19,6 +19,7 @@
  */
 package jsprit.core.util;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -48,10 +49,10 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts {
 	}
 
 	@Override
-	public double getTransportCost(String fromId, String toId, double time, Driver driver, Vehicle vehicle) {
+	public double getTransportCost(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
 		double distance;
 		try {
-			distance = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId)) * detourFactor;
+			distance = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) * detourFactor;
 		} catch (NullPointerException e) {
 			throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
 		}
@@ -65,10 +66,10 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts {
 	}
 
 	@Override
-	public double getTransportTime(String fromId, String toId, double time, Driver driver, Vehicle vehicle) {
+	public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
 		double distance;
 		try {
-			distance = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId)) * detourFactor;
+			distance = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) * detourFactor;
 		} catch (NullPointerException e) {
 			throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
 		}

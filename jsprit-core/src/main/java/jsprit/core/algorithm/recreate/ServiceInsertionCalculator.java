@@ -135,7 +135,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 				loopBroken = true;
 				break;
 			}
-			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActStartTime, newDriver, newVehicle);
+			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
 			prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
 			prevAct = nextAct;
 			actIndex++;

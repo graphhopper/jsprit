@@ -16,11 +16,11 @@
  ******************************************************************************/
 package jsprit.core.algorithm.ruin.distance;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
-import jsprit.core.util.Coordinate;
 import jsprit.core.util.EuclideanDistanceCalculator;
 
 
@@ -70,32 +70,30 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
 	}
 
 	private double calcDist(Service i, Service j) {
-		return calcDist(i.getLocationId(),i.getCoord(),j.getLocationId(),j.getCoord());
+		return calcDist(i.getLocation(),j.getLocation());
 	}
 
 	private double calcDist(Service i, Shipment j) {
-		double c_ij1 = calcDist(i.getLocationId(),i.getCoord(),j.getPickupLocationId(),j.getPickupCoord());
-		double c_ij2 = calcDist(i.getLocationId(),i.getCoord(),j.getDeliveryLocationId(),j.getDeliveryCoord());
+		double c_ij1 = calcDist(i.getLocation(),j.getPickupLocation());
+		double c_ij2 = calcDist(i.getLocation(),j.getDeliveryLocation());
 		return (c_ij1 + c_ij2)/2.0;
 	}
 	
 	private double calcDist(Shipment i, Shipment j) {
-		double c_i1j1 = calcDist(i.getPickupLocationId(),i.getPickupCoord(),j.getPickupLocationId(),j.getPickupCoord());
-		double c_i1j2 = calcDist(i.getPickupLocationId(),i.getPickupCoord(),j.getDeliveryLocationId(),j.getDeliveryCoord());
-		double c_i2j1 = calcDist(i.getDeliveryLocationId(),i.getDeliveryCoord(),j.getPickupLocationId(),j.getPickupCoord());
-		double c_i2j2 = calcDist(i.getDeliveryLocationId(),i.getDeliveryCoord(),j.getDeliveryLocationId(),j.getDeliveryCoord());
+		double c_i1j1 = calcDist(i.getPickupLocation(),j.getPickupLocation());
+		double c_i1j2 = calcDist(i.getPickupLocation(),j.getDeliveryLocation());
+		double c_i2j1 = calcDist(i.getDeliveryLocation(),j.getPickupLocation());
+		double c_i2j2 = calcDist(i.getDeliveryLocation(),j.getDeliveryLocation());
 		return (c_i1j1 + c_i1j2 + c_i2j1 + c_i2j2)/4.0;
 	}
 
-	private double calcDist(String location_i, Coordinate coord_i, String location_j, Coordinate coord_j){
+	private double calcDist(Location location_i, Location location_j){
 		try{
-			double c_ij = costs.getTransportCost(location_i, location_j, 0.0, null, null);
-			return c_ij; 
-		}
+			return costs.getTransportCost(location_i, location_j, 0.0, null, null);
+        }
 		catch(IllegalStateException e){
 			// now try the euclidean distance between these two services
 		}
-		double c_ij = EuclideanDistanceCalculator.calculateDistance(coord_i, coord_j);
-		return c_ij;
+		return EuclideanDistanceCalculator.calculateDistance(location_i.getCoordinate(), location_j.getCoordinate());
 	}
 }

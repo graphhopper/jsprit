@@ -17,6 +17,7 @@
 package jsprit.core.problem.constraint;
 
 import jsprit.core.algorithm.state.InternalStates;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.End;
@@ -46,18 +47,18 @@ import jsprit.core.util.CalculationUtils;
 		public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
 			double latestVehicleArrival = iFacts.getNewVehicle().getLatestArrival();
             Double latestArrTimeAtNextAct;
-            String nextActLocation;
+            Location nextActLocation;
             if(nextAct instanceof End) {
                 latestArrTimeAtNextAct = latestVehicleArrival;
-                nextActLocation = iFacts.getNewVehicle().getEndLocationId();
+                nextActLocation = iFacts.getNewVehicle().getEndLocation();
                 if(!iFacts.getNewVehicle().isReturnToDepot()){
-                    nextActLocation = newAct.getLocationId();
+                    nextActLocation = newAct.getLocation();
                 }
             }
             else{
                 latestArrTimeAtNextAct = states.getActivityState(nextAct, InternalStates.LATEST_OPERATION_START_TIME, Double.class);
                 if(latestArrTimeAtNextAct==null) latestArrTimeAtNextAct=nextAct.getTheoreticalLatestOperationStartTime();
-                nextActLocation = nextAct.getLocationId();
+                nextActLocation = nextAct.getLocation();
             }
 
 			/*
@@ -88,7 +89,7 @@ import jsprit.core.util.CalculationUtils;
 			 *                                          |- earliest arrival of vehicle
 			 *                       |--- nextAct ---|
 			 */
-			double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), nextAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 			if(arrTimeAtNextOnDirectRouteWithNewVehicle > nextAct.getTheoreticalLatestOperationStartTime()){
 				return ConstraintsStatus.NOT_FULFILLED_BREAK;
 			}
@@ -101,11 +102,11 @@ import jsprit.core.util.CalculationUtils;
 			}
 			//			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
 //            double latestArrTimeAtNextAct = states.getActivityState(nextAct, StateFactory.LATEST_OPERATION_START_TIME, Double.class);
-            double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocationId(), newAct.getLocationId(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
 
             double latestArrTimeAtNewAct = Math.min(newAct.getTheoreticalLatestOperationStartTime(),latestArrTimeAtNextAct -
-                    routingCosts.getBackwardTransportTime(nextActLocation, newAct.getLocationId(), latestArrTimeAtNextAct, iFacts.getNewDriver(),
+                    routingCosts.getBackwardTransportTime(nextActLocation, newAct.getLocation(), latestArrTimeAtNextAct, iFacts.getNewDriver(),
                             iFacts.getNewVehicle()) - newAct.getOperationTime());
 			/*
 			 *  |--- prevAct ---|
@@ -123,7 +124,7 @@ import jsprit.core.util.CalculationUtils;
 			}
 //			log.info(newAct + " arrTime=" + arrTimeAtNewAct);
 			double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
-			double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocationId(), nextAct.getLocationId(), endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+			double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
 			/*
 			 *  |--- newAct ---|

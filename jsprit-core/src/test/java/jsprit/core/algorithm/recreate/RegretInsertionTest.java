@@ -18,6 +18,7 @@
 package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
@@ -169,7 +170,7 @@ public class RegretInsertionTest {
                 Vehicle vehicle = vrp.getVehicles().iterator().next();
                 InsertionData iData = null;
                 if(currentRoute.isEmpty()){
-                    double mc = getCost(service.getLocationId(), vehicle.getStartLocationId());
+                    double mc = getCost(service.getLocation(), vehicle.getStartLocation());
                     iData = new InsertionData(2*mc,-1,0,vehicle,newDriver);
                 }
                 else {
@@ -197,13 +198,13 @@ public class RegretInsertionTest {
             }
 
             private double getMarginalCost(Service service, TourActivity prevAct, TourActivity act) {
-                double prev_new = getCost(prevAct.getLocationId(),service.getLocationId());
-                double new_act = getCost(service.getLocationId(),act.getLocationId());
-                double prev_act = getCost(prevAct.getLocationId(),act.getLocationId());
+                double prev_new = getCost(prevAct.getLocation(),service.getLocation());
+                double new_act = getCost(service.getLocation(),act.getLocation());
+                double prev_act = getCost(prevAct.getLocation(),act.getLocation());
                 return prev_new + new_act - prev_act;
             }
 
-            private double getCost(String loc1, String loc2) {
+            private double getCost(Location loc1, Location loc2) {
                 return vrp.getTransportCosts().getTransportCost(loc1,loc2,0.,null,null);
             }
         };

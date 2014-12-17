@@ -18,6 +18,7 @@ package jsprit.core.algorithm;
 
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -116,25 +117,25 @@ public class RefuseCollection_IT {
 		}
 
 		@Override
-		public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, departureTime, driver, vehicle);
+		public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+			return getTransportCost(from, to, departureTime, driver, vehicle);
 		}
 
 		@Override
-		public double getBackwardTransportTime(String fromId, String toId, double arrivalTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
+		public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
+			return getTransportCost(from, to, arrivalTime, driver, vehicle);
 		}
 
 		@Override
-		public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-			if(fromId.equals(toId)) return 0.0;
-			RelationKey key = RelationKey.newKey(fromId, toId);
+		public double getTransportCost(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
+			if(from.equals(to)) return 0.0;
+			RelationKey key = RelationKey.newKey(from.getId(), to.getId());
 			return distances.get(key);
 		}
 
 		@Override
-		public double getBackwardTransportCost(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
+		public double getBackwardTransportCost(Location from, Location to,double arrivalTime, Driver driver, Vehicle vehicle) {
+			return getTransportCost(from, to, arrivalTime, driver, vehicle);
 		}
 		
 	}

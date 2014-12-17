@@ -126,7 +126,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		for(int i=0;i<activities.size();i++){
 			ConstraintsStatus pickupShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, pickupShipment, activities.get(i), prevActEndTime);
 			if(pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)){
-				double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), activities.get(i).getLocationId(), prevActEndTime, newDriver, newVehicle);
+				double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), activities.get(i).getLocation(), prevActEndTime, newDriver, newVehicle);
 				prevActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, activities.get(i));
 				prevAct = activities.get(i);
 				continue;
@@ -138,7 +138,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 			double additionalPickupICosts = softActivityConstraint.getCosts(insertionContext, prevAct, pickupShipment, activities.get(i), prevActEndTime);
 			double pickupAIC = calculate(insertionContext,prevAct,pickupShipment,activities.get(i),prevActEndTime);
 			TourActivity prevAct_deliveryLoop = pickupShipment;
-			double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), pickupShipment.getLocationId(), prevActEndTime, newDriver, newVehicle);
+			double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
 			double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);
 
             pickupContext.setArrivalTime(shipmentPickupArrTime);
@@ -167,7 +167,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 					break;
 				}	
 				//update prevAct and endTime
-				double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocationId(), activities.get(j).getLocationId(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
+				double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), activities.get(j).getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
 				prevActEndTime_deliveryLoop = CalculationUtils.getActivityEndTime(nextActArrTime, activities.get(j));
 				prevAct_deliveryLoop = activities.get(j);
 			}
@@ -186,7 +186,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				}
 			}
 			//update prevAct and endTime
-			double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), activities.get(i).getLocationId(), prevActEndTime, newDriver, newVehicle);
+			double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), activities.get(i).getLocation(), prevActEndTime, newDriver, newVehicle);
 			prevActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, activities.get(i));
 			prevAct = activities.get(i);
 		}
@@ -196,7 +196,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				double additionalPickupICosts = softActivityConstraint.getCosts(insertionContext, prevAct, pickupShipment, end, prevActEndTime);
 				double pickupAIC = calculate(insertionContext,prevAct,pickupShipment,end,prevActEndTime);
 				TourActivity prevAct_deliveryLoop = pickupShipment;
-				double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocationId(), pickupShipment.getLocationId(), prevActEndTime, newDriver, newVehicle);
+				double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
 				double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);
 				double prevActEndTime_deliveryLoop = shipmentPickupEndTime;
 

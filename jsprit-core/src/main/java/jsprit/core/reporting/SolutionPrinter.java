@@ -117,13 +117,13 @@ public class SolutionPrinter {
                 String jobId;
                 if(act instanceof JobActivity) jobId = ((JobActivity)act).getJob().getId();
                 else jobId = "-";
-                double c = problem.getTransportCosts().getTransportCost(prevAct.getLocationId(), act.getLocationId(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+                double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
                 c+= problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 costs+=c;
                 System.out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()), Math.round(act.getEndTime()),Math.round(costs));
                 prevAct=act;
             }
-            double c = problem.getTransportCosts().getTransportCost(prevAct.getLocationId(), route.getEnd().getLocationId(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+            double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
             c+= problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
             costs+=c;
             System.out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef", Math.round(costs));

@@ -1,27 +1,24 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -35,6 +32,10 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Solutions;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class CalcWithTimeSchedulingTest {
@@ -65,26 +66,26 @@ public class CalcWithTimeSchedulingTest {
 		return new VehicleRoutingTransportCosts() {
 			
 			@Override
-			public double getBackwardTransportCost(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
-				return getTransportCost(fromId, toId, arrivalTime, driver, vehicle);
+			public double getBackwardTransportCost(Location from, Location to,double arrivalTime, Driver driver, Vehicle vehicle) {
+				return getTransportCost(from, to, arrivalTime, driver, vehicle);
 			}
 			
 			@Override
-			public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
+			public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
 				if(departureTime < 50){
-					return baseCosts.getTransportCost(fromId, toId, departureTime, driver, vehicle)*2.0;
+					return baseCosts.getTransportCost(from, to, departureTime, driver, vehicle)*2.0;
 				}
-				return baseCosts.getTransportCost(fromId, toId, departureTime, driver, vehicle);
+				return baseCosts.getTransportCost(from, to, departureTime, driver, vehicle);
 			}
 			
 			@Override
-			public double getBackwardTransportTime(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
-				return getTransportTime(fromId, toId, arrivalTime, driver, vehicle);
+			public double getBackwardTransportTime(Location from, Location to,double arrivalTime, Driver driver, Vehicle vehicle) {
+				return getTransportTime(from, to, arrivalTime, driver, vehicle);
 			}
 			
 			@Override
-			public double getTransportTime(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
-				return getTransportCost(fromId, toId, departureTime, driver, vehicle);
+			public double getTransportTime(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
+				return getTransportCost(from, to, departureTime, driver, vehicle);
 			}
 		};
 	}

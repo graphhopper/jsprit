@@ -17,6 +17,7 @@
 
 package jsprit.core.algorithm.recreate;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -144,12 +145,12 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         private double scoreShipment(InsertionData best, Job job) {
             Shipment shipment = (Shipment)job;
             double maxDepotDistance_1 = Math.max(
-                    getDistance(best.getSelectedVehicle().getStartLocationId(),shipment.getPickupLocationId()),
-                    getDistance(best.getSelectedVehicle().getStartLocationId(),shipment.getDeliveryLocationId())
+                    getDistance(best.getSelectedVehicle().getStartLocation(),shipment.getPickupLocation()),
+                    getDistance(best.getSelectedVehicle().getStartLocation(),shipment.getDeliveryLocation())
             );
             double maxDepotDistance_2 = Math.max(
-                    getDistance(best.getSelectedVehicle().getEndLocationId(),shipment.getPickupLocationId()),
-                    getDistance(best.getSelectedVehicle().getEndLocationId(),shipment.getDeliveryLocationId())
+                    getDistance(best.getSelectedVehicle().getEndLocation(),shipment.getPickupLocation()),
+                    getDistance(best.getSelectedVehicle().getEndLocation(),shipment.getDeliveryLocation())
             );
             double maxDepotDistance = Math.max(maxDepotDistance_1,maxDepotDistance_2);
             double minTimeToOperate = Math.min(shipment.getPickupTimeWindow().getEnd()-shipment.getPickupTimeWindow().getStart(),
@@ -159,15 +160,15 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
         private double scoreService(InsertionData best, Job job) {
             double maxDepotDistance = Math.max(
-                    getDistance(best.getSelectedVehicle().getStartLocationId(), ((Service) job).getLocationId()),
-                    getDistance(best.getSelectedVehicle().getEndLocationId(), ((Service) job).getLocationId())
+                    getDistance(best.getSelectedVehicle().getStartLocation(), ((Service) job).getLocation()),
+                    getDistance(best.getSelectedVehicle().getEndLocation(), ((Service) job).getLocation())
             );
             return Math.max(tw_param * (((Service)job).getTimeWindow().getEnd() - ((Service)job).getTimeWindow().getStart()),minTimeWindowScore) +
                     depotDistance_param * maxDepotDistance;
         }
 
 
-        private double getDistance(String loc1, String loc2) {
+        private double getDistance(Location loc1, Location loc2) {
             return vrp.getTransportCosts().getTransportCost(loc1,loc2,0.,null,null);
         }
 

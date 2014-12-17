@@ -21,37 +21,87 @@
      <problemType>
           <fleetSize>INFINITE</fleetSize>
      </problemType>
-     <shipments>
-          <shipment id="1">
-               <pickup>
-                    <location>
-                         <id>pick</id>
-                         <index>1</index>
-                    </location>
-                    <duration>0.0</duration>
-                    <timeWindows>
-                         <timeWindow>
-                              <start>0.0</start>
-                              <end>1.7976931348623157E308</end>
-                         </timeWindow>
-                    </timeWindows>
-               </pickup>
-               <delivery>
-                    <location>
-                         <id>del</id>
-                    </location>
-                    <duration>0.0</duration>
-                    <timeWindows>
-                         <timeWindow>
-                              <start>0.0</start>
-                              <end>1.7976931348623157E308</end>
-                         </timeWindow>
-                    </timeWindows>
-               </delivery>
+     <vehicles>
+          <vehicle>
+               <id>v1</id>
+               <typeId>vehType</typeId>
+               <startLocation>
+                    <id>loc</id>
+               </startLocation>
+               <endLocation>
+                    <id>loc</id>
+               </endLocation>
+               <timeSchedule>
+                    <start>0.0</start>
+                    <end>1.7976931348623157E308</end>
+               </timeSchedule>
+               <returnToDepot>true</returnToDepot>
+          </vehicle>
+     </vehicles>
+     <vehicleTypes>
+          <type>
+               <id>vehType</id>
                <capacity-dimensions>
-                    <dimension index="0">0</dimension>
+                    <dimension index="0">20</dimension>
                </capacity-dimensions>
-               <name>cleaning</name>
-          </shipment>
-     </shipments>
+               <costs>
+                    <fixed>0.0</fixed>
+                    <distance>1.0</distance>
+                    <time>0.0</time>
+               </costs>
+          </type>
+     </vehicleTypes>
+     <services>
+          <service id="2" type="service">
+               <location>
+                    <id>loc2</id>
+               </location>
+               <capacity-dimensions>
+                    <dimension index="0">1</dimension>
+               </capacity-dimensions>
+               <duration>4.0</duration>
+               <timeWindows>
+                    <timeWindow>
+                         <start>0.0</start>
+                         <end>1.7976931348623157E308</end>
+                    </timeWindow>
+               </timeWindows>
+          </service>
+          <service id="1" type="service">
+               <location>
+                    <id>loc</id>
+               </location>
+               <capacity-dimensions>
+                    <dimension index="0">1</dimension>
+               </capacity-dimensions>
+               <duration>2.0</duration>
+               <timeWindows>
+                    <timeWindow>
+                         <start>0.0</start>
+                         <end>1.7976931348623157E308</end>
+                    </timeWindow>
+               </timeWindows>
+          </service>
+     </services>
+     <solutions>
+          <solution>
+               <cost>10.0</cost>
+               <routes>
+                    <route>
+                         <driverId>noDriver</driverId>
+                         <vehicleId>v1</vehicleId>
+                         <start>0.0</start>
+                         <act type="service">
+                              <serviceId>1</serviceId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <end>0.0</end>
+                    </route>
+               </routes>
+               <unassignedJobs>
+                    <job id="2"/>
+               </unassignedJobs>
+          </solution>
+     </solutions>
 </problem>

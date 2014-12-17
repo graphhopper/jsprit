@@ -1,23 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -59,25 +58,29 @@ public class TestLocalActivityInsertionCostsCalculator {
 		when(jic.getNewVehicle()).thenReturn(vehicle);
 		
 		tpCosts = mock(VehicleRoutingTransportCosts.class);
-		when(tpCosts.getTransportCost("i", "j", 0.0, null, vehicle)).thenReturn(2.0);
-		when(tpCosts.getTransportTime("i", "j", 0.0, null, vehicle)).thenReturn(0.0);
-		when(tpCosts.getTransportCost("i", "k", 0.0, null, vehicle)).thenReturn(3.0);
-		when(tpCosts.getTransportTime("i", "k", 0.0, null, vehicle)).thenReturn(0.0);
-		when(tpCosts.getTransportCost("k", "j", 0.0, null, vehicle)).thenReturn(3.0);
-		when(tpCosts.getTransportTime("k", "j", 0.0, null, vehicle)).thenReturn(0.0);
+		when(tpCosts.getTransportCost(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(2.0);
+		when(tpCosts.getTransportTime(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
+		when(tpCosts.getTransportCost(loc("i"), loc("k"), 0.0, null, vehicle)).thenReturn(3.0);
+		when(tpCosts.getTransportTime(loc("i"), loc("k"), 0.0, null, vehicle)).thenReturn(0.0);
+		when(tpCosts.getTransportCost(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(3.0);
+		when(tpCosts.getTransportTime(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
 		
 		actCosts = mock(VehicleRoutingActivityCosts.class);
 		calc = new LocalActivityInsertionCostsCalculator(tpCosts, actCosts);
 	}
-	
-	@Test
+
+    private Location loc(String i) {
+        return Location.Builder.newInstance().setId(i).build();
+    }
+
+    @Test
 	public void whenInsertingActBetweenTwoRouteActs_itCalcsMarginalTpCosts(){
 		TourActivity prevAct = mock(TourActivity.class);
-		when(prevAct.getLocationId()).thenReturn("i");
+		when(prevAct.getLocation()).thenReturn(loc("i"));
 		TourActivity nextAct = mock(TourActivity.class);
-		when(nextAct.getLocationId()).thenReturn("j");
+		when(nextAct.getLocation()).thenReturn(loc("j"));
 		TourActivity newAct = mock(TourActivity.class);
-		when(newAct.getLocationId()).thenReturn("k");
+		when(newAct.getLocation()).thenReturn(loc("k"));
 		
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
@@ -88,10 +91,10 @@ public class TestLocalActivityInsertionCostsCalculator {
 	@Test
 	public void whenInsertingActBetweenLastActAndEnd_itCalcsMarginalTpCosts(){
 		TourActivity prevAct = mock(TourActivity.class);
-		when(prevAct.getLocationId()).thenReturn("i");
+		when(prevAct.getLocation()).thenReturn(loc("i"));
 		End nextAct = End.newInstance("j", 0.0, 0.0);
 		TourActivity newAct = mock(TourActivity.class);
-		when(newAct.getLocationId()).thenReturn("k");
+		when(newAct.getLocation()).thenReturn(loc("k"));
 		
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		
@@ -102,11 +105,11 @@ public class TestLocalActivityInsertionCostsCalculator {
 	@Test
 	public void whenInsertingActBetweenTwoRouteActsAndRouteIsOpen_itCalcsMarginalTpCosts(){
 		TourActivity prevAct = mock(TourActivity.class);
-		when(prevAct.getLocationId()).thenReturn("i");
+		when(prevAct.getLocation()).thenReturn(loc("i"));
 		TourActivity nextAct = mock(TourActivity.class);
-		when(nextAct.getLocationId()).thenReturn("j");
+		when(nextAct.getLocation()).thenReturn(loc("j"));
 		TourActivity newAct = mock(TourActivity.class);
-		when(newAct.getLocationId()).thenReturn("k");
+		when(newAct.getLocation()).thenReturn(loc("k"));
 		
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		
@@ -117,10 +120,10 @@ public class TestLocalActivityInsertionCostsCalculator {
 	@Test
 	public void whenInsertingActBetweenLastActAndEndAndRouteIsOpen_itCalculatesTpCostsFromPrevToNewAct(){
 		TourActivity prevAct = mock(TourActivity.class);
-		when(prevAct.getLocationId()).thenReturn("i");
+		when(prevAct.getLocation()).thenReturn(loc("i"));
 		End nextAct = End.newInstance("j", 0.0, 0.0);
 		TourActivity newAct = mock(TourActivity.class);
-		when(newAct.getLocationId()).thenReturn("k");
+		when(newAct.getLocation()).thenReturn(loc("k"));
 		
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		

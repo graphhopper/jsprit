@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.instance.reader;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -114,25 +115,25 @@ public class Figliozzi {
         }
 
         @Override
-		public double getTransportCost(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-			return transportDistanceParameter * EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId),locations.getCoord(toId)) +
-					transportTimeParameter * getTransportTime(fromId,toId,departureTime, driver, vehicle);
+		public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+			return transportDistanceParameter * EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()),locations.getCoord(to.getId())) +
+					transportTimeParameter * getTransportTime(from, to,departureTime, driver, vehicle);
         }
 		
 		@Override
-		public double getBackwardTransportCost(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
-            return transportDistanceParameter * EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId),locations.getCoord(toId)) +
-                    transportTimeParameter * getBackwardTransportTime(fromId, toId, arrivalTime, driver, vehicle);
+		public double getBackwardTransportCost(Location from, Location to,double arrivalTime, Driver driver, Vehicle vehicle) {
+            return transportDistanceParameter * EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()),locations.getCoord(to.getId())) +
+                    transportTimeParameter * getBackwardTransportTime(from, to, arrivalTime, driver, vehicle);
         }
 
 		
 		@Override
-		public double getTransportTime(String fromId, String toId, double departureTime, Driver driver, Vehicle vehicle) {
-			if(fromId.equals(toId)){
+		public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+			if(from.equals(to)){
 				return 0.0;
 			}
 			double totalTravelTime = 0.0;
-			double distanceToTravel = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId));
+			double distanceToTravel = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
 			double currentTime = departureTime;
 			for(int i=0;i<timeBins.size();i++){
 				double timeThreshold = timeBins.get(i);
@@ -154,12 +155,12 @@ public class Figliozzi {
 
 
 		@Override
-		public double getBackwardTransportTime(String fromId, String toId,double arrivalTime, Driver driver, Vehicle vehicle) {
-			if(fromId.equals(toId)){
+		public double getBackwardTransportTime(Location from, Location to,double arrivalTime, Driver driver, Vehicle vehicle) {
+			if(from.equals(to)){
 				return 0.0;
 			}
 			double totalTravelTime = 0.0;
-			double distanceToTravel = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(fromId), locations.getCoord(toId));
+			double distanceToTravel = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
 			double currentTime = arrivalTime;
 			for(int i=timeBins.size()-1;i>=0;i--){
 				double nextLowerTimeThreshold;

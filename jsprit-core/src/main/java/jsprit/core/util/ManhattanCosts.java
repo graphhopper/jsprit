@@ -18,6 +18,7 @@ package jsprit.core.util;
 
 
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -40,10 +41,10 @@ public class ManhattanCosts extends AbstractForwardVehicleRoutingTransportCosts 
 	}
 
 	@Override
-	public double getTransportCost(String fromId, String toId, double time,Driver driver, Vehicle vehicle) {
+	public double getTransportCost(Location from, Location to, double time,Driver driver, Vehicle vehicle) {
         double distance;
         try {
-            distance = calculateDistance(fromId, toId);
+            distance = calculateDistance(from.getId(), to.getId());
         } catch (NullPointerException e) {
             throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
         }
@@ -57,8 +58,8 @@ public class ManhattanCosts extends AbstractForwardVehicleRoutingTransportCosts 
 	}
 
 	@Override
-	public double getTransportTime(String fromId, String toId, double time,Driver driver, Vehicle vehicle) {
-		return calculateDistance(fromId, toId) / speed;
+	public double getTransportTime(Location from, Location to, double time,Driver driver, Vehicle vehicle) {
+		return calculateDistance(from.getId(), to.getId()) / speed;
 	}
 
 	private double calculateDistance(String fromId, String toId) {

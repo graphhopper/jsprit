@@ -20,6 +20,7 @@ package jsprit.core.analysis;
 import jsprit.core.algorithm.VariablePlusFixedSolutionCostCalculatorFactory;
 import jsprit.core.algorithm.state.*;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.SolutionCostCalculator;
@@ -27,7 +28,6 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.util.ActivityTimeTracker;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,7 +54,7 @@ public class SolutionAnalyser {
 
     public static interface DistanceCalculator {
 
-        public double getDistance(String fromLocationId, String toLocationId);
+        public double getDistance(Location from, Location to);
 
     }
 
@@ -337,7 +337,7 @@ public class SolutionAnalyser {
 		}
 
 		private double transportCost(TourActivity activity) {
-			return transportCost.getTransportCost(prevAct.getLocationId(), activity.getLocationId(), prevActDeparture, route.getDriver(), route.getVehicle());
+			return transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
 		}
 
 		private double transportTime(TourActivity activity) {
@@ -345,7 +345,7 @@ public class SolutionAnalyser {
 		}
 
 		private double distance(TourActivity activity) {
-			return distanceCalculator.getDistance(prevAct.getLocationId(),activity.getLocationId());
+			return distanceCalculator.getDistance(prevAct.getLocation(),activity.getLocation());
 		}
 
 		@Override
@@ -386,7 +386,7 @@ public class SolutionAnalyser {
 
         @Override
         public void visit(TourActivity activity) {
-            double distance = distanceCalculator.getDistance(prevAct.getLocationId(),activity.getLocationId());
+            double distance = distanceCalculator.getDistance(prevAct.getLocation(),activity.getLocation());
             sum_distance += distance;
             stateManager.putActivityState(activity,distance_id,sum_distance);
             prevAct = activity;
@@ -394,7 +394,7 @@ public class SolutionAnalyser {
 
         @Override
         public void finish() {
-            double distance = distanceCalculator.getDistance(prevAct.getLocationId(), route.getEnd().getLocationId());
+            double distance = distanceCalculator.getDistance(prevAct.getLocation(), route.getEnd().getLocation());
             sum_distance += distance;
             stateManager.putRouteState(route,distance_id,sum_distance);
         }

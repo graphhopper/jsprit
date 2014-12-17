@@ -1,26 +1,25 @@
 /*******************************************************************************
- * Copyright (c) 2014 Stefan Schroeder.
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *  
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
 import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -60,12 +59,12 @@ public class ServiceLoadRouteLevelConstraintTest {
 	VehicleRoutingTransportCosts routingCosts = new AbstractForwardVehicleRoutingTransportCosts() {
 		
 		@Override
-		public double getTransportTime(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
+		public double getTransportTime(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
 			return 0;
 		}
 		
 		@Override
-		public double getTransportCost(String fromId, String toId,double departureTime, Driver driver, Vehicle vehicle) {
+		public double getTransportCost(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
 			return 0;
 		}
 	};
