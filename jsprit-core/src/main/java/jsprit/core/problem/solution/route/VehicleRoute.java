@@ -175,9 +175,9 @@ public class VehicleRoute {
 			super();
 			this.vehicle = vehicle;
 			this.driver = driver;
-			start = Start.newInstance(vehicle.getStartLocationId(), vehicle.getEarliestDeparture(), Double.MAX_VALUE);
+			start = new Start(vehicle.getStartLocation(), vehicle.getEarliestDeparture(), Double.MAX_VALUE);
 			start.setEndTime(vehicle.getEarliestDeparture());
-			end = End.newInstance(vehicle.getEndLocationId(), 0.0, vehicle.getLatestArrival());
+			end = new End(vehicle.getEndLocation(), 0.0, vehicle.getLatestArrival());
 		}
 
 		/**
@@ -401,8 +401,8 @@ public class VehicleRoute {
 	private void setStartAndEnd(Vehicle vehicle, double vehicleDepTime) {
 		if(!(vehicle instanceof NoVehicle)){
 			if(start == null && end == null){
-				start = Start.newInstance(vehicle.getStartLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
-				end = End.newInstance(vehicle.getEndLocationId(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+				start = new Start(vehicle.getStartLocation(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+				end = new End(vehicle.getEndLocation(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
 			}
 			start.setEndTime(Math.max(vehicleDepTime, vehicle.getEarliestDeparture()));
 			start.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());

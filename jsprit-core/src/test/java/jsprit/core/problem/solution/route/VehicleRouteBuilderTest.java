@@ -20,6 +20,7 @@ import jsprit.core.problem.Capacity;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -93,10 +94,9 @@ public class VehicleRouteBuilderTest {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(s.getSize()).thenReturn(capacity);
 		when(s2.getSize()).thenReturn(capacity);
-		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.isReturnToDepot()).thenReturn(true);
-		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
-		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setEndLocationId("vehLoc")
+                .build();
+
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(s2);

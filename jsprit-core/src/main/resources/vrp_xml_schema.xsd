@@ -54,31 +54,9 @@
 							<xs:complexType>
 								<xs:all>
 									<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
-									<xs:element name="location" minOccurs="0" maxOccurs="1">
-										<xs:complexType>
-											<xs:all>
-												<xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
-												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
-
-											</xs:all>
-										</xs:complexType>
-									</xs:element>
-									<xs:element name="startLocation" minOccurs="0" maxOccurs="1">
-										<xs:complexType>
-											<xs:all>
-												<xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
-												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
-											</xs:all>
-										</xs:complexType>
-									</xs:element>
-									<xs:element name="endLocation" minOccurs="0" maxOccurs="1">
-										<xs:complexType>
-											<xs:all>
-												<xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
-												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
-											</xs:all>
-										</xs:complexType>
-									</xs:element>
+									<xs:element name="location" type="locationType" minOccurs="0" maxOccurs="1"/>
+									<xs:element name="startLocation" type="locationType" minOccurs="0" maxOccurs="1"/>
+									<xs:element name="endLocation" type="locationType" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="typeId" type="xs:string" minOccurs="1" maxOccurs="1"/>
 									<xs:element name="timeSchedule" type="timeWindowType"/>
 									<xs:element name="returnToDepot" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
@@ -139,6 +117,7 @@
 						<xs:element name="service" minOccurs="0" maxOccurs="unbounded">
 							<xs:complexType>
 								<xs:all>
+                                    <xs:element name="location" type="locationType" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="locationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
                                     <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
@@ -185,6 +164,7 @@
 									<xs:element name="pickup" minOccurs="1" maxOccurs="1">
 										<xs:complexType>
 											<xs:all>
+                                                <xs:element name="location" type="locationType" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="locationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
@@ -201,6 +181,7 @@
 									<xs:element name="delivery" minOccurs="1" maxOccurs="1">
 										<xs:complexType>
 											<xs:all>
+                                                <xs:element name="location" type="locationType" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="locationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
 												<xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1" default="0.0"/>
@@ -348,6 +329,14 @@
 		<xs:element name="start" type="xs:double"/>
 		<xs:element name="end" type="xs:double"/>
 	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="locationType">
+    <xs:all>
+       <xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+       <xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
+       <xs:element name="index" type="xs:int" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
 </xs:complexType>
 
 <xs:complexType name="coordType">

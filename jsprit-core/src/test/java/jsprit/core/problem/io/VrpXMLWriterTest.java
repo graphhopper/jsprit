@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.io;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -138,7 +139,10 @@ public class VrpXMLWriterTest {
     @Test
     public void shouldWriteNameOfShipment(){
         Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        Shipment s1 = Shipment.Builder.newInstance("1").setName("cleaning").setPickupLocationId("pick").setDeliveryLocationId("del").build();
+        Location pickLocation = Location.Builder.newInstance().setId("pick").setIndex(1).build();
+        Shipment s1 = Shipment.Builder.newInstance("1").setName("cleaning")
+                .setPickupLocation(pickLocation)
+                .setDeliveryLocationId("del").build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).build();
         new VrpXMLWriter(vrp, null).write(infileName);

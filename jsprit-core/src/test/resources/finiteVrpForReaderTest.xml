@@ -31,6 +31,7 @@
                <location>
                		<id>depotLoc2</id>
                		<coord x="100.0" y="100.0"/>
+                    <index>1</index>
                </location>
                <typeId>vehType</typeId>
                 <timeSchedule>
@@ -44,6 +45,7 @@
                <location>
                		<id>depotLoc</id>
                		<coord x="10.0" y="100.0"/>
+                   <index>2</index>
                </location>
                <returnToDepot>false</returnToDepot>
                <typeId>vehType2</typeId>
@@ -57,10 +59,12 @@
                <startLocation>
                		<id>startLoc</id>
                		<coord x="10.0" y="100.0"/>
+                    <index>3</index>
                </startLocation>
                <endLocation>
                		<id>endLoc</id>
                		<coord x="1000.0" y="2000.0"/>
+                   <index>4</index>
                </endLocation>
                <typeId>vehType2</typeId>
                <timeSchedule>

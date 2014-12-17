@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.io;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
@@ -220,11 +221,14 @@ public class VrpXMLWriter {
 			Service service = (Service) j;
 			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@id]", service.getId());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@type]", service.getType());
-			if(service.getLocationId() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").locationId", service.getLocationId());
-			if(service.getCoord() != null) {
-				xmlConfig.setProperty(shipmentPathString + "("+counter+").coord[@x]", service.getCoord().getX());
-				xmlConfig.setProperty(shipmentPathString + "("+counter+").coord[@y]", service.getCoord().getY());
+			if(service.getLocation().getId() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").location.id", service.getLocation().getId());
+			if(service.getLocation().getCoordinate() != null) {
+				xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.coord[@x]", service.getLocation().getCoordinate().getX());
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").location.coord[@y]", service.getLocation().getCoordinate().getY());
 			}
+            if(service.getLocation().getIndex() != Location.NO_INDEX){
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.index", service.getLocation().getIndex());
+            }
 			for(int i=0;i<service.getSize().getNuOfDimensions();i++){
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")[@index]", i);
 				xmlConfig.setProperty(shipmentPathString + "("+counter+").capacity-dimensions.dimension("+i+")", service.getSize().get(i));
@@ -255,22 +259,28 @@ public class VrpXMLWriter {
 			Shipment shipment = (Shipment) j;
 			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@id]", shipment.getId());
 //			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@type]", service.getType());
-			if(shipment.getPickupLocationId() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.locationId", shipment.getPickupLocationId());
-			if(shipment.getPickupCoord() != null) {
-				xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.coord[@x]", shipment.getPickupCoord().getX());
-				xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.coord[@y]", shipment.getPickupCoord().getY());
+			if(shipment.getPickupLocation().getId() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.location.id", shipment.getPickupLocation().getId());
+			if(shipment.getPickupLocation().getCoordinate() != null) {
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.location.coord[@x]", shipment.getPickupLocation().getCoordinate().getX());
+				xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.location.coord[@y]", shipment.getPickupLocation().getCoordinate().getY());
 			}
+            if(shipment.getPickupLocation().getIndex() != Location.NO_INDEX){
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.index", shipment.getPickupLocation().getIndex());
+            }
 			
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.duration", shipment.getPickupServiceTime());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.timeWindows.timeWindow(0).start", shipment.getPickupTimeWindow().getStart());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").pickup.timeWindows.timeWindow(0).end", shipment.getPickupTimeWindow().getEnd());
 			
 			
-			if(shipment.getDeliveryLocationId() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.locationId", shipment.getDeliveryLocationId());
-			if(shipment.getDeliveryCoord() != null) {
-				xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.coord[@x]", shipment.getDeliveryCoord().getX());
-				xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.coord[@y]", shipment.getDeliveryCoord().getY());
+			if(shipment.getDeliveryLocation().getId() != null) xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.location.id", shipment.getDeliveryLocation().getId());
+			if(shipment.getDeliveryLocation().getCoordinate() != null) {
+				xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.coord[@x]", shipment.getDeliveryLocation().getCoordinate().getX());
+				xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.coord[@y]", shipment.getDeliveryLocation().getCoordinate().getY());
 			}
+            if(shipment.getDeliveryLocation().getIndex() != Location.NO_INDEX){
+                xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.location.index", shipment.getDeliveryLocation().getIndex());
+            }
 			
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.duration", shipment.getDeliveryServiceTime());
 			xmlConfig.setProperty(shipmentPathString + "("+counter+").delivery.timeWindows.timeWindow(0).start", shipment.getDeliveryTimeWindow().getStart());
@@ -310,16 +320,23 @@ public class VrpXMLWriter {
 			}
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").id", vehicle.getId());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").typeId", vehicle.getType().getTypeId());
-			xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.id", vehicle.getStartLocationId());
-			if(vehicle.getStartLocationCoordinate() != null){
-				xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.coord[@x]", vehicle.getStartLocationCoordinate().getX());
-				xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.coord[@y]", vehicle.getStartLocationCoordinate().getY());
+			xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.id", vehicle.getStartLocation().getId());
+			if(vehicle.getStartLocation().getCoordinate() != null){
+				xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.coord[@x]", vehicle.getStartLocation().getCoordinate().getX());
+				xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.coord[@y]", vehicle.getStartLocation().getCoordinate().getY());
 			}
-			xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.id", vehicle.getEndLocationId());
-			if(vehicle.getEndLocationCoordinate() != null){
-				xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.coord[@x]", vehicle.getEndLocationCoordinate().getX());
-				xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.coord[@y]", vehicle.getEndLocationCoordinate().getY());
+            if(vehicle.getStartLocation().getIndex() != Location.NO_INDEX){
+                xmlConfig.setProperty(vehiclePathString + "("+counter+").startLocation.index", vehicle.getStartLocation().getIndex());
+            }
+
+			xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.id", vehicle.getEndLocation().getId());
+			if(vehicle.getEndLocation().getCoordinate() != null){
+				xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.coord[@x]", vehicle.getEndLocation().getCoordinate().getX());
+				xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.coord[@y]", vehicle.getEndLocation().getCoordinate().getY());
 			}
+            if(vehicle.getEndLocation().getIndex() != Location.NO_INDEX){
+                xmlConfig.setProperty(vehiclePathString + "("+counter+").endLocation.index", vehicle.getEndLocation().getId());
+            }
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.start", vehicle.getEarliestDeparture());
 			xmlConfig.setProperty(vehiclePathString + "("+counter+").timeSchedule.end", vehicle.getLatestArrival());
 

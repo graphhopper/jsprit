@@ -18,6 +18,7 @@ package jsprit.core.problem.solution.route.activity;
 
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 
@@ -57,7 +58,12 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 		return shipment.getPickupLocationId();
 	}
 
-	@Override
+    @Override
+    public Location getLocation() {
+        return shipment.getPickupLocation();
+    }
+
+    @Override
 	public double getTheoreticalEarliestOperationStartTime() {
 		return shipment.getPickupTimeWindow().getStart();
 	}

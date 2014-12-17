@@ -155,8 +155,10 @@
      </vehicleTypes>
      <services>
           <service id="2" type="service">
-               <locationId>i(3,9)</locationId>
-               <coord x="10.0" y="10.0"/>
+               <location>
+                    <id>i(3,9)</id>
+                    <coord x="10.0" y="10.0"/>
+               </location>
                <capacity-dimensions>
                     <dimension index="0">1</dimension>
                </capacity-dimensions>
@@ -169,8 +171,10 @@
                </timeWindows>
           </service>
           <service id="1" type="service">
-               <locationId>j(1,5)</locationId>
-               <coord x="10.0" y="10.0"/>
+               <location>
+                    <id>j(1,5)</id>
+                    <coord x="10.0" y="10.0"/>
+               </location>
                <capacity-dimensions>
                     <dimension index="0">1</dimension>
                </capacity-dimensions>
@@ -186,8 +190,10 @@
      <shipments>
           <shipment id="3">
                <pickup>
-                    <locationId>i(3,9)</locationId>
-                    <coord x="10.0" y="10.0"/>
+                    <location>
+                         <id>i(3,9)</id>
+                         <coord x="10.0" y="10.0"/>
+                    </location>
                     <duration>10.0</duration>
                     <timeWindows>
                          <timeWindow>
@@ -197,8 +203,10 @@
                     </timeWindows>
                </pickup>
                <delivery>
-                    <locationId>i(9,9)</locationId>
-                    <coord x="10.0" y="0.0"/>
+                    <location>
+                         <id>i(9,9)</id>
+                         <coord x="10.0" y="0.0"/>
+                    </location>
                     <duration>100.0</duration>
                     <timeWindows>
                          <timeWindow>
@@ -213,8 +221,10 @@
           </shipment>
           <shipment id="4">
                <pickup>
-                    <locationId>[x=10.0][y=10.0]</locationId>
-                    <coord x="10.0" y="10.0"/>
+                    <location>
+                         <id>[x=10.0][y=10.0]</id>
+                         <coord x="10.0" y="10.0"/>
+                    </location>
                     <duration>0.0</duration>
                     <timeWindows>
                          <timeWindow>
@@ -224,8 +234,10 @@
                     </timeWindows>
                </pickup>
                <delivery>
-                    <locationId>[x=10.0][y=0.0]</locationId>
-                    <coord x="10.0" y="0.0"/>
+                    <location>
+                         <id>[x=10.0][y=0.0]</id>
+                         <coord x="10.0" y="0.0"/>
+                    </location>
                     <duration>100.0</duration>
                     <timeWindows>
                          <timeWindow>

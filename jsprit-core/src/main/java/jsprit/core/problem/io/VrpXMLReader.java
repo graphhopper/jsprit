@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.io;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.driver.Driver;
@@ -366,24 +367,26 @@ public class VrpXMLReader{
             String name = shipmentConfig.getString("name");
             if(name != null) builder.setName(name);
 
+            //pickup location
 			//pickup-locationId
+            Location.Builder pickupLocationBuilder = Location.Builder.newInstance();
 			String pickupLocationId = shipmentConfig.getString("pickup.locationId");
-			if(pickupLocationId != null){
-				builder.setPickupLocationId(pickupLocationId);
+			if(pickupLocationId == null) pickupLocationId = shipmentConfig.getString("pickup.location.id");
+            if(pickupLocationId != null){
+                pickupLocationBuilder.setId(pickupLocationId);
 			}
 			
 			//pickup-coord
 			Coordinate pickupCoord = getCoord(shipmentConfig,"pickup.");
-			if(pickupCoord != null){
-				builder.setPickupCoord(pickupCoord);
-				if(pickupLocationId != null){
-//					vrpBuilder.addLocation(pickupLocationId,pickupCoord);
-				}
-				else{
-//					vrpBuilder.addLocation(pickupCoord.toString(),pickupCoord);
-					builder.setPickupLocationId(pickupCoord.toString());
-				}
+			if(pickupCoord == null) pickupCoord = getCoord(shipmentConfig,"pickup.location.");
+            if(pickupCoord != null){
+                pickupLocationBuilder.setCoordinate(pickupCoord);
 			}
+
+            //pickup.location.index
+            String pickupLocationIndex = shipmentConfig.getString("pickup.location.index");
+            if(pickupLocationIndex != null) pickupLocationBuilder.setIndex(Integer.parseInt(pickupLocationIndex));
+            builder.setPickupLocation(pickupLocationBuilder.build());
 
 			//pickup-serviceTime
 			String pickupServiceTime = shipmentConfig.getString("pickup.duration");
@@ -397,24 +400,26 @@ public class VrpXMLReader{
 				builder.setPickupTimeWindow(pickupTW);
 			}
 
+            //delivery location
 			//delivery-locationId
+            Location.Builder deliveryLocationBuilder = Location.Builder.newInstance();
 			String deliveryLocationId = shipmentConfig.getString("delivery.locationId");
-			if(deliveryLocationId != null){
-				builder.setDeliveryLocationId(deliveryLocationId);
+			if(deliveryLocationId == null) deliveryLocationId = shipmentConfig.getString("delivery.location.id");
+            if(deliveryLocationId != null){
+                deliveryLocationBuilder.setId(deliveryLocationId);
+//				builder.setDeliveryLocationId(deliveryLocationId);
 			}
 			
 			//delivery-coord
 			Coordinate deliveryCoord = getCoord(shipmentConfig,"delivery.");
-			if(deliveryCoord != null){
-				builder.setDeliveryCoord(deliveryCoord);
-				if(deliveryLocationId != null){
-//					vrpBuilder.addLocation(deliveryLocationId,deliveryCoord);
-				}
-				else{
-//					vrpBuilder.addLocation(deliveryCoord.toString(),deliveryCoord);
-					builder.setDeliveryLocationId(deliveryCoord.toString());
-				}
+			if(deliveryCoord == null) deliveryCoord = getCoord(shipmentConfig,"delivery.location.");
+            if(deliveryCoord != null){
+                deliveryLocationBuilder.setCoordinate(deliveryCoord);
 			}
+
+            String deliveryLocationIndex = shipmentConfig.getString("delivery.location.index");
+            if(deliveryLocationIndex != null) deliveryLocationBuilder.setIndex(Integer.parseInt(deliveryLocationIndex));
+            builder.setDeliveryLocation(deliveryLocationBuilder.build());
 
 			//delivery-serviceTime
 			String deliveryServiceTime = shipmentConfig.getString("delivery.duration");
@@ -488,19 +493,24 @@ public class VrpXMLReader{
             String name = serviceConfig.getString("name");
             if(name != null) builder.setName(name);
 
+            //location
+            Location.Builder locationBuilder = Location.Builder.newInstance();
 			String serviceLocationId = serviceConfig.getString("locationId");
-			if(serviceLocationId != null) builder.setLocationId(serviceLocationId);
+			if(serviceLocationId == null) {
+                serviceLocationId = serviceConfig.getString("location.id");
+            }
+            if(serviceLocationId != null) locationBuilder.setId(serviceLocationId);
+
 			Coordinate serviceCoord = getCoord(serviceConfig,"");
-			if(serviceCoord != null){
-				builder.setCoord(serviceCoord);
-				if(serviceLocationId != null){
-//					vrpBuilder.addLocation(serviceLocationId,serviceCoord);
-				}
-				else{
-//					vrpBuilder.addLocation(serviceCoord.toString(),serviceCoord);
-					builder.setLocationId(serviceCoord.toString());
-				}
+            if(serviceCoord == null) serviceCoord = getCoord(serviceConfig,"location.");
+            if(serviceCoord != null){
+				locationBuilder.setCoordinate(serviceCoord);
 			}
+
+            String locationIndex = serviceConfig.getString("location.index");
+            if(locationIndex != null) locationBuilder.setIndex(Integer.parseInt(locationIndex));
+            builder.setLocation(locationBuilder.build());
+
 			if(serviceConfig.containsKey("duration")){
 				builder.setServiceTime(serviceConfig.getDouble("duration"));
 			}
@@ -602,12 +612,12 @@ public class VrpXMLReader{
 			builder.setType(type);
 
             //read startlocation
+            Location.Builder startLocationBuilder = Location.Builder.newInstance();
             String locationId = vehicleConfig.getString("location.id");
 			if(locationId == null) {
 				locationId = vehicleConfig.getString("startLocation.id");
 			}
-			if(locationId == null) throw new IllegalStateException("location.id is missing.");
-			builder.setStartLocationId(locationId);
+            startLocationBuilder.setId(locationId);
 			String coordX = vehicleConfig.getString("location.coord[@x]");
 			String coordY = vehicleConfig.getString("location.coord[@y]");
 			if(coordX == null || coordY == null) {
@@ -622,13 +632,23 @@ public class VrpXMLReader{
 			}
 			else{
 				Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(coordX), Double.parseDouble(coordY));
-				builder.setStartLocationCoordinate(coordinate);
-				
-			}
+                startLocationBuilder.setCoordinate(coordinate);
+            }
+            String index = vehicleConfig.getString("startLocation.index");
+            if(index == null) index = vehicleConfig.getString("location.index");
+            if(index != null){
+                startLocationBuilder.setIndex(Integer.parseInt(index));
+            }
+            builder.setStartLocation(startLocationBuilder.build());
 
             //read endlocation
+            Location.Builder endLocationBuilder = Location.Builder.newInstance();
+            boolean hasEndLocation = false;
 			String endLocationId = vehicleConfig.getString("endLocation.id");
-			if(endLocationId != null) builder.setEndLocationId(endLocationId);
+			if(endLocationId != null) {
+                hasEndLocation = true;
+                endLocationBuilder.setId(endLocationId);
+            }
 			String endCoordX = vehicleConfig.getString("endLocation.coord[@x]");
 			String endCoordY = vehicleConfig.getString("endLocation.coord[@y]");
 			if(endCoordX == null || endCoordY == null) {
@@ -639,8 +659,15 @@ public class VrpXMLReader{
 			}
 			else{
 				Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(endCoordX), Double.parseDouble(endCoordY));
-				builder.setEndLocationCoordinate(coordinate);
+                hasEndLocation = true;
+                endLocationBuilder.setCoordinate(coordinate);
 			}
+            String endLocationIndex =  vehicleConfig.getString("endLocation.index");
+            if(endLocationIndex != null) {
+                hasEndLocation = true;
+                endLocationBuilder.setIndex(Integer.parseInt(endLocationIndex));
+            }
+            if(hasEndLocation) builder.setEndLocation(endLocationBuilder.build());
 			
 			//read timeSchedule
 			String start = vehicleConfig.getString("timeSchedule.start");
