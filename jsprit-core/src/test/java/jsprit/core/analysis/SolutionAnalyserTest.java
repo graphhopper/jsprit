@@ -29,18 +29,22 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
+import jsprit.core.util.EuclideanDistanceCalculator;
 import jsprit.core.util.ManhattanCosts;
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -109,6 +113,7 @@ public class SolutionAnalyserTest {
         solution = new VehicleRoutingProblemSolution(Arrays.asList(route1,route2),42);
     }
 
+ 
     public void buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore(){
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
 
@@ -166,6 +171,130 @@ public class SolutionAnalyserTest {
         solution = new VehicleRoutingProblemSolution(Arrays.asList(route),300);
     }
 
+    /**
+     * Test the last transport costs at an activity are correct.
+     */
+    @Test
+    public void lastTransportCostsOfRoute1ShouldWork(){
+        testTransportCosts(TransportCostsTestType.LAST_COST);
+    }
+    
+    /**
+     * Test the last transport distance at an activity are correct.
+     */
+    @Test
+    public void lastTransportDistanceOfRoute1ShouldWork(){
+        testTransportCosts(TransportCostsTestType.LAST_DISTANCE);
+    }
+    
+    
+    /**
+     * Test the last transport time at an activity are correct.
+     */
+    @Test
+    public void lastTransportTimeOfRoute1ShouldWork(){
+        testTransportCosts(TransportCostsTestType.LAST_TIME);
+    }
+
+    /**
+     * Test the last transport time at an activity are correct.
+     */
+    @Test
+    public void transportTimeAtActivityOfRoute1ShouldWork(){
+        testTransportCosts(TransportCostsTestType.TRANSPORT_TIME_AT_ACTIVITY);
+    }
+
+    private enum TransportCostsTestType{
+    	LAST_COST,
+    	LAST_TIME,
+    	LAST_DISTANCE,
+    	TRANSPORT_TIME_AT_ACTIVITY,
+    }
+
+    /**
+     * Run multiple different tests for transport costs
+     * @param type
+     */
+	private void testTransportCosts(TransportCostsTestType type) {
+		SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
+            @Override
+            public double getDistance(String fromLocationId, String toLocationId) {
+                return vrp.getTransportCosts().getTransportCost(fromLocationId,toLocationId,0.,null,null);
+            }
+        });
+        
+        // this should be the path taken by route 1 including depots
+        Coordinate [] route1Path = new Coordinate[]{
+        	Coordinate.newInstance(-5, 0),
+        	Coordinate.newInstance(-10, 1),
+        	Coordinate.newInstance(-15, 2),
+        	Coordinate.newInstance(-16, 5),
+        	Coordinate.newInstance(-10, 10),
+        	Coordinate.newInstance(-5, 0)
+        	
+        };
+        
+        VehicleRoute route1 = solution.getRoutes().iterator().next();
+        
+        // get route 1 activities
+        List<TourActivity> activities = route1.getActivities();
+        Assert.assertEquals(activities.size(), 4);
+        
+        // utility class to calculate manhattan distance
+        class ManhattanDistance{
+        	private double calc(Coordinate from , Coordinate to) {
+        		return Math.abs(from.getX() - to.getX())
+        				+ Math.abs(from.getY() - to.getY());
+        	}
+        }
+        ManhattanDistance md = new ManhattanDistance();
+        
+        // loop over all activities on route and do tests
+        double totalTime=0;
+        for(int i = 0 ; i < activities.size() ; i++){
+        	TourActivity activity = activities.get(i);
+        	Coordinate last = route1Path[i];
+        	Coordinate current = route1Path[i+1];
+
+         	// calculate last distance and time (Manhattan uses speed  = 1 so distance = time)
+        	double dist = md.calc(last, current);
+           	double time =dist;
+           	
+        	// test last distance
+        	if(type == TransportCostsTestType.LAST_DISTANCE){
+            	double savedDist = analyser.getLastTransportDistanceAtActivity(activity, route1);
+            	Assert.assertEquals(dist, savedDist, 1E-10);        		
+        	}
+        	
+        	// test last time
+        	if(type == TransportCostsTestType.LAST_TIME){
+            	double savedTime = analyser.getLastTransportTimeAtActivity(activity, route1);
+            	Assert.assertEquals(time, savedTime, 1E-10);        		
+        	}
+
+        	// test last cost
+        	if(type == TransportCostsTestType.LAST_COST){
+            	double perDistanceUnit=1;
+            	Vehicle vehicle = route1.getVehicle();
+                if(vehicle != null){
+                    if(vehicle.getType() != null){
+                       perDistanceUnit =  vehicle.getType().getVehicleCostParams().perDistanceUnit;
+                    }
+                }
+                double cost =dist * perDistanceUnit;
+                double savedCost = analyser.getLastTransportCostAtActivity(activity, route1);
+            	Assert.assertEquals(cost, savedCost, 1E-10);        		
+        	}
+            
+        	// test total transport time at activity
+        	if(type == TransportCostsTestType.TRANSPORT_TIME_AT_ACTIVITY){
+            	totalTime += time;
+            	double savedTransportTime = analyser.getTransportTimeAtActivity(activity, route1);
+            	Assert.assertEquals(totalTime, savedTransportTime, 1E-10);        		
+        	}
+        }
+	}
+    
     @Test
     public void constructionShouldWork(){
         SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution, new SolutionAnalyser.DistanceCalculator() {
