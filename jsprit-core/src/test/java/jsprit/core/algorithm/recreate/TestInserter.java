@@ -20,6 +20,7 @@ import jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Service;
@@ -48,15 +49,15 @@ public class TestInserter {
 	public void whenInsertingServiceAndRouteIsClosed_itInsertsCorrectly(){
 		Service service = mock(Service.class);
 		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
-		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocation()).thenReturn(loc("vehLoc"));
+		when(vehicle.getEndLocation()).thenReturn(loc("vehLoc"));
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		when(vehicle.getId()).thenReturn("vehId");
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addService(service).build();
 		//start - pick(shipment) - del(shipment) - end
 		Service serviceToInsert = mock(Service.class);
-		when(serviceToInsert.getLocationId()).thenReturn("delLoc");
+		when(serviceToInsert.getLocation()).thenReturn(loc("delLoc"));
 	
 		InsertionData iData = mock(InsertionData.class);
 		when(iData.getDeliveryInsertionIndex()).thenReturn(1);
@@ -71,11 +72,15 @@ public class TestInserter {
 		inserter.insertJob(serviceToInsert, iData, route);
 		
 		assertEquals(2,route.getTourActivities().getActivities().size());
-		assertEquals(route.getTourActivities().getActivities().get(1).getLocationId(),serviceToInsert.getLocationId());
-		assertEquals(route.getEnd().getLocationId(),vehicle.getEndLocationId());
+		assertEquals(route.getTourActivities().getActivities().get(1).getLocation().getId(),serviceToInsert.getLocation().getId());
+		assertEquals(route.getEnd().getLocation().getId(),vehicle.getEndLocation().getId());
 	}
-	
-	@Test
+
+    private Location loc(String vehLoc) {
+        return Location.Builder.newInstance().setId(vehLoc).build();
+    }
+
+    @Test
 	public void whenInsertingServiceAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation(){
 		Service service = mock(Service.class);
 		Vehicle vehicle = mock(Vehicle.class);
@@ -116,8 +121,8 @@ public class TestInserter {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(shipment.getSize()).thenReturn(capacity);
 		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
-		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocation()).thenReturn(loc("vehLoc"));
+		when(vehicle.getEndLocation()).thenReturn(loc("vehLoc"));
 		when(vehicle.isReturnToDepot()).thenReturn(true);
 		when(vehicle.getId()).thenReturn("vehId");
 		
@@ -136,9 +141,9 @@ public class TestInserter {
 		inserter.insertJob(shipmentToInsert, iData, route);
 		
 		assertEquals(4,route.getTourActivities().getActivities().size());
-		assertEquals(route.getTourActivities().getActivities().get(2).getLocationId(),shipmentToInsert.getPickupLocationId());
-		assertEquals(route.getTourActivities().getActivities().get(3).getLocationId(),shipmentToInsert.getDeliveryLocationId());
-		assertEquals(route.getEnd().getLocationId(),vehicle.getEndLocationId());
+		assertEquals(route.getTourActivities().getActivities().get(2).getLocation().getId(),shipmentToInsert.getPickupLocation().getId());
+		assertEquals(route.getTourActivities().getActivities().get(3).getLocation().getId(),shipmentToInsert.getDeliveryLocation().getId());
+		assertEquals(route.getEnd().getLocation().getId(),vehicle.getEndLocation().getId());
 	}
 
     private List<AbstractActivity> getTourActivities(Shipment shipmentToInsert) {

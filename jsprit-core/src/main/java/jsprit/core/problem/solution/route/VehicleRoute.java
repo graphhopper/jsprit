@@ -299,7 +299,7 @@ public class VehicleRoute {
 			}
 			if(!vehicle.isReturnToDepot()){
 				if(!tourActivities.isEmpty()){
-					end.setLocationId(tourActivities.getActivities().get(tourActivities.getActivities().size()-1).getLocationId());
+					end.setLocation(tourActivities.getActivities().get(tourActivities.getActivities().size() - 1).getLocation());
 				}
 			}
 			return new VehicleRoute(this);
@@ -407,8 +407,8 @@ public class VehicleRoute {
 			start.setEndTime(Math.max(vehicleDepTime, vehicle.getEarliestDeparture()));
 			start.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
 			start.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
-			start.setLocationId(vehicle.getStartLocationId());
-			end.setLocationId(vehicle.getEndLocationId());
+			start.setLocation(vehicle.getStartLocation());
+			end.setLocation(vehicle.getEndLocation());
 			end.setTheoreticalEarliestOperationStartTime(vehicle.getEarliestDeparture());
 			end.setTheoreticalLatestOperationStartTime(vehicle.getLatestArrival());
 		}

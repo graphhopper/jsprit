@@ -17,6 +17,7 @@
 package jsprit.core.problem.solution.route;
 
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.vehicle.Vehicle;
@@ -113,20 +114,24 @@ public class VehicleRouteBuilderTest {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(s.getSize()).thenReturn(capacity);
 		when(s2.getSize()).thenReturn(capacity);
-		when(s2.getDeliveryLocationId()).thenReturn("delLoc");
+		when(s2.getDeliveryLocation()).thenReturn(loc("delLoc"));
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
-		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocation()).thenReturn(loc("vehLoc"));
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(s2);
 		builder.addDelivery(s);
 		builder.addDelivery(s2);
 		VehicleRoute route = builder.build();
-		assertEquals(route.getEnd().getLocationId(), s2.getDeliveryLocationId());
+		assertEquals(route.getEnd().getLocationId(), s2.getDeliveryLocation().getId());
 	}
-	
-	@Test
+
+    private Location loc(String delLoc) {
+        return Location.Builder.newInstance().setId(delLoc).build();
+    }
+
+    @Test
 	public void whenSettingDepartureTime(){
 		Shipment s = mock(Shipment.class);
 		Shipment s2 = mock(Shipment.class);
