@@ -48,55 +48,6 @@ import java.util.Collection;
  */
 public class RefuseCollectionWithFastMatrixExample {
 
-	static class RelationKey {
-
-		final String from;
-		final String to;
-
-		public RelationKey(String from, String to) {
-			super();
-			this.from = from;
-			this.to = to;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Object#hashCode()
-		 */
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((from == null) ? 0 : from.hashCode());
-			result = prime * result + ((to == null) ? 0 : to.hashCode());
-			return result;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			RelationKey other = (RelationKey) obj;
-			if (from == null) {
-				if (other.from != null)
-					return false;
-			} else if (!from.equals(other.from))
-				return false;
-			if (to == null) {
-				if (other.to != null)
-					return false;
-			} else if (!to.equals(other.to))
-				return false;
-			return true;
-		}
-	}
-
 	public static void main(String[] args) throws IOException {
 		/*
 		 * some preparation - create output folder
