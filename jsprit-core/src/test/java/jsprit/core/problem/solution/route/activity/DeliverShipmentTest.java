@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Shipment;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +32,11 @@ public class DeliverShipmentTest {
 	
 	@Before
 	public void doBefore(){
-		shipment = Shipment.Builder.newInstance("shipment").setPickupLocationId("pickupLoc")
-				.setDeliveryLocationId("deliveryLoc")
-				.setPickupTimeWindow(TimeWindow.newInstance(1., 2.))
-				.setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
-				.addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+		shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickupLoc").build())
+                .setDeliveryLocationId("deliveryLoc")
+                .setPickupTimeWindow(TimeWindow.newInstance(1., 2.))
+                .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
+                .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
 		deliver = new DeliverShipment(shipment);
 	}
 	
@@ -70,7 +71,7 @@ public class DeliverShipmentTest {
 	
 	@Test
 	public void whenIniLocationId_itShouldBeSetCorrectly(){
-		assertEquals("deliveryLoc",deliver.getLocationId());
+		assertEquals("deliveryLoc",deliver.getLocation().getId());
 	}
 	
 	@Test
@@ -78,7 +79,7 @@ public class DeliverShipmentTest {
 		DeliverShipment copy = (DeliverShipment) deliver.duplicate();
 		assertEquals(3.,copy.getTheoreticalEarliestOperationStartTime(),0.01);
 		assertEquals(4.,copy.getTheoreticalLatestOperationStartTime(),0.01);
-		assertEquals("deliveryLoc",copy.getLocationId());
+		assertEquals("deliveryLoc",copy.getLocation().getId());
 		assertEquals(-10,copy.getSize().get(0));
 		assertEquals(-100,copy.getSize().get(1));
 		assertEquals(-1000,copy.getSize().get(2));
@@ -88,8 +89,8 @@ public class DeliverShipmentTest {
 	
 	@Test
 	public void whenGettingCapacity_itShouldReturnItCorrectly(){
-		Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocationId("pickLoc").setDeliveryLocationId("delLoc")
-				.addSizeDimension(0, 10).addSizeDimension(1, 100).build();
+		Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocationId("delLoc")
+                .addSizeDimension(0, 10).addSizeDimension(1, 100).build();
 		PickupShipment pick = new PickupShipment(shipment);
 		assertEquals(10,pick.getSize().get(0));
 		assertEquals(100,pick.getSize().get(1));

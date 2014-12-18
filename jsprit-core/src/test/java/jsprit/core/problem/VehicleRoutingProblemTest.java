@@ -114,8 +114,8 @@ public class VehicleRoutingProblemTest {
 
 	@Test
 	public void whenShipmentsAreAdded_vrpShouldContainThem(){
-		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocationId("foofoo").setDeliveryLocationId("foo").build();
-		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 100).setPickupLocationId("foofoo").setDeliveryLocationId("foo").build();
+		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foofoo").build()).setDeliveryLocationId("foo").build();
+		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 100).setPickupLocation(Location.Builder.newInstance().setId("foofoo").build()).setDeliveryLocationId("foo").build();
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addJob(s);
 		vrpBuilder.addJob(s2);
@@ -130,8 +130,10 @@ public class VehicleRoutingProblemTest {
 	public void whenServicesAreAdded_vrpShouldContainThem(){
 		Service s1 = mock(Service.class);
 		when(s1.getId()).thenReturn("s1");
+        when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		Service s2 = mock(Service.class);
 		when(s2.getId()).thenReturn("s2");
+        when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addJob(s1).addJob(s2);
@@ -148,8 +150,10 @@ public class VehicleRoutingProblemTest {
 	public void whenPickupsAreAdded_vrpShouldContainThem(){
 		Pickup s1 = mock(Pickup.class);
 		when(s1.getId()).thenReturn("s1");
+        when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		Pickup s2 = mock(Pickup.class);
 		when(s2.getId()).thenReturn("s2");
+        when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addJob(s1).addJob(s2);
@@ -165,8 +169,10 @@ public class VehicleRoutingProblemTest {
 	public void whenPickupsAreAddedAllAtOnce_vrpShouldContainThem(){
 		Pickup s1 = mock(Pickup.class);
 		when(s1.getId()).thenReturn("s1");
+        when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		Pickup s2 = mock(Pickup.class);
 		when(s2.getId()).thenReturn("s2");
+        when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addAllJobs(Arrays.asList(s1,s2));
@@ -183,9 +189,11 @@ public class VehicleRoutingProblemTest {
 		Delivery s1 = mock(Delivery.class);
 		when(s1.getId()).thenReturn("s1");
         when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		Delivery s2 = mock(Delivery.class);
 		when(s2.getId()).thenReturn("s2");
         when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addJob(s1).addJob(s2);
@@ -202,9 +210,11 @@ public class VehicleRoutingProblemTest {
 		Delivery s1 = mock(Delivery.class);
 		when(s1.getId()).thenReturn("s1");
         when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		Delivery s2 = mock(Delivery.class);
 		when(s2.getId()).thenReturn("s2");
         when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addAllJobs(Arrays.asList(s1,s2));
@@ -220,8 +230,10 @@ public class VehicleRoutingProblemTest {
 	public void whenServicesAreAddedAllAtOnce_vrpShouldContainThem(){
 		Service s1 = mock(Service.class);
 		when(s1.getId()).thenReturn("s1");
+        when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		Service s2 = mock(Service.class);
 		when(s2.getId()).thenReturn("s2");
+        when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 		
 		Collection<Service> services = new ArrayList<Service>();
 		services.add(s1);
@@ -394,7 +406,7 @@ public class VehicleRoutingProblemTest {
     @Test
     public void whenAddingTwoJobs_theyShouldHaveProperIndeces(){
         Service service = Service.Builder.newInstance("myService").setLocationId("loc").build();
-        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocationId("pick").setDeliveryLocationId("del").build();
+        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocationId("del").build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service);
         vrpBuilder.addJob(shipment);

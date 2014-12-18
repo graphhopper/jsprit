@@ -21,6 +21,7 @@ package jsprit.core.algorithm;
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.problem.AbstractActivity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.job.Job;
@@ -267,13 +268,22 @@ public class InitialRoutesTest {
     @Test
     public void maxCapacityShouldNotBeExceeded(){
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("veh").setStartLocationCoordinate(Coordinate.newInstance(0, 0)).setType(type).setStartLocationId("start").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("veh")
+                .setStartLocation(Location.Builder.newInstance().setId("start").setCoordinate(Coordinate.newInstance(0, 0)).build())
+                .setType(type)
+                .build();
 
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocationId("pick").setDeliveryLocationId("del").setPickupCoord(Coordinate.newInstance(10, 0))
-                .setDeliveryCoord(Coordinate.newInstance(0, 10)).addSizeDimension(0, 100).build();
+        Shipment shipment = Shipment.Builder.newInstance("s")
+                .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
+                .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
+                .addSizeDimension(0, 100)
+                .build();
 
-        Shipment another_shipment = Shipment.Builder.newInstance("another_s").setPickupLocationId("pick").setDeliveryLocationId("del").setPickupCoord(Coordinate.newInstance(10, 0))
-                .setDeliveryCoord(Coordinate.newInstance(0, 10)).addSizeDimension(0, 50).build();
+        Shipment another_shipment = Shipment.Builder.newInstance("another_s")
+                .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
+                .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
+                .addSizeDimension(0, 50)
+                .build();
 
         VehicleRoute iniRoute = VehicleRoute.Builder.newInstance(vehicle).addPickup(shipment).addDelivery(shipment).build();
 

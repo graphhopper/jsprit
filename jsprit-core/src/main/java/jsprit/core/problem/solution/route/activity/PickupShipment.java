@@ -55,7 +55,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
 	@Override
 	public String getLocationId() {
-		return shipment.getPickupLocationId();
+		return shipment.getPickupLocation().getId();
 	}
 
     @Override

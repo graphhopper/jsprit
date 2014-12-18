@@ -239,12 +239,12 @@ public class VehicleRoutingProblem {
 		
 		private void addLocationToTentativeLocations(Job job) {
 			if(job instanceof Service) {
-				tentative_coordinates.put(((Service)job).getLocationId(), ((Service)job).getCoord());
+				tentative_coordinates.put(((Service)job).getLocation().getId(), ((Service)job).getLocation().getCoordinate());
 			}
 			else if(job instanceof Shipment){
 				Shipment shipment = (Shipment)job;
-				tentative_coordinates.put(shipment.getPickupLocationId(), shipment.getPickupCoord());
-				tentative_coordinates.put(shipment.getDeliveryLocationId(), shipment.getDeliveryCoord());
+				tentative_coordinates.put(shipment.getPickupLocation().getId(), shipment.getPickupLocation().getCoordinate());
+				tentative_coordinates.put(shipment.getDeliveryLocation().getId(), shipment.getDeliveryLocation().getCoordinate());
 			}
 		}
 
@@ -290,11 +290,11 @@ public class VehicleRoutingProblem {
 		}
 
         private void registerLocation(Job job) {
-            if (job instanceof Service) tentative_coordinates.put(((Service) job).getLocationId(), ((Service) job).getCoord());
+            if (job instanceof Service) tentative_coordinates.put(((Service) job).getLocation().getId(), ((Service) job).getLocation().getCoordinate());
             if (job instanceof Shipment) {
                 Shipment shipment = (Shipment) job;
-                tentative_coordinates.put(shipment.getPickupLocationId(), shipment.getPickupCoord());
-                tentative_coordinates.put(shipment.getDeliveryLocationId(), shipment.getDeliveryCoord());
+                tentative_coordinates.put(shipment.getPickupLocation().getId(), shipment.getPickupLocation().getCoordinate());
+                tentative_coordinates.put(shipment.getDeliveryLocation().getId(), shipment.getDeliveryLocation().getCoordinate());
             }
         }
 
@@ -322,8 +322,8 @@ public class VehicleRoutingProblem {
 		
 		private void addShipment(Shipment job) {
 			if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
-			tentative_coordinates.put(job.getPickupLocationId(), job.getPickupCoord());
-			tentative_coordinates.put(job.getDeliveryLocationId(), job.getDeliveryCoord());
+			tentative_coordinates.put(job.getPickupLocation().getId(), job.getPickupLocation().getCoordinate());
+			tentative_coordinates.put(job.getDeliveryLocation().getId(), job.getDeliveryLocation().getCoordinate());
 			jobs.put(job.getId(),job);
 		}
 
@@ -473,7 +473,7 @@ public class VehicleRoutingProblem {
 		}
 
 		private Builder addService(Service service){
-			tentative_coordinates.put(service.getLocationId(), service.getCoord());
+			tentative_coordinates.put(service.getLocation().getId(), service.getLocation().getCoordinate());
 			if(jobs.containsKey(service.getId())){ logger.warn("service " + service + " already in job list. overrides existing job."); }
 			jobs.put(service.getId(),service);
 			return this;

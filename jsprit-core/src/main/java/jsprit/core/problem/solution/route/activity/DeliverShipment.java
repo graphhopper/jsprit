@@ -59,7 +59,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
 	@Override
 	public String getLocationId() {
-		return shipment.getDeliveryLocationId();
+		return shipment.getDeliveryLocation().getId();
 	}
 
     @Override

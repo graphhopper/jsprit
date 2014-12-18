@@ -310,15 +310,15 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
     private void addJob(Job job) {
         if(job instanceof Service){
             Service service = (Service)job;
-            addNode(service.getId(), service.getCoord());
+            addNode(service.getId(), service.getLocation().getCoordinate());
             markService(service);
         }
         else if(job instanceof Shipment){
             Shipment shipment = (Shipment)job;
             String fromNodeId = getFromNodeId(shipment);
-            addNode(fromNodeId, shipment.getPickupCoord());
+            addNode(fromNodeId, shipment.getPickupLocation().getCoordinate());
             String toNodeId = getToNodeId(shipment);
-            addNode(toNodeId,shipment.getDeliveryCoord());
+            addNode(toNodeId,shipment.getDeliveryLocation().getCoordinate());
             markShipment(shipment);
             if(renderShipments) {
                 Edge e = graph.addEdge("shipment_" + fromNodeId + "_" + toNodeId, fromNodeId, toNodeId, true);

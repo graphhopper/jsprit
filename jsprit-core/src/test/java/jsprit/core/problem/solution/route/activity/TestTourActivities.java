@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import org.junit.Before;
@@ -75,7 +76,7 @@ public class TestTourActivities {
 	
 	@Test
 	public void whenAddingAShipmentActivity_tourShouldServeShipment(){
-		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
+		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
 		TourActivity pickupShipment = fac.createPickup(s);
 		TourActivity deliverShipment = fac.createDelivery(s);
@@ -89,7 +90,7 @@ public class TestTourActivities {
 	
 	@Test
 	public void whenRemovingShipment_tourShouldNotServiceItAnymore(){
-		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
+		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
 		TourActivity pickupShipment = fac.createPickup(s);
 		TourActivity deliverShipment = fac.createDelivery(s);
@@ -103,7 +104,7 @@ public class TestTourActivities {
 	
 	@Test
 	public void whenRemovingShipment_theirCorrespondingActivitiesShouldBeRemoved(){
-		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
+		Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
 		TourActivity pickupShipment = fac.createPickup(s);
 		TourActivity deliverShipment = fac.createDelivery(s);
@@ -144,7 +145,7 @@ public class TestTourActivities {
 
     @Test
     public void removingShipmentActivityShouldWork(){
-        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
+        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
         TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
         TourActivity pickupShipment = fac.createPickup(s);
         TourActivity deliverShipment = fac.createDelivery(s);
@@ -169,7 +170,7 @@ public class TestTourActivities {
 
     @Test
     public void whenCopyingShipmentActivitySeq_jobSizeShouldBeCorrect(){
-        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
+        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
         TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
         TourActivity pickupShipment = fac.createPickup(s);
         TourActivity deliverShipment = fac.createDelivery(s);
@@ -189,7 +190,7 @@ public class TestTourActivities {
 
     @Test
     public void whenCopyingShipmentActivitySeq_noActivitiesShouldBeCorrect(){
-        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
+        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
         TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
         TourActivity pickupShipment = fac.createPickup(s);
         TourActivity deliverShipment = fac.createDelivery(s);
@@ -209,7 +210,7 @@ public class TestTourActivities {
 
     @Test
     public void whenCopyingShipmentActivitySeq_itShouldContaintPickupAct(){
-        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocationId("pickLoc").build();
+        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
         TourShipmentActivityFactory fac = new DefaultShipmentActivityFactory();
         TourActivity pickupShipment = fac.createPickup(s);
         TourActivity deliverShipment = fac.createDelivery(s);

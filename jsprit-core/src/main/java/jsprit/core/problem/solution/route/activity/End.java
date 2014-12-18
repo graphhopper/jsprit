@@ -88,7 +88,7 @@ public final class End extends AbstractActivity implements TourActivity {
 
 	public End(End end) {
         this.location = end.getLocation();
-//		this.locationId = end.getLocationId();
+//		this.locationId = end.getLocation().getId();
 		theoretical_earliestOperationStartTime = end.getTheoreticalEarliestOperationStartTime();
 		theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime();
 		arrTime = end.getArrTime();

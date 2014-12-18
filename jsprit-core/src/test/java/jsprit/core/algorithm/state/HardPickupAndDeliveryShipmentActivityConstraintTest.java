@@ -17,6 +17,7 @@
 package jsprit.core.algorithm.state;
 
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import jsprit.core.problem.constraint.PickupAndDeliverShipmentLoadActivityLevelConstraint;
@@ -58,7 +59,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 	public void doBefore(){
         s1 = Service.Builder.newInstance("s1").setLocationId("loc").build();
         s2 = Service.Builder.newInstance("s2").setLocationId("loc").build();
-        shipment = Shipment.Builder.newInstance("shipment").setPickupLocationId("pickLoc").setDeliveryLocationId("delLoc").addSizeDimension(0,1).build();
+        shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocationId("delLoc").addSizeDimension(0, 1).build();
 
 
 //		when(vehicle.getCapacity()).thenReturn(2);

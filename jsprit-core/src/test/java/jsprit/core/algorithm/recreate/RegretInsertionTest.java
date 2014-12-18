@@ -90,20 +90,16 @@ public class RegretInsertionTest {
     @Test
     public void shipment1ShouldBeAddedFirst(){
         Shipment s1 = Shipment.Builder.newInstance("s1")
-                .setPickupLocationId("pick1")
-                .setPickupCoord(Coordinate.newInstance(-1, 10))
-                .setDeliveryCoord(Coordinate.newInstance(1, 10))
-                .setDeliveryLocationId("del1")
+                .setPickupLocation(Location.Builder.newInstance().setId("pick1").setCoordinate(Coordinate.newInstance(-1, 10)).build())
+                .setDeliveryLocation(Location.Builder.newInstance().setId("del1").setCoordinate(Coordinate.newInstance(1, 10)).build())
                 .build();
 
         Shipment s2 = Shipment.Builder.newInstance("s2")
-                .setPickupCoord(Coordinate.newInstance(-1,20))
-                .setDeliveryCoord(Coordinate.newInstance(1, 20))
-                .setPickupLocationId("pick2")
-                .setDeliveryLocationId("del2")
+                .setPickupLocation(Location.Builder.newInstance().setId("pick2").setCoordinate(Coordinate.newInstance(-1, 20)).build())
+                .setDeliveryLocation(Location.Builder.newInstance().setId("del2").setCoordinate(Coordinate.newInstance(1, 20)).build())
                 .build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
         JobInsertionCostsCalculator calculator = getShipmentCalculator(vrp);

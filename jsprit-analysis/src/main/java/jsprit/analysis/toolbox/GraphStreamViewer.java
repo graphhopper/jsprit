@@ -505,21 +505,21 @@ public class GraphStreamViewer {
 
 	private void renderShipment(Graph g, Shipment shipment, Label label, boolean renderShipments) {
 
-		Node n1 = g.addNode(makeId(shipment.getId(),shipment.getPickupLocationId()));
+		Node n1 = g.addNode(makeId(shipment.getId(),shipment.getPickupLocation().getId()));
 		if(label.equals(Label.ID)) n1.addAttribute("ui.label", shipment.getId());
-		n1.addAttribute("x", shipment.getPickupCoord().getX());
-		n1.addAttribute("y", shipment.getPickupCoord().getY());
+		n1.addAttribute("x", shipment.getPickupLocation().getCoordinate().getX());
+		n1.addAttribute("y", shipment.getPickupLocation().getCoordinate().getY());
 		n1.setAttribute("ui.class", "pickup");
 
-		Node n2 = g.addNode(makeId(shipment.getId(),shipment.getDeliveryLocationId()));
+		Node n2 = g.addNode(makeId(shipment.getId(),shipment.getDeliveryLocation().getId()));
 		if(label.equals(Label.ID)) n2.addAttribute("ui.label", shipment.getId());
-		n2.addAttribute("x", shipment.getDeliveryCoord().getX());
-		n2.addAttribute("y", shipment.getDeliveryCoord().getY());
+		n2.addAttribute("x", shipment.getDeliveryLocation().getCoordinate().getX());
+		n2.addAttribute("y", shipment.getDeliveryLocation().getCoordinate().getY());
 		n2.setAttribute("ui.class", "delivery");
 
 		if(renderShipments){
-			Edge s = g.addEdge(shipment.getId(), makeId(shipment.getId(),shipment.getPickupLocationId()),
-					makeId(shipment.getId(),shipment.getDeliveryLocationId()), true);
+			Edge s = g.addEdge(shipment.getId(), makeId(shipment.getId(),shipment.getPickupLocation().getId()),
+					makeId(shipment.getId(),shipment.getDeliveryLocation().getId()), true);
 			s.addAttribute("ui.class", "shipment");
 		}
 
@@ -535,10 +535,10 @@ public class GraphStreamViewer {
     }
 
 	private void renderService(Graph g, Service service, Label label) {
-		Node n = g.addNode(makeId(service.getId(),service.getLocationId()));
+		Node n = g.addNode(makeId(service.getId(),service.getLocation().getId()));
 		if(label.equals(Label.ID)) n.addAttribute("ui.label", service.getId());
-		n.addAttribute("x", service.getCoord().getX());
-		n.addAttribute("y", service.getCoord().getY());
+		n.addAttribute("x", service.getLocation().getCoordinate().getX());
+		n.addAttribute("y", service.getLocation().getCoordinate().getY());
 		if(service.getType().equals("pickup")) n.setAttribute("ui.class", "pickup");
 		if(service.getType().equals("delivery")) n.setAttribute("ui.class", "delivery");
 	}
@@ -576,7 +576,7 @@ public class GraphStreamViewer {
 		}
 		for(TourActivity act : route.getActivities()){
             Job job = ((JobActivity) act).getJob();
-            String currIdentifier = makeId(job.getId(),act.getLocationId());
+            String currIdentifier = makeId(job.getId(),act.getLocation().getId());
 			if(label.equals(Label.ACTIVITY)){
 				Node actNode = g.getNode(currIdentifier);
 				actNode.addAttribute("ui.label", act.getName());

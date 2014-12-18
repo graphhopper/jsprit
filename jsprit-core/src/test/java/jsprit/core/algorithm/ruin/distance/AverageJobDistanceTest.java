@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.ruin.distance;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.util.Coordinate;
@@ -52,15 +53,15 @@ public class AverageJobDistanceTest {
 	
 	@Test
 	public void distanceOfTwoEqualShipmentsShouldBeSmallerThanAnyOtherDistance(){
-		Shipment s1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocationId("0,0").setDeliveryLocationId("10,10").build();
-		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocationId("0,0").setDeliveryLocationId("10,10").build();
+		Shipment s1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocationId("10,10").build();
+		Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocationId("10,10").build();
 		
 		double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
 		
 		for(int i=0;i<10;i++){
 			for(int j=0;j<10;j++){
-				Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocationId("0,0").setDeliveryLocationId(i + "," + j).build();
-				Shipment other2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocationId("0,0").setDeliveryLocationId("10,10").build();
+				Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocationId(i + "," + j).build();
+				Shipment other2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocationId("10,10").build();
 				double dist2 = new AvgServiceAndShipmentDistance(routingCosts).getDistance(other1, other2);
 				System.out.println("("+i+","+j+"), dist=" + dist + ", dist2=" + dist2);
 				assertTrue(dist<=dist2+dist2*0.001);

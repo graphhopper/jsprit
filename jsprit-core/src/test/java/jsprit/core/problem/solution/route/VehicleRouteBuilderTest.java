@@ -104,7 +104,7 @@ public class VehicleRouteBuilderTest {
 		builder.addDelivery(s);
 		builder.addDelivery(s2);
 		VehicleRoute route = builder.build();
-		assertEquals("vehLoc",route.getEnd().getLocationId());
+		assertEquals("vehLoc",route.getEnd().getLocation().getId());
 	}
 	
 	@Test
@@ -124,7 +124,7 @@ public class VehicleRouteBuilderTest {
 		builder.addDelivery(s);
 		builder.addDelivery(s2);
 		VehicleRoute route = builder.build();
-		assertEquals(route.getEnd().getLocationId(), s2.getDeliveryLocation().getId());
+		assertEquals(route.getEnd().getLocation().getId(), s2.getDeliveryLocation().getId());
 	}
 
     private Location loc(String delLoc) {
@@ -138,10 +138,10 @@ public class VehicleRouteBuilderTest {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(s.getSize()).thenReturn(capacity);
 		when(s2.getSize()).thenReturn(capacity);
-		when(s2.getDeliveryLocationId()).thenReturn("delLoc");
+		when(s2.getDeliveryLocation()).thenReturn(Location.Builder.newInstance().setId("delLoc").build());
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
-		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocation()).thenReturn(Location.Builder.newInstance().setId("vehLoc").build());
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
 		builder.addPickup(s);
 		builder.addPickup(s2);
@@ -161,10 +161,10 @@ public class VehicleRouteBuilderTest {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(s.getSize()).thenReturn(capacity);
 		when(s2.getSize()).thenReturn(capacity);
-		when(s2.getDeliveryLocationId()).thenReturn("delLoc");
+		when(s2.getDeliveryLocation()).thenReturn(Location.Builder.newInstance().setId("delLoc").build());
 		Vehicle vehicle = mock(Vehicle.class);
 		when(vehicle.isReturnToDepot()).thenReturn(false);
-		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocation()).thenReturn(Location.Builder.newInstance().setId("vehLoc").build());
 		when(vehicle.getLatestArrival()).thenReturn(200.0);
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
 		builder.addPickup(s);

@@ -63,15 +63,15 @@ public class SolomonWithSkillsExample {
         for(Job job : vrp.getJobs().values()){
             Service service = (Service) job;
             Service.Builder skillServiceBuilder;
-            if(service.getCoord().getY()<50.){
+            if(service.getLocation().getCoordinate().getY()<50.){
                 skillServiceBuilder = Service.Builder.newInstance(service.getId()+"_skill2").setServiceTime(service.getServiceDuration())
-                .setCoord(service.getCoord()).setLocationId(service.getLocationId()).setTimeWindow(service.getTimeWindow())
+                .setCoord(service.getLocation().getCoordinate()).setLocationId(service.getLocation().getId()).setTimeWindow(service.getTimeWindow())
                         .addSizeDimension(0,service.getSize().get(0));
                 skillServiceBuilder.addRequiredSkill("skill2");
             }
             else {
                 skillServiceBuilder = Service.Builder.newInstance(service.getId()+"_skill1").setServiceTime(service.getServiceDuration())
-                        .setCoord(service.getCoord()).setLocationId(service.getLocationId()).setTimeWindow(service.getTimeWindow())
+                        .setCoord(service.getLocation().getCoordinate()).setLocationId(service.getLocation().getId()).setTimeWindow(service.getTimeWindow())
                         .addSizeDimension(0,service.getSize().get(0));
                 skillServiceBuilder.addRequiredSkill("skill1");
             }

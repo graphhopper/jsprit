@@ -52,7 +52,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
 	@Override
 	public String getLocationId() {
-		return delivery.getLocationId();
+		return delivery.getLocation().getId();
 	}
 
     @Override

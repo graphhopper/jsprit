@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2013  Stefan Schroeder
- * 
+ * Copyright (C) 2014  Stefan Schroeder
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public 
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -470,15 +470,15 @@ public class Plotter {
 			if(route.isEmpty()) continue;
 			XYSeries series = new XYSeries(counter, false, true);
 			
-			Coordinate startCoord = locations.getCoord(route.getStart().getLocationId());
+			Coordinate startCoord = locations.getCoord(route.getStart().getLocation().getId());
 			series.add(startCoord.getX()*scalingFactor, startCoord.getY()*scalingFactor);
 			
 			for(TourActivity act : route.getTourActivities().getActivities()){
-				Coordinate coord = locations.getCoord(act.getLocationId());
+				Coordinate coord = locations.getCoord(act.getLocation().getId());
 				series.add(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			}
 			
-			Coordinate endCoord = locations.getCoord(route.getEnd().getLocationId());
+			Coordinate endCoord = locations.getCoord(route.getEnd().getLocation().getId());
 			series.add(endCoord.getX()*scalingFactor, endCoord.getY()*scalingFactor);
 			
 			coll.addSeries(series);
@@ -507,8 +507,8 @@ public class Plotter {
 				shipmentSeries = new XYSeries(sCounter, false, true);
 				sCounter++;
 			}
-			shipmentSeries.add(shipment.getPickupCoord().getX()*scalingFactor, shipment.getPickupCoord().getY()*scalingFactor);
-			shipmentSeries.add(shipment.getDeliveryCoord().getX()*scalingFactor, shipment.getDeliveryCoord().getY()*scalingFactor);
+			shipmentSeries.add(shipment.getPickupLocation().getCoordinate().getX()*scalingFactor, shipment.getPickupLocation().getCoordinate().getY()*scalingFactor);
+			shipmentSeries.add(shipment.getDeliveryLocation().getCoordinate().getX()*scalingFactor, shipment.getDeliveryLocation().getCoordinate().getY()*scalingFactor);
 			coll.addSeries(shipmentSeries);
 		}
 		return coll;
@@ -517,13 +517,13 @@ public class Plotter {
 	private void addJob(XYSeries activities, Job job) {
 		if(job instanceof Shipment){
 			Shipment s = (Shipment)job;
-			XYDataItem dataItem = new XYDataItem(s.getPickupCoord().getX()*scalingFactor, s.getPickupCoord().getY()*scalingFactor);
+			XYDataItem dataItem = new XYDataItem(s.getPickupLocation().getCoordinate().getX()*scalingFactor, s.getPickupLocation().getCoordinate().getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(s, dataItem);
 			markItem(dataItem,Activity.PICKUP, job);
 			containsPickupAct = true;
 			
-			XYDataItem dataItem2 = new XYDataItem(s.getDeliveryCoord().getX()*scalingFactor, s.getDeliveryCoord().getY()*scalingFactor);
+			XYDataItem dataItem2 = new XYDataItem(s.getDeliveryLocation().getCoordinate().getX()*scalingFactor, s.getDeliveryLocation().getCoordinate().getY()*scalingFactor);
 			activities.add(dataItem2);
 			addLabel(s, dataItem2);
 			markItem(dataItem2,Activity.DELIVERY, job);
@@ -531,7 +531,7 @@ public class Plotter {
 		}
 		else if(job instanceof Pickup){
 			Pickup service = (Pickup)job;
-			Coordinate coord = service.getCoord();
+			Coordinate coord = service.getLocation().getCoordinate();
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
@@ -540,7 +540,7 @@ public class Plotter {
 		}
 		else if(job instanceof Delivery){
 			Delivery service = (Delivery)job;
-			Coordinate coord = service.getCoord();
+			Coordinate coord = service.getLocation().getCoordinate();
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
@@ -549,7 +549,7 @@ public class Plotter {
 		}
 		else if(job instanceof Service){
 			Service service = (Service)job;
-			Coordinate coord = service.getCoord();
+			Coordinate coord = service.getLocation().getCoordinate();
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);

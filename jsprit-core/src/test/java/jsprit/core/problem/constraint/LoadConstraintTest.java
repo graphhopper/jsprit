@@ -18,10 +18,7 @@
 package jsprit.core.problem.constraint;
 
 import jsprit.core.algorithm.state.StateManager;
-import jsprit.core.problem.AbstractActivity;
-import jsprit.core.problem.Capacity;
-import jsprit.core.problem.JobActivityFactory;
-import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.*;
 import jsprit.core.problem.job.*;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -72,8 +69,8 @@ public class LoadConstraintTest {
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder shipmentProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Shipment shipment1 = Shipment.Builder.newInstance("s1").addSizeDimension(0,10).setPickupLocationId("pick").setDeliveryLocationId("del").build();
-        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0,5).setPickupLocationId("pick").setDeliveryLocationId("del").build();
+        Shipment shipment1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocationId("del").build();
+        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 5).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocationId("del").build();
         shipmentProblemBuilder.addJob(shipment1).addJob(shipment2).build();
         final VehicleRoutingProblem shipmentProblem = shipmentProblemBuilder.build();
 

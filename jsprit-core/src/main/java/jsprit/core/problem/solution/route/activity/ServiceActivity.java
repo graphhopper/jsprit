@@ -129,7 +129,7 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 
 	@Override
 	public String getLocationId() {
-		return service.getLocationId();
+		return service.getLocation().getId();
 	}
 
     @Override

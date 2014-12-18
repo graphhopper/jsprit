@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Shipment;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ public class DefaultShipmentActivityFactoryTest {
 	public void whenCreatingPickupActivityWithShipment_itShouldReturnPickupShipment(){
 		DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
 		Shipment shipment = Shipment.Builder.newInstance("s")
-				.setPickupLocationId("pLoc").setDeliveryLocationId("dLoc").build();
+				.setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocationId("dLoc").build();
 		TourActivity act = factory.createPickup(shipment);
 		assertNotNull(act);
 		assertTrue(act instanceof PickupShipment);
@@ -38,7 +39,7 @@ public class DefaultShipmentActivityFactoryTest {
 	public void whenCreatingDeliverActivityWithShipment_itShouldReturnDeliverShipment(){
 		DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
 		Shipment shipment = Shipment.Builder.newInstance("s")
-				.setPickupLocationId("pLoc").setDeliveryLocationId("dLoc").build();
+				.setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocationId("dLoc").build();
 		TourActivity act = factory.createDelivery(shipment);
 		assertNotNull(act);
 		assertTrue(act instanceof DeliverShipment);

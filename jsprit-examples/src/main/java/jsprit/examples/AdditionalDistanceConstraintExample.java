@@ -89,7 +89,7 @@ public class AdditionalDistanceConstraintExample {
         }
 
         double getDistance(TourActivity from, TourActivity to){
-            return costMatrix.getDistance(from.getLocationId(), to.getLocationId());
+            return costMatrix.getDistance(from.getLocation().getId(), to.getLocation().getId());
         }
     }
 
@@ -125,7 +125,7 @@ public class AdditionalDistanceConstraintExample {
         }
 
         double getDistance(TourActivity from, TourActivity to){
-            return costsMatrix.getDistance(from.getLocationId(), to.getLocationId());
+            return costsMatrix.getDistance(from.getLocation().getId(), to.getLocation().getId());
         }
 
     }

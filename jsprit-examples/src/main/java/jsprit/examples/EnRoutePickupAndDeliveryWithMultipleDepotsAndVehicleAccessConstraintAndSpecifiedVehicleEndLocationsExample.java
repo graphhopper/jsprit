@@ -136,12 +136,12 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
             public boolean fulfilled(JobInsertionContext insertionContext) {
                 Shipment shipment2insert = ((Shipment)insertionContext.getJob());
                 if(insertionContext.getNewVehicle().getId().equals("v1")){
-                    if(shipment2insert.getPickupCoord().getX() > 15. || shipment2insert.getDeliveryCoord().getX() > 15.){
+                    if(shipment2insert.getPickupLocation().getCoordinate().getX() > 15. || shipment2insert.getDeliveryLocation().getCoordinate().getX() > 15.){
                         return false;
                     }
                 }
                 if(insertionContext.getNewVehicle().getId().equals("v2")){
-                    if(shipment2insert.getPickupCoord().getX() < 15. || shipment2insert.getDeliveryCoord().getX() < 15.){
+                    if(shipment2insert.getPickupLocation().getCoordinate().getX() < 15. || shipment2insert.getDeliveryLocation().getCoordinate().getX() < 15.){
                         return false;
                     }
                 }

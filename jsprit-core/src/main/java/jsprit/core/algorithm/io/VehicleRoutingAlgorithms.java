@@ -444,7 +444,7 @@ public class VehicleRoutingAlgorithms {
 			if(firstAct){
 				firstAct=false;
 				if(!vehicle.isReturnToDepot()){
-					assert activity.getLocationId().equals(end.getLocationId()) : "route end and last activity are not equal even route is open. this should not be.";
+					assert activity.getLocation().getId().equals(end.getLocation().getId()) : "route end and last activity are not equal even route is open. this should not be.";
 				}
 			}
 			

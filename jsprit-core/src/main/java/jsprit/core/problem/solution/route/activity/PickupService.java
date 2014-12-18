@@ -53,7 +53,7 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
 	@Override
 	public String getLocationId() {
-		return pickup.getLocationId();
+		return pickup.getLocation().getId();
 	}
 
     @Override

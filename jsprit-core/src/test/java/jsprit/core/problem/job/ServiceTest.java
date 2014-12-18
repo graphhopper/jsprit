@@ -102,14 +102,14 @@ public class ServiceTest {
 	@Test
 	public void whenSettingLocation_itShouldBeSetCorrectly(){
 		Service s = Service.Builder.newInstance("s").setLocationId("loc").build();
-		assertEquals("loc",s.getLocationId());
+		assertEquals("loc",s.getLocation().getId());
         assertEquals("loc",s.getLocation().getId());
 	}
 
     @Test
     public void whenSettingLocation_itShouldWork(){
         Service s = Service.Builder.newInstance("s").setLocation(Location.Builder.newInstance().setId("loc").build()).build();
-        assertEquals("loc",s.getLocationId());
+        assertEquals("loc",s.getLocation().getId());
         assertEquals("loc",s.getLocation().getId());
     }
 
@@ -117,8 +117,8 @@ public class ServiceTest {
 	@Test
 	public void whenSettingLocationCoord_itShouldBeSetCorrectly(){
 		Service s = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(1, 2)).build();
-		assertEquals(1.0,s.getCoord().getX(),0.01);
-		assertEquals(2.0,s.getCoord().getY(),0.01);
+		assertEquals(1.0,s.getLocation().getCoordinate().getX(),0.01);
+		assertEquals(2.0,s.getLocation().getCoordinate().getY(),0.01);
         assertEquals(1.0,s.getLocation().getCoordinate().getX(),0.01);
         assertEquals(2.0,s.getLocation().getCoordinate().getY(),0.01);
 	}

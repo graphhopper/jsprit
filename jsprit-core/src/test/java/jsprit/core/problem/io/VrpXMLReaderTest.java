@@ -484,8 +484,8 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
-		assertEquals(10.0,s.getDeliveryCoord().getX(),0.01);
-		assertEquals(0.0,s.getDeliveryCoord().getY(),0.01);
+		assertEquals(10.0,s.getDeliveryLocation().getCoordinate().getX(),0.01);
+		assertEquals(0.0,s.getDeliveryLocation().getCoordinate().getY(),0.01);
 	}
 	
 	@Test
@@ -494,8 +494,8 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
-		assertEquals(10.0,s.getPickupCoord().getX(),0.01);
-		assertEquals(10.0,s.getPickupCoord().getY(),0.01);
+		assertEquals(10.0,s.getPickupLocation().getCoordinate().getX(),0.01);
+		assertEquals(10.0,s.getPickupLocation().getCoordinate().getY(),0.01);
 	}
 	
 	@Test
@@ -504,7 +504,7 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
-		assertEquals("i(9,9)",s.getDeliveryLocationId());
+		assertEquals("i(9,9)",s.getDeliveryLocation().getId());
 	}
 	
 	@Test
@@ -513,7 +513,7 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("3");
-		assertEquals("i(3,9)",s.getPickupLocationId());
+		assertEquals("i(3,9)",s.getPickupLocation().getId());
 	}
 	
 	@Test
@@ -522,7 +522,7 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("4");
-		assertEquals("[x=10.0][y=10.0]",s.getPickupLocationId());
+		assertEquals("[x=10.0][y=10.0]",s.getPickupLocation().getId());
 	}
 	
 	@Test
@@ -531,7 +531,7 @@ public class VrpXMLReaderTest {
 		new VrpXMLReader(builder, null).read(inFileName);
 		VehicleRoutingProblem vrp = builder.build();
 		Shipment s = (Shipment) vrp.getJobs().get("4");
-		assertEquals("[x=10.0][y=0.0]",s.getDeliveryLocationId());
+		assertEquals("[x=10.0][y=0.0]",s.getDeliveryLocation().getId());
 	}
 	
 	@Test
