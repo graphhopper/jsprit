@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.examples;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.StopWatch;
@@ -32,6 +33,7 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
+import jsprit.instance.reader.CordeauReader;
 import jsprit.util.Examples;
 
 import java.util.Arrays;
@@ -51,7 +53,7 @@ public class MultipleDepotExample2 {
 		/*
 		 * Read cordeau-instance p01, BUT only its services without any vehicles 
 		 */
-		new VrpXMLReader(vrpBuilder).read("input/vrp_cordeau_08.xml");
+		new CordeauReader(vrpBuilder).read("input/p08");
 		
 		/*
 		 * add vehicles with its depots
@@ -71,7 +73,7 @@ public class MultipleDepotExample2 {
 		for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second)){
 			for(int i=0;i<nuOfVehicles;i++){
 				VehicleType vehicleType = VehicleTypeImpl.Builder.newInstance(depotCounter + "_type")
-                        .addCapacityDimension(0, capacity).setFixedCost(100.).setCostPerDistance(1.0).build();
+                        .addCapacityDimension(0, capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
 				vehicleBuilder.setStartLocationCoordinate(depotCoord);
@@ -82,11 +84,7 @@ public class MultipleDepotExample2 {
 			}
 			depotCounter++;
 		}
-		
-		/*
-		 * define penalty-type with the same id, but other higher fixed and variable costs
-		 */
-//		vrpBuilder.addPenaltyVehicles(3, 50);
+
 		
 		/*
 		 * define problem with finite fleet
@@ -106,10 +104,10 @@ public class MultipleDepotExample2 {
 		/*
 		 * solve the problem
 		 */
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig.xml");
-		vra.setMaxIterations(10000);
+		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp,12, "input/algorithmConfig.xml");
+		vra.setMaxIterations(5000);
         vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
-//		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		SolutionPrinter.print(vrp, Solutions.bestOf(solutions), jsprit.core.reporting.SolutionPrinter.Print.VERBOSE);

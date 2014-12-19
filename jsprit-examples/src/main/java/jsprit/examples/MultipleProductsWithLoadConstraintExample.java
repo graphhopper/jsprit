@@ -23,6 +23,7 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardActivityConstraint;
@@ -161,23 +162,23 @@ public class MultipleProductsWithLoadConstraintExample {
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(BANANAS_DIMENSION_INDEX,10)
                 .addCapacityDimension(APPLES_DIMENSION_INDEX, 20).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(loc(Coordinate.newInstance(0, 0)))
                 .setType(type).build();
 
         Shipment bananas = Shipment.Builder.newInstance("bananas_1").addSizeDimension(BANANAS_DIMENSION_INDEX,1)
-                .setPickupCoord(Coordinate.newInstance(1, 8)).setDeliveryCoord(Coordinate.newInstance(10, 8)).build();
+                .setPickupLocation(loc(Coordinate.newInstance(1, 8))).setDeliveryLocation(loc(Coordinate.newInstance(10, 8))).build();
 
         Shipment bananas_2 = Shipment.Builder.newInstance("bananas_2").addSizeDimension(BANANAS_DIMENSION_INDEX,1)
-                .setPickupCoord(Coordinate.newInstance(2, 8)).setDeliveryCoord(Coordinate.newInstance(11, 8)).build();
+                .setPickupLocation(loc(Coordinate.newInstance(2, 8))).setDeliveryLocation(loc(Coordinate.newInstance(11, 8))).build();
 
         Shipment bananas_3 = Shipment.Builder.newInstance("bananas_3").addSizeDimension(BANANAS_DIMENSION_INDEX,1)
-                .setPickupCoord(Coordinate.newInstance(3, 8)).setDeliveryCoord(Coordinate.newInstance(12, 8)).build();
+                .setPickupLocation(loc(Coordinate.newInstance(3, 8))).setDeliveryLocation(loc(Coordinate.newInstance(12, 8))).build();
 
         Shipment apples = Shipment.Builder.newInstance("apples_1").addSizeDimension(APPLES_DIMENSION_INDEX,1)
-                .setPickupCoord(Coordinate.newInstance(1, 6)).setDeliveryCoord(Coordinate.newInstance(10, 12)).build();
+                .setPickupLocation(loc(Coordinate.newInstance(1, 6))).setDeliveryLocation(loc(Coordinate.newInstance(10, 12))).build();
 
         Shipment apples_2 = Shipment.Builder.newInstance("apples_2").addSizeDimension(APPLES_DIMENSION_INDEX,1)
-                .setPickupCoord(Coordinate.newInstance(1, 5)).setDeliveryCoord(Coordinate.newInstance(10, 11)).build();
+                .setPickupLocation(loc(Coordinate.newInstance(1, 5))).setDeliveryLocation(loc(Coordinate.newInstance(10, 11))).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE)
                 .addVehicle(vehicle)
@@ -206,5 +207,9 @@ public class MultipleProductsWithLoadConstraintExample {
         new GraphStreamViewer(vrp, Solutions.bestOf(solutions)).labelWith(GraphStreamViewer.Label.ID).setRenderShipments(true).display();
 
 
+    }
+
+    private static Location loc(Coordinate coordinate) {
+        return Location.Builder.newInstance().setCoordinate(coordinate).build();
     }
 }

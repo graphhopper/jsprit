@@ -24,6 +24,7 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.state.StateId;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.StateUpdater;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -352,8 +353,9 @@ public class BicycleMessenger {
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			//define your envelope which is basically a shipment from A to B
-			Shipment envelope = Shipment.Builder.newInstance(tokens[1]).addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
-					.setDeliveryCoord(Coordinate.newInstance(Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]))).build();
+			Shipment envelope = Shipment.Builder.newInstance(tokens[1]).addSizeDimension(0, 1)
+					.setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]))).build())
+					.setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]))).build()).build();
 			problemBuilder.addJob(envelope);
 		}
 		reader.close();
@@ -374,7 +376,8 @@ public class BicycleMessenger {
 			if(firstLine) { firstLine = false; continue; }
 			String[] tokens = line.split("\\s+");
 			//build your vehicle
-			VehicleImpl vehicle = VehicleImpl.Builder.newInstance(tokens[1]).setStartLocationCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])))
+			VehicleImpl vehicle = VehicleImpl.Builder.newInstance(tokens[1])
+					.setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]))).build())
 					.setReturnToDepot(false).setType(messengerType).build();
 			problemBuilder.addVehicle(vehicle);
 		}

@@ -17,6 +17,7 @@
 package jsprit.instance.reader;
 
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.job.Shipment;
@@ -49,20 +50,6 @@ import java.util.Map;
 
 
 public class LiLimReader {
-	
-	static class MyLocations implements Locations{
-
-		private Map<String,Coordinate> locations = new HashMap<String, Coordinate>();
-
-		public void addLocation(String id, Coordinate coord){
-			locations.put(id, coord);
-		}
-
-		@Override
-		public Coordinate getCoord(String id) {
-			return locations.get(id);
-		}	
-	}
 	
 	static class CustomerData{
 		public Coordinate coord;
@@ -128,9 +115,9 @@ public class LiLimReader {
 		buildShipments();
 		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, vehicleCapacity)
 				.setCostPerDistance(1.0).setFixedCost(fixCosts).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle")
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle")
 				.setEarliestStart(depotOpeningTime).setLatestArrival(depotClosingTime)
-				.setStartLocationCoordinate(customers.get(depotId).coord).setType(type).build();
+				.setStartLocation(Location.Builder.newInstance().setCoordinate(customers.get(depotId).coord).build()).setType(type).build();
 		vrpBuilder.addVehicle(vehicle);
 	}
 	
@@ -142,9 +129,9 @@ public class LiLimReader {
 			String to = rel.to;
 			int demand = rel.demand;
 			Shipment s = Shipment.Builder.newInstance(counter.toString()).addSizeDimension(0, demand)
-					.setPickupCoord(customers.get(from).coord).setPickupServiceTime(customers.get(from).serviceTime)
+					.setPickupLocation(Location.Builder.newInstance().setCoordinate(customers.get(from).coord).build()).setPickupServiceTime(customers.get(from).serviceTime)
 					.setPickupTimeWindow(TimeWindow.newInstance(customers.get(from).start, customers.get(from).end))
-					.setDeliveryCoord(customers.get(to).coord).setDeliveryServiceTime(customers.get(to).serviceTime)
+					.setDeliveryLocation(Location.Builder.newInstance().setCoordinate(customers.get(to).coord).build()).setDeliveryServiceTime(customers.get(to).serviceTime)
 					.setDeliveryTimeWindow(TimeWindow.newInstance(customers.get(to).start, customers.get(to).end)).build();
 			vrpBuilder.addJob(s);
 		}

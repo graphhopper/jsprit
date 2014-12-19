@@ -20,6 +20,7 @@ import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.SchrimpfFactory;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Shipment;
@@ -54,7 +55,7 @@ public class SimpleEnRoutePickupAndDeliveryOpenRoutesExample {
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
 		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
+		vehicleBuilder.setStartLocation(loc(Coordinate.newInstance(10, 10)));
 		vehicleBuilder.setType(vehicleType);
 		vehicleBuilder.setReturnToDepot(false);
 		VehicleImpl vehicle = vehicleBuilder.build();
@@ -68,11 +69,11 @@ public class SimpleEnRoutePickupAndDeliveryOpenRoutesExample {
 		 * 4: (15,13)->(14,11)
 		 */
 		
-		Shipment shipment1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(5, 7)).setDeliveryCoord(Coordinate.newInstance(6, 9)).build();
-		Shipment shipment2 = Shipment.Builder.newInstance("2").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(5, 13)).setDeliveryCoord(Coordinate.newInstance(6, 11)).build();
+		Shipment shipment1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(loc(Coordinate.newInstance(6, 9))).build();
+		Shipment shipment2 = Shipment.Builder.newInstance("2").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 13))).setDeliveryLocation(loc(Coordinate.newInstance(6, 11))).build();
 		
-		Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(15, 7)).setDeliveryCoord(Coordinate.newInstance(14, 9)).build();
-		Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupCoord(Coordinate.newInstance(15, 13)).setDeliveryCoord(Coordinate.newInstance(14, 11)).build();
+		Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(loc(Coordinate.newInstance(14, 9))).build();
+		Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -121,6 +122,10 @@ public class SimpleEnRoutePickupAndDeliveryOpenRoutesExample {
 		solutionPlotter.plot("output/simpleEnRoutePickupAndDeliveryExample_solution.png", "en-route pickup and delivery");
 		
 		new GraphStreamViewer(problem, bestSolution).setRenderShipments(true).setRenderDelay(100).display();
+	}
+
+	private static Location loc(Coordinate coordinate) {
+		return Location.Builder.newInstance().setCoordinate(coordinate).build();
 	}
 
 }

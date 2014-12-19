@@ -49,26 +49,32 @@ public class ShipmentTest {
 	@Test
 	public void whenShipmentIsInstantiatedWithASizeOf10_theSizeShouldBe10(){
 		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).
-				setDeliveryLocationId("foofoo").setPickupServiceTime(10).setDeliveryServiceTime(20).build();
+				setDeliveryLocation(TestUtils.loc("foofoo")).setPickupServiceTime(10).setDeliveryServiceTime(20).build();
 		assertEquals(10,one.getSize().get(0));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void whenShipmentIsBuiltWithNegativeDemand_itShouldThrowException(){
 		@SuppressWarnings("unused")
-		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, -10).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).setDeliveryLocationId("foofoo").build();
+		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, -10)
+				.setPickupLocation(Location.Builder.newInstance().setId("foo").build())
+				.setDeliveryLocation(TestUtils.loc("foofoo")).build();
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void whenShipmentIsBuiltWithNegativeDemand_itShouldThrowException_v2(){
 		@SuppressWarnings("unused")
-		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, -10).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).setDeliveryLocationId("foofoo").build();
+		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, -10)
+				.setPickupLocation(Location.Builder.newInstance().setId("foo").build())
+				.setDeliveryLocation(TestUtils.loc("foofoo")).build();
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void whenIdIsNull_itShouldThrowException(){
 		@SuppressWarnings("unused")
-		Shipment one = Shipment.Builder.newInstance(null).addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).setDeliveryLocationId("foofoo").build();
+		Shipment one = Shipment.Builder.newInstance(null).addSizeDimension(0, 10)
+				.setPickupLocation(Location.Builder.newInstance().setId("foo").build())
+				.setDeliveryLocation(TestUtils.loc("foofoo")).build();
 	}
 	
 	@Test
@@ -80,7 +86,7 @@ public class ShipmentTest {
 	@Test(expected=IllegalStateException.class)
 	public void whenNeitherPickupLocationIdNorPickupCoord_itThrowsException(){
 		@SuppressWarnings("unused")
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocation(TestUtils.loc("delLoc")).build();
 	}
 	
 	@Test(expected=IllegalStateException.class)
@@ -91,7 +97,7 @@ public class ShipmentTest {
 	
 	@Test
 	public void whenPickupLocationIdIsSet_itShouldBeDoneCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals("pickLoc",s.getPickupLocation().getId());
         assertEquals("pickLoc",s.getPickupLocation().getId());
 	}
@@ -104,86 +110,80 @@ public class ShipmentTest {
 	
 	@Test
 	public void whenPickupCoordIsSet_itShouldBeDoneCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").setCoordinate(Coordinate.newInstance(1, 2)).build()).build();
+		Shipment s = Shipment.Builder.newInstance("s")
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").setCoordinate(Coordinate.newInstance(1, 2)).build()).build();
 		assertEquals(1.0,s.getPickupLocation().getCoordinate().getX(),0.01);
 		assertEquals(2.0,s.getPickupLocation().getCoordinate().getY(),0.01);
         assertEquals(1.0,s.getPickupLocation().getCoordinate().getX(),0.01);
         assertEquals(2.0,s.getPickupLocation().getCoordinate().getY(),0.01);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void whenPickupCoordIsNull_itThrowsException(){
-		@SuppressWarnings("unused")
-		Shipment.Builder builder = Shipment.Builder.newInstance("s").setPickupCoord(null);
-	}
-	
+
 	@Test
 	public void whenDeliveryLocationIdIsSet_itShouldBeDoneCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s")
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals("delLoc",s.getDeliveryLocation().getId());
         assertEquals("delLoc",s.getDeliveryLocation().getId());
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void whenDeliveryLocationIsNull_itThrowsException(){
-		@SuppressWarnings("unused")
-		Shipment.Builder builder = Shipment.Builder.newInstance("s").setDeliveryLocationId(null);
-	}
-	
+
 	@Test
 	public void whenDeliveryCoordIsSet_itShouldBeDoneCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryCoord(Coordinate.newInstance(1, 2)).build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocation(TestUtils.loc("delLoc",Coordinate.newInstance(1, 2)))
+				.setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build())
+				.build();
 		assertEquals(1.0,s.getDeliveryLocation().getCoordinate().getX(),0.01);
 		assertEquals(2.0,s.getDeliveryLocation().getCoordinate().getY(),0.01);
         assertEquals(1.0,s.getDeliveryLocation().getCoordinate().getX(),0.01);
         assertEquals(2.0,s.getDeliveryLocation().getCoordinate().getY(),0.01);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void whenDeliveryCoordIsNull_itThrowsException(){
-		@SuppressWarnings("unused")
-		Shipment.Builder builder = Shipment.Builder.newInstance("s").setDeliveryCoord(null);
-	}
-	
 	@Test
 	public void whenPickupServiceTimeIsNotSet_itShouldBeZero(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s")
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals(0.0,s.getPickupServiceTime(),0.01);
 	}
 	
 	@Test
 	public void whenDeliveryServiceTimeIsNotSet_itShouldBeZero(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s")
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals(0.0,s.getDeliveryServiceTime(),0.01);
 	}
 	
 	@Test
 	public void whenPickupServiceTimeIsSet_itShouldBeDoneCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setPickupServiceTime(2.0).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s")
+				.setPickupServiceTime(2.0)
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals(2.0,s.getPickupServiceTime(),0.01);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void whenPickupServiceIsSmallerThanZero_itShouldThrowException(){
 		@SuppressWarnings("unused")
-		Shipment s = Shipment.Builder.newInstance("s").setPickupServiceTime(-2.0).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setPickupServiceTime(-2.0)
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 	}
 	
 	@Test
 	public void whenDeliveryServiceTimeIsSet_itShouldBeDoneCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryServiceTime(2.0).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryServiceTime(2.0)
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals(2.0,s.getDeliveryServiceTime(),0.01);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void whenDeliveryServiceIsSmallerThanZero_itShouldThrowException(){
 		@SuppressWarnings("unused")
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryServiceTime(-2.0).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryServiceTime(-2.0).setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 	}
 	
 	@Test
 	public void whenPickupTimeWindowIsNotSet_itShouldBeTheDefaultOne(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals(0.0,s.getPickupTimeWindow().getStart(),0.01);
 		assertEquals(Double.MAX_VALUE,s.getPickupTimeWindow().getEnd(),0.01);
 	}
@@ -191,19 +191,20 @@ public class ShipmentTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void whenPickupTimeWindowIsNull_itShouldThrowException(){
 		@SuppressWarnings("unused")
-		Shipment s = Shipment.Builder.newInstance("s").setPickupTimeWindow(null).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setPickupTimeWindow(null).setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 	}
 	
 	@Test
 	public void whenPickupTimeWindowIsSet_itShouldBeDoneCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setPickupTimeWindow(TimeWindow.newInstance(1, 2)).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setPickupTimeWindow(TimeWindow.newInstance(1, 2))
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals(1.0,s.getPickupTimeWindow().getStart(),0.01);
 		assertEquals(2.0,s.getPickupTimeWindow().getEnd(),0.01);
 	}
 	
 	@Test
 	public void whenDeliveryTimeWindowIsNotSet_itShouldBeTheDefaultOne(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals(0.0,s.getDeliveryTimeWindow().getStart(),0.01);
 		assertEquals(Double.MAX_VALUE,s.getDeliveryTimeWindow().getEnd(),0.01);
 	}
@@ -211,12 +212,13 @@ public class ShipmentTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void whenDeliveryTimeWindowIsNull_itShouldThrowException(){
 		@SuppressWarnings("unused")
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryTimeWindow(null).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryTimeWindow(null).setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 	}
 	
 	@Test
 	public void whenDeliveryTimeWindowIsSet_itShouldBeDoneCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setDeliveryTimeWindow(TimeWindow.newInstance(1, 2)).setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment s = Shipment.Builder.newInstance("s").setDeliveryTimeWindow(TimeWindow.newInstance(1, 2))
+				.setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		assertEquals(1.0,s.getDeliveryTimeWindow().getStart(),0.01);
 		assertEquals(2.0,s.getDeliveryTimeWindow().getEnd(),0.01);
 	}
@@ -224,15 +226,17 @@ public class ShipmentTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void whenShipmentHasNegativeCapacityVal_throwIllegalStateExpception(){
 		@SuppressWarnings("unused")
-		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("foo").build()).setDeliveryLocationId("foofoo")
+		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("foo").build())
+				.setDeliveryLocation(TestUtils.loc("foofoo"))
 		.addSizeDimension(0, -2)
 		.build();
 	}
 	
 	@Test
 	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
-		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("foo").build()).setDeliveryLocationId("foofoo")
-				.addSizeDimension(0,2)
+		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("foo").build())
+				.setDeliveryLocation(TestUtils.loc("foofoo"))
+				.addSizeDimension(0, 2)
 				.addSizeDimension(1, 4)
 				.build();
 		assertEquals(2,one.getSize().getNuOfDimensions());
@@ -240,23 +244,26 @@ public class ShipmentTest {
 	
 	@Test
 	public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
-		Shipment one = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("foo").build()).setPickupCoord(Coordinate.newInstance(0, 0))
-				.setDeliveryLocationId("foofoo").build();
+		Shipment one = Shipment.Builder.newInstance("s")
+				.setPickupLocation(Location.Builder.newInstance().setId("foo").setCoordinate(Coordinate.newInstance(0, 0)).build())
+						.setDeliveryLocation(TestUtils.loc("foofoo")).build();
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(0,one.getSize().get(0));
 	}
 	
 	@Test
 	public void whenShipmentIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
-		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).setPickupCoord(Coordinate.newInstance(0, 0))
-				.setDeliveryLocationId("foofoo").build();
+		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, 1)
+				.setPickupLocation(Location.Builder.newInstance().setId("foo").setCoordinate(Coordinate.newInstance(0, 0)).build())
+				.setDeliveryLocation(TestUtils.loc("foofoo")).build();
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(1,one.getSize().get(0));
 	}
 	
 	@Test
 	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
-		Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("loc").build()).setDeliveryLocationId("delLoc")
+		Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("loc").build())
+				.setDeliveryLocation(TestUtils.loc("delLoc"))
 				.addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
@@ -265,7 +272,9 @@ public class ShipmentTest {
 	
 	@Test
 	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
-        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocationId("del")
+        Shipment s = Shipment.Builder.newInstance("s")
+				.setPickupLocation(Location.Builder.newInstance().setId("pick").build())
+				.setDeliveryLocation(TestUtils.loc("del"))
 				.addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
@@ -273,7 +282,8 @@ public class ShipmentTest {
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
-        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("loc").build()).setDeliveryLocationId("del")
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("loc").build())
+				.setDeliveryLocation(TestUtils.loc("del"))
                 .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
@@ -281,7 +291,8 @@ public class ShipmentTest {
 
     @Test
     public void nameShouldBeAssigned(){
-        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("loc").build()).setDeliveryLocationId("del")
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("loc").build())
+				.setDeliveryLocation(TestUtils.loc("del"))
                 .setName("name").build();
         assertEquals("name",s.getName());
     }
