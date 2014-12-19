@@ -24,6 +24,7 @@ import java.util.Collection;
 
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.recreate.NoSolutionFoundException;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
@@ -35,6 +36,7 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 
+import jsprit.core.util.TestUtils;
 import org.junit.Test;
 
 public class OpenRoutesTest {
@@ -44,10 +46,10 @@ public class OpenRoutesTest {
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
 		
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(11.)
-				.setType(type).setReturnToDepot(false).setStartLocationCoordinate(Coordinate.newInstance(0, 0)).build();
+				.setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 		
-		Shipment shipment = Shipment.Builder.newInstance("s").setPickupCoord(Coordinate.newInstance(5, 0))
-				.setDeliveryCoord(Coordinate.newInstance(10, 0)).build();
+		Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 0)))
+				.setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(10, 0))).build();
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
 		
@@ -95,15 +97,18 @@ public class OpenRoutesTest {
 	public void whenDealingWithOpenRouteAndShipments_algorithmShouldCalculateCorrectCosts(){
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(20.)
-				.setType(type).setReturnToDepot(false).setStartLocationCoordinate(Coordinate.newInstance(0, 0)).build();
+				.setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance()
+						.setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 		
-		Shipment shipment = Shipment.Builder.newInstance("s").setPickupCoord(Coordinate.newInstance(5, 0))
-				.setDeliveryCoord(Coordinate.newInstance(10, 0)).build();
+		Shipment shipment = Shipment.Builder.newInstance("s")
+				.setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build())
+				.setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).build())
+				.build();
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(10);
+		vra.setMaxIterations(10);
 		
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
@@ -115,14 +120,15 @@ public class OpenRoutesTest {
 	public void whenDealingWithOpenRoute_algorithmShouldCalculateCorrectCosts(){
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
 		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(10.)
-				.setType(type).setReturnToDepot(false).setStartLocationCoordinate(Coordinate.newInstance(0, 0)).build();
+				.setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 		
-		Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(5, 0)).build();
+		Service service = Service.Builder.newInstance("s")
+				.setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build()).build();
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(10);
+		vra.setMaxIterations(10);
 		
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		

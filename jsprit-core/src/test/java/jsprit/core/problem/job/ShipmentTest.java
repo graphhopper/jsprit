@@ -19,6 +19,7 @@ package jsprit.core.problem.job;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.util.Coordinate;
+import jsprit.core.util.TestUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,9 +29,9 @@ public class ShipmentTest {
 	@Test
 	public void whenTwoShipmentsHaveTheSameId_theyReferencesShouldBeUnEqual(){
 		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).
-				setDeliveryLocationId("foofoo").setPickupServiceTime(10).setDeliveryServiceTime(20).build();
+				setDeliveryLocation(TestUtils.loc("foofoo")).setPickupServiceTime(10).setDeliveryServiceTime(20).build();
 		Shipment two = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).
-				setDeliveryLocationId("foofoo").setPickupServiceTime(10).setDeliveryServiceTime(20).build();
+				setDeliveryLocation(TestUtils.loc("foofoo")).setPickupServiceTime(10).setDeliveryServiceTime(20).build();
 		
 		assertTrue(one != two);
 	}
@@ -38,9 +39,9 @@ public class ShipmentTest {
 	@Test
 	public void whenTwoShipmentsHaveTheSameId_theyShouldBeEqual(){
 		Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).
-				setDeliveryLocationId("foofoo").setPickupServiceTime(10).setDeliveryServiceTime(20).build();
+				setDeliveryLocation(TestUtils.loc("foofoo")).setPickupServiceTime(10).setDeliveryServiceTime(20).build();
 		Shipment two = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).
-				setDeliveryLocationId("foofoo").setPickupServiceTime(10).setDeliveryServiceTime(20).build();
+				setDeliveryLocation(TestUtils.loc("foofoo")).setPickupServiceTime(10).setDeliveryServiceTime(20).build();
 		
 		assertTrue(one.equals(two));
 	}

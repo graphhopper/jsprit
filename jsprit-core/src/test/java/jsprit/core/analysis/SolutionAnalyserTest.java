@@ -36,6 +36,7 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.ManhattanCosts;
+import jsprit.core.util.TestUtils;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,8 +80,8 @@ public class SolutionAnalyserTest {
                 .addRequiredSkill("skill2").addRequiredSkill("skill1")
                 .build();
         Shipment shipment1 = Shipment.Builder.newInstance("ship1")
-                .setPickupCoord(Coordinate.newInstance(-15, 2))
-                .setDeliveryCoord(Coordinate.newInstance(-16, 5))
+                .setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
+                .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
                 .addSizeDimension(0,10)
                 .setPickupServiceTime(20.)
                 .setDeliveryServiceTime(20.)
@@ -89,11 +90,11 @@ public class SolutionAnalyserTest {
 
         Service s3 = Service.Builder.newInstance("s3")
                 .setTimeWindow(TimeWindow.newInstance(10, 20))
-                .setCoord(Coordinate.newInstance(10, 1)).addSizeDimension(0,2).build();
-        Service s4 = Service.Builder.newInstance("s4").setCoord(Coordinate.newInstance(10, 10)).addSizeDimension(0,3).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupCoord(Coordinate.newInstance(15, 2))
+                .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1))).addSizeDimension(0, 2).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(TestUtils.loc(Coordinate.newInstance(10, 10))).addSizeDimension(0,3).build();
+        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
                 .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
-                .setDeliveryCoord(Coordinate.newInstance(16, 5)).addSizeDimension(0,10).build();
+                .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).addSizeDimension(0, 10).build();
         
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle)
                 .addVehicle(vehicle2)
@@ -130,24 +131,25 @@ public class SolutionAnalyserTest {
                 .setTimeWindow(TimeWindow.newInstance(10, 20))
                 .addSizeDimension(0, 20)
                 .build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupCoord(Coordinate.newInstance(-15, 2)).setDeliveryCoord(Coordinate.newInstance(-16, 5))
+        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
+                .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
                 .addSizeDimension(0, 15)
                 .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
-                .setPickupTimeWindow(TimeWindow.newInstance(10,20)).setDeliveryTimeWindow(TimeWindow.newInstance(10,20))
+                .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
                 .build();
 
         Pickup s3 = (Pickup) Pickup.Builder.newInstance("s3")
                 .setTimeWindow(TimeWindow.newInstance(10, 20))
-                .setCoord(Coordinate.newInstance(10, 1))
+                .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1)))
                 .addSizeDimension(0, 10)
                 .build();
         Delivery s4 = (Delivery) Delivery.Builder.newInstance("s4").setCoord(Coordinate.newInstance(10, 10))
                 .addSizeDimension(0, 20)
                 .setTimeWindow(TimeWindow.newInstance(10, 20))
                 .build();
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupCoord(Coordinate.newInstance(15, 2))
+        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
                 .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
-                .setDeliveryCoord(Coordinate.newInstance(16, 5))
+                .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5)))
                 .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
                 .addSizeDimension(0, 15).build();
 

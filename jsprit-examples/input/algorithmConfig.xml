@@ -23,7 +23,7 @@
 	<iterations>2000</iterations>
 
 	<construction>
-		<insertion name="bestInsertion">
+		<insertion name="regretInsertion">
 		 	
 		</insertion>	
 	</construction>
@@ -42,7 +42,7 @@
 						<ruin name="randomRuin">
 							<share>0.5</share>
 						</ruin>
-						<insertion name="bestInsertion"/>					
+						<insertion name="regretInsertion"/>
 					</module>
 					
 				</modules>
@@ -58,7 +58,7 @@
 						<ruin id="1" name="radialRuin">
 							<share>0.3</share>
 						</ruin>
-						<insertion name="bestInsertion"/>					
+						<insertion name="regretInsertion"/>
 					</module>
 					
 				</modules>
@@ -73,7 +73,7 @@
 						<ruin id="2" name="radialRuin">
 							<share>0.05</share>
 						</ruin>
-						<insertion name="bestInsertion"/>					
+						<insertion name="regretInsertion"/>
 					</module>
 					
 				</modules>
