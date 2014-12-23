@@ -18,6 +18,7 @@ package jsprit.core.util;
 
 import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
+import jsprit.core.problem.cost.TransportDistance;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleTypeImpl.VehicleCostParams;
@@ -30,7 +31,7 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl.VehicleCostParams;
  * @author schroeder
  *
  */
-public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRoutingTransportCosts {
+public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRoutingTransportCosts implements TransportDistance {
 
 	/**
 	 * Builder that builds the matrix.
@@ -141,6 +142,11 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
 	public double getDistance(int fromIndex, int toIndex) {
         int distanceIndex = 0;
         return get(fromIndex, toIndex, distanceIndex);
+	}
+
+	@Override
+	public double getDistance(Location from, Location to) {
+		return getDistance(from.getIndex(),to.getIndex());
 	}
 
 	@Override

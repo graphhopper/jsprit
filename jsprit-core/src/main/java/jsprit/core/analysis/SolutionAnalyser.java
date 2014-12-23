@@ -22,6 +22,7 @@ import jsprit.core.algorithm.state.*;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.cost.TransportDistance;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -52,6 +53,10 @@ public class SolutionAnalyser {
 
     private final static String LOAD_DELIVERED = "load-delivered";
 
+    /**
+     * @deprecated use TransportDistance instead
+     */
+    @Deprecated
     public static interface DistanceCalculator {
 
         public double getDistance(Location from, Location to);
@@ -503,10 +508,32 @@ public class SolutionAnalyser {
 
     private VehicleRoutingProblemSolution solution;
 
+    /**
+     *
+     * @param vrp
+     * @param solution
+     * @param distanceCalculator
+     * @deprecated use SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, final TransportDistance distanceCalculator) instead
+     */
+    @Deprecated
     public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, DistanceCalculator distanceCalculator) {
         this.vrp = vrp;
         this.solution = solution;
         this.distanceCalculator = distanceCalculator;
+        initialise();
+        this.solutionCostCalculator = new VariablePlusFixedSolutionCostCalculatorFactory(stateManager).createCalculator();
+        refreshStates();
+    }
+
+    public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, final TransportDistance distanceCalculator) {
+        this.vrp = vrp;
+        this.solution = solution;
+        this.distanceCalculator = new DistanceCalculator() {
+            @Override
+            public double getDistance(Location from, Location to) {
+                return distanceCalculator.getDistance(from,to);
+            }
+        };
         initialise();
         this.solutionCostCalculator = new VariablePlusFixedSolutionCostCalculatorFactory(stateManager).createCalculator();
         refreshStates();

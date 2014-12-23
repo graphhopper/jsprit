@@ -20,6 +20,7 @@ package jsprit.core.util;
 
 import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
+import jsprit.core.problem.cost.TransportDistance;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 
@@ -29,7 +30,7 @@ import jsprit.core.problem.vehicle.Vehicle;
  * 
  */
 
-public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCosts {
+public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCosts implements TransportDistance{
 
 	private double speed = 1.;
 
@@ -94,4 +95,8 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
         return GreatCircleDistanceCalculator.calculateDistance(fromCoordinate, toCoordinate, distanceUnit) * detour;
 	}
 
+    @Override
+    public double getDistance(Location from, Location to) {
+        return getDistance(from.getId(),to.getId());
+    }
 }

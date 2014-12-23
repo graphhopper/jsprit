@@ -21,6 +21,7 @@ package jsprit.core.util;
 
 import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
+import jsprit.core.problem.cost.TransportDistance;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 
@@ -30,7 +31,7 @@ import jsprit.core.problem.vehicle.Vehicle;
  * @author stefan schroeder
  * 
  */
-public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts {
+public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts implements TransportDistance{
 
 	public int speed = 1;
 
@@ -52,7 +53,7 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts {
 	public double getTransportCost(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
 		double distance;
 		try {
-			distance = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) * detourFactor;
+			distance = calculateDistance(from, to);
 		} catch (NullPointerException e) {
 			throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
 		}
@@ -65,15 +66,38 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts {
 		return costs;
 	}
 
+	private double calculateDistance(Location fromLocation, Location toLocation) {
+		Coordinate from = null;
+		Coordinate to = null;
+		if(fromLocation.getCoordinate() != null & toLocation.getCoordinate() != null){
+			from = fromLocation.getCoordinate();
+			to = toLocation.getCoordinate();
+		}
+		else if(locations != null){
+			from = locations.getCoord(fromLocation.getId());
+			to = locations.getCoord(toLocation.getId());
+		}
+		if(from == null || to == null) throw new NullPointerException();
+		return calculateDistance(from,to);
+	}
+
+	private double calculateDistance(Coordinate from, Coordinate to) {
+		return EuclideanDistanceCalculator.calculateDistance(from,to) * detourFactor;
+	}
+
 	@Override
 	public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
 		double distance;
 		try {
-			distance = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) * detourFactor;
+			distance = calculateDistance(from, to);
 		} catch (NullPointerException e) {
 			throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
 		}
 		return distance / speed;
 	}
 
+	@Override
+	public double getDistance(Location from, Location to) {
+		return calculateDistance(from,to);
+	}
 }
