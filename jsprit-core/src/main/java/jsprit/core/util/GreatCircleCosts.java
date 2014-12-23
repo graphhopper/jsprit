@@ -55,23 +55,34 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
 
     private DistanceUnit distanceUnit = DistanceUnit.Kilometer;
 
+    @Deprecated
 	public GreatCircleCosts(Locations locations) {
 		super();
 		this.locations = locations;
 	}
 
+    public GreatCircleCosts() {
+        super();
+    }
 
+    @Deprecated
     public GreatCircleCosts(Locations locations, DistanceUnit distanceUnit) {
         super();
         this.locations = locations;
         this.distanceUnit = distanceUnit;
     }
 
+    public GreatCircleCosts(DistanceUnit distanceUnit) {
+        super();
+        this.distanceUnit = distanceUnit;
+    }
+
+
 	@Override
 	public double getTransportCost(Location from, Location to, double time,Driver driver, Vehicle vehicle) {
         double distance;
         try {
-            distance = getDistance(from.getId(), to.getId());
+            distance = calculateDistance(from,to);
         } catch (NullPointerException e) {
             throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
         }
@@ -84,11 +95,34 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
         return costs;
 	}
 
+    private double calculateDistance(Location fromLocation, Location toLocation) {
+        Coordinate from = null;
+        Coordinate to = null;
+        if(fromLocation.getCoordinate() != null & toLocation.getCoordinate() != null){
+            from = fromLocation.getCoordinate();
+            to = toLocation.getCoordinate();
+        }
+        else if(locations != null){
+            from = locations.getCoord(fromLocation.getId());
+            to = locations.getCoord(toLocation.getId());
+        }
+        if(from == null || to == null) throw new NullPointerException();
+        return GreatCircleDistanceCalculator.calculateDistance(from, to, distanceUnit) * detour;
+    }
+
 	@Override
 	public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
-		return getDistance(from.getId(), to.getId()) / speed;
+		return calculateDistance(from, to) / speed;
 	}
 
+    /**
+     *
+     * @param fromId
+     * @param toId
+     * @return
+     * @deprecated use getDistance(Location from, Location to) instead
+     */
+    @Deprecated
     public double getDistance(String fromId, String toId) {
 		Coordinate fromCoordinate = locations.getCoord(fromId);
         Coordinate toCoordinate = locations.getCoord(toId);
@@ -97,6 +131,6 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
 
     @Override
     public double getDistance(Location from, Location to) {
-        return getDistance(from.getId(),to.getId());
+        return calculateDistance(from, to);
     }
 }
