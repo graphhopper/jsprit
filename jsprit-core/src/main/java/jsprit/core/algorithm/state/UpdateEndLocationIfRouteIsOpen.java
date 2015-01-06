@@ -34,7 +34,7 @@ public class UpdateEndLocationIfRouteIsOpen implements StateUpdater, RouteVisito
 	private void setRouteEndToLastActivity(VehicleRoute route) {
 		if(!route.getActivities().isEmpty()){
 			TourActivity lastAct = route.getActivities().get(route.getActivities().size()-1);
-			route.getEnd().setLocationId(lastAct.getLocation().getId());
+			route.getEnd().setLocation(lastAct.getLocation());
 		}
 	}
 

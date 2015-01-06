@@ -34,6 +34,7 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
+import jsprit.core.util.GreatCircleCosts;
 import jsprit.core.util.Solutions;
 
 import jsprit.core.util.TestUtils;
@@ -45,7 +46,7 @@ public class OpenRoutesTest {
 	public void whenDealingWithOpenRouteAndShipments_insertionShouldNotRequireRouteToBeClosed(){
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
 		
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(11.)
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(11.)
 				.setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 		
 		Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 0)))
@@ -54,7 +55,7 @@ public class OpenRoutesTest {
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(10);
+		vra.setMaxIterations(10);
 		
 		try{
 			@SuppressWarnings("unused")
@@ -70,15 +71,19 @@ public class OpenRoutesTest {
 	@Test
 	public void whenDealingWithOpenRoute_insertionShouldNotRequireRouteToBeClosed(){
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(9.)
-				.setType(type).setReturnToDepot(false).setStartLocationCoordinate(Coordinate.newInstance(0, 0)).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(9.)
+				.setType(type).setReturnToDepot(false)
+				.setStartLocation(TestUtils.loc(Coordinate.newInstance(0, 0)))
+				.build();
 		
-		Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(5, 0)).build();
+		Service service = Service.Builder.newInstance("s")
+				.setLocation(TestUtils.loc(Coordinate.newInstance(5, 0)))
+				.build();
 		
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(10);
+		vra.setMaxIterations(10);
 		
 		try{
 			@SuppressWarnings("unused")
@@ -96,7 +101,8 @@ public class OpenRoutesTest {
 	@Test
 	public void whenDealingWithOpenRouteAndShipments_algorithmShouldCalculateCorrectCosts(){
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(20.)
+
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(20.)
 				.setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance()
 						.setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 		
@@ -119,7 +125,7 @@ public class OpenRoutesTest {
 	@Test
 	public void whenDealingWithOpenRoute_algorithmShouldCalculateCorrectCosts(){
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(10.)
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(10.)
 				.setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 		
 		Service service = Service.Builder.newInstance("s")
@@ -135,5 +141,37 @@ public class OpenRoutesTest {
 		assertEquals(5.,Solutions.bestOf(solutions).getCost(),0.01);
 
 	}
+
+	@Test
+	public void whenDealingWithOpenRouteAndGreatCircleCost_algorithmShouldRunWithoutException(){
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v")
+				.setType(type).setReturnToDepot(false)
+				.setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build())
+				.build();
+
+		Service service = Service.Builder.newInstance("s")
+				.setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(50, 0)).build()).build();
+
+		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+				.addJob(service).addVehicle(vehicle)
+				.setRoutingCost(new GreatCircleCosts())
+				.build();
+
+		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+		vra.setMaxIterations(10);
+
+		try {
+			@SuppressWarnings("UnusedDeclaration")
+			Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+			assertTrue(true);
+		}
+		catch (Exception e){
+			assertTrue(false);
+		}
+
+
+	}
+
 
 }

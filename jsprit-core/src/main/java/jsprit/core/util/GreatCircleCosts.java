@@ -106,7 +106,7 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
             from = locations.getCoord(fromLocation.getId());
             to = locations.getCoord(toLocation.getId());
         }
-        if(from == null || to == null) throw new NullPointerException();
+        if(from == null || to == null) throw new NullPointerException("either from or to location is null");
         return GreatCircleDistanceCalculator.calculateDistance(from, to, distanceUnit) * detour;
     }
 
