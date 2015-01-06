@@ -48,7 +48,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
@@ -61,7 +61,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		final List<Boolean> testFailed = new ArrayList<Boolean>();
 		vra.addListener(new JobInsertedListener() {
 			
@@ -93,7 +93,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		final List<Boolean> testFailed = new ArrayList<Boolean>();
 		vra.addListener(new VehicleSwitchedListener() {
 			
@@ -132,7 +132,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
@@ -145,7 +145,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 //		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
@@ -159,7 +159,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 //		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
@@ -176,7 +176,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/schrimpf_vehicleSwitchNotAllowed.xml");
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
@@ -189,7 +189,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/schrimpf_vehicleSwitchNotAllowed.xml");
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		final List<Boolean> testFailed = new ArrayList<Boolean>();
 		vra.addListener(new JobInsertedListener() {
 			
@@ -221,7 +221,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/schrimpf_vehicleSwitchNotAllowed.xml");
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		final List<Boolean> testFailed = new ArrayList<Boolean>();
 		vra.addListener(new VehicleSwitchedListener() {
 			
@@ -260,7 +260,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/schrimpf_vehicleSwitchNotAllowed.xml");
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
@@ -273,7 +273,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/schrimpf_vehicleSwitchNotAllowed.xml");
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
@@ -287,7 +287,7 @@ public class MeetTimeWindowConstraint_IT {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/schrimpf_vehicleSwitchNotAllowed.xml");
-		vra.setNuOfIterations(100);
+		vra.setMaxIterations(100);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());

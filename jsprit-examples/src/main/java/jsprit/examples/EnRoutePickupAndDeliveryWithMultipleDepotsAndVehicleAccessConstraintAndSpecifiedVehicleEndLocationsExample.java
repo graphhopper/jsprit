@@ -171,7 +171,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndVehicleAccessConstrain
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
 
 		algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
-//		algorithm.setNuOfIterations(30000);
+//		algorithm.setMaxIterations(30000);
 		/*
 		 * and search a solution
 		 */

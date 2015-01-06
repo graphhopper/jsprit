@@ -37,6 +37,7 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.util.Solutions;
+import junit.framework.Assert;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
@@ -63,15 +64,11 @@ public class BuildPDVRPAlgoFromScratch_IT {
 			final StateManager stateManager = new StateManager(vrp);
 			
 			ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-			constraintManager.addTimeWindowConstraint();
-			constraintManager.addLoadConstraint();
-			
+
 			VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
-			
-			BestInsertionBuilder iBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager, constraintManager);
-//			iBuilder.setConstraintManager(constraintManger);
-			InsertionStrategy bestInsertion = iBuilder.build();
-				
+
+			InsertionStrategy bestInsertion = new BestInsertionBuilder(vrp, fleetManager, stateManager, constraintManager).build();
+
 			RuinStrategy radial = new RadialRuinStrategyFactory( 0.15, new AvgServiceDistance(vrp.getTransportCosts())).createStrategy(vrp);
 			RuinStrategy random = new RandomRuinStrategyFactory(0.25).createStrategy(vrp);
 			
@@ -96,27 +93,26 @@ public class BuildPDVRPAlgoFromScratch_IT {
 			SearchStrategy radialStrategy = new SearchStrategy("radial", new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
 			RuinAndRecreateModule radialModule = new RuinAndRecreateModule("radialRuin_bestInsertion", bestInsertion, radial);
 			radialStrategy.addModule(radialModule);
-			
-			SearchStrategyManager strategyManager = new SearchStrategyManager();
-			strategyManager.addStrategy(radialStrategy, 0.5);
-			strategyManager.addStrategy(randomStrategy, 0.5);
-			
-			vra = new VehicleRoutingAlgorithm(vrp, strategyManager);
-			vra.addListener(stateManager);
-			vra.addListener(new RemoveEmptyVehicles(fleetManager));
-			
-			VehicleRoutingProblemSolution iniSolution = new InsertionInitialSolutionFactory(bestInsertion, solutionCostCalculator).createSolution(vrp);
 
-			vra.addInitialSolution(iniSolution);
-			vra.setNuOfIterations(1000);
+			vra = new PrettyAlgorithmBuilder(vrp,fleetManager,stateManager,constraintManager)
+					.addCoreStateAndConstraintStuff().constructInitialSolutionWith(bestInsertion,solutionCostCalculator)
+					.withStrategy(radialStrategy,0.5).withStrategy(randomStrategy,0.5).build();
+
+			vra.setMaxIterations(1000);
 			vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 			
 	}
 	
 	@Test
 	public void test(){
-		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-		System.out.println(Solutions.bestOf(solutions).getCost());		
+		try {
+			Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+			System.out.println(Solutions.bestOf(solutions).getCost());
+			Assert.assertTrue(true);
+		}
+		catch (Exception e){
+			Assert.assertTrue(false);
+		}
 	}
 
 }

@@ -197,7 +197,7 @@ public class MultipleProductsWithLoadConstraintExample {
 
         vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
         VehicleRoutingAlgorithm vra = vraBuilder.build();
-//        vra.setNuOfIterations(100); //1.3.2-SNAPSHOT
+//        vra.setMaxIterations(100); //1.3.2-SNAPSHOT
 //        vra.setMaxIterations(100);
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

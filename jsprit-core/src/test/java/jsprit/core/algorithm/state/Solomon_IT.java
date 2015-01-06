@@ -24,7 +24,7 @@ public class Solomon_IT {
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp,"src/test/resources/algorithmConfig.xml");
-        vra.setNuOfIterations(500);
+        vra.setMaxIterations(500);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         assertEquals(828.94, Solutions.bestOf(solutions).getCost(),0.01);
     }

@@ -158,7 +158,7 @@ public class AdditionalDistanceConstraintExample {
         vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
 
         VehicleRoutingAlgorithm vra = vraBuilder.build();
-//        vra.setNuOfIterations(250); //v1.3.1
+//        vra.setMaxIterations(250); //v1.3.1
         vra.setMaxIterations(250); //head of development - upcoming release (v1.4)
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

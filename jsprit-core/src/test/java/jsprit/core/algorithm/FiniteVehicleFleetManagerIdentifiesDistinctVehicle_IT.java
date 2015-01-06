@@ -43,7 +43,7 @@ public class FiniteVehicleFleetManagerIdentifiesDistinctVehicle_IT {
 			VehicleRoutingProblem vrp = vrpBuilder.build();
 
 			VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-			vra.setNuOfIterations(10);
+			vra.setMaxIterations(10);
 			try{
 				@SuppressWarnings("unused")
 				Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

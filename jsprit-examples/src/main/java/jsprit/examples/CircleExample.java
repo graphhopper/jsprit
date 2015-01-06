@@ -23,6 +23,7 @@ import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -59,14 +60,15 @@ public class CircleExample {
         }
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v")
+                .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         vrpBuilder.addVehicle(v);
 
         double step = 2*Math.PI/50.;
         Collection<Coordinate> circle = createCoordinates(0,0,20,step);
         int id = 1;
         for(Coordinate c : circle){
-            Service s = Service.Builder.newInstance(Integer.toString(id)).setCoord(c).build();
+            Service s = Service.Builder.newInstance(Integer.toString(id)).setLocation(Location.Builder.newInstance().setCoordinate(c).build()).build();
             vrpBuilder.addJob(s);
             id++;
         }

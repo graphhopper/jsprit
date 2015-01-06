@@ -102,7 +102,7 @@ public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
         VehicleRoutingProblemSolution iniSolution = new InsertionInitialSolutionFactory(bestInsertion, solutionCostCalculator).createSolution(vrp);
         vra.addInitialSolution(iniSolution);
 
-        vra.setNuOfIterations(3);
+        vra.setMaxIterations(3);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		assertTrue(!solutions.isEmpty());
 	}

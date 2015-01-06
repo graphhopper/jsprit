@@ -339,7 +339,7 @@ package jsprit.instance.reader;
 //				bestInsertion);
 //		postOpt.setFleetManager(vehicleFleetManager);
 //		postOpt.setVehicleRouteFactory(new VehicleRouteFactoryImpl(depotId));
-//		postOpt.setNuOfIterations(2000);
+//		postOpt.setMaxIterations(2000);
 //		postOpt.setShareOfJobsToRuin(0.18);
 ////		smallNeighborHoodSearch.addModule(postOpt);
 //		
@@ -350,7 +350,7 @@ package jsprit.instance.reader;
 ////				bestInsertion);
 ////		postOpt2.setFleetManager(vehicleFleetManager);
 ////		postOpt2.setVehicleRouteFactory(new VehicleRouteFactoryImpl(depotId));
-////		postOpt2.setNuOfIterations(2000);
+////		postOpt2.setMaxIterations(2000);
 ////		postOpt2.setShareOfJobsToRuin(0.1);
 ////		strat2.addModule(postOpt2);
 //		
@@ -370,7 +370,7 @@ package jsprit.instance.reader;
 ////		strategyManager.addStrategy(strat2, 0.3);
 //		
 //		metaAlgorithm.setSearchStrategyManager(strategyManager);
-//		metaAlgorithm.setNuOfIterations(20);
+//		metaAlgorithm.setMaxIterations(20);
 //		VehicleRoutingProblem.SOLUTION_MEMORY = 4;
 //		
 //		

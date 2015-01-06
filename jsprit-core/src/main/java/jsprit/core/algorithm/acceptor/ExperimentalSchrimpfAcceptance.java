@@ -120,7 +120,7 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
 		AlgorithmConfig algorithmConfig = new AlgorithmConfig();
 		new AlgorithmConfigXmlReader(algorithmConfig).read(resource);
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.createAlgorithm(problem, algorithmConfig);
-		vra.setNuOfIterations(nOfRandomWalks);
+		vra.setMaxIterations(nOfRandomWalks);
 		vra.getAlgorithmListeners().addListener(new IterationEndsListener() {
 			
 			@Override
