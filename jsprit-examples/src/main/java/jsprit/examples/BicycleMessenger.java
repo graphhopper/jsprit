@@ -265,12 +265,13 @@ public class BicycleMessenger {
         constraintManager.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
 
         //create your algorithm
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(bicycleMessengerProblem,"input/algorithmConfig_open.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(bicycleMessengerProblem,"input/algorithmConfig.xml");
 //        vraBuilder.setNuOfThreads(2);
         vraBuilder.addDefaultCostCalculators();
         vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
+		vraBuilder.setNuOfThreads(10);
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
-        algorithm.setMaxIterations(5000);
+        algorithm.setMaxIterations(10000);
 //        VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
 //        algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
 //        algorithm.addListener(prematureAlgorithmTermination);

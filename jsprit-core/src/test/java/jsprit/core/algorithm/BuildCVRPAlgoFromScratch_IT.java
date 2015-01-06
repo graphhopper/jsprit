@@ -58,16 +58,8 @@ public class BuildCVRPAlgoFromScratch_IT {
 		vrp = builder.build();
 		
 		final StateManager stateManager = new StateManager(vrp);
-		stateManager.updateLoadStates();
-		stateManager.updateTimeWindowStates();
-		stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
-
-
 		ConstraintManager cManager = new ConstraintManager(vrp, stateManager);
-		cManager.addLoadConstraint();
-		cManager.addTimeWindowConstraint();
-		
-				
+
 		VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 		
 		InsertionStrategy bestInsertion = new BestInsertionBuilder(vrp, fleetManager, stateManager, cManager).build();
@@ -94,19 +86,11 @@ public class BuildCVRPAlgoFromScratch_IT {
 		SearchStrategy radialStrategy = new SearchStrategy("radial", new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
 		RuinAndRecreateModule radialModule = new RuinAndRecreateModule("radialRuin_bestInsertion", bestInsertion, radial);
 		radialStrategy.addModule(radialModule);
-		
-		SearchStrategyManager strategyManager = new SearchStrategyManager();
-		strategyManager.addStrategy(radialStrategy, 0.5);
-		strategyManager.addStrategy(randomStrategy, 0.5);
-		
-		vra = new VehicleRoutingAlgorithm(vrp, strategyManager);
-		vra.addListener(stateManager);
-		vra.addListener(new RemoveEmptyVehicles(fleetManager));
-	
-		VehicleRoutingProblemSolution iniSolution = new InsertionInitialSolutionFactory(bestInsertion, solutionCostCalculator).createSolution(vrp);
 
-		vra.addInitialSolution(iniSolution);
-		
+		vra = new PrettyAlgorithmBuilder(vrp,fleetManager,stateManager,cManager)
+				.withStrategy(randomStrategy,0.5).withStrategy(radialStrategy,0.5)
+				.addCoreStateAndConstraintStuff()
+				.constructInitialSolutionWith(bestInsertion,solutionCostCalculator).build();
 		vra.setMaxIterations(2000);
 
 	}

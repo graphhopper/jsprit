@@ -124,7 +124,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
 		 * get the algorithm out-of-the-box. 
 		 */
 		VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig.xml");
-//		algorithm.setNuOfIterations(30000);
+//		algorithm.setMaxIterations(30000);
 		/*
 		 * and search a solution
 		 */

@@ -291,7 +291,7 @@ public class InitialRoutesTest {
                 .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addInitialVehicleRoute(iniRoute).build();
 
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
-        vra.setNuOfIterations(10);
+        vra.setMaxIterations(10);
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
@@ -304,7 +304,7 @@ public class InitialRoutesTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes_2.xml");
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrpBuilder.build());
-        vra.setNuOfIterations(10);
+        vra.setMaxIterations(10);
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 

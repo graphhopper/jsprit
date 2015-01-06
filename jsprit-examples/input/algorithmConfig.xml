@@ -46,7 +46,7 @@
 					</module>
 					
 				</modules>
-				<probability>0.2</probability>
+				<probability>0.4</probability>
 			</searchStrategy>
 			
 			<searchStrategy name="radialRR">
@@ -62,7 +62,7 @@
 					</module>
 					
 				</modules>
-				<probability>0.2</probability>
+				<probability>0.4</probability>
 			</searchStrategy>
 			
 			<searchStrategy name="smallRadialRR">
@@ -77,7 +77,7 @@
 					</module>
 					
 				</modules>
-				<probability>0.6</probability>
+				<probability>0.2</probability>
 			</searchStrategy>
 			
 		</searchStrategies>		
