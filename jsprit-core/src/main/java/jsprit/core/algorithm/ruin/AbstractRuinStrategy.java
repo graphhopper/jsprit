@@ -41,6 +41,16 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
         ruinListeners = new RuinListeners();
     }
 
+    protected RuinShareFactory ruinShareFactory;
+
+    public void setRuinShareFactory(RuinShareFactory ruinShareFactory){
+        this.ruinShareFactory = ruinShareFactory;
+    }
+
+    public RuinShareFactory getRuinShareFactory(){
+        return ruinShareFactory;
+    }
+
     @Override
     public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes){
         ruinListeners.ruinStarts(vehicleRoutes);

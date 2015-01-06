@@ -36,7 +36,7 @@ import java.util.List;
  * 
  */
 
-final class RuinRandom extends AbstractRuinStrategy {
+public final class RuinRandom extends AbstractRuinStrategy {
 	
 	private Logger logger = LogManager.getLogger(RuinRandom.class);
 
@@ -54,6 +54,12 @@ final class RuinRandom extends AbstractRuinStrategy {
 		super();
 		this.vrp = vrp;
 		this.fractionOfAllNodes2beRuined = fraction;
+		setRuinShareFactory(new RuinShareFactory() {
+			@Override
+			public int createNumberToBeRemoved() {
+				return selectNuOfJobs2BeRemoved();
+			}
+		});
         logger.info("initialise " + this);
 		logger.info("done");
 	}
@@ -66,7 +72,7 @@ final class RuinRandom extends AbstractRuinStrategy {
 	@Override
 	public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes) {
         List<Job> unassignedJobs = new ArrayList<Job>();
-		int nOfJobs2BeRemoved = selectNuOfJobs2BeRemoved();
+		int nOfJobs2BeRemoved = getRuinShareFactory().createNumberToBeRemoved();
 		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
         return unassignedJobs;
 	}
@@ -77,20 +83,6 @@ final class RuinRandom extends AbstractRuinStrategy {
 	@Override
 	public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
         throw new IllegalStateException("not supported");
-//        List<Job> unassignedJobs = new ArrayList<Job>();
-//		if(targetJob != null){
-//			boolean removed = false;
-//			for (VehicleRoute route : vehicleRoutes) {
-//				removed = removeJob(targetJob,route);
-//				if (removed) {
-//					nOfJobs2BeRemoved--;
-//					unassignedJobs.add(targetJob);
-//					break;
-//				}
-//			}
-//		}
-//		ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
-//        return unassignedJobs;
 	}
 
 	public void setRuinFraction(double fractionOfAllNodes2beRuined) {
@@ -111,7 +103,7 @@ final class RuinRandom extends AbstractRuinStrategy {
 		
 	@Override
 	public String toString() {
-		return "[name=randomRuin][fraction="+fractionOfAllNodes2beRuined+"]";
+		return "[name=randomRuin][noJobsToBeRemoved="+selectNuOfJobs2BeRemoved()+"]";
 	}
 	
 	private Job pickRandomJob(LinkedList<Job> availableJobs) {

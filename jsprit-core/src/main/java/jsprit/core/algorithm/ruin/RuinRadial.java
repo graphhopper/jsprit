@@ -36,7 +36,7 @@ import java.util.*;
  * @author stefan
  *
  */
-final class RuinRadial extends AbstractRuinStrategy {
+public final class RuinRadial extends AbstractRuinStrategy {
 	
 	static interface JobNeighborhoods {
 		
@@ -254,6 +254,7 @@ final class RuinRadial extends AbstractRuinStrategy {
 
 	private JobNeighborhoods jobNeighborhoods;
 
+	private final int noJobsToMemorize;
 
 	/**
 	 * Constructs RuinRadial.
@@ -266,16 +267,43 @@ final class RuinRadial extends AbstractRuinStrategy {
 		super();
 		this.vrp = vrp;
 		this.fractionOfAllNodes2beRuined = fraction2beRemoved;
-		int nJobsToMemorize = (int) Math.ceil(vrp.getJobs().values().size()*fraction2beRemoved);
-		JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, nJobsToMemorize);
+		noJobsToMemorize = (int) Math.ceil(vrp.getJobs().values().size()*fraction2beRemoved);
+		ruinShareFactory = new RuinShareFactory() {
+
+			@Override
+			public int createNumberToBeRemoved() {
+				return noJobsToMemorize;
+			}
+
+		};
+		JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, noJobsToMemorize);
 		jobNeighborhoodsImpl.initialise();
 		jobNeighborhoods = jobNeighborhoodsImpl;
-		logger.info("intialise " + this);
+		logger.info("initialise " + this);
+	}
+
+	public RuinRadial(VehicleRoutingProblem vrp, int noJobs2beRemoved, JobDistance jobDistance) {
+		super();
+		this.vrp = vrp;
+//		this.fractionOfAllNodes2beRuined = fraction2beRemoved;
+		noJobsToMemorize = noJobs2beRemoved;
+		ruinShareFactory = new RuinShareFactory() {
+
+			@Override
+			public int createNumberToBeRemoved() {
+				return noJobsToMemorize;
+			}
+
+		};
+		JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, noJobsToMemorize);
+		jobNeighborhoodsImpl.initialise();
+		jobNeighborhoods = jobNeighborhoodsImpl;
+		logger.info("initialise " + this);
 	}
 	
 	@Override
 	public String toString() {
-		return "[name=radialRuin][fraction="+fractionOfAllNodes2beRuined+"]";
+		return "[name=radialRuin][noJobsToBeRemoved="+noJobsToMemorize+"]";
 	}
 
 	/**
@@ -287,7 +315,7 @@ final class RuinRadial extends AbstractRuinStrategy {
 		if(vehicleRoutes.isEmpty()){
 			return Collections.emptyList();
 		}
-		int nOfJobs2BeRemoved = getNuOfJobs2BeRemoved();
+		int nOfJobs2BeRemoved = Math.min(ruinShareFactory.createNumberToBeRemoved(), noJobsToMemorize);
 		if (nOfJobs2BeRemoved == 0) {
 			return Collections.emptyList();
 		}
@@ -319,11 +347,5 @@ final class RuinRadial extends AbstractRuinStrategy {
 		int randomIndex = random.nextInt(totNuOfJobs);
 		return new ArrayList<Job>(vrp.getJobs().values()).get(randomIndex);
     }
-
-	private int getNuOfJobs2BeRemoved() {
-		return (int) Math.ceil(vrp.getJobs().values().size()
-				* fractionOfAllNodes2beRuined);
-	}
-
 
 }
