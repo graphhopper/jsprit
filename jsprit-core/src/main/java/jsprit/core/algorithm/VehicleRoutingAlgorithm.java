@@ -205,7 +205,7 @@ public class VehicleRoutingAlgorithm {
 			SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
 			DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
             memorizeIfBestEver(discoveredSolution);
-			selectedStrategy(strategy.getName(),problem, solutions);
+			selectedStrategy(strategy.getId(),problem, solutions);
             if(terminationManager.isPrematureBreak(discoveredSolution)){
 				logger.info("premature algorithm termination at iteration "+ (i+1));
 				noIterationsThisAlgoIsRunning = (i+1);

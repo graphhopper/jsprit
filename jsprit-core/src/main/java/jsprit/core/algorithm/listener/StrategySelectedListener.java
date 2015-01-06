@@ -26,6 +26,6 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 
 public interface StrategySelectedListener extends VehicleRoutingAlgorithmListener{
 
-	void informSelectedStrategy(String strategyName, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions);
+	void informSelectedStrategy(String strategyId, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions);
 	
 }
