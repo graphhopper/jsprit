@@ -205,7 +205,7 @@ public class VehicleRoutingAlgorithm {
 			SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
 			DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
             memorizeIfBestEver(discoveredSolution);
-			selectedStrategy(strategy.getId(),problem, solutions);
+			selectedStrategy(strategy.getId(),searchStrategyManager,problem, solutions);
             if(terminationManager.isPrematureBreak(discoveredSolution)){
 				logger.info("premature algorithm termination at iteration "+ (i+1));
 				noIterationsThisAlgoIsRunning = (i+1);
@@ -233,8 +233,8 @@ public class VehicleRoutingAlgorithm {
     }
 
 
-    private void selectedStrategy(String name, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-		algoListeners.selectedStrategy(name,problem, solutions);
+    private void selectedStrategy(String name, SearchStrategyManager searchStrategyManager, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+		algoListeners.selectedStrategy(name, searchStrategyManager, problem, solutions);
 	}
 
 	/**
