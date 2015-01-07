@@ -55,6 +55,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
         private boolean newRoute;
 
+
         ScoredJob(Job job, double score, InsertionData insertionData, VehicleRoute route, boolean isNewRoute) {
             this.job = job;
             this.score = score;
@@ -184,6 +185,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 	private ScoringFunction scoringFunction;
 
     private JobInsertionCostsCalculator insertionCostsCalculator;
+
 
     /**
 	 * Sets the scoring function.

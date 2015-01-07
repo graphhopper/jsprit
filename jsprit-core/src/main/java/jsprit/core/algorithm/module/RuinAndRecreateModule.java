@@ -80,4 +80,11 @@ public class RuinAndRecreateModule implements SearchStrategyModule{
 		
 	}
 
+	public InsertionStrategy getInsertion() {
+		return insertion;
+	}
+
+	public RuinStrategy getRuin() {
+		return ruin;
+	}
 }

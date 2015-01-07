@@ -43,6 +43,15 @@ public final class BestInsertion extends AbstractInsertionStrategy{
 
 	private JobInsertionCostsCalculator bestInsertionCostCalculator;
 
+	private NoiseMaker noiseMaker = new NoiseMaker() {
+
+		@Override
+		public double makeNoise() {
+			return 0;
+		}
+
+	};
+
 	public BestInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
 		super(vehicleRoutingProblem);
 		bestInsertionCostCalculator = jobInsertionCalculator;
@@ -67,7 +76,7 @@ public final class BestInsertion extends AbstractInsertionStrategy{
 				if(iData instanceof NoInsertionFound) {
 					continue;
 				}
-				if(iData.getInsertionCost() < bestInsertionCost){
+				if(iData.getInsertionCost() < bestInsertionCost + noiseMaker.makeNoise()){
 					bestInsertion = new Insertion(vehicleRoute,iData);
 					bestInsertionCost = iData.getInsertionCost();
 				}
@@ -75,7 +84,7 @@ public final class BestInsertion extends AbstractInsertionStrategy{
             VehicleRoute newRoute = VehicleRoute.emptyRoute();
             InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
             if(!(newIData instanceof NoInsertionFound)){
-                if(newIData.getInsertionCost() < bestInsertionCost){
+                if(newIData.getInsertionCost() < bestInsertionCost + noiseMaker.makeNoise()){
                     bestInsertion = new Insertion(newRoute,newIData);
                     vehicleRoutes.add(newRoute);
                 }
