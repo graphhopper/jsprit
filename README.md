@@ -42,6 +42,9 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 ####Mailing List: 
 In the [mailing list](https://groups.google.com/group/jsprit-mailing-list) you can discuss jsprit related issues and you will probably get answers to your questions.
 
+####Stackoverflow:
+You can also use [stackoverflow](http://stackoverflow.com/questions/tagged/jsprit) to discuss your issues. Tag it with 'jsprit' then it is easier to keep track of your topic.
+
 ####Issue Tracker:
 For bugs, feature requests or similar use the [issue tracker](https://github.com/jsprit/jsprit/issues).
 
