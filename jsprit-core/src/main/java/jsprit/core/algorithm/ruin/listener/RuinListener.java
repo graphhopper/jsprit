@@ -18,11 +18,11 @@
  ******************************************************************************/
 package jsprit.core.algorithm.ruin.listener;
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
 
 
 /**
