@@ -85,6 +85,7 @@ public final class RuinRandom extends AbstractRuinStrategy {
         throw new IllegalStateException("not supported");
 	}
 
+	@Deprecated
 	public void setRuinFraction(double fractionOfAllNodes2beRuined) {
 		this.fractionOfAllNodes2beRuined = fractionOfAllNodes2beRuined;
 		logger.info("fraction set " + this);
