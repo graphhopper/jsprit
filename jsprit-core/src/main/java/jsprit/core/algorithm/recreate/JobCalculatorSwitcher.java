@@ -18,13 +18,13 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.Vehicle;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 class JobCalculatorSwitcher implements JobInsertionCostsCalculator{

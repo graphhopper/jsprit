@@ -18,11 +18,11 @@
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
+import jsprit.core.problem.misc.JobInsertionContext;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
-import jsprit.core.problem.misc.JobInsertionContext;
 
 class SoftRouteConstraintManager implements SoftRouteConstraint{
 

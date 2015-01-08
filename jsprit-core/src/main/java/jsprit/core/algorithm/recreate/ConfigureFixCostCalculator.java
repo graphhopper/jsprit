@@ -17,13 +17,13 @@
 package jsprit.core.algorithm.recreate;
 
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
 
 
 final class ConfigureFixCostCalculator implements InsertionStartsListener, JobInsertedListener{

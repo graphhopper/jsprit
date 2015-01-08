@@ -18,17 +18,16 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import static org.junit.Assert.*;
-
-import java.util.Collection;
-
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.util.Solutions;
-
 import org.junit.Test;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 public class PickupsAndDeliveries_IT {
 	

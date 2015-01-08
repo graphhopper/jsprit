@@ -16,15 +16,15 @@
  ******************************************************************************/
 package jsprit.core.util;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class SolutionVerifier implements AlgorithmEndsListener{

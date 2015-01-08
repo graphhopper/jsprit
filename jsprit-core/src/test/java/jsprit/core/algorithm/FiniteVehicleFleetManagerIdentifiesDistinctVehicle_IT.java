@@ -18,19 +18,18 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.recreate.NoSolutionFoundException;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class FiniteVehicleFleetManagerIdentifiesDistinctVehicle_IT {
 	

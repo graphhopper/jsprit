@@ -16,13 +16,13 @@
  ******************************************************************************/
 package jsprit.core.algorithm.selector;
 
+import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.util.RandomNumberGeneration;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-
-import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.util.RandomNumberGeneration;
 
 
 

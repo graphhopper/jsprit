@@ -16,10 +16,10 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate.listener;
 
-import java.util.Collection;
-
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
 
 
 

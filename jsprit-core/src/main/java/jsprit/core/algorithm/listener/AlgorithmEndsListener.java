@@ -16,10 +16,10 @@
  ******************************************************************************/
 package jsprit.core.algorithm.listener;
 
-import java.util.Collection;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import java.util.Collection;
 
 
 

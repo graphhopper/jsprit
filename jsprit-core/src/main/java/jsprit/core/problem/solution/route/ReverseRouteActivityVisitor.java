@@ -16,12 +16,12 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route;
 
+import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
+import jsprit.core.problem.solution.route.activity.TourActivity;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
-import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
-import jsprit.core.problem.solution.route.activity.TourActivity;
 
 
 public class ReverseRouteActivityVisitor implements RouteVisitor{

@@ -16,13 +16,13 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public class RemoveEmptyVehicles implements InsertionEndsListener{

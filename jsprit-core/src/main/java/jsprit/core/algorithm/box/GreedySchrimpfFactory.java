@@ -16,14 +16,14 @@
  ******************************************************************************/
 package jsprit.core.algorithm.box;
 
-import java.net.URL;
-
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.AlgorithmConfig;
 import jsprit.core.algorithm.io.AlgorithmConfigXmlReader;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.util.Resource;
+
+import java.net.URL;
 
 
 

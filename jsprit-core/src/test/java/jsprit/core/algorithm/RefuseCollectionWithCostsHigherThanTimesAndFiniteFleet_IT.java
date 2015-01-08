@@ -16,15 +16,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Collection;
-
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -39,8 +30,12 @@ import jsprit.core.reporting.SolutionPrinter.Print;
 import jsprit.core.util.Solutions;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix.Builder;
-
 import org.junit.Test;
+
+import java.io.*;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 
 

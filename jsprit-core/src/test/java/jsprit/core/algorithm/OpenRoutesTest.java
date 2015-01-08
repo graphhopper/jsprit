@@ -18,10 +18,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import static org.junit.Assert.*;
-
-import java.util.Collection;
-
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.recreate.NoSolutionFoundException;
 import jsprit.core.problem.Location;
@@ -29,16 +25,18 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.GreatCircleCosts;
 import jsprit.core.util.Solutions;
-
 import jsprit.core.util.TestUtils;
 import org.junit.Test;
+
+import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 public class OpenRoutesTest {
 	

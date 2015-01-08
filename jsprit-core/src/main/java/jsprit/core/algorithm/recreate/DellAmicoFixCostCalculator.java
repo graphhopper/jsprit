@@ -18,8 +18,6 @@
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
 
-import java.util.Collection;
-
 import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import jsprit.core.problem.constraint.SoftRouteConstraint;
@@ -27,6 +25,8 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+
+import java.util.Collection;
 
 public class DellAmicoFixCostCalculator implements SoftRouteConstraint, InsertionStartsListener, JobInsertedListener{
 

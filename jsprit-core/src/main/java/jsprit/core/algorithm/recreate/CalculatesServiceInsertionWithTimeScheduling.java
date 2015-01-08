@@ -1,9 +1,5 @@
 package jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
@@ -12,6 +8,10 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.RandomNumberGeneration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsCalculator{

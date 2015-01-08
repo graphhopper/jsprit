@@ -18,13 +18,13 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DefaultTourActivityFactoryTest {
 	

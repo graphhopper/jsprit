@@ -16,13 +16,13 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 public class ResetAndIniFleetManager implements InsertionStartsListener{

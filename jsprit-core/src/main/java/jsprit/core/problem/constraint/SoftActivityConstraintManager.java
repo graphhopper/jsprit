@@ -18,12 +18,12 @@
  ******************************************************************************/
 package jsprit.core.problem.constraint;
 
+import jsprit.core.problem.misc.JobInsertionContext;
+import jsprit.core.problem.solution.route.activity.TourActivity;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
-import jsprit.core.problem.misc.JobInsertionContext;
-import jsprit.core.problem.solution.route.activity.TourActivity;
 
 class SoftActivityConstraintManager implements SoftActivityConstraint{
 

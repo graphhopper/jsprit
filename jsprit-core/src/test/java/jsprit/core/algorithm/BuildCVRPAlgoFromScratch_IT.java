@@ -27,7 +27,6 @@ import jsprit.core.algorithm.ruin.distance.AvgServiceDistance;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.algorithm.state.StateManager;
-import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.io.VrpXMLReader;

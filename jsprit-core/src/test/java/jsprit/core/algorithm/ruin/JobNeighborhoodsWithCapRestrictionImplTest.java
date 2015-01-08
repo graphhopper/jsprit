@@ -18,23 +18,21 @@
  ******************************************************************************/
 package jsprit.core.algorithm.ruin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import jsprit.core.algorithm.ruin.RuinRadial.JobNeighborhoodsImplWithCapRestriction;
 import jsprit.core.algorithm.ruin.distance.EuclideanServiceDistance;
 import jsprit.core.algorithm.ruin.distance.JobDistance;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.util.Coordinate;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class JobNeighborhoodsWithCapRestrictionImplTest {
