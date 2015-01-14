@@ -12,20 +12,18 @@ import java.util.Random;
 public class RandomUtils {
 
     public static VehicleRoute nextRoute(Collection<VehicleRoute> routes, Random random){
-        int randomIndex = random.nextInt(routes.size());
-        int count = 0;
-        for(VehicleRoute route : routes){
-            if(count <= randomIndex) return route;
-            count++;
-        }
-        return null;
+        return nextItem(routes,random);
     }
 
     public static Job nextJob(Collection<Job> jobs, Random random){
-        int randomIndex = random.nextInt(jobs.size());
+        return nextItem(jobs,random);
+    }
+
+    public static <T> T nextItem(Collection<T> items, Random random){
+        int randomIndex = random.nextInt(items.size());
         int count = 0;
-        for(Job job : jobs){
-            if(count <= randomIndex) return job;
+        for(T item : items){
+            if(count == randomIndex) return item;
             count++;
         }
         return null;
