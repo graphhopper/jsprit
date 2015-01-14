@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
-
+@Deprecated
 public class NeighborhoodImpl implements Neighborhood{
 	
 	private static Logger log = LogManager.getLogger(NeighborhoodImpl.class);

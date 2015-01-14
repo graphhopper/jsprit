@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.util;
 
+@Deprecated
 public interface Neighborhood {
 	
 	public boolean areNeighbors(String location1, String location2);

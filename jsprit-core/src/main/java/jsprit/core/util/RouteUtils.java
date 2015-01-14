@@ -27,6 +27,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 
 import java.util.Collection;
 
+@Deprecated
 public class RouteUtils {
 	
 	/**
