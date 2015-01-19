@@ -288,6 +288,14 @@ public class Capacity {
 		return toReturnBuilder.build();
 	}
 
+	public static Capacity min(Capacity cap1, Capacity cap2) {
+		if(cap1 == null || cap2 == null) throw new IllegalArgumentException("arg must not be null");
+		Capacity.Builder toReturnBuilder = Capacity.Builder.newInstance();
+		for(int i=0;i<Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions());i++){
+			toReturnBuilder.addDimension(i, Math.min(cap1.get(i), cap2.get(i)));
+		}
+		return toReturnBuilder.build();
+	}
 	
 	
 }
