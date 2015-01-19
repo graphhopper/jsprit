@@ -20,6 +20,7 @@ import jsprit.core.algorithm.ruin.distance.JobDistance;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.util.RandomUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -107,7 +108,7 @@ public final class RuinRadial extends AbstractRuinStrategy {
 		if (nOfJobs2BeRemoved == 0) {
 			return Collections.emptyList();
 		}
-		Job randomJob = pickRandomJob();
+		Job randomJob = RandomUtils.nextJob(vrp.getJobs().values(),random);
 		return ruinRoutes(vehicleRoutes, randomJob, nOfJobs2BeRemoved);
 	}
 	
@@ -129,11 +130,5 @@ public final class RuinRadial extends AbstractRuinStrategy {
 		}
         return unassignedJobs;
 	}
-
-	private Job pickRandomJob() {
-		int totNuOfJobs = vrp.getJobs().values().size();
-		int randomIndex = random.nextInt(totNuOfJobs);
-		return new ArrayList<Job>(vrp.getJobs().values()).get(randomIndex);
-    }
 
 }
