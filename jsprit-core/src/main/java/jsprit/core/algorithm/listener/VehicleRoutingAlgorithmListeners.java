@@ -16,7 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.listener;
 
-import jsprit.core.algorithm.SearchStrategyManager;
+import jsprit.core.algorithm.SearchStrategy;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -172,10 +172,10 @@ public class VehicleRoutingAlgorithmListeners {
 		}	
 	}
 
-	public void selectedStrategy(String name, SearchStrategyManager searchStrategyManager, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+	public void selectedStrategy(SearchStrategy.DiscoveredSolution discoveredSolution, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 		for(PrioritizedVRAListener l : algorithmListeners){
 			if(l.getListener() instanceof StrategySelectedListener){
-				((StrategySelectedListener)l.getListener()).informSelectedStrategy(name, searchStrategyManager, problem, solutions);
+				((StrategySelectedListener)l.getListener()).informSelectedStrategy(discoveredSolution, problem, solutions);
 			}
 		}
 	}

@@ -16,7 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.listener;
 
-import jsprit.core.algorithm.SearchStrategyManager;
+import jsprit.core.algorithm.SearchStrategy;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 
@@ -27,6 +27,6 @@ import java.util.Collection;
 
 public interface StrategySelectedListener extends VehicleRoutingAlgorithmListener{
 
-	void informSelectedStrategy(String strategyId, SearchStrategyManager searchStrategyManager, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions);
+	void informSelectedStrategy(SearchStrategy.DiscoveredSolution discoveredSolution, VehicleRoutingProblem vehicleRoutingProblem, Collection<VehicleRoutingProblemSolution> vehicleRoutingProblemSolutions);
 	
 }

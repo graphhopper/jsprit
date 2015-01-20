@@ -33,15 +33,18 @@ import java.util.Collections;
 public class SearchStrategy {
 	
 	public static class DiscoveredSolution {
+
 		private VehicleRoutingProblemSolution solution;
+
 		private boolean accepted;
-		private String strategyName;
+
+		private String strategyId;
 		
-		public DiscoveredSolution(VehicleRoutingProblemSolution solution,boolean accepted, String strategyName) {
+		public DiscoveredSolution(VehicleRoutingProblemSolution solution, boolean accepted, String strategyId) {
 			super();
 			this.solution = solution;
 			this.accepted = accepted;
-			this.strategyName = strategyName;
+			this.strategyId = strategyId;
 		}
 
 		public VehicleRoutingProblemSolution getSolution() {
@@ -52,10 +55,12 @@ public class SearchStrategy {
 			return accepted;
 		}
 
-		@SuppressWarnings("UnusedDeclaration")
+		@Deprecated
         public String getStrategyName() {
-			return strategyName;
+			return strategyId;
 		}
+
+		public String getStrategyId() { return strategyId; }
 		
 	}
 	
@@ -137,7 +142,7 @@ public class SearchStrategy {
 		double costs = solutionCostCalculator.getCosts(lastSolution);
 		lastSolution.setCost(costs);
 		boolean solutionAccepted = solutionAcceptor.acceptSolution(solutions, lastSolution);
-		return new DiscoveredSolution(lastSolution, solutionAccepted, getName());
+		return new DiscoveredSolution(lastSolution, solutionAccepted, getId());
 	}
 
     private String getErrMsg() {

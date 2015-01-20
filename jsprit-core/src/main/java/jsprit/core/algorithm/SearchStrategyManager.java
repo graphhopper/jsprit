@@ -43,11 +43,9 @@ public class SearchStrategyManager {
 		this.random = random;
 	}
 	
-	
 	public List<SearchStrategy> getStrategies() {
 		return Collections.unmodifiableList(strategies);
 	}
-
 
     /**
      * Returns the probabilities.
@@ -55,10 +53,17 @@ public class SearchStrategyManager {
      * are calculated here with the sum of weights]
      * @return list of probabilities
      */
+	@Deprecated
 	public List<Double> getProbabilities() {
 		return Collections.unmodifiableList(weights);
 	}
-	
+
+	public List<Double> getWeights(){ return Collections.unmodifiableList(weights); }
+
+	public double getWeight(String strategyId){
+		return weights.get(id2index.get(strategyId));
+	}
+
 	/**
 	 * adds a new search strategy with a certain weight.
 	 * @param strategy strategy to be added
