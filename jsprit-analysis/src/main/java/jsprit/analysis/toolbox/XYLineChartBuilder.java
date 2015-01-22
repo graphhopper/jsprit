@@ -18,20 +18,18 @@
  ******************************************************************************/
 package jsprit.analysis.toolbox;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -109,16 +107,6 @@ public class XYLineChartBuilder {
 		plot.setBackgroundPaint(Color.WHITE);
 		plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 		plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
-		NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
-		Range rangeBounds = collection.getRangeBounds(true);
-		double upper = Math.min(rangeBounds.getUpperBound(), rangeBounds.getLowerBound()*5);
-		if(upper == 0.0){ upper = 10000; }
-		if(rangeBounds.getLowerBound() == upper){
-			yAxis.setRangeWithMargins(rangeBounds.getLowerBound()-rangeBounds.getLowerBound()*.1,upper+upper*.1);
-		}
-		else{
-			yAxis.setRangeWithMargins(rangeBounds.getLowerBound(),upper);
-		}
 		return chart;
 	}
 
