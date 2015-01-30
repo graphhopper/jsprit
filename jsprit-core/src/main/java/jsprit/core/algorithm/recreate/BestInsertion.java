@@ -20,6 +20,7 @@ import jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.util.NoiseMaker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
