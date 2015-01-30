@@ -191,8 +191,9 @@ public class InsertionBuilder {
 		timeScheduling=true;
 	}
 
-	public void setAllowVehicleSwitch(boolean allowVehicleSwitch) {
+	public InsertionBuilder setAllowVehicleSwitch(boolean allowVehicleSwitch) {
 		this.allowVehicleSwitch = allowVehicleSwitch;
+		return this;
 	}
 
 	
