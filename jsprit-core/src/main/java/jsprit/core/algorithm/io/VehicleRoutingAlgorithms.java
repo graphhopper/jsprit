@@ -48,10 +48,7 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
-import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
-import jsprit.core.problem.vehicle.Vehicle;
-import jsprit.core.problem.vehicle.VehicleFleetManager;
+import jsprit.core.problem.vehicle.*;
 import jsprit.core.util.ActivityTimeTracker;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -549,17 +546,21 @@ public class VehicleRoutingAlgorithms {
         if(stateManager.timeWindowUpdateIsActivated()){
             UpdateVehicleDependentPracticalTimeWindows timeWindowUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,vrp.getTransportCosts());
             timeWindowUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
+				Map<VehicleTypeKey,Vehicle> uniqueTypes = new HashMap<VehicleTypeKey,Vehicle>();
 
-                @Override
-                public Collection<Vehicle> get(VehicleRoute route) {
-                    Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-                    vehicles.add(route.getVehicle());
-                    if(switchAllowed) {
-                        vehicles.addAll(vehicleFleetManager.getAvailableVehicles(route.getVehicle()));
-                    }
-                    return vehicles;
-                }
-
+				@Override
+				public Collection<Vehicle> get(VehicleRoute vehicleRoute) {
+					if(uniqueTypes.isEmpty()){
+						for( Vehicle v : vrp.getVehicles()){
+							if(!uniqueTypes.containsKey(v.getVehicleTypeIdentifier())){
+								uniqueTypes.put(v.getVehicleTypeIdentifier(),v);
+							}
+						}
+					}
+					Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
+					vehicles.addAll(uniqueTypes.values());
+					return vehicles;
+				}
             });
             stateManager.addStateUpdater(timeWindowUpdater);
             activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;

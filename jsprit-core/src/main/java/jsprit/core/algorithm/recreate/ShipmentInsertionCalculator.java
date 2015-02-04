@@ -137,6 +137,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 			}
 			double additionalPickupICosts = softActivityConstraint.getCosts(insertionContext, prevAct, pickupShipment, activities.get(i), prevActEndTime);
 			double pickupAIC = calculate(insertionContext,prevAct,pickupShipment,activities.get(i),prevActEndTime);
+
 			TourActivity prevAct_deliveryLoop = pickupShipment;
 			double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
 			double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);

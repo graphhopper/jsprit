@@ -2,9 +2,11 @@ package jsprit.core.algorithm;
 
 
 import jsprit.core.algorithm.box.SchrimpfFactory;
+import jsprit.core.problem.AbstractJob;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
+import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -14,7 +16,6 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
-import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import org.junit.Test;
@@ -27,26 +28,52 @@ import static org.junit.Assert.assertFalse;
 
 public class PDTW_IT {
 
-    int nShipments = 200;
-    int nVehicles = 15;
+    int nJobs = 200;
+    int nVehicles = 40;
     Random random = new Random(1623);
     int nextShipmentId=1;
     int nextVehicleId=1;
 
     @Test
-    public void timeWindowsShouldNOTbeBroken() {
-
+    public void whenDealingWithShipments_timeWindowsShouldNOTbeBroken() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         for(int i =0 ; i < nVehicles ; i++){
             vrpBuilder.addVehicle(createVehicle());
         }
-        for(int i =0 ; i < nShipments ;i++){
+        for(int i =0 ; i < nJobs;i++){
             vrpBuilder.addJob(createShipment());
         }
         vrpBuilder.setFleetSize(FleetSize.FINITE);
         VehicleRoutingProblem problem = vrpBuilder.build();
         VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
-        algorithm.setMaxIterations(10);
+        algorithm.setMaxIterations(0);
+        Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
+        VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
+
+        for(VehicleRoute route : bestSolution.getRoutes()){
+            Vehicle v = route.getVehicle();
+            for(TourActivity ta : route.getActivities()){
+                if(ta.getArrTime() > v.getLatestArrival() * 1.00001){
+                    assertFalse(true);
+                }
+            }
+        }
+    }
+
+
+    @Test
+    public void whenDealingWithServices_timeWindowsShouldNOTbeBroken() {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        for(int i =0 ; i < nVehicles ; i++){
+            vrpBuilder.addVehicle(createVehicle());
+        }
+        for(int i =0 ; i < nJobs;i++){
+            vrpBuilder.addJob(createService());
+        }
+        vrpBuilder.setFleetSize(FleetSize.FINITE);
+        VehicleRoutingProblem problem = vrpBuilder.build();
+        VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
+        algorithm.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
@@ -58,13 +85,20 @@ public class PDTW_IT {
                 }
             }
         }
+    }
 
-        SolutionPrinter.print(bestSolution);
+    private AbstractJob createService() {
+        Service.Builder b = Service.Builder.newInstance(Integer.toString(nextShipmentId++));
+        b.addSizeDimension(0, 1);
+        b.setServiceTime(random.nextDouble() * 5);
+        b.setLocation(createLocation());
+        return b.build();
     }
 
     private Location createLocation(){
         return loc(new Coordinate(50*random.nextDouble(), 50*random.nextDouble()));
     }
+
     private Shipment createShipment(){
         Shipment.Builder b = Shipment.Builder.newInstance(Integer.toString(nextShipmentId++));
         b.addSizeDimension(0, 1);

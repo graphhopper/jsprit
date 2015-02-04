@@ -30,10 +30,13 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
+import jsprit.core.problem.vehicle.VehicleTypeKey;
 import jsprit.core.util.ActivityTimeTracker;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
 * Created by schroeder on 10.12.14.
@@ -88,11 +91,20 @@ public class PrettyAlgorithmBuilder {
             stateManager.updateTimeWindowStates();
             UpdateVehicleDependentPracticalTimeWindows tw_updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts());
             tw_updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
+
+                Map<VehicleTypeKey,Vehicle> uniqueTypes = new HashMap<VehicleTypeKey,Vehicle>();
+
                 @Override
                 public Collection<Vehicle> get(VehicleRoute vehicleRoute) {
+                    if(uniqueTypes.isEmpty()){
+                        for( Vehicle v : vrp.getVehicles()){
+                            if(!uniqueTypes.containsKey(v.getVehicleTypeIdentifier())){
+                                uniqueTypes.put(v.getVehicleTypeIdentifier(),v);
+                            }
+                        }
+                    }
                     Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-                    vehicles.add(vehicleRoute.getVehicle());
-                    vehicles.addAll(fleetManager.getAvailableVehicles(vehicleRoute.getVehicle()));
+                    vehicles.addAll(uniqueTypes.values());
                     return vehicles;
                 }
             });

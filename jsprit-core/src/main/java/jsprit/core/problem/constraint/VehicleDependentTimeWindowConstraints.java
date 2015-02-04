@@ -62,8 +62,11 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getNewVehicle(), InternalStates.LATEST_OPERATION_START_TIME ,Double.class);
 //            if(latestArrTimeAtNextAct == null) //try to get latest_operation_start_time of currVehicle
 //                latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getRoute().getVehicle(), StateFactory.LATEST_OPERATION_START_TIME ,Double.class);
-            if(latestArrTimeAtNextAct == null) //otherwise set it to theoretical_latest_operation_startTime
-                latestArrTimeAtNextAct=nextAct.getTheoreticalLatestOperationStartTime();
+            if(latestArrTimeAtNextAct == null) {//otherwise set it to theoretical_latest_operation_startTime
+                latestArrTimeAtNextAct = nextAct.getTheoreticalLatestOperationStartTime();
+//                throw new IllegalStateException("this is strange and should not be");
+                //ToDo here, there should be another solution
+            }
             nextActLocation = nextAct.getLocation();
         }
 
@@ -99,6 +102,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         if(arrTimeAtNextOnDirectRouteWithNewVehicle > latestArrTimeAtNextAct){
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
+
 			/*
 			 *                     |--- newAct ---|
 			 *  |--- nextAct ---|
@@ -109,9 +113,13 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         //			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
         double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
-        double latestArrTimeAtNewAct = Math.min(newAct.getTheoreticalLatestOperationStartTime(),latestArrTimeAtNextAct - routingCosts.getBackwardTransportTime(newAct.getLocation(),nextActLocation,
-                latestArrTimeAtNextAct,iFacts.getNewDriver(),iFacts.getNewVehicle()));
-
+        double latestArrTimeAtNewAct =
+                Math.min(newAct.getTheoreticalLatestOperationStartTime(),
+                        latestArrTimeAtNextAct -
+                                routingCosts.getBackwardTransportTime(newAct.getLocation(),nextActLocation,latestArrTimeAtNextAct,iFacts.getNewDriver(),iFacts.getNewVehicle())
+                                    - newAct.getOperationTime()
+                );
+//ToDo: SUSPICIOUS - hier muss noch operation time weg
 			/*
 			 *  |--- prevAct ---|
 			 *                       		                 |--- vehicle's arrival @newAct
