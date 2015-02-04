@@ -119,7 +119,8 @@ public class TestCalculatesServiceInsertion {
 		jobs.add(third);
 		jobs.add(second);
 		
-		vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs).addVehicle(vehicle).setRoutingCost(costs).build();
+		vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs)
+				.addVehicle(vehicle).setRoutingCost(costs).build();
 		
 		states = new StateManager(vrp);
 		states.updateLoadStates();

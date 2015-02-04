@@ -24,7 +24,7 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
-import jsprit.core.problem.vehicle.PenaltyVehicleType;
+
 
 /**
  * Printer to print the details of a vehicle-routing-problem solution.
@@ -143,10 +143,7 @@ public class SolutionPrinter {
 	}
 
     private static String getVehicleString(VehicleRoute route) {
-        if(route.getVehicle().getType() instanceof PenaltyVehicleType){
-            return route.getVehicle().getId()+"*";
-        }
-        return route.getVehicle().getId();
+		return route.getVehicle().getId();
     }
 
 	private static Jobs getNuOfJobs(VehicleRoutingProblem problem) {

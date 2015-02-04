@@ -20,7 +20,6 @@ package jsprit.instance.reader;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
-import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.Coordinate;
 import jsprit.instance.reader.VrphGoldenReader.VrphType;
@@ -38,9 +37,8 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfVehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(!(v.getType() instanceof PenaltyVehicleType)){
-				nuOfVehicles++;
-			}
+			nuOfVehicles++;
+
 		}
 		assertEquals(17,nuOfVehicles);
 	}
@@ -53,7 +51,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_1") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_1")){
 				nuOfType1Vehicles++;
 			}
 		}
@@ -68,7 +66,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_1") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_1")){
 				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
@@ -83,7 +81,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_2")  && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_2")){
 				nuOfType1Vehicles++;
 			}
 		}
@@ -98,7 +96,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_2")  && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_2") ){
 				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
@@ -113,7 +111,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_3") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_3")){
 				nuOfType1Vehicles++;
 			}
 		}
@@ -128,7 +126,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_3") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_3")){
 				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
@@ -143,7 +141,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_4") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_4")){
 				nuOfType1Vehicles++;
 			}
 		}
@@ -158,7 +156,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_4") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_4")){
 				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
@@ -173,7 +171,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_5") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_5") ){
 				nuOfType1Vehicles++;
 			}
 		}
@@ -188,7 +186,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_5") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_5")){
 				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}
@@ -203,7 +201,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int nuOfType1Vehicles = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_6") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_6")){
 				nuOfType1Vehicles++;
 			}
 		}
@@ -218,7 +216,7 @@ public class GoldenReaderTest {
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		int sumOfType1Cap = 0;
 		for(Vehicle v : vrp.getVehicles()){
-			if(v.getType().getTypeId().equals("type_6") && !(v.getType() instanceof PenaltyVehicleType) ){
+			if(v.getType().getTypeId().equals("type_6") ){
 				sumOfType1Cap+=v.getType().getCapacityDimensions().get(0);
 			}
 		}

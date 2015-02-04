@@ -194,15 +194,7 @@ public class VehicleImplTest {
 		assertTrue(v.equals(v2));
 	}
 	
-	@Test
-	public void whenTwoVehiclesHaveTheSameIdButDiffType_theyShouldNotBeEqual(){
-		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setType(type1).setEndLocationId("start").setReturnToDepot(false).build();
-		PenaltyVehicleType penType = new PenaltyVehicleType(type1);
-		Vehicle v2 = VehicleImpl.Builder.newInstance("v").setType(penType).setStartLocationId("start").setEndLocationId("start").setReturnToDepot(false).build();
-		assertTrue(!v.equals(v2));
-	}
-	
+
 	@Test
 	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
 		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();

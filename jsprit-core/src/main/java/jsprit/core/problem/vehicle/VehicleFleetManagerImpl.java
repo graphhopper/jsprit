@@ -120,27 +120,18 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		if(v.getType() == null){
 			throw new IllegalStateException("vehicle needs type");
 		}
-		String typeId = v.getType().getTypeId();
-		if(v.getType() instanceof PenaltyVehicleType){
-			VehicleTypeKey typeKey = new VehicleTypeKey(typeId, v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
-			penaltyVehicles.put(typeKey, v);
+		VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
+		if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
+			typeMapOfAvailableVehicles.put(typeKey, new TypeContainer());
 		}
-		else{
-			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
-			if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
-				typeMapOfAvailableVehicles.put(typeKey, new TypeContainer());
-			}
-			typeMapOfAvailableVehicles.get(typeKey).add(v);
-		}
+		typeMapOfAvailableVehicles.get(typeKey).add(v);
+
 	}
 	
 	private void removeVehicle(Vehicle v){
-		//it might be better to introduce a class PenaltyVehicle
-		if(!(v.getType() instanceof PenaltyVehicleType)){
-			VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
-			if(typeMapOfAvailableVehicles.containsKey(key)){
-				typeMapOfAvailableVehicles.get(key).remove(v);
-			}
+		VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
+		if(typeMapOfAvailableVehicles.containsKey(key)){
+			typeMapOfAvailableVehicles.get(key).remove(v);
 		}
 	}
 
@@ -193,7 +184,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		if(vehicles.isEmpty() || vehicle instanceof NoVehicle){
 			return;
 		}
-		if(vehicle.getType() instanceof PenaltyVehicleType) return;
 		boolean locked = lockedVehicles.add(vehicle);
 		removeVehicle(vehicle);
 		if(!locked){
@@ -210,7 +200,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 			return;
 		}
 		if(vehicle == null) return;
-		if(vehicle.getType() instanceof PenaltyVehicleType) return;
 		lockedVehicles.remove(vehicle);
 		addVehicle(vehicle);
 	}

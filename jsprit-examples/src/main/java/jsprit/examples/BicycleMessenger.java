@@ -42,7 +42,10 @@ import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import jsprit.core.problem.vehicle.*;
+import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
@@ -317,10 +320,6 @@ public class BicycleMessenger {
 					SolutionPrinter.print(bicycleMessengerProblem, bestOf, SolutionPrinter.Print.VERBOSE);
 					throw new IllegalStateException("three times less than ... constraint broken. this must not be. act.getArrTime(): " + act.getArrTime() + " allowed: " + 3*nearestMessengers.get(((JobActivity)act).getJob().getId())); 
 				}
-			}
-			if(route.getVehicle().getType() instanceof PenaltyVehicleType){
-				SolutionPrinter.print(bicycleMessengerProblem, bestOf, SolutionPrinter.Print.VERBOSE);
-				throw new IllegalStateException("penaltyVehicle in solution. if there is a valid solution, this should not be");
 			}
 		}
 	}

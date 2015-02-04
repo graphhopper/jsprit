@@ -109,47 +109,7 @@ public class TestVehicleFleetManagerImpl {
 		assertEquals(2, availableVehicles.size());
 	}
 
-	@Test
-	public void testWithPenalty_whenHavingTwoRegularVehicleAvailablePlusOnePenaltyVehicle_andOneIsLocked_returnTheOtherRegularVehicle(){
-		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard").build();
-		PenaltyVehicleType penaltyVehicleType = new PenaltyVehicleType(penaltyType);
-		
-		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setStartLocationId("loc").
-					setType(penaltyVehicleType).build();
-		
-		Vehicle v3 = VehicleImpl.Builder.newInstance("standard_v3").setStartLocationId("loc").
-				setType(penaltyType).build();
-		
-		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		vehicles.add(v1);
-		vehicles.add(v2);
-		vehicles.add(penalty4standard);
-		vehicles.add(v3);
-		VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
-		fleetManager.lock(v1);
-		fleetManager.lock(v2);
-		Collection<Vehicle> availableVehicles = fleetManager.getAvailableVehicles();
-		assertEquals(1, availableVehicles.size());
-		assertEquals(v3, availableVehicles.iterator().next());
-	}
-	
-	@Test
-	public void testWithPenalty_whenHavingNoRegularVehicleAvailable_penaltyVehicleIsReturned(){
-		VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance("standard").build();
-		
-		Vehicle penalty4standard = VehicleImpl.Builder.newInstance("standard_penalty").setStartLocationId("loc").
-					setType(penaltyType).build();
-		
-		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		vehicles.add(v1);
-		vehicles.add(v2);
-		vehicles.add(penalty4standard);
-		VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
-		fleetManager.lock(v1);
-		fleetManager.lock(v2);
-		Collection<Vehicle> availableVehicles = fleetManager.getAvailableVehicles();
-		assertEquals(penalty4standard, availableVehicles.iterator().next());
-	}
+
 	
 	@Test
 	public void whenAddingTwoVehiclesWithSameTypeIdAndLocation_getAvailableVehicleShouldReturnOnlyOneOfThem(){

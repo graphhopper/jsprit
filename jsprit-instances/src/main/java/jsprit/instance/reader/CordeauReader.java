@@ -17,11 +17,9 @@
 package jsprit.instance.reader;
 
 
-import jsprit.core.problem.Capacity;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
-import jsprit.core.problem.vehicle.PenaltyVehicleType;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -119,25 +117,10 @@ public class CordeauReader {
 			else if(counter <= (nOfCustomers+nOfDepots+nOfDepots)){
 				Coordinate depotCoord = makeCoord(tokens[1].trim(),tokens[2].trim());
 				List<Builder> vBuilders = vehiclesAtDepot.get(depotCounter);
-//				int cap = 0;
-				Capacity cap = Capacity.Builder.newInstance().build();
-				double latestArrTime = 0.0;
-				Coordinate coord = null;
-				String typeId = null;
 				for(Builder vBuilder : vBuilders){
 					vBuilder.setStartLocationCoordinate(depotCoord);
 					VehicleImpl vehicle = vBuilder.build();
-					cap = vehicle.getType().getCapacityDimensions();
-					typeId = vehicle.getType().getTypeId();
-					latestArrTime = vehicle.getLatestArrival();
-					coord = vehicle.getStartLocationCoordinate();
 					vrpBuilder.addVehicle(vehicle);
-				}
-				if(addPenaltyVehicles){
-					VehicleTypeImpl penaltyType = VehicleTypeImpl.Builder.newInstance(typeId).setCapacityDimensions(cap).setCostPerDistance(3.0).setFixedCost(50).build();
-					VehicleImpl penaltyVehicle = VehicleImpl.Builder.newInstance(counter + "_penaltyVehicle").setLatestArrival(latestArrTime)
-							.setType(new PenaltyVehicleType(penaltyType)).setStartLocationCoordinate(coord).build();
-					vrpBuilder.addVehicle(penaltyVehicle);
 				}
 				depotCounter++;
 			}

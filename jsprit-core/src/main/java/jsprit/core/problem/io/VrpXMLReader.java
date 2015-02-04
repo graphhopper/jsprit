@@ -26,8 +26,11 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivityFactory;
-import jsprit.core.problem.vehicle.*;
+import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleImpl.Builder;
+import jsprit.core.problem.vehicle.VehicleType;
+import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Resource;
 import org.apache.commons.configuration.ConfigurationException;
@@ -577,18 +580,6 @@ public class VrpXMLReader{
 			if(distC != null) typeBuilder.setCostPerDistance(distC);
 			VehicleType type = typeBuilder.build();
 			String id = type.getTypeId();
-			String penalty = typeConfig.getString("[@type]");
-			if(penalty != null){
-				if(penalty.equals("penalty")){
-					String penaltyFactor = typeConfig.getString("[@penaltyFactor]");
-					if(penaltyFactor != null){
-						type = new PenaltyVehicleType(type,Double.parseDouble(penaltyFactor));
-					}
-					else type = new PenaltyVehicleType(type);
-					id = id + "_penalty";
-				}
-			}
-			
 			types.put(id, type);
 		}
 		

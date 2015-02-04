@@ -146,13 +146,7 @@ public class VehicleTypeImplTest {
 		assertTrue(type.equals(type2));
 	}
 	
-	@Test
-	public void whenHavingTwoTypesWithTheSameIdButDiffClass_theyShouldNotBeEqual(){
-		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
-		VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
-		PenaltyVehicleType penType = new PenaltyVehicleType(type2);
-		assertTrue(!type.equals(penType));
-	}
+
 	
 
 }
