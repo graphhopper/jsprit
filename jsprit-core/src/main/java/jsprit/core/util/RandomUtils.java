@@ -4,6 +4,7 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -19,6 +20,10 @@ public class RandomUtils {
         return nextItem(jobs,random);
     }
 
+    public static Job nextJob(List<Job> jobs, Random random){
+        return nextItem(jobs,random);
+    }
+
     public static <T> T nextItem(Collection<T> items, Random random){
         int randomIndex = random.nextInt(items.size());
         int count = 0;
@@ -27,6 +32,11 @@ public class RandomUtils {
             count++;
         }
         return null;
+    }
+
+    public static <T> T nextItem(List<T> items, Random random){
+        int randomIndex = random.nextInt(items.size());
+        return items.get(randomIndex);
     }
 
 }
