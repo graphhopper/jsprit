@@ -32,7 +32,11 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ComputationalLaboratory {
-	
+
+	public static interface LabListener {
+
+	}
+
 	/**
 	 * Listener-interface to listen to calculation.
 	 * 
@@ -42,12 +46,19 @@ public class ComputationalLaboratory {
 	 * @author schroeder
 	 *
 	 */
-	public static interface CalculationListener {
+	public static interface CalculationListener extends LabListener{
 		
 		public void calculationStarts(final BenchmarkInstance p, final String algorithmName, final VehicleRoutingAlgorithm algorithm, final int run);
 		
 		public void calculationEnds(final BenchmarkInstance p, final String algorithmName, final VehicleRoutingAlgorithm algorithm, final int run, final Collection<VehicleRoutingProblemSolution> solutions);
 		
+	}
+
+	public static interface LabStartsAndEndsListener extends LabListener {
+
+		public void labStarts(List<BenchmarkInstance> instances, int noAlgorithms, int runs);
+
+		public void labEnds();
 	}
 	
 	/**
@@ -251,6 +262,8 @@ public class ComputationalLaboratory {
 	private int runs = 1;
 	
 	private Collection<CalculationListener> listeners = new ArrayList<ComputationalLaboratory.CalculationListener>();
+
+	private Collection<LabStartsAndEndsListener> startsAndEndslisteners = new ArrayList<LabStartsAndEndsListener>();
 	
 	private List<Algorithm> algorithms = new ArrayList<ComputationalLaboratory.Algorithm>();
 	
@@ -258,7 +271,7 @@ public class ComputationalLaboratory {
 	
 	private Set<String> instanceNames = new HashSet<String>();
 	
-	private int threads = Runtime.getRuntime().availableProcessors()+1;
+	private int threads = 1;
 	
 	public ComputationalLaboratory() {
 
@@ -335,11 +348,16 @@ public class ComputationalLaboratory {
 	
 	/**
 	 * Adds listener to listen computational experiments.
-	 * 
+	 *
 	 * @param listener
 	 */
-	public void addListener(CalculationListener listener){
-		listeners.add(listener);
+	public void addListener(LabListener listener){
+		if(listener instanceof CalculationListener) {
+			listeners.add((CalculationListener) listener);
+		}
+		if(listener instanceof LabStartsAndEndsListener){
+			startsAndEndslisteners.add((LabStartsAndEndsListener) listener);
+		}
 	}
 	
 	/**
@@ -372,6 +390,7 @@ public class ComputationalLaboratory {
 		if(benchmarkInstances.isEmpty()){
 			throw new IllegalStateException("no instance specified. at least one instance needs to be specified.");
 		}
+		informStart();
 		System.out.println("start benchmarking [nuAlgorithms="+algorithms.size()+"][nuInstances=" + benchmarkInstances.size() + "][runsPerInstance=" + runs + "]");
 		double startTime = System.currentTimeMillis();
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
@@ -379,14 +398,16 @@ public class ComputationalLaboratory {
 			for(final BenchmarkInstance p : benchmarkInstances){
 				for(int run=0;run<runs;run++){
 					final int r = run;
-					executor.submit(new Runnable(){
+					runAlgorithm(p, algorithm, r+1);
 
-						@Override
-						public void run() {
-							runAlgorithm(p, algorithm, r+1);
-						}
-						
-					});
+//					executor.submit(new Runnable(){
+//
+//						@Override
+//						public void run() {
+//							;
+//						}
+//
+//					});
 				}
 			}
 		}
@@ -398,6 +419,19 @@ public class ComputationalLaboratory {
 			e.printStackTrace();
 		}
 		System.out.println("benchmarking done [time="+(System.currentTimeMillis()-startTime)/1000 + "sec]");
+		informEnd();
+	}
+
+	private void informEnd() {
+		for(LabStartsAndEndsListener l : startsAndEndslisteners){
+			l.labEnds();
+		}
+	}
+
+	private void informStart() {
+		for(LabStartsAndEndsListener l : startsAndEndslisteners){
+			l.labStarts(benchmarkInstances, algorithms.size(),runs);
+		}
 	}
 
 	/**

@@ -24,6 +24,37 @@ import jsprit.core.util.Coordinate;
  */
 public final class Location implements HasIndex, HasId{
 
+    /**
+     * Factory method (and shortcut) for creating a location object just with x and y coordinates.
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @return location
+     */
+    public static Location newInstance(double x, double y){
+        return Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(x,y)).build();
+    }
+
+    /**
+     * Factory method (and shortcut) for creating location object just with id
+     *
+     * @param id location id
+     * @return location
+     */
+    public static Location newInstance(String id){
+        return Location.Builder.newInstance().setId(id).build();
+    }
+
+    /**
+     * Factory method (and shortcut) for creating location object just with location index
+     *
+     * @param index
+     * @return
+     */
+    public static Location newInstance(int index){
+        return Location.Builder.newInstance().setIndex(index).build();
+    }
+
     public static class Builder {
 
         private String id;

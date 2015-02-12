@@ -33,6 +33,13 @@ public class LocationTest {
         Assert.assertTrue(true);
     }
 
+    @Test
+    public void whenIndexSetWitFactory_returnCorrectLocation(){
+        Location l = Location.newInstance(1);
+        Assert.assertEquals(1,l.getIndex());
+        Assert.assertTrue(true);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void whenIndexSmallerZero_throwException(){
         Location l = Location.Builder.newInstance().setIndex(-1).build();
@@ -51,8 +58,24 @@ public class LocationTest {
     }
 
     @Test
+    public void whenIdSetWithFactory_returnCorrectLocation(){
+        Location l = Location.newInstance("id");
+        Assert.assertEquals("id",l.getId());
+        Assert.assertTrue(true);
+    }
+
+    @Test
     public void whenCoordinateSet_build(){
         Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10,20)).build();
+        Assert.assertEquals(10.,l.getCoordinate().getX());
+        Assert.assertEquals(20.,l.getCoordinate().getY());
+        Assert.assertTrue(true);
+    }
+
+    @Test
+    public void whenCoordinateSetWithFactory_returnCorrectLocation(){
+//        Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10,20)).build();
+        Location l = Location.newInstance(10,20);
         Assert.assertEquals(10.,l.getCoordinate().getX());
         Assert.assertEquals(20.,l.getCoordinate().getY());
         Assert.assertTrue(true);
