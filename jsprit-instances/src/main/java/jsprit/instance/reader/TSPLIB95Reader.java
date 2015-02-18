@@ -17,6 +17,7 @@
 
 package jsprit.instance.reader;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.vehicle.VehicleImpl;
@@ -40,18 +41,23 @@ public class TSPLIB95Reader {
         BufferedReader reader = getBufferedReader(filename);
         String line;
         Coordinate[] coords = null;
-        Integer[] demands = null;
+        int[] demands = null;
         Integer capacity = null;
         List<Integer> depotIds = new ArrayList<Integer>();
         boolean isCoordSection = false;
         boolean isDemandSection = false;
         boolean isDepotSection = false;
+        int dimensions = 0;
         while( ( line = getLine(reader) ) != null ){
+            if(line.startsWith("EOF")){
+                break;
+            }
             if(line.startsWith("DIMENSION")){
                 String[] tokens = line.split(":");
                 String dim = tokens[1].trim();
-                coords = new Coordinate[Integer.parseInt(dim)];
-                demands = new Integer[Integer.parseInt(dim)];
+                dimensions = Integer.parseInt(dim);
+                coords = new Coordinate[dimensions];
+                demands = new int[dimensions];
                 continue;
             }
             if(line.startsWith("CAPACITY")){
@@ -79,13 +85,13 @@ public class TSPLIB95Reader {
             }
             if(isCoordSection){
                 if(coords == null) throw new IllegalStateException("DIMENSION tag missing");
-                String[] tokens = line.split("\\s+");
+                String[] tokens = line.trim().split("\\s+");
                 coords[Integer.parseInt(tokens[0]) - 1] = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
                 continue;
             }
             if(isDemandSection){
                 if(demands == null) throw new IllegalStateException("DIMENSION tag missing");
-                String[] tokens = line.split("\\s+");
+                String[] tokens = line.trim().split("\\s+");
                 demands[Integer.parseInt(tokens[0]) - 1] = Integer.parseInt(tokens[1]);
                 continue;
             }
@@ -106,12 +112,26 @@ public class TSPLIB95Reader {
                     .setStartLocationCoordinate(coords[depotId - 1]).setType(type).build();
             vrpBuilder.addVehicle(vehicle);
         }
-        for(int i=0;i<demands.length;i++){
-            if(demands[i] == 0) continue;
-            String id = "" + (i+1);
-            Service service = Service.Builder.newInstance(id).setLocationId(id).setCoord(coords[i]).addSizeDimension(0,demands[i]).build();
+
+        for (int i = 0; i < coords.length; i++) {
+            String id = "" + (i + 1);
+            if(depotIds.isEmpty()){
+                if(i==0) {
+                    VehicleImpl vehicle = VehicleImpl.Builder.newInstance("start")
+                            .setStartLocation(Location.Builder.newInstance().setId(id)
+                                    .setCoordinate(coords[i]).build())
+                                    .build();
+                    vrpBuilder.addVehicle(vehicle);
+                    continue;
+                }
+            }
+            Service service = Service.Builder.newInstance(id)
+                    .setLocation(Location.Builder.newInstance().setId(id).setCoordinate(coords[i]).build())
+                    .addSizeDimension(0, demands[i]).build();
             vrpBuilder.addJob(service);
         }
+
+
 
     }
 
