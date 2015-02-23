@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.util;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ArrayUtils {
@@ -23,6 +24,16 @@ public class ArrayUtils {
 	public static double[] toPrimitiveArray(List<Double> list){
 		double[] arr = new double[list.size()];
 		for(int i=0;i<list.size();i++) arr[i]=list.get(i);
+		return arr;
+	}
+
+	public static double[] toPrimitiveArray(Collection<Double> collection){
+		double[] arr = new double[collection.size()];
+		int i=0;
+		for(Double d : collection){
+			arr[i]=d;
+			i++;
+		}
 		return arr;
 	}
 	
