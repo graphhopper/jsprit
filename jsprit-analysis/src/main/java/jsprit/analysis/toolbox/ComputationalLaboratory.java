@@ -398,16 +398,16 @@ public class ComputationalLaboratory {
 			for(final BenchmarkInstance p : benchmarkInstances){
 				for(int run=0;run<runs;run++){
 					final int r = run;
-					runAlgorithm(p, algorithm, r+1);
+//					runAlgorithm(p, algorithm, r+1);
 
-//					executor.submit(new Runnable(){
-//
-//						@Override
-//						public void run() {
-//							;
-//						}
-//
-//					});
+					executor.submit(new Runnable(){
+
+						@Override
+						public void run() {
+							runAlgorithm(p, algorithm, r+1);
+						}
+
+					});
 				}
 			}
 		}
