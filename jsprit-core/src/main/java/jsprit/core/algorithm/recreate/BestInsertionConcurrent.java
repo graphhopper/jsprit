@@ -40,7 +40,7 @@ import java.util.concurrent.*;
  * 
  */
 
-final class BestInsertionConcurrent implements InsertionStrategy{
+public final class BestInsertionConcurrent implements InsertionStrategy{
 	
 	static class Batch {
 		List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
