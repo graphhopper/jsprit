@@ -132,7 +132,7 @@ public class Instances {
 		for(int i=0;i<9;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/C1"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder,1000).read(file);
+			new SolomonReader(builder).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("C1" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -153,7 +153,7 @@ public class Instances {
 		for(int i=0;i<8;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/C2"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder,1000).read(file);
+			new SolomonReader(builder).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("C2" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -174,7 +174,7 @@ public class Instances {
 		for(int i=0;i<12;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/R1"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder,1000).read(file);
+			new SolomonReader(builder).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("R1" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -196,7 +196,7 @@ public class Instances {
 		for(int i=0;i<11;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/R2"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder,1000).read(file);
+			new SolomonReader(builder).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("R2" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -217,7 +217,7 @@ public class Instances {
 		for(int i=0;i<8;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/RC1"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder,1000).read(file);
+			new SolomonReader(builder).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("RC1" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
@@ -239,7 +239,7 @@ public class Instances {
 		for(int i=0;i<8;i++){
 			VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 			String file = inputFolder + "/RC2"+ getInstanceNu(i+1) + ".txt";
-			new SolomonReader(builder,1000).read(file);
+			new SolomonReader(builder).read(file);
 			VehicleRoutingProblem p = builder.build();
 			instances.add(new BenchmarkInstance("RC2" + getInstanceNu(i+1), p, bestKnown.get(i).doubleValue(), bestKnowVehicles.get(i).doubleValue()));
 		}
