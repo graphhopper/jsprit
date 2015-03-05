@@ -89,6 +89,22 @@ public final class RuinRadial extends AbstractRuinStrategy {
 		jobNeighborhoods = jobNeighborhoodsImpl;
 		logger.info("initialise " + this);
 	}
+
+	public RuinRadial(VehicleRoutingProblem vrp, int noJobs2beRemoved, JobNeighborhoods neighborhoods) {
+		super();
+		this.vrp = vrp;
+		noJobsToMemorize = noJobs2beRemoved;
+		ruinShareFactory = new RuinShareFactory() {
+
+			@Override
+			public int createNumberToBeRemoved() {
+				return noJobsToMemorize;
+			}
+
+		};
+		jobNeighborhoods = neighborhoods;
+		logger.info("initialise " + this);
+	}
 	
 	@Override
 	public String toString() {
