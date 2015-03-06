@@ -31,6 +31,17 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
 
     public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo){
         TreeSet<ReferencedJob> tree = distanceNodeTree.get(neighborTo.getId());
+        if(tree == null) return new Iterator<Job>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public Job next() {
+                return null;
+            }
+        };
         Iterator<ReferencedJob> descendingIterator = tree.iterator();
         return new NearestNeighborhoodIterator(descendingIterator, nNeighbors);
     }
