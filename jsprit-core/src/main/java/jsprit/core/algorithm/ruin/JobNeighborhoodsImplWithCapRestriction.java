@@ -32,9 +32,7 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
         logger.info("intialise " + this);
     }
 
-    /*
-    TODO: obviously nearestNeighbor does not work with a single customer
-     */
+    @Override
     public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo){
         TreeSet<ReferencedJob> tree = distanceNodeTree.get(neighborTo.getId());
         if(tree == null) return new Iterator<Job>() {
@@ -54,6 +52,7 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
         return new NearestNeighborhoodIterator(descendingIterator, nNeighbors);
     }
 
+    @Override
     public void initialise(){
         logger.info("calculates distances from EACH job to EACH job --> n^2="+Math.pow(vrp.getJobs().values().size(), 2) + " calculations, but 'only' "+(vrp.getJobs().values().size()*capacity)+ " are cached.");
         if(capacity==0) return;

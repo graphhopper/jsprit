@@ -29,6 +29,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
         logger.info("intialise " + this);
     }
 
+    @Override
     public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo){
         TreeSet<ReferencedJob> tree = distanceNodeTree.get(neighborTo.getId());
         if(tree == null) return new Iterator<Job>() {
@@ -46,6 +47,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
         return new NearestNeighborhoodIterator(descendingIterator, nNeighbors);
     }
 
+    @Override
     public void initialise(){
         logger.info("calculates and memorizes distances from EACH job to EACH job --> n^2 calculations");
         calculateDistancesFromJob2Job();
