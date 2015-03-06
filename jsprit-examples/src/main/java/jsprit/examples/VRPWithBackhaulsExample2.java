@@ -16,8 +16,10 @@
  ******************************************************************************/
 package jsprit.examples;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.analysis.SolutionAnalyser;
@@ -73,16 +75,25 @@ public class VRPWithBackhaulsExample2 {
 		 */
 //		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"input/algorithmConfig_solomon.xml");
-        vraBuilder.addDefaultCostCalculators();
-        vraBuilder.addCoreConstraints();
+//        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"input/algorithmConfig_solomon.xml");
+//        vraBuilder.addDefaultCostCalculators();
+//        vraBuilder.addCoreConstraints();
 
         StateManager stateManager = new StateManager(vrp);
         ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
         constraintManager.addConstraint(new ServiceDeliveriesFirstConstraint(), ConstraintManager.Priority.CRITICAL);
 
-        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
-        VehicleRoutingAlgorithm vra = vraBuilder.build();
+//        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+
+//        VehicleRoutingAlgorithm vra = vraBuilder.build();
+
+
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+                .setStateAndConstraintManager(stateManager, constraintManager)
+                .setProperty(Jsprit.Parameter.FIXED_COST_PARAM.toString(),"0.")
+                .buildAlgorithm();
+        vra.setMaxIterations(2000);
+        vra.addListener(new AlgorithmSearchProgressChartListener("output/search"));
 
 
 
@@ -107,9 +118,9 @@ public class VRPWithBackhaulsExample2 {
 		 * Plot solution. 
 		 */
 //		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/pd_solomon_r101_solution.png","pd_r101");
-//		Plotter plotter = new Plotter(vrp, solution);
-//		plotter.setLabel(Label.SIZE);
-//		plotter.plot("output/vrpwbh_christophides_vrpnc1_solution.png","vrpwbh_vrpnc1");
+		Plotter plotter = new Plotter(vrp, solution);
+//		plotter.setLabel(Plotter.Label.SIZE);
+		plotter.plot("output/vrpwbh_christophides_vrpnc1_solution.png","vrpwbh_vrpnc1");
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new SolutionAnalyser.DistanceCalculator() {
 

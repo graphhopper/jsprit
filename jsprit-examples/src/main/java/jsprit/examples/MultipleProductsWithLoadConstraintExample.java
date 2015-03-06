@@ -19,7 +19,7 @@ package jsprit.examples;
 
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Capacity;
@@ -184,28 +184,19 @@ public class MultipleProductsWithLoadConstraintExample {
                 .addVehicle(vehicle)
                 .addJob(bananas).addJob(apples).addJob(bananas_2).addJob(bananas_3).addJob(apples_2).build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"input/algorithmConfig.xml");
-        vraBuilder.addCoreConstraints();
-        vraBuilder.addDefaultCostCalculators();
-
-        StateManager stateManager = new StateManager(vrp); //1.3.2-SNAPSHOT & upcoming release v1.4
-//        StateManager stateManager = new StateManager(vrp.getTransportCosts()); //v1.3.1
-
+        StateManager stateManager = new StateManager(vrp);
         ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
         constraintManager.addConstraint(new NoBananasANDApplesConstraint(stateManager), ConstraintManager.Priority.CRITICAL);
 //        constraintManager.addConstraint(new BananasFirst(),ConstraintManager.Priority.CRITICAL);
 
-        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
-        VehicleRoutingAlgorithm vra = vraBuilder.build();
-//        vra.setMaxIterations(100); //1.3.2-SNAPSHOT
-//        vra.setMaxIterations(100);
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager)
+                .buildAlgorithm();
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
         SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
 
         new GraphStreamViewer(vrp, Solutions.bestOf(solutions)).labelWith(GraphStreamViewer.Label.ID).setRenderShipments(true).display();
-
 
     }
 

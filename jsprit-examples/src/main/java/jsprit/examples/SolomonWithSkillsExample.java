@@ -21,6 +21,7 @@ package jsprit.examples;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
@@ -90,9 +91,7 @@ public class SolomonWithSkillsExample {
         ConstraintManager constraintManager = new ConstraintManager(skillProblem,stateManager);
         constraintManager.addSkillsConstraint();
 
-        VehicleRoutingAlgorithm vra = vraBuilder.build();
-//        vra.setMaxIterations(500);
-
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(skillProblem).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);

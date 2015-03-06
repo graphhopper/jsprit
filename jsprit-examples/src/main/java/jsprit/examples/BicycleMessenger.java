@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.examples;
 
+import jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
@@ -272,13 +273,28 @@ public class BicycleMessenger {
 //        vraBuilder.setNuOfThreads(2);
         vraBuilder.addDefaultCostCalculators();
         vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
-		vraBuilder.setNuOfThreads(10);
+//		vraBuilder.setNuOfThreads(10);
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
-        algorithm.setMaxIterations(10000);
+        algorithm.setMaxIterations(2000);
+
+//		VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(bicycleMessengerProblem)
+//				.setStateAndConstraintManager(stateManager, constraintManager)
+//				.setProperty(Jsprit.Parameter.THREADS.toString(), "6")
+////				.setProperty(Jsprit.Strategy.RADIAL_BEST.toString(), "0.25")
+////				.setProperty(Jsprit.Strategy.WORST_BEST.toString(), "0.25")
+////				.setProperty(Jsprit.Strategy.CLUSTER_BEST.toString(), "0.25")
+////				.setProperty(Jsprit.Strategy.RANDOM_BEST.toString(), "0.")
+////				.setProperty(Jsprit.Strategy.RANDOM_REGRET.toString(), "1.")
+//				.setProperty(Jsprit.Parameter.INSERTION_NOISE_LEVEL.toString(),"0.01")
+//				.setProperty(Jsprit.Parameter.INSERTION_NOISE_PROB.toString(), "0.2")
+////				.setProperty(Jsprit.Parameter.THRESHOLD_ALPHA.toString(),"0.1")
+//				.buildAlgorithm();
+//		algorithm.setMaxIterations(5000);
+
 //        VariationCoefficientTermination prematureAlgorithmTermination = new VariationCoefficientTermination(200, 0.001);
 //        algorithm.setPrematureAlgorithmTermination(prematureAlgorithmTermination);
 //        algorithm.addListener(prematureAlgorithmTermination);
-//		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
+		algorithm.addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 
         //search
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
