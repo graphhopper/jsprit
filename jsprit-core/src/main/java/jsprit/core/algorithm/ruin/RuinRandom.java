@@ -94,6 +94,7 @@ public final class RuinRandom extends AbstractRuinStrategy {
 	private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
 		LinkedList<Job> availableJobs = new LinkedList<Job>(vrp.getJobs().values());
 		for (int i = 0; i < nOfJobs2BeRemoved; i++) {
+			if(availableJobs.isEmpty()) break;
 			Job job = pickRandomJob(availableJobs);
 			unassignedJobs.add(job);
 			availableJobs.remove(job);
