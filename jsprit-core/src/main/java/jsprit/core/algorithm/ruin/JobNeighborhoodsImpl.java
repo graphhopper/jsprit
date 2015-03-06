@@ -42,6 +42,11 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
             public Job next() {
                 return null;
             }
+
+            @Override
+            public void remove() {
+
+            }
         };
         Iterator<ReferencedJob> descendingIterator = tree.iterator();
         return new NearestNeighborhoodIterator(descendingIterator, nNeighbors);

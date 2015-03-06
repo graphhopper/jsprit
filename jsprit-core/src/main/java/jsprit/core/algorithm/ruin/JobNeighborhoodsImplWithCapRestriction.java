@@ -47,6 +47,11 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
                 return null;
             }
 
+            @Override
+            public void remove() {
+
+            }
+
         };
         Iterator<ReferencedJob> descendingIterator = tree.iterator();
         return new NearestNeighborhoodIterator(descendingIterator, nNeighbors);
