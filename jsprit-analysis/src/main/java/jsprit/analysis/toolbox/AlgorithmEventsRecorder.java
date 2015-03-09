@@ -65,7 +65,6 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     public static final int CLEAR_SOLUTION = 3;
 
-    public static final int RENDER_FINAL_SOLUTION = 4;
 
     private Graph graph;
 
@@ -104,6 +103,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         initialiseGraph(vrp);
     }
 
+    @Deprecated
     public AlgorithmEventsRecorder(VehicleRoutingProblem vrp, String dgsFileLocation, boolean renderShipments) {
         this.renderShipments = renderShipments;
         new AlgorithmEventsRecorder(vrp, dgsFileLocation);
@@ -352,15 +352,15 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
     private void addVehicle(Vehicle vehicle) {
         String startId = makeStartId(vehicle);
         Node node = graph.addNode(startId);
-        node.addAttribute("x",vehicle.getStartLocationCoordinate().getX());
-        node.addAttribute("y",vehicle.getStartLocationCoordinate().getY());
+        node.addAttribute("x",vehicle.getStartLocation().getCoordinate().getX());
+        node.addAttribute("y", vehicle.getStartLocation().getCoordinate().getY());
         node.addAttribute("ui.class","depot");
 
         String endId = makeEndId(vehicle);
         if(!startId.equals(endId)){
             Node endNode = graph.addNode(endId);
-            endNode.addAttribute("x",vehicle.getEndLocationCoordinate().getX());
-            endNode.addAttribute("y",vehicle.getEndLocationCoordinate().getY());
+            endNode.addAttribute("x", vehicle.getEndLocation().getCoordinate().getX());
+            endNode.addAttribute("y", vehicle.getEndLocation().getCoordinate().getY());
             endNode.addAttribute("ui.class","depot");
         }
     }
@@ -370,7 +370,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
     }
 
     private String makeEndId(Vehicle vehicle) {
-        if(vehicle.getStartLocationId().equals(vehicle.getEndLocationId())) return makeStartId(vehicle);
+        if(vehicle.getStartLocation().getId().equals(vehicle.getEndLocation().getId())) return makeStartId(vehicle);
         return vehicle.getId() + "_end";
     }
 
@@ -436,15 +436,14 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
         String node_i;
 
-        if(isFirst(insertionIndex,route)) {
+        if(isFirst(insertionIndex)) {
             node_i = makeStartId(data.getSelectedVehicle());
         }
         else {
             TourActivity.JobActivity jobActivity = (TourActivity.JobActivity) route.getActivities().get(insertionIndex - 1);
             node_i = getNodeId(jobActivity);
         }
-        String node_k = nodeId;
-        String edgeId_1 =  node_i + "_" + node_k;
+        String edgeId_1 =  node_i + "_" + nodeId;
         String node_j;
         if(isLast(insertionIndex,route)) {
             node_j = makeEndId(data.getSelectedVehicle());
@@ -453,12 +452,12 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
             TourActivity.JobActivity jobActivity = (TourActivity.JobActivity) route.getActivities().get(insertionIndex);
             node_j = getNodeId(jobActivity);
         }
-        String edgeId_2 = node_k + "_" + node_j;
+        String edgeId_2 = nodeId + "_" + node_j;
 
-        addEdge(edgeId_1, node_i, node_k);
+        addEdge(edgeId_1, node_i, nodeId);
 
         if(!(isLast(insertionIndex,route) && !data.getSelectedVehicle().isReturnToDepot())) {
-            addEdge(edgeId_2, node_k, node_j);
+            addEdge(edgeId_2, nodeId, node_j);
             if (!route.getActivities().isEmpty()) {
                 removeEdge(node_i + "_" + node_j);
             }
@@ -511,7 +510,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         graph.getEdge(edgeId).addAttribute("ui.class","removed");
     }
 
-    private boolean isFirst(int index, VehicleRoute route) {
+    private boolean isFirst(int index) {
         return index == 0;
     }
 

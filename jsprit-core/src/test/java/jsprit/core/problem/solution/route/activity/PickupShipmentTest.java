@@ -25,15 +25,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PickupShipmentTest {
-	
-	private Shipment shipment;
-	
+
 	private PickupShipment pickup;
 	
 	@Before
 	public void doBefore(){
-		shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickupLoc").build())
-                .setDeliveryLocationId("deliveryLoc")
+		Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickupLoc").build())
+                .setDeliveryLocation(Location.newInstance("deliveryLoc"))
                 .setPickupTimeWindow(TimeWindow.newInstance(1., 2.))
                 .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
                 .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
@@ -89,7 +87,7 @@ public class PickupShipmentTest {
 	
 	@Test
 	public void whenGettingCapacity_itShouldReturnItCorrectly(){
-		Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocationId("delLoc")
+		Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc"))
                 .addSizeDimension(0, 10).addSizeDimension(1, 100).build();
 		PickupShipment pick = new PickupShipment(shipment);
 		assertEquals(10,pick.getSize().get(0));

@@ -17,6 +17,7 @@
 package jsprit.core.algorithm.recreate;
 
 import jsprit.core.problem.Capacity;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -48,8 +49,8 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 		veh2 = mock(Vehicle.class);
 		when(veh1.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type1").build());
 		when(veh2.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type2").build());
-		when(veh1.getStartLocationId()).thenReturn("loc1");
-		when(veh2.getStartLocationId()).thenReturn("loc2");
+		when(veh1.getStartLocation()).thenReturn(Location.newInstance("loc1"));
+		when(veh2.getStartLocation()).thenReturn(Location.newInstance("loc2"));
 		fleetManager = mock(VehicleFleetManager.class);
 		service = mock(Service.class);
 		vehicleRoute = mock(VehicleRoute.class);

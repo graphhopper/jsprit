@@ -365,10 +365,10 @@ public class VehicleRoutingProblem {
             if(!vehicleTypes.contains(vehicle.getType())){
                 vehicleTypes.add(vehicle.getType());
             }
-            String startLocationId = vehicle.getStartLocationId();
-            tentative_coordinates.put(startLocationId, vehicle.getStartLocationCoordinate());
-            if(!vehicle.getEndLocationId().equals(startLocationId)){
-                tentative_coordinates.put(vehicle.getEndLocationId(), vehicle.getEndLocationCoordinate());
+            String startLocationId = vehicle.getStartLocation().getId();
+            tentative_coordinates.put(startLocationId, vehicle.getStartLocation().getCoordinate());
+            if(!vehicle.getEndLocation().getId().equals(startLocationId)){
+                tentative_coordinates.put(vehicle.getEndLocation().getId(), vehicle.getEndLocation().getCoordinate());
             }
             return this;
         }

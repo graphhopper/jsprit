@@ -299,13 +299,9 @@ public class Shipment extends AbstractJob{
 		public Shipment build(){
 			if(pickupLocation_ == null) {
                 this.pickupLocation_ = Location.Builder.newInstance().setCoordinate(pickupCoord).setId(pickupLocation).build();
-//                if(pickupCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
-//				pickupLocation = pickupCoord.toString();
             }
 			if(deliveryLocation_ == null) {
 				this.deliveryLocation_ = Location.Builder.newInstance().setCoordinate(deliveryCoord).setId(deliveryLocation).build();
-//                if(deliveryCoord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
-//				deliveryLocation = deliveryCoord.toString();
 			}
 			capacity = capacityBuilder.build();
             skills = skillBuilder.build();

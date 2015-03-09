@@ -19,7 +19,10 @@ package jsprit.core.problem.vehicle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -30,7 +33,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 	
 	private Map<VehicleTypeKey,Vehicle> types = new HashMap<VehicleTypeKey, Vehicle>();
 	
-	private List<VehicleTypeKey> sortedTypes = new ArrayList<VehicleTypeKey>();
+//	private List<VehicleTypeKey> sortedTypes = new ArrayList<VehicleTypeKey>();
 		
 	public InfiniteVehicles(Collection<Vehicle> vehicles){
 		extractTypes(vehicles);
@@ -44,10 +47,9 @@ class InfiniteVehicles implements VehicleFleetManager{
 
 	private void extractTypes(Collection<Vehicle> vehicles) {
 		for(Vehicle v : vehicles){
-			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(),v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
+			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(),v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
 			types.put(typeKey,v);
-			sortedTypes.add(typeKey);
-
+//			sortedTypes.add(typeKey);
 		}
 	}
 
@@ -81,7 +83,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
 		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills());
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation().getId(), withoutThisType.getEndLocation().getId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills());
 		for(VehicleTypeKey key : types.keySet()){
 			if(!key.equals(thisKey)){
 				vehicles.add(types.get(key));

@@ -147,7 +147,7 @@ public class Plotter {
 	 *
 	 */
 	public static enum Label {
-		ID, SIZE, NO_LABEL
+		ID, SIZE, @SuppressWarnings("UnusedDeclaration")NO_LABEL
 	}
 	
 	private Label label = Label.SIZE;
@@ -181,7 +181,7 @@ public class Plotter {
 	/**
 	 * Constructs Plotter with problem. Thus only the problem can be rendered.
 	 * 
-	 * @param vrp
+	 * @param vrp the routing problem
 	 */
 	public Plotter(VehicleRoutingProblem vrp) {
 		super();
@@ -191,8 +191,8 @@ public class Plotter {
 	/**
 	 * Constructs Plotter with problem and solution to render them both.
 	 * 
-	 * @param vrp
-	 * @param solution
+	 * @param vrp the routing problem
+	 * @param solution the solution
 	 */
 	public Plotter(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution) {
 		super();
@@ -204,8 +204,8 @@ public class Plotter {
 	/**
 	 * Constructs Plotter with problem and routes to render individual routes.
 	 * 
-	 * @param vrp
-	 * @param routes
+	 * @param vrp the routing problem
+	 * @param routes routes
 	 */
 	public Plotter(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) {
 		super();
@@ -214,17 +214,7 @@ public class Plotter {
 		plotSolutionAsWell = true;
 	}
 
-	/**
-	 * 
-	 * @param show
-	 * @return plotter
-	 * @deprecated always true
-	 */
-	@Deprecated
-	public Plotter setShowFirstActivity(boolean show){
-		return this;
-	}
-	
+	@SuppressWarnings("UnusedDeclaration")
 	public Plotter setScalingFactor(double scalingFactor){
 		this.scalingFactor=scalingFactor;
 		return this;
@@ -232,8 +222,8 @@ public class Plotter {
 	
 	/**
 	 * Sets a label.
-	 * @param label
-	 * @return
+	 * @param label of jobs
+	 * @return plotter
 	 */
 	public Plotter setLabel(Label label){
 		this.label = label;
@@ -243,12 +233,13 @@ public class Plotter {
 	/**
 	 * Sets a bounding box to zoom in to certain areas.
 	 * 
-	 * @param minX
-	 * @param minY
-	 * @param maxX
-	 * @param maxY
+	 * @param minX lower left x
+	 * @param minY lower left y
+	 * @param maxX upper right x
+	 * @param maxY upper right y
 	 * @return
 	 */
+	@SuppressWarnings("UnusedDeclaration")
 	public Plotter setBoundingBox(double minX, double minY, double maxX, double maxY){
 		boundingBox = new BoundingBox(minX,minY,maxX,maxY);
 		return this;
@@ -257,8 +248,8 @@ public class Plotter {
 	/**
 	 * Flag that indicates whether shipments should be rendered as well.
 	 * 
-	 * @param plotShipments
-	 * @return
+	 * @param plotShipments flag to plot shipment
+	 * @return the plotter
 	 */
 	public Plotter plotShipments(boolean plotShipments) {
 		this.plotShipments  = plotShipments;
@@ -287,7 +278,7 @@ public class Plotter {
 	
 	private void plot(VehicleRoutingProblem vrp, final Collection<VehicleRoute> routes, String pngFile, String title){
 		log.info("plot to " + pngFile);
-		XYSeriesCollection problem = null;
+		XYSeriesCollection problem;
 		XYSeriesCollection solution = null;
 		final XYSeriesCollection shipments;
 		try {
@@ -520,13 +511,13 @@ public class Plotter {
 			XYDataItem dataItem = new XYDataItem(s.getPickupLocation().getCoordinate().getX()*scalingFactor, s.getPickupLocation().getCoordinate().getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(s, dataItem);
-			markItem(dataItem,Activity.PICKUP, job);
+			markItem(dataItem,Activity.PICKUP);
 			containsPickupAct = true;
 			
 			XYDataItem dataItem2 = new XYDataItem(s.getDeliveryLocation().getCoordinate().getX()*scalingFactor, s.getDeliveryLocation().getCoordinate().getY()*scalingFactor);
 			activities.add(dataItem2);
 			addLabel(s, dataItem2);
-			markItem(dataItem2,Activity.DELIVERY, job);
+			markItem(dataItem2,Activity.DELIVERY);
 			containsDeliveryAct = true;
 		}
 		else if(job instanceof Pickup){
@@ -535,7 +526,7 @@ public class Plotter {
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
-			markItem(dataItem, Activity.PICKUP, job);
+			markItem(dataItem, Activity.PICKUP);
 			containsPickupAct = true;
 		}
 		else if(job instanceof Delivery){
@@ -544,7 +535,7 @@ public class Plotter {
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
-			markItem(dataItem, Activity.DELIVERY, job);
+			markItem(dataItem, Activity.DELIVERY);
 			containsDeliveryAct = true;
 		}
 		else if(job instanceof Service){
@@ -553,7 +544,7 @@ public class Plotter {
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
-			markItem(dataItem, Activity.SERVICE, job);
+			markItem(dataItem, Activity.SERVICE);
 			containsServiceAct = true;
 		}
 		else{
@@ -591,18 +582,18 @@ public class Plotter {
 	private void retrieveActivities(VehicleRoutingProblem vrp) throws NoLocationFoundException{
 		activities = new XYSeries("activities", false, true);
 		for(Vehicle v : vrp.getVehicles()){
-			Coordinate startCoord = v.getStartLocationCoordinate();
-			if(startCoord == null) throw new NoLocationFoundException();
-			XYDataItem item = new XYDataItem(startCoord.getX()*scalingFactor, startCoord.getY()*scalingFactor);
-			markItem(item,Activity.START, null);
+			Coordinate start_coordinate = v.getStartLocation().getCoordinate();
+			if(start_coordinate == null) throw new NoLocationFoundException();
+			XYDataItem item = new XYDataItem(start_coordinate.getX()*scalingFactor, start_coordinate.getY()*scalingFactor);
+			markItem(item,Activity.START);
 			activities.add(item);
 			
-			if(!v.getStartLocationId().equals(v.getEndLocationId())){
-				Coordinate endCoord = v.getEndLocationCoordinate();
-				if(endCoord == null) throw new NoLocationFoundException();
-                XYDataItem enditem = new XYDataItem(endCoord.getX()*scalingFactor,endCoord.getY()*scalingFactor);
-                markItem(enditem,Activity.END, null);
-                activities.add(enditem);
+			if(!v.getStartLocation().getId().equals(v.getEndLocation().getId())){
+				Coordinate end_coordinate = v.getEndLocation().getCoordinate();
+				if(end_coordinate == null) throw new NoLocationFoundException();
+                XYDataItem end_item = new XYDataItem(end_coordinate.getX()*scalingFactor,end_coordinate.getY()*scalingFactor);
+                markItem(end_item,Activity.END);
+                activities.add(end_item);
 			}
 		}
 		for(Job job : vrp.getJobs().values()){
@@ -615,7 +606,7 @@ public class Plotter {
 		}
 	}
 	
-	private void markItem(XYDataItem item, Activity activity, Job job) {
+	private void markItem(XYDataItem item, Activity activity) {
 		activitiesByDataItem.put(item,activity);
 	}
 

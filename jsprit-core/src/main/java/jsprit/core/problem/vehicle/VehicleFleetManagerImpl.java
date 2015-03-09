@@ -28,20 +28,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	public VehicleFleetManagerImpl newInstance(Collection<Vehicle> vehicles){
 		return new VehicleFleetManagerImpl(vehicles);
 	}
-
-    @Deprecated
-	public static VehicleFleetManager createDefaultFleetManager() {
-		return new DefaultFleetManager();
-	}
-	
-	public static class DefaultFleetManager extends VehicleFleetManagerImpl {
-
-		public DefaultFleetManager() {
-			super(Collections.<Vehicle> emptyList());
-			
-		}
-		
-	}
 	
 	static class TypeContainer {
 		
@@ -92,17 +78,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		makeMap();
 		logger.info("initialise " + this);
 	}
-	
-	public VehicleFleetManagerImpl(Collection<Vehicle> vehicles, Collection<Vehicle> lockedVehicles) {
-		this.vehicles = vehicles;
-		makeMap();
-		this.lockedVehicles = new HashSet<Vehicle>();
-		for(Vehicle v : lockedVehicles){
-			lock(v);
-		}
-		logger.info("initialise " + this);
-	}
-	
+
 	@Override
 	public String toString() {
 		return "[name=finiteVehicles]";
@@ -120,7 +96,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		if(v.getType() == null){
 			throw new IllegalStateException("vehicle needs type");
 		}
-		VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
+		VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
 		if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
 			typeMapOfAvailableVehicles.put(typeKey, new TypeContainer());
 		}
@@ -129,7 +105,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	}
 	
 	private void removeVehicle(Vehicle v){
-		VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocationId(), v.getEndLocationId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
+		VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
 		if(typeMapOfAvailableVehicles.containsKey(key)){
 			typeMapOfAvailableVehicles.get(key).remove(v);
 		}
@@ -161,7 +137,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 	@Override
 	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocationId(), withoutThisType.getEndLocationId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills());
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation().getId(), withoutThisType.getEndLocation().getId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills());
 		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
 			if(key.equals(thisKey)) continue;
 			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
@@ -225,12 +201,10 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 			throw new IllegalStateException("no vehicle must be locked");
 		}
 	}
-	
+
+	@Deprecated
 	public int sizeOfLockedVehicles(){
 		return lockedVehicles.size();
 	}
 
-	
-
-	
 }

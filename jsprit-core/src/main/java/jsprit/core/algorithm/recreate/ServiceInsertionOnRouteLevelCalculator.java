@@ -18,6 +18,7 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.constraint.HardActivityConstraint;
 import jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import jsprit.core.problem.constraint.HardRouteConstraint;
@@ -38,7 +39,10 @@ import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
 
 
 
@@ -127,7 +131,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 		/**
 		 * map that memorizes the costs with newVehicle, which is a cost-snapshot at tour-activities. 
 		 */
-		Map<TourActivity,Double> activity2costWithNewVehicle = new HashMap<TourActivity,Double>();
+//		Map<TourActivity,Double> activity2costWithNewVehicle = new HashMap<TourActivity,Double>();
 		
 		/**
 		 * priority queue that stores insertion-data by insertion-costs in ascending order.
@@ -197,7 +201,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 			 * memorize transport and activity costs with new vehicle without inserting k
 			 */
 			sumOf_prevCosts_newVehicle += transportCost_prevAct_nextAct_newVehicle + activityCost_nextAct;
-			activity2costWithNewVehicle.put(nextAct, sumOf_prevCosts_newVehicle);
+//			activity2costWithNewVehicle.put(nextAct, sumOf_prevCosts_newVehicle);
 
 			/**
 			 * departure time at nextAct with new vehicle
@@ -284,20 +288,14 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 		insertionData.setVehicleDepartureTime(start.getEndTime());
 		return insertionData;
 	}
-	
-	/**
-	 * initialize start and end of tour.
-	 * 
-	 * @param newVehicle
-	 * @param newVehicleDepartureTime
-	 */
+
 	private void initialiseStartAndEnd(final Vehicle newVehicle, double newVehicleDepartureTime) {
 		if(start == null){
 			start = new Start(newVehicle.getStartLocation(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
 			start.setEndTime(newVehicleDepartureTime);
 		}
 		else{
-			start.setLocationId(newVehicle.getStartLocationId());
+			start.setLocation(Location.newInstance(newVehicle.getStartLocation().getId()));
 			start.setTheoreticalEarliestOperationStartTime(newVehicle.getEarliestDeparture());
 			start.setTheoreticalLatestOperationStartTime(Double.MAX_VALUE);
 			start.setEndTime(newVehicleDepartureTime);
@@ -307,7 +305,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 			end = new End(newVehicle.getEndLocation(), 0.0, newVehicle.getLatestArrival());
 		}
 		else{
-			end.setLocationId(newVehicle.getEndLocationId());
+			end.setLocation(Location.newInstance(newVehicle.getEndLocation().getId()));
 			end.setTheoreticalEarliestOperationStartTime(0.0);
 			end.setTheoreticalLatestOperationStartTime(newVehicle.getLatestArrival());
 		}
@@ -323,10 +321,6 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 		return prevCost;
 	}
 
-	/**
-	 * creates a comparator to sort insertion-data in insertionQueue in ascending order according insertion costs.
-	 * @return
-	 */
 	private Comparator<InsertionData> getComparator() {
 		return new Comparator<InsertionData>() {
 

@@ -54,8 +54,6 @@ public class Pickup extends Service {
 		public Pickup build(){
 			if(location == null) {
 				location = Location.Builder.newInstance().setCoordinate(coord).setId(locationId).build();
-//                if(coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
-//				locationId = coord.toString();
 			}
 			this.setType("pickup");
 			super.capacity = super.capacityBuilder.build();

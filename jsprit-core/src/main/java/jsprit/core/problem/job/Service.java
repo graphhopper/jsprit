@@ -191,11 +191,6 @@ public class Service extends AbstractJob {
 		public Service build(){
 			if(location == null) {
                 location = Location.Builder.newInstance().setCoordinate(coord).setId(locationId).build();
-//                if (locationId == null) {
-//                    if (coord == null) throw new IllegalStateException("either locationId or a coordinate must be given. But is not.");
-//                    locationId = coord.toString();
-//                }
-//
             }
 			this.setType("service");
 			capacity = capacityBuilder.build();

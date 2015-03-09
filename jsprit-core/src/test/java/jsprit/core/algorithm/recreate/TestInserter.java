@@ -84,8 +84,8 @@ public class TestInserter {
 	public void whenInsertingServiceAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation(){
 		Service service = mock(Service.class);
 		Vehicle vehicle = mock(Vehicle.class);
-		when(vehicle.getStartLocationId()).thenReturn("vehLoc");
-		when(vehicle.getEndLocationId()).thenReturn("vehLoc");
+		when(vehicle.getStartLocation()).thenReturn(Location.newInstance("vehLoc"));
+		when(vehicle.getEndLocation()).thenReturn(Location.newInstance("vehLoc"));
 		when(vehicle.isReturnToDepot()).thenReturn(false);
 		when(vehicle.getId()).thenReturn("vehId");
 		
@@ -128,7 +128,7 @@ public class TestInserter {
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
-		Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocation(Location.newInstance("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 
 		InsertionData iData = mock(InsertionData.class);
 		when(iData.getPickupInsertionIndex()).thenReturn(2);
@@ -164,7 +164,7 @@ public class TestInserter {
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
-		Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocationId("delLoc").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+		Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocation(Location.newInstance("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
 		InsertionData iData = mock(InsertionData.class);
 		when(iData.getPickupInsertionIndex()).thenReturn(2);
 		when(iData.getDeliveryInsertionIndex()).thenReturn(2);
@@ -186,12 +186,12 @@ public class TestInserter {
 		Shipment shipment = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(shipment.getSize()).thenReturn(capacity);
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
-		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
+		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
-		Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocationId("delLoc").build();
+		Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).build();
 		
 		InsertionData iData = mock(InsertionData.class);
 		when(iData.getPickupInsertionIndex()).thenReturn(2);
@@ -203,7 +203,7 @@ public class TestInserter {
 		Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
 		inserter.insertJob(shipmentToInsert, iData, route);
 		
-		assertEquals(route.getEnd().getLocation().getId(),newVehicle.getEndLocationId());
+		assertEquals(route.getEnd().getLocation().getId(),newVehicle.getEndLocation().getId());
 	}
 	
 	@Test
@@ -211,12 +211,12 @@ public class TestInserter {
 		Shipment shipment = mock(Shipment.class);
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(shipment.getSize()).thenReturn(capacity);
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocationId("vehLoc").setType(mock(VehicleType.class)).build(); 
-		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocationId("newVehLoc").setType(mock(VehicleType.class)).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
+		Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
-        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocationId("delLoc").build();
+        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).build();
 
         InsertionData iData = mock(InsertionData.class);
 		when(iData.getPickupInsertionIndex()).thenReturn(2);
@@ -242,7 +242,7 @@ public class TestInserter {
 		
 		VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
 		//start - pick(shipment) - del(shipment) - end
-        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocationId("delLoc").build();
+        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).build();
 
         InsertionData iData = mock(InsertionData.class);
 		when(iData.getPickupInsertionIndex()).thenReturn(0);

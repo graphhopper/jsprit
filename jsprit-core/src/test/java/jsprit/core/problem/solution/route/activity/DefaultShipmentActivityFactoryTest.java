@@ -29,7 +29,7 @@ public class DefaultShipmentActivityFactoryTest {
 	public void whenCreatingPickupActivityWithShipment_itShouldReturnPickupShipment(){
 		DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
 		Shipment shipment = Shipment.Builder.newInstance("s")
-				.setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocationId("dLoc").build();
+				.setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
 		TourActivity act = factory.createPickup(shipment);
 		assertNotNull(act);
 		assertTrue(act instanceof PickupShipment);
@@ -39,7 +39,7 @@ public class DefaultShipmentActivityFactoryTest {
 	public void whenCreatingDeliverActivityWithShipment_itShouldReturnDeliverShipment(){
 		DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
 		Shipment shipment = Shipment.Builder.newInstance("s")
-				.setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocationId("dLoc").build();
+				.setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
 		TourActivity act = factory.createDelivery(shipment);
 		assertNotNull(act);
 		assertTrue(act instanceof DeliverShipment);

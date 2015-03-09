@@ -112,6 +112,8 @@ public class GraphStreamViewer {
                         "}" ;
 
 
+
+        @SuppressWarnings("UnusedDeclaration")
         public static String SIMPLE_WHITE =
                 "node {" +
                         "	size: 10px, 10px;" +
@@ -287,6 +289,7 @@ public class GraphStreamViewer {
 		return this;
 	}
 
+    @Deprecated
 	public GraphStreamViewer setEnableAutoLayout(boolean enableAutoLayout) {
 		return this;
 	}
@@ -325,7 +328,7 @@ public class GraphStreamViewer {
 
         View view = createEmbeddedView(g,scaling);
 
-        JFrame jframe = createJFrame(view,scaling);
+        createJFrame(view,scaling);
 
         render(g, view);
 	}
@@ -363,7 +366,7 @@ public class GraphStreamViewer {
         //conf jframe
         jframe.setSize((int)(800*scaling),(int)(580*scaling));
         jframe.setLocationRelativeTo(null);
-        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jframe.setVisible(true);
         jframe.pack();
         jframe.setTitle("jsprit - GraphStream");
@@ -548,20 +551,19 @@ public class GraphStreamViewer {
 	}
 
 	private void renderVehicle(Graph g, Vehicle vehicle, Label label) {
-		String nodeId = makeId(vehicle.getId(),vehicle.getStartLocationId());
+		String nodeId = makeId(vehicle.getId(),vehicle.getStartLocation().getId());
         Node vehicleStart = g.addNode(nodeId);
 		if(label.equals(Label.ID)) vehicleStart.addAttribute("ui.label", "depot");
 //		if(label.equals(Label.ACTIVITY)) n.addAttribute("ui.label", "start");
-		vehicleStart.addAttribute("x", vehicle.getStartLocationCoordinate().getX());
-		vehicleStart.addAttribute("y", vehicle.getStartLocationCoordinate().getY());
+		vehicleStart.addAttribute("x", vehicle.getStartLocation().getCoordinate().getX());
+		vehicleStart.addAttribute("y", vehicle.getStartLocation().getCoordinate().getY());
 		vehicleStart.setAttribute("ui.class", "depot");
 		
-		if(!vehicle.getStartLocationId().equals(vehicle.getEndLocationId())){
-			Node vehicleEnd = g.addNode(makeId(vehicle.getId(),vehicle.getEndLocationId()));
+		if(!vehicle.getStartLocation().getId().equals(vehicle.getEndLocation().getId())){
+			Node vehicleEnd = g.addNode(makeId(vehicle.getId(),vehicle.getEndLocation().getId()));
 			if(label.equals(Label.ID)) vehicleEnd.addAttribute("ui.label", "depot");
-//			if(label.equals(Label.ACTIVITY)) n.addAttribute("ui.label", "start");
-			vehicleEnd.addAttribute("x", vehicle.getEndLocationCoordinate().getX());
-			vehicleEnd.addAttribute("y", vehicle.getEndLocationCoordinate().getY());
+			vehicleEnd.addAttribute("x", vehicle.getEndLocation().getCoordinate().getX());
+			vehicleEnd.addAttribute("y", vehicle.getEndLocation().getCoordinate().getY());
 			vehicleEnd.setAttribute("ui.class", "depot");
 			
 		}
@@ -569,7 +571,7 @@ public class GraphStreamViewer {
 
 	private void renderRoute(Graph g, VehicleRoute route, int routeId, long renderDelay_in_ms, Label label) {
 		int vehicle_edgeId = 1;
-		String prevIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getStartLocationId());
+		String prevIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getStartLocation().getId());
 		if(label.equals(Label.ACTIVITY) || label.equals(Label.JOB_NAME)){
 			Node n = g.getNode(prevIdentifier);
 			n.addAttribute("ui.label", "start");
@@ -601,7 +603,7 @@ public class GraphStreamViewer {
 			sleep(renderDelay_in_ms);
 		}
 		if(route.getVehicle().isReturnToDepot()){
-			String lastIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getEndLocationId());
+			String lastIdentifier = makeId(route.getVehicle().getId(),route.getVehicle().getEndLocation().getId());
 			g.addEdge(makeEdgeId(routeId,vehicle_edgeId), prevIdentifier, lastIdentifier, true);
 		}
 	}
