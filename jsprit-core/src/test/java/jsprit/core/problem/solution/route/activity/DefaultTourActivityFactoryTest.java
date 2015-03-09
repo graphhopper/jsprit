@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
@@ -31,7 +32,7 @@ public class DefaultTourActivityFactoryTest {
 	@Test
 	public void whenCreatingActivityWithService_itShouldReturnPickupService(){
 		DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
-		Service service = Service.Builder.newInstance("service").setLocationId("loc").build();
+		Service service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
 		TourActivity act = factory.createActivity(service);
 		assertNotNull(act);
 		assertTrue(act instanceof PickupService);
@@ -40,7 +41,7 @@ public class DefaultTourActivityFactoryTest {
 	@Test
 	public void whenCreatingActivityWithPickup_itShouldReturnPickupService(){
 		DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
-		Pickup service = (Pickup) Pickup.Builder.newInstance("service").setLocationId("loc").build();
+		Pickup service = (Pickup) Pickup.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
 		TourActivity act = factory.createActivity(service);
 		assertNotNull(act);
 		assertTrue(act instanceof PickupService);
@@ -49,7 +50,7 @@ public class DefaultTourActivityFactoryTest {
 	@Test
 	public void whenCreatingActivityWithDelivery_itShouldReturnDeliverService(){
 		DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
-		Delivery service = (Delivery) Delivery.Builder.newInstance("service").setLocationId("loc").build();
+		Delivery service = (Delivery) Delivery.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
 		TourActivity act = factory.createActivity(service);
 		assertNotNull(act);
 		assertTrue(act instanceof DeliverService);

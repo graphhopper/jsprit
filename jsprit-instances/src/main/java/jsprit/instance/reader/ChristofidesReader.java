@@ -17,10 +17,10 @@
 package jsprit.instance.reader;
 
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
@@ -52,7 +52,7 @@ public class ChristofidesReader {
 	/**
 	 * Constructs the reader.
 	 * 
-	 * @param vrpBuilder
+	 * @param vrpBuilder the builder
 	 */
 	public ChristofidesReader(VehicleRoutingProblem.Builder vrpBuilder) {
 		super();
@@ -63,7 +63,7 @@ public class ChristofidesReader {
 	 * Reads instance-file and memorizes vehicles, customers and so forth in
 	 * {@link VehicleRoutingProblem.Builder}.
 	 * 
-	 * @param fileName
+	 * @param fileName the filename to read
 	 */
 	public void read(String fileName){
 		vrpBuilder.setFleetSize(FleetSize.INFINITE);
@@ -72,7 +72,7 @@ public class ChristofidesReader {
 		double serviceTime = 0.0;
 		double endTime = Double.MAX_VALUE;
 		int counter = 0;
-		String line = null;
+		String line;
 		while((line = readLine(reader)) != null){
 			line = line.replace("\r", "");
 			line = line.trim();
@@ -86,7 +86,7 @@ public class ChristofidesReader {
 				Coordinate depotCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
 				VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance("christophidesType").addCapacityDimension(0, vehicleCapacity).
 						setCostPerDistance(1.0).build();
-				Vehicle vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setStartLocationCoordinate(depotCoord).
+				VehicleImpl vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setStartLocation(Location.newInstance(depotCoord.getX(), depotCoord.getY())).
 						setType(vehicleType).build();
 				vrpBuilder.addVehicle(vehicle);
 			}
@@ -94,7 +94,7 @@ public class ChristofidesReader {
 				Coordinate customerCoord = makeCoord(tokens[0].trim(),tokens[1].trim());
 				int demand = Integer.parseInt(tokens[2].trim());
 				String customer = Integer.valueOf(counter-1).toString();
-				Service service = Service.Builder.newInstance(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setCoord(customerCoord).build();
+				Service service = Service.Builder.newInstance(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
 				vrpBuilder.addJob(service);
 			}
 			counter++;

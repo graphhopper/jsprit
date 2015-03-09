@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Service;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class ServiceActivityTest {
 	
 	@Before
 	public void doBefore(){
-		service = Service.Builder.newInstance("service").setLocationId("loc").
+		service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
 				setTimeWindow(TimeWindow.newInstance(1., 2.)).
 				addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
 		serviceActivity = ServiceActivity.newInstance(service);
@@ -84,8 +85,8 @@ public class ServiceActivityTest {
 	
 	@Test
 	public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual(){
-		Service s1 = Service.Builder.newInstance("s").setLocationId("loc").build();
-		Service s2 = Service.Builder.newInstance("s").setLocationId("loc").build();
+		Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+		Service s2 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
 		
 		ServiceActivity d1 = ServiceActivity.newInstance(s1);
 		ServiceActivity d2 = ServiceActivity.newInstance(s2);
@@ -95,8 +96,8 @@ public class ServiceActivityTest {
 	
 	@Test
 	public void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual(){
-		Service s1 = Service.Builder.newInstance("s").setLocationId("loc").build();
-		Service s2 = Service.Builder.newInstance("s1").setLocationId("loc").build();
+		Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+		Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
 		
 		ServiceActivity d1 = ServiceActivity.newInstance(s1);
 		ServiceActivity d2 = ServiceActivity.newInstance(s2);

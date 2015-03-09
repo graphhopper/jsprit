@@ -32,6 +32,7 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Solutions;
+import jsprit.core.util.TestUtils;
 
 import java.util.Collection;
 
@@ -43,11 +44,12 @@ public class CalcWithTimeSchedulingTest {
 	
 	public void timeScheduler(){
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("myVehicle").setEarliestStart(0.0).setLatestArrival(100.0).
-				setStartLocationCoordinate(Coordinate.newInstance(0, 0)).setStartLocationId("0,0")
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("myVehicle").setEarliestStart(0.0).setLatestArrival(100.0).
+				setStartLocation(TestUtils.loc("0,0", Coordinate.newInstance(0, 0)))
 				.setType(VehicleTypeImpl.Builder.newInstance("myType").addCapacityDimension(0, 20).setCostPerDistance(1.0).build()).build();
 		vrpBuilder.addVehicle(vehicle);
-		vrpBuilder.addJob(Service.Builder.newInstance("myService").addSizeDimension(0, 2).setLocationId("0,20").setCoord(Coordinate.newInstance(0, 20)).build());
+		vrpBuilder.addJob(Service.Builder.newInstance("myService").addSizeDimension(0, 2)
+				.setLocation(TestUtils.loc("0,20",Coordinate.newInstance(0, 20))).build());
 		vrpBuilder.setFleetSize(FleetSize.INFINITE);
 		vrpBuilder.setRoutingCost(getTpCosts(new CrowFlyCosts(vrpBuilder.getLocations())));
 		VehicleRoutingProblem vrp = vrpBuilder.build();

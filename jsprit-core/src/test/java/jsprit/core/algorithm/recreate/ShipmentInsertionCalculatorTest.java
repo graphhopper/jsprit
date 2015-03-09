@@ -301,7 +301,7 @@ public class ShipmentInsertionCalculatorTest {
 		switcher.put(Shipment.class, insertionCalculator);
 		
 //		Service service = Service.Builder.newInstance("pick", 1).setLocationId("5,5").build();
-		Pickup service = (Pickup)Pickup.Builder.newInstance("pick").addSizeDimension(0, 1).setLocationId("5,5").build();
+		Pickup service = (Pickup)Pickup.Builder.newInstance("pick").addSizeDimension(0, 1).setLocation(Location.newInstance("5,5")).build();
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
         List<AbstractActivity> activities = new ArrayList<AbstractActivity>();

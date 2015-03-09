@@ -21,6 +21,7 @@ import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.io.VrpXMLWriter;
@@ -31,7 +32,6 @@ import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
-import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 
 import java.io.File;
@@ -65,12 +65,12 @@ public class SimpleExampleWithSkills {
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
 		Builder vehicleBuilder = Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
+		vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
 		VehicleImpl vehicle = vehicleBuilder.build();
 
         Builder vehicle2Builder = Builder.newInstance("vehicle2");
-        vehicle2Builder.setStartLocationCoordinate(Coordinate.newInstance(1, 1));
+        vehicle2Builder.setStartLocation(Location.newInstance(1, 1));
         vehicle2Builder.setType(vehicleType);
         vehicle2Builder.addSkill("drill");
         VehicleImpl vehicle2 = vehicle2Builder.build();
@@ -78,12 +78,12 @@ public class SimpleExampleWithSkills {
 		/*
 		 * build services at the required locations, each with a capacity-demand of 1.
 		 */
-		Service service1 = Service.Builder.newInstance("1").addSizeDimension(WEIGHT_INDEX, 1).setCoord(Coordinate.newInstance(5, 7)).build();
-		Service service2 = Service.Builder.newInstance("2").addSizeDimension(WEIGHT_INDEX, 1).setCoord(Coordinate.newInstance(5, 13)).build();
+		Service service1 = Service.Builder.newInstance("1").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 7)).build();
+		Service service2 = Service.Builder.newInstance("2").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 13)).build();
 		
-		Service service3 = Service.Builder.newInstance("3").addSizeDimension(WEIGHT_INDEX, 1).setCoord(Coordinate.newInstance(15, 7)).build();
+		Service service3 = Service.Builder.newInstance("3").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 7)).build();
 
-		Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX, 1).addRequiredSkill("drill").setCoord(Coordinate.newInstance(15, 13)).build();
+		Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX, 1).addRequiredSkill("drill").setLocation(Location.newInstance(15, 13)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

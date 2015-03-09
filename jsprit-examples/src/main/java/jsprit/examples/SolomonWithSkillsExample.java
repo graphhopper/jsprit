@@ -23,6 +23,7 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.io.VrpXMLWriter;
@@ -51,12 +52,13 @@ public class SolomonWithSkillsExample {
         VehicleType newType = solomonVehicle.getType();
         VehicleRoutingProblem.Builder skillProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
         for(int i=0;i<5;i++) {
-            VehicleImpl skill1Vehicle = VehicleImpl.Builder.newInstance("skill1_vehicle_"+i).addSkill("skill1")
-                    .setStartLocationCoordinate(solomonVehicle.getStartLocationCoordinate()).setStartLocationId(solomonVehicle.getStartLocationId())
+            VehicleImpl skill1Vehicle = VehicleImpl.Builder.newInstance("skill1_vehicle_" + i).addSkill("skill1")
+                    .setStartLocation(Location.Builder.newInstance().setId(solomonVehicle.getStartLocation().getId()).setCoordinate(solomonVehicle.getStartLocation().getCoordinate()).build())
                     .setEarliestStart(solomonVehicle.getEarliestDeparture())
                     .setType(newType).build();
-            VehicleImpl skill2Vehicle = VehicleImpl.Builder.newInstance("skill2_vehicle_"+i).addSkill("skill2")
-                    .setStartLocationCoordinate(solomonVehicle.getStartLocationCoordinate()).setStartLocationId(solomonVehicle.getStartLocationId())
+            VehicleImpl skill2Vehicle = VehicleImpl.Builder.newInstance("skill2_vehicle_" + i).addSkill("skill2")
+                    .setStartLocation(Location.Builder.newInstance().setId(solomonVehicle.getStartLocation().getId())
+                            .setCoordinate(solomonVehicle.getStartLocation().getCoordinate()).build())
                     .setEarliestStart(solomonVehicle.getEarliestDeparture())
                     .setType(newType).build();
             skillProblemBuilder.addVehicle(skill1Vehicle).addVehicle(skill2Vehicle);
@@ -65,14 +67,18 @@ public class SolomonWithSkillsExample {
             Service service = (Service) job;
             Service.Builder skillServiceBuilder;
             if(service.getLocation().getCoordinate().getY()<50.){
-                skillServiceBuilder = Service.Builder.newInstance(service.getId()+"_skill2").setServiceTime(service.getServiceDuration())
-                .setCoord(service.getLocation().getCoordinate()).setLocationId(service.getLocation().getId()).setTimeWindow(service.getTimeWindow())
-                        .addSizeDimension(0,service.getSize().get(0));
+                skillServiceBuilder = Service.Builder.newInstance(service.getId() + "_skill2").setServiceTime(service.getServiceDuration())
+                        .setLocation(Location.Builder.newInstance().setId(service.getLocation().getId())
+                                .setCoordinate(service.getLocation().getCoordinate()).build()).setTimeWindow(service.getTimeWindow())
+                        .addSizeDimension(0, service.getSize().get(0));
                 skillServiceBuilder.addRequiredSkill("skill2");
             }
             else {
                 skillServiceBuilder = Service.Builder.newInstance(service.getId()+"_skill1").setServiceTime(service.getServiceDuration())
-                        .setCoord(service.getLocation().getCoordinate()).setLocationId(service.getLocation().getId()).setTimeWindow(service.getTimeWindow())
+                        .setLocation(
+                                Location.Builder.newInstance().setId(service.getLocation().getId())
+                                        .setCoordinate(service.getLocation().getCoordinate()).build()
+                        ).setTimeWindow(service.getTimeWindow())
                         .addSizeDimension(0,service.getSize().get(0));
                 skillServiceBuilder.addRequiredSkill("skill1");
             }

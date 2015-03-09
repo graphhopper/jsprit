@@ -18,6 +18,7 @@
 package jsprit.core.problem.constraint;
 
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -49,14 +50,14 @@ public class SkillConstraintTest {
     @Before
     public void doBefore(){
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").build();
-        vehicle = VehicleImpl.Builder.newInstance("v").addSkill("skill1").addSkill("skill2").addSkill("skill3").addSkill("skill4").setStartLocationId("start").setType(type).build();
-        vehicle2 = VehicleImpl.Builder.newInstance("v").addSkill("skill4").addSkill("skill5").setStartLocationId("start").setType(type).build();
+        vehicle = VehicleImpl.Builder.newInstance("v").addSkill("skill1").addSkill("skill2").addSkill("skill3").addSkill("skill4").setStartLocation(Location.newInstance("start")).setType(type).build();
+        vehicle2 = VehicleImpl.Builder.newInstance("v").addSkill("skill4").addSkill("skill5").setStartLocation(Location.newInstance("start")).setType(type).build();
 
-        Service service = Service.Builder.newInstance("s").setLocationId("loc").addRequiredSkill("skill1").build();
-        Service service2 = Service.Builder.newInstance("s2").setLocationId("loc").addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();
+        Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
+        Service service2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();
 
-        Service service3 = Service.Builder.newInstance("s3").setLocationId("loc").addRequiredSkill("skill4").addRequiredSkill("skill5").build();
-        Service service4 = Service.Builder.newInstance("s4").setLocationId("loc").addRequiredSkill("skill1").build();
+        Service service3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance("loc")).addRequiredSkill("skill4").addRequiredSkill("skill5").build();
+        Service service4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
 
         vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addVehicle(vehicle2).addJob(service)
                 .addJob(service2).addJob(service3).addJob(service4).build();

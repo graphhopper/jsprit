@@ -39,10 +39,10 @@ public class RegretInsertionTest {
 
     @Test
     public void noRoutesShouldBeCorrect(){
-        Service s1 = Service.Builder.newInstance("s1").setCoord(Coordinate.newInstance(0,10)).build();
-        Service s2 = Service.Builder.newInstance("s2").setCoord(Coordinate.newInstance(0,5)).build();
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 10)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 5)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
@@ -55,10 +55,10 @@ public class RegretInsertionTest {
 
     @Test
     public void noJobsInRouteShouldBeCorrect(){
-        Service s1 = Service.Builder.newInstance("s1").setCoord(Coordinate.newInstance(0,10)).build();
-        Service s2 = Service.Builder.newInstance("s2").setCoord(Coordinate.newInstance(0,5)).build();
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 10)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 5)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
@@ -71,10 +71,10 @@ public class RegretInsertionTest {
 
     @Test
     public void s1ShouldBeAddedFirst(){
-        Service s1 = Service.Builder.newInstance("s1").setCoord(Coordinate.newInstance(0,10)).build();
-        Service s2 = Service.Builder.newInstance("s2").setCoord(Coordinate.newInstance(0,5)).build();
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 10)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 5)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
@@ -164,7 +164,7 @@ public class RegretInsertionTest {
             public InsertionData getInsertionData(VehicleRoute currentRoute, Job newJob, Vehicle newVehicle, double newVehicleDepartureTime, Driver newDriver, double bestKnownCosts) {
                 Service service = (Service)newJob;
                 Vehicle vehicle = vrp.getVehicles().iterator().next();
-                InsertionData iData = null;
+                InsertionData iData;
                 if(currentRoute.isEmpty()){
                     double mc = getCost(service.getLocation(), vehicle.getStartLocation());
                     iData = new InsertionData(2*mc,-1,0,vehicle,newDriver);

@@ -54,20 +54,20 @@ public class LoadStateTest {
         when(vehicle.getType()).thenReturn(type);
 
         VehicleRoutingProblem.Builder serviceProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Service s1 = Service.Builder.newInstance("s").addSizeDimension(0,10).setLocationId("loc").build();
-        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0,5).setLocationId("loc").build();
+        Service s1 = Service.Builder.newInstance("s").addSizeDimension(0,10).setLocation(Location.newInstance("loc")).build();
+        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0,5).setLocation(Location.newInstance("loc")).build();
         serviceProblemBuilder.addJob(s1).addJob(s2);
         final VehicleRoutingProblem serviceProblem = serviceProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder pdProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0,10).setLocationId("loc").build();
-        Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0,5).setLocationId("loc").build();
+        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0,10).setLocation(Location.newInstance("loc")).build();
+        Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0,5).setLocation(Location.newInstance("loc")).build();
         pdProblemBuilder.addJob(pickup).addJob(delivery);
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder shipmentProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Shipment shipment1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocationId("del").build();
-        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 5).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocationId("del").build();
+        Shipment shipment1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
+        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 5).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
         shipmentProblemBuilder.addJob(shipment1).addJob(shipment2).build();
         final VehicleRoutingProblem shipmentProblem = shipmentProblemBuilder.build();
 

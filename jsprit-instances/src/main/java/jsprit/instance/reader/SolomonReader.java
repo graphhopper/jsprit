@@ -17,6 +17,7 @@
 package jsprit.instance.reader;
 
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
@@ -104,12 +105,14 @@ public class SolomonReader {
 					VehicleTypeImpl vehicleType = typeBuilder.build();
 
 					VehicleImpl vehicle = VehicleImpl.Builder.newInstance("solomonVehicle").setEarliestStart(start).setLatestArrival(end)
-							.setStartLocationId(customerId).setStartLocationCoordinate(coord).setType(vehicleType).build();
+							.setStartLocation(Location.Builder.newInstance().setId(customerId)
+									.setCoordinate(coord).build()).setType(vehicleType).build();
 					vrpBuilder.addVehicle(vehicle);
 					
 				}
 				else{
-					Service service = Service.Builder.newInstance(customerId).addSizeDimension(0, demand).setCoord(coord).setLocationId(customerId).setServiceTime(serviceTime)
+					Service service = Service.Builder.newInstance(customerId).addSizeDimension(0, demand)
+							.setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime)
 							.setTimeWindow(TimeWindow.newInstance(start, end)).build();
 					vrpBuilder.addJob(service);
 				}

@@ -20,6 +20,7 @@ package jsprit.core.algorithm.state;
 
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
@@ -61,11 +62,11 @@ public class UpdatePracticalTimeWindowTest {
 		reverseActivityVisitor = new ReverseRouteActivityVisitor();
 		reverseActivityVisitor.addActivityVisitor(new UpdatePracticalTimeWindows(stateManager, routingCosts));
 		
-		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").setLocationId("0,20").setTimeWindow(TimeWindow.newInstance(0, 30)).build();
-		Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").setLocationId("20,20").setTimeWindow(TimeWindow.newInstance(10, 40)).build();
-		Pickup pickup2 = (Pickup) Pickup.Builder.newInstance("pick2").setLocationId("20,0").setTimeWindow(TimeWindow.newInstance(20, 50)).build();
+		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").setLocation(Location.newInstance("0,20")).setTimeWindow(TimeWindow.newInstance(0, 30)).build();
+		Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").setLocation(Location.newInstance("20,20")).setTimeWindow(TimeWindow.newInstance(10, 40)).build();
+		Pickup pickup2 = (Pickup) Pickup.Builder.newInstance("pick2").setLocation(Location.newInstance("20,0")).setTimeWindow(TimeWindow.newInstance(20, 50)).build();
 
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(mock(VehicleType.class)).build();
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(mock(VehicleType.class)).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         final VehicleRoutingProblem vrp = vrpBuilder.addJob(pickup).addJob(pickup2).addJob(delivery).build();

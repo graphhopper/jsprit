@@ -17,6 +17,7 @@
 package jsprit.instance.reader;
 
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
@@ -53,8 +54,7 @@ public class CordeauReader {
 	private final VehicleRoutingProblem.Builder vrpBuilder;
 
 	private double coordProjectionFactor = 1;
-	
-	private boolean addPenaltyVehicles = false;
+
 
 	public CordeauReader(VehicleRoutingProblem.Builder vrpBuilder) {
 		super();
@@ -65,7 +65,6 @@ public class CordeauReader {
 	public CordeauReader(VehicleRoutingProblem.Builder vrpBuilder, boolean penaltyVehicles) {
 		super();
 		this.vrpBuilder = vrpBuilder;
-		this.addPenaltyVehicles = penaltyVehicles;
 	}
 	
 	public void read(String fileName){
@@ -111,14 +110,15 @@ public class CordeauReader {
 				Coordinate customerCoord = makeCoord(tokens[1].trim(),tokens[2].trim());
 				double serviceTime = Double.parseDouble(tokens[3].trim());
 				int demand = Integer.parseInt(tokens[4].trim());
-				Service service = Service.Builder.newInstance(id).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocationId(id).setCoord(customerCoord).build();
+				Service service = Service.Builder.newInstance(id).addSizeDimension(0, demand).setServiceTime(serviceTime)
+						.setLocation(Location.Builder.newInstance().setId(id).setCoordinate(customerCoord).build()).build();
 				vrpBuilder.addJob(service);				
 			}
 			else if(counter <= (nOfCustomers+nOfDepots+nOfDepots)){
 				Coordinate depotCoord = makeCoord(tokens[1].trim(),tokens[2].trim());
 				List<Builder> vBuilders = vehiclesAtDepot.get(depotCounter);
 				for(Builder vBuilder : vBuilders){
-					vBuilder.setStartLocationCoordinate(depotCoord);
+					vBuilder.setStartLocation(Location.newInstance(depotCoord.getX(),depotCoord.getY()));
 					VehicleImpl vehicle = vBuilder.build();
 					vrpBuilder.addVehicle(vehicle);
 				}

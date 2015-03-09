@@ -20,6 +20,7 @@ import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.AlgorithmConfig;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Service;
@@ -29,7 +30,6 @@ import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
-import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -55,18 +55,18 @@ public class ConfigureAlgorithmInCodeInsteadOfPerXml {
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
 		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
+		vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
 		VehicleImpl vehicle = vehicleBuilder.build();
 		
 		/*
 		 * build services at the required locations, each with a capacity-demand of 1.
 		 */
-		Service service1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 7)).build();
-		Service service2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 13)).build();
+		Service service1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
+		Service service2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
 		
-		Service service3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 7)).build();
-		Service service4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 13)).build();
+		Service service3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
+		Service service4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -104,12 +104,13 @@ public class ConfigureAlgorithmInCodeInsteadOfPerXml {
 	private static AlgorithmConfig getAlgorithmConfig() {
 		AlgorithmConfig config = new AlgorithmConfig();
 		XMLConfiguration xmlConfig = config.getXMLConfiguration();
-		xmlConfig.setProperty("iterations", 2000);
+		xmlConfig.setProperty("iterations", "2000");
 		xmlConfig.setProperty("construction.insertion[@name]","bestInsertion");
 		
 		xmlConfig.setProperty("strategy.memory", 1);
 		String searchStrategy = "strategy.searchStrategies.searchStrategy";
-		
+
+		xmlConfig.setProperty(searchStrategy + "(0)[@name]","random_best");
 		xmlConfig.setProperty(searchStrategy + "(0).selector[@name]","selectBest");
 		xmlConfig.setProperty(searchStrategy + "(0).acceptor[@name]","acceptNewRemoveWorst");
 		xmlConfig.setProperty(searchStrategy + "(0).modules.module(0)[@name]","ruin_and_recreate");
@@ -117,7 +118,8 @@ public class ConfigureAlgorithmInCodeInsteadOfPerXml {
 		xmlConfig.setProperty(searchStrategy + "(0).modules.module(0).ruin.share","0.3");
 		xmlConfig.setProperty(searchStrategy + "(0).modules.module(0).insertion[@name]","bestInsertion");
 		xmlConfig.setProperty(searchStrategy + "(0).probability","0.5");
-		
+
+		xmlConfig.setProperty(searchStrategy + "(1)[@name]","radial_best");
 		xmlConfig.setProperty(searchStrategy + "(1).selector[@name]","selectBest");
 		xmlConfig.setProperty(searchStrategy + "(1).acceptor[@name]","acceptNewRemoveWorst");
 		xmlConfig.setProperty(searchStrategy + "(1).modules.module(0)[@name]","ruin_and_recreate");

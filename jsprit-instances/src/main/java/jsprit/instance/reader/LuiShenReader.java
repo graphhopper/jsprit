@@ -17,6 +17,7 @@
 package jsprit.instance.reader;
 
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
@@ -86,7 +87,8 @@ public class LuiShenReader {
 					createVehicles(vehicleFile,costScenario,customerId,coord,start,end);
 				}
 				else{
-					Service service = Service.Builder.newInstance("" + counter).addSizeDimension(0, demand).setCoord(coord).setLocationId(customerId).setServiceTime(serviceTime)
+					Service service = Service.Builder.newInstance("" + counter).addSizeDimension(0, demand)
+							.setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime)
 							.setTimeWindow(TimeWindow.newInstance(start, end)).build();
 					vrpBuilder.addJob(service);
 				}

@@ -24,6 +24,7 @@ import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import jsprit.core.algorithm.state.StateId;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.StateUpdater;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.constraint.HardActivityConstraint;
@@ -36,7 +37,6 @@ import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.reporting.SolutionPrinter;
-import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 
 import java.util.Collection;
@@ -210,45 +210,45 @@ public class JobAndActivityDependenciesExample {
 
         VehicleImpl driver1 = VehicleImpl.Builder.newInstance("driver1")
                 .addSkill("driver1")
-                .setStartLocationCoordinate(Coordinate.newInstance(0, 0)).setReturnToDepot(false).build();
+                .setStartLocation(Location.newInstance(0, 0)).setReturnToDepot(false).build();
 
         VehicleImpl driver3 = VehicleImpl.Builder.newInstance("driver3")
                 .addSkill("driver3")
-                .setStartLocationCoordinate(Coordinate.newInstance(-3, 5)).setReturnToDepot(true).build();
+                .setStartLocation(Location.newInstance(-3, 5)).setReturnToDepot(true).build();
 
         Service s1 = Service.Builder.newInstance("s1")
                 .addRequiredSkill("driver1")
                 .setName("install new device")
-                .setCoord(Coordinate.newInstance(2, 2)).build();
+                .setLocation(Location.newInstance(2, 2)).build();
         Service s2 = Service.Builder.newInstance("s2")
                 .addRequiredSkill("driver3")
                 .setName("deliver key")
-                .setCoord(Coordinate.newInstance(2, 4)).build();
+                .setLocation(Location.newInstance(2, 4)).build();
 
         Service s3 = Service.Builder.newInstance("s3")
                 .addRequiredSkill("driver1")
                 .setName("repair heater")
-                .setCoord(Coordinate.newInstance(-2, 2)).build();
+                .setLocation(Location.newInstance(-2, 2)).build();
 
         Service s4 = Service.Builder.newInstance("s4")
                 .addRequiredSkill("driver3")
                 .setName("get key")
-                .setCoord(Coordinate.newInstance(-2.3, 4)).build();
+                .setLocation(Location.newInstance(-2.3, 4)).build();
 
         Service s5 = Service.Builder.newInstance("s5")
                 .addRequiredSkill("driver1")
                 .setName("cleaning")
-                .setCoord(Coordinate.newInstance(1, 5)).build();
+                .setLocation(Location.newInstance(1, 5)).build();
 
         Service s6 = Service.Builder.newInstance("s6")
                 .addRequiredSkill("driver3")
                 .setName("use key")
-                .setCoord(Coordinate.newInstance(-2, 3)).build();
+                .setLocation(Location.newInstance(-2, 3)).build();
 
         Service s7 = Service.Builder.newInstance("s7")
                 .addRequiredSkill("driver3")
                 .setName("maintenance")
-                .setCoord(Coordinate.newInstance(-1.7, 3.5)).build();
+                .setLocation(Location.newInstance(-1.7, 3.5)).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
                 .addJob(s1).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6).addJob(s7)

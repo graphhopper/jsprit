@@ -21,10 +21,7 @@ import jsprit.core.algorithm.state.InternalStates;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateActivityTimes;
 import jsprit.core.algorithm.state.UpdateVehicleDependentPracticalTimeWindows;
-import jsprit.core.problem.AbstractActivity;
-import jsprit.core.problem.AbstractVehicle;
-import jsprit.core.problem.JobActivityFactory;
-import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.*;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -55,8 +52,6 @@ public class VehicleDependentTimeWindowTest {
 
     private VehicleRoutingTransportCosts routingCosts;
 
-    private VehicleRoutingProblem vrp;
-
     private VehicleImpl v3;
     private VehicleImpl v4;
     private VehicleImpl v5;
@@ -69,29 +64,29 @@ public class VehicleDependentTimeWindowTest {
         vrpBuilder.setRoutingCost(routingCosts);
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-        vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocationId("0,0")
+        vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance("0,0"))
                 .setEarliestStart(0.).setLatestArrival(100.).build();
 
-        v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocationId("0,0")
+        v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance("0,0"))
                 .setEarliestStart(0.).setLatestArrival(60.).build();
 
-        v3 = VehicleImpl.Builder.newInstance("v3").setType(type).setStartLocationId("0,0")
+        v3 = VehicleImpl.Builder.newInstance("v3").setType(type).setStartLocation(Location.newInstance("0,0"))
                 .setEarliestStart(0.).setLatestArrival(50.).build();
 
-        v4 = VehicleImpl.Builder.newInstance("v4").setType(type).setStartLocationId("0,0")
+        v4 = VehicleImpl.Builder.newInstance("v4").setType(type).setStartLocation(Location.newInstance("0,0"))
                 .setEarliestStart(0.).setLatestArrival(10.).build();
 
-        v5 = VehicleImpl.Builder.newInstance("v5").setType(type).setStartLocationId("0,0")
+        v5 = VehicleImpl.Builder.newInstance("v5").setType(type).setStartLocation(Location.newInstance("0,0"))
                 .setEarliestStart(60.).setLatestArrival(100.).build();
 
-        v6 = VehicleImpl.Builder.newInstance("v6").setType(type).setStartLocationId("0,0")
-                .setEndLocationId("40,0").setEarliestStart(0.).setLatestArrival(40.).build();
+        v6 = VehicleImpl.Builder.newInstance("v6").setType(type).setStartLocation(Location.newInstance("0,0"))
+                .setEndLocation(Location.newInstance("40,0")).setEarliestStart(0.).setLatestArrival(40.).build();
 
         vrpBuilder.addVehicle(vehicle).addVehicle(v2).addVehicle(v3).addVehicle(v4).addVehicle(v5).addVehicle(v6);
 
-        Service service = Service.Builder.newInstance("s1").setLocationId("10,0").build();
-        Service service2 = Service.Builder.newInstance("s2").setLocationId("20,0").build();
-        Service service3 = Service.Builder.newInstance("s3").setLocationId("30,0").build();
+        Service service = Service.Builder.newInstance("s1").setLocation(Location.newInstance("10,0")).build();
+        Service service2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("20,0")).build();
+        Service service3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance("30,0")).build();
 
         vrpBuilder.addJob(service).addJob(service2).addJob(service3);
         final VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -116,7 +111,7 @@ public class VehicleDependentTimeWindowTest {
         vehicles.add(v6);
 
         final VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
-//        stateManager.updateTimeWindowStates();
+
         UpdateVehicleDependentPracticalTimeWindows timeWindow_updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts);
         timeWindow_updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
 
@@ -155,7 +150,7 @@ public class VehicleDependentTimeWindowTest {
     @Test
     public void whenNewJobIsInsertedWithOldVeh_itJustShouldReturnTrue(){
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("50,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("50,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle,route.getDriver(),0.);
@@ -170,7 +165,7 @@ public class VehicleDependentTimeWindowTest {
     @Test
     public void whenNewJobIsInsertedWithOldVeh_itJustShouldReturnFalse(){
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("1000,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("1000,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle,route.getDriver(),0.);
@@ -185,7 +180,7 @@ public class VehicleDependentTimeWindowTest {
     @Test
     public void whenNewJobIsInsertedInBetweenAct1And2WithOldVeh_itJustShouldReturnTrue(){
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("50,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("50,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle,route.getDriver(),0.);
@@ -203,7 +198,7 @@ public class VehicleDependentTimeWindowTest {
     @Test
     public void whenNewJobIsInsertedInBetweenAct1And2WithOldVeh_itJustShouldReturnFalse(){
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("51,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("51,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,vehicle,route.getDriver(),0.);
@@ -225,7 +220,7 @@ public class VehicleDependentTimeWindowTest {
         System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60.,route.getEnd().getArrTime(),0.01);
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("40,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,v2,route.getDriver(),0.);
@@ -244,7 +239,7 @@ public class VehicleDependentTimeWindowTest {
         System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60.,route.getEnd().getArrTime(),0.01);
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("40,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,v3,route.getDriver(),0.);
@@ -262,7 +257,7 @@ public class VehicleDependentTimeWindowTest {
         System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60.,route.getEnd().getArrTime(),0.01);
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("40,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,v4,route.getDriver(),0.);
@@ -280,7 +275,7 @@ public class VehicleDependentTimeWindowTest {
         System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60.,route.getEnd().getArrTime(),0.01);
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("40,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,v6,route.getDriver(),0.);
@@ -298,7 +293,7 @@ public class VehicleDependentTimeWindowTest {
         System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60.,route.getEnd().getArrTime(),0.01);
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("40,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,v6,route.getDriver(),0.);
@@ -316,7 +311,7 @@ public class VehicleDependentTimeWindowTest {
         System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60.,route.getEnd().getArrTime(),0.01);
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("40,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,v6,route.getDriver(),0.);
@@ -332,7 +327,7 @@ public class VehicleDependentTimeWindowTest {
         System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60.,route.getEnd().getArrTime(),0.01);
 
-        Service s4 = Service.Builder.newInstance("s4").setLocationId("40,0").build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
 
         JobInsertionContext insertionContext = new JobInsertionContext(route,s4,v5,route.getDriver(),60.);

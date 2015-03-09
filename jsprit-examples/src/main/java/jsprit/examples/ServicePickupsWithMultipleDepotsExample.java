@@ -21,6 +21,7 @@ import jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Service;
@@ -30,7 +31,6 @@ import jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
-import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import jsprit.util.Examples;
 
@@ -57,12 +57,12 @@ public class ServicePickupsWithMultipleDepotsExample {
 		 * define two depots, i.e. two vehicle locations ([10,10],[50,50]) and equip them with an infinite number of vehicles of type 'vehicleType' 
 		 */
 		Builder vehicleBuilder1 = VehicleImpl.Builder.newInstance("vehicles@[10,10]");
-		vehicleBuilder1.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
+		vehicleBuilder1.setStartLocation(Location.newInstance(10, 10));
 		vehicleBuilder1.setType(vehicleType);
 		VehicleImpl vehicle1 = vehicleBuilder1.build();
 		
 		Builder vehicleBuilder2 = VehicleImpl.Builder.newInstance("vehicles@[50,50]");
-		vehicleBuilder2.setStartLocationCoordinate(Coordinate.newInstance(50, 50));
+		vehicleBuilder2.setStartLocation(Location.newInstance(50, 50));
 		vehicleBuilder2.setType(vehicleType);
 		VehicleImpl vehicle2 = vehicleBuilder2.build();
 		
@@ -76,17 +76,17 @@ public class ServicePickupsWithMultipleDepotsExample {
 		 * 4: (15,13)->(14,11)
 		 */
 		
-		Service shipment1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 7)).build();
-		Service shipment2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(5, 13)).build();
+		Service shipment1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
+		Service shipment2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
 		
-		Service shipment3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 7)).build();
-		Service shipment4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(15, 13)).build();
+		Service shipment3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
+		Service shipment4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
 		
-		Service shipment5 = Service.Builder.newInstance("5").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(55, 57)).build();
-		Service shipment6 = Service.Builder.newInstance("6").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(55, 63)).build();
+		Service shipment5 = Service.Builder.newInstance("5").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 57)).build();
+		Service shipment6 = Service.Builder.newInstance("6").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 63)).build();
 		
-		Service shipment7 = Service.Builder.newInstance("7").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(65, 57)).build();
-		Service shipment8 = Service.Builder.newInstance("8").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(65, 63)).build();
+		Service shipment7 = Service.Builder.newInstance("7").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 57)).build();
+		Service shipment8 = Service.Builder.newInstance("8").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 63)).build();
 		
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

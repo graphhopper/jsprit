@@ -19,6 +19,7 @@
 package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.job.Delivery;
@@ -50,7 +51,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
 		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
+		vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
 		VehicleImpl vehicle = vehicleBuilder.build();
 		
@@ -115,7 +116,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
 		Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocationCoordinate(Coordinate.newInstance(10, 10));
+		vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
 		vehicleBuilder.setType(vehicleType);
 		VehicleImpl vehicle = vehicleBuilder.build();
 		
@@ -127,10 +128,10 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		 * 3: (16,8)
 		 * 4: (16,12)
 		 */
-		Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("5").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(4, 8)).build();
-		Delivery delivery2 = (Delivery) Delivery.Builder.newInstance("6").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(4, 12)).build();
-		Delivery delivery3 = (Delivery) Delivery.Builder.newInstance("7").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(16, 8)).build();
-		Delivery delivery4 = (Delivery) Delivery.Builder.newInstance("8").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(16, 12)).build();
+		Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("5").addSizeDimension(0, 1).setLocation(Location.newInstance(4, 8)).build();
+		Delivery delivery2 = (Delivery) Delivery.Builder.newInstance("6").addSizeDimension(0, 1).setLocation(Location.newInstance(4, 12)).build();
+		Delivery delivery3 = (Delivery) Delivery.Builder.newInstance("7").addSizeDimension(0, 1).setLocation(Location.newInstance(16, 8)).build();
+		Delivery delivery4 = (Delivery) Delivery.Builder.newInstance("8").addSizeDimension(0, 1).setLocation(Location.newInstance(16, 12)).build();
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle)

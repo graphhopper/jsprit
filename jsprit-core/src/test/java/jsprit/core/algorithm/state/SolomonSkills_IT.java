@@ -32,6 +32,7 @@ import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.util.Solutions;
+import jsprit.core.util.TestUtils;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -56,11 +57,11 @@ public class SolomonSkills_IT {
         VehicleRoutingProblem.Builder skillProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
         for(int i=0;i<6;i++) {
             VehicleImpl skill1Vehicle = VehicleImpl.Builder.newInstance("skill1_vehicle_"+i).addSkill("skill1")
-                    .setStartLocationCoordinate(solomonVehicle.getStartLocationCoordinate()).setStartLocationId(solomonVehicle.getStartLocationId())
+                    .setStartLocation(TestUtils.loc(solomonVehicle.getStartLocation().getId(), solomonVehicle.getStartLocation().getCoordinate()))
                     .setEarliestStart(solomonVehicle.getEarliestDeparture())
                     .setType(newType).build();
             VehicleImpl skill2Vehicle = VehicleImpl.Builder.newInstance("skill2_vehicle_"+i).addSkill("skill2")
-                    .setStartLocationCoordinate(solomonVehicle.getStartLocationCoordinate()).setStartLocationId(solomonVehicle.getStartLocationId())
+                    .setStartLocation(TestUtils.loc(solomonVehicle.getStartLocation().getId(), solomonVehicle.getStartLocation().getCoordinate()))
                     .setEarliestStart(solomonVehicle.getEarliestDeparture())
                     .setType(newType).build();
             skillProblemBuilder.addVehicle(skill1Vehicle).addVehicle(skill2Vehicle);
@@ -68,8 +69,8 @@ public class SolomonSkills_IT {
         for(Job job : vrp.getJobs().values()){
             Service service = (Service) job;
             Service.Builder skillServiceBuilder = Service.Builder.newInstance(service.getId()).setServiceTime(service.getServiceDuration())
-                    .setCoord(service.getLocation().getCoordinate()).setLocationId(service.getLocation().getId()).setTimeWindow(service.getTimeWindow())
-                    .addSizeDimension(0,service.getSize().get(0));
+                    .setLocation(TestUtils.loc(service.getLocation().getId(), service.getLocation().getCoordinate())).setTimeWindow(service.getTimeWindow())
+                    .addSizeDimension(0, service.getSize().get(0));
             if(service.getLocation().getCoordinate().getY()<50) skillServiceBuilder.addRequiredSkill("skill2");
             else skillServiceBuilder.addRequiredSkill("skill1");
             skillProblemBuilder.addJob(skillServiceBuilder.build());

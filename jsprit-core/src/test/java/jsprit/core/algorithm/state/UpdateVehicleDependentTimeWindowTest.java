@@ -2,6 +2,7 @@ package jsprit.core.algorithm.state;
 
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
@@ -49,13 +50,13 @@ public class UpdateVehicleDependentTimeWindowTest {
         routingCosts = CostFactory.createEuclideanCosts();
         vrpBuilder.setRoutingCost(routingCosts);
 
-        vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setEarliestStart(0.).setLatestArrival(100.).build();
+        vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
 
-        vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("0,0").setEarliestStart(0.).setLatestArrival(60.).build();
+        vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(60.).build();
 
-        vehicle3 = VehicleImpl.Builder.newInstance("v3").setStartLocationId("40,0").setEarliestStart(0.).setLatestArrival(100.).build();
+        vehicle3 = VehicleImpl.Builder.newInstance("v3").setStartLocation(Location.newInstance("40,0")).setEarliestStart(0.).setLatestArrival(100.).build();
 
-        equivalentOf3 = VehicleImpl.Builder.newInstance("v4").setStartLocationId("40,0").setEarliestStart(0.).setLatestArrival(100.).build();
+        equivalentOf3 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance("40,0")).setEarliestStart(0.).setLatestArrival(100.).build();
 
         vrpBuilder.addVehicle(vehicle).addVehicle(vehicle2).addVehicle(vehicle3).addVehicle(equivalentOf3);
 
@@ -67,9 +68,9 @@ public class UpdateVehicleDependentTimeWindowTest {
 
         fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
 
-        Service service = Service.Builder.newInstance("s1").setLocationId("10,0").build();
-        Service service2 = Service.Builder.newInstance("s2").setLocationId("20,0").build();
-        Service service3 = Service.Builder.newInstance("s3").setLocationId("30,0").build();
+        Service service = Service.Builder.newInstance("s1").setLocation(Location.newInstance("10,0")).build();
+        Service service2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("20,0")).build();
+        Service service3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance("30,0")).build();
 
         vrpBuilder.addJob(service).addJob(service2).addJob(service3);
         vrp = vrpBuilder.build();

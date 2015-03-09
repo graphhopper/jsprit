@@ -18,7 +18,6 @@ package jsprit.core.problem.job;
 
 import jsprit.core.problem.Location;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.util.Coordinate;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -30,16 +29,16 @@ public class ServiceTest {
 	
 	@Test
 	public void whenTwoServicesHaveTheSameId_theirReferencesShouldBeUnEqual(){
-		Service one = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocationId("foo").build();
-		Service two = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocationId("fo").build();
+		Service one = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocation(Location.newInstance("foo")).build();
+		Service two = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocation(Location.newInstance("fo")).build();
 		
 		assertTrue(one != two);
 	}
 
 	@Test
 	public void whenTwoServicesHaveTheSameId_theyShouldBeEqual(){
-		Service one = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocationId("foo").build();
-		Service two = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocationId("fo").build();
+		Service one = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocation(Location.newInstance("foo")).build();
+		Service two = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocation(Location.newInstance("fo")).build();
 		
 		assertTrue(one.equals(two));
 	}
@@ -47,8 +46,8 @@ public class ServiceTest {
 	@Test
 	public void noName(){
 		Set<Service> serviceSet = new HashSet<Service>();
-		Service one = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocationId("foo").build();
-		Service two = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocationId("fo").build();
+		Service one = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocation(Location.newInstance("foo")).build();
+		Service two = Service.Builder.newInstance("service").addSizeDimension(0, 10).setLocation(Location.newInstance("fo")).build();
 		serviceSet.add(one);
 //		assertTrue(serviceSet.contains(two));
 		serviceSet.remove(two);
@@ -58,12 +57,12 @@ public class ServiceTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void whenCapacityDimValueIsNegative_throwIllegalStateExpception(){
 		@SuppressWarnings("unused")
-		Service s = Service.Builder.newInstance("s").setLocationId("foo").addSizeDimension(0, -10).build();
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("foo")).addSizeDimension(0, -10).build();
 	}
 	
 	@Test
 	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
-		Service one = Service.Builder.newInstance("s").setLocationId("foofoo")
+		Service one = Service.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
 				.addSizeDimension(0,2)
 				.addSizeDimension(1,4)
 				.build();
@@ -72,7 +71,7 @@ public class ServiceTest {
 	
 	@Test
 	public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
-		Service one = Service.Builder.newInstance("s").setLocationId("foofoo")
+		Service one = Service.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
 				.build();
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(0,one.getSize().get(0));
@@ -80,7 +79,7 @@ public class ServiceTest {
 	
 	@Test
 	public void whenShipmentIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
-		Service one = Service.Builder.newInstance("s").addSizeDimension(0, 1).setLocationId("foofoo")
+		Service one = Service.Builder.newInstance("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
 				.build();
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(1,one.getSize().get(0));
@@ -90,18 +89,17 @@ public class ServiceTest {
 	public void whenCallingForNewInstanceOfBuilder_itShouldReturnBuilderCorrectly(){
 		Service.Builder builder = Service.Builder.newInstance("s");
 		assertNotNull(builder);
-		assertTrue(builder instanceof Service.Builder);
 	}
 	
 	@Test
 	public void whenSettingNoType_itShouldReturn_service(){
-		Service s = Service.Builder.newInstance("s").setLocationId("loc").build();
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
 		assertEquals("service",s.getType());
 	}
 	
 	@Test
 	public void whenSettingLocation_itShouldBeSetCorrectly(){
-		Service s = Service.Builder.newInstance("s").setLocationId("loc").build();
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
 		assertEquals("loc",s.getLocation().getId());
         assertEquals("loc",s.getLocation().getId());
 	}
@@ -116,7 +114,7 @@ public class ServiceTest {
 	
 	@Test
 	public void whenSettingLocationCoord_itShouldBeSetCorrectly(){
-		Service s = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(1, 2)).build();
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance(1, 2)).build();
 		assertEquals(1.0,s.getLocation().getCoordinate().getX(),0.01);
 		assertEquals(2.0,s.getLocation().getCoordinate().getY(),0.01);
         assertEquals(1.0,s.getLocation().getCoordinate().getX(),0.01);
@@ -132,31 +130,31 @@ public class ServiceTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void whenServiceTimeSmallerZero_throwIllegalStateException(){
 		@SuppressWarnings("unused")
-		Service s = Service.Builder.newInstance("s").setLocationId("loc").setServiceTime(-1).build();
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setServiceTime(-1).build();
 	}
 	
 	@Test
 	public void whenSettingServiceTime_itShouldBeSetCorrectly(){
-		Service s = Service.Builder.newInstance("s").setLocationId("loc").setServiceTime(1).build();
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setServiceTime(1).build();
 		assertEquals(1.0,s.getServiceDuration(),0.01);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void whenTimeWindowIsNull_throwException(){
 		@SuppressWarnings("unused")
-		Service s = Service.Builder.newInstance("s").setLocationId("loc").setTimeWindow(null).build();
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setTimeWindow(null).build();
 	}
 	
 	@Test
 	public void whenSettingTimeWindow_itShouldBeSetCorrectly(){
-		Service s = Service.Builder.newInstance("s").setLocationId("loc").setTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
 		assertEquals(1.0,s.getTimeWindow().getStart(),0.01);
 		assertEquals(2.0,s.getTimeWindow().getEnd(),0.01);
 	}
 	
 	@Test
 	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
-		Service s = Service.Builder.newInstance("s").setLocationId("loc")
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
 				.addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
@@ -165,7 +163,7 @@ public class ServiceTest {
 	
 	@Test
 	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
-		Service s = Service.Builder.newInstance("s").setLocationId("loc")
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
 				.addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
@@ -173,7 +171,7 @@ public class ServiceTest {
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
-       Service s = Service.Builder.newInstance("s").setLocationId("loc")
+       Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
                 .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
@@ -181,7 +179,7 @@ public class ServiceTest {
 
     @Test
     public void nameShouldBeAssigned(){
-        Service s = (Service) Service.Builder.newInstance("s").setLocationId("loc")
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
                 .setName("name").build();
         assertEquals("name",s.getName());
     }

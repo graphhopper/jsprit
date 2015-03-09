@@ -18,6 +18,7 @@ package jsprit.core.algorithm;
 
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
@@ -169,7 +170,8 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
 			/*
 			 * build service
 			 */
-			Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
+			Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
+					.setLocation(Location.newInstance(lineTokens[0])).build();
 			/*
 			 * and add it to problem
 			 */

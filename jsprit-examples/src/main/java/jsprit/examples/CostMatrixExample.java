@@ -19,6 +19,7 @@ package jsprit.examples;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -50,11 +51,12 @@ public class CostMatrixExample {
 		Examples.createOutputFolder();
 		
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).setCostPerDistance(1).setCostPerTime(2).build();
-		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("0").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle")
+				.setStartLocation(Location.newInstance("0")).setType(type).build();
 		
-		Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocationId("1").build();
-		Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocationId("2").build();
-		Service s3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setLocationId("3").build();
+		Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance("1")).build();
+		Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance("2")).build();
+		Service s3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setLocation(Location.newInstance("3")).build();
 		
 		
 		/*

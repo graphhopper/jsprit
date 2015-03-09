@@ -17,12 +17,12 @@
 
 package jsprit.instance.reader;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.io.VrpXMLWriter;
 import jsprit.core.problem.job.Service;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
@@ -72,7 +72,7 @@ public class VrphGoldenReader {
 
 	public void read(String filename){
 		BufferedReader reader = getReader(filename);
-		String line = null;
+		String line;
 		boolean firstline = true;
 		Coordinate depotCoord = null;
 		int customerCount=0;
@@ -92,7 +92,7 @@ public class VrphGoldenReader {
 				}
 				else{
 					Service.Builder serviceBuilder = Service.Builder.newInstance(tokens[0]).addSizeDimension(0, Integer.parseInt(tokens[3]));
-					serviceBuilder.setCoord(Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])));
+					serviceBuilder.setLocation(Location.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])));
 					vrpBuilder.addJob(serviceBuilder.build());
 				}
 				customerCount++;
@@ -135,8 +135,8 @@ public class VrphGoldenReader {
 				}
 				for(int i=0;i<nuOfVehicles;i++){
 					VehicleTypeImpl type = typeBuilder.build();
-					Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle_"+tokens[1]+"_"+i)
-							.setStartLocationCoordinate(depotCoord).setType(type).build();
+					VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle_"+tokens[1]+"_"+i)
+							.setStartLocation(Location.newInstance(depotCoord.getX(),depotCoord.getY())).setType(type).build();
 					vrpBuilder.addVehicle(vehicle);
 				}
 			}

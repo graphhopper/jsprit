@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.job;
 
+import jsprit.core.problem.Location;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,9 +30,9 @@ public class DeliveryTest {
 	
 	@Test
 	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
-		Delivery one = (Delivery)Delivery.Builder.newInstance("s").setLocationId("foofoo")
-				.addSizeDimension(0,2)
-				.addSizeDimension(1,4)
+		Delivery one = (Delivery)Delivery.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
+				.addSizeDimension(0, 2)
+				.addSizeDimension(1, 4)
 				.build();
 		assertEquals(2,one.getSize().getNuOfDimensions());
 		assertEquals(2,one.getSize().get(0));
@@ -41,7 +42,7 @@ public class DeliveryTest {
 	
 	@Test
 	public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
-		Delivery one = (Delivery)Delivery.Builder.newInstance("s").setLocationId("foofoo")
+		Delivery one = (Delivery)Delivery.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
 				.build();
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(0,one.getSize().get(0));
@@ -49,7 +50,7 @@ public class DeliveryTest {
 	
 	@Test
 	public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
-		Delivery one = (Delivery)Delivery.Builder.newInstance("s").addSizeDimension(0, 1).setLocationId("foofoo")
+		Delivery one = (Delivery)Delivery.Builder.newInstance("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
 				.build();
 		assertEquals(1,one.getSize().getNuOfDimensions());
 		assertEquals(1,one.getSize().get(0));
@@ -57,7 +58,7 @@ public class DeliveryTest {
 	
 	@Test
 	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
-		Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocationId("loc")
+		Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
 				.addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
@@ -65,7 +66,7 @@ public class DeliveryTest {
 	
 	@Test
 	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
-		Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocationId("loc")
+		Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
 				.addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
 		assertTrue(s.getRequiredSkills().containsSkill("drill"));
 		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
@@ -73,7 +74,7 @@ public class DeliveryTest {
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
-        Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocationId("loc")
+        Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
                 .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
@@ -81,7 +82,7 @@ public class DeliveryTest {
 
     @Test
     public void nameShouldBeAssigned(){
-        Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocationId("loc")
+        Delivery s = (Delivery) Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
                 .setName("name").build();
         assertEquals("name", s.getName());
     }

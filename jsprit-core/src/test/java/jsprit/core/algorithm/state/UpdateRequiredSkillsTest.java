@@ -1,5 +1,6 @@
 package jsprit.core.algorithm.state;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
@@ -28,10 +29,10 @@ public class UpdateRequiredSkillsTest {
     @Before
     public void doBefore(){
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("start").setType(type).build();
-        Service service = Service.Builder.newInstance("s").setLocationId("loc").addRequiredSkill("skill1").build();
-        Service service2 = Service.Builder.newInstance("s2").setLocationId("loc").addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();
-        Service service3 = Service.Builder.newInstance("s3").setLocationId("loc").addRequiredSkill("skill4").addRequiredSkill("skill5").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type).build();
+        Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
+        Service service2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();
+        Service service3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance("loc")).addRequiredSkill("skill4").addRequiredSkill("skill5").build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(service)
                 .addJob(service2).addJob(service3).build();
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).addService(service2).addService(service3).build();

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
 
+import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Delivery;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class DeliverServiceTest {
 	
 	@Before
 	public void doBefore(){
-		service = (Delivery) Delivery.Builder.newInstance("service").setLocationId("loc").
+		service = (Delivery) Delivery.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
 				setTimeWindow(TimeWindow.newInstance(1., 2.)).
 				addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
 		deliver = new DeliverService(service);

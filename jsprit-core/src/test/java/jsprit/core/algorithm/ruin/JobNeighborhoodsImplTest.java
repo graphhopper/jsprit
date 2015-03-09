@@ -20,10 +20,10 @@ package jsprit.core.algorithm.ruin;
 
 import jsprit.core.algorithm.ruin.distance.EuclideanServiceDistance;
 import jsprit.core.algorithm.ruin.distance.JobDistance;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
-import jsprit.core.util.Coordinate;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,14 +52,14 @@ public class JobNeighborhoodsImplTest {
 	@Before
 	public void doBefore(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-		target = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(0, 5)).build();
-		s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(0, 4)).build();
-		s3 = Service.Builder.newInstance("s3").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(0, 3)).build();
-		s4 = Service.Builder.newInstance("s4").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(0, 2)).build();
+		target = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 5)).build();
+		s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 4)).build();
+		s3 = Service.Builder.newInstance("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 3)).build();
+		s4 = Service.Builder.newInstance("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 2)).build();
 		
-		s5 = Service.Builder.newInstance("s5").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(0, 6)).build();
-		s6 = Service.Builder.newInstance("s6").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(0, 7)).build();
-		s7 = Service.Builder.newInstance("s7").addSizeDimension(0, 1).setCoord(Coordinate.newInstance(0, 8)).build();
+		s5 = Service.Builder.newInstance("s5").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 6)).build();
+		s6 = Service.Builder.newInstance("s6").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 7)).build();
+		s7 = Service.Builder.newInstance("s7").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 8)).build();
 		
 		vrp = builder.addJob(target).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6).addJob(s7).build();
 		

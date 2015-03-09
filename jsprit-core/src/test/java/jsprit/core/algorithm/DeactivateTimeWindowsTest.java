@@ -19,6 +19,7 @@ package jsprit.core.algorithm;
 
 
 import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.job.Service;
@@ -26,7 +27,6 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.VehicleImpl;
-import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,9 +37,9 @@ public class DeactivateTimeWindowsTest {
 
     @Test
     public void activityTimesShouldIgnoreTimeWindows(){
-        Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(20, 0))
-                .setTimeWindow(TimeWindow.newInstance(40,50)).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
+                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
         VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
         vraBuilder.addDefaultCostCalculators();
@@ -53,9 +53,9 @@ public class DeactivateTimeWindowsTest {
 
     @Test
     public void whenNotActivatingViaStateManager_activityTimesShouldConsiderTimeWindows(){
-        Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(20, 0))
-                .setTimeWindow(TimeWindow.newInstance(40,50)).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
+                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
         VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
         vraBuilder.addDefaultCostCalculators();
@@ -72,9 +72,9 @@ public class DeactivateTimeWindowsTest {
 
     @Test
     public void activityTimesShouldConsiderTimeWindows(){
-        Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(20, 0))
-                .setTimeWindow(TimeWindow.newInstance(40,50)).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
+                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
         VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
         vraBuilder.addCoreConstraints();
@@ -89,9 +89,9 @@ public class DeactivateTimeWindowsTest {
 
     @Test
     public void whenActivatingViaStateManager_activityTimesShouldConsiderTimeWindows(){
-        Service service = Service.Builder.newInstance("s").setCoord(Coordinate.newInstance(20, 0))
-                .setTimeWindow(TimeWindow.newInstance(40,50)).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationCoordinate(Coordinate.newInstance(0,0)).build();
+        Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
+                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
         VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
         vraBuilder.addDefaultCostCalculators();

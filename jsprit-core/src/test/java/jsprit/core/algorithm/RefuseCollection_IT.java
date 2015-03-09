@@ -287,7 +287,8 @@ public class RefuseCollection_IT {
 			/*
 			 * build service
 			 */
-			Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
+			Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
+					.setLocation(Location.newInstance(lineTokens[0])).build();
 			/*
 			 * and add it to problem
 			 */
@@ -319,7 +320,8 @@ public class RefuseCollection_IT {
 			/*
 			 * build service
 			 */
-            Pickup service = (Pickup) Pickup.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
+            Pickup service = (Pickup) Pickup.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
+					.setLocation(Location.newInstance(lineTokens[0])).build();
 			/*
 			 * and add it to problem
 			 */
@@ -341,7 +343,8 @@ public class RefuseCollection_IT {
 			/*
 			 * build service
 			 */
-            Delivery service = (Delivery) Delivery.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
+            Delivery service = (Delivery) Delivery.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
+					.setLocation(Location.newInstance(lineTokens[0])).build();
 			/*
 			 * and add it to problem
 			 */

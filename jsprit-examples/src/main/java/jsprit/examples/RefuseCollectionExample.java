@@ -19,6 +19,7 @@ package jsprit.examples;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.io.VrpXMLWriter;
@@ -49,55 +50,6 @@ import java.util.Collection;
  */
 public class RefuseCollectionExample {
 
-	static class RelationKey {
-
-		final String from;
-		final String to;
-		
-		public RelationKey(String from, String to) {
-			super();
-			this.from = from;
-			this.to = to;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Object#hashCode()
-		 */
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((from == null) ? 0 : from.hashCode());
-			result = prime * result + ((to == null) ? 0 : to.hashCode());
-			return result;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			RelationKey other = (RelationKey) obj;
-			if (from == null) {
-				if (other.from != null)
-					return false;
-			} else if (!from.equals(other.from))
-				return false;
-			if (to == null) {
-				if (other.to != null)
-					return false;
-			} else if (!to.equals(other.to))
-				return false;
-			return true;
-		}
-	}
-
 	public static void main(String[] args) throws IOException {
 		/*
 		 * some preparation - create output folder
@@ -112,7 +64,7 @@ public class RefuseCollectionExample {
 		VehicleTypeImpl bigType = typeBuilder.build();
 		
 		VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocationId("1");
+		vehicleBuilder.setStartLocation(Location.newInstance("1"));
 		vehicleBuilder.setType(bigType);
 		VehicleImpl bigVehicle = vehicleBuilder.build();
 		
@@ -162,7 +114,7 @@ public class RefuseCollectionExample {
 			/*
 			 * build service
 			 */
-			Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocationId(lineTokens[0]).build();
+			Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocation(Location.newInstance(lineTokens[0])).build();
 			/*
 			 * and add it to problem
 			 */

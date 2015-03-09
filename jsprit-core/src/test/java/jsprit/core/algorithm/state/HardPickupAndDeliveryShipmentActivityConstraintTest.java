@@ -27,7 +27,6 @@ import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.DeliverShipment;
 import jsprit.core.problem.solution.route.activity.PickupService;
 import jsprit.core.problem.solution.route.activity.PickupShipment;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -39,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 
-	Vehicle vehicle;
+	VehicleImpl vehicle;
 	
 	StateManager stateManager;
 	
@@ -57,14 +56,14 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 	
 	@Before
 	public void doBefore(){
-        s1 = Service.Builder.newInstance("s1").setLocationId("loc").build();
-        s2 = Service.Builder.newInstance("s2").setLocationId("loc").build();
-        shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocationId("delLoc").addSizeDimension(0, 1).build();
+        s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
+        s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("loc")).build();
+        shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 1).build();
 
 
 //		when(vehicle.getCapacity()).thenReturn(2);
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0,2).build();
-        vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocationId("start").build();
+        vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance("start")).build();
 
         vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(shipment).addVehicle(vehicle).build();
 

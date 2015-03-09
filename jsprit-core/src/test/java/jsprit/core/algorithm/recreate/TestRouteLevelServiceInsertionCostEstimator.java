@@ -22,6 +22,7 @@ import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.JobActivityFactory;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -84,13 +85,13 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         };
         vrpBuilder.setActivityCosts(activityCosts);
 
-        Service s1 = Service.Builder.newInstance("s1").setLocationId("10,0").setTimeWindow(TimeWindow.newInstance(10.,10.)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocationId("20,0").setTimeWindow(TimeWindow.newInstance(20.,20.)).build();
-        Service s3 = Service.Builder.newInstance("s3").setLocationId("30,0").setTimeWindow(TimeWindow.newInstance(30.,30.)).build();
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(10., 10.)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("20,0")).setTimeWindow(TimeWindow.newInstance(20.,20.)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance("30,0")).setTimeWindow(TimeWindow.newInstance(30.,30.)).build();
         vrpBuilder.addJob(s1).addJob(s2).addJob(s3);
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId("0,0").setType(type).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("0,0")).setType(type).build();
         vrpBuilder.addVehicle(vehicle);
         vrp = vrpBuilder.build();
 
@@ -110,7 +111,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
     @Test
     public void whenNewServiceNeedToBeInserted_itShouldReturnCorrectInsertionCosts(){
-        final Service s4 = Service.Builder.newInstance("s4").setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
+        final Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
         ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
@@ -132,7 +133,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
     @Test
     public void whenNewServiceNeedToBeInserted_itShouldReturnCorrectInsertionIndex(){
-        final Service s4 = Service.Builder.newInstance("s4").setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
+        final Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
         final ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
@@ -154,7 +155,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
     @Test
     public void whenNewServiceWithServiceTimeNeedToBeInserted_itShouldReturnCorrectInsertionData(){
-        final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
+        final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
         estimator.setForwardLooking(0);
         ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
@@ -178,7 +179,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
     @Test
     public void whenNewServiceWithServiceTimeNeedToBeInsertedAndRouteIsEmpty_itShouldReturnCorrectInsertionData(){
-        final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
+        final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5.,5.)).build();
 //        PickupActivity pickupService = new PickupService(s4);
         VehicleRoute emptyroute = VehicleRoute.emptyRoute();
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);
@@ -203,7 +204,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
     @Test
     public void whenNewServiceWithServiceTimeAndTWNeedToBeInsertedAndRouteIsEmpty_itShouldReturnCorrectInsertionData(){
-        final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocationId("5,0").setTimeWindow(TimeWindow.newInstance(3.,3.)).build();
+        final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(3.,3.)).build();
 //        PickupActivity pickupService = new PickupService(s4);
         VehicleRoute emptyroute = VehicleRoute.emptyRoute();
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts,activityCosts,stateManager);

@@ -16,10 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm.state;
 
-import jsprit.core.problem.AbstractActivity;
-import jsprit.core.problem.Capacity;
-import jsprit.core.problem.JobActivityFactory;
-import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.*;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -53,7 +50,7 @@ public class StateManagerTest {
     }
 
     private VehicleRoute getRoute(Vehicle vehicle) {
-        return VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new ActFac()).addService(Service.Builder.newInstance("s").setLocationId("loc").build()).build();
+        return VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new ActFac()).addService(Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build()).build();
     }
 
 

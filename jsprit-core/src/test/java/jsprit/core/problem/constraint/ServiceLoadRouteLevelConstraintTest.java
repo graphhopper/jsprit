@@ -21,9 +21,6 @@ import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
-import jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
-import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
@@ -51,24 +48,9 @@ public class ServiceLoadRouteLevelConstraintTest {
 	private VehicleRoute route;
 	
 	RouteAndActivityStateGetter stateGetter;
-	
-	JobInsertionContext iContext;
-	
+
 	ServiceLoadRouteLevelConstraint constraint;
-	
-	VehicleRoutingTransportCosts routingCosts = new AbstractForwardVehicleRoutingTransportCosts() {
-		
-		@Override
-		public double getTransportTime(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
-			return 0;
-		}
-		
-		@Override
-		public double getTransportCost(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
-			return 0;
-		}
-	};
-	
+
 	StateManager stateManager;
 	
 	@Before
@@ -338,7 +320,7 @@ public class ServiceLoadRouteLevelConstraintTest {
 		final Service pickup2 = createPickup("pick2",3);
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,3).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocationId("loc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance("loc")).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(pickup).addJob(pickup2).build();
 
@@ -354,7 +336,7 @@ public class ServiceLoadRouteLevelConstraintTest {
 		Pickup service = (Pickup) createPickup("pick",2);
         Service serviceInRoute = createPickup("pick1",3);
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,3).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocationId("loc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance("loc")).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(service).addJob(serviceInRoute).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(serviceInRoute).build();
         stateManager.informInsertionStarts(Arrays.asList(route), null);
@@ -366,12 +348,8 @@ public class ServiceLoadRouteLevelConstraintTest {
 	
 
 	private Service createPickup(String string, int i) {
-		return Pickup.Builder.newInstance(string).addSizeDimension(0, i).setLocationId("loc").build();
+		return Pickup.Builder.newInstance(string).addSizeDimension(0, i).setLocation(Location.newInstance("loc")).build();
 	}
 
-	private Service createDelivery(String string, int i) {
-		return Delivery.Builder.newInstance(string).addSizeDimension(0, i).setLocationId("loc").build();
-	}
-	
 	
 }
