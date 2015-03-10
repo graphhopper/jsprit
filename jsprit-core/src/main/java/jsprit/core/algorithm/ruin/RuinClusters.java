@@ -79,7 +79,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 	private double epsFactor = 0.8;
 
 	public RuinClusters(VehicleRoutingProblem vrp, final int initialNumberJobsToRemove, JobNeighborhoods jobNeighborhoods) {
-		super();
+		super(vrp);
 		this.vrp = vrp;
 		setRuinShareFactory(new RuinShareFactory() {
 			@Override
@@ -156,9 +156,10 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 			List<Job> cluster = dbscan.getRandomCluster(targetRoute);
 			for(Job j : cluster){
 				if(toRemove == 0) break;
-				removeJob(j, vehicleRoutes);
-				lastRemoved.add(j);
-				unassignedJobs.add(j);
+				if(removeJob(j, vehicleRoutes)) {
+					lastRemoved.add(j);
+					unassignedJobs.add(j);
+				}
 				toRemove--;
 			}
 			ruined.add(targetRoute);

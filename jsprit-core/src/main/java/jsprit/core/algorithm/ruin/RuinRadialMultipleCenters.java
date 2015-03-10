@@ -48,7 +48,7 @@ public final class RuinRadialMultipleCenters extends AbstractRuinStrategy {
 	private int noCenters = 1;
 
 	public RuinRadialMultipleCenters(VehicleRoutingProblem vrp, int neighborhoodSize, JobDistance jobDistance) {
-		super();
+		super(vrp);
 		this.vrp = vrp;
 		noJobsToMemorize = neighborhoodSize;
 		ruinShareFactory = new RuinShareFactory() {
@@ -116,8 +116,9 @@ public final class RuinRadialMultipleCenters extends AbstractRuinStrategy {
 		while(neighborhoodIterator.hasNext()){
 			Job job = neighborhoodIterator.next();
 			if(available!=null) available.remove(job);
-			removeJob(job,vehicleRoutes);
-			unassignedJobs.add(job);
+			if(removeJob(job,vehicleRoutes)) {
+				unassignedJobs.add(job);
+			}
 		}
 		return unassignedJobs;
 	}

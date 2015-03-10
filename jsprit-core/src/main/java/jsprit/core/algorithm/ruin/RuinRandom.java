@@ -51,7 +51,7 @@ public final class RuinRandom extends AbstractRuinStrategy {
 	 * @param fraction which is the fraction of total c
 	 */
 	public RuinRandom(VehicleRoutingProblem vrp, double fraction) {
-		super();
+		super(vrp);
 		this.vrp = vrp;
 		this.fractionOfAllNodes2beRuined = fraction;
 		setRuinShareFactory(new RuinShareFactory() {
@@ -96,9 +96,10 @@ public final class RuinRandom extends AbstractRuinStrategy {
 		for (int i = 0; i < nOfJobs2BeRemoved; i++) {
 			if(availableJobs.isEmpty()) break;
 			Job job = pickRandomJob(availableJobs);
-			unassignedJobs.add(job);
-			availableJobs.remove(job);
-			removeJob(job,vehicleRoutes);
+			if(removeJob(job,vehicleRoutes)) {
+				unassignedJobs.add(job);
+				availableJobs.remove(job);
+			}
 		}
 	}
 

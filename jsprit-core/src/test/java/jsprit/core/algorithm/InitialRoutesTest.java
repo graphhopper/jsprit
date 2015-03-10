@@ -19,6 +19,7 @@ package jsprit.core.algorithm;
 
 
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Location;
@@ -209,11 +210,40 @@ public class InitialRoutesTest {
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
 
-        assertTrue(hasActivityIn(solution.getRoutes().iterator().next(),"1"));
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        Job job = getInitialJob("1",vrp);
+        assertTrue(hasActivityIn(solution,"veh1", job));
+    }
+
+    private Job getInitialJob(String jobId, VehicleRoutingProblem vrp) {
+        for(VehicleRoute r : vrp.getInitialVehicleRoutes()){
+            for(Job j : r.getTourActivities().getJobs()){
+               if(j.getId().equals(jobId)) return j;
+            }
+        }
+        return null;
     }
 
     @Test
-    public void whenSolvingProblem2_deliverServices_and_allShipmentActs_shouldBeInRoute(){
+    public void whenSolvingWithJsprit_deliverService1_shouldBeInRoute(){
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes_3.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
+
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+
+        Job job = getInitialJob("1",vrp);
+        assertTrue(hasActivityIn(solution,"veh1", job));
+    }
+
+    @Test
+    public void whenSolvingProblem2With_deliverServices_and_allShipmentActs_shouldBeInRoute(){
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
@@ -227,6 +257,29 @@ public class InitialRoutesTest {
         assertTrue(hasActivityIn(solution.getRoutes(),"2"));
         assertTrue(hasActivityIn(solution.getRoutes(),"3"));
         assertTrue(hasActivityIn(solution.getRoutes(),"4"));
+
+        assertTrue(hasActivityIn(solution,"veh1", getInitialJob("1",vrp)));
+        assertTrue(hasActivityIn(solution,"veh2", getInitialJob("3",vrp)));
+    }
+
+    @Test
+    public void whenSolvingProblem2WithJsprit_deliverServices_and_allShipmentActs_shouldBeInRoute(){
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
+
+        assertTrue(hasActivityIn(solution.getRoutes(),"1"));
+        assertTrue(hasActivityIn(solution.getRoutes(),"2"));
+        assertTrue(hasActivityIn(solution.getRoutes(),"3"));
+        assertTrue(hasActivityIn(solution.getRoutes(),"4"));
+
+        assertTrue(hasActivityIn(solution,"veh1", getInitialJob("1",vrp)));
+        assertTrue(hasActivityIn(solution,"veh2", getInitialJob("3",vrp)));
     }
 
     private boolean hasActivityIn(Collection<VehicleRoute> routes, String jobId) {
@@ -240,6 +293,19 @@ public class InitialRoutesTest {
         }
         return isInRoute;
     }
+
+    private boolean hasActivityIn(VehicleRoutingProblemSolution solution, String vehicleId, Job job) {
+        for(VehicleRoute route : solution.getRoutes()){
+            String vehicleId_ = route.getVehicle().getId();
+            if(vehicleId_.equals(vehicleId)){
+                if(route.getTourActivities().servesJob(job)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     private boolean hasActivityIn(VehicleRoute route, String jobId){
         boolean isInRoute = false;

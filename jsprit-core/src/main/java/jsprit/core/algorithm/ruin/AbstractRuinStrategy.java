@@ -20,6 +20,7 @@ package jsprit.core.algorithm.ruin;
 
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.algorithm.ruin.listener.RuinListeners;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.util.RandomNumberGeneration;
@@ -33,12 +34,10 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
 
     protected Random random = RandomNumberGeneration.getRandom();
 
+    protected VehicleRoutingProblem vrp;
+
     public void setRandom(Random random) {
         this.random = random;
-    }
-
-    protected AbstractRuinStrategy() {
-        ruinListeners = new RuinListeners();
     }
 
     protected RuinShareFactory ruinShareFactory;
@@ -49,6 +48,11 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
 
     public RuinShareFactory getRuinShareFactory(){
         return ruinShareFactory;
+    }
+
+    protected AbstractRuinStrategy(VehicleRoutingProblem vrp) {
+        this.vrp = vrp;
+        ruinListeners = new RuinListeners();
     }
 
     @Override
@@ -90,6 +94,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
     }
 
     protected boolean removeJob(Job job, Collection<VehicleRoute> vehicleRoutes) {
+        if(jobIsInitial(job)) return false;
         for (VehicleRoute route : vehicleRoutes) {
             if (removeJob(job, route)) {
                 return true;
@@ -98,7 +103,12 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
         return false;
     }
 
+    private boolean jobIsInitial(Job job){
+        return !vrp.getJobs().containsKey(job.getId()); //for initial jobs (being not contained in problem
+    }
+
     protected boolean removeJob(Job job, VehicleRoute route) {
+        if(jobIsInitial(job)) return false;
         boolean removed = route.getTourActivities().removeJob(job);
         if (removed) {
             ruinListeners.removed(job,route);

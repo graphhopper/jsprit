@@ -76,6 +76,9 @@ public class MultipleDepotWithInitialRoutesExample {
 		/*
 		 * solve the problem
 		 */
+//		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+//				.setProperty(Jsprit.Parameter.ITERATIONS,"10000").buildAlgorithm();
+
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_noVehicleSwitch.xml");
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		

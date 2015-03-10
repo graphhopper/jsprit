@@ -14,7 +14,7 @@
 	<strategy>
 		<memory>1</memory>
 		<searchStrategies>
-			<searchStrategy name="radialRuinAndRecreate">
+			<searchStrategy name="random_best">
 				<selector name="selectBest"/>
 				<acceptor name="acceptNewRemoveWorst"/>
 					
@@ -30,7 +30,7 @@
 				<probability>0.2</probability>
 			</searchStrategy>
 			
-			<searchStrategy name="radialRuinAndRecreate">
+			<searchStrategy name="radial_best">
 				<selector name="selectBest"/>
 				<acceptor name="acceptNewRemoveWorst"/>
 					
@@ -46,7 +46,7 @@
 				<probability>0.2</probability>
 			</searchStrategy>
 			
-			<searchStrategy name="radialRuinAndRecreate">
+			<searchStrategy name="small_radial_best">
 				<selector name="selectBest"/>
 				<acceptor name="acceptNewRemoveWorst"/>  
 				<modules>

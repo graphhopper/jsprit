@@ -56,7 +56,7 @@ public final class RuinWorst extends AbstractRuinStrategy {
 	}
 
 	public RuinWorst(VehicleRoutingProblem vrp, final int initialNumberJobsToRemove) {
-		super();
+		super(vrp);
 		this.vrp = vrp;
 		setRuinShareFactory(new RuinShareFactory() {
 			@Override
@@ -95,9 +95,10 @@ public final class RuinWorst extends AbstractRuinStrategy {
 		while(toRemove > 0){
 			Job worst = getWorst(vehicleRoutes);
 			if(worst == null) break;
-			removeJob(worst,vehicleRoutes);
-			availableJobs.remove(worst);
-			unassignedJobs.add(worst);
+			if(removeJob(worst,vehicleRoutes)) {
+				availableJobs.remove(worst);
+				unassignedJobs.add(worst);
+			}
 			toRemove--;
 		}
 	}
