@@ -10,7 +10,7 @@ jsprit, which was basically specific configurations of the schrimpf-algorithm wa
 
 ![schrimpf_simpleCluster](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_simpleCluster.png)
 
-The algorithm results in what we would expect by looking at the problem. Look at what happened when we add similar job-clusters
+The algorithm results in what we would expect. Look at what happened when we add similar job-clusters
 between depot and the existing clusters.
 
 ![schrimpf_moreClusters](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters.png)
@@ -43,7 +43,7 @@ or, if you need to assign your own ConstraintManager or to just configure the al
 
 <pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem) ... .buildAlgorithm();</code></pre>
 
-Since, the algorithm is more computationally intense, we recommended you to use all your idle computational power by
+Since, the algorithm is more computationally intense, we recommend you to use all your idle computational power by
 increasing the number threads (try for example noThreads = #cores+1 first).
 
 <pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setProperty(Parameter.THREADS,5).buildAlgorithm();</code></pre>
