@@ -10,7 +10,7 @@ jsprit, which was basically specific configurations of the schrimpf-algorithm wa
 
 ![schrimpf_simpleCluster](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_simpleCluster.png)
 
-The algorithm results in what we expect by looking at the problem. Look at what happened when we add similar job-clusters
+The algorithm results in what we would expect by looking at the problem. Look at what happened when we add similar job-clusters
 between depot and the existing clusters.
 
 ![schrimpf_moreClusters](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters.png)
@@ -25,7 +25,7 @@ This is definitely not the solution, one would intuitively expect when looking a
 
 Therefore, we put much effort into analysing this and designing a new algorithm (which is still based on the
 schrimpf principles). We implemented two new ruin strategies: worst and cluster ruin, and we added
-some randomness to the ruin and recreation strategies. Moreover, the new algorithm makes use of regretInsertion by default.
+some thouroughly designed randomness to these and the existing strategies. Moreover, the new algorithm makes use of regretInsertion by default.
 On all benchmarking instances, our new algorithm performs better (or at least as good
  as) than the previous algorithms in terms of solution quality. However, it comes with higher computational costs.
 Look at how the new algorithm solves the above problem
