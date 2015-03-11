@@ -56,6 +56,14 @@ we encapsulated these attributes in an object called Location. It is not only cl
 allows you to assign a location index. Thus, you can save the transport times and distances
 between locations in (fast) arrays rather than maps (see FastVehicleRoutingTransportCostMatrix).
 
+Thus from now on define locations like this:
+<pre><code>Location location = Location.newInstance(Coordinate.newInstance(0,0));</code></pre>
+
+or if you require an index as well as a coordinate, code this:
+
+<pre><code>Location location = Location.Builder.newInstance().setIndex(1).setCoordinate(Coordinate.newInstance(0,0).build();
+</code></pre>
+
 
 ------------------------------
 <b>2014-12-12</b> new release **v1.5**
