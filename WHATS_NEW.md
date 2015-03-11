@@ -25,7 +25,7 @@ This is definitely not the solution, one would intuitively expect when looking a
 
 Therefore, we put much effort into analysing this and designing a new algorithm (which is still based on the
 schrimpf principles). We implemented two new ruin strategies: worst and cluster ruin, and we added
-some thouroughly designed randomness to these and the existing strategies. Moreover, the new algorithm makes use of regretInsertion by default.
+some thoroughly designed randomness to these and the existing strategies. Moreover, the new algorithm makes use of regretInsertion by default.
 On all benchmarking instances, our new algorithm performs better (or at least as good
  as) than the previous algorithms in terms of solution quality. However, it comes with higher computational costs.
 Look at how the new algorithm solves the above problem
