@@ -35,6 +35,14 @@ Look at how the new algorithm solves the above problem
 which is the intuitive solution. Along with this we made a number of incremental changes to simplify the implementation
 which, in turn, makes your life easier when designing your own algorithm.
 
+Using the new algorithm is as simple as coding this:
+
+<pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);</code></pre>
+
+or, if you need to assign your own ConstraintManager or to configure the algorithm:
+
+<pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem) ... .buildAlgorithm();</code></pre>
+
 The second major improvement is that we changed the way locations are defined. Instead of separately assigning location-id and coordinates,
 we encapsulated these attributes in an object called Location. It is not only clearer, but it
 allows you to assign a location index. Thus, you can save the transport times and distances
