@@ -21,7 +21,7 @@ To make it even more obvious, we added a job cloud surrounding
 
 ![schrimpf_moreClusters_depotNoise](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters_depotNoise.png)
 
-This is definitely not the intuitive solution, one would expect when looking at the problem sharply.
+This is definitely not the solution, one would intuitively expect when looking at the problem sharply.
 
 Therefore, we put much effort into analysing this and designing a new algorithm (which is still based on the
 schrimpf principles). We implemented two new ruin strategies: worst and cluster ruin, and we added
