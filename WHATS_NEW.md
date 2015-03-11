@@ -1,6 +1,13 @@
 WHATS NEW
 ==========
 ------------------------------
+<b>2014-03-??</b> new release **v1.6**
+
+![schrimpf_simpleCluster](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_simpleCluster.png)
+
+![schrimpf_moreClusters](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters.png)
+
+------------------------------
 <b>2014-12-12</b> new release **v1.5**
 
 jsprit made a big step towards analysing and designing your own ruin and recreation strategies.
