@@ -7,6 +7,10 @@ WHATS NEW
 
 ![schrimpf_moreClusters](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters.png)
 
+![schrimpf_moreClusters_depotNoise](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters_depotNoise.png)
+
+![schrimpf_moreClusters_depotNoise](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_jsprit_moreClusters_depotNoise.png)
+
 ------------------------------
 <b>2014-12-12</b> new release **v1.5**
 
