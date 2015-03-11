@@ -43,6 +43,11 @@ or, if you need to assign your own ConstraintManager or to configure the algorit
 
 <pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem) ... .buildAlgorithm();</code></pre>
 
+Since, the algorithm is more computational intense, it is recommended to use all your idle computational power by setting
+the number of threads you want to use (try for example noThreads = #cores+1 first).
+
+<pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setProperty(Parameter.THREADS,5).buildAlgorithm();</code></pre>
+
 The second major improvement is that we changed the way locations are defined. Instead of separately assigning location-id and coordinates,
 we encapsulated these attributes in an object called Location. It is not only clearer, but it
 allows you to assign a location index. Thus, you can save the transport times and distances
