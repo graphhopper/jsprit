@@ -3,13 +3,43 @@ WHATS NEW
 ------------------------------
 <b>2014-03-??</b> new release **v1.6**
 
+When reviewing the feedback from our users, we realized that jsprit cannot solve certain kinds of problems adequately.
+To illustrate and characterize them, look at the following examples.
+
+jsprit, which was basically specific configurations of the schrimpf-algorithm was/is good and fast at solving this:
+
 ![schrimpf_simpleCluster](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_simpleCluster.png)
+
+The algorithm results in what we expect by looking at the problem. Look at what happened when we add similar job-clusters
+between depot and the existing clusters.
 
 ![schrimpf_moreClusters](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters.png)
 
+Obviously, the way we ruined and recreated wasn't sufficient to solve the problem reasonably.
+To make it even more obvious, we added a number of job cloud surrounding
+ the depot. The schrimpf-algorithm (as we configured it) yields the following solution.
+
 ![schrimpf_moreClusters_depotNoise](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters_depotNoise.png)
 
+This is definitely not the intuitive solution, one would expect when looking at the problem sharply.
+
+Therefore, we put much effort into analysing this and designing a new algorithm (which is still based on the
+schrimpf principles). We implemented two new ruin strategies: worst and cluster ruin, and we added
+noise to the ruin and recreation strategies. Moreover, the new algorithm makes use of regretInsertion by default.
+On all benchmarking instances, our new algorithm performs better (or at least as good
+ as) than the previous algorithms in terms of solution quality. However, it comes with higher computational costs.
+Look at how the new algorithm solves the above problem
+
 ![schrimpf_moreClusters_depotNoise](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_jsprit_moreClusters_depotNoise.png)
+
+which is the intuitive solution. Along with this we made a number of incremental changes to simplify the implementation
+which, in turn, makes your life easier when designing your own algorithm.
+
+The second major improvement is that we changed the way locations are defined. Instead of separately assigning location-id and coordinates,
+we encapsulated these attributes in an object called Location. It is not only clearer, but it
+allows you to assign a location index. Thus, you can save the transport times and distances
+between locations in (fast) arrays rather than maps (see FastVehicleRoutingTransportCostMatrix).
+
 
 ------------------------------
 <b>2014-12-12</b> new release **v1.5**
