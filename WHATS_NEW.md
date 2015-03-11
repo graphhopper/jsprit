@@ -39,14 +39,17 @@ Using the new algorithm is as simple as coding this:
 
 <pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);</code></pre>
 
-or, if you need to assign your own ConstraintManager or to configure the algorithm:
+or, if you need to assign your own ConstraintManager or to just configure the algorithm by yourself code:
 
 <pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem) ... .buildAlgorithm();</code></pre>
 
-Since, the algorithm is more computational intense, it is recommended to use all your idle computational power by setting
+Since, the algorithm is more computationally intense, it is recommended to use all your idle computational power by setting
 the number of threads you want to use (try for example noThreads = #cores+1 first).
 
 <pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setProperty(Parameter.THREADS,5).buildAlgorithm();</code></pre>
+
+By using <code>.setProperty(...)</code> you can basically configure the algorithm the way you want.
+This way, you can even change it back to the schrimpf-configuration.
 
 The second major improvement is that we changed the way locations are defined. Instead of separately assigning location-id and coordinates,
 we encapsulated these attributes in an object called Location. It is not only clearer, but it
