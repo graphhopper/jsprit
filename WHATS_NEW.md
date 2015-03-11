@@ -16,7 +16,7 @@ between depot and the existing clusters.
 ![schrimpf_moreClusters](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters.png)
 
 Obviously, the way we ruined and recreated wasn't sufficient to solve the problem reasonably.
-To make it even more obvious, we added a number of job cloud surrounding
+To make it even more obvious, we added a job cloud surrounding
  the depot. The schrimpf-algorithm (as we configured it) yields the following solution.
 
 ![schrimpf_moreClusters_depotNoise](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters_depotNoise.png)
