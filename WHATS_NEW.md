@@ -23,8 +23,9 @@ To make it even more obvious, we added a job cloud surrounding
 
 This is definitely not the solution, one would intuitively expect when looking at the problem sharply.
 
-Therefore, we put much effort into analysing this and designing a new algorithm (which is still based on the
-schrimpf principles). We implemented two new ruin strategies: worst and cluster ruin, and we added
+Therefore, we put much effort into analysing this and implementing a new algorithm (which is still based on the
+principles of [Schrimpf et al. (2000)](http://www.sciencedirect.com/science/article/pii/S0021999199964136) and additionally inspired by [Pisinger and Ropke (2007)](http://www.sciencedirect.com/science/article/pii/S0305054805003023)).
+We implemented two new ruin strategies: worst and cluster ruin, and we added
 some thoroughly designed randomness to these and the existing strategies. Moreover, the new algorithm makes use of regretInsertion by default.
 On all benchmarking instances, our new algorithm performs better (or at least as good
  as) than the previous algorithms in terms of solution quality. However, it comes with higher computational costs.
