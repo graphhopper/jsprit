@@ -47,7 +47,7 @@ or, if you need to assign your own ConstraintManager or to just configure the al
 Since, the algorithm is more computationally intense, we recommend you to use all your idle computational power by
 increasing the number threads (try for example noThreads = #cores+1 first).
 
-<pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setProperty(Parameter.THREADS,5).buildAlgorithm();</code></pre>
+<pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setProperty(Parameter.THREADS,"5").buildAlgorithm();</code></pre>
 
 By using <code>.setProperty(...)</code> you can basically configure the algorithm the way you want.
 This way, you can even change it back to the schrimpf-configuration.
@@ -58,7 +58,7 @@ allows you to assign a location index. Thus, you can save the transport times an
 between locations in (fast) arrays rather than maps (see [FastVehicleRoutingTransportCostMatrix](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/util/FastVehicleRoutingTransportCostsMatrix.java)).
 
 Thus from now on define locations like this:
-<pre><code>Location location = Location.newInstance(Coordinate.newInstance(0,0));</code></pre>
+<pre><code>Location location = Location.newInstance(x_coordinate, y_coordinate);</code></pre>
 
 or if you require an index as well as a coordinate, code this:
 
