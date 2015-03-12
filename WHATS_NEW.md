@@ -44,7 +44,7 @@ or, if you need to assign your own ConstraintManager or to just configure the al
 
 <pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem) ... .buildAlgorithm();</code></pre>
 
-Since, the algorithm is more computationally intense, we recommend you to use all your idle computational power by
+Since, the algorithm is more computationally intensive, we recommend you to use all your idle computational power by
 increasing the number threads (try for example noThreads = #cores+1 first).
 
 <pre><code>VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setProperty(Parameter.THREADS,"5").buildAlgorithm();</code></pre>
