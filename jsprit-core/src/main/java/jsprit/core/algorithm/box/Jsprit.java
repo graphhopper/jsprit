@@ -31,9 +31,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by schroeder on 06/01/15.
- */
+
 public class Jsprit {
 
     public enum Construction {
