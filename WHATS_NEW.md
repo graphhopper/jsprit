@@ -6,7 +6,7 @@ WHATS NEW
 When reviewing the feedback from our users, we realized that jsprit cannot solve certain kinds of problems adequately.
 To illustrate and characterize them, look at the following examples.
 
-jsprit, which was basically specific configurations of the schrimpf-algorithm was/is good and fast at solving this:
+jsprit was/is good and fast at solving this:
 
 ![schrimpf_simpleCluster](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_simpleCluster.png)
 
@@ -17,7 +17,7 @@ between depot and the existing clusters.
 
 Obviously, the way we ruined and recreated wasn't sufficient to solve the problem reasonably.
 To make it even more obvious, we added a job cloud surrounding
- the depot. The schrimpf-algorithm (as we configured it) yields the following solution.
+ the depot yielding the following solution.
 
 ![schrimpf_moreClusters_depotNoise](https://github.com/jsprit/misc-rep/raw/master/wiki-images/vrp_clustered_schrimpf_moreClusters_depotNoise.png)
 
