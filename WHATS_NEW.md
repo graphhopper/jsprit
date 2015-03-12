@@ -1,7 +1,7 @@
 WHATS NEW
 ==========
 ------------------------------
-<b>2014-03-??</b> new release **v1.6**
+<b>2014-03-12</b> new release **v1.6**
 
 When reviewing the feedback from our users, we realized that jsprit cannot solve certain kinds of problems adequately.
 To illustrate and characterize them, look at the following examples.
