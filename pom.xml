@@ -21,7 +21,7 @@
   
   <groupId>jsprit</groupId>
   <artifactId>jsprit</artifactId>
-  <version>1.5.1-SNAPSHOT</version>
+  <version>1.6</version>
   
   <packaging>pom</packaging>
   
@@ -52,7 +52,7 @@
   	<connection>scm:git:git@github.com:jsprit/jsprit.git</connection>
   	<developerConnection>scm:git:https://github.com/jsprit/jsprit.git</developerConnection>
   	<url>http://github.com/jsprit/jsprit/tree/master</url>
-  	<tag>HEAD</tag>
+  	<tag>v1.6</tag>
   </scm>
   
   <issueManagement>
