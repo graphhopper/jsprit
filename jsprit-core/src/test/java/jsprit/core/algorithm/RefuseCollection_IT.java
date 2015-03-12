@@ -16,18 +16,16 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
-import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
@@ -39,106 +37,13 @@ import org.junit.Test;
 
 import java.io.*;
 import java.util.Collection;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
 
 
 public class RefuseCollection_IT {
-	
-	static class RelationKey {
-		
-		static RelationKey newKey(String from, String to){
-			int fromInt = Integer.parseInt(from);
-			int toInt = Integer.parseInt(to);
-			if(fromInt < toInt){
-				return new RelationKey(from, to);
-			}
-			else {
-				return new RelationKey(to, from);
-			}
-		}
-		
-		final String from;
-		final String to;
-		
-		public RelationKey(String from, String to) {
-			super();
-			this.from = from;
-			this.to = to;
-		}
 
-		/* (non-Javadoc)
-		 * @see java.lang.Object#hashCode()
-		 */
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((from == null) ? 0 : from.hashCode());
-			result = prime * result + ((to == null) ? 0 : to.hashCode());
-			return result;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			RelationKey other = (RelationKey) obj;
-			if (from == null) {
-				if (other.from != null)
-					return false;
-			} else if (!from.equals(other.from))
-				return false;
-			if (to == null) {
-				if (other.to != null)
-					return false;
-			} else if (!to.equals(other.to))
-				return false;
-			return true;
-		}
-	}
-	
-	static class RoutingCosts implements VehicleRoutingTransportCosts {
-
-		private Map<RelationKey,Integer> distances;
-		
-		public RoutingCosts(Map<RelationKey, Integer> distances) {
-			super();
-			this.distances = distances;
-		}
-
-		@Override
-		public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(from, to, departureTime, driver, vehicle);
-		}
-
-		@Override
-		public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(from, to, arrivalTime, driver, vehicle);
-		}
-
-		@Override
-		public double getTransportCost(Location from, Location to,double departureTime, Driver driver, Vehicle vehicle) {
-			if(from.equals(to)) return 0.0;
-			RelationKey key = RelationKey.newKey(from.getId(), to.getId());
-			return distances.get(key);
-		}
-
-		@Override
-		public double getBackwardTransportCost(Location from, Location to,double arrivalTime, Driver driver, Vehicle vehicle) {
-			return getTransportCost(from, to, arrivalTime, driver, vehicle);
-		}
-		
-	}
 	
 	
 	@Test
@@ -152,7 +57,7 @@ public class RefuseCollection_IT {
 		VehicleTypeImpl bigType = typeBuilder.build();
 		
 		VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocationId("1");
+		vehicleBuilder.setStartLocation(Location.newInstance("1"));
 		vehicleBuilder.setType(bigType);
 		VehicleImpl bigVehicle = vehicleBuilder.build();
 		
@@ -185,6 +90,50 @@ public class RefuseCollection_IT {
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
 	}
 
+	@Test
+	public void whenReadingServices_usingJsprit_itShouldCalculateCorrectly(){
+
+		/*
+		 * create vehicle-type and vehicle
+		 */
+		VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type").addCapacityDimension(0, 23);
+		typeBuilder.setCostPerDistance(1.0);
+		VehicleTypeImpl bigType = typeBuilder.build();
+
+		VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
+		vehicleBuilder.setStartLocation(Location.newInstance("1"));
+		vehicleBuilder.setType(bigType);
+		VehicleImpl bigVehicle = vehicleBuilder.build();
+
+		/*
+		 * start building the problem
+		 */
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		vrpBuilder.setFleetSize(FleetSize.INFINITE);
+		vrpBuilder.addVehicle(bigVehicle);
+
+		/*
+		 * create cost-matrix
+		 */
+		VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
+		/*
+		 * read demand quantities
+		 */
+		readDemandQuantitiesAsServices(vrpBuilder);
+		readDistances(matrixBuilder);
+
+		vrpBuilder.setRoutingCost(matrixBuilder.build());
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		SolutionPrinter.print(vrp, Solutions.bestOf(solutions), Print.VERBOSE);
+
+		assertEquals(397.0,Solutions.bestOf(solutions).getCost(),40.);
+		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+	}
+
     @Test
     public void whenReadingPickups_itShouldCalculateCorrectly(){
 
@@ -196,7 +145,7 @@ public class RefuseCollection_IT {
         VehicleTypeImpl bigType = typeBuilder.build();
 
         VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-        vehicleBuilder.setStartLocationId("1");
+        vehicleBuilder.setStartLocation(Location.newInstance("1"));
         vehicleBuilder.setType(bigType);
         VehicleImpl bigVehicle = vehicleBuilder.build();
 
@@ -240,7 +189,7 @@ public class RefuseCollection_IT {
         VehicleTypeImpl bigType = typeBuilder.build();
 
         VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-        vehicleBuilder.setStartLocationId("1");
+        vehicleBuilder.setStartLocation(Location.newInstance("1"));
         vehicleBuilder.setType(bigType);
         VehicleImpl bigVehicle = vehicleBuilder.build();
 

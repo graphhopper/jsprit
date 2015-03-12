@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
@@ -37,6 +38,18 @@ public class PickupsAndDeliveries_IT {
 		new VrpXMLReader(vrpBuilder).read("src/test/resources/lilim_lr101.xml");
 		VehicleRoutingProblem vrp = vrpBuilder.build();
 		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/lilim_algorithmConfig.xml");
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+		assertEquals(1650.8,Solutions.bestOf(solutions).getCost(),80.);
+		assertEquals(19,Solutions.bestOf(solutions).getRoutes().size(),1);
+	}
+
+	@Test
+	public void whenSolvingLR101InstanceOfLiLim_withJsprit_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/lilim_lr101.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setMaxIterations(1000);
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		assertEquals(1650.8,Solutions.bestOf(solutions).getCost(),80.);
 		assertEquals(19,Solutions.bestOf(solutions).getRoutes().size(),1);

@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.recreate.NoSolutionFoundException;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -42,6 +43,28 @@ public class FiniteVehicleFleetManagerIdentifiesDistinctVehicle_IT {
 			VehicleRoutingProblem vrp = vrpBuilder.build();
 
 			VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+			vra.setMaxIterations(10);
+			try{
+				@SuppressWarnings("unused")
+				Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+			}
+			catch(NoSolutionFoundException e){
+				testFailed.add(true);
+			}
+		}
+		System.out.println("failed: " + testFailed.size());
+		assertTrue(testFailed.isEmpty());
+	}
+
+	@Test
+	public void whenEmployingVehicleWhereOnlyOneDistinctVehicleCanServeAParticularJobWith_jspritAlgorithmShouldFoundDistinctSolution(){
+		final List<Boolean> testFailed = new ArrayList<Boolean>();
+		for(int i=0;i<10;i++){
+			VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+			new VrpXMLReader(vrpBuilder).read("src/test/resources/biggerProblem.xml");
+			VehicleRoutingProblem vrp = vrpBuilder.build();
+
+			VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
 			vra.setMaxIterations(10);
 			try{
 				@SuppressWarnings("unused")

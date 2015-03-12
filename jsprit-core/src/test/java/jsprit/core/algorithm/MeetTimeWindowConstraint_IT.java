@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
@@ -292,6 +293,273 @@ public class MeetTimeWindowConstraint_IT {
 		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
 		assertTrue(containsJob(vrp.getJobs().get("2"),getRoute("19",Solutions.bestOf(solutions))));
 	}
+
+
+
+
+
+
+
+
+
+
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_jsprit_nRoutesShouldBeCorrect(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setMaxIterations(100);
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_jsprit_certainJobsCanNeverBeAssignedToCertainVehicles(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setMaxIterations(100);
+		final List<Boolean> testFailed = new ArrayList<Boolean>();
+		vra.addListener(new JobInsertedListener() {
+
+			@Override
+			public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+				if(job2insert.getId().equals("1")){
+					if(inRoute.getVehicle().getId().equals("19")){
+						testFailed.add(true);
+					}
+				}
+				if(job2insert.getId().equals("2")){
+					if(inRoute.getVehicle().getId().equals("21")){
+						testFailed.add(true);
+					}
+				}
+			}
+
+		});
+		@SuppressWarnings("unused")
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		assertTrue(testFailed.isEmpty());
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_jsprit_certainVehiclesCanNeverBeAssignedToCertainRoutes(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setMaxIterations(100);
+		final List<Boolean> testFailed = new ArrayList<Boolean>();
+		vra.addListener(new VehicleSwitchedListener() {
+
+			@Override
+			public void vehicleSwitched(VehicleRoute vehicleRoute, Vehicle oldVehicle, Vehicle newVehicle) {
+				if(oldVehicle==null) return;
+				if(oldVehicle.getId().equals("21") && newVehicle.getId().equals("19")){
+					for(Job j : vehicleRoute.getTourActivities().getJobs()){
+						if(j.getId().equals("1")){
+							testFailed.add(true);
+						}
+					}
+				}
+				if(oldVehicle.getId().equals("19") && newVehicle.getId().equals("21")){
+					for(Job j : vehicleRoute.getTourActivities().getJobs()){
+						if(j.getId().equals("2")){
+							testFailed.add(true);
+						}
+					}
+				}
+			}
+
+		});
+
+
+		@SuppressWarnings("unused")
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+		System.out.println("failed " + testFailed.size());
+		assertTrue(testFailed.isEmpty());
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_jsprit_job2CanNeverBeInVehicle21(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setMaxIterations(100);
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_jsprit_job1ShouldBeAssignedCorrectly(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setMaxIterations(100);
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+//		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+		assertTrue(containsJob(vrp.getJobs().get("1"),getRoute("21",Solutions.bestOf(solutions))));
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_jsprit_job2ShouldBeAssignedCorrectly(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setMaxIterations(100);
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+//		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+		assertTrue(containsJob(vrp.getJobs().get("2"),getRoute("19",Solutions.bestOf(solutions))));
+	}
+
+
+
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_jsprit_and_vehicleSwitchIsNotAllowed_nRoutesShouldBeCorrect(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.VEHICLE_SWITCH, "false").buildAlgorithm();
+		vra.setMaxIterations(100);
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_and_vehicleSwitchIsNotAllowed_jsprit_certainJobsCanNeverBeAssignedToCertainVehicles(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.VEHICLE_SWITCH,"false").buildAlgorithm();
+		vra.setMaxIterations(100);
+		final List<Boolean> testFailed = new ArrayList<Boolean>();
+		vra.addListener(new JobInsertedListener() {
+
+			@Override
+			public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+				if(job2insert.getId().equals("1")){
+					if(inRoute.getVehicle().getId().equals("19")){
+						testFailed.add(true);
+					}
+				}
+				if(job2insert.getId().equals("2")){
+					if(inRoute.getVehicle().getId().equals("21")){
+						testFailed.add(true);
+					}
+				}
+			}
+
+		});
+		@SuppressWarnings("unused")
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		assertTrue(testFailed.isEmpty());
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_and_vehicleSwitchIsNotAllowed_jsprit_certainVehiclesCanNeverBeAssignedToCertainRoutes(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.VEHICLE_SWITCH,"false").buildAlgorithm();
+		vra.setMaxIterations(100);
+		final List<Boolean> testFailed = new ArrayList<Boolean>();
+		vra.addListener(new VehicleSwitchedListener() {
+
+			@Override
+			public void vehicleSwitched(VehicleRoute vehicleRoute, Vehicle oldVehicle, Vehicle newVehicle) {
+				if(oldVehicle==null) return;
+				if(oldVehicle.getId().equals("21") && newVehicle.getId().equals("19")){
+					for(Job j : vehicleRoute.getTourActivities().getJobs()){
+						if(j.getId().equals("1")){
+							testFailed.add(true);
+						}
+					}
+				}
+				if(oldVehicle.getId().equals("19") && newVehicle.getId().equals("21")){
+					for(Job j : vehicleRoute.getTourActivities().getJobs()){
+						if(j.getId().equals("2")){
+							testFailed.add(true);
+						}
+					}
+				}
+			}
+
+		});
+
+
+		@SuppressWarnings("unused")
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+		System.out.println("failed " + testFailed.size());
+		assertTrue(testFailed.isEmpty());
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_and_vehicleSwitchIsNotAllowed_jsprit_job2CanNeverBeInVehicle21(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.VEHICLE_SWITCH,"false").buildAlgorithm();
+		vra.setMaxIterations(100);
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_and_vehicleSwitchIsNotAllowed_jsprit_job1ShouldBeAssignedCorrectly(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.VEHICLE_SWITCH,"false").buildAlgorithm();
+		vra.setMaxIterations(100);
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+		assertTrue(containsJob(vrp.getJobs().get("1"),getRoute("21",Solutions.bestOf(solutions))));
+	}
+
+	@Test
+	public void whenEmployingVehicleWithDifferentWorkingShifts_and_vehicleSwitchIsNotAllowed_jsprit_job2ShouldBeAssignedCorrectly(){
+		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+		new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem.xml");
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.VEHICLE_SWITCH,"false").buildAlgorithm();
+		vra.setMaxIterations(100);
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		assertEquals(2,Solutions.bestOf(solutions).getRoutes().size());
+		assertTrue(containsJob(vrp.getJobs().get("2"),getRoute("19",Solutions.bestOf(solutions))));
+	}
+
+
+
+
 
 	private boolean containsJob(Job job, VehicleRoute route) {
 		if(route == null) return false;

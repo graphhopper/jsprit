@@ -1,6 +1,7 @@
 package jsprit.core.algorithm;
 
 
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.problem.AbstractJob;
 import jsprit.core.problem.Location;
@@ -73,6 +74,59 @@ public class PDTW_IT {
         vrpBuilder.setFleetSize(FleetSize.FINITE);
         VehicleRoutingProblem problem = vrpBuilder.build();
         VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
+        algorithm.setMaxIterations(100);
+        Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
+        VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
+
+        for(VehicleRoute route : bestSolution.getRoutes()){
+            Vehicle v = route.getVehicle();
+            for(TourActivity ta : route.getActivities()){
+                if(ta.getArrTime() * 1.000001 > v.getLatestArrival()){
+                    assertFalse(true);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void whenDealingWithShipments_usingJsprit_timeWindowsShouldNOTbeBroken() {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        for(int i =0 ; i < nVehicles ; i++){
+            vrpBuilder.addVehicle(createVehicle());
+        }
+        for(int i =0 ; i < nJobs;i++){
+            vrpBuilder.addJob(createShipment());
+        }
+        vrpBuilder.setFleetSize(FleetSize.FINITE);
+        VehicleRoutingProblem problem = vrpBuilder.build();
+        VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
+        algorithm.setMaxIterations(0);
+        Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
+        VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
+
+        for(VehicleRoute route : bestSolution.getRoutes()){
+            Vehicle v = route.getVehicle();
+            for(TourActivity ta : route.getActivities()){
+                if(ta.getArrTime() > v.getLatestArrival() * 1.00001){
+                    assertFalse(true);
+                }
+            }
+        }
+    }
+
+
+    @Test
+    public void whenDealingWithServices_usingJsprit_timeWindowsShouldNOTbeBroken() {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        for(int i =0 ; i < nVehicles ; i++){
+            vrpBuilder.addVehicle(createVehicle());
+        }
+        for(int i =0 ; i < nJobs;i++){
+            vrpBuilder.addJob(createService());
+        }
+        vrpBuilder.setFleetSize(FleetSize.FINITE);
+        VehicleRoutingProblem problem = vrpBuilder.build();
+        VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
         algorithm.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
