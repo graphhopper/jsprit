@@ -36,6 +36,22 @@ import java.util.concurrent.Executors;
  */
 public class Jsprit {
 
+    public enum Construction {
+
+        BEST_INSERTION("best_insertion"), REGRET_INSERTION("regret_insertion");
+
+        String name;
+
+        Construction(String name){
+            this.name = name;
+        }
+
+        public String toString(){
+            return name;
+        }
+
+    }
+
     public enum Strategy {
 
         RADIAL_BEST("radial_best"),
@@ -78,7 +94,8 @@ public class Jsprit {
         INSERTION_NOISE_LEVEL("insertion.noise_level"),
         INSERTION_NOISE_PROB("insertion.noise_prob"),
         RUIN_WORST_NOISE_LEVEL("worst.noise_level"),
-        RUIN_WORST_NOISE_PROB("worst.noise_prob");
+        RUIN_WORST_NOISE_PROB("worst.noise_prob"),
+        CONSTRUCTION("construction");
 
         String paraName;
 
@@ -160,6 +177,7 @@ public class Jsprit {
             defaults.put(Parameter.RUIN_WORST_NOISE_LEVEL.toString(),String.valueOf(0.15));
             defaults.put(Parameter.RUIN_WORST_NOISE_PROB.toString(),String.valueOf(0.2));
             defaults.put(Parameter.VEHICLE_SWITCH.toString(),String.valueOf(true));
+            defaults.put(Parameter.CONSTRUCTION.toString(),Construction.REGRET_INSERTION.toString());
             return defaults;
         }
 
@@ -419,8 +437,14 @@ public class Jsprit {
                 .withStrategy(worst_best, toDouble(getProperty(Strategy.WORST_BEST.toString())))
                 .withStrategy(worst_regret, toDouble(getProperty(Strategy.WORST_REGRET.toString())))
                 .withStrategy(clusters_regret,toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
-                .withStrategy(clusters_best,toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
-                .constructInitialSolutionWith(regret, objectiveFunction);
+                .withStrategy(clusters_best,toDouble(getProperty(Strategy.CLUSTER_BEST.toString())));
+        if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.BEST_INSERTION.toString())){
+            prettyBuilder.constructInitialSolutionWith(best, objectiveFunction);
+        }
+        else{
+            prettyBuilder.constructInitialSolutionWith(regret, objectiveFunction);
+        }
+
 
         VehicleRoutingAlgorithm vra = prettyBuilder.build();
         vra.addListener(schrimpfThreshold);
