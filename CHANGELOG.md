@@ -1,5 +1,13 @@
 Change-log
 ==========
+
+**v1.6** @ 2015-03-12
+<b>! Break change !</b> 
+
+new features: see [Whats new](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
+
+- [detailed changelog](https://github.com/jsprit/misc-rep/blob/master/changelog_1.5_to_1.6.txt)
+
 **v1.5** @ 2014-12-12
 <b>! Break change !</b> 
 
