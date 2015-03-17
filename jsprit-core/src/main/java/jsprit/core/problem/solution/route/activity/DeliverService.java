@@ -43,6 +43,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 		this.endTime=deliveryActivity.getEndTime();
 		capacity = deliveryActivity.getSize();
         setIndex(deliveryActivity.getIndex());
+		setOperationTime(deliveryActivity.getOperationTime());
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 	}
 
 	@Override
-	public double getOperationTime() {
+	public double getTheoreticalOperationTime() {
 		return delivery.getServiceDuration();
 	}
 

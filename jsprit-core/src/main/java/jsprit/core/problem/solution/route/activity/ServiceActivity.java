@@ -80,6 +80,7 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 		this.arrTime = serviceActivity.getArrTime();
 		this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());
+		setOperationTime(serviceActivity.getOperationTime());
 	}
 	
 	
@@ -123,7 +124,7 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 	}
 
 	@Override
-	public double getOperationTime() {
+	public double getTheoreticalOperationTime() {
 		return service.getServiceDuration();
 	}
 

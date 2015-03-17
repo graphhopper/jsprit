@@ -127,7 +127,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 			ConstraintsStatus pickupShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, pickupShipment, activities.get(i), prevActEndTime);
 			if(pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)){
 				double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), activities.get(i).getLocation(), prevActEndTime, newDriver, newVehicle);
-				prevActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, activities.get(i));
+				prevActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, newVehicle, activities.get(i));
 				prevAct = activities.get(i);
 				continue;
 			}
@@ -140,7 +140,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 
 			TourActivity prevAct_deliveryLoop = pickupShipment;
 			double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
-			double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);
+			double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, newVehicle, pickupShipment);
 
             pickupContext.setArrivalTime(shipmentPickupArrTime);
             pickupContext.setEndTime(shipmentPickupEndTime);
@@ -169,7 +169,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				}	
 				//update prevAct and endTime
 				double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), activities.get(j).getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
-				prevActEndTime_deliveryLoop = CalculationUtils.getActivityEndTime(nextActArrTime, activities.get(j));
+				prevActEndTime_deliveryLoop = CalculationUtils.getActivityEndTime(nextActArrTime, newVehicle, activities.get(j));
 				prevAct_deliveryLoop = activities.get(j);
 			}
 			if(!deliverShipmentLoopBroken){ //check insertion between lastAct and endOfTour
@@ -188,7 +188,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 			}
 			//update prevAct and endTime
 			double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), activities.get(i).getLocation(), prevActEndTime, newDriver, newVehicle);
-			prevActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, activities.get(i));
+			prevActEndTime = CalculationUtils.getActivityEndTime(nextActArrTime, newVehicle, activities.get(i));
 			prevAct = activities.get(i);
 		}
 		if(!pickupShipmentLoopBroken){ //check insertion of pickupShipment and deliverShipment at just before tour ended
@@ -198,7 +198,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				double pickupAIC = calculate(insertionContext,prevAct,pickupShipment,end,prevActEndTime);
 				TourActivity prevAct_deliveryLoop = pickupShipment;
 				double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
-				double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, pickupShipment);
+				double shipmentPickupEndTime = CalculationUtils.getActivityEndTime(shipmentPickupArrTime, newVehicle, pickupShipment);
 				double prevActEndTime_deliveryLoop = shipmentPickupEndTime;
 
                 pickupContext.setArrivalTime(shipmentPickupArrTime);

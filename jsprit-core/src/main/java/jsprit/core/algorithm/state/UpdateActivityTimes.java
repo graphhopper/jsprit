@@ -70,6 +70,7 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater{
 		timeTracker.visit(activity);
 		activity.setArrTime(timeTracker.getActArrTime());
 		activity.setEndTime(timeTracker.getActEndTime());
+		activity.setOperationTime(timeTracker.getActOperationTime());
 	}
 
 	@Override

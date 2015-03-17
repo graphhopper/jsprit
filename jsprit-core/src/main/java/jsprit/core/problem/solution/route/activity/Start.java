@@ -114,8 +114,13 @@ public final class Start extends AbstractActivity implements TourActivity {
     }
 
     @Override
-	public double getOperationTime() {
+	public double getTheoreticalOperationTime() {
 		return 0.0;
+	}
+
+	@Override
+	public double getOperationTime() {
+		return getTheoreticalOperationTime();
 	}
 
 	@Override

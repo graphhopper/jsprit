@@ -45,6 +45,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 		this.endTime = deliveryShipmentActivity.getEndTime();
 		this.capacity = deliveryShipmentActivity.getSize();
         setIndex(deliveryShipmentActivity.getIndex());
+		setOperationTime(deliveryShipmentActivity.getOperationTime());
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 	}
 
 	@Override
-	public double getOperationTime() {
+	public double getTheoreticalOperationTime() {
 		return shipment.getDeliveryServiceTime();
 	}
 

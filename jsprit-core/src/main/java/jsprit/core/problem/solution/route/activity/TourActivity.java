@@ -91,15 +91,31 @@ public interface TourActivity extends HasIndex {
 	public abstract double getTheoreticalLatestOperationStartTime();
 
 	/**
-	 * Returns the operation-time this activity takes.
+	 * Returns the theoretical operation-time this activity takes.
 	 * 
 	 * <p>Note that this is not necessarily the duration of this activity, but the 
 	 * service time a pickup/delivery actually takes, that is for example <code>service.getServiceTime()</code>.
-	 *  
-	 * @return operation time
+	 *
+	 * @return theoretical operation time
+	 */
+	public abstract double getTheoreticalOperationTime();
+
+	/**
+	 * Returns the actual operation-time this activity takes.
+	 * <p/>
+	 * <p>Note that this is time is taking into account the vehicle operation time factor if set.
+	 *
+	 * @return theoretical operation time
 	 */
 	public abstract double getOperationTime();
-	
+
+	/**
+	 * Set the actual operation-time this activity takes.
+	 *
+	 * @param operationTime the actual operation-time
+	 */
+	public abstract void setOperationTime(double operationTime);
+
 	/**
 	 * Returns the arrival-time of this activity.
 	 * 

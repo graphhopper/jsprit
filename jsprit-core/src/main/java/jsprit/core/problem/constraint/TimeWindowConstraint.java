@@ -107,7 +107,7 @@ import jsprit.core.util.CalculationUtils;
 
             double latestArrTimeAtNewAct = Math.min(newAct.getTheoreticalLatestOperationStartTime(),latestArrTimeAtNextAct -
                     routingCosts.getBackwardTransportTime(nextActLocation, newAct.getLocation(), latestArrTimeAtNextAct, iFacts.getNewDriver(),
-                            iFacts.getNewVehicle()) - newAct.getOperationTime());
+							iFacts.getNewVehicle()) - CalculationUtils.getActivityOperationTime(iFacts.getNewVehicle(), newAct));
 			/*
 			 *  |--- prevAct ---|
 			 *                       		                 |--- vehicle's arrival @newAct
@@ -123,7 +123,7 @@ import jsprit.core.util.CalculationUtils;
 				}
 			}
 //			log.info(newAct + " arrTime=" + arrTimeAtNewAct);
-			double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
+			double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, iFacts.getNewVehicle(), newAct);
 			double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
 			/*

@@ -38,7 +38,7 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint{
 		double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 		
 		double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
-		double newAct_endTime = CalculationUtils.getActivityEndTime(newAct_arrTime, newAct);
+		double newAct_endTime = CalculationUtils.getActivityEndTime(newAct_arrTime, iFacts.getNewVehicle(), newAct);
 		
 		//open routes
 		if(nextAct instanceof End){

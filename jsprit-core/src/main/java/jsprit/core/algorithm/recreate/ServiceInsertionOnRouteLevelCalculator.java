@@ -36,6 +36,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
+import jsprit.core.util.CalculationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -206,7 +207,8 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 			/**
 			 * departure time at nextAct with new vehicle
 			 */
-			double depTime_nextAct_newVehicle = Math.max(arrTime_nextAct_newVehicle, nextAct.getTheoreticalEarliestOperationStartTime()) + nextAct.getOperationTime();
+			double operationTime = CalculationUtils.getActivityOperationTime(newVehicle, nextAct);
+			double depTime_nextAct_newVehicle = Math.max(arrTime_nextAct_newVehicle, nextAct.getTheoreticalEarliestOperationStartTime()) + operationTime;
 
 			/**
 			 * set previous to next
