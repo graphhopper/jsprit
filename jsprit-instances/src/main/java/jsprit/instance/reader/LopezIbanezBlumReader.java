@@ -5,7 +5,6 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.VehicleImpl;
-import jsprit.core.util.Coordinate;
 import jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,7 +56,7 @@ public class LopezIbanezBlumReader {
                 int nodeIndex = lineCount - 2 - noNodes;
                 String[] twTokens = line.split("\\s+");
                 if(nodeIndex == 0){
-                    VehicleImpl travelingSalesman = VehicleImpl.Builder.newInstance(""+nodeIndex).setStartLocation(Location.newInstance(nodeIndex))
+                    VehicleImpl travelingSalesman = VehicleImpl.Builder.newInstance("traveling_salesman").setStartLocation(Location.newInstance(nodeIndex))
                             .setEarliestStart(Double.parseDouble(twTokens[0])).setLatestArrival(Double.parseDouble(twTokens[1])).build();
                     builder.addVehicle(travelingSalesman);
                 }
@@ -105,12 +104,6 @@ public class LopezIbanezBlumReader {
             System.exit(1);
             return null;
         }
-    }
-
-    private Coordinate makeCoord(String xString, String yString) {
-        double x = Double.parseDouble(xString);
-        double y = Double.parseDouble(yString);
-        return new Coordinate(x,y);
     }
 
     private BufferedReader getReader(String solomonFile) {
