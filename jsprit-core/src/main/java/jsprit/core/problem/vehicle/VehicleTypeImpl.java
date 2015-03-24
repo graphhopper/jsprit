@@ -80,6 +80,8 @@ public class VehicleTypeImpl implements VehicleType {
 		private double fixedCost = 0.0;
 		private double perDistance = 1.0;
 		private double perTime = 0.0;
+
+		private String profile = "car";
 		
 		private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
 		
@@ -197,6 +199,11 @@ public class VehicleTypeImpl implements VehicleType {
 			this.capacityDimensions = capacity;
 			return this;
 		}
+
+		public Builder setProfile(String profile){
+			this.profile = profile;
+			return this;
+		}
 	}
 	
 	@Override
@@ -231,6 +238,8 @@ public class VehicleTypeImpl implements VehicleType {
 	private final String typeId;
 	
 	private final int capacity;
+
+	private final String profile;
 	
 	private final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
 	
@@ -249,6 +258,7 @@ public class VehicleTypeImpl implements VehicleType {
 		maxVelocity = builder.maxVelo;
 		vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance);
 		capacityDimensions = builder.capacityDimensions;
+		profile = builder.profile;
 	}
 
 	/* (non-Javadoc)
@@ -283,4 +293,8 @@ public class VehicleTypeImpl implements VehicleType {
 	public Capacity getCapacityDimensions() {
 		return capacityDimensions;
 	}
+
+	@Override
+	public String getProfile(){ return profile; }
+
 }

@@ -55,4 +55,6 @@ public interface VehicleType {
 	 */
 	public VehicleCostParams getVehicleCostParams();
 
+	public String getProfile();
+
 }
