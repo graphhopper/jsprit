@@ -146,7 +146,11 @@ public class VehicleTypeImplTest {
 		assertTrue(type.equals(type2));
 	}
 	
-
+	@Test
+	public void whenAddingProfile_itShouldBeCorrect(){
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setProfile("car").build();
+		assertEquals("car",type.getProfile());
+	}
 	
 
 }
