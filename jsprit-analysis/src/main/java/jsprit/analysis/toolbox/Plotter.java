@@ -177,6 +177,8 @@ public class Plotter {
 	private boolean containsServiceAct = false;
 	
 	private double scalingFactor = 1.;
+
+	private boolean invert = false;
 	
 	/**
 	 * Constructs Plotter with problem. Thus only the problem can be rendered.
@@ -227,6 +229,11 @@ public class Plotter {
 	 */
 	public Plotter setLabel(Label label){
 		this.label = label;
+		return this;
+	}
+
+	public Plotter invertCoordinates(boolean invert){
+		this.invert = invert;
 		return this;
 	}
 	
@@ -461,15 +468,15 @@ public class Plotter {
 			if(route.isEmpty()) continue;
 			XYSeries series = new XYSeries(counter, false, true);
 			
-			Coordinate startCoord = locations.getCoord(route.getStart().getLocation().getId());
+			Coordinate startCoord = getCoordinate(locations.getCoord(route.getStart().getLocation().getId()));
 			series.add(startCoord.getX()*scalingFactor, startCoord.getY()*scalingFactor);
 			
 			for(TourActivity act : route.getTourActivities().getActivities()){
-				Coordinate coord = locations.getCoord(act.getLocation().getId());
+				Coordinate coord = getCoordinate(locations.getCoord(act.getLocation().getId()));
 				series.add(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			}
 			
-			Coordinate endCoord = locations.getCoord(route.getEnd().getLocation().getId());
+			Coordinate endCoord = getCoordinate(locations.getCoord(route.getEnd().getLocation().getId()));
 			series.add(endCoord.getX()*scalingFactor, endCoord.getY()*scalingFactor);
 			
 			coll.addSeries(series);
@@ -498,8 +505,10 @@ public class Plotter {
 				shipmentSeries = new XYSeries(sCounter, false, true);
 				sCounter++;
 			}
-			shipmentSeries.add(shipment.getPickupLocation().getCoordinate().getX()*scalingFactor, shipment.getPickupLocation().getCoordinate().getY()*scalingFactor);
-			shipmentSeries.add(shipment.getDeliveryLocation().getCoordinate().getX()*scalingFactor, shipment.getDeliveryLocation().getCoordinate().getY()*scalingFactor);
+			Coordinate pickupCoordinate = getCoordinate(shipment.getPickupLocation().getCoordinate());
+			Coordinate delCoordinate = getCoordinate(shipment.getDeliveryLocation().getCoordinate());
+			shipmentSeries.add(pickupCoordinate.getX()*scalingFactor, pickupCoordinate.getY()*scalingFactor);
+			shipmentSeries.add(delCoordinate.getX()*scalingFactor, delCoordinate.getY()*scalingFactor);
 			coll.addSeries(shipmentSeries);
 		}
 		return coll;
@@ -508,13 +517,15 @@ public class Plotter {
 	private void addJob(XYSeries activities, Job job) {
 		if(job instanceof Shipment){
 			Shipment s = (Shipment)job;
-			XYDataItem dataItem = new XYDataItem(s.getPickupLocation().getCoordinate().getX()*scalingFactor, s.getPickupLocation().getCoordinate().getY()*scalingFactor);
+			Coordinate pickupCoordinate = getCoordinate(s.getPickupLocation().getCoordinate());
+			XYDataItem dataItem = new XYDataItem(pickupCoordinate.getX()*scalingFactor, pickupCoordinate.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(s, dataItem);
 			markItem(dataItem,Activity.PICKUP);
 			containsPickupAct = true;
-			
-			XYDataItem dataItem2 = new XYDataItem(s.getDeliveryLocation().getCoordinate().getX()*scalingFactor, s.getDeliveryLocation().getCoordinate().getY()*scalingFactor);
+
+			Coordinate deliveryCoordinate = getCoordinate(s.getDeliveryLocation().getCoordinate());
+			XYDataItem dataItem2 = new XYDataItem(deliveryCoordinate.getX()*scalingFactor, deliveryCoordinate.getY()*scalingFactor);
 			activities.add(dataItem2);
 			addLabel(s, dataItem2);
 			markItem(dataItem2,Activity.DELIVERY);
@@ -522,7 +533,7 @@ public class Plotter {
 		}
 		else if(job instanceof Pickup){
 			Pickup service = (Pickup)job;
-			Coordinate coord = service.getLocation().getCoordinate();
+			Coordinate coord = getCoordinate(service.getLocation().getCoordinate());
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
@@ -531,7 +542,7 @@ public class Plotter {
 		}
 		else if(job instanceof Delivery){
 			Delivery service = (Delivery)job;
-			Coordinate coord = service.getLocation().getCoordinate();
+			Coordinate coord = getCoordinate(service.getLocation().getCoordinate());
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
@@ -540,7 +551,7 @@ public class Plotter {
 		}
 		else if(job instanceof Service){
 			Service service = (Service)job;
-			Coordinate coord = service.getLocation().getCoordinate();
+			Coordinate coord = getCoordinate(service.getLocation().getCoordinate());
 			XYDataItem dataItem = new XYDataItem(coord.getX()*scalingFactor, coord.getY()*scalingFactor);
 			activities.add(dataItem);
 			addLabel(service, dataItem);
@@ -579,17 +590,24 @@ public class Plotter {
 		return builder.toString();
 	}
 
+	private Coordinate getCoordinate(Coordinate coordinate){
+		if(invert){
+			return Coordinate.newInstance(coordinate.getY(),coordinate.getX());
+		}
+		return coordinate;
+	}
+
 	private void retrieveActivities(VehicleRoutingProblem vrp) throws NoLocationFoundException{
 		activities = new XYSeries("activities", false, true);
 		for(Vehicle v : vrp.getVehicles()){
-			Coordinate start_coordinate = v.getStartLocation().getCoordinate();
+			Coordinate start_coordinate = getCoordinate(v.getStartLocation().getCoordinate());
 			if(start_coordinate == null) throw new NoLocationFoundException();
 			XYDataItem item = new XYDataItem(start_coordinate.getX()*scalingFactor, start_coordinate.getY()*scalingFactor);
 			markItem(item,Activity.START);
 			activities.add(item);
 			
 			if(!v.getStartLocation().getId().equals(v.getEndLocation().getId())){
-				Coordinate end_coordinate = v.getEndLocation().getCoordinate();
+				Coordinate end_coordinate = getCoordinate(v.getEndLocation().getCoordinate());
 				if(end_coordinate == null) throw new NoLocationFoundException();
                 XYDataItem end_item = new XYDataItem(end_coordinate.getX()*scalingFactor,end_coordinate.getY()*scalingFactor);
                 markItem(end_item,Activity.END);
