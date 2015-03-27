@@ -30,7 +30,9 @@ import jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class TSPLIB95Reader {
@@ -57,7 +59,8 @@ public class TSPLIB95Reader {
         boolean isEdgeWeightSection = false;
         List<Double> edgeWeights = new ArrayList<Double>();
         int dimensions = 0;
-
+        int coordIndex = 0;
+        Map<Integer,Integer> indexMap = new HashMap<Integer, Integer>();
         while( ( line = getLine(reader) ) != null ){
             if(line.startsWith("EOF") || line.contains("EOF")){
                 break;
@@ -123,13 +126,18 @@ public class TSPLIB95Reader {
             if(isCoordSection){
                 if(coords == null) throw new IllegalStateException("DIMENSION tag missing");
                 String[] tokens = line.trim().split("\\s+");
-                coords[Integer.parseInt(tokens[0]) - 1] = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
+                Integer id = Integer.parseInt(tokens[0]);
+                coords[coordIndex] = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
+                indexMap.put(id,coordIndex);
+                coordIndex++;
                 continue;
             }
             if(isDemandSection){
                 if(demands == null) throw new IllegalStateException("DIMENSION tag missing");
                 String[] tokens = line.trim().split("\\s+");
-                demands[Integer.parseInt(tokens[0]) - 1] = Integer.parseInt(tokens[1]);
+                Integer id = Integer.parseInt(tokens[0]);
+                int index = indexMap.get(id);
+                demands[index] = Integer.parseInt(tokens[1]);
                 continue;
             }
             if(isDepotSection){
@@ -156,14 +164,14 @@ public class TSPLIB95Reader {
             vrpBuilder.addVehicle(vehicle);
         }
 
-        for (int i = 0; i < coords.length; i++) {
-            String id = "" + (i + 1);
+        for (Integer id_ : indexMap.keySet()) {
+            String id = id_.toString();
+            int index = indexMap.get(id_);
             if(depotIds.isEmpty()){
-                if(i==0) {
+                if(index == 0) {
                     VehicleImpl vehicle = VehicleImpl.Builder.newInstance("traveling_salesman")
                             .setStartLocation(Location.Builder.newInstance().setId(id)
-                                    .setCoordinate(coords[i]).setIndex(i).build())
-
+                                    .setCoordinate(coords[index]).setIndex(index).build())
                                     .build();
                     vrpBuilder.addVehicle(vehicle);
                     continue;
@@ -171,8 +179,8 @@ public class TSPLIB95Reader {
             }
             Service service = Service.Builder.newInstance(id)
                     .setLocation(Location.Builder.newInstance().setId(id)
-                            .setCoordinate(coords[i]).setIndex(i).build())
-                    .addSizeDimension(0, demands[i]).build();
+                            .setCoordinate(coords[index]).setIndex(index).build())
+                    .addSizeDimension(0, demands[index]).build();
             vrpBuilder.addJob(service);
         }
         if(edgeType.equals("GEO")){
@@ -228,7 +236,7 @@ public class TSPLIB95Reader {
                 vrpBuilder.setRoutingCost(matrixBuilder.build());
             }
             else if(edgeWeightFormat.equals("FULL_MATRIX")){
-                FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(dimensions,true);
+                FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(dimensions,false);
                 int fromIndex = 0;
                 int toIndex = 0;
                 for(int i=0;i<edgeWeights.size();i++){
