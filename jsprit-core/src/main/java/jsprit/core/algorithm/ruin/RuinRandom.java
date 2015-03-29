@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -85,33 +85,22 @@ public final class RuinRandom extends AbstractRuinStrategy {
         throw new IllegalStateException("not supported");
 	}
 
-	@Deprecated
-	public void setRuinFraction(double fractionOfAllNodes2beRuined) {
-		this.fractionOfAllNodes2beRuined = fractionOfAllNodes2beRuined;
-		logger.info("fraction set " + this);
-	}
-
 	private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
-		LinkedList<Job> availableJobs = new LinkedList<Job>(vrp.getJobs().values());
-		for (int i = 0; i < nOfJobs2BeRemoved; i++) {
-			if(availableJobs.isEmpty()) break;
-			Job job = pickRandomJob(availableJobs);
+		ArrayList<Job> availableJobs = new ArrayList<Job>(vrp.getJobs().values());
+		Collections.shuffle(availableJobs,random);
+		int removed = 0;
+		for (Job job : availableJobs) {
+			if(removed == nOfJobs2BeRemoved) break;
 			if(removeJob(job,vehicleRoutes)) {
 				unassignedJobs.add(job);
-				availableJobs.remove(job);
 			}
+			removed++;
 		}
 	}
 
-		
 	@Override
 	public String toString() {
 		return "[name=randomRuin][noJobsToBeRemoved="+selectNuOfJobs2BeRemoved()+"]";
-	}
-	
-	private Job pickRandomJob(LinkedList<Job> availableJobs) {
-		int randomIndex = random.nextInt(availableJobs.size());
-		return availableJobs.get(randomIndex);
 	}
 
 	private int selectNuOfJobs2BeRemoved() {
