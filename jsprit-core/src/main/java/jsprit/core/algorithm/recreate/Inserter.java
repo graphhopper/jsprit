@@ -81,7 +81,7 @@ class Inserter {
 		}
 		
 		private void setEndLocation(VehicleRoute route, Service service) {
-			route.getEnd().setLocationId(service.getLocation().getId());
+			route.getEnd().setLocation(service.getLocation());
 		}
 		
 		public void setNextHandler(JobInsertionHandler jobInsertionHandler){
@@ -121,7 +121,7 @@ class Inserter {
 		}
 		
 		private void setEndLocation(VehicleRoute route, Shipment shipment) {
-			route.getEnd().setLocationId(shipment.getDeliveryLocation().getId());
+			route.getEnd().setLocation(shipment.getDeliveryLocation());
 		}
 
 		public void setNextHandler(JobInsertionHandler jobInsertionHandler){
