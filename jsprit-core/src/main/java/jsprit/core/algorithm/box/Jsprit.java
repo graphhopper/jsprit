@@ -256,6 +256,8 @@ public class Jsprit {
 
     private boolean addCoreConstraints;
 
+    private SolutionCostCalculator objectiveFunction = null;
+
     private Properties properties;
 
     private Jsprit(Builder builder) {
@@ -265,6 +267,7 @@ public class Jsprit {
         this.noThreads = builder.noThreads;
         this.addCoreConstraints = builder.addConstraints;
         this.properties = builder.properties;
+        this.objectiveFunction = builder.objectiveFunction;
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp){
@@ -503,7 +506,8 @@ public class Jsprit {
         return Double.valueOf(string);
     }
 
-    private static SolutionCostCalculator getObjectiveFunction(final VehicleRoutingProblem vrp, final double maxCosts) {
+    private SolutionCostCalculator getObjectiveFunction(final VehicleRoutingProblem vrp, final double maxCosts) {
+        if(objectiveFunction != null) return objectiveFunction;
         return new SolutionCostCalculator() {
 
 
