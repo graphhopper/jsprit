@@ -94,7 +94,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 	public void doBefore(){
 		routingCosts = CostFactory.createManhattanCosts();
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).setCostPerDistance(1).build();
-		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();
 		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
 		createInsertionCalculator(hardRouteLevelConstraint);
         vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
@@ -112,7 +112,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
 		Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 15).setLocation(Location.newInstance("0,10")).build();
 
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 50).setCostPerDistance(1).build();
-		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("0,0").setType(type).build();
+		VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();
 
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(delivery).addJob(pickup).addVehicle(vehicle).build();
 

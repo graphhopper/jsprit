@@ -159,8 +159,9 @@ public class TSPLIB95Reader {
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         for(Integer depotId : depotIds){
             VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,capacity).build();
-            VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocationId(depotId.toString())
-                    .setStartLocationCoordinate(coords[depotId - 1]).setType(type).build();
+            VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle")
+                    .setStartLocation(Location.Builder.newInstance().setId(depotId.toString()).setCoordinate(coords[depotId - 1]).build())
+                    .setType(type).build();
             vrpBuilder.addVehicle(vehicle);
         }
 

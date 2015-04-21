@@ -22,7 +22,6 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.util.Coordinate;
@@ -123,8 +122,9 @@ public class LuiShenReader {
 			
 			VehicleTypeImpl type = typeBuilder.build();
 			
-			Vehicle reprVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(start).setLatestArrival(end).
-					setStartLocationId(locationId).setStartLocationCoordinate(coord).setType(type).build();
+			VehicleImpl reprVehicle = VehicleImpl.Builder.newInstance(vehicleId).setEarliestStart(start).setLatestArrival(end).
+					setStartLocation(Location.Builder.newInstance().setId(locationId).setCoordinate(coord).build())
+					.setType(type).build();
 			
 			vrpBuilder.addVehicle(reprVehicle);
 			

@@ -99,19 +99,6 @@ public class Service extends AbstractJob {
 			this.type = name;
 			return this;
 		}
-		
-		/**
-		 * Sets the location-id of this service.
-		 * 
-		 * @param locationId the location id of the service
-		 * @return builder
-         * @deprecated use .setLocation(..) instead
-		 */
-        @Deprecated
-		public Builder setLocationId(String locationId){
-			this.locationId = locationId;
-			return this;
-		}
 
         /**
          * Sets location
@@ -123,20 +110,7 @@ public class Service extends AbstractJob {
             this.location = location;
             return this;
         }
-		
-		/**
-		 * Sets the coordinate of this service.
-		 * 
-		 * @param coord the coordinate of service
-		 * @return builder
-         * @deprecated use .setLocation(..) instead and add coordinate ot Location obj
-		 */
-        @Deprecated
-		public Builder setCoord(Coordinate coord){
-			this.coord = coord;
-			return this;
-		}
-		
+
 		/**
 		 * Sets the serviceTime of this service.
 		 * 
@@ -189,9 +163,7 @@ public class Service extends AbstractJob {
 		 * @throws IllegalStateException if neither locationId nor coordinate is set.
 		 */
 		public Service build(){
-			if(location == null) {
-                location = Location.Builder.newInstance().setCoordinate(coord).setId(locationId).build();
-            }
+			if(location == null) throw new IllegalStateException("location is missing");
 			this.setType("service");
 			capacity = capacityBuilder.build();
             skills = skillBuilder.build();
@@ -243,28 +215,6 @@ public class Service extends AbstractJob {
 	}
 
 	/**
-	 * Returns the location-id of this service.
-	 * 
-	 * @return String that indicates the location
-     * @deprecated use .getLocation().getId() instead
-	 */
-    @Deprecated
-	public String getLocationId() {
-		return location.getId();
-	}
-
-//    public AbstractLocation getLocation()
-	
-	/**
-	 * Returns the coordinate of this service.
-	 * 
-	 * @return {@link Coordinate}
-     * @deprecated use .getLocation().getCoordinate() instead
-	 */
-    @Deprecated
-	public Coordinate getCoord(){ return location.getCoordinate(); }
-
-    /**
      * Returns location.
      *
      * @return location

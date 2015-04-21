@@ -95,7 +95,7 @@ public class VehicleRouteBuilderTest {
 		Capacity capacity = Capacity.Builder.newInstance().build();
 		when(s.getSize()).thenReturn(capacity);
 		when(s2.getSize()).thenReturn(capacity);
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setEndLocationId("vehLoc")
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("vehLoc")).setEndLocation(Location.newInstance("vehLoc"))
                 .build();
 
 		VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));

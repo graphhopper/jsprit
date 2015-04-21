@@ -78,8 +78,8 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 		costs = mock(VehicleRoutingTransportCosts.class);
 
 		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0,1000).build();
-        vehicle = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocationId("0,0").setLatestArrival(100.).build();
-        newVehicle = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocationId("0,0").setLatestArrival(100.).build();
+        vehicle = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance("0,0")).setLatestArrival(100.).build();
+        newVehicle = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance("0,0")).setLatestArrival(100.).build();
 		driver = DriverImpl.noDriver();
 
         costs = new AbstractForwardVehicleRoutingTransportCosts() {

@@ -20,7 +20,6 @@ import jsprit.core.problem.HasId;
 import jsprit.core.problem.HasIndex;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
-import jsprit.core.util.Coordinate;
 
 /**
  * Basic interface for vehicle-data.
@@ -65,37 +64,12 @@ public interface Vehicle extends HasId, HasIndex {
 	 * @return true if isReturnToDepot
 	 */
 	public abstract boolean isReturnToDepot();
-	
-	/**
-	 * Returns the start-locationId of this vehicle.
-	 */
-    @Deprecated
-	public abstract String getStartLocationId();
-	
-	/**
-	 * Returns the start-locationCoord of this vehicle.
-	 */
-    @Deprecated
-	public abstract Coordinate getStartLocationCoordinate();
 
     public abstract Location getStartLocation();
 	
-	/**
-	 * Returns the end-locationId of this vehicle.
-	 * 
-	 */
-    @Deprecated
-	public abstract String getEndLocationId();
-
-    public abstract Location getEndLocation();
+	public abstract Location getEndLocation();
 	
-	/**
-	 * Returns the end-locationCoord of this vehicle.
-	 */
-    @Deprecated
-	public abstract Coordinate getEndLocationCoordinate();
-
-    public abstract VehicleTypeKey getVehicleTypeIdentifier();
+	public abstract VehicleTypeKey getVehicleTypeIdentifier();
 
     public abstract Skills getSkills();
 }

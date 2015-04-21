@@ -18,6 +18,7 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.Builder;
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -74,7 +75,7 @@ public class TestDepartureTimeOpt {
 		TimeWindow timeWindow = TimeWindow.newInstance(40, 45);
 		Service service = Service.Builder.newInstance("s")
 				.setLocation(TestUtils.loc("servLoc",Coordinate.newInstance(0, 10))).setTimeWindow(timeWindow).build();
-		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("vehLoc").setStartLocationCoordinate(Coordinate.newInstance(0, 0))
+		Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setId("vehLoc").setCoordinate(Coordinate.newInstance(0, 0)).build())
 				.setType(VehicleTypeImpl.Builder.newInstance("vType").build()).build();
 		
 		Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

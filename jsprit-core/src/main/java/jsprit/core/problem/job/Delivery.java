@@ -17,8 +17,6 @@
 package jsprit.core.problem.job;
 
 
-import jsprit.core.problem.Location;
-
 /**
  * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
  * 
@@ -50,9 +48,7 @@ public class Delivery extends Service{
 		 * @throws IllegalStateException if neither locationId nor coord is set
 		 */
 		public Delivery build(){
-			if(location == null) {
-                location = Location.Builder.newInstance().setCoordinate(coord).setId(locationId).build();
-			}
+			if(location == null) throw new IllegalStateException("location is missing");
 			this.setType("delivery");
 			super.capacity = super.capacityBuilder.build();
             super.skills = super.skillBuilder.build();

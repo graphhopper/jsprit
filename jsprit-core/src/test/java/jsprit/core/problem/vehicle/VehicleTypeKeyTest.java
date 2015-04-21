@@ -1,6 +1,7 @@
 package jsprit.core.problem.vehicle;
 
 
+import jsprit.core.problem.Location;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -10,18 +11,18 @@ public class VehicleTypeKeyTest {
 
     @Test
     public void typeIdentifierShouldBeEqual(){
-        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").addSkill("skill1").addSkill("skill2")
+        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2")
                 .addSkill("skill3").build();
-        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").addSkill("skill2").addSkill("skill1")
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).addSkill("skill2").addSkill("skill1")
                 .addSkill("skill3").build();
         assertTrue(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
     }
 
     @Test
     public void typeIdentifierShouldNotBeEqual(){
-        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocationId("start").addSkill("skill1").addSkill("skill2")
+        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2")
                 .build();
-        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocationId("start").addSkill("skill2").addSkill("skill1")
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).addSkill("skill2").addSkill("skill1")
                 .addSkill("skill3").build();
         assertFalse(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
     }

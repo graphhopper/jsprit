@@ -114,7 +114,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_withTimeAndD
 		VehicleTypeImpl bigType = typeBuilder.build();
 		
 		VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocationId("1");
+		vehicleBuilder.setStartLocation(Location.newInstance("1"));
 		vehicleBuilder.setType(bigType);
 		vehicleBuilder.setLatestArrival(220);
 		Vehicle bigVehicle = vehicleBuilder.build();

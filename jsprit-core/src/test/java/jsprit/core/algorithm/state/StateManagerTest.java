@@ -74,7 +74,7 @@ public class StateManagerTest {
 
     @Test
     public void whenVehicleDependentInternalRouteStateIsSet_itMustBeSetCorrectly(){
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         //noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
 
@@ -87,7 +87,7 @@ public class StateManagerTest {
 
     @Test
     public void whenVehicleDependentInternalRouteStateIsNotSet_itMustBeSetCorrectly(){
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         //noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
 
@@ -221,7 +221,7 @@ public class StateManagerTest {
 
     @Test
     public void whenCreatingAVehicleDependentRouteState_itShouldBeMemorized(){
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         //noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         VehicleRoute route = getRoute(vehicle);
@@ -235,7 +235,7 @@ public class StateManagerTest {
 
     @Test
     public void whenCreatingAVehicleDependentActivityState_itShouldBeMemorized(){
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         //noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
@@ -250,7 +250,7 @@ public class StateManagerTest {
 
     @Test
     public void whenMemorizingVehicleInfo_itShouldBeMemorized(){
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         //noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         VehicleRoute route = getRoute(vehicle);
@@ -264,8 +264,8 @@ public class StateManagerTest {
     @Test
     public void whenMemorizingTwoVehicleInfoForRoute_itShouldBeMemorized(){
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
-        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
         VehicleRoute route = getRoute(vehicle);
 
         //getting the indices created in vrpBuilder
@@ -284,8 +284,8 @@ public class StateManagerTest {
     @Test
     public void whenMemorizingTwoVehicleInfoForAct_itShouldBeMemorized(){
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
-        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
 
         //getting the indices created in vrpBuilder
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -306,8 +306,8 @@ public class StateManagerTest {
     @Test
     public void whenClearing_arrElementsShouldBeNull(){
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").build();
-        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocationId("loc").setType(type).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
 
         //getting the indices created in vrpBuilder
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

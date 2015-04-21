@@ -17,8 +17,6 @@
 package jsprit.core.problem.job;
 
 
-import jsprit.core.problem.Location;
-
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
  * 
@@ -52,9 +50,7 @@ public class Pickup extends Service {
 		 * @throws IllegalStateException if neither locationId nor coordinate has been set
 		 */
 		public Pickup build(){
-			if(location == null) {
-				location = Location.Builder.newInstance().setCoordinate(coord).setId(locationId).build();
-			}
+			if(location == null) throw new IllegalStateException("location is missing");
 			this.setType("pickup");
 			super.capacity = super.capacityBuilder.build();
             super.skills = super.skillBuilder.build();

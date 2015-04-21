@@ -78,10 +78,10 @@ public class TestCalculatesServiceInsertion {
 	public void setup(){
 
 		VehicleType t1 = VehicleTypeImpl.Builder.newInstance("t1").addCapacityDimension(0, 1000).setCostPerDistance(1.0).build();
-		vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setStartLocationId("0,0").setType(t1).build();
+		vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setStartLocation(Location.newInstance("0,0")).setType(t1).build();
 		
 		VehicleType t2 = VehicleTypeImpl.Builder.newInstance("t2").addCapacityDimension(0, 1000).setCostPerDistance(2.0).build();
-		newVehicle = VehicleImpl.Builder.newInstance("newVehicle").setLatestArrival(100.0).setStartLocationId("0,0").setType(t2).build();
+		newVehicle = VehicleImpl.Builder.newInstance("newVehicle").setLatestArrival(100.0).setStartLocation(Location.newInstance("0,0")).setType(t2).build();
 		
 		driver = DriverImpl.noDriver();
 		

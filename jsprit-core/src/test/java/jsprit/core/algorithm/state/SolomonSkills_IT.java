@@ -89,7 +89,7 @@ public class SolomonSkills_IT {
         constraintManager.addSkillsConstraint();
 
         VehicleRoutingAlgorithm vra = vraBuilder.build();
-        vra.setMaxIterations(500);
+        vra.setMaxIterations(2000);
 
         try {
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

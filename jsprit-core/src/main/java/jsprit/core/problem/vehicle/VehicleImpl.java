@@ -19,7 +19,6 @@ package jsprit.core.problem.vehicle;
 import jsprit.core.problem.AbstractVehicle;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
-import jsprit.core.util.Coordinate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,32 +78,12 @@ public class VehicleImpl extends AbstractVehicle{
         }
 
         @Override
-        public String getStartLocationId() {
-            return null;
-        }
-
-        @Override
-        public Coordinate getStartLocationCoordinate() {
-            return null;
-        }
-
-        @Override
         public Location getStartLocation() {
             return null;
         }
 
         @Override
-        public String getEndLocationId() {
-            return null;
-        }
-
-        @Override
         public Location getEndLocation() {
-            return null;
-        }
-
-        @Override
-        public Coordinate getEndLocationCoordinate() {
             return null;
         }
 
@@ -129,23 +108,11 @@ public class VehicleImpl extends AbstractVehicle{
         static final Logger log = LogManager.getLogger(Builder.class.getName());
 
         private String id;
-		
-		private String locationId;
-
-		private Coordinate locationCoord;
 
 		private double earliestStart = 0.0;
 
 		private double latestArrival = Double.MAX_VALUE;
-		
-		private String startLocationId;
 
-		private Coordinate startLocationCoord;
-		
-		private String endLocationId;
-
-		private Coordinate endLocationCoord;
-		
 		private boolean returnToDepot = true;
 		
 		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
@@ -192,36 +159,6 @@ public class VehicleImpl extends AbstractVehicle{
 			this.returnToDepot = returnToDepot;
 			return this;
 		}
-		
-		/**
-		 * Sets the start-location of this vehicle.
-		 * 
-		 * @param startLocationId the location id of vehicle's start
-		 * @return this builder
-		 * @throws IllegalArgumentException if startLocationId is null
-         * @deprecated use .setStartLocation(..) instead
-		 */
-        @Deprecated
-		public Builder setStartLocationId(String startLocationId){
-			if(startLocationId == null) throw new IllegalArgumentException("startLocationId cannot be null");
-			this.startLocationId = startLocationId;
-			this.locationId = startLocationId;
-			return this;
-		}
-		
-		/**
-		 * Sets the start-coordinate of this vehicle.
-		 * 
-		 * @param coord the coordinate of vehicle's start location
-		 * @return this builder
-         * @deprecated use .setStartLocation(..) instead
-		 */
-        @Deprecated
-		public Builder setStartLocationCoordinate(Coordinate coord){
-			this.startLocationCoord = coord;
-			this.locationCoord = coord;
-			return this;
-		}
 
         /**
          * Sets start location.
@@ -232,32 +169,6 @@ public class VehicleImpl extends AbstractVehicle{
             this.startLocation = startLocation;
             return this;
         }
-		
-		/**
-		 * Sets the end-locationId of this vehicle.
-		 * 
-		 * @param endLocationId the location id of vehicle's end
-		 * @return this builder
-         * @deprecated use .setEndLocation(..) instead
-		 */
-        @Deprecated
-		public Builder setEndLocationId(String endLocationId){
-			this.endLocationId = endLocationId;
-			return this;
-		}
-		
-		/**
-		 * Sets the end-coordinate of this vehicle.
-		 * 
-		 * @param coord the coordinate of vehicle's end location
-		 * @return this builder
-         * @deprecated use .setEndLocation(..) instead
-		 */
-        @Deprecated
-		public Builder setEndLocationCoordinate(Coordinate coord){
-			this.endLocationCoord = coord;
-			return this;
-		}
 
         public Builder setEndLocation(Location endLocation){
             this.endLocation = endLocation;
@@ -312,30 +223,12 @@ public class VehicleImpl extends AbstractVehicle{
                 if( !startLocation.getId().equals(endLocation.getId()) && !returnToDepot) throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
                         "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
             }
-            if (startLocation != null && endLocation == null && endLocationId == null && endLocationCoord == null) {
+            if (startLocation != null && endLocation == null) {
                 endLocation = startLocation;
             }
             if(startLocation == null && endLocation == null) {
-                if ((locationId == null && locationCoord == null) && (startLocationId == null && startLocationCoord == null)) {
-                    throw new IllegalStateException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
-                }
-                if(locationId == null && locationCoord == null) throw new IllegalStateException("locationId and locationCoord is missing.");
-                if(locationCoord == null) log.warn("locationCoord for vehicle " + id + " is missing.");
-                if (locationId == null && locationCoord != null) {
-                    locationId = locationCoord.toString();
-                    startLocationId = locationCoord.toString();
-                }
-                startLocation = Location.Builder.newInstance().setCoordinate(locationCoord).setId(locationId).build();
-
-                if (endLocationId == null && endLocationCoord != null) endLocationId = endLocationCoord.toString();
-                if (endLocationId == null && endLocationCoord == null) {
-                    endLocationId = startLocationId;
-                    endLocationCoord = startLocationCoord;
-                }
-                endLocation = Location.Builder.newInstance().setCoordinate(endLocationCoord).setId(endLocationId).build();
-                if( !startLocationId.equals(endLocationId) && !returnToDepot) throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
-                        "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
-            }
+				throw new IllegalStateException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
+			}
             skills = skillBuilder.build();
             return new VehicleImpl(this);
 		}
@@ -433,35 +326,15 @@ public class VehicleImpl extends AbstractVehicle{
 		return returnToDepot;
 	}
 
-	@Override
-	public String getStartLocationId() {
-		return this.startLocation.getId();
-	}
-
-	@Override
-	public Coordinate getStartLocationCoordinate() {
-		return this.startLocation.getCoordinate();
-	}
-
     @Override
     public Location getStartLocation() {
         return startLocation;
     }
 
     @Override
-	public String getEndLocationId() {
-		return this.endLocation.getId();
-	}
-
-    @Override
     public Location getEndLocation() {
         return endLocation;
     }
-
-    @Override
-	public Coordinate getEndLocationCoordinate() {
-		return this.endLocation.getCoordinate();
-	}
 
     @Override
     public Skills getSkills() {
