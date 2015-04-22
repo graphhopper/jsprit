@@ -33,8 +33,9 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.swingViewer.View;
-import org.graphstream.ui.swingViewer.Viewer;
+import org.graphstream.ui.swingViewer.ViewPanel;
+import org.graphstream.ui.view.View;
+import org.graphstream.ui.view.Viewer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -176,10 +177,10 @@ public class GraphStreamViewer {
         return g;
     }
 
-    public static View createEmbeddedView(Graph graph, double scaling){
+    public static ViewPanel createEmbeddedView(Graph graph, double scaling){
         Viewer viewer = new Viewer(graph,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-        View view = viewer.addDefaultView(false);
-        view.setPreferredSize(new Dimension((int)(698*scaling),(int)(440*scaling)));
+        ViewPanel view = viewer.addDefaultView(false);
+        view.setPreferredSize(new Dimension((int) (698 * scaling), (int) (440 * scaling)));
         return view;
     }
 
@@ -326,14 +327,14 @@ public class GraphStreamViewer {
 
         Graph g = createMultiGraph("g");
 
-        View view = createEmbeddedView(g,scaling);
+        ViewPanel view = createEmbeddedView(g,scaling);
 
         createJFrame(view,scaling);
 
         render(g, view);
 	}
 
-    private JFrame createJFrame(View view, double scaling) {
+    private JFrame createJFrame(ViewPanel view, double scaling) {
         JFrame jframe = new JFrame();
         JPanel basicPanel = new JPanel();
         basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
@@ -377,7 +378,7 @@ public class GraphStreamViewer {
         return GraphStreamViewer.createMultiGraph(name,STYLESHEET);
     }
 
-    private void render(Graph g, View view) {
+    private void render(Graph g, ViewPanel view) {
 		if(center != null){
 			view.resizeFrame(view.getWidth(), view.getHeight());
             alignCamera(view);

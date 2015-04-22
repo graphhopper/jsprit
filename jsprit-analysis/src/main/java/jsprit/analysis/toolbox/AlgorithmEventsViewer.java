@@ -21,7 +21,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.stream.Sink;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDGS;
-import org.graphstream.ui.swingViewer.Viewer;
+import org.graphstream.ui.view.Viewer;
 
 import java.io.IOException;
 
