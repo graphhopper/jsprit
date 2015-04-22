@@ -21,11 +21,11 @@ import jsprit.analysis.toolbox.GraphStreamViewer;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.analysis.toolbox.StopWatch;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
+import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -76,7 +76,7 @@ public class MultipleDepotExample2 {
                         .addCapacityDimension(0, capacity).setCostPerDistance(1.0).build();
 				String vehicleId = depotCounter + "_" + (i+1) + "_vehicle";
 				VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance(vehicleId);
-				vehicleBuilder.setStartLocationCoordinate(depotCoord);
+				vehicleBuilder.setStartLocation(Location.newInstance(depotCoord.getX(),depotCoord.getY()));
 				vehicleBuilder.setType(vehicleType);
 				vehicleBuilder.setLatestArrival(maxDuration);
 				VehicleImpl vehicle = vehicleBuilder.build();
@@ -104,8 +104,8 @@ public class MultipleDepotExample2 {
 		/*
 		 * solve the problem
 		 */
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp,12, "input/algorithmConfig.xml");
-		vra.setMaxIterations(5000);
+		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS,"5").buildAlgorithm();
+		vra.setMaxIterations(2000);
         vra.getAlgorithmListeners().addListener(new StopWatch(),Priority.HIGH);
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
