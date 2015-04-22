@@ -268,7 +268,7 @@ public class TestAlgorithmReader {
 	@Test
 	public void whenCreatingAlgorithm_nOfIterationsIsReadCorrectly(){
 		VehicleRoutingAlgorithm algo = VehicleRoutingAlgorithms.createAlgorithm(vrp, config);
-		assertEquals(10, algo.getNuOfIterations());
+		assertEquals(10, algo.getMaxIterations());
 	}
 	
 	@Test

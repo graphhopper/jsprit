@@ -109,7 +109,7 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
 		logger.info("prepare schrimpfAcceptanceFunction, i.e. determine initial threshold");
 		logger.info("start random-walk (see randomWalk.xml)");
 		double now = System.currentTimeMillis();
-		this.nOfTotalIterations = algorithm.getNuOfIterations();
+		this.nOfTotalIterations = algorithm.getMaxIterations();
 		
 		/*
 		 * randomWalk to determine standardDev
