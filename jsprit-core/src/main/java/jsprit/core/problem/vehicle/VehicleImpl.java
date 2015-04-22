@@ -91,7 +91,12 @@ public class VehicleImpl extends AbstractVehicle{
         public Skills getSkills() {
             return null;
         }
-    }
+
+		@Override
+		public Float getOperationTimeFactor() {
+			return null;
+		}
+	}
 	
 	/**
 	 * Builder that builds the vehicle.
@@ -125,7 +130,9 @@ public class VehicleImpl extends AbstractVehicle{
 
         private Location endLocation;
 
-        private Builder(String id) {
+		private Float operationTimeFactor;
+
+		private Builder(String id) {
 			super();
 			this.id = id;
 		}
@@ -201,7 +208,12 @@ public class VehicleImpl extends AbstractVehicle{
             skillBuilder.addSkill(skill);
             return this;
         }
-		
+
+		public Builder setOperationTimeFactor(Float operationTimeFactor) {
+			this.operationTimeFactor = operationTimeFactor;
+			return this;
+		}
+
 		/**
 		 * Builds and returns the vehicle.
 		 * 
@@ -274,6 +286,8 @@ public class VehicleImpl extends AbstractVehicle{
 
     private final Location startLocation;
 
+	private final Float operationTimeFactor;
+
 	private VehicleImpl(Builder builder){
 		id = builder.id;
 		type = builder.type;
@@ -283,7 +297,8 @@ public class VehicleImpl extends AbstractVehicle{
 	    skills = builder.skills;
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
+		operationTimeFactor = builder.operationTimeFactor;
+		setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills));
 	}
 	
 	/**
@@ -339,7 +354,12 @@ public class VehicleImpl extends AbstractVehicle{
     @Override
     public Skills getSkills() {
         return skills;
-    }
+	}
+
+	@Override
+	public Float getOperationTimeFactor() {
+		return operationTimeFactor;
+	}
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()

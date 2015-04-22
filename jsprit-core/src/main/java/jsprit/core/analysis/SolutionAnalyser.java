@@ -29,6 +29,7 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.*;
 import jsprit.core.util.ActivityTimeTracker;
+import jsprit.core.util.CalculationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -286,9 +287,9 @@ public class SolutionAnalyser {
             sum_transport_time += transportTime;
             prevActDeparture = activity.getEndTime();
             //service time
-            sum_service_time += activity.getOperationTime();
-            
-            stateManager.putActivityState(activity, transport_time_id, sum_transport_time);
+			sum_service_time += CalculationUtils.getActivityOperationTime(route.getVehicle(), activity);
+
+			stateManager.putActivityState(activity, transport_time_id, sum_transport_time);
 
         }
 

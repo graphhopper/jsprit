@@ -48,6 +48,7 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
+import jsprit.core.util.CalculationUtils;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.CrowFlyCosts;
 import jsprit.core.util.Solutions;
@@ -127,8 +128,8 @@ public class BicycleMessenger {
 			}
 
 			//impact on whole route, since insertion of newAct shifts all subsequent activities forward in time
-			double departureTime_at_newAct = arrTime_at_newAct + newAct.getOperationTime();
-            double latest_arrTime_at_newAct = latest_arrTime_at_nextAct - routingCosts.getTransportTime(newAct.getLocation(),nextAct.getLocation(),departureTime_at_newAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
+			double departureTime_at_newAct = arrTime_at_newAct + CalculationUtils.getActivityOperationTime(iFacts.getNewVehicle(), newAct);
+			double latest_arrTime_at_newAct = latest_arrTime_at_nextAct - routingCosts.getTransportTime(newAct.getLocation(),nextAct.getLocation(),departureTime_at_newAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
 			if(arrTime_at_newAct > latest_arrTime_at_newAct){
                 return ConstraintsStatus.NOT_FULFILLED;
             }
@@ -215,7 +216,7 @@ public class BicycleMessenger {
 		public void visit(TourActivity currAct) {
 			double timeOfNearestMessenger = bestMessengers.get(((JobActivity)currAct).getJob().getId());
 			double potential_latest_arrTime_at_currAct =
-					latest_arrTime_at_prevAct - routingCosts.getBackwardTransportTime(currAct.getLocation(), prevAct.getLocation(), latest_arrTime_at_prevAct, route.getDriver(),route.getVehicle()) - currAct.getOperationTime();
+					latest_arrTime_at_prevAct - routingCosts.getBackwardTransportTime(currAct.getLocation(), prevAct.getLocation(), latest_arrTime_at_prevAct, route.getDriver(), route.getVehicle()) - CalculationUtils.getActivityOperationTime(route.getVehicle(), currAct);
 			double latest_arrTime_at_currAct = Math.min(3*timeOfNearestMessenger, potential_latest_arrTime_at_currAct);
 			stateManager.putActivityState(currAct, latest_act_arrival_time_stateId, latest_arrTime_at_currAct);
 			assert currAct.getArrTime() <= latest_arrTime_at_currAct : "this must not be since it breaks condition; actArrTime: " + currAct.getArrTime() + " latestArrTime: " + latest_arrTime_at_currAct + " vehicle: " + route.getVehicle().getId();

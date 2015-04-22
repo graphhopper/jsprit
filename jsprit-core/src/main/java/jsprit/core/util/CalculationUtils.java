@@ -19,9 +19,18 @@
 package jsprit.core.util;
 
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.vehicle.Vehicle;
 
 public class CalculationUtils {
-	
+
+	public static double getActivityOperationTime(Vehicle vehicle, TourActivity act) {
+		if (act.getOperationTime() != -1)
+			return act.getOperationTime();
+		double operationTime = act.getTheoreticalOperationTime();
+		if (vehicle != null && vehicle.getOperationTimeFactor() != null)
+			operationTime *= vehicle.getOperationTimeFactor();
+		return operationTime;
+	}
 
 	/**
 	 * Calculates actEndTime assuming that activity can at earliest start at act.getTheoreticalEarliestOperationStartTime().
@@ -30,7 +39,7 @@ public class CalculationUtils {
 	 * @param act
 	 * @return
 	 */
-	public static double getActivityEndTime(double actArrTime, TourActivity act){
-		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
+	public static double getActivityEndTime(double actArrTime, Vehicle vehicle, TourActivity act) {
+		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + getActivityOperationTime(vehicle, act);
 	}
 }

@@ -21,6 +21,7 @@ import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.util.CalculationUtils;
 
 
 public class ExampleActivityCostFunction implements VehicleRoutingActivityCosts{
@@ -41,7 +42,8 @@ public class ExampleActivityCostFunction implements VehicleRoutingActivityCosts{
 		}
 		else{
 			//waiting + act-time
-			double endTime = Math.max(arrivalTime, tourAct.getTheoreticalEarliestOperationStartTime()) + tourAct.getOperationTime();
+			double operationTime = CalculationUtils.getActivityOperationTime(vehicle, tourAct);
+			double endTime = Math.max(arrivalTime, tourAct.getTheoreticalEarliestOperationStartTime()) + operationTime;
 			double timeAtAct = endTime - arrivalTime;
 			
 			double totalCost = timeAtAct * parameter_timeAtAct;

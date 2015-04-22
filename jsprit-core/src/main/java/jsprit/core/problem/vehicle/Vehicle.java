@@ -72,4 +72,13 @@ public interface Vehicle extends HasId, HasIndex {
 	public abstract VehicleTypeKey getVehicleTypeIdentifier();
 
     public abstract Skills getSkills();
+
+	/**
+	 * This factor is used to calculate the actual operation time (ActEndTime) for an activity when this vehicle is doing it.
+	 * <p/>
+	 * If this field is set to 1.5 and the job operation time is 1h, it means that this vehicle will do it in 1.5h.
+	 *
+	 * @return the operation time factor for this vehicle
+	 */
+	public abstract Float getOperationTimeFactor();
 }

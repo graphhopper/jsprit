@@ -41,6 +41,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 		this.arrTime = pickupShipmentActivity.getArrTime();
 		this.endTime = pickupShipmentActivity.getEndTime();
         setIndex(pickupShipmentActivity.getIndex());
+		setOperationTime(pickupShipmentActivity.getOperationTime());
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 	}
 
 	@Override
-	public double getOperationTime() {
+	public double getTheoreticalOperationTime() {
 		return shipment.getPickupServiceTime();
 	}
 

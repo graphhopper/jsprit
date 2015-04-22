@@ -43,7 +43,9 @@ public class ActivityTimeTracker implements ActivityVisitor{
 	
 	private double actEndTime;
 
-    private ActivityPolicy activityPolicy = ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
+	private double actOperationTime;
+
+	private ActivityPolicy activityPolicy = ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
 	
 	public ActivityTimeTracker(ForwardTransportTime transportTime) {
 		super();
@@ -63,7 +65,11 @@ public class ActivityTimeTracker implements ActivityVisitor{
 	public double getActEndTime(){
 		return actEndTime;
 	}
-	
+
+	public double getActOperationTime() {
+		return actOperationTime;
+	}
+
 	@Override
 	public void begin(VehicleRoute route) {
 		prevAct = route.getStart(); 
@@ -90,7 +96,9 @@ public class ActivityTimeTracker implements ActivityVisitor{
         }
 		else operationStartTime = actArrTime;
 
-		double operationEndTime = operationStartTime + activity.getOperationTime();
+		actOperationTime = CalculationUtils.getActivityOperationTime(route.getVehicle(), activity);
+
+		double operationEndTime = operationStartTime + actOperationTime;
 		
 		actEndTime = operationEndTime;
 		

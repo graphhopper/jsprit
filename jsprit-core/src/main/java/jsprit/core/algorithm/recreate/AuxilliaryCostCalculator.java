@@ -22,6 +22,7 @@ import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.util.CalculationUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -69,7 +70,8 @@ final class AuxilliaryCostCalculator {
 			double transportTime = routingCosts.getTransportTime(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
 			cost += transportCost;
 			double actStartTime = departureTimePrevAct + transportTime;
-            departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
+			double operationTime = CalculationUtils.getActivityOperationTime(vehicle, act);
+			departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + operationTime;
 			cost += activityCosts.getActivityCost(act, actStartTime, driver, vehicle);
 			prevAct = act;
 		}

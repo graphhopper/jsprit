@@ -112,13 +112,13 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         }
         //			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
         double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
-        double latestArrTimeAtNewAct =
-                Math.min(newAct.getTheoreticalLatestOperationStartTime(),
+		double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, iFacts.getNewVehicle(), newAct);
+		double latestArrTimeAtNewAct =
+				Math.min(newAct.getTheoreticalLatestOperationStartTime(),
                         latestArrTimeAtNextAct -
                                 routingCosts.getBackwardTransportTime(newAct.getLocation(),nextActLocation,latestArrTimeAtNextAct,iFacts.getNewDriver(),iFacts.getNewVehicle())
-                                    - newAct.getOperationTime()
-                );
+								- CalculationUtils.getActivityOperationTime(iFacts.getNewVehicle(), newAct)
+				);
 //ToDo: SUSPICIOUS - hier muss noch operation time weg
 			/*
 			 *  |--- prevAct ---|
