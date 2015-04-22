@@ -125,8 +125,7 @@ public class VehicleRoutingAlgorithm {
         initialSolutions.add(solution);
 	}
 
-
-    private void verify(VehicleRoutingProblemSolution solution) {
+	private void verify(VehicleRoutingProblemSolution solution) {
         int nuJobs = 0;
         for(VehicleRoute route : solution.getRoutes()){
             nuJobs += route.getTourActivities().getJobs().size();
@@ -157,7 +156,6 @@ public class VehicleRoutingAlgorithm {
 	public void setPrematureAlgorithmTermination(PrematureAlgorithmTermination prematureAlgorithmTermination){
 		terminationManager = new TerminationManager();
         terminationManager.addTermination(prematureAlgorithmTermination);
-//        this.prematureAlgorithmTermination = prematureAlgorithmTermination;
 	}
 
     /**
@@ -237,18 +235,6 @@ public class VehicleRoutingAlgorithm {
 		algoListeners.selectedStrategy(discoveredSolution,problem,solutions);
 	}
 
-	/**
-	 * Returns the number of iterations.
-	 * 
-	 * @return iterations
-     * @deprecated use .getMaxIterations() instead
-	 */
-    @Deprecated
-	public int getNuOfIterations(){
-		return maxIterations;
-	}
-
-
 	private void algorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 		algoListeners.algorithmEnds(problem, solutions);
 	}
@@ -294,16 +280,5 @@ public class VehicleRoutingAlgorithm {
         return maxIterations;
     }
 
-    /**
-     * Sets max number of iterations.
-     *
-     * @param nOfIterations max number of iteration the algorithm runs
-     * @deprecated use .setMaxIterations(int maxIterations) instead
-     */
-    @Deprecated
-	public void setNuOfIterations(int nOfIterations) {
-		this.maxIterations = nOfIterations;
-		logger.info("set nuOfIterations to " + nOfIterations);
-	}
 
 }

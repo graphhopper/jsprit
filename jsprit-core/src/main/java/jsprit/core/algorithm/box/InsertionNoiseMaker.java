@@ -31,7 +31,6 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
 
     private double noiseLevel = 0.1;
 
-
     public InsertionNoiseMaker(VehicleRoutingProblem vrp, double noiseLevel, double noiseProbability) {
         this.vrp = vrp;
         this.noiseLevel = noiseLevel;
@@ -39,6 +38,7 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
         determineMaxCosts(vrp);
     }
 
+    //@ToDo refactor determining max costs to allow skipping this
     private void determineMaxCosts(VehicleRoutingProblem vrp) {
         double max = 0.;
         for(Job i : vrp.getJobs().values()){
