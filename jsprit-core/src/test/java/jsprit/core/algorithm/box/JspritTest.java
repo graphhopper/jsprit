@@ -19,7 +19,6 @@ import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.util.RandomNumberGeneration;
 import jsprit.core.util.Solutions;
 import junit.framework.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
@@ -29,11 +28,7 @@ import java.util.*;
  */
 public class JspritTest {
 
-    @Before
-    public void doBefore(){
 
-//        RandomNumberGeneration.reset();
-    }
 
 
     @Test
@@ -547,7 +542,7 @@ public class JspritTest {
             }
         }
         Assert.assertTrue(true);
-        Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(),Solutions.bestOf(secondSolutions).getCost());
+        Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(), Solutions.bestOf(secondSolutions).getCost());
     }
 
     @Test
