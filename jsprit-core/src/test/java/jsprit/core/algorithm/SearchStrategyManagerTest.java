@@ -202,6 +202,7 @@ public class SearchStrategyManagerTest {
 
 	@Test
 	public void strategyDrawShouldBeReproducible(){
+		RandomNumberGeneration.reset();
 		SearchStrategyManager managerUnderTest = new SearchStrategyManager();
 		SearchStrategy mockedStrategy1 = new SearchStrategy("strat1"
 				,mock(SolutionSelector.class),mock(SolutionAcceptor.class),mock(SolutionCostCalculator.class));
