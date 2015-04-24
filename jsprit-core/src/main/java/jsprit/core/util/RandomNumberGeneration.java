@@ -24,6 +24,10 @@ public class RandomNumberGeneration {
 
 	private static Random random = new Random(DEFAULT_SEED);
 
+	public static Random newInstance(){
+		return new Random(DEFAULT_SEED);
+	}
+
 	public static Random getRandom() {
 		return random;
 	}
@@ -33,6 +37,10 @@ public class RandomNumberGeneration {
 	}
 
 	public static void reset() {
+		reset(random);
+	}
+
+	public static void reset(Random random){
 		random.setSeed(DEFAULT_SEED);
 	}
 
