@@ -61,10 +61,8 @@ public class Instances {
 			reader.close();
 			return result;
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -79,7 +77,7 @@ public class Instances {
 	 * Returns a collection of {@link BenchmarkInstance} which are Cordeau's pr instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 10 p-instances are located with their original name, i.e. pr01,pr02,...,pr10.
 	 * <p>It also assumes that solution files are also located in inputFolder ending with .res
-	 * @param inputFolder TODO
+	 * @param inputFolder
 	 * @param inputFolder where cordeau's pr instances are located. It must end without '/' such as instances/cordeau.
 	 * 
 	 * @return a collection of {@link BenchmarkInstance}
@@ -185,7 +183,7 @@ public class Instances {
 	 * Returns a collection of {@link BenchmarkInstance} which are Solomon instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 11 R1-instances are located with their original name, i.e. R201.txt,R202.txt,...,R111.txt.
 	 * <p>Note that unlike the original problems, a fixed-cost value of 1000 is set for each employed vehicle.
-	 * @param inputFolder TODO
+	 * @param inputFolder
 	 * @param inputFolder where solomon R2 instances are located. It must end without '/' such as instances/solomon.
 	 * @return a collection of {@link BenchmarkInstance}
 	 */
@@ -228,7 +226,7 @@ public class Instances {
 	 * Returns a collection of {@link BenchmarkInstance} which are Solomon instances.
 	 * <p>Note that this assumes that within the folder 'inputFolder' 8 RC2-instances are located with their original name, i.e. RC201.txt,RC202.txt,...,RC208.txt.
 	 * <p>Note that unlike the original problems, a fixed-cost value of 1000 is set for each employed vehicle.
-	 * @param inputFolder TODO
+	 * @param inputFolder
 	 * @param inputFolder where solomon RC2 instances are located. It must end without '/' such as instances/solomon.
 	 * @return a collection of {@link BenchmarkInstance}
 	 */

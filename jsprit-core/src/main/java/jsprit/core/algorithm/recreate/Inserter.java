@@ -47,8 +47,7 @@ class Inserter {
 
 		@Override
 		public void setNextHandler(JobInsertionHandler handler) {
-			// TODO Auto-generated method stub
-			
+
 		}
 		
 	}

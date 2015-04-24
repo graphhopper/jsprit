@@ -39,7 +39,7 @@ public interface SolutionAcceptor {
 	 * 
 	 * @param solutions collection of existing solutions
 	 * @param newSolution new solution to be evaluated
-	 * @return TODO
+	 * @return true if solution accepted
 	 */
 	public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution);
 

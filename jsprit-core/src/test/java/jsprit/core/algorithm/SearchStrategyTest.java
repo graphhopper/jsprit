@@ -72,15 +72,13 @@ public class SearchStrategyTest {
 
 			@Override
 			public String getName() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public void addModuleListener(
 					SearchStrategyModuleListener moduleListener) {
-				// TODO Auto-generated method stub
-				
+
 			}
 		};
 		strat.addModule(mod);
@@ -114,15 +112,13 @@ public class SearchStrategyTest {
 
 			@Override
 			public String getName() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public void addModuleListener(
 					SearchStrategyModuleListener moduleListener) {
-				// TODO Auto-generated method stub
-				
+
 			}
 		};
 		SearchStrategyModule mod2 = new SearchStrategyModule() {
@@ -135,15 +131,13 @@ public class SearchStrategyTest {
 
 			@Override
 			public String getName() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public void addModuleListener(
 					SearchStrategyModuleListener moduleListener) {
-				// TODO Auto-generated method stub
-				
+
 			}
 		};
 		strat.addModule(mod);
@@ -181,15 +175,13 @@ public class SearchStrategyTest {
 
 				@Override
 				public String getName() {
-					// TODO Auto-generated method stub
 					return null;
 				}
 
 				@Override
 				public void addModuleListener(
 						SearchStrategyModuleListener moduleListener) {
-					// TODO Auto-generated method stub
-					
+
 				}
 			};
 			strat.addModule(mod);
@@ -225,15 +217,13 @@ public class SearchStrategyTest {
 
 				@Override
 				public String getName() {
-					// TODO Auto-generated method stub
 					return null;
 				}
 
 				@Override
 				public void addModuleListener(
 						SearchStrategyModuleListener moduleListener) {
-					// TODO Auto-generated method stub
-					
+
 				}
 			};
 			strat.addModule(mod);

@@ -191,32 +191,27 @@ public class TestAlgorithmReader {
 
 			@Override
 			public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes,
 					Job targetJob, int nOfJobs2BeRemoved) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public void addListener(RuinListener ruinListener) {
-				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void removeListener(RuinListener ruinListener) {
-				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public Collection<RuinListener> getListeners() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 			
@@ -232,17 +227,15 @@ public class TestAlgorithmReader {
 
 			@Override
 			public String getName() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public void addModuleListener(
 					SearchStrategyModuleListener moduleListener) {
-				// TODO Auto-generated method stub
-				
+
 			}
-		};;;
+		};
 		
 		typedMap.put(accKey, acceptor);
 		typedMap.put(moduleKey, stratModule);

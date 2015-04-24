@@ -46,7 +46,7 @@ public class TSPLIB95Reader {
 
     public void read(String filename){
         BufferedReader reader = getBufferedReader(filename);
-        String line;
+        String line_;
         Coordinate[] coords = null;
         int[] demands = null;
         Integer capacity = null;
@@ -61,7 +61,8 @@ public class TSPLIB95Reader {
         int dimensions = 0;
         int coordIndex = 0;
         Map<Integer,Integer> indexMap = new HashMap<Integer, Integer>();
-        while( ( line = getLine(reader) ) != null ){
+        while( ( line_ = getLine(reader) ) != null ){
+            String line = line_.trim();
             if(line.startsWith("EOF") || line.contains("EOF")){
                 break;
             }

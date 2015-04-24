@@ -119,7 +119,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
                                 routingCosts.getBackwardTransportTime(newAct.getLocation(),nextActLocation,latestArrTimeAtNextAct,iFacts.getNewDriver(),iFacts.getNewVehicle())
                                     - newAct.getOperationTime()
                 );
-//ToDo: SUSPICIOUS - hier muss noch operation time weg
+
 			/*
 			 *  |--- prevAct ---|
 			 *                       		                 |--- vehicle's arrival @newAct

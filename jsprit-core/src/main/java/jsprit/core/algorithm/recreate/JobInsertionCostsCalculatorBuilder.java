@@ -112,7 +112,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
 	/**
 	 * Sets activityStates. MUST be set.
-	 * @param stateManager TODO
+	 * @param stateManager
 	 * 
 	 * @return
 	 */
@@ -147,7 +147,7 @@ public class JobInsertionCostsCalculatorBuilder {
 	 * Sets a flag to build a calculator based on local calculations.
 	 * 
 	 * <p>Insertion of a job and job-activity is evaluated based on the previous and next activity.
-	 * @param addDefaultCostCalc TODO
+	 * @param addDefaultCostCalc
 	 */
 	public JobInsertionCostsCalculatorBuilder setLocalLevel(boolean addDefaultCostCalc){
 		local = true;
@@ -165,7 +165,7 @@ public class JobInsertionCostsCalculatorBuilder {
 	 * 
 	 * @param forwardLooking
 	 * @param memory
-	 * @param addDefaultMarginalCostCalc TODO
+	 * @param addDefaultMarginalCostCalc
 	 */
 	public JobInsertionCostsCalculatorBuilder setRouteLevel(int forwardLooking, int memory, boolean addDefaultMarginalCostCalc){
 		local = false;

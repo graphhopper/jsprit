@@ -43,7 +43,7 @@ public class DellAmicoFixCostCalculator implements SoftRouteConstraint, Insertio
 	}
 
 	@Override
-	public double getCosts(JobInsertionContext insertionContext) {// TODO Auto-generated method stub
+	public double getCosts(JobInsertionContext insertionContext) {
 		return calculator.getCosts(insertionContext);
 	}
 	

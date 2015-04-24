@@ -38,7 +38,6 @@ public class TestJobDistanceAvgCosts {
 			@Override
 			public double getBackwardTransportCost(Location from, Location to,
 					double arrivalTime, Driver driver, Vehicle vehicle) {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 			
@@ -53,7 +52,6 @@ public class TestJobDistanceAvgCosts {
 			@Override
 			public double getTransportTime(Location from, Location to,
 					double departureTime, Driver driver, Vehicle vehicle) {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
@@ -75,7 +73,6 @@ public class TestJobDistanceAvgCosts {
 			@Override
 			public double getBackwardTransportCost(Location from, Location to,
 					double arrivalTime, Driver driver, Vehicle vehicle) {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 			
@@ -90,7 +87,6 @@ public class TestJobDistanceAvgCosts {
 			@Override
 			public double getTransportTime(Location from, Location to,
 					double departureTime, Driver driver, Vehicle vehicle) {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 		};

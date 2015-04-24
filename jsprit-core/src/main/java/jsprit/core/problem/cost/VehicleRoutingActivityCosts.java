@@ -53,10 +53,9 @@ public interface VehicleRoutingActivityCosts {
 	 * @param tourAct
 	 * @param arrivalTime is actually the arrival time at this tourActivity, which must not nessecarrily be the operation start time. If the theoretical earliest
 	 * operation start time at this activity is later than actualStartTime, the driver must wait at this activity.
-	 * @param driver TODO
-	 * @param vehicle TODO
-	 * @param earliestStartTime, this is the practical earliest operation start time which considers also previous activities.
-	 * @param latestStartTime, this is the practical latest operation start time which consider also future activities in the tour. 
+	 * @param driver
+	 * @param vehicle
+	 *
 	 * if earliestStartTime > latestStartTime activity operations cannot be conducted within the given time-window.
 	 * @return
 	 */
