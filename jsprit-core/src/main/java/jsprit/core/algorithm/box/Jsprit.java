@@ -28,6 +28,7 @@ import jsprit.core.util.Solutions;
 
 import java.util.Collection;
 import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -129,6 +130,8 @@ public class Jsprit {
 
         private boolean addConstraints = true;
 
+        private Random random = RandomNumberGeneration.newInstance();
+
         public static Builder newInstance(VehicleRoutingProblem vrp){
             return new Builder(vrp);
         }
@@ -186,6 +189,11 @@ public class Jsprit {
             return this;
         }
 
+        public Builder setRandom(Random random){
+            this.random = random;
+            return this;
+        }
+
         public Builder setProperty(String key, String value){
             properties.put(key,value);
             return this;
@@ -231,15 +239,28 @@ public class Jsprit {
 
         private int minShare;
 
+        private Random random = RandomNumberGeneration.getRandom();
+
+        public void setRandom(Random random) {
+            this.random = random;
+        }
+
         public RuinShareFactoryImpl(int minShare, int maxShare) {
             if(maxShare < minShare) throw new IllegalArgumentException("maxShare must be equal or greater than minShare");
             this.minShare = minShare;
             this.maxShare = maxShare;
         }
 
+        public RuinShareFactoryImpl(int minShare, int maxShare, Random random) {
+            if(maxShare < minShare) throw new IllegalArgumentException("maxShare must be equal or greater than minShare");
+            this.minShare = minShare;
+            this.maxShare = maxShare;
+            this.random = random;
+        }
+
         @Override
         public int createNumberToBeRemoved() {
-            return (int) (minShare + (maxShare - minShare) * RandomNumberGeneration.getRandom().nextDouble());
+            return (int) (minShare + (maxShare - minShare) * random.nextDouble());
         }
 
     }
@@ -260,6 +281,8 @@ public class Jsprit {
 
     private Properties properties;
 
+    private Random random;
+
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
         this.constraintManager = builder.constraintManager;
@@ -268,6 +291,7 @@ public class Jsprit {
         this.addCoreConstraints = builder.addConstraints;
         this.properties = builder.properties;
         this.objectiveFunction = builder.objectiveFunction;
+        this.random = builder.random;
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp){
@@ -287,33 +311,42 @@ public class Jsprit {
         double noiseLevel = toDouble(getProperty(Parameter.INSERTION_NOISE_LEVEL.toString()));
         double noiseProbability = toDouble(getProperty(Parameter.INSERTION_NOISE_PROB.toString()));
         final InsertionNoiseMaker noiseMaker = new InsertionNoiseMaker(vrp, noiseLevel, noiseProbability);
+        noiseMaker.setRandom(random);
         constraintManager.addConstraint(noiseMaker);
 
         JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
         jobNeighborhoods.initialise();
 
         RuinRadial radial = new RuinRadial(vrp,vrp.getJobs().size(),jobNeighborhoods);
+        radial.setRandom(random);
         radial.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.RADIAL_MAX_SHARE.toString())))
+                toInteger(properties.getProperty(Parameter.RADIAL_MAX_SHARE.toString())),
+                        random)
         );
 
         final RuinRandom random_for_regret = new RuinRandom(vrp,0.5);
+        random_for_regret.setRandom(random);
         random_for_regret.setRuinShareFactory(new RuinShareFactoryImpl(
                         toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MIN_SHARE.toString())),
-                        toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MAX_SHARE.toString())))
+                        toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MAX_SHARE.toString())),
+                        random)
         );
 
         final RuinRandom random_for_best = new RuinRandom(vrp,0.5);
+        random_for_best.setRandom(random);
         random_for_best.setRuinShareFactory(new RuinShareFactoryImpl(
                         toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
-                        toInteger(properties.getProperty(Parameter.RANDOM_BEST_MAX_SHARE.toString())))
+                        toInteger(properties.getProperty(Parameter.RANDOM_BEST_MAX_SHARE.toString())),
+                        random)
         );
 
         final RuinWorst worst = new RuinWorst(vrp, (int) (vrp.getJobs().values().size()*0.5));
+        worst.setRandom(random);
         worst.setRuinShareFactory(new RuinShareFactoryImpl(
                         toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
-                        toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())))
+                        toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
+                        random)
         );
         IterationStartsListener noise = new IterationStartsListener() {
             @Override
@@ -321,9 +354,9 @@ public class Jsprit {
                 worst.setNoiseMaker(new NoiseMaker() {
 
                     public double makeNoise() {
-                        if(RandomNumberGeneration.getRandom().nextDouble() < toDouble(getProperty(Parameter.RUIN_WORST_NOISE_PROB.toString()))) {
+                        if(random.nextDouble() < toDouble(getProperty(Parameter.RUIN_WORST_NOISE_PROB.toString()))) {
                             return toDouble(getProperty(Parameter.RUIN_WORST_NOISE_LEVEL.toString()))
-                                    * noiseMaker.maxCosts * RandomNumberGeneration.getRandom().nextDouble();
+                                    * noiseMaker.maxCosts * random.nextDouble();
                         }
                         else return 0.;
                     }
@@ -332,12 +365,14 @@ public class Jsprit {
         };
 
         final RuinClusters clusters = new RuinClusters(vrp,(int) (vrp.getJobs().values().size()*0.5),jobNeighborhoods);
+        clusters.setRandom(random);
         clusters.setRuinShareFactory(new RuinShareFactoryImpl(
                         toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
-                        toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())))
+                        toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
+                        random)
         );
 
-        InsertionStrategy regret;
+        AbstractInsertionStrategy regret;
         final RegretInsertion.DefaultScorer scorer;
         if(noThreads == null){
             noThreads = toInteger(getProperty(Parameter.THREADS.toString()));
@@ -369,8 +404,9 @@ public class Jsprit {
             regretInsertion.setScoringFunction(scorer);
             regret = regretInsertion;
         }
+        regret.setRandom(random);
 
-        InsertionStrategy best;
+        AbstractInsertionStrategy best;
         if(vrp.getJobs().size() < 250 || es == null) {
             BestInsertion bestInsertion = (BestInsertion) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.BEST)
@@ -388,6 +424,7 @@ public class Jsprit {
                     .build();
             best = bestInsertion;
         }
+        best.setRandom(random);
 
         final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1,toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
         IterationStartsListener schrimpfThreshold = new IterationStartsListener() {
@@ -428,6 +465,7 @@ public class Jsprit {
 
 
         PrettyAlgorithmBuilder prettyBuilder  = PrettyAlgorithmBuilder.newInstance(vrp, fm, stateManager, constraintManager);
+        prettyBuilder.setRandom(random);
         if(addCoreConstraints){
             prettyBuilder.addCoreStateAndConstraintStuff();
         }

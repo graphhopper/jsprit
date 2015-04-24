@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 
 class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsCalculator{
@@ -45,6 +46,12 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsC
 
     private List<Double> departureTimeKnowledge = new ArrayList<Double>();
 
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    private Random random = RandomNumberGeneration.getRandom();
+
     CalculatesServiceInsertionWithTimeScheduling(JobInsertionCostsCalculator jic, double t, double f) {
         super();
         this.jic = jic;
@@ -61,7 +68,7 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsC
         double departureTime = newVehicleDepartureTime;
         if(currentRoute.isEmpty()){
             if(!departureTimeKnowledge.isEmpty()){
-                departureTime = departureTimeKnowledge.get(RandomNumberGeneration.getRandom().nextInt(departureTimeKnowledge.size()));
+                departureTime = departureTimeKnowledge.get(random.nextInt(departureTimeKnowledge.size()));
             }
         }
         else if(!currentRoute.getVehicle().getId().equals(newVehicle.getId())){

@@ -103,6 +103,12 @@ public class DBSCANClusterer {
 
     private Double epsDistance;
 
+    private Random random = RandomNumberGeneration.getRandom();
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
     public DBSCANClusterer(VehicleRoutingTransportCosts costs) {
         this.costs = costs;
     }
@@ -162,14 +168,13 @@ public class DBSCANClusterer {
         }
         List<Cluster<LocationWrapper>> clusterResults = getClusters(route,locations);
         if(clusterResults.isEmpty()) return Collections.emptyList();
-        Cluster<LocationWrapper> randomCluster = RandomUtils.nextItem(clusterResults, RandomNumberGeneration.getRandom());
+        Cluster<LocationWrapper> randomCluster = RandomUtils.nextItem(clusterResults, random);
         return getJobList(randomCluster);
     }
 
     private double sample(VehicleRoutingTransportCosts costs, VehicleRoute r) {
         double min = Double.MAX_VALUE;
         double sum = 0;
-        Random random = RandomNumberGeneration.getRandom();
         for(int i=0;i<noDistanceSamples;i++){
             TourActivity act1 = RandomUtils.nextItem(r.getActivities(), random);
             TourActivity act2 = RandomUtils.nextItem(r.getActivities(), random);

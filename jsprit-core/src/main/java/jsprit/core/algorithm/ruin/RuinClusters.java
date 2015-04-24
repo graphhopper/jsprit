@@ -22,7 +22,6 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.util.RandomNumberGeneration;
 import jsprit.core.util.RandomUtils;
 import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.apache.logging.log4j.LogManager;
@@ -43,8 +42,8 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 
 	@Override
 	public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-		minPts = 1 + RandomNumberGeneration.getRandom().nextInt(2);
-		epsFactor = 0.5 + RandomNumberGeneration.getRandom().nextDouble();
+		minPts = 1 + random.nextInt(2);
+		epsFactor = 0.5 + random.nextDouble();
 	}
 
 	public static class JobActivityWrapper implements Clusterable {
@@ -151,6 +150,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 				break;
 			}
 			DBSCANClusterer dbscan = new DBSCANClusterer(vrp.getTransportCosts());
+			dbscan.setRandom(random);
 			dbscan.setMinPts(minPts);
 			dbscan.setEpsFactor(epsFactor);
 			List<Job> cluster = dbscan.getRandomCluster(targetRoute);

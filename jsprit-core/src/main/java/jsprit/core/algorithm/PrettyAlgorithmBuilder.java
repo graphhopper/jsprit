@@ -33,10 +33,7 @@ import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.problem.vehicle.VehicleTypeKey;
 import jsprit.core.util.ActivityTimeTracker;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
 * Created by schroeder on 10.12.14.
@@ -69,6 +66,11 @@ public class PrettyAlgorithmBuilder {
         this.stateManager = stateManager;
         this.constraintManager = constraintManager;
         this.searchStrategyManager = new SearchStrategyManager();
+    }
+
+    public PrettyAlgorithmBuilder setRandom(Random random){
+        searchStrategyManager.setRandom(random);
+        return this;
     }
 
     public PrettyAlgorithmBuilder withStrategy(SearchStrategy strategy, double weight){
@@ -163,5 +165,6 @@ public class PrettyAlgorithmBuilder {
         this.coreStuff = true;
         return this;
     }
+
 
 }

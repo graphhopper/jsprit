@@ -511,6 +511,7 @@ public class JspritTest {
         Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(),Solutions.bestOf(secondSolutions).getCost());
     }
 
+
     @Test
     public void whenTerminatingWithVariationCoefficient_terminationShouldBeReproducible(){
 
@@ -556,6 +557,104 @@ public class JspritTest {
         }
         Assert.assertTrue(true);
         Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(),Solutions.bestOf(secondSolutions).getCost());
+    }
+
+    @Test
+    public void whenBiggerProblem_insertioPositionsShouldBeReproducibleWithoutResetingRNGExplicitly(){
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+
+        RandomNumberGeneration.reset();
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        vra.setMaxIterations(200);
+        final List<Integer> firstRecord = new ArrayList<Integer>();
+        vra.addListener(new BeforeJobInsertionListener() {
+            @Override
+            public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
+                firstRecord.add(data.getDeliveryInsertionIndex());
+            }
+        });
+        Collection<VehicleRoutingProblemSolution> firstSolutions = vra.searchSolutions();
+
+//        RandomNumberGeneration.reset();
+        VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
+        second.setMaxIterations(200);
+        final List<Integer> secondRecord = new ArrayList<Integer>();
+        second.addListener(new BeforeJobInsertionListener() {
+            @Override
+            public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
+                secondRecord.add(data.getDeliveryInsertionIndex());
+            }
+        });
+        Collection<VehicleRoutingProblemSolution> secondSolutions = second.searchSolutions();
+
+        Assert.assertEquals(secondRecord.size(),firstRecord.size());
+        for(int i=0;i<firstRecord.size();i++){
+            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+                Assert.assertFalse(true);
+            }
+        }
+        Assert.assertTrue(true);
+        Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(),Solutions.bestOf(secondSolutions).getCost());
+    }
+
+    @Test
+    public void whenBiggerProblem_ruinedJobsShouldBeReproducibleWithoutResetingRNGExplicitly(){
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        vra.setMaxIterations(200);
+        final List<String> firstRecord = new ArrayList<String>();
+        vra.addListener(new RuinListener() {
+            @Override
+            public void ruinStarts(Collection<VehicleRoute> routes) {
+
+            }
+
+            @Override
+            public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+
+            }
+
+            @Override
+            public void removed(Job job, VehicleRoute fromRoute) {
+                firstRecord.add(job.getId());
+            }
+        });
+        vra.searchSolutions();
+
+//        RandomNumberGeneration.reset();
+        VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
+        second.setMaxIterations(200);
+        final List<String> secondRecord = new ArrayList<String>();
+        second.addListener(new RuinListener() {
+            @Override
+            public void ruinStarts(Collection<VehicleRoute> routes) {
+
+            }
+
+            @Override
+            public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+
+            }
+
+            @Override
+            public void removed(Job job, VehicleRoute fromRoute) {
+                secondRecord.add(job.getId());
+            }
+        });
+        second.searchSolutions();
+
+        Assert.assertEquals(secondRecord.size(),firstRecord.size());
+        for(int i=0;i<firstRecord.size();i++){
+            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+                Assert.assertFalse(true);
+            }
+        }
+        Assert.assertTrue(true);
     }
 
 }

@@ -15,6 +15,7 @@ import jsprit.core.util.RandomNumberGeneration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 /**
 * Created by schroeder on 16/01/15.
@@ -30,6 +31,8 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
     double maxCosts = 0.;
 
     private double noiseLevel = 0.1;
+
+    private Random random = RandomNumberGeneration.getRandom();
 
     public InsertionNoiseMaker(VehicleRoutingProblem vrp, double noiseLevel, double noiseProbability) {
         this.vrp = vrp;
@@ -70,7 +73,7 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
 
     @Override
     public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-        if(RandomNumberGeneration.getRandom().nextDouble() < noiseProbability){
+        if(random.nextDouble() < noiseProbability){
             makeNoise = true;
         }
         else makeNoise = false;
@@ -79,10 +82,13 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         if(makeNoise) {
-            return noiseLevel * maxCosts * RandomNumberGeneration.getRandom().nextDouble();
+            return noiseLevel * maxCosts * random.nextDouble();
         }
         return 0;
     }
 
 
+    public void setRandom(Random random) {
+        this.random = random;
+    }
 }
