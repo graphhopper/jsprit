@@ -31,7 +31,8 @@ public class JspritTest {
 
     @Before
     public void doBefore(){
-        RandomNumberGeneration.reset();
+
+//        RandomNumberGeneration.reset();
     }
 
 
@@ -300,7 +301,6 @@ public class JspritTest {
         });
         vra.searchSolutions();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
         second.setMaxIterations(1000);
         final List<String> secondRecord = new ArrayList<String>();
@@ -357,7 +357,6 @@ public class JspritTest {
         });
         vra.searchSolutions();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
         second.setMaxIterations(1000);
         final List<String> secondRecord = new ArrayList<String>();
@@ -398,7 +397,6 @@ public class JspritTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(1000);
         final List<String> firstRecord = new ArrayList<String>();
@@ -410,7 +408,6 @@ public class JspritTest {
         });
         vra.searchSolutions();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
         second.setMaxIterations(1000);
         final List<String> secondRecord = new ArrayList<String>();
@@ -437,7 +434,6 @@ public class JspritTest {
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(200);
         final List<String> firstRecord = new ArrayList<String>();
@@ -449,7 +445,6 @@ public class JspritTest {
         });
         vra.searchSolutions();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
         second.setMaxIterations(200);
         final List<String> secondRecord = new ArrayList<String>();
@@ -477,7 +472,6 @@ public class JspritTest {
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(200);
         final List<Integer> firstRecord = new ArrayList<Integer>();
@@ -489,7 +483,6 @@ public class JspritTest {
         });
         Collection<VehicleRoutingProblemSolution> firstSolutions = vra.searchSolutions();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
         second.setMaxIterations(200);
         final List<Integer> secondRecord = new ArrayList<Integer>();
@@ -519,7 +512,6 @@ public class JspritTest {
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(1000);
         VariationCoefficientTermination termination = new VariationCoefficientTermination(50, 0.005);
@@ -534,7 +526,6 @@ public class JspritTest {
         });
         Collection<VehicleRoutingProblemSolution> firstSolutions = vra.searchSolutions();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
         VariationCoefficientTermination secondTermination = new VariationCoefficientTermination(50, 0.005);
         second.setPrematureAlgorithmTermination(secondTermination);
@@ -566,7 +557,6 @@ public class JspritTest {
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(200);
         final List<Integer> firstRecord = new ArrayList<Integer>();
@@ -578,7 +568,6 @@ public class JspritTest {
         });
         Collection<VehicleRoutingProblemSolution> firstSolutions = vra.searchSolutions();
 
-//        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
         second.setMaxIterations(200);
         final List<Integer> secondRecord = new ArrayList<Integer>();
@@ -626,7 +615,6 @@ public class JspritTest {
         });
         vra.searchSolutions();
 
-//        RandomNumberGeneration.reset();
         VehicleRoutingAlgorithm second = Jsprit.createAlgorithm(vrp);
         second.setMaxIterations(200);
         final List<String> secondRecord = new ArrayList<String>();
