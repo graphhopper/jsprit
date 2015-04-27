@@ -122,17 +122,17 @@ public class VrpXMLReader{
 
 	public VrpXMLReader(VehicleRoutingProblem.Builder vrpBuilder, Collection<VehicleRoutingProblemSolution> solutions){
 		this.vrpBuilder = vrpBuilder;
-		this.vehicleMap = new HashMap<String, Vehicle>();
-		this.serviceMap = new HashMap<String, Service>();
-		this.shipmentMap = new HashMap<String, Shipment>();
+		this.vehicleMap = new LinkedHashMap<String, Vehicle>();
+		this.serviceMap = new LinkedHashMap<String, Service>();
+		this.shipmentMap = new LinkedHashMap<String, Shipment>();
 		this.solutions = solutions;
 	}
 	
 	public VrpXMLReader(VehicleRoutingProblem.Builder vrpBuilder){
 		this.vrpBuilder = vrpBuilder;
-		this.vehicleMap = new HashMap<String, Vehicle>();
-		this.serviceMap = new HashMap<String, Service>();
-		this.shipmentMap = new HashMap<String, Shipment>();
+		this.vehicleMap = new LinkedHashMap<String, Vehicle>();
+		this.serviceMap = new LinkedHashMap<String, Service>();
+		this.shipmentMap = new LinkedHashMap<String, Shipment>();
 		this.solutions = null;
 	}
 	
