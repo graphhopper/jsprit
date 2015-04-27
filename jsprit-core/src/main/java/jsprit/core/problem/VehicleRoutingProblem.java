@@ -89,9 +89,9 @@ public class VehicleRoutingProblem {
 			
 		};
 
-		private Map<String,Job> jobs = new HashMap<String, Job>();
+		private Map<String,Job> jobs = new LinkedHashMap<String, Job>();
 		
-		private Map<String,Job> tentativeJobs = new HashMap<String,Job>();
+		private Map<String,Job> tentativeJobs = new LinkedHashMap<String,Job>();
 		
 		private Set<String> jobsInInitialRoutes = new HashSet<String>();
 		
