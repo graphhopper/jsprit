@@ -12,13 +12,12 @@ import jsprit.core.algorithm.ruin.*;
 import jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
 import jsprit.core.algorithm.selector.SelectBest;
 import jsprit.core.algorithm.state.StateManager;
-import jsprit.core.analysis.SolutionAnalyser;
-import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
-import jsprit.core.problem.cost.TransportDistance;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
@@ -546,23 +545,25 @@ public class Jsprit {
 
     private SolutionCostCalculator getObjectiveFunction(final VehicleRoutingProblem vrp, final double maxCosts) {
         if(objectiveFunction != null) return objectiveFunction;
-        return new SolutionCostCalculator() {
 
-
+        SolutionCostCalculator solutionCostCalculator = new SolutionCostCalculator() {
             @Override
             public double getCosts(VehicleRoutingProblemSolution solution) {
-                SolutionAnalyser analyser = new SolutionAnalyser(vrp,solution,new TransportDistance() {
-
-                    @Override
-                    public double getDistance(Location from, Location to) {
-                        return vrp.getTransportCosts().getTransportCost(from, to,0.,null,null);
+                double costs = 0.;
+                for(VehicleRoute route : solution.getRoutes()){
+                    costs += route.getVehicle().getType().getVehicleCostParams().fix;
+                    TourActivity prevAct = route.getStart();
+                    for(TourActivity act : route.getActivities()){
+                        costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(),act.getLocation(),prevAct.getEndTime(),route.getDriver(),route.getVehicle());
+                        prevAct = act;
                     }
-
-                });
-                return analyser.getVariableTransportCosts() + analyser.getFixedCosts() + solution.getUnassignedJobs().size() * maxCosts * 2;
+                    costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(),route.getEnd().getLocation(),prevAct.getEndTime(),route.getDriver(),route.getVehicle());
+                }
+                costs += solution.getUnassignedJobs().size() * maxCosts * 2;
+                return costs;
             }
-
         };
+        return solutionCostCalculator;
     }
 
 }
