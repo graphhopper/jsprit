@@ -39,6 +39,11 @@ public class TSPLIB95Reader {
 
     private VehicleRoutingProblem.Builder vrpBuilder;
 
+    private boolean switchCoordinates = false;
+
+    public void setSwitchCoordinates(boolean switchCoordinates) {
+        this.switchCoordinates = switchCoordinates;
+    }
 
     public TSPLIB95Reader(VehicleRoutingProblem.Builder vrpBuilder) {
         this.vrpBuilder = vrpBuilder;
@@ -128,7 +133,10 @@ public class TSPLIB95Reader {
                 if(coords == null) throw new IllegalStateException("DIMENSION tag missing");
                 String[] tokens = line.trim().split("\\s+");
                 Integer id = Integer.parseInt(tokens[0]);
-                coords[coordIndex] = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
+                if(switchCoordinates){
+                    coords[coordIndex] = Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[1]));
+                }
+                else coords[coordIndex] = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
                 indexMap.put(id,coordIndex);
                 coordIndex++;
                 continue;
