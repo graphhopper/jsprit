@@ -432,7 +432,6 @@ public class Jsprit {
                 if(i == 1){
                     double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
                     schrimpfAcceptance.setInitialThreshold(initialThreshold);
-                    System.out.println("threshold: " + initialThreshold);
                 }
             }
         };

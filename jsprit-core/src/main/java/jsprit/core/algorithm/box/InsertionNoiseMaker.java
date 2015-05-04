@@ -56,7 +56,6 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
             }
         }
         maxCosts = max;
-        System.out.println("maxNoise="+maxCosts);
     }
 
     private List<Location> getLocations(Job j) {
