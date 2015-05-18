@@ -24,11 +24,15 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.util.RandomNumberGeneration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Random;
 
 public abstract class AbstractRuinStrategy implements RuinStrategy{
+
+    private final static Logger logger = LogManager.getLogger();
 
     private RuinListeners ruinListeners;
 
@@ -59,6 +63,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
     public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes){
         ruinListeners.ruinStarts(vehicleRoutes);
         Collection<Job> unassigned = ruinRoutes(vehicleRoutes);
+        logger.trace("ruin: " + "[ruined=" + unassigned.size() + "]");
         ruinListeners.ruinEnds(vehicleRoutes,unassigned);
         return unassigned;
     }
@@ -111,6 +116,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
         if(jobIsInitial(job)) return false;
         boolean removed = route.getTourActivities().removeJob(job);
         if (removed) {
+            logger.trace("ruin: " + job.getId());
             ruinListeners.removed(job,route);
             return true;
         }

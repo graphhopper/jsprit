@@ -90,7 +90,7 @@ public class InsertionData {
 	
 	@Override
 	public String toString() {
-		return "[iCost="+insertionCost+"][iIndex="+deliveryInsertionIndex+"][depTime="+departureTime+"][vehicle="+selectedVehicle+"][driver="+selectedDriver+"]";
+		return "[iCost="+insertionCost+"][pickupIndex="+pickupInsertionIndex+"][deliveryIndex="+deliveryInsertionIndex+"][depTime="+departureTime+"][vehicle="+selectedVehicle+"][driver="+selectedDriver+"]";
 	}
 	
 	/**

@@ -26,6 +26,8 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.RandomNumberGeneration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +56,8 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
         }
 
     }
+
+    private final static Logger logger = LogManager.getLogger();
 
     protected Random random = RandomNumberGeneration.getRandom();
 
@@ -106,6 +110,7 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
     }
 
     protected void insertJob(Job unassignedJob, InsertionData iData, VehicleRoute inRoute){
+        logger.trace("insert: [jobId=" + unassignedJob.getId() + "]" + iData );
         inserter.insertJob(unassignedJob, iData, inRoute);
     }
 
