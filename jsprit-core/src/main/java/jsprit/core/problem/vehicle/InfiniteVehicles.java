@@ -37,7 +37,7 @@ class InfiniteVehicles implements VehicleFleetManager{
 		
 	public InfiniteVehicles(Collection<Vehicle> vehicles){
 		extractTypes(vehicles);
-		logger.info("initialise " + this);
+		logger.debug("initialise " + this);
 	}
 	
 	@Override

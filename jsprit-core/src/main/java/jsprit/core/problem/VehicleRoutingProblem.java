@@ -399,9 +399,7 @@ public class VehicleRoutingProblem {
 		 * @return {@link VehicleRoutingProblem}
 		 */
 		public VehicleRoutingProblem build() {
-			logger.info("build problem ...");
 			if(transportCosts == null){
-				logger.warn("set routing costs crowFlyDistance.");
 				transportCosts = new CrowFlyCosts(getLocations());
 			}
             for(Job job : tentativeJobs.values())
@@ -556,7 +554,7 @@ public class VehicleRoutingProblem {
 		this.locations = builder.getLocations();
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
-		logger.info("initialise " + this);
+		logger.info("setup problem: " + this);
 	}
 
     @Override

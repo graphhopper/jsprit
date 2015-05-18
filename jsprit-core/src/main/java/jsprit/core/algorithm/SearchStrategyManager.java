@@ -19,11 +19,15 @@ package jsprit.core.algorithm;
 import jsprit.core.algorithm.listener.SearchStrategyListener;
 import jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import jsprit.core.util.RandomNumberGeneration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 
 public class SearchStrategyManager {
+
+	private final static Logger logger = LogManager.getLogger();
 	
 	private List<SearchStrategyListener> searchStrategyListeners = new ArrayList<SearchStrategyListener>();
 	

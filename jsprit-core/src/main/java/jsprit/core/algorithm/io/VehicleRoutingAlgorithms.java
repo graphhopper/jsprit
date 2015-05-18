@@ -503,13 +503,13 @@ public class VehicleRoutingAlgorithms {
 		//threading
 		final ExecutorService executorService;
 		if(nuOfThreads > 0){
-			log.info("setup executor-service with " + nuOfThreads + " threads");
+			log.debug("setup executor-service with " + nuOfThreads + " threads");
 			executorService = Executors.newFixedThreadPool(nuOfThreads);
 			algorithmListeners.add(new PrioritizedVRAListener(Priority.LOW, new AlgorithmEndsListener() {
 
 				@Override
 				public void informAlgorithmEnds(VehicleRoutingProblem problem,Collection<VehicleRoutingProblemSolution> solutions) {
-					log.info("shutdown executor-service");
+					log.debug("shutdown executor-service");
 					executorService.shutdown();
 				}
 			}));
@@ -645,18 +645,18 @@ public class VehicleRoutingAlgorithms {
     private static PrematureAlgorithmTermination getTerminationCriterion(HierarchicalConfiguration config, Set<PrioritizedVRAListener> algorithmListeners) {
         String basedOn = config.getString("[@basedOn]");
         if(basedOn == null){
-            log.info("set default prematureBreak, i.e. no premature break at all.");
+            log.debug("set default prematureBreak, i.e. no premature break at all.");
             return null;
         }
         if(basedOn.equals("iterations")){
-            log.info("set prematureBreak based on iterations");
+            log.debug("set prematureBreak based on iterations");
             String iter = config.getString("iterations");
             if(iter == null) throw new IllegalStateException("iterations is missing");
             int iterations = Integer.valueOf(iter);
             return new IterationWithoutImprovementTermination(iterations);
         }
         if(basedOn.equals("time")){
-            log.info("set prematureBreak based on time");
+            log.debug("set prematureBreak based on time");
             String timeString = config.getString("time");
             if(timeString == null) throw new IllegalStateException("time is missing");
             long time = Long.parseLong(timeString);
@@ -665,7 +665,7 @@ public class VehicleRoutingAlgorithms {
             return timeBreaker;
         }
         if(basedOn.equals("variationCoefficient")){
-            log.info("set prematureBreak based on variation coefficient");
+            log.debug("set prematureBreak based on variation coefficient");
             String thresholdString = config.getString("threshold");
             String iterationsString = config.getString("iterations");
             if(thresholdString == null) throw new IllegalStateException("threshold is missing");
@@ -682,18 +682,18 @@ public class VehicleRoutingAlgorithms {
 	private static PrematureAlgorithmTermination getPrematureTermination(XMLConfiguration config, Set<PrioritizedVRAListener> algorithmListeners) {
 		String basedOn = config.getString("prematureBreak[@basedOn]");
 		if(basedOn == null){
-			log.info("set default prematureBreak, i.e. no premature break at all.");
+			log.debug("set default prematureBreak, i.e. no premature break at all.");
 			return null;
 		}
 		if(basedOn.equals("iterations")){
-			log.info("set prematureBreak based on iterations");
+			log.debug("set prematureBreak based on iterations");
 			String iter = config.getString("prematureBreak.iterations");
 			if(iter == null) throw new IllegalStateException("prematureBreak.iterations is missing");
 			int iterations = Integer.valueOf(iter);
 			return new IterationWithoutImprovementTermination(iterations);
 		}
 		if(basedOn.equals("time")){
-			log.info("set prematureBreak based on time");
+			log.debug("set prematureBreak based on time");
 			String timeString = config.getString("prematureBreak.time");
 			if(timeString == null) throw new IllegalStateException("prematureBreak.time is missing");
 			long time = Long.parseLong(timeString);
@@ -702,7 +702,7 @@ public class VehicleRoutingAlgorithms {
 			return timeBreaker;
 		}
 		if(basedOn.equals("variationCoefficient")){
-			log.info("set prematureBreak based on variation coefficient");
+			log.debug("set prematureBreak based on variation coefficient");
 			String thresholdString = config.getString("prematureBreak.threshold");
 			String iterationsString = config.getString("prematureBreak.iterations");
 			if(thresholdString == null) throw new IllegalStateException("prematureBreak.threshold is missing");

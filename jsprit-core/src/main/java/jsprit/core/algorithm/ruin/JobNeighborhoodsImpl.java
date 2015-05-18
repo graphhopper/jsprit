@@ -26,7 +26,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
         super();
         this.vrp = vrp;
         this.jobDistance = jobDistance;
-        logger.info("intialise " + this);
+        logger.debug("intialise " + this);
     }
 
     @Override
@@ -54,12 +54,12 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
 
     @Override
     public void initialise(){
-        logger.info("calculates and memorizes distances from EACH job to EACH job --> n^2 calculations");
+        logger.debug("calculates and memorizes distances from EACH job to EACH job --> n^2 calculations");
         calculateDistancesFromJob2Job();
     }
 
     private void calculateDistancesFromJob2Job() {
-        logger.info("preprocess distances between locations ...");
+        logger.debug("preprocess distances between locations ...");
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         int nuOfDistancesStored = 0;
@@ -86,7 +86,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
 
         }
         stopWatch.stop();
-        logger.info("preprocessing comp-time: " + stopWatch + "; nuOfDistances stored: " + nuOfDistancesStored + "; estimated memory: " +
+        logger.debug("preprocessing comp-time: " + stopWatch + "; nuOfDistances stored: " + nuOfDistancesStored + "; estimated memory: " +
                 (distanceNodeTree.keySet().size()*64+nuOfDistancesStored*92) + " bytes");
     }
 

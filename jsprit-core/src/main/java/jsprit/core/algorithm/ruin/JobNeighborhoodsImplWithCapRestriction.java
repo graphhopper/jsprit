@@ -29,7 +29,7 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
         this.vrp = vrp;
         this.jobDistance = jobDistance;
         this.capacity = capacity;
-        logger.info("intialise " + this);
+        logger.debug("intialise " + this);
     }
 
     @Override
@@ -59,13 +59,13 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
     @Override
     public void initialise(){
-        logger.info("calculates distances from EACH job to EACH job --> n^2="+Math.pow(vrp.getJobs().values().size(), 2) + " calculations, but 'only' "+(vrp.getJobs().values().size()*capacity)+ " are cached.");
+        logger.debug("calculates distances from EACH job to EACH job --> n^2="+Math.pow(vrp.getJobs().values().size(), 2) + " calculations, but 'only' "+(vrp.getJobs().values().size()*capacity)+ " are cached.");
         if(capacity==0) return;
         calculateDistancesFromJob2Job();
     }
 
     private void calculateDistancesFromJob2Job() {
-        logger.info("preprocess distances between locations ...");
+        logger.debug("preprocess distances between locations ...");
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         int nuOfDistancesStored = 0;
@@ -101,7 +101,7 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
         }
         stopWatch.stop();
-        logger.info("preprocessing comp-time: " + stopWatch + "; nuOfDistances stored: " + nuOfDistancesStored + "; estimated memory: " +
+        logger.debug("preprocessing comp-time: " + stopWatch + "; nuOfDistances stored: " + nuOfDistancesStored + "; estimated memory: " +
                 (distanceNodeTree.keySet().size()*64+nuOfDistancesStored*92) + " bytes");
     }
 

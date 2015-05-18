@@ -70,7 +70,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 		this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
         completionService = new ExecutorCompletionService<ScoredJob>(executorService);
-		logger.info("initialise " + this);
+		logger.debug("initialise " + this);
 	}
 
 	@Override

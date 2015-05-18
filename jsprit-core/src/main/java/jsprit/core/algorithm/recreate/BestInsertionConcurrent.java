@@ -94,7 +94,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 		this.nuOfBatches = nuOfBatches;
 		bestInsertionCostCalculator = jobInsertionCalculator;
 		completionService = new ExecutorCompletionService<Insertion>(executorService);
-		logger.info("initialise " + this);
+		logger.debug("initialise " + this);
 	}
 
 	@Override

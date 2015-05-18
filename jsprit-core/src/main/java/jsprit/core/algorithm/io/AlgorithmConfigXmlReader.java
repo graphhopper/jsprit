@@ -50,7 +50,7 @@ public class AlgorithmConfigXmlReader {
 	}
 	
 	public void read(URL url){
-		log.info("read algorithm-config from file " + url);
+		log.debug("read algorithm: " + url);
 		algorithmConfig.getXMLConfiguration().setURL(url);
 		algorithmConfig.getXMLConfiguration().setAttributeSplittingDisabled(true);
 		algorithmConfig.getXMLConfiguration().setDelimiterParsingDisabled(true);
@@ -70,7 +70,6 @@ public class AlgorithmConfigXmlReader {
 				};
 				algorithmConfig.getXMLConfiguration().setEntityResolver(resolver);
 				algorithmConfig.getXMLConfiguration().setSchemaValidation(true);
-				log.info("validating " + url + " with xsd-schema");
 			}
 			else{
 				log.warn("cannot find schema-xsd file (algorithm_xml_schema.xsd). try to read xml without xml-file-validation.");
@@ -87,7 +86,7 @@ public class AlgorithmConfigXmlReader {
 	
 	
 	public void read(String filename){
-		log.info("read algorithm-config from file " + filename);
+		log.debug("read algorithm-config from file " + filename);
 		URL url = Resource.getAsURL(filename);
 		read(url);
 	}

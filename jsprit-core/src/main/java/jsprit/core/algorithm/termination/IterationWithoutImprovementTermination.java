@@ -45,7 +45,7 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
      */
 	public IterationWithoutImprovementTermination(int noIterationsWithoutImprovement){
 		this.noIterationWithoutImprovement =noIterationsWithoutImprovement;
-		log.info("initialise " + this);
+		log.debug("initialise " + this);
 	}
 	
 	@Override

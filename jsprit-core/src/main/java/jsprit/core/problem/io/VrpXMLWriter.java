@@ -80,7 +80,7 @@ public class VrpXMLWriter {
 	
 	public void write(String filename){
 		if(!filename.endsWith(".xml")) filename+=".xml";
-		log.info("write vrp to " + filename);
+		log.info("write vrp: " + filename);
 		XMLConf xmlConfig = new XMLConf();
 		xmlConfig.setFileName(filename);
 		xmlConfig.setRootElementName("problem");

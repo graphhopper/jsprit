@@ -43,7 +43,7 @@ class CalculatesServiceInsertionWithTimeSchedulingInSlices implements JobInserti
 		this.jic = jic;
 		this.timeSlice = timeSlice;
 		this.nOfDepartureTimes = neighbors;
-		log.info("initialise " + this);
+		log.debug("initialise " + this);
 	}
 	
 	@Override

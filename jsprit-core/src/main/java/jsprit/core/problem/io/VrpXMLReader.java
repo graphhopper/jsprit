@@ -137,7 +137,7 @@ public class VrpXMLReader{
 	}
 	
 	public void read(String filename) {
-		logger.info("read vrp from file " + filename);
+		logger.debug("read vrp: " + filename);
 		XMLConfiguration xmlConfig = new XMLConfiguration();
 		xmlConfig.setFileName(filename);
 		xmlConfig.setAttributeSplittingDisabled(true);
@@ -158,10 +158,9 @@ public class VrpXMLReader{
 				};
 				xmlConfig.setEntityResolver(resolver);
 				xmlConfig.setSchemaValidation(true);
-				logger.info("validating " + filename + " with xsd-schema");
 			}
 			else{
-				logger.warn("cannot find schema-xsd file (vrp_xml_schema.xsd). try to read xml without xml-file-validation.");
+				logger.debug("cannot find schema-xsd file (vrp_xml_schema.xsd). try to read xml without xml-file-validation.");
 			}		
 		}
 		try {
@@ -617,7 +616,7 @@ public class VrpXMLReader{
 			}
 			if(coordX == null || coordY == null) {
 					if(!doNotWarnAgain) {
-						logger.warn("location.coord is missing. will not warn you again.");
+						logger.debug("location.coord is missing. will not warn you again.");
 						doNotWarnAgain = true;
 					}
 			}
@@ -644,7 +643,7 @@ public class VrpXMLReader{
 			String endCoordY = vehicleConfig.getString("endLocation.coord[@y]");
 			if(endCoordX == null || endCoordY == null) {
 				if(!doNotWarnAgain) {
-					logger.warn("endLocation.coord is missing. will not warn you again.");
+					logger.debug("endLocation.coord is missing. will not warn you again.");
 					doNotWarnAgain = true;
 				}
 			}

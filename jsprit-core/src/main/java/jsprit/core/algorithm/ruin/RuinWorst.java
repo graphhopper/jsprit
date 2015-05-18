@@ -64,8 +64,7 @@ public final class RuinWorst extends AbstractRuinStrategy {
 				return initialNumberJobsToRemove;
 			}
 		});
-        logger.info("initialise " + this);
-		logger.info("done");
+        logger.debug("initialise " + this);
 	}
 
 	/**

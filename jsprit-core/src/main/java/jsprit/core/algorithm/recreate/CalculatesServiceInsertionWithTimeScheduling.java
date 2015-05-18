@@ -55,7 +55,7 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsC
     CalculatesServiceInsertionWithTimeScheduling(JobInsertionCostsCalculator jic, double t, double f) {
         super();
         this.jic = jic;
-        log.info("initialise " + this);
+        log.debug("initialise " + this);
     }
 
     @Override

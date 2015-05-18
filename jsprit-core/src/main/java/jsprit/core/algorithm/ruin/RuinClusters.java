@@ -87,8 +87,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 			}
 		});
 		this.jobNeighborhoods = jobNeighborhoods;
-        logger.info("initialise " + this);
-		logger.info("done");
+        logger.debug("initialise " + this);
 	}
 
 	public void setNoClusters(int noClusters) {

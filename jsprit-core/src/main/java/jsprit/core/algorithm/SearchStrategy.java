@@ -61,7 +61,11 @@ public class SearchStrategy {
 		}
 
 		public String getStrategyId() { return strategyId; }
-		
+
+		@Override
+		public String toString() {
+			return "[strategyId="+strategyId+"][solution="+solution+"][accepted="+accepted+"]";
+		}
 	}
 	
 	private static Logger logger = LogManager.getLogger(SearchStrategy.class);
@@ -84,7 +88,7 @@ public class SearchStrategy {
         this.solutionAcceptor = solutionAcceptor;
         this.solutionCostCalculator = solutionCostCalculator;
         this.id = id;
-        logger.info("initialise " + this);
+        logger.debug("initialise " + this);
     }
 
     public String getId() {
@@ -155,7 +159,7 @@ public class SearchStrategy {
     public void addModule(SearchStrategyModule module){
 		if(module == null) throw new IllegalStateException("module to be added is null.");
 		searchStrategyModules.add(module);
-		logger.info("module added [module="+module+"][#modules="+searchStrategyModules.size()+"]");
+		logger.debug("module added [module=" + module + "][#modules=" + searchStrategyModules.size() + "]");
 	}
 
 	public void addModuleListener(SearchStrategyModuleListener moduleListener) {

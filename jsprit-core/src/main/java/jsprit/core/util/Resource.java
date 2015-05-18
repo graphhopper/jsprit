@@ -41,16 +41,16 @@ public class Resource {
 		if (url != null) {
 			return url;
 		}
-		log.info("Resource " + filename + " is unreachable by the current class loader, try the filesystem");
+		log.debug("resource: " + filename + " is unreachable by the current class loader, try the filesystem");
 		File file = new File(filename);
 		if (!file.exists()) {
-			log.warn("Resource " + filename + " do not exists on the filesystem");
+			log.debug("resource: " + filename + " do not exists on the filesystem");
 			return null;
 		}
 		try {
 			return file.toURI().toURL();
 		} catch (MalformedURLException e) {
-			log.warn("Resource " + filename + " exists on the filesystem, but its URL is invalid: " + e.getMessage());
+			log.debug("resource: " + filename + " exists on the filesystem, but its URL is invalid: " + e.getMessage());
 			return null;
 		}
 	}
@@ -60,16 +60,16 @@ public class Resource {
 		if (stream != null) {
 			return stream;
 		}
-		log.info("Resource " + filename + " is unreachable by the current class loader, try the filesystem");
+		log.debug("resource: " + filename + " is unreachable by the current class loader, try the filesystem");
 		File file = new File(filename);
 		if (!file.exists()) {
-			log.warn("Resource " + filename + " do not exists on the filesystem");
+			log.debug("resource: " + filename + " do not exists on the filesystem");
 			return null;
 		}
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException e) {
-			log.warn("Resource " + filename + " exists on the filesystem, but its URL is invalid: " + e.getMessage());
+			log.debug("resource: " + filename + " exists on the filesystem, but its URL is invalid: " + e.getMessage());
 			return null;
 		}
 	}

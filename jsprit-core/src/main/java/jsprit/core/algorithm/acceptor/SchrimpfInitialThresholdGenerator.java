@@ -49,9 +49,7 @@ public class SchrimpfInitialThresholdGenerator implements AlgorithmStartsListene
 
 	@Override
 	public void informAlgorithmStarts(VehicleRoutingProblem problem,VehicleRoutingAlgorithm algorithm,Collection<VehicleRoutingProblemSolution> solutions) {
-		logger.info("---------------------------------------------------------------------");
 		logger.info("prepare schrimpfAcceptanceFunction, i.e. determine initial threshold");
-		logger.info("start random-walk (see randomWalk.xml)");
 		double now = System.currentTimeMillis();
 		
 		/*
@@ -81,10 +79,9 @@ public class SchrimpfInitialThresholdGenerator implements AlgorithmStartsListene
 		double initialThreshold = standardDeviation / 2;
 		
 		schrimpfAcceptance.setInitialThreshold(initialThreshold);
-		
-		logger.info("warmup done");
-		logger.info("total time: " + ((System.currentTimeMillis()-now)/1000.0) + "s");
-		logger.info("initial threshold: " + initialThreshold);
+
+		logger.info("took " + ((System.currentTimeMillis()-now)/1000.0) + " seconds");
+		logger.debug("initial threshold: " + initialThreshold);
 		logger.info("---------------------------------------------------------------------");
 	}
 

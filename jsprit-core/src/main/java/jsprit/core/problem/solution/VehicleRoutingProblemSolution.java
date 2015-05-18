@@ -120,4 +120,8 @@ public class VehicleRoutingProblemSolution {
         return unassignedJobs;
     }
 
+	@Override
+	public String toString() {
+		return "[costs=" + cost + "][routes="+routes.size()+"][unassigned="+unassignedJobs.size()+"]";
+	}
 }
