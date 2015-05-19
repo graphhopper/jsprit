@@ -168,6 +168,8 @@ public class RegretInsertionTest {
                 if(currentRoute.isEmpty()){
                     double mc = getCost(service.getLocation(), vehicle.getStartLocation());
                     iData = new InsertionData(2*mc,-1,0,vehicle,newDriver);
+                    iData.getEvents().add(new InsertActivity(currentRoute,vehicle,vrp.copyAndGetActivities(newJob).get(0),0));
+                    iData.getEvents().add(new SwitchVehicle(currentRoute,vehicle,newVehicleDepartureTime));
                 }
                 else {
                     double best = Double.MAX_VALUE;
@@ -189,6 +191,8 @@ public class RegretInsertionTest {
                         bestIndex = index;
                     }
                     iData = new InsertionData(best,-1,bestIndex,vehicle,newDriver);
+                    iData.getEvents().add(new InsertActivity(currentRoute,vehicle,vrp.copyAndGetActivities(newJob).get(0),bestIndex));
+                    iData.getEvents().add(new SwitchVehicle(currentRoute,vehicle,newVehicleDepartureTime));
                 }
                 return iData;
             }

@@ -62,6 +62,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 		double totalInsertionCost = iData.getInsertionCost() + fixcost_contribution;
 		InsertionData insertionData = new InsertionData(totalInsertionCost, iData.getPickupInsertionIndex(), iData.getDeliveryInsertionIndex(), newVehicle, newDriver);
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
+		insertionData.getEvents().addAll(iData.getEvents());
 		return insertionData;
 	}
 

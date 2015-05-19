@@ -71,12 +71,15 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
 
     private Inserter inserter;
 
+    private EventListeners eventListeners;
+
     protected VehicleRoutingProblem vrp;
 
     public AbstractInsertionStrategy(VehicleRoutingProblem vrp) {
         this.insertionsListeners = new InsertionListeners();
         this.vrp = vrp;
         inserter = new Inserter(insertionsListeners, vrp);
+        eventListeners = new EventListeners();
     }
 
     public void setRandom(Random random) {
@@ -111,7 +114,14 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
 
     protected void insertJob(Job unassignedJob, InsertionData iData, VehicleRoute inRoute){
         logger.trace("insert: [jobId=" + unassignedJob.getId() + "]" + iData );
-        inserter.insertJob(unassignedJob, iData, inRoute);
+        insertionsListeners.informBeforeJobInsertion(unassignedJob, iData, inRoute);
+        if(!(inRoute.getVehicle().getId().equals(iData.getSelectedVehicle().getId()))){
+            insertionsListeners.informVehicleSwitched(inRoute, inRoute.getVehicle(), iData.getSelectedVehicle());
+        }
+        for(Event e : iData.getEvents()){
+            eventListeners.inform(e);
+        }
+        insertionsListeners.informJobInserted(unassignedJob, inRoute, iData.getInsertionCost(), iData.getAdditionalTime());
     }
 
 }

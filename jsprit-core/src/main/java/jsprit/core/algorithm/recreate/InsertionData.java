@@ -19,6 +19,9 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.vehicle.Vehicle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Data object that collects insertion information. It collects insertionCosts, insertionIndeces, vehicle and driver to be employed
  * and departureTime of vehicle at vehicle's start location (e.g. depot).
@@ -65,7 +68,13 @@ public class InsertionData {
 	private double departureTime;
 	
 	private double additionalTime;
-	
+
+	private List<Event> events = new ArrayList<Event>();
+
+	List<Event> getEvents(){
+		return events;
+	}
+
 	/**
 	 * @return the additionalTime
 	 */

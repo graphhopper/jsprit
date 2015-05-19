@@ -155,6 +155,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 			return InsertionData.createEmptyInsertionData();
 		}
 		InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
+		insertionData.getEvents().add(new InsertActivity(currentRoute,newVehicle,deliveryAct2Insert,insertionIndex));
+		insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
 		return insertionData;
 	}

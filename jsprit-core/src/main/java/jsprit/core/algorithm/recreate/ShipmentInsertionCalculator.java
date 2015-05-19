@@ -225,6 +225,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		}
 		InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
+		insertionData.getEvents().add(new InsertActivity(currentRoute,newVehicle,deliverShipment,deliveryInsertionIndex));
+		insertionData.getEvents().add(new InsertActivity(currentRoute,newVehicle,pickupShipment,pickupInsertionIndex));
+		insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));
 		return insertionData;
 	}
 
