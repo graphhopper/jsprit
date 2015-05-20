@@ -90,7 +90,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
         Service service = (Service)jobToInsert;
         int insertionIndex = InsertionData.NO_INDEX;
-        TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
+
+		TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
         insertionContext.getAssociatedActivities().add(deliveryAct2Insert);
 
         /*
@@ -111,7 +112,6 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
         /*
         generate new start and end for new vehicle
          */
-//		Start start = Start.newInstance(newVehicle.getStartLocationId(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
         Start start = new Start(newVehicle.getStartLocation(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
 		start.setEndTime(newVehicleDepartureTime);
 		End end = new End(newVehicle.getEndLocation(), 0.0, newVehicle.getLatestArrival());

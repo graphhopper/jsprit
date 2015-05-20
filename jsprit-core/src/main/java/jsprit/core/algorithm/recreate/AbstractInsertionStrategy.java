@@ -69,8 +69,6 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
 
     private InsertionListeners insertionsListeners;
 
-    private Inserter inserter;
-
     private EventListeners eventListeners;
 
     protected VehicleRoutingProblem vrp;
@@ -78,7 +76,6 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
     public AbstractInsertionStrategy(VehicleRoutingProblem vrp) {
         this.insertionsListeners = new InsertionListeners();
         this.vrp = vrp;
-        inserter = new Inserter(insertionsListeners, vrp);
         eventListeners = new EventListeners();
     }
 
