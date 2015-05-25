@@ -33,6 +33,8 @@ import jsprit.core.util.CalculationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Iterator;
+
 /**
  * Calculator that calculates the best insertion position for a {@link Service}.
  * 
@@ -119,8 +121,15 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		TourActivity prevAct = start;
 		double prevActStartTime = newVehicleDepartureTime;
 		int actIndex = 0;
-		boolean loopBroken = false;
-		for(TourActivity nextAct : currentRoute.getTourActivities().getActivities()){
+		Iterator<TourActivity> activityIterator = currentRoute.getActivities().iterator();
+		boolean tourEnd = false;
+		while(!tourEnd){
+			TourActivity nextAct;
+			if(activityIterator.hasNext()) nextAct = activityIterator.next();
+			else{
+				nextAct = end;
+				tourEnd = true;
+			}
 			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
 			if(status.equals(ConstraintsStatus.FULFILLED)){
 				//from job2insert induced costs at activity level
@@ -132,24 +141,12 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 				}
 			}
 			else if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)){
-				loopBroken = true;
 				break;
 			}
 			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
 			prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
 			prevAct = nextAct;
 			actIndex++;
-		}
-		if(!loopBroken){
-			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, end, prevActStartTime);
-			if(status.equals(ConstraintsStatus.FULFILLED)){
-				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, end, prevActStartTime);
-				double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, end, deliveryAct2Insert, prevActStartTime);
-				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost){
-					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
-					insertionIndex = actIndex;
-				}
-			}
 		}
 		if(insertionIndex == InsertionData.NO_INDEX) {
 			return InsertionData.createEmptyInsertionData();
