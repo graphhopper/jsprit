@@ -21,7 +21,10 @@ import jsprit.core.problem.Capacity;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
+import jsprit.core.problem.solution.route.activity.TimeWindows;
 import jsprit.core.util.Coordinate;
+
+import java.util.Collection;
 
 /**
  * Service implementation of a job.
@@ -83,6 +86,8 @@ public class Service extends AbstractJob {
 
         protected Location location;
 
+		protected TimeWindows timeWindows;
+
 		Builder(String id){
 			this.id = id;
 		}
@@ -110,6 +115,11 @@ public class Service extends AbstractJob {
             this.location = location;
             return this;
         }
+
+		public Builder setTimeWindows(TimeWindows timeWindows){
+			this.timeWindows = timeWindows;
+			return this;
+		}
 
 		/**
 		 * Sets the serviceTime of this service.
@@ -198,6 +208,8 @@ public class Service extends AbstractJob {
 
     private final Location location;
 
+	private final TimeWindows timeWindowManager;
+
 	Service(Builder builder){
 		id = builder.id;
         serviceTime = builder.serviceTime;
@@ -207,6 +219,11 @@ public class Service extends AbstractJob {
         skills = builder.skills;
         name = builder.name;
         location = builder.location;
+		timeWindowManager = builder.timeWindows;
+	}
+
+	public Collection<TimeWindow> getTimeWindows(double time){
+		return timeWindowManager.getTimeWindows(time);
 	}
 
 	@Override

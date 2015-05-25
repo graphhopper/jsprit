@@ -27,11 +27,14 @@ import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.Start;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.CalculationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Collection;
 
 /**
  * Calculator that calculates the best insertion position for a {@link Service}.
@@ -108,6 +111,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 
 		double bestCost = bestKnownCosts;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
+		TimeWindow bestTimeWindow = null;
 
         /*
         generate new start and end for new vehicle
@@ -121,17 +125,28 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		int actIndex = 0;
 		boolean loopBroken = false;
 		for(TourActivity nextAct : currentRoute.getTourActivities().getActivities()){
-			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-			if(status.equals(ConstraintsStatus.FULFILLED)){
-				//from job2insert induced costs at activity level
-				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-				double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost){
-					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
-					insertionIndex = actIndex;
+			double actArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(),deliveryAct2Insert.getLocation(),prevActStartTime,newDriver,newVehicle);
+			Collection<TimeWindow> timeWindows = service.getTimeWindows(actArrTime);
+			boolean not_fulfilled_break = true;
+			for(TimeWindow timeWindow : timeWindows) {
+				deliveryAct2Insert.setTheoreticalEarliestStart(timeWindow.getStart());
+				deliveryAct2Insert.setTheoreticalLatestStart(timeWindow.getEnd());
+				ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+				if (status.equals(ConstraintsStatus.FULFILLED)) {
+					//from job2insert induced costs at activity level
+					double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+					double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+					if (additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost) {
+						bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
+						insertionIndex = actIndex;
+						bestTimeWindow = timeWindow;
+					}
+					not_fulfilled_break = false;
+				} else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
+					not_fulfilled_break = false;
 				}
 			}
-			else if(status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)){
+			if(not_fulfilled_break){
 				loopBroken = true;
 				break;
 			}
@@ -141,6 +156,10 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 			actIndex++;
 		}
 		if(!loopBroken){
+			Collection<TimeWindow> timeWindows = service.getTimeWindows(actArrTime);
+			for(TimeWindow timeWindow : timeWindows) {
+
+			}
 			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, end, prevActStartTime);
 			if(status.equals(ConstraintsStatus.FULFILLED)){
 				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, end, prevActStartTime);
