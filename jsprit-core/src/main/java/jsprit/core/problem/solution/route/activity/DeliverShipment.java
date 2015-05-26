@@ -53,6 +53,16 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 	}
 
 	@Override
+	public void setTheoreticalEarliestOperationStartTime(double earliest) {
+
+	}
+
+	@Override
+	public void setTheoreticalLatestOperationStartTime(double latest) {
+
+	}
+
+	@Override
 	public String getName() {
 		return "deliverShipment";
 	}

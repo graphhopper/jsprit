@@ -31,6 +31,10 @@ import jsprit.core.problem.job.Job;
  */
 public interface TourActivity extends HasIndex {
 
+	public void setTheoreticalEarliestOperationStartTime(double earliest);
+
+	public void setTheoreticalLatestOperationStartTime(double latest);
+
 	/**
 	 * Basic interface of job-activies.
 	 * 

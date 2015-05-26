@@ -29,6 +29,10 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 	private double arrTime;
 	
 	private double depTime;
+
+	private double theoreticalEarliest;
+
+	private double theoreticalLatest;
 	
 	public PickupService(Pickup pickup) {
 		super();
@@ -43,7 +47,19 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 		this.pickup=pickupActivity.getJob();
 		this.arrTime=pickupActivity.getArrTime();
 		this.depTime=pickupActivity.getEndTime();
+		this.theoreticalEarliest = pickupActivity.getTheoreticalEarliestOperationStartTime();
+		this.theoreticalLatest = pickupActivity.getTheoreticalLatestOperationStartTime();
         setIndex(pickupActivity.getIndex());
+	}
+
+	@Override
+	public void setTheoreticalEarliestOperationStartTime(double earliest) {
+		this.theoreticalEarliest = earliest;
+	}
+
+	@Override
+	public void setTheoreticalLatestOperationStartTime(double latest) {
+		this.theoreticalLatest = latest;
 	}
 
 	@Override
@@ -63,12 +79,12 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     @Override
 	public double getTheoreticalEarliestOperationStartTime() {
-		return pickup.getTimeWindow().getStart();
+		return theoreticalEarliest;
 	}
 
 	@Override
 	public double getTheoreticalLatestOperationStartTime() {
-		return pickup.getTimeWindow().getEnd();
+		return theoreticalLatest;
 	}
 
 	@Override

@@ -184,4 +184,28 @@ public class ServiceTest {
         assertEquals("name",s.getName());
     }
 
+	@Test
+	public void shouldKnowMultipleTimeWindows(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+				.addTimeWindow(TimeWindow.newInstance(0., 10.)).addTimeWindow(TimeWindow.newInstance(20., 30.))
+				.setName("name").build();
+		assertEquals(2,s.getTimeWindows(0.).size());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void whenMultipleTWOverlap_throwEx(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+				.addTimeWindow(TimeWindow.newInstance(0.,10.))
+				.addTimeWindow(TimeWindow.newInstance(5., 30.))
+				.setName("name").build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void whenMultipleTWOverlap2_throwEx(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+				.addTimeWindow(TimeWindow.newInstance(20., 30.))
+				.addTimeWindow(TimeWindow.newInstance(0., 25.))
+				.setName("name").build();
+	}
+
 }

@@ -22,6 +22,7 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TimeWindows;
+import jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 import jsprit.core.util.Coordinate;
 
 import java.util.Collection;
@@ -86,10 +87,14 @@ public class Service extends AbstractJob {
 
         protected Location location;
 
-		protected TimeWindows timeWindows;
+		protected TimeWindows timeWindows = new TimeWindowsImpl();
+
+		private boolean twAdded = false;
 
 		Builder(String id){
 			this.id = id;
+			timeWindows = new TimeWindowsImpl();
+			((TimeWindowsImpl)timeWindows).add(timeWindow);
 		}
 		
 		/**
@@ -163,7 +168,31 @@ public class Service extends AbstractJob {
 		public Builder setTimeWindow(TimeWindow tw){
 			if(tw == null) throw new IllegalArgumentException("time-window arg must not be null");
 			this.timeWindow = tw;
+			this.timeWindows = new TimeWindowsImpl();
+			((TimeWindowsImpl) timeWindows).add(tw);
 			return this;
+		}
+
+		public Builder addTimeWindow(TimeWindow timeWindow) {
+			if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
+			if(!twAdded){
+				timeWindows = new TimeWindowsImpl();
+				twAdded = true;
+			}
+			for(TimeWindow tw : ((TimeWindowsImpl)timeWindows).getTimeWindows()){
+				if(timeWindow.getStart() > tw.getStart() && timeWindow.getStart() < tw.getEnd()){
+					throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
+				}
+				if(timeWindow.getEnd() > tw.getStart() && timeWindow.getEnd() < tw.getEnd()){
+					throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
+				}
+			}
+			((TimeWindowsImpl) timeWindows).add(timeWindow);
+			return this;
+		}
+
+		public Builder addTimeWindow(double earliest, double latest) {
+			return addTimeWindow(TimeWindow.newInstance(earliest, latest));
 		}
 		
 		/**
@@ -189,7 +218,10 @@ public class Service extends AbstractJob {
             this.name = name;
             return this;
         }
-    }
+
+
+
+	}
 	
 	
 	private final String id;
@@ -222,8 +254,8 @@ public class Service extends AbstractJob {
 		timeWindowManager = builder.timeWindows;
 	}
 
-	public Collection<TimeWindow> getTimeWindows(double time){
-		return timeWindowManager.getTimeWindows(time);
+	public Collection<TimeWindow> getTimeWindows(double arrTime){
+		return timeWindowManager.getTimeWindows(arrTime);
 	}
 
 	@Override

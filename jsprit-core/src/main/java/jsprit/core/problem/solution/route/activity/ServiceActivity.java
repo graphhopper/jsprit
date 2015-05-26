@@ -24,12 +24,16 @@ import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
 public class ServiceActivity extends AbstractActivity implements JobActivity{
 	
+	@Deprecated
 	public static int counter = 0;
 	
 	public double arrTime;
 	
 	public double endTime;
-	
+
+	private double theoreticalEarliest;
+
+	private double theoreticalLatest;
 	/**
 	 * @return the arrTime
 	 */
@@ -115,11 +119,11 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 	}
 
 	public double getTheoreticalEarliestOperationStartTime() {
-		return service.getTimeWindow().getStart();
+		return theoreticalEarliest;
 	}
 
 	public double getTheoreticalLatestOperationStartTime() {
-		return service.getTimeWindow().getEnd();
+		return theoreticalLatest;
 	}
 
 	@Override
@@ -151,7 +155,17 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
 		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
 	}
-	
+
+	@Override
+	public void setTheoreticalEarliestOperationStartTime(double earliest) {
+		theoreticalEarliest = earliest;
+	}
+
+	@Override
+	public void setTheoreticalLatestOperationStartTime(double latest) {
+		theoreticalLatest = latest;
+	}
+
 	@Override
 	public String getName() {
 		return service.getType();

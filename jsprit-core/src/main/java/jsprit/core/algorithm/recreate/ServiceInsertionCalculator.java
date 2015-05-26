@@ -35,31 +35,32 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Calculator that calculates the best insertion position for a {@link Service}.
- * 
+ *
  * @author schroeder
  *
  */
 final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
-	
+
 	private static final Logger logger = LogManager.getLogger(ServiceInsertionCalculator.class);
 
 	private HardRouteConstraint hardRouteLevelConstraint;
-	
+
 	private HardActivityConstraint hardActivityLevelConstraint;
-	
+
 	private SoftRouteConstraint softRouteConstraint;
-	
+
 	private SoftActivityConstraint softActivityConstraint;
-	
+
 	private VehicleRoutingTransportCosts transportCosts;
-	
+
 	private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
-	
+
 	private JobActivityFactory activityFactory;
-	
+
 	private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
 	public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
@@ -77,16 +78,16 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
     public void setJobActivityFactory(JobActivityFactory jobActivityFactory){
         this.activityFactory = jobActivityFactory;
     }
-	
+
 	@Override
 	public String toString() {
 		return "[name=calculatesServiceInsertion]";
 	}
-	
+
 	/**
 	 * Calculates the marginal cost of inserting job i locally. This is based on the
 	 * assumption that cost changes can entirely covered by only looking at the predecessor i-1 and its successor i+1.
-	 *  
+	 *
 	 */
 	@Override
 	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
@@ -119,18 +120,25 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
         Start start = new Start(newVehicle.getStartLocation(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
 		start.setEndTime(newVehicleDepartureTime);
 		End end = new End(newVehicle.getEndLocation(), 0.0, newVehicle.getLatestArrival());
-		
+
 		TourActivity prevAct = start;
 		double prevActStartTime = newVehicleDepartureTime;
 		int actIndex = 0;
-		boolean loopBroken = false;
-		for(TourActivity nextAct : currentRoute.getTourActivities().getActivities()){
+		Iterator<TourActivity> activityIterator = currentRoute.getActivities().iterator();
+		boolean tourEnd = false;
+		while(!tourEnd){
+			TourActivity nextAct;
+			if(activityIterator.hasNext()) nextAct = activityIterator.next();
+			else{
+				nextAct = end;
+				tourEnd = true;
+			}
 			double actArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(),deliveryAct2Insert.getLocation(),prevActStartTime,newDriver,newVehicle);
 			Collection<TimeWindow> timeWindows = service.getTimeWindows(actArrTime);
 			boolean not_fulfilled_break = true;
 			for(TimeWindow timeWindow : timeWindows) {
-				deliveryAct2Insert.setTheoreticalEarliestStart(timeWindow.getStart());
-				deliveryAct2Insert.setTheoreticalLatestStart(timeWindow.getEnd());
+				deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+				deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
 				ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
 				if (status.equals(ConstraintsStatus.FULFILLED)) {
 					//from job2insert induced costs at activity level
@@ -146,34 +154,18 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 					not_fulfilled_break = false;
 				}
 			}
-			if(not_fulfilled_break){
-				loopBroken = true;
-				break;
-			}
+			if(not_fulfilled_break) break;
 			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
 			prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
 			prevAct = nextAct;
 			actIndex++;
 		}
-		if(!loopBroken){
-			Collection<TimeWindow> timeWindows = service.getTimeWindows(actArrTime);
-			for(TimeWindow timeWindow : timeWindows) {
-
-			}
-			ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, end, prevActStartTime);
-			if(status.equals(ConstraintsStatus.FULFILLED)){
-				double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, end, prevActStartTime);
-				double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, end, deliveryAct2Insert, prevActStartTime);
-				if(additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost){
-					bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
-					insertionIndex = actIndex;
-				}
-			}
-		}
 		if(insertionIndex == InsertionData.NO_INDEX) {
 			return InsertionData.createEmptyInsertionData();
 		}
 		InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
+		deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
+		deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
 		insertionData.getEvents().add(new InsertActivity(currentRoute,newVehicle,deliveryAct2Insert,insertionIndex));
 		insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);

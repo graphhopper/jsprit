@@ -146,7 +146,8 @@ public final class End extends AbstractActivity implements TourActivity {
 		+ "][twStart=" + Activities.round(theoretical_earliestOperationStartTime)
 		+ "][twEnd=" + Activities.round(theoretical_latestOperationStartTime) + "]";
 	}
-	
+
+
 	@Override
 	public String getName() {
 		return "end";

@@ -49,6 +49,16 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 	}
 
 	@Override
+	public void setTheoreticalEarliestOperationStartTime(double earliest) {
+
+	}
+
+	@Override
+	public void setTheoreticalLatestOperationStartTime(double latest) {
+
+	}
+
+	@Override
 	public String getName() {
 		return "pickupShipment";
 	}
