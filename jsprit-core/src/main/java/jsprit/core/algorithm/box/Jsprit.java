@@ -498,7 +498,7 @@ public class Jsprit {
         RegretInsertion.DefaultScorer scorer;
         scorer = new RegretInsertion.DefaultScorer(vrp);
         scorer.setTimeWindowParam(Double.valueOf(properties.getProperty(Parameter.REGRET_TIME_WINDOW_SCORER.toString())));
-        scorer.setDepotDistanceParam(Double.valueOf(properties.getProperty(Parameter.REGRET_TIME_WINDOW_SCORER.toString())));
+        scorer.setDepotDistanceParam(Double.valueOf(properties.getProperty(Parameter.REGRET_DISTANCE_SCORER.toString())));
         return scorer;
     }
 
