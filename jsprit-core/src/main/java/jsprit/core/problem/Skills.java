@@ -58,7 +58,7 @@ public class Skills {
          * @return builder
          */
         public Builder addAllSkills(Collection<String> skills){
-            for(String skill : skills) this.skills.add(skill);
+            for(String skill : skills) addSkill(skill);
             return this;
         }
 
