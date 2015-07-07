@@ -49,8 +49,8 @@ public class TimeWindow {
 	 */
 	public TimeWindow(double start, double end) {
 		super();
-		if(start < 0.0 || end < 0.0) throw new IllegalArgumentException("neither time window start nor end must be < 0.0");
-		if(end < start) throw new IllegalArgumentException("time window end cannot be smaller than its start");
+		if(start < 0.0 || end < 0.0) throw new IllegalArgumentException("neither time window start nor end must be < 0.0: " + "[start=" + start + "][end=" + end + "]");
+		if(end < start) throw new IllegalArgumentException("time window end cannot be smaller than its start: " + "[start=" + start + "][end=" + end + "]" );
 		this.start = start;
 		this.end = end;
 	}
