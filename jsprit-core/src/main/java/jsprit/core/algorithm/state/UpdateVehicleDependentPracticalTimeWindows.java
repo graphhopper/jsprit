@@ -21,6 +21,7 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 
@@ -85,7 +86,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
             Location prevLocation = location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
                     latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activity.getOperationTime();
-            double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
+            double latestArrivalTime = getLatestArrivalTime(activity.getTimeWindows(),potentialLatestArrivalTimeAtCurrAct);
             stateManager.putInternalTypedActivityState(activity, vehicle, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = latestArrivalTime;
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = activity.getLocation();
@@ -94,6 +95,23 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
 
     @Override
     public void finish() {}
+
+    private double getLatestArrivalTime(Collection<TimeWindow> timeWindows, double potentialLatestArrivalTimeAtCurrAct) {
+        TimeWindow last = null;
+        for(TimeWindow tw : timeWindows){
+            if(tw.getStart() <= potentialLatestArrivalTimeAtCurrAct && tw.getEnd() >= potentialLatestArrivalTimeAtCurrAct){
+                return potentialLatestArrivalTimeAtCurrAct;
+            }
+            else if(tw.getStart() > potentialLatestArrivalTimeAtCurrAct){
+                if(last == null){
+                    return potentialLatestArrivalTimeAtCurrAct;
+                }
+                else return last.getEnd();
+            }
+            last = tw;
+        }
+        return last.getEnd();
+    }
 
 }
 

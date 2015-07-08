@@ -19,7 +19,10 @@ package jsprit.core.algorithm.state;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+
+import java.util.Collection;
 
 /**
  * Updates and memorizes latest operation start times at activities.
@@ -55,12 +58,29 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
 	@Override
 	public void visit(TourActivity activity) {
 		double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
-		double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
-		
+		Collection<TimeWindow> timeWindows = activity.getTimeWindows();
+		double latestArrivalTime = getLatestArrivalTime(timeWindows,potentialLatestArrivalTimeAtCurrAct);
 		states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
 		
 		latestArrTimeAtPrevAct = latestArrivalTime;
 		prevAct = activity;
+	}
+
+	private double getLatestArrivalTime(Collection<TimeWindow> timeWindows, double potentialLatestArrivalTimeAtCurrAct) {
+		TimeWindow last = null;
+		for(TimeWindow tw : timeWindows){
+			if(tw.getStart() <= potentialLatestArrivalTimeAtCurrAct && tw.getEnd() >= potentialLatestArrivalTimeAtCurrAct){
+				return potentialLatestArrivalTimeAtCurrAct;
+			}
+			else if(tw.getStart() > potentialLatestArrivalTimeAtCurrAct){
+				if(last == null){
+					return potentialLatestArrivalTimeAtCurrAct;
+				}
+				else return last.getEnd();
+			}
+			last = tw;
+		}
+		return last.getEnd();
 	}
 
 	@Override

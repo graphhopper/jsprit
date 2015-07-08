@@ -22,6 +22,8 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 
+import java.util.List;
+
 public final class DeliverShipment extends AbstractActivity implements DeliveryActivity{
 
 	private Shipment shipment;
@@ -60,6 +62,12 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 	@Override
 	public void setTheoreticalLatestOperationStartTime(double latest) {
 
+	}
+
+	@Override
+	public List<TimeWindow> getTimeWindows() {
+//		return shipment.getDeliveryTimeWindow();
+		return null;
 	}
 
 	@Override

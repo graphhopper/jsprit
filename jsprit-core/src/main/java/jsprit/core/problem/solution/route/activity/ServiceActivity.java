@@ -22,6 +22,9 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ServiceActivity extends AbstractActivity implements JobActivity{
 	
 	@Deprecated
@@ -72,10 +75,13 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 
 	
 	private final Service service;
+
+	private List<TimeWindow> timeWindows;
 			
 	protected ServiceActivity(Service service) {
 		counter++;
 		this.service = service;
+		timeWindows = new ArrayList<TimeWindow>(service.getTimeWindows(0.));
 	}
 	
 	protected ServiceActivity(ServiceActivity serviceActivity) {
@@ -84,6 +90,7 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 		this.arrTime = serviceActivity.getArrTime();
 		this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());
+		timeWindows = new ArrayList<TimeWindow>(serviceActivity.getTimeWindows());
 	}
 	
 	
@@ -164,6 +171,11 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 	@Override
 	public void setTheoreticalLatestOperationStartTime(double latest) {
 		theoreticalLatest = latest;
+	}
+
+	@Override
+	public List<TimeWindow> getTimeWindows() {
+		return timeWindows;
 	}
 
 	@Override

@@ -21,6 +21,9 @@ import jsprit.core.problem.Capacity;
 import jsprit.core.problem.Location;
 import jsprit.core.util.Coordinate;
 
+import java.util.Arrays;
+import java.util.List;
+
 public final class End extends AbstractActivity implements TourActivity {
 
     @Deprecated
@@ -66,6 +69,11 @@ public final class End extends AbstractActivity implements TourActivity {
 
 	public void setTheoreticalLatestOperationStartTime(double theoreticalLatestOperationStartTime) {
 		theoretical_latestOperationStartTime = theoreticalLatestOperationStartTime;
+	}
+
+	@Override
+	public List<TimeWindow> getTimeWindows() {
+		return Arrays.asList(TimeWindow.newInstance(theoretical_earliestOperationStartTime,theoretical_latestOperationStartTime));
 	}
 
 	public End(Location location, double theoreticalStart, double theoreticalEnd) {

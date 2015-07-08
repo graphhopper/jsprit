@@ -45,11 +45,21 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         this.routingCosts = routingCosts;
     }
 
+    public double getLatestOperationStartTime(TourActivity act){
+        return act.getTimeWindows().get(act.getTimeWindows().size()-1).getEnd();
+    }
+
+    public double getEarliestOperationStartTime(TourActivity act){
+        return act.getTimeWindows().get(0).getStart();
+    }
+
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         double latestVehicleArrival = iFacts.getNewVehicle().getLatestArrival();
         Double latestArrTimeAtNextAct;
         Location nextActLocation;
+        double nextAct_theoreticalLatestOperationStartTime = getLatestOperationStartTime(nextAct);
+
         if(nextAct instanceof End) {
             latestArrTimeAtNextAct = latestVehicleArrival;
             nextActLocation = iFacts.getNewVehicle().getEndLocation();
@@ -63,7 +73,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 //            if(latestArrTimeAtNextAct == null) //try to get latest_operation_start_time of currVehicle
 //                latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getRoute().getVehicle(), StateFactory.LATEST_OPERATION_START_TIME ,Double.class);
             if(latestArrTimeAtNextAct == null) {//otherwise set it to theoretical_latest_operation_startTime
-                latestArrTimeAtNextAct = nextAct.getTheoreticalLatestOperationStartTime();
+                latestArrTimeAtNextAct = nextAct_theoreticalLatestOperationStartTime;
 //                throw new IllegalStateException("this is strange and should not be");
                 //ToDo here, there should be another solution
             }
@@ -77,9 +87,15 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 			 *     |--- vehicle's operation time ---|
 			 *                        					|--- prevAct or newAct or nextAct ---|
 			 */
-        if(latestVehicleArrival < prevAct.getTheoreticalEarliestOperationStartTime() ||
-                latestVehicleArrival < newAct.getTheoreticalEarliestOperationStartTime() ||
-                latestVehicleArrival < nextAct.getTheoreticalEarliestOperationStartTime()){
+        double prevAct_theoreticalEarliestOperationStartTime = getEarliestOperationStartTime(prevAct);
+        double newAct_theoreticalEarliestOperationStartTime = getEarliestOperationStartTime(newAct);
+//                newAct.getTheoreticalEarliestOperationStartTime();
+        double nextAct_theoreticalEarliestOperationStartTime = getEarliestOperationStartTime(nextAct);
+//                nextAct.getTheoreticalEarliestOperationStartTime();
+
+        if(latestVehicleArrival < prevAct_theoreticalEarliestOperationStartTime ||
+                latestVehicleArrival < newAct_theoreticalEarliestOperationStartTime ||
+                latestVehicleArrival < nextAct_theoreticalEarliestOperationStartTime){
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
 			/*
@@ -89,7 +105,10 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 			 *                    |--- prevAct ---|
 			 *  |--- newAct ---|
 			 */
-        if(newAct.getTheoreticalLatestOperationStartTime() < prevAct.getTheoreticalEarliestOperationStartTime()){
+        double newAct_theoreticalLatestOperationStartTime = getLatestOperationStartTime(newAct);
+//                newAct.getTheoreticalLatestOperationStartTime();
+
+        if(newAct_theoreticalLatestOperationStartTime < prevAct_theoreticalEarliestOperationStartTime){
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
 
@@ -107,14 +126,14 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 			 *                     |--- newAct ---|
 			 *  |--- nextAct ---|
 			 */
-        if(newAct.getTheoreticalEarliestOperationStartTime() > nextAct.getTheoreticalLatestOperationStartTime()){
+        if(newAct_theoreticalEarliestOperationStartTime > nextAct_theoreticalLatestOperationStartTime){
             return ConstraintsStatus.NOT_FULFILLED;
         }
         //			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
         double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
         double latestArrTimeAtNewAct =
-                Math.min(newAct.getTheoreticalLatestOperationStartTime(),
+                Math.min(newAct_theoreticalLatestOperationStartTime,
                         latestArrTimeAtNextAct -
                                 routingCosts.getBackwardTransportTime(newAct.getLocation(),nextActLocation,latestArrTimeAtNextAct,iFacts.getNewDriver(),iFacts.getNewVehicle())
                                     - newAct.getOperationTime()
