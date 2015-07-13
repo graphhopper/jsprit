@@ -98,7 +98,7 @@ public class BelhaizaReader {
 					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(fixedCostPerVehicle);
 					VehicleTypeImpl vehicleType = typeBuilder.build();
 					double end = Double.parseDouble(tokens[8])*timeProjectionFactor;
-					for(int i=0;i<11;i++) {
+					for(int i=0;i<10;i++) {
 						VehicleImpl vehicle = VehicleImpl.Builder.newInstance("solomonVehicle"+(i+1)).setEarliestStart(0.).setLatestArrival(end)
 								.setStartLocation(Location.Builder.newInstance().setId(customerId)
 										.setCoordinate(coord).build()).setType(vehicleType).build();

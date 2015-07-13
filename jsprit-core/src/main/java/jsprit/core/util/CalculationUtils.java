@@ -18,6 +18,7 @@
 
 package jsprit.core.util;
 
+import jsprit.core.algorithm.state.ActivityStartsAsSoonAsNextTimeWindowOpens;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 
 public class CalculationUtils {
@@ -31,6 +32,7 @@ public class CalculationUtils {
 	 * @return
 	 */
 	public static double getActivityEndTime(double actArrTime, TourActivity act){
-		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
+		return new ActivityStartsAsSoonAsNextTimeWindowOpens().getActivityStartTime(act,actArrTime) +  act.getOperationTime();
+//		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
 	}
 }

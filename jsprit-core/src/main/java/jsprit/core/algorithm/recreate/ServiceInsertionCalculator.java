@@ -135,8 +135,10 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 			}
 			double actArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(),deliveryAct2Insert.getLocation(),prevActStartTime,newDriver,newVehicle);
 			Collection<TimeWindow> timeWindows = service.getTimeWindows(actArrTime);
+			TimeWindow timeWindow = getNextTimeWindow(actArrTime,timeWindows);
+			if(timeWindow == null) break;
 			boolean not_fulfilled_break = true;
-			for(TimeWindow timeWindow : timeWindows) {
+//			for(TimeWindow timeWindow : timeWindows) {
 				deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
 				deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
 				ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
@@ -153,7 +155,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 				} else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
 					not_fulfilled_break = false;
 				}
-			}
+//			}
 			if(not_fulfilled_break) break;
 			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
 			prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
@@ -170,6 +172,16 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));
 		insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
 		return insertionData;
+	}
+
+	private TimeWindow getNextTimeWindow(double actArrTime, Collection<TimeWindow> timeWindows) {
+		for(TimeWindow tw : timeWindows){
+			if(actArrTime >= tw.getStart() && actArrTime <= tw.getEnd()) return tw;
+			else if(actArrTime < tw.getStart()){
+				return tw;
+			}
+		}
+		return null;
 	}
 
 }

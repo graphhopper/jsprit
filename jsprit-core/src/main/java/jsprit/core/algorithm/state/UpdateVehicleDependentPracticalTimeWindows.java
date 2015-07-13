@@ -75,6 +75,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
         vehicles = vehiclesToUpdate.get(route);
         for(Vehicle vehicle : vehicles){
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
+//            System.out.println("vehicle latest arr time: " + latest_arrTimes_at_prevAct);
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getEndLocation();
         }
     }
@@ -87,6 +88,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
             double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
                     latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activity.getOperationTime();
             double latestArrivalTime = getLatestArrivalTime(activity.getTimeWindows(),potentialLatestArrivalTimeAtCurrAct);
+//            System.out.println("update latest: " + latestArrivalTime + " activity: " + activity);
             stateManager.putInternalTypedActivityState(activity, vehicle, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = latestArrivalTime;
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = activity.getLocation();

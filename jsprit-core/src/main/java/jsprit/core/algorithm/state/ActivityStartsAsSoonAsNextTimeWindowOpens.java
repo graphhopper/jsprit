@@ -10,22 +10,19 @@ public class ActivityStartsAsSoonAsNextTimeWindowOpens implements ActivityStartS
 
     @Override
     public double getActivityStartTime(TourActivity activity, double arrivalTime) {
-        boolean next = false;
-        for(TimeWindow tw : activity.getTimeWindows()){
-            if(next){
-                return Math.max(tw.getStart(),arrivalTime);
-            }
+        TimeWindow last = null;
+        for(int i=activity.getTimeWindows().size()-1; i >= 0; i--){
+            TimeWindow tw = activity.getTimeWindows().get(i);
             if(tw.getStart() <= arrivalTime && tw.getEnd() >= arrivalTime){
                 return arrivalTime;
             }
-            else if(tw.getEnd() < arrivalTime){
-                next = true;
+            else if(arrivalTime > tw.getEnd()){
+                if(last != null) return last.getStart();
+                else return arrivalTime;
             }
-            else if(tw.getStart() > arrivalTime){
-                return tw.getStart();
-            }
+            last = tw;
         }
-        return arrivalTime;
+        return Math.max(arrivalTime,last.getStart());
     }
 
 }
