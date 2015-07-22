@@ -91,7 +91,12 @@ public class VehicleImpl extends AbstractVehicle{
         public Skills getSkills() {
             return null;
         }
-    }
+
+		@Override
+		public boolean hasVariableDepartureTime() {
+			return false;
+		}
+	}
 	
 	/**
 	 * Builder that builds the vehicle.
@@ -125,7 +130,9 @@ public class VehicleImpl extends AbstractVehicle{
 
         private Location endLocation;
 
-        private Builder(String id) {
+		private boolean hasVariableDepartureTime = false;
+
+		private Builder(String id) {
 			super();
 			this.id = id;
 		}
@@ -140,6 +147,11 @@ public class VehicleImpl extends AbstractVehicle{
 		public Builder setType(VehicleType type){
 			if(type==null) throw new IllegalStateException("type cannot be null.");
 			this.type = type;
+			return this;
+		}
+
+		public Builder setHasVariableDepartureTime(boolean hasVariableDepartureTime){
+			this.hasVariableDepartureTime = hasVariableDepartureTime;
 			return this;
 		}
 		
@@ -274,6 +286,8 @@ public class VehicleImpl extends AbstractVehicle{
 
     private final Location startLocation;
 
+	private final boolean hasVariableDepartureTime;
+
 	private VehicleImpl(Builder builder){
 		id = builder.id;
 		type = builder.type;
@@ -283,6 +297,7 @@ public class VehicleImpl extends AbstractVehicle{
 	    skills = builder.skills;
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
+		hasVariableDepartureTime = builder.hasVariableDepartureTime;
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
 	}
 	
@@ -341,7 +356,12 @@ public class VehicleImpl extends AbstractVehicle{
         return skills;
     }
 
-    /* (non-Javadoc)
+	@Override
+	public boolean hasVariableDepartureTime() {
+		return hasVariableDepartureTime;
+	}
+
+	/* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
 	@Override

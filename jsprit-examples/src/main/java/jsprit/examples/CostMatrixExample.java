@@ -18,7 +18,7 @@ package jsprit.examples;
 
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -58,7 +58,7 @@ public class CostMatrixExample {
 		Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance("2")).build();
 		Service s3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setLocation(Location.newInstance("3")).build();
 		
-		
+
 		/*
 		 * Assume the following symmetric distance-matrix
 		 * from,to,distance
@@ -98,7 +98,7 @@ public class CostMatrixExample {
 		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(FleetSize.INFINITE).setRoutingCost(costMatrix)
 				.addVehicle(vehicle).addJob(s1).addJob(s2).addJob(s3).build();
 		
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/fastAlgo.xml");
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
 		
 		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 		

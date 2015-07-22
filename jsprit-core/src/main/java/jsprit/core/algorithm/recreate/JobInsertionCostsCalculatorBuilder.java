@@ -259,8 +259,10 @@ public class JobInsertionCostsCalculatorBuilder {
 		if(constraintManager == null) throw new IllegalStateException("constraint-manager is null");
 
 		ActivityInsertionCostsCalculator actInsertionCalc;
+		ConfigureLocalActivityInsertionCalculator configLocal = null;
 		if(activityInsertionCostCalculator == null && addDefaultCostCalc){
 			actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
+			configLocal = new ConfigureLocalActivityInsertionCalculator(vrp, (LocalActivityInsertionCostsCalculator) actInsertionCalc);
 		}
 		else if(activityInsertionCostCalculator == null && !addDefaultCostCalc){
 			actInsertionCalc = new ActivityInsertionCostsCalculator(){
@@ -296,7 +298,11 @@ public class JobInsertionCostsCalculatorBuilder {
 		switcher.put(Pickup.class, serviceInsertion);
 		switcher.put(Delivery.class, serviceInsertion);
 
-		return new CalculatorPlusListeners(switcher);
+		CalculatorPlusListeners calculatorPlusListeners = new CalculatorPlusListeners(switcher);
+		if(configLocal != null){
+			calculatorPlusListeners.insertionListener.add(configLocal);
+		}
+		return calculatorPlusListeners;
 	}
 
 	private CalculatorPlusListeners createCalculatorConsideringFixedCosts(VehicleRoutingProblem vrp, JobInsertionCostsCalculator baseCalculator, RouteAndActivityStateGetter activityStates2, double weightOfFixedCosts){

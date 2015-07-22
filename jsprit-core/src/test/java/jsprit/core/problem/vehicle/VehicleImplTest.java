@@ -221,5 +221,15 @@ public class VehicleImplTest {
 		assertFalse(v.getSkills().containsSkill("ScrewDriver"));
 	}
 	
-	
+	@Test
+	public void whenSettingVariableDeparture_itShouldBeSet(){
+		VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setHasVariableDepartureTime(true).build();
+		assertTrue(v.hasVariableDepartureTime());
+	}
+
+	@Test
+	public void defaultOfHasVariableDepartureShouldBeFalse(){
+		VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
+		assertFalse(v.hasVariableDepartureTime());
+	}
 }
