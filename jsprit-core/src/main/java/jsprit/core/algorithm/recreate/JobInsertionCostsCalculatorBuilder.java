@@ -261,7 +261,7 @@ public class JobInsertionCostsCalculatorBuilder {
 		ActivityInsertionCostsCalculator actInsertionCalc;
 		ConfigureLocalActivityInsertionCalculator configLocal = null;
 		if(activityInsertionCostCalculator == null && addDefaultCostCalc){
-			actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts());
+			actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), statesManager);
 			configLocal = new ConfigureLocalActivityInsertionCalculator(vrp, (LocalActivityInsertionCostsCalculator) actInsertionCalc);
 		}
 		else if(activityInsertionCostCalculator == null && !addDefaultCostCalc){

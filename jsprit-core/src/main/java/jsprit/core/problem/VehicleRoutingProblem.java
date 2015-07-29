@@ -18,7 +18,7 @@ package jsprit.core.problem;
 
 import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
-import jsprit.core.problem.driver.Driver;
+import jsprit.core.problem.cost.WaitingTimeCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
@@ -75,19 +75,7 @@ public class VehicleRoutingProblem {
 
 		private VehicleRoutingTransportCosts transportCosts;
 		
-		private VehicleRoutingActivityCosts activityCosts = new VehicleRoutingActivityCosts() {
-			
-			@Override
-			public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
-				return 0;
-			}
-			
-			@Override
-			public String toString() {
-				return "[name=defaultActivityCosts]";
-			}
-			
-		};
+		private VehicleRoutingActivityCosts activityCosts = new WaitingTimeCosts();
 
 		private Map<String,Job> jobs = new LinkedHashMap<String, Job>();
 		

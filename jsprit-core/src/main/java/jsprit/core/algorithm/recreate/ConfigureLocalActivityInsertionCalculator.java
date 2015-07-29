@@ -28,13 +28,13 @@ public class ConfigureLocalActivityInsertionCalculator implements InsertionStart
     public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
         this.nuOfJobsToRecreate = unassignedJobs.size();
         double completenessRatio = (1-((double)nuOfJobsToRecreate/(double)vrp.getJobs().values().size()));
-        localActivityInsertionCostsCalculator.setSolutionCompletenessRatio(completenessRatio);
+        localActivityInsertionCostsCalculator.setSolutionCompletenessRatio(Math.max(0.5,completenessRatio));
     }
 
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
         nuOfJobsToRecreate--;
         double completenessRatio = (1-((double)nuOfJobsToRecreate/(double)vrp.getJobs().values().size()));
-        localActivityInsertionCostsCalculator.setSolutionCompletenessRatio(completenessRatio);
+        localActivityInsertionCostsCalculator.setSolutionCompletenessRatio(Math.max(0.5,completenessRatio));
     }
 }

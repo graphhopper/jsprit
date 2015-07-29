@@ -21,34 +21,86 @@ import jsprit.core.problem.solution.route.RouteVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 
-public class UpdateDepartureTime implements StateUpdater, RouteVisitor{
+import java.util.Iterator;
 
-	private VehicleRoutingTransportCosts routingCosts;
+/**
+ * Updates and memorizes latest operation start times at activities.
+ * 
+ * @author schroeder
+ *
+ */
+public class UpdateDepartureTime implements RouteVisitor, StateUpdater{
 
-	public UpdateDepartureTime(VehicleRoutingTransportCosts routingCosts) {
-		this.routingCosts = routingCosts;
+
+
+	private VehicleRoute route;
+
+	private VehicleRoutingTransportCosts transportCosts;
+
+	private double arrTimeAtPrevActWithoutWaiting;
+
+	private TourActivity prevAct;
+
+	private boolean hasEarliest = false;
+
+	private boolean hasVariableDepartureTime;
+
+	public UpdateDepartureTime(VehicleRoutingTransportCosts tpCosts) {
+		super();
+		this.transportCosts = tpCosts;
+
+	}
+
+
+	public void begin(VehicleRoute route) {
+		this.route = route;
+		hasEarliest = false;
+		prevAct = route.getEnd();
+		hasVariableDepartureTime = route.getVehicle().hasVariableDepartureTime();
+	}
+
+
+	public void visit(TourActivity activity) {
+		if(!hasVariableDepartureTime) return;
+		if(hasEarliest){
+			double potentialArrivalTimeAtCurrAct = arrTimeAtPrevActWithoutWaiting - transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), arrTimeAtPrevActWithoutWaiting, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
+			if(potentialArrivalTimeAtCurrAct < activity.getTheoreticalEarliestOperationStartTime()){
+				arrTimeAtPrevActWithoutWaiting = activity.getTheoreticalEarliestOperationStartTime();
+			}
+			else if(potentialArrivalTimeAtCurrAct >= activity.getTheoreticalEarliestOperationStartTime() && potentialArrivalTimeAtCurrAct <= activity.getTheoreticalLatestOperationStartTime()){
+				arrTimeAtPrevActWithoutWaiting = potentialArrivalTimeAtCurrAct;
+			}
+			else {
+				arrTimeAtPrevActWithoutWaiting = activity.getTheoreticalLatestOperationStartTime();
+			}
+		}
+		else{
+			if(activity.getTheoreticalEarliestOperationStartTime() > 0){
+				hasEarliest = true;
+				arrTimeAtPrevActWithoutWaiting = activity.getTheoreticalEarliestOperationStartTime();
+			}
+		}
+		prevAct = activity;
+	}
+
+
+	public void finish() {
+		if(!hasVariableDepartureTime) return;
+		if(hasEarliest){
+			double dep = arrTimeAtPrevActWithoutWaiting - transportCosts.getBackwardTransportTime(route.getStart().getLocation(), prevAct.getLocation(), arrTimeAtPrevActWithoutWaiting, route.getDriver(),route.getVehicle());
+			double newDepartureTime = Math.max(route.getVehicle().getEarliestDeparture(), dep);
+			route.setVehicleAndDepartureTime(route.getVehicle(),newDepartureTime);
+		}
+		else route.setVehicleAndDepartureTime(route.getVehicle(),route.getVehicle().getEarliestDeparture());
 	}
 
 	@Override
 	public void visit(VehicleRoute route) {
-		if(route.getVehicle() != null){
-			if(route.getVehicle().hasVariableDepartureTime()) {
-				if (!route.isEmpty()) {
-					TourActivity first = route.getActivities().get(0);
-					double earliestStart = first.getTheoreticalEarliestOperationStartTime();
-					double backwardTravelTime = routingCosts.getBackwardTransportTime(first.getLocation(), route.getStart().getLocation(),
-							earliestStart, route.getDriver(), route.getVehicle());
-					double newDepartureTime = Math.max(route.getStart().getEndTime(), earliestStart - backwardTravelTime);
-					route.setVehicleAndDepartureTime(route.getVehicle(), newDepartureTime);
-				}
-			}
+		begin(route);
+		Iterator<TourActivity> revIterator = route.getTourActivities().reverseActivityIterator();
+		while(revIterator.hasNext()){
+			visit(revIterator.next());
 		}
+		finish();
 	}
-
-
-
-
-
-	
-
 }

@@ -19,15 +19,26 @@ package jsprit.core.algorithm.state;
 
 import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import jsprit.core.problem.solution.route.RouteVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
-public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivityVisitor, StateUpdater{
+public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor, StateUpdater{
+
+    @Override
+    public void visit(VehicleRoute route) {
+        begin(route);
+        Iterator<TourActivity> revIterator = route.getTourActivities().reverseActivityIterator();
+        while(revIterator.hasNext()){
+            visit(revIterator.next());
+        }
+        finish();
+    }
 
     public static interface VehiclesToUpdate {
 
@@ -68,7 +79,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
         this.vehiclesToUpdate = vehiclesToUpdate;
     }
 
-    @Override
+
     public void begin(VehicleRoute route) {
         this.route = route;
         vehicles = vehiclesToUpdate.get(route);
@@ -78,7 +89,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
         }
     }
 
-    @Override
+
     public void visit(TourActivity activity) {
         for(Vehicle vehicle : vehicles){
             double latestArrTimeAtPrevAct = latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
@@ -92,7 +103,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements ReverseActivi
         }
     }
 
-    @Override
+
     public void finish() {}
 
 }
