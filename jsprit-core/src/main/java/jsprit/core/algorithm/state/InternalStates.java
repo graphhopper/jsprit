@@ -46,4 +46,6 @@ public class InternalStates {
 	public static final StateId WAITING = new StateFactory.StateIdImpl("waiting",11);
 
 	public static final StateId TIME_SLACK = new StateFactory.StateIdImpl("time_slack",12);
+
+	public static final StateId FUTURE_WAITING = new StateFactory.StateIdImpl("future_waiting",13);
 }

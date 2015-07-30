@@ -35,25 +35,26 @@ public class VariableStartAndWaitingTimeExample {
 
     public static void main(String[] args) {
 
-        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(1.5).setCostPerWaitingTime(1.0).build();
+        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(2.5).setCostPerWaitingTime(2.0).build();
+//        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type1").setCostPerDistance(1.5).setCostPerWaitingTime(.0).build();
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setReturnToDepot(true)
                 .setHasVariableDepartureTime(true).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setType(type).setReturnToDepot(true)
                 .setHasVariableDepartureTime(true).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setType(type).setReturnToDepot(true)
-                .setHasVariableDepartureTime(true).setStartLocation(Location.newInstance(0, 0)).build();
+                .setHasVariableDepartureTime(false).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         Random r = RandomNumberGeneration.newInstance();
-        for(int i=0;i<20;i++){
-            Service s = Service.Builder.newInstance("s_"+i)
+        for(int i=0;i<40;i++){
+            Service s = Service.Builder.newInstance("s_"+i).setServiceTime(0)
 //                    .setTimeWindow(TimeWindow.newInstance(r.nextInt(50),100+r.nextInt(150)))
                     .setLocation(Location.newInstance(1 - r.nextInt(5), 10 + r.nextInt(10))).build();
             vrpBuilder.addJob(s);
         }
-        Service s1 = Service.Builder.newInstance("s12").setLocation(Location.newInstance(-3, 15)).setTimeWindow(TimeWindow.newInstance(20, 40)).build();
+        Service s1 = Service.Builder.newInstance("s12").setLocation(Location.newInstance(-3, 15)).setTimeWindow(TimeWindow.newInstance(20, 60)).build();
 //        Service s4 = Service.Builder.newInstance("s13").setLocation(Location.newInstance(5,15)).setTimeWindow(TimeWindow.newInstance(100, 160)).build();
-        Service s2 = Service.Builder.newInstance("s10").setLocation(Location.newInstance(-1, 15)).setTimeWindow(TimeWindow.newInstance(200, 210)).build();
+        Service s2 = Service.Builder.newInstance("s10").setLocation(Location.newInstance(-1, 15)).setTimeWindow(TimeWindow.newInstance(200, 250)).build();
         Service s3 = Service.Builder.newInstance("s11").setLocation(Location.newInstance(10, 10)).setTimeWindow(TimeWindow.newInstance(300, 310)).build();
         vrpBuilder.addJob(s1).addJob(s2).addJob(s3).addVehicle(v4).addVehicle(v2).addVehicle(v3);
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
@@ -70,8 +71,8 @@ public class VariableStartAndWaitingTimeExample {
                 return  Jsprit.Builder.newInstance(vrp)
                         .addCoreStateAndConstraintStuff(true)
                         .setStateAndConstraintManager(stateManager, constraintManager)
-                        .setProperty(Jsprit.Parameter.THRESHOLD_INI, "0.1")
-                        .setProperty(Jsprit.Parameter.THRESHOLD_ALPHA, "0.3")
+//                        .setProperty(Jsprit.Parameter.THRESHOLD_INI, "0.1")
+//                        .setProperty(Jsprit.Parameter.THRESHOLD_ALPHA, "0.3")
 //                                .setProperty(Parameter.)
 //                        .setProperty(Jsprit.Parameter.CONSTRUCTION, Jsprit.Construction.BEST_INSERTION.toString())
                         .setObjectiveFunction(new SolutionCostCalculator() {
@@ -96,7 +97,7 @@ public class VariableStartAndWaitingTimeExample {
             }
         };
         VehicleRoutingAlgorithm vra = algorithmFactory.createAlgorithm(vrp);
-        vra.setMaxIterations(1000);
+        vra.setMaxIterations(500);
         vra.addListener(new AlgorithmSearchProgressChartListener("output/search"));
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         System.out.println("c: " + solution.getCost());
