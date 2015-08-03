@@ -45,12 +45,13 @@ public class UpdateDepartureTime implements RouteVisitor, StateUpdater{
 
 	private boolean hasVariableDepartureTime;
 
-	public UpdateDepartureTime(VehicleRoutingTransportCosts tpCosts) {
+	private StateManager stateManager;
+
+	public UpdateDepartureTime(VehicleRoutingTransportCosts tpCosts, StateManager stateManager) {
 		super();
 		this.transportCosts = tpCosts;
-
+		this.stateManager = stateManager;
 	}
-
 
 	public void begin(VehicleRoute route) {
 		this.route = route;
@@ -73,11 +74,13 @@ public class UpdateDepartureTime implements RouteVisitor, StateUpdater{
 			else {
 				arrTimeAtPrevActWithoutWaiting = activity.getTheoreticalLatestOperationStartTime();
 			}
+			stateManager.putInternalTypedActivityState(activity,route.getVehicle(),InternalStates.EARLIEST_WITHOUT_WAITING,arrTimeAtPrevActWithoutWaiting);
 		}
 		else{
 			if(activity.getTheoreticalEarliestOperationStartTime() > 0){
 				hasEarliest = true;
 				arrTimeAtPrevActWithoutWaiting = activity.getTheoreticalEarliestOperationStartTime();
+				stateManager.putInternalTypedActivityState(activity,route.getVehicle(),InternalStates.EARLIEST_WITHOUT_WAITING,arrTimeAtPrevActWithoutWaiting);
 			}
 		}
 		prevAct = activity;

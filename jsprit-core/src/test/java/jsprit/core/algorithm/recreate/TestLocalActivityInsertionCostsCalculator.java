@@ -446,12 +446,12 @@ public class TestLocalActivityInsertionCostsCalculator {
 		LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(),new WaitingTimeCosts(),stateManager);
 		calc.setSolutionCompletenessRatio(1.);
 		double c = calc.getCosts(context,prevAct,nextAct,newAct,10);
-		assertEquals(-10.,c,0.01);
+		assertEquals(0.,c,0.01);
 		/*
 		activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
 		 */
 		/*
-		old = s:40,act1:50,act2:60,act3:70,act4:80 --> w=20
+		old = s:40,act1:50,act2:60,act3:70,act4:90 --> w=10
 		new = s:30,act1:40,act2:50,act3:70,act4:80,act5:90 --> w=10 => -10
 		 */
 	}
@@ -485,13 +485,99 @@ public class TestLocalActivityInsertionCostsCalculator {
 		LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(),new WaitingTimeCosts(),stateManager);
 		calc.setSolutionCompletenessRatio(1.);
 		double c = calc.getCosts(context,prevAct,nextAct,newAct,10);
-		assertEquals(20.,c,0.01);
+		assertEquals(30.,c,0.01);
 		/*
 		activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
 		 */
 		/*
-		old = s:40,act1:50,act2:60,act3:70,act4:80 --> w=20
-		new = s:0,act1:10,act2:20,act3:40,act4:50,act5:60 --> w=40 => 20
+		old = s:40,act1:50,act2:60,70,act3:(70,80),act4:90 --> w=10
+		new = s:0,act1:10,act2:20,act3:(40,50),act4:50,act5:60 --> w=40 => 20
+		 */
+	}
+
+	@Test
+	public void whenAddingNewWithTWBetweenTwoActs1WithVarStart_itShouldCalcInsertionCostsCorrectly(){
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
+
+		VehicleImpl v = VehicleImpl.Builder.newInstance("v").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+//		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+
+		Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10,0)).build();
+		Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(10,20)).setLocation(Location.newInstance(20, 0)).build();
+		Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30,0)).setTimeWindow(TimeWindow.newInstance(40,70)).build();
+
+		Service afterNextS = Service.Builder.newInstance("afterNext").setLocation(Location.newInstance(40,0)).setTimeWindow(TimeWindow.newInstance(50,100)).build();
+		Service afterAfterNextS = Service.Builder.newInstance("afterAfterNext").setLocation(Location.newInstance(50,0)).setTimeWindow(TimeWindow.newInstance(100,500)).build();
+
+		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(prevS).addJob(newS).addJob(nextS)
+				.addJob(afterNextS).addJob(afterAfterNextS).build();
+
+		TourActivity prevAct = vrp.getActivities(prevS).get(0);
+		TourActivity newAct = vrp.getActivities(newS).get(0);
+		TourActivity nextAct = vrp.getActivities(nextS).get(0);
+
+		VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).addService(afterNextS).addService(afterAfterNextS).build();
+		JobInsertionContext context = new JobInsertionContext(route,newS,v,null,0.);
+
+		StateManager stateManager = getStateManager(vrp, route);
+
+		LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(),new WaitingTimeCosts(),stateManager);
+		calc.setSolutionCompletenessRatio(1.);
+		double c = calc.getCosts(context,prevAct,nextAct,newAct,10);
+		assertEquals(30.,c,0.01);
+		/*
+		activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
+		 */
+		/*
+		old = s:40,act1:50,act2:60,70,act3:(70,80),act4:90 --> w=10
+		new = s:0,act1:10,act2:20,act3:(40,50),act4:50,act5:60 --> w=40 => 20
+		 */
+	}
+
+	@Test
+	public void whenAddingNewWithTWBetweenTwoActs5WithVarStart_itShouldCalcInsertionCostsCorrectly(){
+		VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
+
+		VehicleImpl v = VehicleImpl.Builder.newInstance("v").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+//		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+
+		Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10,0)).build();
+		Service newS = Service.Builder.newInstance("new").setServiceTime(10)
+				.setTimeWindow(TimeWindow.newInstance(0,20))
+				.setLocation(Location.newInstance(20, 0)).build();
+		Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30,0))
+//				.setTimeWindow(TimeWindow.newInstance(40,80))
+				.build();
+
+		Service afterNextS = Service.Builder.newInstance("afterNext").setLocation(Location.newInstance(40,0))
+//				.setTimeWindow(TimeWindow.newInstance(50,100))
+				.build();
+		Service afterAfterNextS = Service.Builder.newInstance("afterAfterNext").setLocation(Location.newInstance(50,0))
+				.setTimeWindow(TimeWindow.newInstance(100,500))
+				.build();
+
+		VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(prevS).addJob(newS).addJob(nextS)
+				.addJob(afterNextS).addJob(afterAfterNextS).build();
+
+		TourActivity prevAct = vrp.getActivities(prevS).get(0);
+		TourActivity newAct = vrp.getActivities(newS).get(0);
+		TourActivity nextAct = vrp.getActivities(nextS).get(0);
+
+		VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).addService(afterNextS).addService(afterAfterNextS).build();
+		JobInsertionContext context = new JobInsertionContext(route,newS,v,null,0.);
+
+		StateManager stateManager = getStateManager(vrp, route);
+
+		LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(),new WaitingTimeCosts(),stateManager);
+		calc.setSolutionCompletenessRatio(1.);
+		double c = calc.getCosts(context,prevAct,nextAct,newAct,10);
+		assertEquals(40.,c,0.01);
+		/*
+		activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
+		 */
+		/*
+		old = s:40,act1:50,act2:60,70,act3:(70,80),act4:90 --> w=10
+		new = s:0,act1:10,act2:20,act3:(40,50),act4:50,act5:60 --> w=40 => 20
 		 */
 	}
 
@@ -501,7 +587,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 		stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts()));
 		stateManager.addStateUpdater(new UpdateVehicleDependentPracticalTimeWindows(stateManager,vrp.getTransportCosts()));
 		stateManager.addStateUpdater(new UpdateFutureWaitingTimes(stateManager,vrp.getTransportCosts()));
-		stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts()));
+		stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts(),stateManager ));
 		stateManager.informInsertionStarts(Arrays.asList(route),new ArrayList<Job>());
 		return stateManager;
 	}

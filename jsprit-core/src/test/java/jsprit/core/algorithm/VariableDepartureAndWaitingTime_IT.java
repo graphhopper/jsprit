@@ -56,7 +56,7 @@ public class VariableDepartureAndWaitingTime_IT {
             @Override
             public VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp) {
                 StateManager stateManager = new StateManager(vrp);
-                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts()));
+                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts(),stateManager ));
                 ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 
                 return  Jsprit.Builder.newInstance(vrp)
@@ -160,7 +160,7 @@ public class VariableDepartureAndWaitingTime_IT {
             @Override
             public VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp) {
                 StateManager stateManager = new StateManager(vrp);
-                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts()));
+                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts(), stateManager));
                 ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 
                 return  Jsprit.Builder.newInstance(vrp)
@@ -206,7 +206,7 @@ public class VariableDepartureAndWaitingTime_IT {
             @Override
             public VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp) {
                 StateManager stateManager = new StateManager(vrp);
-                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts()));
+                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts(), stateManager));
                 ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 
                 return  Jsprit.Builder.newInstance(vrp)
@@ -260,7 +260,7 @@ public class VariableDepartureAndWaitingTime_IT {
             @Override
             public VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp) {
                 StateManager stateManager = new StateManager(vrp);
-                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts()));
+                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts(), stateManager));
                 ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 
                 return  Jsprit.Builder.newInstance(vrp)
@@ -323,7 +323,7 @@ public class VariableDepartureAndWaitingTime_IT {
             @Override
             public VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp) {
                 StateManager stateManager = new StateManager(vrp);
-                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts()));
+                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts(), stateManager));
                 ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 
                 return  Jsprit.Builder.newInstance(vrp)

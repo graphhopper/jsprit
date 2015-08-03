@@ -1,6 +1,7 @@
 package jsprit.core.algorithm.state;
 
 import jsprit.core.problem.Location;
+import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.RouteVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -11,6 +12,8 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.mock;
+
 /**
  * Created by schroeder on 22/07/15.
  */
@@ -20,7 +23,8 @@ public class UpdateDepartureTimeTest {
 
     @Before
     public void doBefore(){
-        revVisitors = new UpdateDepartureTime(CostFactory.createManhattanCosts());
+        StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
+        revVisitors = new UpdateDepartureTime(CostFactory.createManhattanCosts(), stateManager);
     }
 
     @Test
