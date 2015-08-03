@@ -5,8 +5,7 @@ import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.state.StateManager;
-import jsprit.core.algorithm.state.UpdateDepartureTime;
-import jsprit.core.algorithm.state.UpdateTimeSlack;
+import jsprit.core.algorithm.state.UpdateFutureWaitingTimes;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
@@ -32,11 +31,11 @@ public class VariableStartAndWaitingTimeExample2 {
 
     public static void main(String[] args) {
 
-        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(1.5).setCostPerWaitingTime(1.0).build();
+        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(1.5).setCostPerWaitingTime(1.).build();
 //        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type1").setCostPerDistance(1.5).setCostPerWaitingTime(.0).build();
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setReturnToDepot(true)
-                .setHasVariableDepartureTime(false).setStartLocation(Location.newInstance(0, 0)).build();
+                .setStartLocation(Location.newInstance(0, 0)).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
@@ -45,7 +44,7 @@ public class VariableStartAndWaitingTimeExample2 {
         Service s4 = Service.Builder.newInstance("s13").setLocation(Location.newInstance(0, 10)).build();
         Service s2 = Service.Builder.newInstance("s10").setLocation(Location.newInstance(1, 12)).build();
         Service s3 = Service.Builder.newInstance("s11").setLocation(Location.newInstance(4, 10)).build();
-        Service s5 = Service.Builder.newInstance("s14").setLocation(Location.newInstance(6, 5)).setTimeWindow(TimeWindow.newInstance(100,220)).build();
+        Service s5 = Service.Builder.newInstance("s14").setLocation(Location.newInstance(6, 5)).setTimeWindow(TimeWindow.newInstance(110,220)).build();
         vrpBuilder.addJob(s1).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addVehicle(v2);
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         final VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -54,8 +53,7 @@ public class VariableStartAndWaitingTimeExample2 {
             @Override
             public VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp) {
                 StateManager stateManager = new StateManager(vrp);
-                stateManager.addStateUpdater(new UpdateDepartureTime(vrp.getTransportCosts(), stateManager));
-                stateManager.addStateUpdater(new UpdateTimeSlack(stateManager,vrp.getTransportCosts()));
+                stateManager.addStateUpdater(new UpdateFutureWaitingTimes(stateManager,vrp.getTransportCosts()));
                 ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
 
                 return  Jsprit.Builder.newInstance(vrp)

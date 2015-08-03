@@ -92,10 +92,7 @@ public class VehicleImpl extends AbstractVehicle{
             return null;
         }
 
-		@Override
-		public boolean hasVariableDepartureTime() {
-			return false;
-		}
+
 	}
 	
 	/**
@@ -130,7 +127,6 @@ public class VehicleImpl extends AbstractVehicle{
 
         private Location endLocation;
 
-		private boolean hasVariableDepartureTime = false;
 
 		private Builder(String id) {
 			super();
@@ -150,11 +146,7 @@ public class VehicleImpl extends AbstractVehicle{
 			return this;
 		}
 
-		public Builder setHasVariableDepartureTime(boolean hasVariableDepartureTime){
-			this.hasVariableDepartureTime = hasVariableDepartureTime;
-			return this;
-		}
-		
+
 		/**
 		 * Sets the flag whether the vehicle must return to depot or not.
 		 * 
@@ -286,8 +278,6 @@ public class VehicleImpl extends AbstractVehicle{
 
     private final Location startLocation;
 
-	private final boolean hasVariableDepartureTime;
-
 	private VehicleImpl(Builder builder){
 		id = builder.id;
 		type = builder.type;
@@ -297,7 +287,6 @@ public class VehicleImpl extends AbstractVehicle{
 	    skills = builder.skills;
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
-		hasVariableDepartureTime = builder.hasVariableDepartureTime;
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills, returnToDepot));
 	}
 	
@@ -356,10 +345,6 @@ public class VehicleImpl extends AbstractVehicle{
         return skills;
     }
 
-	@Override
-	public boolean hasVariableDepartureTime() {
-		return hasVariableDepartureTime;
-	}
 
 	/* (non-Javadoc)
      * @see java.lang.Object#hashCode()
