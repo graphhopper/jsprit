@@ -37,16 +37,16 @@ public class VariableStartAndWaitingTimeExample {
     public static void main(String[] args) {
 
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type1").setCostPerDistance(3.).setCostPerWaitingTime(2.0).build();
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type1").setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
 //        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type2").setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setReturnToDepot(false)
                 .setStartLocation(Location.newInstance(0, 0))
-//                .setEarliestStart(0).setLatestArrival(400)
+                .setEarliestStart(0).setLatestArrival(220)
                 .build();
         VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setType(type1).setReturnToDepot(false)
-                .setStartLocation(Location.newInstance(0, 0))
-//                .setEarliestStart(0).setLatestArrival(400)
+                .setStartLocation(Location.newInstance(0, 10))
+                .setEarliestStart(200).setLatestArrival(450)
                 .build();
 //        VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setType(type2).setReturnToDepot(true)
 //                .setStartLocation(Location.newInstance(0, 0)).build();
@@ -54,15 +54,15 @@ public class VariableStartAndWaitingTimeExample {
         Random r = RandomNumberGeneration.newInstance();
         for(int i=0;i<40;i++){
             Service s = Service.Builder.newInstance("s_"+i).setServiceTime(5)
-//                    .setTimeWindow(TimeWindow.newInstance(r.nextInt(50),100+r.nextInt(150)))
+//                    .setTimeWindow(TimeWindow.newInstance(0,100*(1+r.nextInt(3))))
                     .setLocation(Location.newInstance(1 - r.nextInt(5), 10 + r.nextInt(10))).build();
             vrpBuilder.addJob(s);
         }
         Service s1 = Service.Builder.newInstance("s12").setLocation(Location.newInstance(-3, 15)).setTimeWindow(TimeWindow.newInstance(290, 600)).build();
-//        Service s4 = Service.Builder.newInstance("s13").setLocation(Location.newInstance(5,15)).setTimeWindow(TimeWindow.newInstance(100, 160)).build();
-        Service s2 = Service.Builder.newInstance("s10").setLocation(Location.newInstance(-1, 15)).setTimeWindow(TimeWindow.newInstance(0, 250)).build();
+        Service s4 = Service.Builder.newInstance("s13").setLocation(Location.newInstance(0,20)).setTimeWindow(TimeWindow.newInstance(290, 340)).build();
+        Service s2 = Service.Builder.newInstance("s10").setLocation(Location.newInstance(-1, 15)).setTimeWindow(TimeWindow.newInstance(300, 350)).build();
         Service s3 = Service.Builder.newInstance("s11").setLocation(Location.newInstance(10, 10)).setTimeWindow(TimeWindow.newInstance(300, 600)).build();
-        vrpBuilder.addJob(s1).addJob(s2).addJob(s3).addVehicle(v2).addVehicle(v3);
+        vrpBuilder.addJob(s1).addJob(s2).addJob(s3).addJob(s4).addVehicle(v2).addVehicle(v3);
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         final VehicleRoutingProblem vrp = vrpBuilder.build();
 
