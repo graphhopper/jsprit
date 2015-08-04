@@ -290,11 +290,15 @@ public class JobInsertionCostsCalculatorBuilder {
 		ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
         serviceInsertion.setJobActivityFactory(activityFactory);
 
+		BreakInsertionCalculator breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(), actInsertionCalc, constraintManager);
+		breakInsertionCalculator.setJobActivityFactory(activityFactory);
+
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
 		switcher.put(Shipment.class, shipmentInsertion);
 		switcher.put(Service.class, serviceInsertion);
 		switcher.put(Pickup.class, serviceInsertion);
 		switcher.put(Delivery.class, serviceInsertion);
+		switcher.put(Break.class, breakInsertionCalculator);
 
 		return new CalculatorPlusListeners(switcher);
 	}

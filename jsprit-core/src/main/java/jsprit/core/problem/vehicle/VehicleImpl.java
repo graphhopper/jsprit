@@ -19,6 +19,7 @@ package jsprit.core.problem.vehicle;
 import jsprit.core.problem.AbstractVehicle;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
+import jsprit.core.problem.job.Break;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -91,7 +92,10 @@ public class VehicleImpl extends AbstractVehicle{
         public Skills getSkills() {
             return null;
         }
-    }
+
+		@Override
+		public Break getBreak() { return null; }
+	}
 	
 	/**
 	 * Builder that builds the vehicle.
@@ -125,7 +129,9 @@ public class VehicleImpl extends AbstractVehicle{
 
         private Location endLocation;
 
-        private Builder(String id) {
+		private Break aBreak;
+
+		private Builder(String id) {
 			super();
 			this.id = id;
 		}
@@ -245,7 +251,12 @@ public class VehicleImpl extends AbstractVehicle{
             this.skillBuilder.addAllSkills(skills.values());
             return this;
         }
-    }
+
+		public Builder setBreak(Break aBreak) {
+			this.aBreak = aBreak;
+			return this;
+		}
+	}
 
 	/**
 	 * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
@@ -274,6 +285,8 @@ public class VehicleImpl extends AbstractVehicle{
 
     private final Location startLocation;
 
+	private final Break aBreak;
+
 	private VehicleImpl(Builder builder){
 		id = builder.id;
 		type = builder.type;
@@ -283,6 +296,7 @@ public class VehicleImpl extends AbstractVehicle{
 	    skills = builder.skills;
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
+		aBreak = builder.aBreak;
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
 	}
 	
@@ -341,7 +355,12 @@ public class VehicleImpl extends AbstractVehicle{
         return skills;
     }
 
-    /* (non-Javadoc)
+	@Override
+	public Break getBreak() {
+		return aBreak;
+	}
+
+	/* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
 	@Override

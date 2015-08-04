@@ -23,6 +23,7 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.BreakActivity;
 import jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
 import jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
 import jsprit.core.problem.solution.route.activity.TourActivity;
@@ -117,7 +118,7 @@ public class VehicleRoutingProblem {
                     acts.add(shipmentActivityFactory.createPickup((Shipment) job));
                     acts.add(shipmentActivityFactory.createDelivery((Shipment) job));
                 }
-                return acts;
+				return acts;
             }
 
         };
@@ -138,7 +139,7 @@ public class VehicleRoutingProblem {
 
         private final DefaultTourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
 
-        private void incJobIndexCounter(){
+		private void incJobIndexCounter(){
             jobIndexCounter++;
         }
 
@@ -265,6 +266,16 @@ public class VehicleRoutingProblem {
             activityMap.put(job, jobActs);
 		}
 
+		private void addBreaksToActivityMap(){
+			for(Vehicle v : uniqueVehicles){
+				if(v.getBreak() != null){
+					AbstractActivity breakActivity = BreakActivity.newInstance(v.getBreak());
+					breakActivity.setIndex(activityIndexCounter);
+					incActivityIndexCounter();
+					activityMap.put(v.getBreak(),Arrays.asList(breakActivity));
+				}
+			}
+		}
 
         /**
          * Adds an initial vehicle route.
@@ -402,10 +413,12 @@ public class VehicleRoutingProblem {
 			if(transportCosts == null){
 				transportCosts = new CrowFlyCosts(getLocations());
 			}
-            for(Job job : tentativeJobs.values())
-                if (!jobsInInitialRoutes.contains(job.getId())) {
-                    addJobToFinalJobMapAndCreateActivities(job);
-                }
+            for(Job job : tentativeJobs.values()) {
+				if (!jobsInInitialRoutes.contains(job.getId())) {
+					addJobToFinalJobMapAndCreateActivities(job);
+				}
+			}
+			addBreaksToActivityMap();
 			return new VehicleRoutingProblem(this);
 		}
 

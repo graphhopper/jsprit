@@ -160,10 +160,14 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         }
 
         private double scoreService(InsertionData best, Job job) {
-            double maxDepotDistance = Math.max(
-                    getDistance(best.getSelectedVehicle().getStartLocation(), ((Service) job).getLocation()),
-                    getDistance(best.getSelectedVehicle().getEndLocation(), ((Service) job).getLocation())
-            );
+            Location location = ((Service) job).getLocation();
+            double maxDepotDistance = 0;
+            if(location != null) {
+                maxDepotDistance = Math.max(
+                        getDistance(best.getSelectedVehicle().getStartLocation(), location),
+                        getDistance(best.getSelectedVehicle().getEndLocation(), location)
+                );
+            }
             return Math.max(tw_param * (((Service)job).getTimeWindow().getEnd() - ((Service)job).getTimeWindow().getStart()),minTimeWindowScore) +
                     depotDistance_param * maxDepotDistance;
         }

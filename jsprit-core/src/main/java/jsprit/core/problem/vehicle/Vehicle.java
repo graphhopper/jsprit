@@ -20,6 +20,7 @@ import jsprit.core.problem.HasId;
 import jsprit.core.problem.HasIndex;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
+import jsprit.core.problem.job.Break;
 
 /**
  * Basic interface for vehicle-data.
@@ -72,4 +73,6 @@ public interface Vehicle extends HasId, HasIndex {
 	public abstract VehicleTypeKey getVehicleTypeIdentifier();
 
     public abstract Skills getSkills();
+
+	public abstract Break getBreak();
 }
