@@ -109,9 +109,9 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 			relevantVehicles.addAll(fleetManager.getAvailableVehicles());		
 		}
 		for(Vehicle v : relevantVehicles){
-			double depTime;
-			if(v == selectedVehicle) depTime = currentRoute.getDepartureTime();
-			else depTime = v.getEarliestDeparture();
+			double depTime = v.getEarliestDeparture();
+//			if(v == selectedVehicle) depTime = currentRoute.getDepartureTime();
+//			else depTime = v.getEarliestDeparture();
 			InsertionData iData = insertionCalculator.getInsertionData(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);
 			if(iData instanceof NoInsertionFound) { 
                 continue;

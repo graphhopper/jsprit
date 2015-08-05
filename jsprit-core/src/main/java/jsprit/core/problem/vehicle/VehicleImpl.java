@@ -297,7 +297,8 @@ public class VehicleImpl extends AbstractVehicle{
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
 		aBreak = builder.aBreak;
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
+//        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills, returnToDepot));
 	}
 	
 	/**

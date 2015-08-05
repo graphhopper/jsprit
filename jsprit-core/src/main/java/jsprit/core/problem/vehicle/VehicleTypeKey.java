@@ -37,8 +37,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey{
 	public final double earliestStart;
 	public final double latestEnd;
     public final Skills skills;
+    public final boolean returnToDepot;
 	
-	public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills) {
+	public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
 		super();
 		this.type = typeId;
 		this.startLocationId = startLocationId;
@@ -46,17 +47,19 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey{
 		this.earliestStart = earliestStart;
 		this.latestEnd = latestEnd;
         this.skills = skills;
+        this.returnToDepot=returnToDepot;
 	}
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VehicleTypeKey)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         VehicleTypeKey that = (VehicleTypeKey) o;
 
         if (Double.compare(that.earliestStart, earliestStart) != 0) return false;
         if (Double.compare(that.latestEnd, latestEnd) != 0) return false;
+        if (returnToDepot != that.returnToDepot) return false;
         if (!endLocationId.equals(that.endLocationId)) return false;
         if (!skills.equals(that.skills)) return false;
         if (!startLocationId.equals(that.startLocationId)) return false;
@@ -77,6 +80,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey{
         temp = Double.doubleToLongBits(latestEnd);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + skills.hashCode();
+        result = 31 * result + (returnToDepot ? 1 : 0);
         return result;
     }
 

@@ -42,4 +42,12 @@ public class InternalStates {
 	public final static StateId PAST_MAXLOAD = new StateFactory.StateIdImpl("past_max_load", 9);
 
     public static final StateId SKILLS = new StateFactory.StateIdImpl("skills", 10);
+
+	public static final StateId WAITING = new StateFactory.StateIdImpl("waiting",11);
+
+	public static final StateId TIME_SLACK = new StateFactory.StateIdImpl("time_slack",12);
+
+	public static final StateId FUTURE_WAITING = new StateFactory.StateIdImpl("future_waiting",13);
+
+	public static final StateId EARLIEST_WITHOUT_WAITING = new StateFactory.StateIdImpl("earliest_without_waiting",14);
 }

@@ -42,19 +42,32 @@ public class VehicleTypeImpl implements VehicleType {
 		}
 	
 		public final double fix;
+		@Deprecated
 		public final double perTimeUnit;
+		public final double perTransportTimeUnit;
 		public final double perDistanceUnit;
+		public final double perWaitingTimeUnit;
 
 		private VehicleCostParams(double fix, double perTimeUnit,double perDistanceUnit) {
 			super();
 			this.fix = fix;
 			this.perTimeUnit = perTimeUnit;
+			this.perTransportTimeUnit = perTimeUnit;
 			this.perDistanceUnit = perDistanceUnit;
+			this.perWaitingTimeUnit = 0.;
 		}
-		
+
+		public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit) {
+			this.fix = fix;
+			this.perTimeUnit = perTimeUnit;
+			this.perTransportTimeUnit = perTimeUnit;
+			this.perDistanceUnit = perDistanceUnit;
+			this.perWaitingTimeUnit = perWaitingTimeUnit;
+		}
+
 		@Override
 		public String toString() {
-			return "[fixed="+fix+"][perTime="+perTimeUnit+"][perDistance="+perDistanceUnit+"]";
+			return "[fixed="+fix+"][perTime="+perTransportTimeUnit+"][perDistance="+perDistanceUnit+"][perWaitingTimeUnit="+perWaitingTimeUnit+"]";
 		}
 	}
 
@@ -65,7 +78,9 @@ public class VehicleTypeImpl implements VehicleType {
 	 *
 	 */
 	public static class Builder{
-		
+
+
+
 		public static VehicleTypeImpl.Builder newInstance(String id) {
 			if(id==null) throw new IllegalStateException();
 			return new Builder(id);
@@ -80,6 +95,7 @@ public class VehicleTypeImpl implements VehicleType {
 		private double fixedCost = 0.0;
 		private double perDistance = 1.0;
 		private double perTime = 0.0;
+		private double perWaitingTime = 0.0;
 
 		private String profile = "car";
 		
@@ -143,11 +159,45 @@ public class VehicleTypeImpl implements VehicleType {
 		 * @param perTime
 		 * @return this builder
 		 * @throws IllegalStateException if costPerTime is smaller than zero
+		 * @deprecated use .setCostPerTransportTime(..) instead
 		 */
+		@Deprecated
 		public VehicleTypeImpl.Builder setCostPerTime(double perTime){ 
 			if(perTime < 0.0) throw new IllegalStateException();
 			this.perTime = perTime; 
 			return this; 
+		}
+
+		/**
+		 * Sets cost per time unit, for instance € per second.
+		 *
+		 * <p>by default it is 0.0
+		 *
+		 * @param perTime
+		 * @return this builder
+		 * @throws IllegalStateException if costPerTime is smaller than zero
+		 *
+		 */
+		public VehicleTypeImpl.Builder setCostPerTransportTime(double perTime){
+			if(perTime < 0.0) throw new IllegalStateException();
+			this.perTime = perTime;
+			return this;
+		}
+
+		/**
+		 * Sets cost per waiting time unit, for instance € per second.
+		 *
+		 * <p>by default it is 0.0
+		 *
+		 * @param perWaitingTime
+		 * @return this builder
+		 * @throws IllegalStateException if costPerTime is smaller than zero
+		 *
+		 */
+		public VehicleTypeImpl.Builder setCostPerWaitingTime(double perWaitingTime){
+			if(perWaitingTime < 0.0) throw new IllegalStateException();
+			this.perWaitingTime = perWaitingTime;
+			return this;
 		}
 		
 		/**
@@ -256,7 +306,7 @@ public class VehicleTypeImpl implements VehicleType {
 		typeId = builder.id;
 		capacity = builder.capacity;
 		maxVelocity = builder.maxVelo;
-		vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance);
+		vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance, builder.perWaitingTime);
 		capacityDimensions = builder.capacityDimensions;
 		profile = builder.profile;
 	}

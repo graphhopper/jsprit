@@ -554,6 +554,7 @@ public class Jsprit {
                     TourActivity prevAct = route.getStart();
                     for(TourActivity act : route.getActivities()){
                         costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(),act.getLocation(),prevAct.getEndTime(),route.getDriver(),route.getVehicle());
+                        costs += vrp.getActivityCosts().getActivityCost(act,act.getArrTime(),route.getDriver(),route.getVehicle());
                         prevAct = act;
                     }
                     costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(),route.getEnd().getLocation(),prevAct.getEndTime(),route.getDriver(),route.getVehicle());
