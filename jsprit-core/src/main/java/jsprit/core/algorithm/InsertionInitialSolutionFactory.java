@@ -25,6 +25,7 @@ import jsprit.core.problem.solution.InitialSolutionFactory;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.vehicle.Vehicle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,7 +61,11 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
 	}
 
 	private List<Job> getUnassignedJobs(VehicleRoutingProblem vrp) {
-		return new ArrayList<Job>(vrp.getJobs().values());
+		ArrayList<Job> jobs = new ArrayList<Job>(vrp.getJobs().values());
+		for(Vehicle v : vrp.getVehicles()){
+			if(v.getBreak() != null) jobs.add(v.getBreak());
+		}
+		return jobs;
 	}
 
 }

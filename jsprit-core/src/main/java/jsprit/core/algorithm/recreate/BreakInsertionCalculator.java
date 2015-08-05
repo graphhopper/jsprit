@@ -95,6 +95,7 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator{
 	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
 		Break breakToInsert = (Break) jobToInsert;
 		if(newVehicle.getBreak() == null || newVehicle.getBreak() != breakToInsert) return InsertionData.createEmptyInsertionData();
+		if(currentRoute.isEmpty()) return InsertionData.createEmptyInsertionData();
 
 		JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
         int insertionIndex = InsertionData.NO_INDEX;
@@ -160,11 +161,11 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator{
 				} else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
 					breakThis = false;
 				}
-				double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
-				prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
-				prevAct = nextAct;
-				actIndex++;
 			}
+			double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
+			prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
+			prevAct = nextAct;
+			actIndex++;
 			if(breakThis) break;
 		}
 		if(insertionIndex == InsertionData.NO_INDEX) {

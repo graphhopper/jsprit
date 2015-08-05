@@ -47,19 +47,22 @@ public class BreakExample {
 		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and one capacity dimension, i.e. weight, and capacity dimension value of 2
 		 */
 		final int WEIGHT_INDEX = 0;
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(WEIGHT_INDEX, 4);
+		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType")
+				.addCapacityDimension(WEIGHT_INDEX, 2).setCostPerWaitingTime(1.);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 
 		/*
 		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
-		Builder vehicleBuilder = Builder.newInstance("vehicle");
+		Builder vehicleBuilder = Builder.newInstance("v1");
 		vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
-		Break myFirstBreak = (Break) Break.Builder.newInstance("myFirstBreak").setTimeWindow(TimeWindow.newInstance(30, 50)).setServiceTime(10).build();
+		Break myFirstBreak = (Break) Break.Builder.newInstance("myFirstBreak").setTimeWindow(TimeWindow.newInstance(10, 15)).setServiceTime(100).build();
 		vehicleBuilder.setBreak(myFirstBreak);
 		vehicleBuilder.setType(vehicleType);
 		VehicleImpl vehicle = vehicleBuilder.build();
-		
+
+		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0, 10)).setType(vehicleType)
+				.setBreak((Break) Break.Builder.newInstance("mySecondBreak").setTimeWindow(TimeWindow.newInstance(5,10)).setServiceTime(10).build()).build();
 		/*
 		 * build services at the required locations, each with a capacity-demand of 1.
 		 */
@@ -72,7 +75,7 @@ public class BreakExample {
 		
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);
-		vrpBuilder.addJob(service1).addJob(service2).addJob(service3).addJob(service4);
+		vrpBuilder.addJob(service1).addJob(service2).addJob(service3).addJob(service4).addVehicle(v2);
 		vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
 		VehicleRoutingProblem problem = vrpBuilder.build();
 		
