@@ -94,6 +94,8 @@ public class VehicleRoutingProblem {
 		
 		private Set<Vehicle> uniqueVehicles = new HashSet<Vehicle>();
 
+		private boolean hasBreaks = false;
+
 		private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
             @Override
@@ -254,15 +256,18 @@ public class VehicleRoutingProblem {
             activityMap.put(job, jobActs);
 		}
 
-		private void addBreaksToActivityMap(){
+		private boolean addBreaksToActivityMap(){
+			boolean hasBreaks = false;
 			for(Vehicle v : uniqueVehicles){
 				if(v.getBreak() != null){
+					hasBreaks = true;
 					AbstractActivity breakActivity = BreakActivity.newInstance(v.getBreak());
 					breakActivity.setIndex(activityIndexCounter);
 					incActivityIndexCounter();
 					activityMap.put(v.getBreak(),Arrays.asList(breakActivity));
 				}
 			}
+			return hasBreaks;
 		}
 
         /**
@@ -406,7 +411,8 @@ public class VehicleRoutingProblem {
 					addJobToFinalJobMapAndCreateActivities(job);
 				}
 			}
-			addBreaksToActivityMap();
+			boolean hasBreaks = addBreaksToActivityMap();
+			if(hasBreaks && fleetSize.equals(FleetSize.INFINITE)) throw new UnsupportedOperationException("breaks are not yet supported when dealing with infinite fleet. either set it to finite or omit breaks.");
 			return new VehicleRoutingProblem(this);
 		}
 
