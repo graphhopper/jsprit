@@ -128,7 +128,10 @@ public class VehicleRoute {
             @Override
             public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-                if(job instanceof Service){
+                if(job instanceof Break){
+					acts.add(BreakActivity.newInstance((Break)job));
+				}
+				else if(job instanceof Service){
                     acts.add(serviceActivityFactory.createActivity((Service) job));
                 }
                 else if(job instanceof Shipment){

@@ -21,11 +21,11 @@ import java.util.List;
 public class RuinBreakTest {
 
     @Test
-    public void test(){
+    public void itShouldRuinBreaks(){
         Break aBreak = Break.Builder.newInstance("break").build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc"))
                 .setBreak(aBreak).build();
-        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(v).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(aBreak).build();
         TourActivity tourActivity = route.getActivities().get(0);
         System.out.println(tourActivity);

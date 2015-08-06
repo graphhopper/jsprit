@@ -3,8 +3,6 @@ package jsprit.core.algorithm.ruin;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
-import jsprit.core.problem.job.Service;
-import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.util.RandomNumberGeneration;
@@ -30,24 +28,24 @@ public class DBSCANClusterer {
 
         private int id;
 
-        public LocationWrapper(Job job) {
-            this.locations = getLocations(job);
+        public LocationWrapper(Job job, List<Location> locations) {
+            this.locations = locations;
             objCounter++;
             this.job = job;
             this.id = objCounter;
         }
 
-        private List<Location> getLocations(Job job){
-            List<Location> locs = new ArrayList<Location>();
-            if(job instanceof Service) {
-                locs.add(((Service) job).getLocation());
-            }
-            else if(job instanceof Shipment){
-                locs.add(((Shipment) job).getPickupLocation());
-                locs.add(((Shipment) job).getDeliveryLocation());
-            }
-            return locs;
-        }
+//        private List<Location> getLocations(Job job){
+//            List<Location> locs = new ArrayList<Location>();
+//            if(job instanceof Service) {
+//                locs.add(((Service) job).getLocation());
+//            }
+//            else if(job instanceof Shipment){
+//                locs.add(((Shipment) job).getPickupLocation());
+//                locs.add(((Shipment) job).getDeliveryLocation());
+//            }
+//            return locs;
+//        }
 
         public List<Location> getLocations() {
             return locations;
@@ -126,12 +124,27 @@ public class DBSCANClusterer {
     }
 
     public List<List<Job>> getClusters(VehicleRoute route){
-        List<LocationWrapper> locations = new ArrayList<LocationWrapper>(route.getTourActivities().getJobs().size());
-        for(Job j : route.getTourActivities().getJobs()){
-            locations.add(new LocationWrapper(j));
-        }
+        List<LocationWrapper> locations = getLocationWrappers(route);
         List<Cluster<LocationWrapper>> clusterResults = getClusters(route, locations);
         return makeList(clusterResults);
+    }
+
+    private List<LocationWrapper> getLocationWrappers(VehicleRoute route) {
+        List<LocationWrapper> locations = new ArrayList<LocationWrapper>(route.getTourActivities().getJobs().size());
+        Map<Job,List<Location>> jobs2locations = new HashMap<Job, List<Location>>();
+        for(TourActivity act : route.getActivities()){
+            if(act instanceof TourActivity.JobActivity){
+                Job job = ((TourActivity.JobActivity) act).getJob();
+                if(!jobs2locations.containsKey(job)){
+                    jobs2locations.put(job,new ArrayList<Location>());
+                }
+                jobs2locations.get(job).add(act.getLocation());
+            }
+        }
+        for(Job j : jobs2locations.keySet()){
+            locations.add(new LocationWrapper(j,jobs2locations.get(j)));
+        }
+        return locations;
     }
 
     private List<Cluster<LocationWrapper>> getClusters(VehicleRoute route, List<LocationWrapper> locations) {
@@ -162,10 +175,7 @@ public class DBSCANClusterer {
 
     public List<Job> getRandomCluster(VehicleRoute route){
         if(route.isEmpty()) return Collections.emptyList();
-        List<LocationWrapper> locations = new ArrayList<LocationWrapper>(route.getTourActivities().getJobs().size());
-        for(Job j : route.getTourActivities().getJobs()){
-            locations.add(new LocationWrapper(j));
-        }
+        List<LocationWrapper> locations = getLocationWrappers(route);
         List<Cluster<LocationWrapper>> clusterResults = getClusters(route,locations);
         if(clusterResults.isEmpty()) return Collections.emptyList();
         Cluster<LocationWrapper> randomCluster = RandomUtils.nextItem(clusterResults, random);
