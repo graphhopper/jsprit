@@ -1,7 +1,7 @@
 Change-log
 ==========
 
-**v1.6.1 @ 2015-08-10
+**v1.6.1** @ 2015-08-10
 - feature [#165](https://github.com/jsprit/jsprit/issues/156)
 - feature [#169](https://github.com/jsprit/jsprit/issues/159)
 
