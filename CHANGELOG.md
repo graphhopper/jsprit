@@ -4,7 +4,6 @@ Change-log
 **v1.6.1** @ 2015-08-10
 - feature [#165](https://github.com/jsprit/jsprit/issues/156)
 - feature [#169](https://github.com/jsprit/jsprit/issues/159)
-
 - bugfix [#154](https://github.com/jsprit/jsprit/issues/154)
 - bugfix [#155](https://github.com/jsprit/jsprit/issues/155)
 - bugfix [#158](https://github.com/jsprit/jsprit/issues/158)
