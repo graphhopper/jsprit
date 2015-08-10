@@ -10,7 +10,8 @@ Change-log
 - bugfix [#164](https://github.com/jsprit/jsprit/issues/164)
 - bugfix [#165](https://github.com/jsprit/jsprit/issues/165)
 
-- [detailed changelog ](https://github.com/jsprit/misc-rep/raw/master/changelog_1.6_to_1.6.1.html)
+- [detailed changelog ](https://rawgit.com/jsprit/misc-rep/master/changelog_1.6_to_1.6.1.html)
+
 
 **v1.6** @ 2015-03-12
 <b>! Break change !</b> 
