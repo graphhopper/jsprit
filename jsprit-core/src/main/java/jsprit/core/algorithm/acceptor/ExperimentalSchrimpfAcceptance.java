@@ -57,7 +57,7 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
 		this.alpha = alpha;
 		this.nOfRandomWalks = nOfWarmupIterations;
 		this.solutionMemory = solutionMemory;
-		logger.info("initialise " + this);
+		logger.info("initialise {}", this);
 	}
 	
 
@@ -96,7 +96,7 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
 	
 	private double getThreshold(int iteration) {
 		double scheduleVariable = (double) iteration / (double) nOfTotalIterations;
-//		logger.debug("iter="+iteration+" totalIter="+nOfTotalIterations+" scheduling="+scheduleVariable);
+//		logger.debug("iter={} totalIter={} scheduling={}", iteration, nOfTotalIterations, scheduleVariable);
 		double currentThreshold = initialThreshold * Math.exp(-Math.log(2) * scheduleVariable / alpha);
 		return currentThreshold;
 	}
@@ -126,7 +126,7 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
 			@Override
 			public void informIterationEnds(int iteration, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 				double result = Solutions.bestOf(solutions).getCost();
-//				logger.info("result="+result);
+//				logger.info("result={}", result);
 				results[iteration-1] = result;
 			}
 			
@@ -138,8 +138,8 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
 		initialThreshold = standardDeviation / 2;
 		
 		logger.info("warmup done");
-		logger.info("total time: " + ((System.currentTimeMillis()-now)/1000.0) + "s");
-		logger.info("initial threshold: " + initialThreshold);
+		logger.info("total time: {}s", ((System.currentTimeMillis()-now)/1000.0));
+		logger.info("initial threshold: {}", initialThreshold);
 		logger.info("---------------------------------------------------------------------");
 		
 	}

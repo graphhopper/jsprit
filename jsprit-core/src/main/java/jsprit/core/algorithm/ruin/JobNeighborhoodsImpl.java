@@ -26,7 +26,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
         super();
         this.vrp = vrp;
         this.jobDistance = jobDistance;
-        logger.debug("intialise " + this);
+        logger.debug("intialise {}", this);
     }
 
     @Override
@@ -86,8 +86,8 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
 
         }
         stopWatch.stop();
-        logger.debug("preprocessing comp-time: " + stopWatch + "; nuOfDistances stored: " + nuOfDistancesStored + "; estimated memory: " +
-                (distanceNodeTree.keySet().size()*64+nuOfDistancesStored*92) + " bytes");
+        logger.debug("preprocessing comp-time: {}; nuOfDistances stored: {}; estimated memory: {}" +
+                " bytes", stopWatch, nuOfDistancesStored, (distanceNodeTree.keySet().size()*64+nuOfDistancesStored*92) );
     }
 
 }

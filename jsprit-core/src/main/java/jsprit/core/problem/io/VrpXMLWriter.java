@@ -117,7 +117,7 @@ public class VrpXMLWriter {
 			element.setAttribute("xsi:schemaLocation","http://www.w3schools.com vrp_xml_schema.xsd");
 						
 		} catch (ConfigurationException e) {
-			logger.error(e);
+			logger.error("Exception:", e);
 			e.printStackTrace();
 			System.exit(1);
 		} 
@@ -128,7 +128,7 @@ public class VrpXMLWriter {
 			serializer.serialize(xmlConfig.getDocument());
 			out.close();
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Exception:", e);
 			e.printStackTrace();
 			System.exit(1);
 		}

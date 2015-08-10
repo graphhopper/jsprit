@@ -110,7 +110,7 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
     }
 
     protected void insertJob(Job unassignedJob, InsertionData iData, VehicleRoute inRoute){
-        logger.trace("insert: [jobId=" + unassignedJob.getId() + "]" + iData );
+        logger.trace("insert: [jobId={}]{}", unassignedJob.getId(), iData);
         insertionsListeners.informBeforeJobInsertion(unassignedJob, iData, inRoute);
         if(!(inRoute.getVehicle().getId().equals(iData.getSelectedVehicle().getId()))){
             insertionsListeners.informVehicleSwitched(inRoute, inRoute.getVehicle(), iData.getSelectedVehicle());

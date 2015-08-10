@@ -203,7 +203,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
 		this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	@Override

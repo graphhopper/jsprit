@@ -60,7 +60,7 @@ public final class RuinRandom extends AbstractRuinStrategy {
 				return selectNuOfJobs2BeRemoved();
 			}
 		});
-        logger.debug("initialise " + this);
+        logger.debug("initialise {}", this);
 	}
 
 	/**

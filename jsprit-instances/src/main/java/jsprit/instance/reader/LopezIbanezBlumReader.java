@@ -90,7 +90,7 @@ public class LopezIbanezBlumReader {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error(e);
+            logger.error("Exception:", e);
             System.exit(1);
         }
     }
@@ -100,7 +100,7 @@ public class LopezIbanezBlumReader {
             return reader.readLine();
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error(e);
+            logger.error("Exception:", e);
             System.exit(1);
             return null;
         }
@@ -112,7 +112,7 @@ public class LopezIbanezBlumReader {
             reader = new BufferedReader(new FileReader(solomonFile));
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
-            logger.error(e1);
+            logger.error("Exception:", e1);
             System.exit(1);
         }
         return reader;

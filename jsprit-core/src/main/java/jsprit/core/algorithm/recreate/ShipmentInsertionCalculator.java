@@ -68,7 +68,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 		this.softRouteConstraint = constraintManager;
 		this.transportCosts = routingCosts;
 		additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
     public void setJobActivityFactory(JobActivityFactory activityFactory){
@@ -136,7 +136,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator{
 				nextAct = end;
 				tourEnd = true;
 			}
-//			logger.info("activity: " + i + ", act-size: " + activities.size());
+//			logger.info("activity: {}, act-size: {}", i, activities.size());
 			ConstraintsStatus pickupShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
 			if(pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)){
 				double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);

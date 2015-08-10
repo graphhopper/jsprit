@@ -142,7 +142,7 @@ public class LiLimReader {
 			reader = new BufferedReader(new FileReader(file));
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
-			logger.error(e1);
+			logger.error("Exception:", e1);
 			System.exit(1);
 		}
 		return reader;

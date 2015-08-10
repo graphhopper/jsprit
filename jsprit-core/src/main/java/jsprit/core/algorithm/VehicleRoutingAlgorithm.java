@@ -142,8 +142,8 @@ public class VehicleRoutingAlgorithm {
             }
         }
         if(nuJobs != problem.getJobs().values().size()){
-            logger.warn("number of jobs in initial solution (" + nuJobs + ") is not equal nuJobs in vehicle routing problem (" + problem.getJobs().values().size() + ")" +
-                    "\n this might yield unintended effects, e.g. initial solution cannot be improved anymore.");
+            logger.warn("number of jobs in initial solution ({}) is not equal nuJobs in vehicle routing problem ({})" +
+                    "\n this might yield unintended effects, e.g. initial solution cannot be improved anymore.", nuJobs, problem.getJobs().values().size() );
         }
     }
 
@@ -188,7 +188,7 @@ public class VehicleRoutingAlgorithm {
 	 * @see {@link SearchStrategyManager}, {@link VehicleRoutingAlgorithmListener}, {@link AlgorithmStartsListener}, {@link AlgorithmEndsListener}, {@link IterationStartsListener}, {@link IterationEndsListener}
 	 */
 	public Collection<VehicleRoutingProblemSolution> searchSolutions(){
-		logger.info("algorithm starts: " + "[maxIterations=" + maxIterations + "]");
+		logger.info("algorithm starts: [maxIterations={}]", maxIterations);
 		double now = System.currentTimeMillis();
 		int noIterationsThisAlgoIsRunning = maxIterations;
 		counter.reset();
@@ -198,24 +198,24 @@ public class VehicleRoutingAlgorithm {
         logger.info("iterations start");
 		for(int i=0;i< maxIterations;i++){
 			iterationStarts(i+1,problem,solutions);
-			logger.debug("start iteration: " + i);
+			logger.debug("start iteration: {}", i);
 			counter.incCounter();
 			SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
 			DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
-			logger.trace("discovered solution: " + discoveredSolution);
+			logger.trace("discovered solution: {}", discoveredSolution);
             memorizeIfBestEver(discoveredSolution);
 			selectedStrategy(discoveredSolution,problem,solutions);
             if(terminationManager.isPrematureBreak(discoveredSolution)){
-				logger.info("premature algorithm termination at iteration "+ (i+1));
+				logger.info("premature algorithm termination at iteration {}", (i+1));
 				noIterationsThisAlgoIsRunning = (i+1);
 				break;
 			}
 			iterationEnds(i+1,problem,solutions);
 		}
-		logger.info("iterations end at " + noIterationsThisAlgoIsRunning + " iterations");
+		logger.info("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
 		addBestEver(solutions);
         algorithmEnds(problem, solutions);
-		logger.info("took " + ((System.currentTimeMillis()-now)/1000.0) + " seconds");
+		logger.info("took {} seconds", ((System.currentTimeMillis()-now)/1000.0));
 		return solutions;
 	}
 
@@ -267,7 +267,7 @@ public class VehicleRoutingAlgorithm {
      */
     public void setMaxIterations(int maxIterations) {
         this.maxIterations = maxIterations;
-        logger.debug("set maxIterations to " + this.maxIterations);
+        logger.debug("set maxIterations to {}", this.maxIterations);
     }
 
     /**

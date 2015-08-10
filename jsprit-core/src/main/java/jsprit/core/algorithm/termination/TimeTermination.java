@@ -70,7 +70,7 @@ public class TimeTermination implements PrematureAlgorithmTermination, Algorithm
 	public TimeTermination(long timeThreshold_in_milliseconds) {
 		super();
 		this.timeThreshold = timeThreshold_in_milliseconds;
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
     public void setTimeGetter(TimeGetter timeGetter) {

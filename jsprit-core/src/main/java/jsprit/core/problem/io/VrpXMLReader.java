@@ -137,7 +137,7 @@ public class VrpXMLReader{
 	}
 	
 	public void read(String filename) {
-		logger.debug("read vrp: " + filename);
+		logger.debug("read vrp: {}", filename);
 		XMLConfiguration xmlConfig = new XMLConfiguration();
 		xmlConfig.setFileName(filename);
 		xmlConfig.setAttributeSplittingDisabled(true);
@@ -166,7 +166,7 @@ public class VrpXMLReader{
 		try {
 			xmlConfig.load();
 		} catch (ConfigurationException e) {
-			logger.error(e);
+			logger.error("Exception:", e);
 			e.printStackTrace();
 			System.exit(1);
 		}

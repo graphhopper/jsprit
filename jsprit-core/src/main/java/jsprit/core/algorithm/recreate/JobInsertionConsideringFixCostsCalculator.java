@@ -46,7 +46,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 		super();
 		this.standardServiceInsertion = standardInsertionCalculator;
 		this.stateGetter = stateGetter;
-		logger.debug("inialise " + this);
+		logger.debug("inialise {}", this);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 	
 	public void setWeightOfFixCost(double weight){
 		weight_deltaFixCost = weight;
-		logger.debug("set weightOfFixCostSaving to " + weight);
+		logger.debug("set weightOfFixCostSaving to {}", weight);
 	}
 	
 	@Override
