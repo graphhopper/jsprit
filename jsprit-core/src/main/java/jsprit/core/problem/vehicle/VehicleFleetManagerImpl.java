@@ -76,7 +76,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 		this.vehicles = vehicles;
 		this.lockedVehicles = new HashSet<Vehicle>();
 		makeMap();
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	@Override

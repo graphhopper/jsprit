@@ -70,7 +70,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator{
 		softRouteConstraint = constraintManager;
 		this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
 		additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
     public void setJobActivityFactory(JobActivityFactory jobActivityFactory){

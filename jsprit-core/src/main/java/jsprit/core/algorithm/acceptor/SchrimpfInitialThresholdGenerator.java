@@ -67,7 +67,7 @@ public class SchrimpfInitialThresholdGenerator implements AlgorithmStartsListene
 			@Override
 			public void informIterationEnds(int iteration, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
 				double result = Solutions.bestOf(solutions).getCost();
-//				logger.info("result="+result);
+//				logger.info("result={}", result);
 				results[iteration-1] = result;
 			}
 			
@@ -80,8 +80,8 @@ public class SchrimpfInitialThresholdGenerator implements AlgorithmStartsListene
 		
 		schrimpfAcceptance.setInitialThreshold(initialThreshold);
 
-		logger.info("took " + ((System.currentTimeMillis()-now)/1000.0) + " seconds");
-		logger.debug("initial threshold: " + initialThreshold);
+		logger.info("took {} seconds", ((System.currentTimeMillis()-now)/1000.0) );
+		logger.debug("initial threshold: {}", initialThreshold);
 		logger.info("---------------------------------------------------------------------");
 	}
 

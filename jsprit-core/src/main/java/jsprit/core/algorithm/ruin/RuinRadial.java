@@ -68,7 +68,7 @@ public final class RuinRadial extends AbstractRuinStrategy {
 		JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, noJobsToMemorize);
 		jobNeighborhoodsImpl.initialise();
 		jobNeighborhoods = jobNeighborhoodsImpl;
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	public RuinRadial(VehicleRoutingProblem vrp, int noJobs2beRemoved, JobDistance jobDistance) {
@@ -87,7 +87,7 @@ public final class RuinRadial extends AbstractRuinStrategy {
 		JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, noJobsToMemorize);
 		jobNeighborhoodsImpl.initialise();
 		jobNeighborhoods = jobNeighborhoodsImpl;
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	public RuinRadial(VehicleRoutingProblem vrp, int noJobs2beRemoved, JobNeighborhoods neighborhoods) {
@@ -103,7 +103,7 @@ public final class RuinRadial extends AbstractRuinStrategy {
 
 		};
 		jobNeighborhoods = neighborhoods;
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 	
 	@Override

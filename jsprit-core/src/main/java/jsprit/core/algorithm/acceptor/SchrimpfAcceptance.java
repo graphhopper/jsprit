@@ -83,7 +83,7 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 	public SchrimpfAcceptance(int solutionMemory, double alpha){
 		this.alpha = alpha;
 		this.solutionMemory = solutionMemory;
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	@Override

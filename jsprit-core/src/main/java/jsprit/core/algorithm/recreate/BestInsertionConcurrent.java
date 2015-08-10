@@ -94,7 +94,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 		this.nuOfBatches = nuOfBatches;
 		bestInsertionCostCalculator = jobInsertionCalculator;
 		completionService = new ExecutorCompletionService<Insertion>(executorService);
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy{
 			}
 			catch (ExecutionException e) {
 				e.printStackTrace();
-				logger.error(e.getCause().toString());
+				logger.error("Exception", e);
 				System.exit(1);
 			}
 			VehicleRoute newRoute = VehicleRoute.emptyRoute();

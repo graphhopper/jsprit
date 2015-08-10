@@ -81,7 +81,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 
 	public void setMemorySize(int memorySize) {
 		this.memorySize = memorySize;
-		logger.debug("set [solutionMemory="+memorySize+"]");
+		logger.debug("set [solutionMemory={}]", memorySize);
 	}
 
 	public ServiceInsertionOnRouteLevelCalculator(VehicleRoutingTransportCosts vehicleRoutingCosts, VehicleRoutingActivityCosts costFunc, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteConstraint hardRouteLevelConstraint, HardActivityConstraint hardActivityLevelConstraint) {
@@ -92,7 +92,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 			this.hardRouteLevelConstraint = hardRouteLevelConstraint;
 			this.hardActivityLevelConstraint = hardActivityLevelConstraint;
 			auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(transportCosts, activityCosts);
-			logger.debug("initialise " + this);
+			logger.debug("initialise {}", this);
 		}
 
 
@@ -102,7 +102,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 	
 	void setNuOfActsForwardLooking(int nOfActsForwardLooking) {
 		this.nuOfActsForwardLooking = nOfActsForwardLooking;
-		logger.debug("set [forwardLooking="+nOfActsForwardLooking+"]");
+		logger.debug("set [forwardLooking={}]", nOfActsForwardLooking);
 	}
 
 	@Override

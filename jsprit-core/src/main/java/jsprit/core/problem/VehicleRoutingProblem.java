@@ -321,7 +321,7 @@ public class VehicleRoutingProblem {
 		}
 		
 		private void addShipment(Shipment job) {
-			if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
+			if(jobs.containsKey(job.getId())){ logger.warn("job {} already in job list. overrides existing job.", job); }
 			tentative_coordinates.put(job.getPickupLocation().getId(), job.getPickupLocation().getCoordinate());
 			tentative_coordinates.put(job.getDeliveryLocation().getId(), job.getDeliveryLocation().getCoordinate());
 			jobs.put(job.getId(),job);
@@ -472,7 +472,7 @@ public class VehicleRoutingProblem {
 
 		private Builder addService(Service service){
 			tentative_coordinates.put(service.getLocation().getId(), service.getLocation().getCoordinate());
-			if(jobs.containsKey(service.getId())){ logger.warn("service " + service + " already in job list. overrides existing job."); }
+			if(jobs.containsKey(service.getId())){ logger.warn("service {} already in job list. overrides existing job.", service); }
 			jobs.put(service.getId(),service);
 			return this;
 		}
@@ -554,7 +554,7 @@ public class VehicleRoutingProblem {
 		this.locations = builder.getLocations();
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
-		logger.info("setup problem: " + this);
+		logger.info("setup problem: {}", this);
 	}
 
     @Override

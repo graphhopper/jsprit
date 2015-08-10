@@ -73,7 +73,7 @@ public class VariationCoefficientTermination implements PrematureAlgorithmTermin
 		this.noIterations = noIterations;
 		this.variationCoefficientThreshold = variationCoefficientThreshold;
 		solutionValues = new double[noIterations];
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 	
 	@Override

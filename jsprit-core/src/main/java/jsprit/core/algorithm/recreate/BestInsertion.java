@@ -56,7 +56,7 @@ public final class BestInsertion extends AbstractInsertionStrategy{
 	public BestInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
 		super(vehicleRoutingProblem);
 		bestInsertionCostCalculator = jobInsertionCalculator;
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	@Override

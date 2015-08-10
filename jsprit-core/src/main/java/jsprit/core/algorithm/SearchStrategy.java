@@ -88,7 +88,7 @@ public class SearchStrategy {
         this.solutionAcceptor = solutionAcceptor;
         this.solutionCostCalculator = solutionCostCalculator;
         this.id = id;
-        logger.debug("initialise " + this);
+        logger.debug("initialise {}", this);
     }
 
     public String getId() {
@@ -159,7 +159,7 @@ public class SearchStrategy {
     public void addModule(SearchStrategyModule module){
 		if(module == null) throw new IllegalStateException("module to be added is null.");
 		searchStrategyModules.add(module);
-		logger.debug("module added [module=" + module + "][#modules=" + searchStrategyModules.size() + "]");
+		logger.debug("module added [module={}][#modules={}]", module, searchStrategyModules.size());
 	}
 
 	public void addModuleListener(SearchStrategyModuleListener moduleListener) {

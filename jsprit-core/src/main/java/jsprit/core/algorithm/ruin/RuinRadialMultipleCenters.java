@@ -62,7 +62,7 @@ public final class RuinRadialMultipleCenters extends AbstractRuinStrategy {
 		JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, noJobsToMemorize);
 		jobNeighborhoodsImpl.initialise();
 		jobNeighborhoods = jobNeighborhoodsImpl;
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	public void setNumberOfRuinCenters(int noCenters){

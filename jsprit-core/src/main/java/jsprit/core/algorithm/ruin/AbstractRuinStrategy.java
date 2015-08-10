@@ -63,7 +63,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
     public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes){
         ruinListeners.ruinStarts(vehicleRoutes);
         Collection<Job> unassigned = ruinRoutes(vehicleRoutes);
-        logger.trace("ruin: " + "[ruined=" + unassigned.size() + "]");
+        logger.trace("ruin: [ruined={}]", unassigned.size());
         ruinListeners.ruinEnds(vehicleRoutes,unassigned);
         return unassigned;
     }
@@ -116,7 +116,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
         if(jobIsInitial(job)) return false;
         boolean removed = route.getTourActivities().removeJob(job);
         if (removed) {
-            logger.trace("ruin: " + job.getId());
+            logger.trace("ruin: {}", job.getId());
             ruinListeners.removed(job,route);
             return true;
         }

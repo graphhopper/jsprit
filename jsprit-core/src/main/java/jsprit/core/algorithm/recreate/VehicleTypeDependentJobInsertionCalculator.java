@@ -60,7 +60,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 		this.insertionCalculator = jobInsertionCalc;
 		this.vrp = vrp;
 		getInitialVehicleIds();
-		logger.debug("initialise " + this);
+		logger.debug("initialise {}", this);
 	}
 
 	private void getInitialVehicleIds() {
@@ -89,7 +89,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 	 * @param vehicleSwitchAllowed the vehicleSwitchAllowed to set
 	 */
 	public void setVehicleSwitchAllowed(boolean vehicleSwitchAllowed) {
-		logger.debug("set vehicleSwitchAllowed to " + vehicleSwitchAllowed);
+		logger.debug("set vehicleSwitchAllowed to {}", vehicleSwitchAllowed);
 		this.vehicleSwitchAllowed = vehicleSwitchAllowed;
 	}
 
