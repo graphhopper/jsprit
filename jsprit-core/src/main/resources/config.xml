@@ -1,67 +1,67 @@
 <?xml version="1.0" ?>
 <config>
 
-	<controler>
-		<iterations>2000</iterations>
-	</controler>
-	
-	<construction>
-		<insertion name="bestInsertion"/>
-	</construction>
-	
-	<strategy>
-		<memory>3</memory>
-		<searchStrategies>
-			
-			<searchStrategy id="randomRuinAndRecreate">
-				<selector name="selectBest"/>
-	  			<acceptor name="acceptNewRemoveWorst"/> 
-	<!-- 			<acceptor id="1" name="schrimpfAcceptance"> 
- 					<alpha>0.1</alpha> 
- 					<iterations>10</iterations> 
- 				</acceptor> -->
-				<modules>
-					<module name="randomRuin">
-						<share>0.5</share>
-					</module>
-					<module name="bestInsertion"></module>
-				</modules>
-				<probability>0.5</probability>
-			</searchStrategy>
-			
-			<searchStrategy id="radialRuinAndRecreate">
-				<selector id="1" name="selectBest"/>
-				<acceptor name="acceptNewRemoveWorst"/> 
-	<!-- 			<acceptor id="1" name="schrimpfAcceptance"> 
- 					<alpha>0.1</alpha> 
- 					<iterations>10</iterations> 
- 				</acceptor> -->
-				<modules>
-					<module name="radialRuin">
-						<share>0.3</share>
-						<distanceMeasure>euclid</distanceMeasure>
-					</module>
-					<module name="bestInsertion"></module>
-				</modules>
-				<probability>0.5</probability>
-			</searchStrategy>
-			
-<!--  			<searchStrategy id="gendreauPostOpt">  -->
-<!-- 				<modules>  -->
-<!-- 					<module name="gendreauPostOpt">  -->
-<!-- 						<iterations>200</iterations>  -->
-<!--  		 				<share>0.2</share>  -->
-<!-- 					</module>  -->
-<!-- 				</modules>  -->
-<!--  				<probability>0.1</probability>  -->
-<!--  			</searchStrategy> --> -->
-		</searchStrategies>
-		
-		<before></before>
-		
-		<after></after>
-	
-	</strategy>
-	
+    <controler>
+        <iterations>2000</iterations>
+    </controler>
+
+    <construction>
+        <insertion name="bestInsertion"/>
+    </construction>
+
+    <strategy>
+        <memory>3</memory>
+        <searchStrategies>
+
+            <searchStrategy id="randomRuinAndRecreate">
+                <selector name="selectBest"/>
+                <acceptor name="acceptNewRemoveWorst"/>
+                <!-- 			<acceptor id="1" name="schrimpfAcceptance">
+                                 <alpha>0.1</alpha>
+                                 <iterations>10</iterations>
+                             </acceptor> -->
+                <modules>
+                    <module name="randomRuin">
+                        <share>0.5</share>
+                    </module>
+                    <module name="bestInsertion"></module>
+                </modules>
+                <probability>0.5</probability>
+            </searchStrategy>
+
+            <searchStrategy id="radialRuinAndRecreate">
+                <selector id="1" name="selectBest"/>
+                <acceptor name="acceptNewRemoveWorst"/>
+                <!-- 			<acceptor id="1" name="schrimpfAcceptance">
+                                 <alpha>0.1</alpha>
+                                 <iterations>10</iterations>
+                             </acceptor> -->
+                <modules>
+                    <module name="radialRuin">
+                        <share>0.3</share>
+                        <distanceMeasure>euclid</distanceMeasure>
+                    </module>
+                    <module name="bestInsertion"></module>
+                </modules>
+                <probability>0.5</probability>
+            </searchStrategy>
+
+            <!--  			<searchStrategy id="gendreauPostOpt">  -->
+            <!-- 				<modules>  -->
+            <!-- 					<module name="gendreauPostOpt">  -->
+            <!-- 						<iterations>200</iterations>  -->
+            <!--  		 				<share>0.2</share>  -->
+            <!-- 					</module>  -->
+            <!-- 				</modules>  -->
+            <!--  				<probability>0.1</probability>  -->
+            <!--  			</searchStrategy> --> -->
+        </searchStrategies>
+
+        <before></before>
+
+        <after></after>
+
+    </strategy>
+
 
 </config>
