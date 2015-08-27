@@ -7,14 +7,14 @@ class InsertActivityListener implements EventListener {
 
     @Override
     public void inform(Event event) {
-        if(event instanceof InsertActivity){
+        if (event instanceof InsertActivity) {
             InsertActivity insertActivity = (InsertActivity) event;
-            if(!insertActivity.getNewVehicle().isReturnToDepot()){
-                if(insertActivity.getIndex()>=insertActivity.getVehicleRoute().getActivities().size()){
+            if (!insertActivity.getNewVehicle().isReturnToDepot()) {
+                if (insertActivity.getIndex() >= insertActivity.getVehicleRoute().getActivities().size()) {
                     insertActivity.getVehicleRoute().getEnd().setLocation(insertActivity.getActivity().getLocation());
                 }
             }
-            insertActivity.getVehicleRoute().getTourActivities().addActivity(insertActivity.getIndex(),((InsertActivity) event).getActivity());
+            insertActivity.getVehicleRoute().getTourActivities().addActivity(insertActivity.getIndex(), ((InsertActivity) event).getActivity());
         }
     }
 

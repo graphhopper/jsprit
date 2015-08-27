@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -22,7 +22,7 @@ import jsprit.core.util.Coordinate;
 /**
  * Created by schroeder on 16.12.14.
  */
-public final class Location implements HasIndex, HasId{
+public final class Location implements HasIndex, HasId {
 
     /**
      * Factory method (and shortcut) for creating a location object just with x and y coordinates.
@@ -31,8 +31,8 @@ public final class Location implements HasIndex, HasId{
      * @param y coordinate
      * @return location
      */
-    public static Location newInstance(double x, double y){
-        return Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(x,y)).build();
+    public static Location newInstance(double x, double y) {
+        return Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(x, y)).build();
     }
 
     /**
@@ -41,7 +41,7 @@ public final class Location implements HasIndex, HasId{
      * @param id location id
      * @return location
      */
-    public static Location newInstance(String id){
+    public static Location newInstance(String id) {
         return Location.Builder.newInstance().setId(id).build();
     }
 
@@ -51,7 +51,7 @@ public final class Location implements HasIndex, HasId{
      * @param index
      * @return
      */
-    public static Location newInstance(int index){
+    public static Location newInstance(int index) {
         return Location.Builder.newInstance().setIndex(index).build();
     }
 
@@ -63,32 +63,34 @@ public final class Location implements HasIndex, HasId{
 
         private Coordinate coordinate;
 
-        public static Builder newInstance(){ return new Builder(); }
+        public static Builder newInstance() {
+            return new Builder();
+        }
 
-        public Builder setIndex(int index){
-            if(index < 0) throw new IllegalArgumentException("index must be >= 0");
+        public Builder setIndex(int index) {
+            if (index < 0) throw new IllegalArgumentException("index must be >= 0");
             this.index = index;
             return this;
         }
 
-        public Builder setCoordinate(Coordinate coordinate){
+        public Builder setCoordinate(Coordinate coordinate) {
             this.coordinate = coordinate;
             return this;
         }
 
-        public Builder setId(String id){
+        public Builder setId(String id) {
             this.id = id;
             return this;
         }
 
-        public Location build(){
-            if(id == null && coordinate == null){
-                if(index == -1) throw new IllegalStateException("either id or coordinate or index must be set");
+        public Location build() {
+            if (id == null && coordinate == null) {
+                if (index == -1) throw new IllegalStateException("either id or coordinate or index must be set");
             }
-            if(coordinate != null && id == null){
+            if (coordinate != null && id == null) {
                 this.id = coordinate.toString();
             }
-            if(index != -1 && id == null){
+            if (index != -1 && id == null) {
                 this.id = Integer.toString(index);
             }
             return new Location(this);
@@ -120,7 +122,7 @@ public final class Location implements HasIndex, HasId{
         return index;
     }
 
-    public Coordinate getCoordinate(){
+    public Coordinate getCoordinate() {
         return coordinate;
     }
 
@@ -148,6 +150,6 @@ public final class Location implements HasIndex, HasId{
 
     @Override
     public String toString() {
-        return "[id="+id+"][index="+index+"][coordinate="+coordinate+"]";
+        return "[id=" + id + "][index=" + index + "][coordinate=" + coordinate + "]";
     }
 }

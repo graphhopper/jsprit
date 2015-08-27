@@ -1,22 +1,20 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.reporting;
-
-import java.io.PrintWriter;
 
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
@@ -26,6 +24,8 @@ import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
+
+import java.io.PrintWriter;
 
 
 /**
@@ -162,7 +162,7 @@ public class SolutionPrinter {
             out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
             double costs = 0;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),
-                    Math.round(costs));
+                Math.round(costs));
             TourActivity prevAct = route.getStart();
             for (TourActivity act : route.getActivities()) {
                 String jobId;
@@ -172,19 +172,19 @@ public class SolutionPrinter {
                     jobId = "-";
                 }
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
-                        route.getVehicle());
+                    route.getVehicle());
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 costs += c;
                 out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()),
-                        Math.round(act.getEndTime()), Math.round(costs));
+                    Math.round(act.getEndTime()), Math.round(costs));
                 prevAct = act;
             }
             double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(),
-                    route.getDriver(), route.getVehicle());
+                route.getDriver(), route.getVehicle());
             c += problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
             costs += c;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef",
-                    Math.round(costs));
+                Math.round(costs));
             routeNu++;
         }
         out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");

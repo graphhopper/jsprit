@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public 
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm;
@@ -45,8 +45,8 @@ import static org.junit.Assert.assertTrue;
 
 public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
 
-	@Test
-	public void test(){
+    @Test
+    public void test() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder).read("src/test/resources/pdp.xml");
 
@@ -57,17 +57,17 @@ public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
 //        stateManager.updateTimeWindowStates();
         stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 
-        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
 //        constraintManager.addTimeWindowConstraint();
         constraintManager.addLoadConstraint();
 
         VehicleFleetManager fleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 
-        BestInsertionBuilder bestIBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager,constraintManager);
+        BestInsertionBuilder bestIBuilder = new BestInsertionBuilder(vrp, fleetManager, stateManager, constraintManager);
         InsertionStrategy bestInsertion = bestIBuilder.build();
 
 
-        RuinStrategy radial = new RadialRuinStrategyFactory( 0.3, new AvgServiceAndShipmentDistance(vrp.getTransportCosts())).createStrategy(vrp);
+        RuinStrategy radial = new RadialRuinStrategyFactory(0.3, new AvgServiceAndShipmentDistance(vrp.getTransportCosts())).createStrategy(vrp);
         RuinStrategy random = new RandomRuinStrategyFactory(0.5).createStrategy(vrp);
 
 
@@ -76,18 +76,18 @@ public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
             @Override
             public double getCosts(VehicleRoutingProblemSolution solution) {
                 double costs = 0.0;
-                for(VehicleRoute route : solution.getRoutes()){
+                for (VehicleRoute route : solution.getRoutes()) {
                     costs += stateManager.getRouteState(route, InternalStates.COSTS, Double.class);
                 }
                 return costs;
             }
         };
 
-        SearchStrategy randomStrategy = new SearchStrategy("random",new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
+        SearchStrategy randomStrategy = new SearchStrategy("random", new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
         RuinAndRecreateModule randomModule = new RuinAndRecreateModule("randomRuin_bestInsertion", bestInsertion, random);
         randomStrategy.addModule(randomModule);
 
-        SearchStrategy radialStrategy = new SearchStrategy("radial",new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
+        SearchStrategy radialStrategy = new SearchStrategy("radial", new SelectBest(), new GreedyAcceptance(1), solutionCostCalculator);
         RuinAndRecreateModule radialModule = new RuinAndRecreateModule("radialRuin_bestInsertion", bestInsertion, radial);
         radialStrategy.addModule(radialModule);
 
@@ -103,10 +103,9 @@ public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
         vra.addInitialSolution(iniSolution);
 
         vra.setMaxIterations(3);
-		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-		assertTrue(!solutions.isEmpty());
-	}
-
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+        assertTrue(!solutions.isEmpty());
+    }
 
 
 }

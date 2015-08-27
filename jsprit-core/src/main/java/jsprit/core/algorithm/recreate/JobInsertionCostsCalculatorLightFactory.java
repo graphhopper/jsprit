@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -44,17 +44,17 @@ public class JobInsertionCostsCalculatorLightFactory {
      * @param constraintManager constraint manager
      * @return insertion calculator
      */
-    public static JobInsertionCostsCalculatorLight createStandardCalculator(VehicleRoutingProblem vrp, VehicleFleetManager fleetManager, StateManager stateManager, ConstraintManager constraintManager){
+    public static JobInsertionCostsCalculatorLight createStandardCalculator(VehicleRoutingProblem vrp, VehicleFleetManager fleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         List<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener> al = new ArrayList<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener>();
         List<InsertionListener> il = new ArrayList<InsertionListener>();
-        JobInsertionCostsCalculatorBuilder builder = new JobInsertionCostsCalculatorBuilder(il,al);
+        JobInsertionCostsCalculatorBuilder builder = new JobInsertionCostsCalculatorBuilder(il, al);
         builder.setVehicleRoutingProblem(vrp).setConstraintManager(constraintManager).setStateManager(stateManager).setVehicleFleetManager(fleetManager);
         final JobInsertionCostsCalculator calculator = builder.build();
         return new JobInsertionCostsCalculatorLight() {
 
             @Override
             public InsertionData getInsertionData(Job unassignedJob, VehicleRoute route, double bestKnownCosts) {
-                return calculator.getInsertionData(route,unassignedJob,AbstractInsertionStrategy.NO_NEW_VEHICLE_YET,AbstractInsertionStrategy.NO_NEW_DEPARTURE_TIME_YET,AbstractInsertionStrategy.NO_NEW_DRIVER_YET,bestKnownCosts);
+                return calculator.getInsertionData(route, unassignedJob, AbstractInsertionStrategy.NO_NEW_VEHICLE_YET, AbstractInsertionStrategy.NO_NEW_DEPARTURE_TIME_YET, AbstractInsertionStrategy.NO_NEW_DRIVER_YET, bestKnownCosts);
             }
 
         };

@@ -1,4 +1,3 @@
-
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Copyright (C) 2014  Stefan Schroeder
   ~
@@ -16,79 +15,80 @@
   ~ License along with this library.  If not, see <http://www.gnu.org/licenses />.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-  	<groupId>jsprit</groupId>
-  	<artifactId>jsprit</artifactId>
-  	<version>1.6.2-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>jsprit-core</artifactId>
-  <name>jsprit-core</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>jsprit</groupId>
+        <artifactId>jsprit</artifactId>
+        <version>1.6.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jsprit-core</artifactId>
+    <name>jsprit-core</name>
 
-<build>
-  <pluginManagement>	
-    	<plugins>
-    	<plugin>
-        	<groupId>org.eclipse.m2e</groupId>
-        	<artifactId>lifecycle-mapping</artifactId>
-        	<version>1.0.0</version>
-        	<configuration>
-          		<lifecycleMappingMetadata>
-            		<pluginExecutions>
-              			<pluginExecution>
-                			<pluginExecutionFilter>
-                  				<groupId>org.apache.maven.plugins</groupId>
-                  				<artifactId>maven-enforcer-plugin</artifactId>
-                  				<versionRange>[1.0.0,)</versionRange>
-                  				<goals>
-                    				<goal>enforce</goal>
-                  				</goals>
-                			</pluginExecutionFilter>
-                			<action>
-                  				<ignore />
-                			</action>
-              			</pluginExecution>
-            		</pluginExecutions>
-          		</lifecycleMappingMetadata>
-        	</configuration>
-      	</plugin>
-  		</plugins>
-    </pluginManagement>
-  </build>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-enforcer-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>enforce</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
-  <dependencies>
-		
-    <dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.2</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		
-    <dependency>
-    	<groupId>commons-configuration</groupId>
-    	<artifactId>commons-configuration</artifactId>
-    	<version>1.9</version>
-    	<type>jar</type>
-    	<scope>compile</scope>
-    </dependency>
+    <dependencies>
 
-    <dependency>
-    	<groupId>xerces</groupId>
-    	<artifactId>xercesImpl</artifactId>
-    	<version>2.11.0</version>
-    	<scope>compile</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math</artifactId>
+            <version>2.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 
-	  <dependency>
-		  <groupId>org.apache.commons</groupId>
-		  <artifactId>commons-math3</artifactId>
-		  <version>3.4</version>
-	  </dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.9</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 
-  </dependencies>
-  
- 
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.11.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.4</version>
+        </dependency>
+
+    </dependencies>
+
+
 </project>

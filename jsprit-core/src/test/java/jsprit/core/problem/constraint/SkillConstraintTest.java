@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -48,7 +48,7 @@ public class SkillConstraintTest {
     private VehicleRoutingProblem vrp;
 
     @Before
-    public void doBefore(){
+    public void doBefore() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").build();
         vehicle = VehicleImpl.Builder.newInstance("v").addSkill("skill1").addSkill("skill2").addSkill("skill3").addSkill("skill4").setStartLocation(Location.newInstance("start")).setType(type).build();
         vehicle2 = VehicleImpl.Builder.newInstance("v").addSkill("skill4").addSkill("skill5").setStartLocation(Location.newInstance("start")).setType(type).build();
@@ -60,44 +60,44 @@ public class SkillConstraintTest {
         Service service4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
 
         vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addVehicle(vehicle2).addJob(service)
-                .addJob(service2).addJob(service3).addJob(service4).build();
+            .addJob(service2).addJob(service3).addJob(service4).build();
 
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).addService(service2).build();
 
         StateManager stateManager = new StateManager(vrp);
         stateManager.updateSkillStates();
-        stateManager.informInsertionStarts(Arrays.asList(route),null);
+        stateManager.informInsertionStarts(Arrays.asList(route), null);
 
         skillConstraint = new HardSkillConstraint(stateManager);
     }
 
     @Test
-    public void whenJobToBeInsertedRequiresSkillsThatNewVehicleDoesNotHave_itShouldReturnFalse(){
-        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s3"),vehicle,route.getDriver(),0.);
+    public void whenJobToBeInsertedRequiresSkillsThatNewVehicleDoesNotHave_itShouldReturnFalse() {
+        JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s3"), vehicle, route.getDriver(), 0.);
         assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
-    public void whenJobToBeInsertedRequiresSkillsThatVehicleHave_itShouldReturnTrue(){
-        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s4"),vehicle,route.getDriver(),0.);
+    public void whenJobToBeInsertedRequiresSkillsThatVehicleHave_itShouldReturnTrue() {
+        JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle, route.getDriver(), 0.);
         assertTrue(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
-    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave_itShouldReturnFalse(){
-        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s3"),vehicle2,route.getDriver(),0.);
+    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave_itShouldReturnFalse() {
+        JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s3"), vehicle2, route.getDriver(), 0.);
         assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
-    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave2_itShouldReturnFalse(){
-        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s4"),vehicle2,route.getDriver(),0.);
+    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave2_itShouldReturnFalse() {
+        JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle2, route.getDriver(), 0.);
         assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
-    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesHave_itShouldReturnTrue(){
-        JobInsertionContext insertionContext = new JobInsertionContext(route,vrp.getJobs().get("s4"),vehicle,route.getDriver(),0.);
+    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesHave_itShouldReturnTrue() {
+        JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle, route.getDriver(), 0.);
         assertTrue(skillConstraint.fulfilled(insertionContext));
     }
 

@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Collection;
 import java.util.Random;
 
-public abstract class AbstractRuinStrategy implements RuinStrategy{
+public abstract class AbstractRuinStrategy implements RuinStrategy {
 
     private final static Logger logger = LogManager.getLogger();
 
@@ -46,11 +46,11 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
 
     protected RuinShareFactory ruinShareFactory;
 
-    public void setRuinShareFactory(RuinShareFactory ruinShareFactory){
+    public void setRuinShareFactory(RuinShareFactory ruinShareFactory) {
         this.ruinShareFactory = ruinShareFactory;
     }
 
-    public RuinShareFactory getRuinShareFactory(){
+    public RuinShareFactory getRuinShareFactory() {
         return ruinShareFactory;
     }
 
@@ -60,11 +60,11 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
     }
 
     @Override
-    public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes){
+    public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
         ruinListeners.ruinStarts(vehicleRoutes);
         Collection<Job> unassigned = ruinRoutes(vehicleRoutes);
         logger.trace("ruin: [ruined={}]", unassigned.size());
-        ruinListeners.ruinEnds(vehicleRoutes,unassigned);
+        ruinListeners.ruinEnds(vehicleRoutes, unassigned);
         return unassigned;
     }
 
@@ -73,10 +73,10 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
 
     @Override
     @Deprecated
-    public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved){
+    public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
         ruinListeners.ruinStarts(vehicleRoutes);
         Collection<Job> unassigned = ruinRoutes(vehicleRoutes, targetJob, nOfJobs2BeRemoved);
-        ruinListeners.ruinEnds(vehicleRoutes,unassigned);
+        ruinListeners.ruinEnds(vehicleRoutes, unassigned);
         return unassigned;
     }
 
@@ -99,7 +99,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
     }
 
     protected boolean removeJob(Job job, Collection<VehicleRoute> vehicleRoutes) {
-        if(jobIsInitial(job)) return false;
+        if (jobIsInitial(job)) return false;
         for (VehicleRoute route : vehicleRoutes) {
             if (removeJob(job, route)) {
                 return true;
@@ -108,16 +108,16 @@ public abstract class AbstractRuinStrategy implements RuinStrategy{
         return false;
     }
 
-    private boolean jobIsInitial(Job job){
+    private boolean jobIsInitial(Job job) {
         return !vrp.getJobs().containsKey(job.getId()); //for initial jobs (being not contained in problem
     }
 
     protected boolean removeJob(Job job, VehicleRoute route) {
-        if(jobIsInitial(job)) return false;
+        if (jobIsInitial(job)) return false;
         boolean removed = route.getTourActivities().removeJob(job);
         if (removed) {
             logger.trace("ruin: {}", job.getId());
-            ruinListeners.removed(job,route);
+            ruinListeners.removed(job, route);
             return true;
         }
         return false;

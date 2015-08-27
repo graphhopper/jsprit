@@ -7,8 +7,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.Iterator;
 
 /**
-* Created by schroeder on 07/01/15.
-*/
+ * Created by schroeder on 07/01/15.
+ */
 class NearestNeighborhoodIterator implements Iterator<Job> {
 
     private static Logger log = LogManager.getLogger(NearestNeighborhoodIterator.class);
@@ -27,9 +27,10 @@ class NearestNeighborhoodIterator implements Iterator<Job> {
 
     @Override
     public boolean hasNext() {
-        if(jobCount < nJobs){
+        if (jobCount < nJobs) {
             boolean hasNext = jobIter.hasNext();
-            if(!hasNext) log.warn("more jobs are requested then iterator can iterate over. probably the number of neighbors memorized in JobNeighborhoods is too small");
+            if (!hasNext)
+                log.warn("more jobs are requested then iterator can iterate over. probably the number of neighbors memorized in JobNeighborhoods is too small");
             return hasNext;
         }
         return false;

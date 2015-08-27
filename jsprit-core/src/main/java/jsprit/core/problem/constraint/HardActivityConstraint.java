@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -22,16 +22,16 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 /**
  * Hard constraint that evaluates whether a new activity can be inserted between an activity segment (prevAct,nextAct).
  */
-public interface HardActivityConstraint extends HardConstraint{
+public interface HardActivityConstraint extends HardConstraint {
 
     /**
      * Indicates whether a hard activity constraint is fulfilled or not
      */
-	static enum ConstraintsStatus {
+    static enum ConstraintsStatus {
 
-		NOT_FULFILLED_BREAK, NOT_FULFILLED, FULFILLED
+        NOT_FULFILLED_BREAK, NOT_FULFILLED, FULFILLED
 
-	}
+    }
 
     /**
      * Returns whether newAct can be inserted in between prevAct and nextAct.
@@ -77,6 +77,6 @@ public interface HardActivityConstraint extends HardConstraint{
      * @param prevActDepTime the departure time at previous activity (prevAct) with the new vehicle (iFacts.getNewVehicle())
      * @return fulfilled if hard constraint is met, other not fulfilled.
      */
-	public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);
+    public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);
 
 }

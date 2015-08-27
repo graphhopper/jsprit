@@ -9,7 +9,11 @@ public abstract class AbstractActivity implements TourActivity {
 
     private int index;
 
-    public int getIndex(){ return index; }
+    public int getIndex() {
+        return index;
+    }
 
-    protected void setIndex(int index){ this.index = index; }
+    protected void setIndex(int index) {
+        this.index = index;
+    }
 }
