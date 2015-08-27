@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
-public abstract class AbstractInsertionStrategy implements InsertionStrategy{
+public abstract class AbstractInsertionStrategy implements InsertionStrategy {
 
     protected class Insertion {
 
@@ -84,9 +84,9 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
     }
 
     @Override
-    public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs){
+    public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
         insertionsListeners.informInsertionStarts(vehicleRoutes, unassignedJobs);
-        Collection<Job> badJobs = insertUnassignedJobs(vehicleRoutes,unassignedJobs);
+        Collection<Job> badJobs = insertUnassignedJobs(vehicleRoutes, unassignedJobs);
         insertionsListeners.informInsertionEndsListeners(vehicleRoutes);
         return badJobs;
     }
@@ -109,13 +109,13 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
 
     }
 
-    protected void insertJob(Job unassignedJob, InsertionData iData, VehicleRoute inRoute){
+    protected void insertJob(Job unassignedJob, InsertionData iData, VehicleRoute inRoute) {
         logger.trace("insert: [jobId={}]{}", unassignedJob.getId(), iData);
         insertionsListeners.informBeforeJobInsertion(unassignedJob, iData, inRoute);
-        if(!(inRoute.getVehicle().getId().equals(iData.getSelectedVehicle().getId()))){
+        if (!(inRoute.getVehicle().getId().equals(iData.getSelectedVehicle().getId()))) {
             insertionsListeners.informVehicleSwitched(inRoute, inRoute.getVehicle(), iData.getSelectedVehicle());
         }
-        for(Event e : iData.getEvents()){
+        for (Event e : iData.getEvents()) {
             eventListeners.inform(e);
         }
         insertionsListeners.informJobInserted(unassignedJob, inRoute, iData.getInsertionCost(), iData.getAdditionalTime());

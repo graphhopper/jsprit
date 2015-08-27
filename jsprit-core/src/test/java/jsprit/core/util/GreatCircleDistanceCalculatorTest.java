@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -26,7 +26,7 @@ import org.junit.Test;
 public class GreatCircleDistanceCalculatorTest {
 
     @Test
-    public void test(){
+    public void test() {
         double lon1 = 8.3858333;
         double lat1 = 49.0047222;
 
@@ -34,15 +34,15 @@ public class GreatCircleDistanceCalculatorTest {
         double lat2 = 54.0833333;
 
         double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
-                Coordinate.newInstance(lon1,lat1),
-                Coordinate.newInstance(lon2,lat2),
-                DistanceUnit.Kilometer
+            Coordinate.newInstance(lon1, lat1),
+            Coordinate.newInstance(lon2, lat2),
+            DistanceUnit.Kilometer
         );
-        Assert.assertEquals(600,greatCircle,30.);
+        Assert.assertEquals(600, greatCircle, 30.);
     }
 
     @Test
-    public void testMeter(){
+    public void testMeter() {
         double lon1 = 8.3858333;
         double lat1 = 49.0047222;
 
@@ -50,11 +50,11 @@ public class GreatCircleDistanceCalculatorTest {
         double lat2 = 54.0833333;
 
         double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
-                Coordinate.newInstance(lon1,lat1),
-                Coordinate.newInstance(lon2,lat2),
-                DistanceUnit.Meter
+            Coordinate.newInstance(lon1, lat1),
+            Coordinate.newInstance(lon2, lat2),
+            DistanceUnit.Meter
         );
-        Assert.assertEquals(600000,greatCircle,30000.);
+        Assert.assertEquals(600000, greatCircle, 30000.);
     }
 
 }

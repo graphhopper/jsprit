@@ -18,15 +18,15 @@ import static org.junit.Assert.assertEquals;
 public class Solomon_IT {
 
     @Test
-    public void itShouldFindTheBestKnownSolution(){
+    public void itShouldFindTheBestKnownSolution() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/solomon_c101.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp,"src/test/resources/algorithmConfig.xml");
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig.xml");
         vra.setMaxIterations(500);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertEquals(828.94, Solutions.bestOf(solutions).getCost(),0.01);
+        assertEquals(828.94, Solutions.bestOf(solutions).getCost(), 0.01);
     }
 
 }

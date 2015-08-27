@@ -18,26 +18,26 @@ import static org.mockito.Mockito.when;
 public class RandomUtilsTest {
 
     @Test
-    public void shouldReturnSingleJob(){
+    public void shouldReturnSingleJob() {
         Job job = mock(Job.class);
         Collection<Job> jobs = Arrays.asList(job);
         Assert.assertEquals(job, RandomUtils.nextItem(jobs, RandomNumberGeneration.getRandom()));
     }
 
     @Test
-    public void shouldReturnSingleJob_(){
+    public void shouldReturnSingleJob_() {
         Job job = mock(Job.class);
         Collection<Job> jobs = Arrays.asList(job);
         Assert.assertEquals(job, RandomUtils.nextJob(jobs, RandomNumberGeneration.getRandom()));
     }
 
     @Test
-    public void shouldReturnJob3(){
+    public void shouldReturnJob3() {
         Job job3 = mock(Job.class);
-        List<Job> jobs = Arrays.asList(mock(Job.class),mock(Job.class),job3);
+        List<Job> jobs = Arrays.asList(mock(Job.class), mock(Job.class), job3);
         Random random = mock(Random.class);
         when(random.nextInt(jobs.size())).thenReturn(2);
-        Assert.assertEquals(job3,RandomUtils.nextJob(jobs,random));
+        Assert.assertEquals(job3, RandomUtils.nextJob(jobs, random));
     }
 
 

@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -47,7 +47,7 @@ public class AlgorithmEventsViewer {
             this.delayContainer = delayContainer;
         }
 
-        public void setRuinDelay(long ruinDelay){
+        public void setRuinDelay(long ruinDelay) {
             this.ruinDelay = ruinDelay;
         }
 
@@ -131,16 +131,14 @@ public class AlgorithmEventsViewer {
 
         @Override
         public void stepBegins(String sourceId, long timeId, double step) {
-            if(step == AlgorithmEventsRecorder.RECREATE) {
+            if (step == AlgorithmEventsRecorder.RECREATE) {
                 delayContainer.delay = recreateDelay;
             }
-            if(step == AlgorithmEventsRecorder.RUIN){
+            if (step == AlgorithmEventsRecorder.RUIN) {
                 delayContainer.delay = ruinDelay;
-            }
-            else if(step == AlgorithmEventsRecorder.CLEAR_SOLUTION){
+            } else if (step == AlgorithmEventsRecorder.CLEAR_SOLUTION) {
                 delayContainer.delay = delay;
-            }
-            else if(step == AlgorithmEventsRecorder.BEFORE_RUIN_RENDER_SOLUTION){
+            } else if (step == AlgorithmEventsRecorder.BEFORE_RUIN_RENDER_SOLUTION) {
                 delayContainer.delay = delay;
             }
         }
@@ -156,15 +154,15 @@ public class AlgorithmEventsViewer {
 
     private long delay = 2;
 
-    public void setRecreationDelay(long delay_in_ms){
+    public void setRecreationDelay(long delay_in_ms) {
         this.delayRecreation = delay_in_ms;
     }
 
-    public void setRuinDelay(long delay_in_ms){
+    public void setRuinDelay(long delay_in_ms) {
         this.delayRuin = delay_in_ms;
     }
 
-    public void display(String dgsFile){
+    public void display(String dgsFile) {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         Graph graph = GraphStreamViewer.createMultiGraph("g", GraphStreamViewer.StyleSheets.BLUE_FOREST);
         Viewer viewer = graph.display();
@@ -185,13 +183,13 @@ public class AlgorithmEventsViewer {
             while (fs.nextEvents()) {
                 sleep(delayContainer.delay);
             }
-        } catch( IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         try {
             fs.end();
-        } catch( IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             fs.removeSink(graph);

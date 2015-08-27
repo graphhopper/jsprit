@@ -15,8 +15,8 @@ class EventListeners {
         listeners.add(new SwitchVehicleListener());
     }
 
-    public void inform(Event event){
-        for(EventListener l : listeners){
+    public void inform(Event event) {
+        for (EventListener l : listeners) {
             l.inform(event);
         }
     }

@@ -32,16 +32,16 @@ public class PDTW_IT {
     int nJobs = 200;
     int nVehicles = 40;
     Random random = new Random(1623);
-    int nextShipmentId=1;
-    int nextVehicleId=1;
+    int nextShipmentId = 1;
+    int nextVehicleId = 1;
 
     @Test
     public void whenDealingWithShipments_timeWindowsShouldNOTbeBroken() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        for(int i =0 ; i < nVehicles ; i++){
+        for (int i = 0; i < nVehicles; i++) {
             vrpBuilder.addVehicle(createVehicle());
         }
-        for(int i =0 ; i < nJobs;i++){
+        for (int i = 0; i < nJobs; i++) {
             vrpBuilder.addJob(createShipment());
         }
         vrpBuilder.setFleetSize(FleetSize.FINITE);
@@ -51,10 +51,10 @@ public class PDTW_IT {
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
-        for(VehicleRoute route : bestSolution.getRoutes()){
+        for (VehicleRoute route : bestSolution.getRoutes()) {
             Vehicle v = route.getVehicle();
-            for(TourActivity ta : route.getActivities()){
-                if(ta.getArrTime() > v.getLatestArrival() * 1.00001){
+            for (TourActivity ta : route.getActivities()) {
+                if (ta.getArrTime() > v.getLatestArrival() * 1.00001) {
                     assertFalse(true);
                 }
             }
@@ -65,10 +65,10 @@ public class PDTW_IT {
     @Test
     public void whenDealingWithServices_timeWindowsShouldNOTbeBroken() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        for(int i =0 ; i < nVehicles ; i++){
+        for (int i = 0; i < nVehicles; i++) {
             vrpBuilder.addVehicle(createVehicle());
         }
-        for(int i =0 ; i < nJobs;i++){
+        for (int i = 0; i < nJobs; i++) {
             vrpBuilder.addJob(createService());
         }
         vrpBuilder.setFleetSize(FleetSize.FINITE);
@@ -78,10 +78,10 @@ public class PDTW_IT {
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
-        for(VehicleRoute route : bestSolution.getRoutes()){
+        for (VehicleRoute route : bestSolution.getRoutes()) {
             Vehicle v = route.getVehicle();
-            for(TourActivity ta : route.getActivities()){
-                if(ta.getArrTime() * 1.000001 > v.getLatestArrival()){
+            for (TourActivity ta : route.getActivities()) {
+                if (ta.getArrTime() * 1.000001 > v.getLatestArrival()) {
                     assertFalse(true);
                 }
             }
@@ -91,10 +91,10 @@ public class PDTW_IT {
     @Test
     public void whenDealingWithShipments_usingJsprit_timeWindowsShouldNOTbeBroken() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        for(int i =0 ; i < nVehicles ; i++){
+        for (int i = 0; i < nVehicles; i++) {
             vrpBuilder.addVehicle(createVehicle());
         }
-        for(int i =0 ; i < nJobs;i++){
+        for (int i = 0; i < nJobs; i++) {
             vrpBuilder.addJob(createShipment());
         }
         vrpBuilder.setFleetSize(FleetSize.FINITE);
@@ -104,10 +104,10 @@ public class PDTW_IT {
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
-        for(VehicleRoute route : bestSolution.getRoutes()){
+        for (VehicleRoute route : bestSolution.getRoutes()) {
             Vehicle v = route.getVehicle();
-            for(TourActivity ta : route.getActivities()){
-                if(ta.getArrTime() > v.getLatestArrival() * 1.00001){
+            for (TourActivity ta : route.getActivities()) {
+                if (ta.getArrTime() > v.getLatestArrival() * 1.00001) {
                     assertFalse(true);
                 }
             }
@@ -118,10 +118,10 @@ public class PDTW_IT {
     @Test
     public void whenDealingWithServices_usingJsprit_timeWindowsShouldNOTbeBroken() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        for(int i =0 ; i < nVehicles ; i++){
+        for (int i = 0; i < nVehicles; i++) {
             vrpBuilder.addVehicle(createVehicle());
         }
-        for(int i =0 ; i < nJobs;i++){
+        for (int i = 0; i < nJobs; i++) {
             vrpBuilder.addJob(createService());
         }
         vrpBuilder.setFleetSize(FleetSize.FINITE);
@@ -131,10 +131,10 @@ public class PDTW_IT {
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
-        for(VehicleRoute route : bestSolution.getRoutes()){
+        for (VehicleRoute route : bestSolution.getRoutes()) {
             Vehicle v = route.getVehicle();
-            for(TourActivity ta : route.getActivities()){
-                if(ta.getArrTime() * 1.000001 > v.getLatestArrival()){
+            for (TourActivity ta : route.getActivities()) {
+                if (ta.getArrTime() * 1.000001 > v.getLatestArrival()) {
                     assertFalse(true);
                 }
             }
@@ -149,11 +149,11 @@ public class PDTW_IT {
         return b.build();
     }
 
-    private Location createLocation(){
-        return loc(new Coordinate(50*random.nextDouble(), 50*random.nextDouble()));
+    private Location createLocation() {
+        return loc(new Coordinate(50 * random.nextDouble(), 50 * random.nextDouble()));
     }
 
-    private Shipment createShipment(){
+    private Shipment createShipment() {
         Shipment.Builder b = Shipment.Builder.newInstance(Integer.toString(nextShipmentId++));
         b.addSizeDimension(0, 1);
         b.setPickupServiceTime(random.nextDouble() * 5);
@@ -162,7 +162,8 @@ public class PDTW_IT {
         b.setPickupLocation(createLocation());
         return b.build();
     }
-    private VehicleImpl createVehicle(){
+
+    private VehicleImpl createVehicle() {
         VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType" + nextVehicleId).addCapacityDimension(0, 2);
         vehicleTypeBuilder.setCostPerDistance(1.0);
         vehicleTypeBuilder.setCostPerTime(1);
@@ -180,7 +181,7 @@ public class PDTW_IT {
     }
 
 
-    private static Location loc(Coordinate coordinate){
+    private static Location loc(Coordinate coordinate) {
         return Location.Builder.newInstance().setCoordinate(coordinate).build();
     }
 }

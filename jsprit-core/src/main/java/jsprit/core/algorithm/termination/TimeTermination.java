@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public 
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm.termination;
@@ -29,27 +29,27 @@ import java.util.Collection;
 
 /**
  * Terminates algorithm prematurely based on specified time.
- * 
+ *
  * <p>Note, TimeTermination must be registered as AlgorithmListener <br>
  * TimeTermination will be activated by:<br>
  *
  * <code>algorithm.setPrematureAlgorithmTermination(this);</code><br>
  * <code>algorithm.addListener(this);</code>
- * 
+ *
  * @author stefan schroeder
  *
  */
-public class TimeTermination implements PrematureAlgorithmTermination, AlgorithmStartsListener{
+public class TimeTermination implements PrematureAlgorithmTermination, AlgorithmStartsListener {
 
-	public static interface TimeGetter {
+    public static interface TimeGetter {
 
         public long getCurrentTime();
 
     }
 
     private static Logger logger = LogManager.getLogger(TimeTermination.class);
-	
-	private final long timeThreshold;
+
+    private final long timeThreshold;
 
     private TimeGetter timeGetter = new TimeGetter() {
 
@@ -59,45 +59,45 @@ public class TimeTermination implements PrematureAlgorithmTermination, Algorithm
         }
 
     };
-	
-	private long startTime;
-	
-	/**
-	 * Constructs TimeTermination that terminates algorithm prematurely based on specified time.
-	 *
+
+    private long startTime;
+
+    /**
+     * Constructs TimeTermination that terminates algorithm prematurely based on specified time.
+     *
      * @param timeThreshold_in_milliseconds the computation time [in ms] after which the algorithm terminates
      */
-	public TimeTermination(long timeThreshold_in_milliseconds) {
-		super();
-		this.timeThreshold = timeThreshold_in_milliseconds;
-		logger.debug("initialise {}", this);
-	}
+    public TimeTermination(long timeThreshold_in_milliseconds) {
+        super();
+        this.timeThreshold = timeThreshold_in_milliseconds;
+        logger.debug("initialise {}", this);
+    }
 
     public void setTimeGetter(TimeGetter timeGetter) {
         this.timeGetter = timeGetter;
     }
 
     @Override
-	public String toString() {
-		return "[name=TimeTermination][timeThreshold="+timeThreshold+" ms]";
-	}
+    public String toString() {
+        return "[name=TimeTermination][timeThreshold=" + timeThreshold + " ms]";
+    }
 
-	@Override
-	public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
-		return ( now() - startTime )  > timeThreshold ;
-	}
+    @Override
+    public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
+        return (now() - startTime) > timeThreshold;
+    }
 
-    void start(long startTime){
+    void start(long startTime) {
         this.startTime = startTime;
     }
 
-    private long now(){
+    private long now() {
         return timeGetter.getCurrentTime();
     }
-	
-	@Override
-	public void informAlgorithmStarts(VehicleRoutingProblem problem,VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
-		start(timeGetter.getCurrentTime());
-	}
+
+    @Override
+    public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
+        start(timeGetter.getCurrentTime());
+    }
 
 }

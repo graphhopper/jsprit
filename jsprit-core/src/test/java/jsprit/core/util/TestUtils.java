@@ -7,15 +7,15 @@ import jsprit.core.problem.Location;
  */
 public class TestUtils {
 
-    public static Location loc(String id, Coordinate coordinate){
+    public static Location loc(String id, Coordinate coordinate) {
         return Location.Builder.newInstance().setId(id).setCoordinate(coordinate).build();
     }
 
-    public static Location loc(String id){
+    public static Location loc(String id) {
         return Location.Builder.newInstance().setId(id).build();
     }
 
-    public static Location loc(Coordinate coordinate){
+    public static Location loc(Coordinate coordinate) {
         return Location.Builder.newInstance().setCoordinate(coordinate).build();
     }
 }

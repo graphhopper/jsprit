@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
 public class SolomonSkills_IT {
 
     @Test
-    public void itShouldMakeCorrectAssignmentAccordingToSkills(){
+    public void itShouldMakeCorrectAssignmentAccordingToSkills() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/solomon_c101.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -55,37 +55,37 @@ public class SolomonSkills_IT {
         Vehicle solomonVehicle = vrp.getVehicles().iterator().next();
         VehicleType newType = solomonVehicle.getType();
         VehicleRoutingProblem.Builder skillProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        for(int i=0;i<6;i++) {
-            VehicleImpl skill1Vehicle = VehicleImpl.Builder.newInstance("skill1_vehicle_"+i).addSkill("skill1")
-                    .setStartLocation(TestUtils.loc(solomonVehicle.getStartLocation().getId(), solomonVehicle.getStartLocation().getCoordinate()))
-                    .setEarliestStart(solomonVehicle.getEarliestDeparture())
-                    .setType(newType).build();
-            VehicleImpl skill2Vehicle = VehicleImpl.Builder.newInstance("skill2_vehicle_"+i).addSkill("skill2")
-                    .setStartLocation(TestUtils.loc(solomonVehicle.getStartLocation().getId(), solomonVehicle.getStartLocation().getCoordinate()))
-                    .setEarliestStart(solomonVehicle.getEarliestDeparture())
-                    .setType(newType).build();
+        for (int i = 0; i < 6; i++) {
+            VehicleImpl skill1Vehicle = VehicleImpl.Builder.newInstance("skill1_vehicle_" + i).addSkill("skill1")
+                .setStartLocation(TestUtils.loc(solomonVehicle.getStartLocation().getId(), solomonVehicle.getStartLocation().getCoordinate()))
+                .setEarliestStart(solomonVehicle.getEarliestDeparture())
+                .setType(newType).build();
+            VehicleImpl skill2Vehicle = VehicleImpl.Builder.newInstance("skill2_vehicle_" + i).addSkill("skill2")
+                .setStartLocation(TestUtils.loc(solomonVehicle.getStartLocation().getId(), solomonVehicle.getStartLocation().getCoordinate()))
+                .setEarliestStart(solomonVehicle.getEarliestDeparture())
+                .setType(newType).build();
             skillProblemBuilder.addVehicle(skill1Vehicle).addVehicle(skill2Vehicle);
         }
-        for(Job job : vrp.getJobs().values()){
+        for (Job job : vrp.getJobs().values()) {
             Service service = (Service) job;
             Service.Builder skillServiceBuilder = Service.Builder.newInstance(service.getId()).setServiceTime(service.getServiceDuration())
-                    .setLocation(TestUtils.loc(service.getLocation().getId(), service.getLocation().getCoordinate())).setTimeWindow(service.getTimeWindow())
-                    .addSizeDimension(0, service.getSize().get(0));
-            if(service.getLocation().getCoordinate().getY()<50) skillServiceBuilder.addRequiredSkill("skill2");
+                .setLocation(TestUtils.loc(service.getLocation().getId(), service.getLocation().getCoordinate())).setTimeWindow(service.getTimeWindow())
+                .addSizeDimension(0, service.getSize().get(0));
+            if (service.getLocation().getCoordinate().getY() < 50) skillServiceBuilder.addRequiredSkill("skill2");
             else skillServiceBuilder.addRequiredSkill("skill1");
             skillProblemBuilder.addJob(skillServiceBuilder.build());
         }
         skillProblemBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         VehicleRoutingProblem skillProblem = skillProblemBuilder.build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(skillProblem,"src/test/resources/algorithmConfig.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(skillProblem, "src/test/resources/algorithmConfig.xml");
         vraBuilder.addCoreConstraints();
         vraBuilder.addDefaultCostCalculators();
 
         StateManager stateManager = new StateManager(skillProblem);
         stateManager.updateSkillStates();
 
-        ConstraintManager constraintManager = new ConstraintManager(skillProblem,stateManager);
+        ConstraintManager constraintManager = new ConstraintManager(skillProblem, stateManager);
         constraintManager.addSkillsConstraint();
 
         VehicleRoutingAlgorithm vra = vraBuilder.build();
@@ -95,19 +95,18 @@ public class SolomonSkills_IT {
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
             VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
             assertEquals(828.94, solution.getCost(), 0.01);
-            for(VehicleRoute route : solution.getRoutes()){
+            for (VehicleRoute route : solution.getRoutes()) {
                 Skills vehicleSkill = route.getVehicle().getSkills();
-                for(Job job : route.getTourActivities().getJobs()){
-                    for(String skill : job.getRequiredSkills().values()){
-                        if(!vehicleSkill.containsSkill(skill)){
+                for (Job job : route.getTourActivities().getJobs()) {
+                    for (String skill : job.getRequiredSkills().values()) {
+                        if (!vehicleSkill.containsSkill(skill)) {
                             assertFalse(true);
                         }
                     }
                 }
             }
             assertTrue(true);
-        }
-        catch (NoSolutionFoundException e){
+        } catch (NoSolutionFoundException e) {
             System.out.println(e.toString());
             assertFalse(true);
         }

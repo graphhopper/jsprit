@@ -8,7 +8,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 /**
  * Update to update required skills on route
  */
-public class UpdateSkills implements StateUpdater, ActivityVisitor{
+public class UpdateSkills implements StateUpdater, ActivityVisitor {
 
     private Skills.Builder skillBuilder;
 
@@ -28,7 +28,7 @@ public class UpdateSkills implements StateUpdater, ActivityVisitor{
 
     @Override
     public void visit(TourActivity activity) {
-        if(activity instanceof TourActivity.JobActivity){
+        if (activity instanceof TourActivity.JobActivity) {
             Skills skills = ((TourActivity.JobActivity) activity).getJob().getRequiredSkills();
             skillBuilder.addAllSkills(skills.values());
         }
