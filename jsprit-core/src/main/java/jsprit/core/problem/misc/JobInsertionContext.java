@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem.misc;
@@ -27,88 +27,87 @@ import java.util.List;
 
 /**
  * Provides context information about a particular job insertion.
- *
  */
 public class JobInsertionContext {
 
     private VehicleRoute route;
 
-	private Job job;
+    private Job job;
 
-	private Vehicle newVehicle;
+    private Vehicle newVehicle;
 
-	private Driver newDriver;
+    private Driver newDriver;
 
-	private double newDepTime;
+    private double newDepTime;
 
     private List<TourActivity> associatedActivities = new ArrayList<TourActivity>();
 
     private ActivityContext pickupContext;
-	
-	/**
+
+    /**
      * Returns the existing route where the .getJob() needs to be inserted in.
      *
-	 * @return the route
-	 */
-	public VehicleRoute getRoute() {
-		return route;
-	}
+     * @return the route
+     */
+    public VehicleRoute getRoute() {
+        return route;
+    }
 
-	/**
+    /**
      * Returns the job that needs to be inserted.
      *
-	 * @return the job
-	 */
-	public Job getJob() {
-		return job;
-	}
+     * @return the job
+     */
+    public Job getJob() {
+        return job;
+    }
 
-	/**
+    /**
      * Returns the vehicle that should operate the new route, i.e. route <code>this.getRoute()</code> + new job <code>this.getJob()</code>.
      *
-	 * @return the newVehicle
-	 */
-	public Vehicle getNewVehicle() {
-		return newVehicle;
-	}
+     * @return the newVehicle
+     */
+    public Vehicle getNewVehicle() {
+        return newVehicle;
+    }
 
-	/**
+    /**
      * Returns the driver that should operate the new route, i.e. route <code>this.getRoute()</code> + new job <code>this.getJob()</code>.
-     *
+     * <p/>
      * <p>Currently the driver is just a mock, it has no functions</p>
      *
-	 * @return the newDriver
-	 */
-	public Driver getNewDriver() {
-		return newDriver;
-	}
+     * @return the newDriver
+     */
+    public Driver getNewDriver() {
+        return newDriver;
+    }
 
-	/**
+    /**
      * Returns the new departure time at the new vehicle's start location.
      *
-	 * @return the newDepTime
-	 */
-	public double getNewDepTime() {
-		return newDepTime;
-	}
+     * @return the newDepTime
+     */
+    public double getNewDepTime() {
+        return newDepTime;
+    }
 
     /**
      * Constructs the context.
      *
-     * @param route the existing route where the job needs to be inserted in
-     * @param job the job to be inserted
+     * @param route      the existing route where the job needs to be inserted in
+     * @param job        the job to be inserted
      * @param newVehicle the new vehicle that should operate the new route
-     * @param newDriver the new driver that should operate the new route
+     * @param newDriver  the new driver that should operate the new route
      * @param newDepTime the new departure time at the new vehicle's start location
      */
-	public JobInsertionContext(VehicleRoute route, Job job, Vehicle newVehicle, Driver newDriver, double newDepTime) {
-		super();
-		this.route = route;
-		this.job = job;
-		this.newVehicle = newVehicle;
-		this.newDriver = newDriver;
-		this.newDepTime = newDepTime;
-	}
+    public JobInsertionContext(VehicleRoute route, Job job, Vehicle newVehicle, Driver newDriver, double newDepTime) {
+        super();
+        this.route = route;
+        this.job = job;
+        this.newVehicle = newVehicle;
+        this.newDriver = newDriver;
+        this.newDepTime = newDepTime;
+    }
 
     public List<TourActivity> getAssociatedActivities() {
         return associatedActivities;
@@ -119,7 +118,7 @@ public class JobInsertionContext {
      *
      * @param pickupContext pickup context
      */
-    public void setRelatedActivityContext(ActivityContext pickupContext){
+    public void setRelatedActivityContext(ActivityContext pickupContext) {
         this.pickupContext = pickupContext;
     }
 
@@ -128,7 +127,7 @@ public class JobInsertionContext {
      *
      * @return pickup context
      */
-    public ActivityContext getRelatedActivityContext(){
+    public ActivityContext getRelatedActivityContext() {
         return this.pickupContext;
     }
 }

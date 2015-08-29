@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
@@ -24,110 +24,110 @@ import jsprit.core.util.Coordinate;
 public final class End extends AbstractActivity implements TourActivity {
 
     @Deprecated
-	public static int creation = 0;
-	
-	public static End newInstance(String locationId, double earliestArrival, double latestArrival) {
-		creation++;
-		return new End(locationId,earliestArrival,latestArrival);
-	}
-	
-	public static End copyOf(End end){
-		return new End(end);
-	}
+    public static int creation = 0;
 
-	private final static Capacity capacity = Capacity.Builder.newInstance().build();
+    public static End newInstance(String locationId, double earliestArrival, double latestArrival) {
+        creation++;
+        return new End(locationId, earliestArrival, latestArrival);
+    }
 
-	private Coordinate coordinate;
+    public static End copyOf(End end) {
+        return new End(end);
+    }
 
-    @Deprecated
-	Coordinate getCoordinate() {
-		return coordinate;
-	}
+    private final static Capacity capacity = Capacity.Builder.newInstance().build();
+
+    private Coordinate coordinate;
 
     @Deprecated
-	void setCoordinate(Coordinate coordinate) {
-		this.coordinate = coordinate;
-	}
+    Coordinate getCoordinate() {
+        return coordinate;
+    }
 
-	private double endTime = -1;
-	
+    @Deprecated
+    void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
 
-	private double theoretical_earliestOperationStartTime;
-	
-	private double theoretical_latestOperationStartTime;
+    private double endTime = -1;
 
-	private double arrTime;
+
+    private double theoretical_earliestOperationStartTime;
+
+    private double theoretical_latestOperationStartTime;
+
+    private double arrTime;
 
     private Location location;
 
-	public void setTheoreticalEarliestOperationStartTime(double theoreticalEarliestOperationStartTime) {
-		theoretical_earliestOperationStartTime = theoreticalEarliestOperationStartTime;
-	}
+    public void setTheoreticalEarliestOperationStartTime(double theoreticalEarliestOperationStartTime) {
+        theoretical_earliestOperationStartTime = theoreticalEarliestOperationStartTime;
+    }
 
-	public void setTheoreticalLatestOperationStartTime(double theoreticalLatestOperationStartTime) {
-		theoretical_latestOperationStartTime = theoreticalLatestOperationStartTime;
-	}
+    public void setTheoreticalLatestOperationStartTime(double theoreticalLatestOperationStartTime) {
+        theoretical_latestOperationStartTime = theoreticalLatestOperationStartTime;
+    }
 
-	public End(Location location, double theoreticalStart, double theoreticalEnd) {
-		super();
-		this.location = location;
-		theoretical_earliestOperationStartTime = theoreticalStart;
-		theoretical_latestOperationStartTime = theoreticalEnd;
-		endTime = theoreticalEnd;
-        setIndex(-2);
-	}
-
-    public End(String locationId, double theoreticalStart, double theoreticalEnd) {
+    public End(Location location, double theoreticalStart, double theoreticalEnd) {
         super();
-        if(locationId != null) this.location = Location.Builder.newInstance().setId(locationId).build();
+        this.location = location;
         theoretical_earliestOperationStartTime = theoreticalStart;
         theoretical_latestOperationStartTime = theoreticalEnd;
         endTime = theoreticalEnd;
         setIndex(-2);
     }
 
-	public End(End end) {
+    public End(String locationId, double theoreticalStart, double theoreticalEnd) {
+        super();
+        if (locationId != null) this.location = Location.Builder.newInstance().setId(locationId).build();
+        theoretical_earliestOperationStartTime = theoreticalStart;
+        theoretical_latestOperationStartTime = theoreticalEnd;
+        endTime = theoreticalEnd;
+        setIndex(-2);
+    }
+
+    public End(End end) {
         this.location = end.getLocation();
 //		this.locationId = end.getLocation().getId();
-		theoretical_earliestOperationStartTime = end.getTheoreticalEarliestOperationStartTime();
-		theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime();
-		arrTime = end.getArrTime();
-		endTime = end.getEndTime();
+        theoretical_earliestOperationStartTime = end.getTheoreticalEarliestOperationStartTime();
+        theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime();
+        arrTime = end.getArrTime();
+        endTime = end.getEndTime();
         setIndex(-2);
-	}
+    }
 
-	public double getTheoreticalEarliestOperationStartTime() {
-		return theoretical_earliestOperationStartTime;
-	}
+    public double getTheoreticalEarliestOperationStartTime() {
+        return theoretical_earliestOperationStartTime;
+    }
 
-	public double getTheoreticalLatestOperationStartTime() {
-		return theoretical_latestOperationStartTime;
-	}
+    public double getTheoreticalLatestOperationStartTime() {
+        return theoretical_latestOperationStartTime;
+    }
 
-	public double getEndTime() {
-		return endTime;
-	}
+    public double getEndTime() {
+        return endTime;
+    }
 
-	public void setEndTime(double endTime) {
-		this.endTime = endTime;
-	}
+    public void setEndTime(double endTime) {
+        this.endTime = endTime;
+    }
 
     @Deprecated
-	public void setLocationId(String locationId) {
-		if(locationId == null) return;
+    public void setLocationId(String locationId) {
+        if (locationId == null) return;
         this.location = Location.Builder.newInstance().setId(locationId).build();
-	}
+    }
 
-    public void setLocation(Location location){
+    public void setLocation(Location location) {
         this.location = location;
     }
 
     @Deprecated
-	@Override
-	public String getLocationId() {
-		if(location == null) return null;
+    @Override
+    public String getLocationId() {
+        if (location == null) return null;
         return location.getId();
-	}
+    }
 
     @Override
     public Location getLocation() {
@@ -135,42 +135,42 @@ public final class End extends AbstractActivity implements TourActivity {
     }
 
     @Override
-	public double getOperationTime() {
-		return 0.0;
-	}
+    public double getOperationTime() {
+        return 0.0;
+    }
 
 
-	@Override
-	public String toString() {
-		return "[type="+getName()+"][location=" + location
-		+ "][twStart=" + Activities.round(theoretical_earliestOperationStartTime)
-		+ "][twEnd=" + Activities.round(theoretical_latestOperationStartTime) + "]";
-	}
-	
-	@Override
-	public String getName() {
-		return "end";
-	}
+    @Override
+    public String toString() {
+        return "[type=" + getName() + "][location=" + location
+            + "][twStart=" + Activities.round(theoretical_earliestOperationStartTime)
+            + "][twEnd=" + Activities.round(theoretical_latestOperationStartTime) + "]";
+    }
 
-	@Override
-	public double getArrTime() {
-		return this.arrTime;
-	}
+    @Override
+    public String getName() {
+        return "end";
+    }
 
-	@Override
-	public void setArrTime(double arrTime) {
-		this.arrTime = arrTime;
-		
-	}
+    @Override
+    public double getArrTime() {
+        return this.arrTime;
+    }
 
-	@Override
-	public TourActivity duplicate() {
-		return new End(this);
-	}
+    @Override
+    public void setArrTime(double arrTime) {
+        this.arrTime = arrTime;
 
-	@Override
-	public Capacity getSize() {
-		return capacity;
-	}
+    }
+
+    @Override
+    public TourActivity duplicate() {
+        return new End(this);
+    }
+
+    @Override
+    public Capacity getSize() {
+        return capacity;
+    }
 
 }

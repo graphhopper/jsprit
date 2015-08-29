@@ -22,70 +22,70 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PickupTest {
-	
-	@Test(expected=IllegalStateException.class)
-	public void whenNeitherLocationIdNorCoordIsSet_itThrowsException(){
-		Pickup.Builder.newInstance("p").build();
-	}
-	
-	@Test
-	public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo(){
-		Pickup one = (Pickup)Pickup.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
-				.addSizeDimension(0, 2)
-				.addSizeDimension(1, 4)
-				.build();
-		assertEquals(2,one.getSize().getNuOfDimensions());
-		assertEquals(2,one.getSize().get(0));
-		assertEquals(4,one.getSize().get(1));
-		
-	}
-	
-	@Test
-	public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero(){
-		Pickup one = (Pickup)Pickup.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
-				.build();
-		assertEquals(1,one.getSize().getNuOfDimensions());
-		assertEquals(0,one.getSize().get(0));
-	}
-	
-	@Test
-	public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly(){
-		Pickup one = (Pickup)Pickup.Builder.newInstance("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
-				.build();
-		assertEquals(1,one.getSize().getNuOfDimensions());
-		assertEquals(1,one.getSize().get(0));
-	}
-	
-	@Test
-	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
-		Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-				.addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
-		assertTrue(s.getRequiredSkills().containsSkill("drill"));
-		assertTrue(s.getRequiredSkills().containsSkill("drill"));
-		assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
-	}
-	
-	@Test
-	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
-		Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-				.addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
-		assertTrue(s.getRequiredSkills().containsSkill("drill"));
-		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
-	}
+
+    @Test(expected = IllegalStateException.class)
+    public void whenNeitherLocationIdNorCoordIsSet_itThrowsException() {
+        Pickup.Builder.newInstance("p").build();
+    }
 
     @Test
-    public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
+    public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
+        Pickup one = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
+            .addSizeDimension(0, 2)
+            .addSizeDimension(1, 4)
+            .build();
+        assertEquals(2, one.getSize().getNuOfDimensions());
+        assertEquals(2, one.getSize().get(0));
+        assertEquals(4, one.getSize().get(1));
+
+    }
+
+    @Test
+    public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero() {
+        Pickup one = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
+            .build();
+        assertEquals(1, one.getSize().getNuOfDimensions());
+        assertEquals(0, one.getSize().get(0));
+    }
+
+    @Test
+    public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
+        Pickup one = (Pickup) Pickup.Builder.newInstance("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
+            .build();
+        assertEquals(1, one.getSize().getNuOfDimensions());
+        assertEquals(1, one.getSize().get(0));
+    }
+
+    @Test
+    public void whenAddingSkills_theyShouldBeAddedCorrectly() {
         Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-                .addRequiredSkill("screwDriver").build();
+            .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
+        assertTrue(s.getRequiredSkills().containsSkill("drill"));
+        assertTrue(s.getRequiredSkills().containsSkill("drill"));
+        assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
+    }
+
+    @Test
+    public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
+        Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
+        assertTrue(s.getRequiredSkills().containsSkill("drill"));
+        assertTrue(s.getRequiredSkills().containsSkill("drilL"));
+    }
+
+    @Test
+    public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
+        Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
     }
 
     @Test
-    public void nameShouldBeAssigned(){
+    public void nameShouldBeAssigned() {
         Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-                .setName("name").build();
-        assertEquals("name",s.getName());
+            .setName("name").build();
+        assertEquals("name", s.getName());
     }
 
 

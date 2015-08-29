@@ -26,7 +26,7 @@ import org.junit.Test;
 public class TimeTerminationTest {
 
     @Test
-    public void whenTimeThreshold2000msAndCurrentTime0_itShouldNotBreak(){
+    public void whenTimeThreshold2000msAndCurrentTime0_itShouldNotBreak() {
         long threshold = 2000;
         TimeTermination tt = new TimeTermination(threshold);
         tt.setTimeGetter(new TimeTermination.TimeGetter() {
@@ -40,7 +40,7 @@ public class TimeTerminationTest {
     }
 
     @Test
-    public void whenTimeThreshold2000msAndCurrentTime2000ms_itShouldBreak(){
+    public void whenTimeThreshold2000msAndCurrentTime2000ms_itShouldBreak() {
         long threshold = 2000;
         TimeTermination tt = new TimeTermination(threshold);
         tt.setTimeGetter(new TimeTermination.TimeGetter() {

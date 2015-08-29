@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm;
@@ -33,56 +33,55 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 
-
 public class SearchStrategyManagerTest {
 
-	@Test
-	public void StrategyManagerInAction_addingStrategy_IsSuccessful(){
-		SearchStrategyManager manager = new SearchStrategyManager();
-		SearchStrategy strat1 = mock(SearchStrategy.class);
-		SearchStrategy strat2 = mock(SearchStrategy.class);
+    @Test
+    public void StrategyManagerInAction_addingStrategy_IsSuccessful() {
+        SearchStrategyManager manager = new SearchStrategyManager();
+        SearchStrategy strat1 = mock(SearchStrategy.class);
+        SearchStrategy strat2 = mock(SearchStrategy.class);
         when(strat1.getId()).thenReturn("strat1");
         when(strat2.getId()).thenReturn("strat2");
-		manager.addStrategy(strat1, 0.5);
-		manager.addStrategy(strat2, 0.5);
-		assertTrue(true);
-	}
-	
-	@Test(expected=IllegalStateException.class)
-	public void StrategyManagerInAction_strategyIsNull_throwsException(){
-		SearchStrategyManager manager = new SearchStrategyManager();
-		manager.addStrategy(null, 1.0);
-		assertTrue(false);
-	}
-	
-	@Test(expected=IllegalStateException.class)
-	public void StrategyManagerInAction_probabilityIsLowerThanZero_throwsException(){
-		SearchStrategyManager manager = new SearchStrategyManager();
-		SearchStrategy strat = mock(SearchStrategy.class);
+        manager.addStrategy(strat1, 0.5);
+        manager.addStrategy(strat2, 0.5);
+        assertTrue(true);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void StrategyManagerInAction_strategyIsNull_throwsException() {
+        SearchStrategyManager manager = new SearchStrategyManager();
+        manager.addStrategy(null, 1.0);
+        assertTrue(false);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void StrategyManagerInAction_probabilityIsLowerThanZero_throwsException() {
+        SearchStrategyManager manager = new SearchStrategyManager();
+        SearchStrategy strat = mock(SearchStrategy.class);
         when(strat.getId()).thenReturn("strat1");
-		manager.addStrategy(strat, -1.0);
-		assertTrue(false);
-	}
-	
+        manager.addStrategy(strat, -1.0);
+        assertTrue(false);
+    }
+
     @Test
-	public void itShouldReturnStrategy2(){
-		SearchStrategyManager manager = new SearchStrategyManager();
-		SearchStrategy mockedStrat1 = mock(SearchStrategy.class);
-		SearchStrategy mockedStrat2 = mock(SearchStrategy.class);
+    public void itShouldReturnStrategy2() {
+        SearchStrategyManager manager = new SearchStrategyManager();
+        SearchStrategy mockedStrat1 = mock(SearchStrategy.class);
+        SearchStrategy mockedStrat2 = mock(SearchStrategy.class);
         when(mockedStrat1.getId()).thenReturn("strat1");
         when(mockedStrat2.getId()).thenReturn("strat2");
-		manager.addStrategy(mockedStrat1, 0.5);
-		manager.addStrategy(mockedStrat2, 1.5);
+        manager.addStrategy(mockedStrat1, 0.5);
+        manager.addStrategy(mockedStrat2, 1.5);
 
         Random mockedRandom = mock(Random.class);
         manager.setRandom(mockedRandom);
         stub(mockedRandom.nextDouble()).toReturn(0.25);
 
         assertThat(manager.getRandomStrategy(), is(mockedStrat2));
-	}
+    }
 
     @Test
-    public void whenStratWeightChanged_itShouldReturnStrategy1(){
+    public void whenStratWeightChanged_itShouldReturnStrategy1() {
         SearchStrategyManager manager = new SearchStrategyManager();
         SearchStrategy mockedStrat1 = mock(SearchStrategy.class);
         SearchStrategy mockedStrat2 = mock(SearchStrategy.class);
@@ -99,13 +98,13 @@ public class SearchStrategyManagerTest {
 
         assertThat(manager.getRandomStrategy(), is(mockedStrat2));
 
-        manager.informStrategyWeightChanged("strat2",1.4);
+        manager.informStrategyWeightChanged("strat2", 1.4);
 
         assertThat(manager.getRandomStrategy(), is(mockedStrat1));
     }
 
     @Test
-    public void itShouldReturnStrategy1(){
+    public void itShouldReturnStrategy1() {
         SearchStrategyManager manager = new SearchStrategyManager();
         SearchStrategy mockedStrat1 = mock(SearchStrategy.class);
         SearchStrategy mockedStrat2 = mock(SearchStrategy.class);
@@ -122,12 +121,12 @@ public class SearchStrategyManagerTest {
 
         assertThat(manager.getRandomStrategy(), is(mockedStrat1));
     }
-	
-	@Test
-	public void whenRandomDices_0point1_returnsStrategy1(){
-		SearchStrategyManager managerUnderTest = new SearchStrategyManager();
-		SearchStrategy mockedStrategy1 = mock(SearchStrategy.class);
-		SearchStrategy mockedStrategy2 = mock(SearchStrategy.class);
+
+    @Test
+    public void whenRandomDices_0point1_returnsStrategy1() {
+        SearchStrategyManager managerUnderTest = new SearchStrategyManager();
+        SearchStrategy mockedStrategy1 = mock(SearchStrategy.class);
+        SearchStrategy mockedStrategy2 = mock(SearchStrategy.class);
 
         when(mockedStrategy1.getId()).thenReturn("strat1");
         when(mockedStrategy2.getId()).thenReturn("strat2");
@@ -136,18 +135,18 @@ public class SearchStrategyManagerTest {
         managerUnderTest.addStrategy(mockedStrategy2, 0.8);
 
         Random mockedRandom = mock(Random.class);
-		managerUnderTest.setRandom(mockedRandom);
-		stub(mockedRandom.nextDouble()).toReturn(0.1);
-		
-		assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy1));
-		
-	}
-	
-	@Test
-	public void whenRandomDices_0point5_returnsStrategy2(){
-		SearchStrategyManager managerUnderTest = new SearchStrategyManager();
-		SearchStrategy mockedStrategy1 = mock(SearchStrategy.class);
-		SearchStrategy mockedStrategy2 = mock(SearchStrategy.class);
+        managerUnderTest.setRandom(mockedRandom);
+        stub(mockedRandom.nextDouble()).toReturn(0.1);
+
+        assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy1));
+
+    }
+
+    @Test
+    public void whenRandomDices_0point5_returnsStrategy2() {
+        SearchStrategyManager managerUnderTest = new SearchStrategyManager();
+        SearchStrategy mockedStrategy1 = mock(SearchStrategy.class);
+        SearchStrategy mockedStrategy2 = mock(SearchStrategy.class);
 
         when(mockedStrategy1.getId()).thenReturn("strat1");
         when(mockedStrategy2.getId()).thenReturn("strat2");
@@ -156,18 +155,18 @@ public class SearchStrategyManagerTest {
         managerUnderTest.addStrategy(mockedStrategy2, 0.8);
 
         Random mockedRandom = mock(Random.class);
-		managerUnderTest.setRandom(mockedRandom);
-		when(mockedRandom.nextDouble()).thenReturn(0.5);
-		
-		assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy2));
-		
-	}
-	
-	@Test
-	public void whenRandomDices_0point0_returnsStrategy1(){
-		SearchStrategyManager managerUnderTest = new SearchStrategyManager();
-		SearchStrategy mockedStrategy1 = mock(SearchStrategy.class);
-		SearchStrategy mockedStrategy2 = mock(SearchStrategy.class);
+        managerUnderTest.setRandom(mockedRandom);
+        when(mockedRandom.nextDouble()).thenReturn(0.5);
+
+        assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy2));
+
+    }
+
+    @Test
+    public void whenRandomDices_0point0_returnsStrategy1() {
+        SearchStrategyManager managerUnderTest = new SearchStrategyManager();
+        SearchStrategy mockedStrategy1 = mock(SearchStrategy.class);
+        SearchStrategy mockedStrategy2 = mock(SearchStrategy.class);
 
         when(mockedStrategy1.getId()).thenReturn("strat1");
         when(mockedStrategy2.getId()).thenReturn("strat2");
@@ -176,57 +175,57 @@ public class SearchStrategyManagerTest {
         managerUnderTest.addStrategy(mockedStrategy2, 0.8);
 
         Random mockedRandom = mock(Random.class);
-		managerUnderTest.setRandom(mockedRandom);
-		when(mockedRandom.nextDouble()).thenReturn(0.0);
-		
-		assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy1));
-		
-	}
-	
-	@Test(expected=IllegalStateException.class)
-	public void whenRandomIsNull_throwException(){
-		SearchStrategyManager managerUnderTest = new SearchStrategyManager();
-		SearchStrategy mockedStrategy1 = mock(SearchStrategy.class);
-		SearchStrategy mockedStrategy2 = mock(SearchStrategy.class);
-		managerUnderTest.addStrategy(mockedStrategy1, 0.2);
-		managerUnderTest.addStrategy(mockedStrategy2, 0.8);
+        managerUnderTest.setRandom(mockedRandom);
+        when(mockedRandom.nextDouble()).thenReturn(0.0);
+
+        assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy1));
+
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenRandomIsNull_throwException() {
+        SearchStrategyManager managerUnderTest = new SearchStrategyManager();
+        SearchStrategy mockedStrategy1 = mock(SearchStrategy.class);
+        SearchStrategy mockedStrategy2 = mock(SearchStrategy.class);
+        managerUnderTest.addStrategy(mockedStrategy1, 0.2);
+        managerUnderTest.addStrategy(mockedStrategy2, 0.8);
 
         when(mockedStrategy1.getId()).thenReturn("strat1");
         when(mockedStrategy2.getId()).thenReturn("strat2");
 
         Random mockedRandom = null;
-		managerUnderTest.setRandom(mockedRandom);
-		managerUnderTest.getRandomStrategy();
-		
-	}
+        managerUnderTest.setRandom(mockedRandom);
+        managerUnderTest.getRandomStrategy();
 
-	@Test
-	public void strategyDrawShouldBeReproducible(){
-		RandomNumberGeneration.reset();
-		SearchStrategyManager managerUnderTest = new SearchStrategyManager();
-		SearchStrategy mockedStrategy1 = new SearchStrategy("strat1"
-				,mock(SolutionSelector.class),mock(SolutionAcceptor.class),mock(SolutionCostCalculator.class));
-		SearchStrategy mockedStrategy2 = new SearchStrategy("strat2"
-				,mock(SolutionSelector.class),mock(SolutionAcceptor.class),mock(SolutionCostCalculator.class));
+    }
 
-		managerUnderTest.addStrategy(mockedStrategy1, 0.2);
-		managerUnderTest.addStrategy(mockedStrategy2, 0.8);
-		List<String> firstRecord = new ArrayList<String>();
-		for(int i=0; i<1000;i++){
-			firstRecord.add(managerUnderTest.getRandomStrategy().getId());
-		}
+    @Test
+    public void strategyDrawShouldBeReproducible() {
+        RandomNumberGeneration.reset();
+        SearchStrategyManager managerUnderTest = new SearchStrategyManager();
+        SearchStrategy mockedStrategy1 = new SearchStrategy("strat1"
+            , mock(SolutionSelector.class), mock(SolutionAcceptor.class), mock(SolutionCostCalculator.class));
+        SearchStrategy mockedStrategy2 = new SearchStrategy("strat2"
+            , mock(SolutionSelector.class), mock(SolutionAcceptor.class), mock(SolutionCostCalculator.class));
 
-		RandomNumberGeneration.reset();
-		List<String> secondRecord = new ArrayList<String>();
-		for(int i=0; i<1000;i++){
-			secondRecord.add(managerUnderTest.getRandomStrategy().getId());
-		}
+        managerUnderTest.addStrategy(mockedStrategy1, 0.2);
+        managerUnderTest.addStrategy(mockedStrategy2, 0.8);
+        List<String> firstRecord = new ArrayList<String>();
+        for (int i = 0; i < 1000; i++) {
+            firstRecord.add(managerUnderTest.getRandomStrategy().getId());
+        }
 
-		for(int i=0;i<1000;i++){
-			if(!firstRecord.get(i).equals(secondRecord.get(i))){
-				Assert.assertFalse(true);
-			}
-		}
-		Assert.assertTrue(true);
-	}
+        RandomNumberGeneration.reset();
+        List<String> secondRecord = new ArrayList<String>();
+        for (int i = 0; i < 1000; i++) {
+            secondRecord.add(managerUnderTest.getRandomStrategy().getId());
+        }
+
+        for (int i = 0; i < 1000; i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
+                Assert.assertFalse(true);
+            }
+        }
+        Assert.assertTrue(true);
+    }
 }

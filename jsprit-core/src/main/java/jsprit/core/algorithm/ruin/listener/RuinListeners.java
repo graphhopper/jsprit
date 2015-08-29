@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
  *
@@ -27,30 +26,30 @@ import java.util.Collections;
 
 
 public class RuinListeners {
-	
-	private Collection<RuinListener> ruinListeners = new ArrayList<RuinListener>();
 
-	public void ruinStarts(Collection<VehicleRoute> routes){
-		for(RuinListener l : ruinListeners) l.ruinStarts(routes);
-	}
-	
-	public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs){
-		for(RuinListener l : ruinListeners) l.ruinEnds(routes, unassignedJobs);
-	}
-	
-	public void removed(Job job, VehicleRoute fromRoute){
-		for(RuinListener l : ruinListeners) l.removed(job, fromRoute);
-	}
-	
-	public void addListener(RuinListener ruinListener){
-		ruinListeners.add(ruinListener);
-	}
-	
-	public void removeListener(RuinListener ruinListener){
-		ruinListeners.remove(ruinListener);
-	}
-	
-	public Collection<RuinListener> getListeners(){
-		return Collections.unmodifiableCollection(ruinListeners);
-	}
+    private Collection<RuinListener> ruinListeners = new ArrayList<RuinListener>();
+
+    public void ruinStarts(Collection<VehicleRoute> routes) {
+        for (RuinListener l : ruinListeners) l.ruinStarts(routes);
+    }
+
+    public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+        for (RuinListener l : ruinListeners) l.ruinEnds(routes, unassignedJobs);
+    }
+
+    public void removed(Job job, VehicleRoute fromRoute) {
+        for (RuinListener l : ruinListeners) l.removed(job, fromRoute);
+    }
+
+    public void addListener(RuinListener ruinListener) {
+        ruinListeners.add(ruinListener);
+    }
+
+    public void removeListener(RuinListener ruinListener) {
+        ruinListeners.remove(ruinListener);
+    }
+
+    public Collection<RuinListener> getListeners() {
+        return Collections.unmodifiableCollection(ruinListeners);
+    }
 }

@@ -24,7 +24,6 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
 /**
  * SkillConstraint that ensures that only vehicles with according skills can serve route and job to be inserted.
- *
  */
 public class HardSkillConstraint implements HardRouteConstraint {
 
@@ -38,15 +37,15 @@ public class HardSkillConstraint implements HardRouteConstraint {
 
     @Override
     public boolean fulfilled(JobInsertionContext insertionContext) {
-        for(String skill : insertionContext.getJob().getRequiredSkills().values()){
-            if(!insertionContext.getNewVehicle().getSkills().containsSkill(skill)){
+        for (String skill : insertionContext.getJob().getRequiredSkills().values()) {
+            if (!insertionContext.getNewVehicle().getSkills().containsSkill(skill)) {
                 return false;
             }
         }
         Skills requiredSkillsForRoute = states.getRouteState(insertionContext.getRoute(), InternalStates.SKILLS, Skills.class);
-        if(requiredSkillsForRoute == null) requiredSkillsForRoute = defaultSkills;
-        for(String skill : requiredSkillsForRoute.values()){
-            if(!insertionContext.getNewVehicle().getSkills().containsSkill(skill)){
+        if (requiredSkillsForRoute == null) requiredSkillsForRoute = defaultSkills;
+        for (String skill : requiredSkillsForRoute.values()) {
+            if (!insertionContext.getNewVehicle().getSkills().containsSkill(skill)) {
                 return false;
             }
         }

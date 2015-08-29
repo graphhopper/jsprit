@@ -8,12 +8,12 @@ import jsprit.core.problem.VehicleRoutingProblem;
  */
 public class JobNeighborhoodsFactory {
 
-    public JobNeighborhoods createNeighborhoods(VehicleRoutingProblem vrp, JobDistance jobDistance){
-        return new JobNeighborhoodsImpl(vrp,jobDistance);
+    public JobNeighborhoods createNeighborhoods(VehicleRoutingProblem vrp, JobDistance jobDistance) {
+        return new JobNeighborhoodsImpl(vrp, jobDistance);
     }
 
-    public JobNeighborhoods createNeighborhoods(VehicleRoutingProblem vrp, JobDistance jobDistance, int capacity){
-        return new JobNeighborhoodsImplWithCapRestriction(vrp,jobDistance,capacity);
+    public JobNeighborhoods createNeighborhoods(VehicleRoutingProblem vrp, JobDistance jobDistance, int capacity) {
+        return new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, capacity);
     }
 
 }

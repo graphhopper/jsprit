@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
  *
@@ -22,33 +21,35 @@ import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 
 public interface ActivityInsertionCostsCalculator {
-	
-	public class ActivityInsertionCosts {
-		
-		private double additionalCosts;
-		private double additionalTime;
-		public ActivityInsertionCosts(double additionalCosts, double additionalTime) {
-			super();
-			this.additionalCosts = additionalCosts;
-			this.additionalTime = additionalTime;
-		}
-		/**
-		 * @return the additionalCosts
-		 */
-		public double getAdditionalCosts() {
-			return additionalCosts;
-		}
-		/**
-		 * @return the additionalTime
-		 */
-		public double getAdditionalTime() {
-			return additionalTime;
-		}
-		
-		
 
-	}
-	
-	public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct);
+    public class ActivityInsertionCosts {
+
+        private double additionalCosts;
+        private double additionalTime;
+
+        public ActivityInsertionCosts(double additionalCosts, double additionalTime) {
+            super();
+            this.additionalCosts = additionalCosts;
+            this.additionalTime = additionalTime;
+        }
+
+        /**
+         * @return the additionalCosts
+         */
+        public double getAdditionalCosts() {
+            return additionalCosts;
+        }
+
+        /**
+         * @return the additionalTime
+         */
+        public double getAdditionalTime() {
+            return additionalTime;
+        }
+
+
+    }
+
+    public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct);
 
 }

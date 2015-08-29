@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jsprit.core.reporting;
 
-import java.io.PrintWriter;
-
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -27,12 +25,13 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
+import java.io.PrintWriter;
+
 
 /**
  * Printer to print the details of a vehicle-routing-problem solution.
  *
  * @author stefan schroeder
- *
  */
 public class SolutionPrinter {
 
@@ -41,12 +40,11 @@ public class SolutionPrinter {
 
     /**
      * Enum to indicate verbose-level.
-     *
-     * <p>
+     * <p/>
+     * <p/>
      * Print.CONCISE and Print.VERBOSE are available.
      *
      * @author stefan schroeder
-     *
      */
     public enum Print {
 
@@ -68,8 +66,7 @@ public class SolutionPrinter {
     /**
      * Prints costs and #vehicles to stdout (out.println).
      *
-     * @param solution
-     *            the solution to be printed
+     * @param solution the solution to be printed
      */
     public static void print(VehicleRoutingProblemSolution solution) {
         print(SYSTEM_OUT_AS_PRINT_WRITER, solution);
@@ -79,11 +76,8 @@ public class SolutionPrinter {
     /**
      * Prints costs and #vehicles to the given writer
      *
-     * @param out
-     *            the destination writer
-     *
-     * @param solution
-     *            the solution to be printed
+     * @param out      the destination writer
+     * @param solution the solution to be printed
      */
     public static void print(PrintWriter out, VehicleRoutingProblemSolution solution) {
         out.println("[costs=" + solution.getCost() + "]");
@@ -93,11 +87,8 @@ public class SolutionPrinter {
     /**
      * Prints costs and #vehicles to the to stdout (out.println).
      *
-     * @param out
-     *            the destination writer
-     *
-     * @param solution
-     *            the solution to be printed
+     * @param out      the destination writer
+     * @param solution the solution to be printed
      */
     public static void print(VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution, Print print) {
         print(SYSTEM_OUT_AS_PRINT_WRITER, problem, solution, print);
@@ -107,11 +98,8 @@ public class SolutionPrinter {
     /**
      * Prints costs and #vehicles to the given writer
      *
-     * @param out
-     *            the destination writer
-     *
-     * @param solution
-     *            the solution to be printed
+     * @param out      the destination writer
+     * @param solution the solution to be printed
      */
     public static void print(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution, Print print) {
         String leftAlign = "| %-13s | %-8s | %n";
@@ -162,7 +150,7 @@ public class SolutionPrinter {
             out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
             double costs = 0;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),
-                    Math.round(costs));
+                Math.round(costs));
             TourActivity prevAct = route.getStart();
             for (TourActivity act : route.getActivities()) {
                 String jobId;
@@ -172,19 +160,19 @@ public class SolutionPrinter {
                     jobId = "-";
                 }
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
-                        route.getVehicle());
+                    route.getVehicle());
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 costs += c;
                 out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()),
-                        Math.round(act.getEndTime()), Math.round(costs));
+                    Math.round(act.getEndTime()), Math.round(costs));
                 prevAct = act;
             }
             double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(),
-                    route.getDriver(), route.getVehicle());
+                route.getDriver(), route.getVehicle());
             c += problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
             costs += c;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef",
-                    Math.round(costs));
+                Math.round(costs));
             routeNu++;
         }
         out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");

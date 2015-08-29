@@ -44,7 +44,7 @@ public class UpdateVehicleDependentTimeWindowTest {
     private VehicleRoutingProblem vrp;
 
     @Before
-    public void doBefore(){
+    public void doBefore() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
         routingCosts = CostFactory.createEuclideanCosts();
@@ -84,7 +84,7 @@ public class UpdateVehicleDependentTimeWindowTest {
 
 
         stateManager = new StateManager(vrp);
-        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,routingCosts);
+        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts);
         updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
 
             @Override
@@ -101,9 +101,9 @@ public class UpdateVehicleDependentTimeWindowTest {
     }
 
     @Test
-    public void whenSwitchIsNotAllowed_itShouldCalOnlyStatesOfCurrentVehicle(){
+    public void whenSwitchIsNotAllowed_itShouldCalOnlyStatesOfCurrentVehicle() {
         stateManager = new StateManager(vrp);
-        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,routingCosts);
+        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts);
 
         stateManager.addStateUpdater(updater);
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -112,74 +112,71 @@ public class UpdateVehicleDependentTimeWindowTest {
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3(){
-        assertEquals(70.,stateManager.getActivityState(route.getActivities().get(2),vehicle,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3() {
+        assertEquals(70., stateManager.getActivityState(route.getActivities().get(2), vehicle,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
 
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3_v2(){
-        assertEquals(70.,stateManager.getActivityState(route.getActivities().get(2),vehicle,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3_v2() {
+        assertEquals(70., stateManager.getActivityState(route.getActivities().get(2), vehicle,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3WithVehicle2(){
-        assertEquals(30.,stateManager.getActivityState(route.getActivities().get(2),vehicle2,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3WithVehicle2() {
+        assertEquals(30., stateManager.getActivityState(route.getActivities().get(2), vehicle2,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3WithVehicle3(){
-        assertEquals(90.,stateManager.getActivityState(route.getActivities().get(2),vehicle3,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3WithVehicle3() {
+        assertEquals(90., stateManager.getActivityState(route.getActivities().get(2), vehicle3,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2(){
-        assertEquals(60.,stateManager.getActivityState(route.getActivities().get(1),vehicle,
-                InternalStates.LATEST_OPERATION_START_TIME,Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2() {
+        assertEquals(60., stateManager.getActivityState(route.getActivities().get(1), vehicle,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2_v2(){
-        assertEquals(60.,stateManager.getActivityState(route.getActivities().get(1),vehicle,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2_v2() {
+        assertEquals(60., stateManager.getActivityState(route.getActivities().get(1), vehicle,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithVehicle2(){
-        assertEquals(20.,stateManager.getActivityState(route.getActivities().get(1),vehicle2,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithVehicle2() {
+        assertEquals(20., stateManager.getActivityState(route.getActivities().get(1), vehicle2,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithVehicle3(){
-        assertEquals(80.,stateManager.getActivityState(route.getActivities().get(1),vehicle3,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithVehicle3() {
+        assertEquals(80., stateManager.getActivityState(route.getActivities().get(1), vehicle3,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithEquivalentOfVehicle3(){
-        assertEquals(80.,stateManager.getActivityState(route.getActivities().get(1),equivalentOf3,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithEquivalentOfVehicle3() {
+        assertEquals(80., stateManager.getActivityState(route.getActivities().get(1), equivalentOf3,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1WithVehicle2(){
-        assertEquals(10.,stateManager.getActivityState(route.getActivities().get(0),vehicle2,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1WithVehicle2() {
+        assertEquals(10., stateManager.getActivityState(route.getActivities().get(0), vehicle2,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
-    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1WithVehicle3(){
-        assertEquals(70.,stateManager.getActivityState(route.getActivities().get(0),vehicle3,
-                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1WithVehicle3() {
+        assertEquals(70., stateManager.getActivityState(route.getActivities().get(0), vehicle3,
+            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
-
-
-
 
 
 }

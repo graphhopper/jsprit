@@ -26,25 +26,24 @@ import org.junit.Test;
 import java.util.Collection;
 
 public class CVRPwithDeliveriesAndDifferentInsertionStrategies_IT {
-	
-	@Test
-	public void whenWithTwoInsertionStrategiesWhereOnleOneIsInAlgo_itShouldWork(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
-		VehicleRoutingProblem vrp = vrpBuilder.build();
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig_greedyWithRegret.xml");
-        vra.setMaxIterations(10);
-		try {
-            Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-            Assert.assertTrue(true);
-        }
-        catch (Exception e){
-            Assert.assertTrue(false);
-        }
-	}
 
     @Test
-    public void whenWithTwoInsertionStrategiesWhereBothAreInAlgo_itShouldWork(){
+    public void whenWithTwoInsertionStrategiesWhereOnleOneIsInAlgo_itShouldWork() {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig_greedyWithRegret.xml");
+        vra.setMaxIterations(10);
+        try {
+            Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void whenWithTwoInsertionStrategiesWhereBothAreInAlgo_itShouldWork() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -53,8 +52,7 @@ public class CVRPwithDeliveriesAndDifferentInsertionStrategies_IT {
         try {
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
             Assert.assertTrue(true);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Assert.assertTrue(false);
         }
     }
