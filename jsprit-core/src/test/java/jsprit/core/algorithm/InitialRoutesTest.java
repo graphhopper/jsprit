@@ -383,4 +383,16 @@ public class InitialRoutesTest {
         TourActivity secondAct = solution.getRoutes().iterator().next().getActivities().get(1);
         return secondAct instanceof PickupShipment;
     }
+
+    @Test
+    public void whenAllJobsInInitialRoute_itShouldWork(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance(0,10)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+        VehicleRoute iniRoute = VehicleRoute.Builder.newInstance(v).addService(s).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addInitialVehicleRoute(iniRoute).build();
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        vra.setMaxIterations(100);
+        vra.searchSolutions();
+        assertTrue(true);
+    }
 }

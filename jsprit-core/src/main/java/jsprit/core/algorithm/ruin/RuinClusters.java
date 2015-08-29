@@ -116,6 +116,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 	}
 
 	private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
+		if(vrp.getJobs().values().size() == 0) return;
 		Map<Job,VehicleRoute> mappedRoutes = map(vehicleRoutes);
 		int toRemove = nOfJobs2BeRemoved;
 
