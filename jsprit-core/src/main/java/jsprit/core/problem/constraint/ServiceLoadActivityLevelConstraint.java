@@ -32,7 +32,7 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
  * @author schroeder
  *
  */
-class ServiceLoadActivityLevelConstraint implements HardActivityConstraint {
+public class ServiceLoadActivityLevelConstraint implements HardActivityConstraint {
 	
 	private RouteAndActivityStateGetter stateManager;
 
