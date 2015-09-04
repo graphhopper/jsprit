@@ -83,6 +83,8 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 	 * Runs insertion.
 	 *
 	 * <p>Before inserting a job, all unassigned jobs are scored according to its best- and secondBest-insertion plus additional scoring variables.
+     *
+     * @throws java.lang.RuntimeException if smth went wrong with thread execution
 	 *
 	 */
 	@Override
@@ -145,7 +147,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         catch (ExecutionException e) {
             e.printStackTrace();
             logger.error("Exception", e);
-            System.exit(1);
+            throw new RuntimeException(e);
         }
 
         return bestScoredJob;
