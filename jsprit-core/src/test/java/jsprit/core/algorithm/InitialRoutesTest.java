@@ -18,12 +18,27 @@
 package jsprit.core.algorithm;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+import java.util.List;
+
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.box.Jsprit;
+import jsprit.core.algorithm.box.Jsprit.Builder;
 import jsprit.core.algorithm.box.SchrimpfFactory;
+import jsprit.core.algorithm.state.StateManager;
+import jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
+import jsprit.core.algorithm.state.UpdateVariableCosts;
 import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.constraint.ConstraintManager;
+import jsprit.core.problem.constraint.ConstraintManager.Priority;
+import jsprit.core.problem.constraint.ServiceLoadActivityLevelConstraint;
+import jsprit.core.problem.constraint.ServiceLoadRouteLevelConstraint;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
@@ -38,12 +53,8 @@ import jsprit.core.problem.vehicle.VehicleTypeImpl;
 import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Coordinate;
 import jsprit.core.util.Solutions;
+
 import org.junit.Test;
-
-import java.util.Collection;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class InitialRoutesTest {
 
@@ -394,5 +405,38 @@ public class InitialRoutesTest {
         vra.setMaxIterations(100);
         vra.searchSolutions();
         assertTrue(true);
+    }
+    
+    @Test
+    public void buildWithoutTimeConstraints() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0,10)).addSizeDimension(0, 10).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(10,20)).addSizeDimension(0, 12).build();
+        
+        VehicleTypeImpl vt = VehicleTypeImpl.Builder.newInstance("vt").addCapacityDimension(0, 15).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(vt).setStartLocation(Location.newInstance(0,0)).build();
+        
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
+        Builder algBuilder = Jsprit.Builder.newInstance(vrp).addCoreStateAndConstraintStuff(false);
+        
+        // only required constraints
+        StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        constraintManager.addConstraint(new ServiceLoadRouteLevelConstraint(stateManager));
+        constraintManager.addConstraint(new ServiceLoadActivityLevelConstraint(stateManager), Priority.LOW);
+        stateManager.updateLoadStates();
+        stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
+        stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+        
+        algBuilder.setStateAndConstraintManager(stateManager, constraintManager);
+        VehicleRoutingAlgorithm vra = algBuilder.buildAlgorithm();
+        vra.setMaxIterations(20);
+        Collection<VehicleRoutingProblemSolution> searchSolutions = vra.searchSolutions();
+        VehicleRoutingProblemSolution bestOf = Solutions.bestOf(searchSolutions);
+        
+        //ensure 2 routes
+        assertEquals(2, bestOf.getRoutes().size());
+        
+        //ensure no time information in first service of first route
+        assertEquals(0, bestOf.getRoutes().iterator().next().getActivities().iterator().next().getArrTime(), 0.001);
     }
 }

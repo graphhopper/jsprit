@@ -145,8 +145,6 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
             Thread.currentThread().interrupt();
         }
         catch (ExecutionException e) {
-            e.printStackTrace();
-            logger.error("Exception", e);
             throw new RuntimeException(e);
         }
 

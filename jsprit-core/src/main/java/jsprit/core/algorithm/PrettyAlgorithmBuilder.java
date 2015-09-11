@@ -136,7 +136,9 @@ public class PrettyAlgorithmBuilder {
             vra.addListener(new AlgorithmStartsListener() {
                 @Override
                 public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
-                    solutions.add(new InsertionInitialSolutionFactory(iniInsertionStrategy, iniObjFunction).createSolution(vrp));
+                    if (solutions.isEmpty()) {
+                        solutions.add(new InsertionInitialSolutionFactory(iniInsertionStrategy, iniObjFunction).createSolution(vrp));
+                    }
                 }
             });
         }
