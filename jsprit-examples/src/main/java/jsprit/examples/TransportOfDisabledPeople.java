@@ -55,7 +55,7 @@ public class TransportOfDisabledPeople {
         Examples.createOutputFolder();
 
 		/*
-		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
+         * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
         VehicleTypeImpl.Builder wheelChairTypeBuilder = VehicleTypeImpl.Builder.newInstance("wheelChairBusType")
             .addCapacityDimension(WHEELCHAIRSPACE_INDEX, 2) //can transport two people with wheelchair
@@ -67,7 +67,7 @@ public class TransportOfDisabledPeople {
         VehicleType vehicleType_solelypassenger = soleyPassengerTypeBuilder.build();
 
 		/*
-		 * define two vehicles and their locations.
+         * define two vehicles and their locations.
 		 *
 		 * this example employs two vehicles. one that has to return to its start-location (vehicle1) and one that has a different
 		 * end-location.

@@ -178,8 +178,8 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         } else {
             vehicleRoutes.add(VehicleRoute.emptyRoute());
         }
-		/*
-		 * distribute routes to batches equally
+        /*
+         * distribute routes to batches equally
 		 */
         int count = 0;
         for (VehicleRoute route : vehicleRoutes) {

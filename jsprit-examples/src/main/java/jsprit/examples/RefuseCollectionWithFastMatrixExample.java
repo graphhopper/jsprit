@@ -54,7 +54,7 @@ public class RefuseCollectionWithFastMatrixExample {
         Examples.createOutputFolder();
 
 		/*
-		 * create vehicle-type and vehicle
+         * create vehicle-type and vehicle
 		 */
         VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type").addCapacityDimension(0, 23);
         typeBuilder.setCostPerDistance(1.0);
@@ -66,7 +66,7 @@ public class RefuseCollectionWithFastMatrixExample {
         VehicleImpl bigVehicle = vehicleBuilder.build();
 
 		/*
-		 * start building the problem
+         * start building the problem
 		 */
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.setFleetSize(FleetSize.INFINITE);

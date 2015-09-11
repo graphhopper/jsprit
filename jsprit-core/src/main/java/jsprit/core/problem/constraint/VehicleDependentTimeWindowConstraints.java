@@ -79,7 +79,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
             /*
-			 * if the latest operation start-time of new activity is smaller than the earliest start of prev. activity,
+             * if the latest operation start-time of new activity is smaller than the earliest start of prev. activity,
 			 * then
 			 *
 			 *                    |--- prevAct ---|
@@ -90,7 +90,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         }
 
 			/*
-			 *  |--- prevAct ---|
+             *  |--- prevAct ---|
 			 *                                          |- earliest arrival of vehicle
 			 *                       |--- nextAct ---|
 			 */

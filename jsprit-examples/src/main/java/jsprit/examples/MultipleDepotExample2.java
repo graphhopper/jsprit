@@ -50,8 +50,8 @@ public class MultipleDepotExample2 {
         Examples.createOutputFolder();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		/*
-		 * Read cordeau-instance p01, BUT only its services without any vehicles
+        /*
+         * Read cordeau-instance p01, BUT only its services without any vehicles
 		 */
         new CordeauReader(vrpBuilder).read("input/p08");
 

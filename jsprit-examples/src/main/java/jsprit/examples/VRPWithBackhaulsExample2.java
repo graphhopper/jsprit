@@ -48,14 +48,14 @@ public class VRPWithBackhaulsExample2 {
         Examples.createOutputFolder();
 
 		/*
-		 * Build the problem.
+         * Build the problem.
 		 *
 		 * But define a problem-builder first.
 		 */
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
 		/*
-		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
+         * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
         new VrpXMLReader(vrpBuilder).read("input/pd_christophides_vrpnc1_vcap50.xml");
 

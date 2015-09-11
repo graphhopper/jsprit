@@ -45,8 +45,8 @@ public class MultipleDepotWithInitialRoutesExample {
         Examples.createOutputFolder();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		/*
-		 * Read cordeau-instance p01
+        /*
+         * Read cordeau-instance p01
 		 */
         new VrpXMLReader(vrpBuilder).read("input/cordeau01.xml");
 

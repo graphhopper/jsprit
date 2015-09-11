@@ -39,14 +39,14 @@ public class SolomonR101Example {
         Examples.createOutputFolder();
 
 		/*
-		 * Build the problem.
+         * Build the problem.
 		 *
 		 * But define a problem-builder first.
 		 */
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
 		/*
-		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
+         * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
 //		new SolomonReader(vrpBuilder).read("/Users/schroeder/IdeaProjects/jsprit/jsprit-instances/instances/solomon/R211.txt");
         new VrpXMLReader(vrpBuilder).read("output/R211.xml");

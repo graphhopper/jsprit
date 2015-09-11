@@ -72,7 +72,7 @@ class TimeWindowConstraint implements HardActivityConstraint {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
             /*
-			 * if the latest operation start-time of new activity is smaller than the earliest start of prev. activity,
+             * if the latest operation start-time of new activity is smaller than the earliest start of prev. activity,
 			 * then
 			 *
 			 *                    |--- prevAct ---|
@@ -83,7 +83,7 @@ class TimeWindowConstraint implements HardActivityConstraint {
         }
 
 			/*
-			 *  |--- prevAct ---|
+             *  |--- prevAct ---|
 			 *                                          |- earliest arrival of vehicle
 			 *                       |--- nextAct ---|
 			 */

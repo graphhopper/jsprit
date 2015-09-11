@@ -41,14 +41,14 @@ public class PickupAndDeliveryOpenExample {
         Examples.createOutputFolder();
 
 		/*
-		 * Build the problem.
+         * Build the problem.
 		 *
 		 * But define a problem-builder first.
 		 */
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
 		/*
-		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
+         * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
         new VrpXMLReader(vrpBuilder).read("input/pickups_and_deliveries_solomon_r101_withoutTWs_open.xml");
 

@@ -118,14 +118,14 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
         Vehicle bigVehicle = vehicleBuilder.build();
 
 		/*
-		 * start building the problem
+         * start building the problem
 		 */
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.setFleetSize(FleetSize.INFINITE);
         vrpBuilder.addVehicle(bigVehicle);
 
 		/*
-		 * create cost-matrix
+         * create cost-matrix
 		 */
         VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
 		/*

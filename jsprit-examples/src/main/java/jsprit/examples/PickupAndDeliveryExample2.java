@@ -49,12 +49,12 @@ public class PickupAndDeliveryExample2 {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
 		/*
-		 * A solomonReader reads solomon-instance files, and stores the required information in the builder.
+         * A solomonReader reads solomon-instance files, and stores the required information in the builder.
 		 */
         new VrpXMLReader(vrpBuilder).read("input/pd_christophides_vrpnc1_vcap50.xml");
 
 		/*
-		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
+         * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
 
         VehicleRoutingProblem vrp = vrpBuilder.build();

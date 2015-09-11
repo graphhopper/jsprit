@@ -49,14 +49,14 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
         Examples.createOutputFolder();
 
 		/*
-		 * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
+         * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
         VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 2);
         vehicleTypeBuilder.setCostPerDistance(1.0);
         VehicleType vehicleType = vehicleTypeBuilder.build();
 
 		/*
-		 * define two vehicles and their start-locations
+         * define two vehicles and their start-locations
 		 *
 		 * the first two do need to return to depot
 		 */
