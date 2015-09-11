@@ -156,7 +156,7 @@ public class BuildAlgorithmFromScratch {
         RuinStrategy radialRuin = new RadialRuinStrategyFactory(0.3, new AvgServiceAndShipmentDistance(vrp.getTransportCosts())).createStrategy(vrp);
 
 		/*
-		 * objective function
+         * objective function
 		 */
         SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp);
 

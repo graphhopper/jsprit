@@ -43,7 +43,7 @@ public class SimpleExampleWithSkills {
 
     public static void main(String[] args) {
         /*
-		 * some preparation - create output folder
+         * some preparation - create output folder
 		 */
         File dir = new File("output");
         // if the directory does not exist, create it

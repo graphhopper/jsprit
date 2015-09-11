@@ -40,7 +40,7 @@ public class MultipleDepotWithInitialRoutesExample {
 
     public static void main(String[] args) {
         /*
-		 * some preparation - create output folder
+         * some preparation - create output folder
 		 */
         Examples.createOutputFolder();
 

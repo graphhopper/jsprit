@@ -105,7 +105,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
 
 
 		/*
-		 * create vehicle-type and vehicle
+         * create vehicle-type and vehicle
 		 */
         VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type").addCapacityDimension(0, 23);
         typeBuilder.setCostPerDistance(1.0);

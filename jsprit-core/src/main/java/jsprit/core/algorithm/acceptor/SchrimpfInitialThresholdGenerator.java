@@ -53,7 +53,7 @@ public class SchrimpfInitialThresholdGenerator implements AlgorithmStartsListene
         double now = System.currentTimeMillis();
 
 		/*
-		 * randomWalk to determine standardDev
+         * randomWalk to determine standardDev
 		 */
         final double[] results = new double[nOfRandomWalks];
 

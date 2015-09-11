@@ -70,7 +70,7 @@ public class SchrimpfAcceptanceTest {
     public void respectsTheNonZeroThreshold_usingWorstCostSolution() {
         schrimpfAcceptance.setInitialThreshold(0.5);
         /*
-		 * it should be accepted since 2.1 < 2.0 + 0.5 (2.0 is the best solution found so far and 0.5 the ini threshold
+         * it should be accepted since 2.1 < 2.0 + 0.5 (2.0 is the best solution found so far and 0.5 the ini threshold
 		 * since the threshold of 0.5 allows new solutions to be <0.5 worse than the current best solution
 		 */
         assertTrue("Worst cost solution (2.1 > 2.0) should be accepted", schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1)));

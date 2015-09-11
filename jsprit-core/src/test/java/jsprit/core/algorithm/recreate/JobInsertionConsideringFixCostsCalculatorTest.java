@@ -244,7 +244,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
         //(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
         /*
-		 * (0.5*(100-50)+0.5*(
+         * (0.5*(100-50)+0.5*(
 		 * relFixNew - relFixOld = (75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.) =
 		 * )*0.5*0.5
 		 * = (0.5*(100-50)+0.5*((75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.)))*0.5*0.5

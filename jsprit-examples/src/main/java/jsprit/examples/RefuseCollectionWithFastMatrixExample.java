@@ -49,7 +49,7 @@ public class RefuseCollectionWithFastMatrixExample {
 
     public static void main(String[] args) throws IOException {
         /*
-		 * some preparation - create output folder
+         * some preparation - create output folder
 		 */
         Examples.createOutputFolder();
 

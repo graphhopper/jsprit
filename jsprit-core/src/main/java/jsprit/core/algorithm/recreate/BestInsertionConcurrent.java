@@ -167,7 +167,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         List<Batch> batches = new ArrayList<Batch>();
         for (int i = 0; i < nuOfBatches; i++) batches.add(new Batch());
         /*
-		 * if route.size < nuOfBatches add as much routes as empty batches are available
+         * if route.size < nuOfBatches add as much routes as empty batches are available
 		 * else add one empty route anyway
 		 */
         if (vehicleRoutes.size() < nuOfBatches) {

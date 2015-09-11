@@ -39,7 +39,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
     @Test(expected = UnsupportedOperationException.class)
     public void whenHavingShipmentsAndServicesInOneProblem_andInsertionShouldBeMadeOnRouteLevel_throwException() {
         /* get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
-		 */
+         */
         VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 2);
         VehicleType vehicleType = vehicleTypeBuilder.build();
 

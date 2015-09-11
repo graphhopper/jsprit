@@ -110,7 +110,7 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
         this.nOfTotalIterations = algorithm.getMaxIterations();
 
 		/*
-		 * randomWalk to determine standardDev
+         * randomWalk to determine standardDev
 		 */
         final double[] results = new double[nOfRandomWalks];
 

@@ -234,7 +234,7 @@ public class BicycleMessenger {
         Examples.createOutputFolder();
 
 		/*
-		build the problem
+        build the problem
 		 */
         VehicleRoutingProblem.Builder problemBuilder = VehicleRoutingProblem.Builder.newInstance();
         problemBuilder.setFleetSize(FleetSize.FINITE);
