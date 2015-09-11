@@ -23,7 +23,7 @@ import jsprit.core.util.Solutions;
 /**
  * Created by schroeder on 23/07/15.
  */
-public class VariableStartAndWaitingTimeExample2 {
+public class WaitingTimeExample2 {
 
     static interface AlgorithmFactory {
         VehicleRoutingAlgorithm createAlgorithm(VehicleRoutingProblem vrp);

@@ -12,7 +12,6 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.cost.TransportDistance;
-import jsprit.core.problem.job.Break;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.SolutionCostCalculator;
@@ -32,7 +31,7 @@ import java.util.Random;
 /**
  * Created by schroeder on 23/07/15.
  */
-public class VariableStartAndWaitingTimeExample {
+public class WaitingTimeExample {
 
     static interface AlgorithmFactory {
         VehicleRoutingAlgorithm createAlgorithm(VehicleRoutingProblem vrp);
@@ -42,24 +41,24 @@ public class VariableStartAndWaitingTimeExample {
 
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type")
                 .addCapacityDimension(0,22)
-                .setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
+                .setCostPerDistance(4.).setCostPerWaitingTime(1.0).build();
         VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type2")
                 .addCapacityDimension(0,22)
-                .setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
+                .setCostPerDistance(4.).setCostPerWaitingTime(1.0).build();
         VehicleTypeImpl type3 = VehicleTypeImpl.Builder.newInstance("type3")
                 .addCapacityDimension(0,22)
-                .setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
+                .setCostPerDistance(4.).setCostPerWaitingTime(1.0).build();
 //        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type1").setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
 //        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type2").setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setReturnToDepot(true)
                 .setStartLocation(Location.newInstance(0, 0))
                 .setEarliestStart(0).setLatestArrival(500)
-                .setBreak((Break) Break.Builder.newInstance("v2-break").setTimeWindow(TimeWindow.newInstance(60,80)).setServiceTime(50).build())
+//                .setBreak((Break) Break.Builder.newInstance("v2-break").setTimeWindow(TimeWindow.newInstance(40,80)).setServiceTime(50).build())
                 .build();
         VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setType(type2).setReturnToDepot(true)
                 .setStartLocation(Location.newInstance(0.5, 10.5))
-                .setBreak((Break) Break.Builder.newInstance("v3-break").setTimeWindow(TimeWindow.newInstance(60,80)).setServiceTime(50).build())
+//                .setBreak((Break) Break.Builder.newInstance("v3-break").setTimeWindow(TimeWindow.newInstance(40,80)).setServiceTime(50).build())
                 .setEarliestStart(0).setLatestArrival(500)
                 .build();
 //        VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setType(type3).setReturnToDepot(true)
