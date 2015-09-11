@@ -91,17 +91,17 @@ public class PrettyAlgorithmBuilder {
             constraintManager.addSkillsConstraint();
             stateManager.updateLoadStates();
             stateManager.updateTimeWindowStates();
-            UpdateVehicleDependentPracticalTimeWindows tw_updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts());
-            tw_updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
+            UpdateVehicleDependentPracticalTimeWindows twUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts());
+            twUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
 
-                Map<VehicleTypeKey,Vehicle> uniqueTypes = new HashMap<VehicleTypeKey,Vehicle>();
+                Map<VehicleTypeKey, Vehicle> uniqueTypes = new HashMap<VehicleTypeKey, Vehicle>();
 
                 @Override
                 public Collection<Vehicle> get(VehicleRoute vehicleRoute) {
-                    if(uniqueTypes.isEmpty()){
-                        for( Vehicle v : vrp.getVehicles()){
-                            if(!uniqueTypes.containsKey(v.getVehicleTypeIdentifier())){
-                                uniqueTypes.put(v.getVehicleTypeIdentifier(),v);
+                    if (uniqueTypes.isEmpty()) {
+                        for (Vehicle v : vrp.getVehicles()) {
+                            if (!uniqueTypes.containsKey(v.getVehicleTypeIdentifier())) {
+                                uniqueTypes.put(v.getVehicleTypeIdentifier(), v);
                             }
                         }
                     }
@@ -109,12 +109,14 @@ public class PrettyAlgorithmBuilder {
                     vehicles.addAll(uniqueTypes.values());
                     return vehicles;
                 }
+
             });
-            stateManager.addStateUpdater(tw_updater);
+            stateManager.addStateUpdater(twUpdater);
             stateManager.updateSkillStates();
             stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
             stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS));
             stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+            stateManager.addStateUpdater(new UpdateFutureWaitingTimes(stateManager,vrp.getTransportCosts()));
         }
         VehicleRoutingAlgorithm vra = new VehicleRoutingAlgorithm(vrp,searchStrategyManager);
         vra.addListener(stateManager);
