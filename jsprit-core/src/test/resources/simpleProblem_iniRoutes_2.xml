@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <problem xmlns="http://www.w3schools.com"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
-     <problemType>
-          <fleetSize>FINITE</fleetSize>
-          <fleetComposition>HOMOGENEOUS</fleetComposition>
-     </problemType>
-     <vehicles>
-          <vehicle>
-               <id>veh1</id>
-               <typeId>type1</typeId>
-               <startLocation>
-                    <id>[x=0.0][y=0.0]</id>
-                    <coord x="0.0" y="0.0"/>
-               </startLocation>
-               <endLocation>
-                    <id>[x=0.0][y=0.0]</id>
-                    <coord x="0.0" y="0.0"/>
-               </endLocation>
-               <timeSchedule>
-                    <start>0.0</start>
-                    <end>46800.0</end>
-               </timeSchedule>
-               <returnToDepot>true</returnToDepot>
-          </vehicle>
-     </vehicles>
-     <vehicleTypes>
-          <type>
-               <id>type1</id>
-               <capacity-dimensions>
-                    <dimension index="0">100</dimension>
-               </capacity-dimensions>
-               <costs>
-                    <fixed>0.0</fixed>
-                    <distance>1.0</distance>
-                    <time>0.0</time>
-               </costs>
-          </type>
-     </vehicleTypes>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
+    <problemType>
+        <fleetSize>FINITE</fleetSize>
+        <fleetComposition>HOMOGENEOUS</fleetComposition>
+    </problemType>
+    <vehicles>
+        <vehicle>
+            <id>veh1</id>
+            <typeId>type1</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>0.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+    </vehicles>
+    <vehicleTypes>
+        <type>
+            <id>type1</id>
+            <capacity-dimensions>
+                <dimension index="0">100</dimension>
+            </capacity-dimensions>
+            <costs>
+                <fixed>0.0</fixed>
+                <distance>1.0</distance>
+                <time>0.0</time>
+            </costs>
+        </type>
+    </vehicleTypes>
 
     <shipments>
         <shipment id="3">

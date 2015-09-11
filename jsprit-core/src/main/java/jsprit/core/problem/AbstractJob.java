@@ -9,8 +9,12 @@ public abstract class AbstractJob implements Job {
 
     private int index;
 
-    public int getIndex(){ return index; }
+    public int getIndex() {
+        return index;
+    }
 
-    protected void setIndex(int index){ this.index = index; }
+    protected void setIndex(int index) {
+        this.index = index;
+    }
 
 }

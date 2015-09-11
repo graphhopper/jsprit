@@ -15,22 +15,24 @@ import java.util.List;
 import java.util.Random;
 
 
-class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsCalculator{
+class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsCalculator {
 
 
     public static class KnowledgeInjection implements InsertionStartsListener {
         private CalculatesServiceInsertionWithTimeScheduling c;
+
         public KnowledgeInjection(CalculatesServiceInsertionWithTimeScheduling c) {
             super();
             this.c = c;
         }
+
         @Override
-        public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes,Collection<Job> unassignedJobs) {
+        public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
             List<Double> knowledge = new ArrayList<Double>();
-            if(vehicleRoutes.isEmpty()){
+            if (vehicleRoutes.isEmpty()) {
 //                System.out.println("hmm");
             }
-            for(VehicleRoute route : vehicleRoutes){
+            for (VehicleRoute route : vehicleRoutes) {
 //                if(route.getDepartureTime() == 21600.){
 //                    System.out.println("hu");
 //                }
@@ -60,18 +62,17 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsC
 
     @Override
     public String toString() {
-        return "[name="+this.getClass().toString()+"]";
+        return "[name=" + this.getClass().toString() + "]";
     }
 
     @Override
     public InsertionData getInsertionData(VehicleRoute currentRoute, Job jobToInsert, Vehicle newVehicle, double newVehicleDepartureTime, Driver newDriver, double bestKnownScore) {
         double departureTime = newVehicleDepartureTime;
-        if(currentRoute.isEmpty()){
-            if(!departureTimeKnowledge.isEmpty()){
+        if (currentRoute.isEmpty()) {
+            if (!departureTimeKnowledge.isEmpty()) {
                 departureTime = departureTimeKnowledge.get(random.nextInt(departureTimeKnowledge.size()));
             }
-        }
-        else if(!currentRoute.getVehicle().getId().equals(newVehicle.getId())){
+        } else if (!currentRoute.getVehicle().getId().equals(newVehicle.getId())) {
             departureTime = currentRoute.getDepartureTime();
         }
 
@@ -82,7 +83,7 @@ class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsC
         return insertionData;
     }
 
-    public void setDepartureTimeKnowledge(List<Double> departureTimes){
-        departureTimeKnowledge=departureTimes;
+    public void setDepartureTimeKnowledge(List<Double> departureTimes) {
+        departureTimeKnowledge = departureTimes;
     }
 }

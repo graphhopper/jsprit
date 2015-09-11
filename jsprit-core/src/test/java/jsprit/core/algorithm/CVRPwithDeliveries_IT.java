@@ -29,27 +29,27 @@ import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 
 public class CVRPwithDeliveries_IT {
-	
-	@Test
-	public void whenSolvingVRPNC1withDeliveries_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
-		VehicleRoutingProblem vrp = vrpBuilder.build();
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig.xml");
-		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-		assertEquals(530.0, Solutions.bestOf(solutions).getCost(),50.0);
-        assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
-	}
 
-	@Test
-	public void whenSolvingVRPNC1withDeliveriesWithJsprit_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution(){
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
-		VehicleRoutingProblem vrp = vrpBuilder.build();
-		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
-		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-		assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
-		assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
-	}
+    @Test
+    public void whenSolvingVRPNC1withDeliveries_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution() {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfig.xml");
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+        assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
+        assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
+    }
+
+    @Test
+    public void whenSolvingVRPNC1withDeliveriesWithJsprit_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution() {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+        assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
+        assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
+    }
 
 }

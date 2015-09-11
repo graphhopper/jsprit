@@ -3,8 +3,8 @@ package jsprit.core.algorithm.ruin;
 import jsprit.core.problem.job.Job;
 
 /**
-* Created by schroeder on 07/01/15.
-*/
+ * Created by schroeder on 07/01/15.
+ */
 class ReferencedJob {
     private Job job;
     private double distance;

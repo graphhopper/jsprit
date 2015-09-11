@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm.acceptor;
@@ -24,35 +24,33 @@ import java.util.Collection;
  * @deprecated use GreedyAcceptance instead
  */
 @Deprecated
-public class AcceptNewRemoveFirst implements SolutionAcceptor{
+public class AcceptNewRemoveFirst implements SolutionAcceptor {
 
-	private final int solutionMemory;
-	
-	public AcceptNewRemoveFirst(int solutionMemory){
-		this.solutionMemory = solutionMemory;
-	}
-	
-	/**
-	 * Accepts every solution if solution memory allows. If memory occupied, than accepts new solution only if better than the worst in memory.
-	 * Consequently, the worst solution is removed from solutions, and the new solution added. 
-	 * 
-	 * <p>Note that this modifies Collection<VehicleRoutingProblemSolution> solutions.
-	 */
-	@Override
-	public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution) {
-		if (solutions.size() >= solutionMemory) {
-			solutions.remove(solutions.iterator().next());
-		}
-		solutions.add(newSolution);
-		return true;
-	}
-	
-	@Override
-	public String toString() {
-		return "[name=acceptNewRemoveFirst]";
-	}
-	
+    private final int solutionMemory;
 
+    public AcceptNewRemoveFirst(int solutionMemory) {
+        this.solutionMemory = solutionMemory;
+    }
+
+    /**
+     * Accepts every solution if solution memory allows. If memory occupied, than accepts new solution only if better than the worst in memory.
+     * Consequently, the worst solution is removed from solutions, and the new solution added.
+     * <p/>
+     * <p>Note that this modifies Collection<VehicleRoutingProblemSolution> solutions.
+     */
+    @Override
+    public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution) {
+        if (solutions.size() >= solutionMemory) {
+            solutions.remove(solutions.iterator().next());
+        }
+        solutions.add(newSolution);
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "[name=acceptNewRemoveFirst]";
+    }
 
 
 }

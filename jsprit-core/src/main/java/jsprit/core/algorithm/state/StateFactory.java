@@ -9,26 +9,28 @@ import java.util.List;
 class StateFactory {
 
     final static List<String> reservedIds = Arrays.asList("max_load", "load", "costs", "load_at_beginning", "load_at_end", "duration", "latest_operation_start_time", "earliest_operation_start_time"
-            , "future_max_load", "past_max_load", "skills");
+        , "future_max_load", "past_max_load", "skills");
 
 
-    static StateId createId(String name){
-        if(reservedIds.contains(name)){ throwReservedIdException(name); }
+    static StateId createId(String name) {
+        if (reservedIds.contains(name)) {
+            throwReservedIdException(name);
+        }
         return new StateIdImpl(name, -1);
     }
 
-    static StateId createId(String name, int index){
-        if(reservedIds.contains(name)) throwReservedIdException(name);
-        if(index < 10) throwReservedIdException(name);
+    static StateId createId(String name, int index) {
+        if (reservedIds.contains(name)) throwReservedIdException(name);
+        if (index < 10) throwReservedIdException(name);
         return new StateIdImpl(name, index);
     }
 
 
-    static boolean isReservedId(String stateId){
+    static boolean isReservedId(String stateId) {
         return reservedIds.contains(stateId);
     }
 
-    static boolean isReservedId(StateId stateId){
+    static boolean isReservedId(StateId stateId) {
         return reservedIds.contains(stateId.toString());
     }
 
@@ -41,7 +43,9 @@ class StateFactory {
 
         private int index;
 
-        public int getIndex(){ return index; }
+        public int getIndex() {
+            return index;
+        }
 
         /* (non-Javadoc)
          * @see java.lang.Object#hashCode()
@@ -82,7 +86,7 @@ class StateFactory {
             this.index = index;
         }
 
-        public String toString(){
+        public String toString() {
             return name;
         }
     }

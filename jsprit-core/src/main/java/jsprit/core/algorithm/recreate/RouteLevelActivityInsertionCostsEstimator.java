@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
  *
@@ -32,65 +31,68 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCostsCalculator{
+class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCostsCalculator {
 
-	private VehicleRoutingActivityCosts activityCosts;
-	
-	private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
-	
-	private RouteAndActivityStateGetter stateManager;
-	
-	private int nuOfActivities2LookForward = 0;
-	
-	public RouteLevelActivityInsertionCostsEstimator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, RouteAndActivityStateGetter stateManager) {
-		super();
-		this.activityCosts = actCosts;
-		this.stateManager = stateManager;
-		auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(routingCosts, activityCosts);
-	}
+    private VehicleRoutingActivityCosts activityCosts;
 
-	@Override
-	public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
-		List<TourActivity> path = new ArrayList<TourActivity>();
-		path.add(prevAct); path.add(newAct); path.add(nextAct);
-		int actIndex;
-		if(prevAct instanceof Start) actIndex = 0;
-		else actIndex = iFacts.getRoute().getTourActivities().getActivities().indexOf(nextAct);
-		if(nuOfActivities2LookForward > 0 && !(nextAct instanceof End)){ path.addAll(getForwardLookingPath(iFacts.getRoute(),actIndex)); }
+    private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
+
+    private RouteAndActivityStateGetter stateManager;
+
+    private int nuOfActivities2LookForward = 0;
+
+    public RouteLevelActivityInsertionCostsEstimator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, RouteAndActivityStateGetter stateManager) {
+        super();
+        this.activityCosts = actCosts;
+        this.stateManager = stateManager;
+        auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(routingCosts, activityCosts);
+    }
+
+    @Override
+    public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
+        List<TourActivity> path = new ArrayList<TourActivity>();
+        path.add(prevAct);
+        path.add(newAct);
+        path.add(nextAct);
+        int actIndex;
+        if (prevAct instanceof Start) actIndex = 0;
+        else actIndex = iFacts.getRoute().getTourActivities().getActivities().indexOf(nextAct);
+        if (nuOfActivities2LookForward > 0 && !(nextAct instanceof End)) {
+            path.addAll(getForwardLookingPath(iFacts.getRoute(), actIndex));
+        }
 
 		/*
-		 * calculates the path costs with new vehicle, c(forwardPath,newVehicle).
+         * calculates the path costs with new vehicle, c(forwardPath,newVehicle).
 		 */
-		double forwardPathCost_newVehicle = auxilliaryPathCostCalculator.costOfPath(path, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
-		return forwardPathCost_newVehicle - (actCostsOld(iFacts.getRoute(), path.get(path.size()-1)) - actCostsOld(iFacts.getRoute(), prevAct));
-	}
-	
-	private double actCostsOld(VehicleRoute vehicleRoute, TourActivity act) {
+        double forwardPathCost_newVehicle = auxilliaryPathCostCalculator.costOfPath(path, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        return forwardPathCost_newVehicle - (actCostsOld(iFacts.getRoute(), path.get(path.size() - 1)) - actCostsOld(iFacts.getRoute(), prevAct));
+    }
+
+    private double actCostsOld(VehicleRoute vehicleRoute, TourActivity act) {
         Double cost_at_act;
-        if(act instanceof End){
+        if (act instanceof End) {
             cost_at_act = stateManager.getRouteState(vehicleRoute, InternalStates.COSTS, Double.class);
-		}
-        else{
+        } else {
             cost_at_act = stateManager.getActivityState(act, InternalStates.COSTS, Double.class);
         }
-        if(cost_at_act == null) cost_at_act = 0.;
+        if (cost_at_act == null) cost_at_act = 0.;
         return cost_at_act;
-	}
-	
-	private List<TourActivity> getForwardLookingPath(VehicleRoute route, int actIndex) {
-		List<TourActivity> forwardLookingPath = new ArrayList<TourActivity>();
-		int nuOfActsInPath = 0;
-		int index = actIndex + 1;
-		while(index < route.getTourActivities().getActivities().size() && nuOfActsInPath < nuOfActivities2LookForward){
-			forwardLookingPath.add(route.getTourActivities().getActivities().get(index));
-			index++;
-			nuOfActsInPath++;
-		}
-		if(nuOfActsInPath < nuOfActivities2LookForward){
-			forwardLookingPath.add(route.getEnd());
-		}
-		return forwardLookingPath;
-	}
+    }
+
+    private List<TourActivity> getForwardLookingPath(VehicleRoute route, int actIndex) {
+        List<TourActivity> forwardLookingPath = new ArrayList<TourActivity>();
+        int nuOfActsInPath = 0;
+        int index = actIndex + 1;
+        while (index < route.getTourActivities().getActivities().size() && nuOfActsInPath < nuOfActivities2LookForward) {
+            forwardLookingPath.add(route.getTourActivities().getActivities().get(index));
+            index++;
+            nuOfActsInPath++;
+        }
+        if (nuOfActsInPath < nuOfActivities2LookForward) {
+            forwardLookingPath.add(route.getEnd());
+        }
+        return forwardLookingPath;
+    }
 
     public void setForwardLooking(int nActivities) {
         this.nuOfActivities2LookForward = nActivities;

@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
  *
@@ -25,22 +24,20 @@ import java.util.Collection;
 
 /**
  * Acceptor that decides whether the newSolution is accepted or not.
- * 
- * 
- * @author stefan
  *
+ * @author stefan
  */
 public interface SolutionAcceptor {
-	
-	/**
-	 * Accepts solution or not, and returns true if a new solution has been accepted.
-	 * 
-	 * <p>If the solution is accepted, it is added to solutions, i.e. the solutions-collections is modified.
-	 * 
-	 * @param solutions collection of existing solutions
-	 * @param newSolution new solution to be evaluated
-	 * @return true if solution accepted
-	 */
-	public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution);
+
+    /**
+     * Accepts solution or not, and returns true if a new solution has been accepted.
+     * <p/>
+     * <p>If the solution is accepted, it is added to solutions, i.e. the solutions-collections is modified.
+     *
+     * @param solutions   collection of existing solutions
+     * @param newSolution new solution to be evaluated
+     * @return true if solution accepted
+     */
+    public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution);
 
 }

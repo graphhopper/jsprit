@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
@@ -23,53 +23,51 @@ import jsprit.core.problem.Skills;
 
 /**
  * Basic interface for vehicle-data.
- * 
- * @author schroeder
  *
+ * @author schroeder
  */
 public interface Vehicle extends HasId, HasIndex {
 
-	/**
-	 * Returns the earliest departure of vehicle which should be the lower bound of this vehicle's departure times. 
-	 * 
-	 * @return earliest departure time
-	 */
-	public abstract double getEarliestDeparture();
+    /**
+     * Returns the earliest departure of vehicle which should be the lower bound of this vehicle's departure times.
+     *
+     * @return earliest departure time
+     */
+    public abstract double getEarliestDeparture();
 
-	/**
-	 * Returns the latest arrival time at this vehicle's end-location which should be the upper bound of this vehicle's arrival times at end-location.
-	 * 
-	 * @return latest arrival time of this vehicle
-	 * 
-	 */
-	public abstract double getLatestArrival();
+    /**
+     * Returns the latest arrival time at this vehicle's end-location which should be the upper bound of this vehicle's arrival times at end-location.
+     *
+     * @return latest arrival time of this vehicle
+     */
+    public abstract double getLatestArrival();
 
-	/**
-	 * Returns the {@link VehicleType} of this vehicle.
-	 * 
-	 * @return {@link VehicleType} of this vehicle
-	 */
-	public abstract VehicleType getType();
+    /**
+     * Returns the {@link VehicleType} of this vehicle.
+     *
+     * @return {@link VehicleType} of this vehicle
+     */
+    public abstract VehicleType getType();
 
-	/**
-	 * Returns the id of this vehicle.
-	 * 
-	 * @return id
-	 */
-	public abstract String getId();
+    /**
+     * Returns the id of this vehicle.
+     *
+     * @return id
+     */
+    public abstract String getId();
 
-	/**
-	 * Returns true if vehicle returns to depot, false otherwise.
-	 * 
-	 * @return true if isReturnToDepot
-	 */
-	public abstract boolean isReturnToDepot();
+    /**
+     * Returns true if vehicle returns to depot, false otherwise.
+     *
+     * @return true if isReturnToDepot
+     */
+    public abstract boolean isReturnToDepot();
 
     public abstract Location getStartLocation();
-	
-	public abstract Location getEndLocation();
-	
-	public abstract VehicleTypeKey getVehicleTypeIdentifier();
+
+    public abstract Location getEndLocation();
+
+    public abstract VehicleTypeKey getVehicleTypeIdentifier();
 
     public abstract Skills getSkills();
 }

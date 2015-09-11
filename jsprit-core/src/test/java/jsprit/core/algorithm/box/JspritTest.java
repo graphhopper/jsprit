@@ -29,16 +29,14 @@ import java.util.*;
 public class JspritTest {
 
 
-
-
     @Test
-    public void whenRunningJspritWithSingleCustomer_itShouldWork(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1,1)).build();
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+    public void whenRunningJspritWithSingleCustomer_itShouldWork() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(10000);
-        final Map<String,Integer> counts = new HashMap<String,Integer>();
+        final Map<String, Integer> counts = new HashMap<String, Integer>();
         vra.addListener(new StrategySelectedListener() {
 
             @Override
@@ -47,16 +45,15 @@ public class JspritTest {
             }
 
             private void count(String strategyId) {
-                if(!counts.containsKey(strategyId)) counts.put(strategyId,1);
-                counts.put(strategyId,counts.get(strategyId)+1);
+                if (!counts.containsKey(strategyId)) counts.put(strategyId, 1);
+                counts.put(strategyId, counts.get(strategyId) + 1);
             }
 
         });
         try {
             vra.searchSolutions();
             Assert.assertTrue(true);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Assert.assertTrue(false);
         }
 
@@ -136,15 +133,15 @@ public class JspritTest {
 //    }
 
     @Test
-    public void whenActivatingStrat_itShouldBeReflected(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1,1)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1,2)).build();
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+    public void whenActivatingStrat_itShouldBeReflected() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(s2).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-                .setProperty(Jsprit.Strategy.RADIAL_BEST,"100.").buildAlgorithm();
+            .setProperty(Jsprit.Strategy.RADIAL_BEST, "100.").buildAlgorithm();
         vra.setMaxIterations(5000);
-        final Map<String,Integer> counts = new HashMap<String,Integer>();
+        final Map<String, Integer> counts = new HashMap<String, Integer>();
         vra.addListener(new StrategySelectedListener() {
 
             @Override
@@ -153,9 +150,9 @@ public class JspritTest {
             }
 
             private void count(String strategyId) {
-                if(!counts.containsKey(strategyId)) counts.put(strategyId,1);
+                if (!counts.containsKey(strategyId)) counts.put(strategyId, 1);
                 Integer integer = counts.get(strategyId);
-                counts.put(strategyId, integer +1);
+                counts.put(strategyId, integer + 1);
             }
 
         });
@@ -164,16 +161,16 @@ public class JspritTest {
     }
 
     @Test
-    public void test_v3(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1,1)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1,2)).build();
-        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1,2)).build();
+    public void test_v3() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 2)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(5000);
-        final Map<String,Integer> counts = new HashMap<String,Integer>();
+        final Map<String, Integer> counts = new HashMap<String, Integer>();
         vra.addListener(new StrategySelectedListener() {
 
             @Override
@@ -182,8 +179,8 @@ public class JspritTest {
             }
 
             private void count(String strategyId) {
-                if(!counts.containsKey(strategyId)) counts.put(strategyId,1);
-                counts.put(strategyId,counts.get(strategyId)+1);
+                if (!counts.containsKey(strategyId)) counts.put(strategyId, 1);
+                counts.put(strategyId, counts.get(strategyId) + 1);
             }
 
         });
@@ -192,17 +189,17 @@ public class JspritTest {
     }
 
     @Test
-    public void test_v4(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1,1)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1,2)).build();
-        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1,2)).build();
-        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1,2)).build();
+    public void test_v4() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 2)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1, 2)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(5000);
-        final Map<String,Integer> counts = new HashMap<String,Integer>();
+        final Map<String, Integer> counts = new HashMap<String, Integer>();
         vra.addListener(new StrategySelectedListener() {
 
             @Override
@@ -211,8 +208,8 @@ public class JspritTest {
             }
 
             private void count(String strategyId) {
-                if(!counts.containsKey(strategyId)) counts.put(strategyId,1);
-                counts.put(strategyId,counts.get(strategyId)+1);
+                if (!counts.containsKey(strategyId)) counts.put(strategyId, 1);
+                counts.put(strategyId, counts.get(strategyId) + 1);
             }
 
         });
@@ -222,13 +219,13 @@ public class JspritTest {
 
 
     @Test
-    public void strategyDrawShouldBeReproducible(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1,1)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1,2)).build();
-        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1,2)).build();
-        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1,2)).build();
+    public void strategyDrawShouldBeReproducible() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 2)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1, 2)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(1000);
@@ -257,8 +254,8 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        for(int i=0;i<1000;i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        for (int i = 0; i < 1000; i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 org.junit.Assert.assertFalse(true);
             }
         }
@@ -267,13 +264,13 @@ public class JspritTest {
     }
 
     @Test
-    public void ruinedJobsShouldBeReproducible(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1,1)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1,2)).build();
-        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1,2)).build();
-        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1,2)).build();
+    public void ruinedJobsShouldBeReproducible() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 2)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1, 2)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(1000);
@@ -317,9 +314,9 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(),firstRecord.size());
-        for(int i=0;i<firstRecord.size();i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 Assert.assertFalse(true);
             }
         }
@@ -327,7 +324,7 @@ public class JspritTest {
     }
 
     @Test
-    public void whenBiggerProblem_ruinedJobsShouldBeReproducible(){
+    public void whenBiggerProblem_ruinedJobsShouldBeReproducible() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -373,9 +370,9 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(),firstRecord.size());
-        for(int i=0;i<firstRecord.size();i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 Assert.assertFalse(true);
             }
         }
@@ -383,13 +380,13 @@ public class JspritTest {
     }
 
     @Test
-    public void insertionShouldBeReproducible(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1,1)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1,2)).build();
-        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1,2)).build();
-        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1,2)).build();
+    public void insertionShouldBeReproducible() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 2)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1, 2)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
 
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
@@ -414,9 +411,9 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(),firstRecord.size());
-        for(int i=0;i<firstRecord.size();i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 Assert.assertFalse(true);
             }
         }
@@ -424,7 +421,7 @@ public class JspritTest {
     }
 
     @Test
-    public void whenBiggerProblem_insertionShouldBeReproducible(){
+    public void whenBiggerProblem_insertionShouldBeReproducible() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -451,9 +448,9 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(),firstRecord.size());
-        for(int i=0;i<firstRecord.size();i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 Assert.assertFalse(true);
             }
         }
@@ -461,7 +458,7 @@ public class JspritTest {
     }
 
     @Test
-    public void whenBiggerProblem_insertionPositionsShouldBeReproducible(){
+    public void whenBiggerProblem_insertionPositionsShouldBeReproducible() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
@@ -489,19 +486,19 @@ public class JspritTest {
         });
         Collection<VehicleRoutingProblemSolution> secondSolutions = second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(),firstRecord.size());
-        for(int i=0;i<firstRecord.size();i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 Assert.assertFalse(true);
             }
         }
         Assert.assertTrue(true);
-        Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(),Solutions.bestOf(secondSolutions).getCost());
+        Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(), Solutions.bestOf(secondSolutions).getCost());
     }
 
 
     @Test
-    public void whenTerminatingWithVariationCoefficient_terminationShouldBeReproducible(){
+    public void whenTerminatingWithVariationCoefficient_terminationShouldBeReproducible() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
@@ -535,9 +532,9 @@ public class JspritTest {
         });
         Collection<VehicleRoutingProblemSolution> secondSolutions = second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(),firstRecord.size());
-        for(int i=0;i<firstRecord.size();i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 Assert.assertFalse(true);
             }
         }
@@ -546,7 +543,7 @@ public class JspritTest {
     }
 
     @Test
-    public void whenBiggerProblem_insertioPositionsShouldBeReproducibleWithoutResetingRNGExplicitly(){
+    public void whenBiggerProblem_insertioPositionsShouldBeReproducibleWithoutResetingRNGExplicitly() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
@@ -574,18 +571,18 @@ public class JspritTest {
         });
         Collection<VehicleRoutingProblemSolution> secondSolutions = second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(),firstRecord.size());
-        for(int i=0;i<firstRecord.size();i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 Assert.assertFalse(true);
             }
         }
         Assert.assertTrue(true);
-        Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(),Solutions.bestOf(secondSolutions).getCost());
+        Assert.assertEquals(Solutions.bestOf(firstSolutions).getCost(), Solutions.bestOf(secondSolutions).getCost());
     }
 
     @Test
-    public void whenBiggerProblem_ruinedJobsShouldBeReproducibleWithoutResetingRNGExplicitly(){
+    public void whenBiggerProblem_ruinedJobsShouldBeReproducibleWithoutResetingRNGExplicitly() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
         VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -631,9 +628,9 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(),firstRecord.size());
-        for(int i=0;i<firstRecord.size();i++){
-            if(!firstRecord.get(i).equals(secondRecord.get(i))){
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
                 Assert.assertFalse(true);
             }
         }
