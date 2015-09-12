@@ -25,69 +25,71 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-class InfiniteVehicles implements VehicleFleetManager {
 
-    private static Logger logger = LogManager.getLogger(InfiniteVehicles.class);
 
-    private Map<VehicleTypeKey, Vehicle> types = new HashMap<VehicleTypeKey, Vehicle>();
+class InfiniteVehicles implements VehicleFleetManager{
+
+	private static Logger logger = LogManager.getLogger(InfiniteVehicles.class);
+
+	private Map<VehicleTypeKey,Vehicle> types = new HashMap<VehicleTypeKey, Vehicle>();
 
 //	private List<VehicleTypeKey> sortedTypes = new ArrayList<VehicleTypeKey>();
 
-    public InfiniteVehicles(Collection<Vehicle> vehicles) {
-        extractTypes(vehicles);
-        logger.debug("initialise {}", this);
-    }
+	public InfiniteVehicles(Collection<Vehicle> vehicles){
+		extractTypes(vehicles);
+		logger.debug("initialise " + this);
+	}
 
-    @Override
-    public String toString() {
-        return "[name=infiniteVehicle]";
-    }
+	@Override
+	public String toString() {
+		return "[name=infiniteVehicle]";
+	}
 
-    private void extractTypes(Collection<Vehicle> vehicles) {
-        for (Vehicle v : vehicles) {
-            VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
-            types.put(typeKey, v);
+	private void extractTypes(Collection<Vehicle> vehicles) {
+		for(Vehicle v : vehicles){
+			VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(),v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills(), v.isReturnToDepot());
+			types.put(typeKey,v);
 //			sortedTypes.add(typeKey);
-        }
-    }
+		}
+	}
 
 
-    @Override
-    public void lock(Vehicle vehicle) {
+	@Override
+	public void lock(Vehicle vehicle) {
 
-    }
+	}
 
-    @Override
-    public void unlock(Vehicle vehicle) {
+	@Override
+	public void unlock(Vehicle vehicle) {
 
-    }
+	}
 
 
-    @Override
-    public boolean isLocked(Vehicle vehicle) {
-        return false;
-    }
+	@Override
+	public boolean isLocked(Vehicle vehicle) {
+		return false;
+	}
 
-    @Override
-    public void unlockAll() {
+	@Override
+	public void unlockAll() {
 
-    }
+	}
 
-    @Override
-    public Collection<Vehicle> getAvailableVehicles() {
-        return types.values();
-    }
+	@Override
+	public Collection<Vehicle> getAvailableVehicles() {
+		return types.values();
+	}
 
-    @Override
-    public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
-        Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-        VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation().getId(), withoutThisType.getEndLocation().getId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills());
-        for (VehicleTypeKey key : types.keySet()) {
-            if (!key.equals(thisKey)) {
-                vehicles.add(types.get(key));
-            }
-        }
-        return vehicles;
-    }
+	@Override
+	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
+		Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation().getId(), withoutThisType.getEndLocation().getId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills(), withoutThisType.isReturnToDepot());
+		for(VehicleTypeKey key : types.keySet()){
+			if(!key.equals(thisKey)){
+				vehicles.add(types.get(key));
+			}
+		}
+		return vehicles;
+	}
 
 }

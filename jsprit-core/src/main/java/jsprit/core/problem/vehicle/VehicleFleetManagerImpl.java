@@ -25,184 +25,186 @@ import java.util.*;
 
 class VehicleFleetManagerImpl implements VehicleFleetManager {
 
-    public VehicleFleetManagerImpl newInstance(Collection<Vehicle> vehicles) {
-        return new VehicleFleetManagerImpl(vehicles);
-    }
+	public VehicleFleetManagerImpl newInstance(Collection<Vehicle> vehicles){
+		return new VehicleFleetManagerImpl(vehicles);
+	}
 
-    static class TypeContainer {
+	static class TypeContainer {
 
-        private ArrayList<Vehicle> vehicleList;
+		private ArrayList<Vehicle> vehicleList;
 
-        public TypeContainer() {
-            super();
-            vehicleList = new ArrayList<Vehicle>();
-        }
+		public TypeContainer() {
+			super();
+			vehicleList = new ArrayList<Vehicle>();
+		}
 
-        void add(Vehicle vehicle) {
-            if (vehicleList.contains(vehicle)) {
-                throw new IllegalStateException("cannot add vehicle twice " + vehicle.getId());
-            }
-            vehicleList.add(vehicle);
-        }
+		void add(Vehicle vehicle){
+			if(vehicleList.contains(vehicle)){
+				throw new IllegalStateException("cannot add vehicle twice " + vehicle.getId());
+			}
+			vehicleList.add(vehicle);
+		}
 
-        void remove(Vehicle vehicle) {
-            vehicleList.remove(vehicle);
-        }
+		void remove(Vehicle vehicle){
+			vehicleList.remove(vehicle);
+		}
 
-        public Vehicle getVehicle() {
-            return vehicleList.get(0);
+		public Vehicle getVehicle() {
+			return vehicleList.get(0);
 //			return vehicleList.getFirst();
-        }
+		}
 
-        public boolean isEmpty() {
-            return vehicleList.isEmpty();
-        }
+		public boolean isEmpty() {
+			return vehicleList.isEmpty();
+		}
 
-    }
+	}
 
-    private static Logger logger = LogManager.getLogger(VehicleFleetManagerImpl.class);
+	private static Logger logger = LogManager.getLogger(VehicleFleetManagerImpl.class);
 
-    private Collection<Vehicle> vehicles;
+	private Collection<Vehicle> vehicles;
 
-    private Set<Vehicle> lockedVehicles;
+	private Set<Vehicle> lockedVehicles;
 
-    private Map<VehicleTypeKey, TypeContainer> typeMapOfAvailableVehicles;
+	private Map<VehicleTypeKey,TypeContainer> typeMapOfAvailableVehicles;
 
-    private Map<VehicleTypeKey, Vehicle> penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
-
-
-    public VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
-        super();
-        this.vehicles = vehicles;
-        this.lockedVehicles = new HashSet<Vehicle>();
-        makeMap();
-        logger.debug("initialise {}", this);
-    }
-
-    @Override
-    public String toString() {
-        return "[name=finiteVehicles]";
-    }
-
-    private void makeMap() {
-        typeMapOfAvailableVehicles = new HashMap<VehicleTypeKey, TypeContainer>();
-        penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
-        for (Vehicle v : vehicles) {
-            addVehicle(v);
-        }
-    }
-
-    private void addVehicle(Vehicle v) {
-        if (v.getType() == null) {
-            throw new IllegalStateException("vehicle needs type");
-        }
-        VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
-        if (!typeMapOfAvailableVehicles.containsKey(typeKey)) {
-            typeMapOfAvailableVehicles.put(typeKey, new TypeContainer());
-        }
-        typeMapOfAvailableVehicles.get(typeKey).add(v);
-
-    }
-
-    private void removeVehicle(Vehicle v) {
-        VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills());
-        if (typeMapOfAvailableVehicles.containsKey(key)) {
-            typeMapOfAvailableVehicles.get(key).remove(v);
-        }
-    }
+	private Map<VehicleTypeKey,Vehicle> penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
 
 
-    /**
-     * Returns a collection of available vehicles.
-     * <p/>
-     * <p>If there is no vehicle with a certain type and location anymore, it looks up whether a penalty vehicle has been specified with
-     * this type and location. If so, it returns this penalty vehicle. If not, no vehicle with this type and location is returned.
-     */
-    @Override
-    public Collection<Vehicle> getAvailableVehicles() {
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        for (VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()) {
-            if (!typeMapOfAvailableVehicles.get(key).isEmpty()) {
-                vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
-            } else {
-                if (penaltyVehicles.containsKey(key)) {
-                    vehicles.add(penaltyVehicles.get(key));
-                }
-            }
-        }
-        return vehicles;
-    }
+	public VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
+		super();
+		this.vehicles = vehicles;
+		this.lockedVehicles = new HashSet<Vehicle>();
+		makeMap();
+		logger.debug("initialise " + this);
+	}
 
-    @Override
-    public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation().getId(), withoutThisType.getEndLocation().getId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills());
-        for (VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()) {
-            if (key.equals(thisKey)) continue;
-            if (!typeMapOfAvailableVehicles.get(key).isEmpty()) {
-                vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
-            } else {
-                if (penaltyVehicles.containsKey(key)) {
-                    vehicles.add(penaltyVehicles.get(key));
-                }
-            }
-        }
-        return vehicles;
-    }
+	@Override
+	public String toString() {
+		return "[name=finiteVehicles]";
+	}
 
-    /* (non-Javadoc)
-     * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#lock(org.matsim.contrib.freight.vrp.basics.Vehicle)
-     */
-    @Override
-    public void lock(Vehicle vehicle) {
-        if (vehicles.isEmpty() || vehicle instanceof NoVehicle) {
-            return;
-        }
-        boolean locked = lockedVehicles.add(vehicle);
-        removeVehicle(vehicle);
-        if (!locked) {
-            throw new IllegalStateException("cannot lock vehicle twice " + vehicle.getId());
-        }
-    }
+	private void makeMap() {
+		typeMapOfAvailableVehicles = new HashMap<VehicleTypeKey, TypeContainer>();
+		penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
+		for(Vehicle v : vehicles){
+			addVehicle(v);
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#unlock(org.matsim.contrib.freight.vrp.basics.Vehicle)
-     */
-    @Override
-    public void unlock(Vehicle vehicle) {
-        if (vehicles.isEmpty() || vehicle instanceof NoVehicle) {
-            return;
-        }
-        if (vehicle == null) return;
-        lockedVehicles.remove(vehicle);
-        addVehicle(vehicle);
-    }
+	private void addVehicle(Vehicle v) {
+		if(v.getType() == null){
+			throw new IllegalStateException("vehicle needs type");
+		}
+		VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills(),v.isReturnToDepot() );
+		if(!typeMapOfAvailableVehicles.containsKey(typeKey)){
+			typeMapOfAvailableVehicles.put(typeKey, new TypeContainer());
+		}
+		typeMapOfAvailableVehicles.get(typeKey).add(v);
 
-    /* (non-Javadoc)
-     * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#isLocked(org.matsim.contrib.freight.vrp.basics.Vehicle)
-     */
-    @Override
-    public boolean isLocked(Vehicle vehicle) {
-        return lockedVehicles.contains(vehicle);
-    }
+	}
 
-    /* (non-Javadoc)
-     * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#unlockAll()
-     */
-    @Override
-    public void unlockAll() {
-        Collection<Vehicle> locked = new ArrayList<Vehicle>(lockedVehicles);
-        for (Vehicle v : locked) {
-            unlock(v);
-        }
-        if (!lockedVehicles.isEmpty()) {
-            throw new IllegalStateException("no vehicle must be locked");
-        }
-    }
+	private void removeVehicle(Vehicle v){
+		VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills(),v.isReturnToDepot() );
+		if(typeMapOfAvailableVehicles.containsKey(key)){
+			typeMapOfAvailableVehicles.get(key).remove(v);
+		}
+	}
 
-    @Deprecated
-    public int sizeOfLockedVehicles() {
-        return lockedVehicles.size();
-    }
+
+	/**
+	 * Returns a collection of available vehicles.
+	 *
+	 *<p>If there is no vehicle with a certain type and location anymore, it looks up whether a penalty vehicle has been specified with
+	 * this type and location. If so, it returns this penalty vehicle. If not, no vehicle with this type and location is returned.
+	 */
+	@Override
+	public Collection<Vehicle> getAvailableVehicles() {
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
+			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
+				vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
+			}
+			else{
+				if(penaltyVehicles.containsKey(key)){
+					vehicles.add(penaltyVehicles.get(key));
+				}
+			}
+		}
+		return vehicles;
+	}
+
+	@Override
+	public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation().getId(), withoutThisType.getEndLocation().getId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills(),withoutThisType.isReturnToDepot() );
+		for(VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()){
+			if(key.equals(thisKey)) continue;
+			if(!typeMapOfAvailableVehicles.get(key).isEmpty()){
+				vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
+			}
+			else{
+				if(penaltyVehicles.containsKey(key)){
+					vehicles.add(penaltyVehicles.get(key));
+				}
+			}
+		}
+		return vehicles;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#lock(org.matsim.contrib.freight.vrp.basics.Vehicle)
+	 */
+	@Override
+	public void lock(Vehicle vehicle){
+		if(vehicles.isEmpty() || vehicle instanceof NoVehicle){
+			return;
+		}
+		boolean locked = lockedVehicles.add(vehicle);
+		removeVehicle(vehicle);
+		if(!locked){
+			throw new IllegalStateException("cannot lock vehicle twice " + vehicle.getId());
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#unlock(org.matsim.contrib.freight.vrp.basics.Vehicle)
+	 */
+	@Override
+	public void unlock(Vehicle vehicle){
+		if(vehicles.isEmpty() || vehicle instanceof NoVehicle){
+			return;
+		}
+		if(vehicle == null) return;
+		lockedVehicles.remove(vehicle);
+		addVehicle(vehicle);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#isLocked(org.matsim.contrib.freight.vrp.basics.Vehicle)
+	 */
+	@Override
+	public boolean isLocked(Vehicle vehicle) {
+		return lockedVehicles.contains(vehicle);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#unlockAll()
+	 */
+	@Override
+	public void unlockAll() {
+		Collection<Vehicle> locked = new ArrayList<Vehicle>(lockedVehicles);
+		for(Vehicle v : locked){
+			unlock(v);
+		}
+		if(!lockedVehicles.isEmpty()){
+			throw new IllegalStateException("no vehicle must be locked");
+		}
+	}
+
+	@Deprecated
+	public int sizeOfLockedVehicles(){
+		return lockedVehicles.size();
+	}
 
 }

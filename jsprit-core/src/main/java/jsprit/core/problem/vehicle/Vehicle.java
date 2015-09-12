@@ -70,4 +70,5 @@ public interface Vehicle extends HasId, HasIndex {
     public abstract VehicleTypeKey getVehicleTypeIdentifier();
 
     public abstract Skills getSkills();
+
 }

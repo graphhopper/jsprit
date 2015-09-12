@@ -54,49 +54,49 @@ import static org.mockito.Mockito.mock;
 
 public class ServiceInsertionAndLoadConstraintsTest {
 
-    VehicleRoutingTransportCosts routingCosts;
+	VehicleRoutingTransportCosts routingCosts;
 
-    VehicleRoutingActivityCosts activityCosts = new VehicleRoutingActivityCosts() {
+	VehicleRoutingActivityCosts activityCosts = new VehicleRoutingActivityCosts(){
 
-        @Override
-        public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
-            return 0;
-        }
+		@Override
+		public double getActivityCost(TourActivity tourAct, double arrivalTime,Driver driver, Vehicle vehicle) {
+			return 0;
+		}
 
-    };
+	};
 
-    HardActivityConstraint hardActivityLevelConstraint = new HardActivityConstraint() {
+	HardActivityConstraint hardActivityLevelConstraint = new HardActivityConstraint() {
 
-        @Override
-        public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-            return ConstraintsStatus.FULFILLED;
-        }
-    };
+		@Override
+		public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct,TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+			return ConstraintsStatus.FULFILLED;
+		}
+	};
 
-    HardRouteConstraint hardRouteLevelConstraint = new HardRouteConstraint() {
+	HardRouteConstraint hardRouteLevelConstraint = new HardRouteConstraint(){
 
-        @Override
-        public boolean fulfilled(JobInsertionContext insertionContext) {
-            return true;
-        }
+		@Override
+		public boolean fulfilled(JobInsertionContext insertionContext) {
+			return true;
+		}
 
-    };
+	};
 
-    ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
+	ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
-    ShipmentInsertionCalculator insertionCalculator;
+	ShipmentInsertionCalculator insertionCalculator;
 
     VehicleRoutingProblem vehicleRoutingProblem;
 
-    Vehicle vehicle;
+	Vehicle vehicle;
 
-    @Before
-    public void doBefore() {
-        routingCosts = CostFactory.createManhattanCosts();
-        VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).setCostPerDistance(1).build();
-        vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();
-        activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts);
-        createInsertionCalculator(hardRouteLevelConstraint);
+	@Before
+	public void doBefore(){
+		routingCosts = CostFactory.createManhattanCosts();
+		VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).setCostPerDistance(1).build();
+		vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();
+		activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, activityCosts, mock(StateManager.class));
+		createInsertionCalculator(hardRouteLevelConstraint);
         vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
     }
 

@@ -20,6 +20,7 @@ import jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
 import jsprit.core.algorithm.listener.*;
 import jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
@@ -35,6 +36,7 @@ import java.util.Collection;
  * Algorithm that solves a {@link VehicleRoutingProblem}.
  *
  * @author stefan schroeder
+ *
  */
 public class VehicleRoutingAlgorithm {
 
@@ -42,14 +44,14 @@ public class VehicleRoutingAlgorithm {
 
         private Collection<PrematureAlgorithmTermination> terminationCriteria = new ArrayList<PrematureAlgorithmTermination>();
 
-        void addTermination(PrematureAlgorithmTermination termination) {
+        void addTermination(PrematureAlgorithmTermination termination){
             terminationCriteria.add(termination);
         }
 
         @Override
         public boolean isPrematureBreak(DiscoveredSolution discoveredSolution) {
-            for (PrematureAlgorithmTermination termination : terminationCriteria) {
-                if (termination.isPrematureBreak(discoveredSolution)) {
+            for(PrematureAlgorithmTermination termination : terminationCriteria){
+                if(termination.isPrematureBreak(discoveredSolution)){
                     return true;
                 }
             }
@@ -194,14 +196,15 @@ public class VehicleRoutingAlgorithm {
         Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
+		if(logger.isTraceEnabled()) log(solutions);
         logger.info("iterations start");
-        for (int i = 0; i < maxIterations; i++) {
-            iterationStarts(i + 1, problem, solutions);
-            logger.debug("start iteration: {}", i);
-            counter.incCounter();
-            SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
-            DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
-            logger.trace("discovered solution: {}", discoveredSolution);
+		for(int i=0;i< maxIterations;i++){
+			iterationStarts(i+1,problem,solutions);
+			logger.debug("start iteration: {}",i);
+			counter.incCounter();
+			SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
+			DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
+			if(logger.isTraceEnabled()) log(discoveredSolution);
             memorizeIfBestEver(discoveredSolution);
             selectedStrategy(discoveredSolution, problem, solutions);
             if (terminationManager.isPrematureBreak(discoveredSolution)) {
@@ -221,6 +224,39 @@ public class VehicleRoutingAlgorithm {
     private void addBestEver(Collection<VehicleRoutingProblemSolution> solutions) {
         if (bestEver != null) solutions.add(bestEver);
     }
+
+    private void log(Collection<VehicleRoutingProblemSolution> solutions) {
+		for(VehicleRoutingProblemSolution sol : solutions) log(sol);
+	}
+
+	private void log(VehicleRoutingProblemSolution solution){
+		logger.trace("solution costs: {}",solution.getCost());
+		for(VehicleRoute r : solution.getRoutes()){
+			StringBuilder b = new StringBuilder();
+			b.append(r.getVehicle().getId()).append(" : ").append("[ ");
+			for(TourActivity act : r.getActivities()){
+				if(act instanceof TourActivity.JobActivity){
+					b.append(((TourActivity.JobActivity) act).getJob().getId()).append(" ");
+				}
+			}
+			b.append("]");
+			logger.trace(b.toString());
+		}
+		StringBuilder b = new StringBuilder();
+		b.append("unassigned : [ ");
+		for(Job j : solution.getUnassignedJobs()){
+			b.append(j.getId()).append(" ");
+		}
+		b.append("]");
+		logger.trace(b.toString());
+	}
+
+	private void log(DiscoveredSolution discoveredSolution) {
+		logger.trace("discovered solution: {}",discoveredSolution);
+		log(discoveredSolution.getSolution());
+	}
+
+
 
     private void memorizeIfBestEver(DiscoveredSolution discoveredSolution) {
         if (discoveredSolution == null) return;
