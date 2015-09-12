@@ -24,15 +24,10 @@ import java.util.Random;
  */
 public class WaitingTimeExample {
 
-    static interface AlgorithmFactory {
-        VehicleRoutingAlgorithm createAlgorithm(VehicleRoutingProblem vrp);
-    }
-
     public static void main(String[] args) {
 
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(4.).setCostPerWaitingTime(1.0).build();
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type1").setCostPerDistance(4.).setCostPerWaitingTime(1.0).build();
-//        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type2").setCostPerDistance(4.).setCostPerWaitingTime(2.0).build();
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setReturnToDepot(true)
                 .setStartLocation(Location.newInstance(0, 0))
@@ -42,13 +37,10 @@ public class WaitingTimeExample {
                 .setStartLocation(Location.newInstance(0, 10))
                 .setEarliestStart(200).setLatestArrival(450)
                 .build();
-//        VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setType(type2).setReturnToDepot(true)
-//                .setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         Random r = RandomNumberGeneration.newInstance();
         for(int i=0;i<40;i++){
             Service s = Service.Builder.newInstance("s_"+i).setServiceTime(5)
-//                    .setTimeWindow(TimeWindow.newInstance(0,100*(1+r.nextInt(3))))
                     .setLocation(Location.newInstance(1 - r.nextInt(5), 10 + r.nextInt(10))).build();
             vrpBuilder.addJob(s);
         }
@@ -59,42 +51,6 @@ public class WaitingTimeExample {
         vrpBuilder.addJob(s1).addJob(s2).addJob(s3).addJob(s4).addVehicle(v2).addVehicle(v3);
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         final VehicleRoutingProblem vrp = vrpBuilder.build();
-
-//        AlgorithmFactory algorithmFactory = new AlgorithmFactory() {
-//            @Override
-//            public VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp) {
-//                StateManager stateManager = new StateManager(vrp);
-//                stateManager.addStateUpdater(new UpdateFutureWaitingTimes(stateManager,vrp.getTransportCosts()));
-//                ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-//
-//                return  Jsprit.Builder.newInstance(vrp)
-//                        .addCoreStateAndConstraintStuff(true)
-//                        .setStateAndConstraintManager(stateManager, constraintManager)
-//                        .setProperty(Jsprit.Parameter.THRESHOLD_INI, "0.1")
-////                        .setProperty(Jsprit.Parameter.THRESHOLD_ALPHA, "0.3")
-////                                .setProperty(Parameter.)
-////                        .setProperty(Jsprit.Parameter.CONSTRUCTION, Jsprit.Construction.BEST_INSERTION.toString())
-//                        .setObjectiveFunction(new SolutionCostCalculator() {
-//                            @Override
-//                            public double getCosts(VehicleRoutingProblemSolution solution) {
-//                                double costs = 0.;
-//                                for (VehicleRoute route : solution.getRoutes()) {
-//                                    costs += route.getVehicle().getType().getVehicleCostParams().fix;
-//                                    TourActivity prevAct = route.getStart();
-//                                    for (TourActivity act : route.getActivities()) {
-//                                        costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
-//                                        costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
-//                                        prevAct = act;
-//                                    }
-//                                    costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
-//                                }
-//                                costs += solution.getUnassignedJobs().size() * 200;
-//                                return costs;
-//                            }
-//                        })
-//                        .buildAlgorithm();
-//            }
-//        };
 
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(2000);
