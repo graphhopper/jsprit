@@ -23,38 +23,38 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 
 /**
  * Updates and memorizes latest operation start times at activities.
- * 
- * @author schroeder
  *
+ * @author schroeder
  */
-public class UpdateFutureWaitingTimes implements ReverseActivityVisitor, StateUpdater{
+public class UpdateFutureWaitingTimes implements ReverseActivityVisitor, StateUpdater {
 
-	private StateManager states;
+    private StateManager states;
 
-	private VehicleRoute route;
+    private VehicleRoute route;
 
-	private VehicleRoutingTransportCosts transportCosts;
+    private VehicleRoutingTransportCosts transportCosts;
 
-	private double futureWaiting;
+    private double futureWaiting;
 
-	public UpdateFutureWaitingTimes(StateManager states, VehicleRoutingTransportCosts tpCosts) {
-		super();
-		this.states = states;
-		this.transportCosts = tpCosts;
-	}
+    public UpdateFutureWaitingTimes(StateManager states, VehicleRoutingTransportCosts tpCosts) {
+        super();
+        this.states = states;
+        this.transportCosts = tpCosts;
+    }
 
-	@Override
-	public void begin(VehicleRoute route) {
-		this.route = route;
-		this.futureWaiting = 0.;
-	}
+    @Override
+    public void begin(VehicleRoute route) {
+        this.route = route;
+        this.futureWaiting = 0.;
+    }
 
-	@Override
-	public void visit(TourActivity activity) {
-		states.putInternalTypedActivityState(activity,route.getVehicle(),InternalStates.FUTURE_WAITING,futureWaiting);
-		futureWaiting += Math.max(activity.getTheoreticalEarliestOperationStartTime() - activity.getArrTime(),0);
-	}
+    @Override
+    public void visit(TourActivity activity) {
+        states.putInternalTypedActivityState(activity, route.getVehicle(), InternalStates.FUTURE_WAITING, futureWaiting);
+        futureWaiting += Math.max(activity.getTheoreticalEarliestOperationStartTime() - activity.getArrTime(), 0);
+    }
 
-	@Override
-	public void finish() {}
+    @Override
+    public void finish() {
+    }
 }

@@ -100,7 +100,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         }
 
 			/*
-			 *                     |--- newAct ---|
+             *                     |--- newAct ---|
 			 *  |--- nextAct ---|
 			 */
         if (newAct.getTheoreticalEarliestOperationStartTime() > nextAct.getTheoreticalLatestOperationStartTime()) {
@@ -117,7 +117,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             );
 
 			/*
-			 *  |--- prevAct ---|
+             *  |--- prevAct ---|
 			 *                       		                 |--- vehicle's arrival @newAct
 			 *        latest arrival of vehicle @newAct ---|
 			 */

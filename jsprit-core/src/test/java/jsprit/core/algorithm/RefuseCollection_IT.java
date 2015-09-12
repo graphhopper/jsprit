@@ -71,7 +71,7 @@ public class RefuseCollection_IT {
 		 */
         VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
         /*
-		 * read demand quantities
+         * read demand quantities
 		 */
         readDemandQuantitiesAsServices(vrpBuilder);
         readDistances(matrixBuilder);
@@ -92,7 +92,7 @@ public class RefuseCollection_IT {
     public void whenReadingServices_usingJsprit_itShouldCalculateCorrectly() {
 
 		/*
-		 * create vehicle-type and vehicle
+         * create vehicle-type and vehicle
 		 */
         VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("vehicle-type").addCapacityDimension(0, 23);
         typeBuilder.setCostPerDistance(1.0);

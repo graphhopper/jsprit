@@ -60,7 +60,7 @@ public class SimpleDepotBoundedPickupAndDeliveryExample {
         VehicleImpl vehicle = vehicleBuilder.build();
 
 		/*
-		 * build pickups and deliveries at the required locations, each with a capacity-demand of 1.
+         * build pickups and deliveries at the required locations, each with a capacity-demand of 1.
 		 */
         Pickup pickup1 = (Pickup) Pickup.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
         Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
@@ -77,7 +77,7 @@ public class SimpleDepotBoundedPickupAndDeliveryExample {
         VehicleRoutingProblem problem = vrpBuilder.build();
 
 		/*
-		 * get the algorithm out-of-the-box.
+         * get the algorithm out-of-the-box.
 		 */
         VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
 

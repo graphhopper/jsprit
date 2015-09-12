@@ -74,12 +74,12 @@ public class RefuseCollectionExample {
         vrpBuilder.addVehicle(bigVehicle);
 
 		/*
-		 * read demand quantities
+         * read demand quantities
 		 */
         readDemandQuantities(vrpBuilder);
 
 		/*
-		 * create cost-matrix
+         * create cost-matrix
 		 */
         VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
         readDistances(matrixBuilder);

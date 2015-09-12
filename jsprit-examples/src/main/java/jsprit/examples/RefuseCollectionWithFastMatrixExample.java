@@ -73,12 +73,12 @@ public class RefuseCollectionWithFastMatrixExample {
         vrpBuilder.addVehicle(bigVehicle);
 
 		/*
-		 * read demand quantities
+         * read demand quantities
 		 */
         readDemandQuantities(vrpBuilder);
 
 		/*
-		 * create cost-matrix
+         * create cost-matrix
 		 */
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(11, true);
         readDistances(matrixBuilder);

@@ -67,7 +67,7 @@ public class SimpleExample {
         VehicleImpl vehicle = vehicleBuilder.build();
 
 		/*
-		 * build services at the required locations, each with a capacity-demand of 1.
+         * build services at the required locations, each with a capacity-demand of 1.
 		 */
         Service service1 = Service.Builder.newInstance("1").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 7)).build();
         Service service2 = Service.Builder.newInstance("2").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 13)).build();
@@ -83,7 +83,7 @@ public class SimpleExample {
         VehicleRoutingProblem problem = vrpBuilder.build();
 
 		/*
-		 * get the algorithm out-of-the-box.
+         * get the algorithm out-of-the-box.
 		 */
         VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
 

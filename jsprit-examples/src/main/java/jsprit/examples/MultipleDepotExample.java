@@ -54,7 +54,7 @@ public class MultipleDepotExample {
         new VrpXMLReader(vrpBuilder).read("input/vrp_cordeau_01.xml");
 
 		/*
-		 * add vehicles with its depots
+         * add vehicles with its depots
 		 * 4 depots:
 		 * (20,20)
 		 * (30,40)
@@ -81,7 +81,7 @@ public class MultipleDepotExample {
         }
 
 		/*
-		 * define problem with finite fleet
+         * define problem with finite fleet
 		 */
         vrpBuilder.setFleetSize(FleetSize.FINITE);
 

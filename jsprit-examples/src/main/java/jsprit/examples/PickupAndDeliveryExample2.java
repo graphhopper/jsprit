@@ -63,14 +63,14 @@ public class PickupAndDeliveryExample2 {
 
 
 		/*
-		 * Define the required vehicle-routing algorithms to solve the above problem.
+         * Define the required vehicle-routing algorithms to solve the above problem.
 		 *
 		 * The algorithm can be defined and configured in an xml-file.
 		 */
 //		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
-		/*
+        /*
 		 * Solve the problem.
 		 *
 		 *

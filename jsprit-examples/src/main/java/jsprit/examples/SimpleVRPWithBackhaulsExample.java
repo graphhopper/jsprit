@@ -63,7 +63,7 @@ public class SimpleVRPWithBackhaulsExample {
         VehicleImpl vehicle = vehicleBuilder.build();
 
 		/*
-		 * build pickups and deliveries at the required locations, each with a capacity-demand of 1.
+         * build pickups and deliveries at the required locations, each with a capacity-demand of 1.
 		 */
         Pickup pickup1 = (Pickup) Pickup.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
         Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
@@ -89,7 +89,7 @@ public class SimpleVRPWithBackhaulsExample {
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
 
 		/*
-		 * and search a solution
+         * and search a solution
 		 */
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 

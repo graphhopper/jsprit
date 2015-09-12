@@ -23,32 +23,31 @@ import jsprit.core.problem.Skills;
 
 /**
  * Key to identify similar vehicles
- *
+ * <p/>
  * <p>Two vehicles are equal if they share the same type, the same start and end-location and the same earliestStart and latestStart.
  *
  * @author stefan
- *
  */
-public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey{
+public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
 
-	public final String type;
-	public final String startLocationId;
-	public final String endLocationId;
-	public final double earliestStart;
-	public final double latestEnd;
+    public final String type;
+    public final String startLocationId;
+    public final String endLocationId;
+    public final double earliestStart;
+    public final double latestEnd;
     public final Skills skills;
     public final boolean returnToDepot;
 
-	public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
-		super();
-		this.type = typeId;
-		this.startLocationId = startLocationId;
-		this.endLocationId = endLocationId;
-		this.earliestStart = earliestStart;
-		this.latestEnd = latestEnd;
+    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
+        super();
+        this.type = typeId;
+        this.startLocationId = startLocationId;
+        this.endLocationId = endLocationId;
+        this.earliestStart = earliestStart;
+        this.latestEnd = latestEnd;
         this.skills = skills;
-        this.returnToDepot=returnToDepot;
-	}
+        this.returnToDepot = returnToDepot;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -85,13 +84,12 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey{
     }
 
     @Override
-	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(type).append("_").append(startLocationId).append("_").append(endLocationId)
-			.append("_").append(Double.toString(earliestStart)).append("_").append(Double.toString(latestEnd));
-		return stringBuilder.toString();
-	}
-
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(type).append("_").append(startLocationId).append("_").append(endLocationId)
+            .append("_").append(Double.toString(earliestStart)).append("_").append(Double.toString(latestEnd));
+        return stringBuilder.toString();
+    }
 
 
 }

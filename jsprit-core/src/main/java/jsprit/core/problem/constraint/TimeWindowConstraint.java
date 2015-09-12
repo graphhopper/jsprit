@@ -91,8 +91,8 @@ class TimeWindowConstraint implements HardActivityConstraint {
         if (arrTimeAtNextOnDirectRouteWithNewVehicle > nextAct.getTheoreticalLatestOperationStartTime()) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
-			/*
-			 *                     |--- newAct ---|
+            /*
+             *                     |--- newAct ---|
 			 *  |--- nextAct ---|
 			 */
         if (newAct.getTheoreticalEarliestOperationStartTime() > nextAct.getTheoreticalLatestOperationStartTime()) {

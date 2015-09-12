@@ -81,7 +81,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
         VehicleImpl vehicle4 = vehicleBuilder4.build();
 
 		/*
-		 * build shipments at the required locations, each with a capacity-demand of 1.
+         * build shipments at the required locations, each with a capacity-demand of 1.
 
 		 */
 
@@ -121,7 +121,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
         VehicleRoutingProblem problem = vrpBuilder.build();
 
 		/*
-		 * get the algorithm out-of-the-box.
+         * get the algorithm out-of-the-box.
 		 */
         VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.readAndCreateAlgorithm(problem, "input/algorithmConfig.xml");
 //		algorithm.setMaxIterations(30000);

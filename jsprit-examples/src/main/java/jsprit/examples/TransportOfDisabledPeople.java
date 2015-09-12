@@ -96,7 +96,7 @@ public class TransportOfDisabledPeople {
 
 
 		/*
-		 * build shipments at the required locations, each with a capacity-demand of 1.
+         * build shipments at the required locations, each with a capacity-demand of 1.
 		 *
 		 */
         Shipment shipment1 = Shipment.Builder.newInstance("wheelchair_1").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(loc(Coordinate.newInstance(6, 9))).build();
@@ -141,7 +141,7 @@ public class TransportOfDisabledPeople {
         vrpBuilder.setFleetSize(FleetSize.FINITE);
 
 		/*
-		 *
+         *
 		 * wheelchair-bus can only pickup passenger where x<15
 		 */
         HardRouteConstraint wheelchair_bus_passenger_pickup_constraint = new HardRouteConstraint() {

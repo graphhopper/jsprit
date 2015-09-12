@@ -34,33 +34,25 @@ public class VehicleImplTest {
         Vehicle v = VehicleImpl.Builder.newInstance("v").build();
     }
 
-	@Test
-	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
-		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
-				.addSkill("drill").addSkill("screwdriver").build();
-		assertTrue(v.getSkills().containsSkill("drill"));
-		assertTrue(v.getSkills().containsSkill("drill"));
-		assertTrue(v.getSkills().containsSkill("screwdriver"));
-	}
+    @Test
+    public void whenAddingSkills_theyShouldBeAddedCorrectly() {
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+        Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
+            .addSkill("drill").addSkill("screwdriver").build();
+        assertTrue(v.getSkills().containsSkill("drill"));
+        assertTrue(v.getSkills().containsSkill("drill"));
+        assertTrue(v.getSkills().containsSkill("screwdriver"));
+    }
 
-	@Test
-	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
-		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
-				.addSkill("drill").addSkill("screwdriver").build();
-		assertTrue(v.getSkills().containsSkill("drill"));
-		assertTrue(v.getSkills().containsSkill("dRill"));
-		assertTrue(v.getSkills().containsSkill("ScrewDriver"));
-	}
-
-	@Test
-	public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly(){
-		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
-		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
-				.addSkill("drill").build();
-		assertFalse(v.getSkills().containsSkill("ScrewDriver"));
-	}
+    @Test
+    public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+        Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
+            .addSkill("drill").addSkill("screwdriver").build();
+        assertTrue(v.getSkills().containsSkill("drill"));
+        assertTrue(v.getSkills().containsSkill("dRill"));
+        assertTrue(v.getSkills().containsSkill("ScrewDriver"));
+    }
 
 
     @Test
@@ -220,26 +212,6 @@ public class VehicleImplTest {
         assertTrue(v.equals(v2));
     }
 
-
-    @Test
-    public void whenAddingSkills_theyShouldBeAddedCorrectly() {
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
-        Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
-            .addSkill("drill").addSkill("screwdriver").build();
-        assertTrue(v.getSkills().containsSkill("drill"));
-        assertTrue(v.getSkills().containsSkill("drill"));
-        assertTrue(v.getSkills().containsSkill("screwdriver"));
-    }
-
-    @Test
-    public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
-        Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
-            .addSkill("drill").addSkill("screwdriver").build();
-        assertTrue(v.getSkills().containsSkill("drill"));
-        assertTrue(v.getSkills().containsSkill("dRill"));
-        assertTrue(v.getSkills().containsSkill("ScrewDriver"));
-    }
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {

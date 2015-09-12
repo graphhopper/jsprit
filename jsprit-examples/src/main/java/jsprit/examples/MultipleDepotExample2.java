@@ -56,7 +56,7 @@ public class MultipleDepotExample2 {
         new CordeauReader(vrpBuilder).read("input/p08");
 
 		/*
-		 * add vehicles with its depots
+         * add vehicles with its depots
 		 * 2 depots:
 		 * (-33,33)
 		 * (33,-33)
@@ -87,7 +87,7 @@ public class MultipleDepotExample2 {
 
 
 		/*
-		 * define problem with finite fleet
+         * define problem with finite fleet
 		 */
         vrpBuilder.setFleetSize(FleetSize.FINITE);
 

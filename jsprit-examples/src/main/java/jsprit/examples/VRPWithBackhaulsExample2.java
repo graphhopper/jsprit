@@ -61,7 +61,7 @@ public class VRPWithBackhaulsExample2 {
 
 
 		/*
-		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
+         * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
         final VehicleRoutingProblem vrp = vrpBuilder.build();
 
@@ -69,7 +69,7 @@ public class VRPWithBackhaulsExample2 {
 
 
 		/*
-		 * Define the required vehicle-routing algorithms to solve the above problem.
+         * Define the required vehicle-routing algorithms to solve the above problem.
 		 *
 		 * The algorithm can be defined and configured in an xml-file.
 		 */

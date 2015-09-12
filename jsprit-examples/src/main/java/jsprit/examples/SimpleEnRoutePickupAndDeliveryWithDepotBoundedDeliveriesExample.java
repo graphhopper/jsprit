@@ -63,7 +63,7 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
         VehicleImpl vehicle = vehicleBuilder.build();
 
 		/*
-		 * build shipments at the required locations, each with a capacity-demand of 1.
+         * build shipments at the required locations, each with a capacity-demand of 1.
 		 * 4 shipments
 		 * 1: (5,7)->(6,9)
 		 * 2: (5,13)->(6,11)
@@ -77,7 +77,7 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
         Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(loc(Coordinate.newInstance(14, 9))).build();
         Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
 //
-		/*
+        /*
 		 * build deliveries, (implicitly picked up in the depot)
 		 * 1: (4,8)
 		 * 2: (4,12)

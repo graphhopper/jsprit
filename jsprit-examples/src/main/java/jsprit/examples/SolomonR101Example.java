@@ -50,8 +50,8 @@ public class SolomonR101Example {
 		 */
 //		new SolomonReader(vrpBuilder).read("/Users/schroeder/IdeaProjects/jsprit/jsprit-instances/instances/solomon/R211.txt");
         new VrpXMLReader(vrpBuilder).read("output/R211.xml");
-		/*
-		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
+        /*
+         * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
         VehicleRoutingProblem vrp = vrpBuilder.build();
 

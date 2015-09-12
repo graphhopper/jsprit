@@ -55,7 +55,7 @@ public class VRPWithBackhaulsExample {
         new VrpXMLReader(vrpBuilder).read("input/pickups_and_deliveries_solomon_r101.xml");
 
 		/*
-		 * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
+         * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
 		 */
 //
         VehicleRoutingProblem vrp = vrpBuilder.build();
@@ -63,7 +63,7 @@ public class VRPWithBackhaulsExample {
 //		SolutionPlotter.plotVrpAsPNG(vrp, "output/vrpwbh_solomon_r101.png", "pd_r101");
 
 		/*
-		 * Define the required vehicle-routing algorithms to solve the above problem.
+         * Define the required vehicle-routing algorithms to solve the above problem.
 		 *
 		 * The algorithm can be defined and configured in an xml-file.
 		 */

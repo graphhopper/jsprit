@@ -128,8 +128,8 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_withTimeAndD
          * create cost-matrix
 		 */
         VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
-		/*
-		 * read demand quantities
+        /*
+         * read demand quantities
 		 */
         try {
             readDemandQuantities(vrpBuilder);

@@ -67,7 +67,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
         Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 11))).build();
 
 		/*
-		 * build deliveries, (implicitly picked up in the depot)
+         * build deliveries, (implicitly picked up in the depot)
 		 * 1: (4,8)
 		 * 2: (4,12)
 		 * 3: (16,8)
@@ -103,7 +103,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 
     @Test
     public void whenHavingOnlyServicesInOneProblem_andInsertionShouldBeMadeOnRouteLevel_itShouldAssertTrue() {
-		/* get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
+        /* get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
 		 */
         VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(0, 2);
         VehicleType vehicleType = vehicleTypeBuilder.build();
