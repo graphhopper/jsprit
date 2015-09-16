@@ -152,14 +152,6 @@ public class Service extends AbstractJob {
             return this;
         }
 
-        protected T create() {
-            if (location == null) throw new IllegalStateException("location is missing");
-            this.setType("service");
-            capacity = capacityBuilder.build();
-            skills = skillBuilder.build();
-            return (T) new Service(this);
-        }
-        
         /**
          * Builds the service.
          *
