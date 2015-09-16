@@ -267,7 +267,7 @@ public class RefuseCollection_IT {
 			/*
 			 * build service
 			 */
-            Pickup service = (Pickup) Pickup.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
+            Pickup service = Pickup.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
                 .setLocation(Location.newInstance(lineTokens[0])).build();
 			/*
 			 * and add it to problem

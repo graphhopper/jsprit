@@ -24,7 +24,7 @@ package jsprit.core.problem.job;
  */
 public class Pickup extends Service {
 
-    public static class Builder extends Service.Builder {
+    public static class Builder extends Service.Builder<Pickup> {
 
         /**
          * Returns a new instance of builder that builds a pickup.
