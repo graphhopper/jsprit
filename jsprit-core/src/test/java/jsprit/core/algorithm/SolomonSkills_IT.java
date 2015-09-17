@@ -15,11 +15,11 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package jsprit.core.algorithm.state;
+package jsprit.core.algorithm;
 
-import jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.recreate.NoSolutionFoundException;
+import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.problem.Skills;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
@@ -34,6 +34,7 @@ import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.util.Solutions;
 import jsprit.core.util.TestUtils;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Collection;
 
@@ -45,6 +46,7 @@ import static org.junit.Assert.*;
 public class SolomonSkills_IT {
 
     @Test
+    @Category(IntegrationTest.class)
     public void itShouldMakeCorrectAssignmentAccordingToSkills() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/solomon_c101.xml");

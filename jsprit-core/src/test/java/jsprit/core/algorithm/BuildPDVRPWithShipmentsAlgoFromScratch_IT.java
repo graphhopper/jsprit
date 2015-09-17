@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import jsprit.core.algorithm.module.RuinAndRecreateModule;
 import jsprit.core.algorithm.recreate.BestInsertionBuilder;
@@ -37,6 +38,7 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Collection;
 
@@ -46,6 +48,7 @@ import static org.junit.Assert.assertTrue;
 public class BuildPDVRPWithShipmentsAlgoFromScratch_IT {
 
     @Test
+    @Category(IntegrationTest.class)
     public void test() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder).read("src/test/resources/pdp.xml");

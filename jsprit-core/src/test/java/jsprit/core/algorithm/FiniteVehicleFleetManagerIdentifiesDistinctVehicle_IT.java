@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.recreate.NoSolutionFoundException;
@@ -25,6 +26,7 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +37,7 @@ import static org.junit.Assert.assertTrue;
 public class FiniteVehicleFleetManagerIdentifiesDistinctVehicle_IT {
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenEmployingVehicleWhereOnlyOneDistinctVehicleCanServeAParticularJob_algorithmShouldFoundDistinctSolution() {
         final List<Boolean> testFailed = new ArrayList<Boolean>();
         for (int i = 0; i < 10; i++) {

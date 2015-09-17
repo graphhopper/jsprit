@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import jsprit.core.problem.Location;
@@ -32,6 +33,7 @@ import jsprit.core.util.Solutions;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix.Builder;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.*;
 import java.util.Collection;
@@ -101,6 +103,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_withTimeAndD
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void testAlgo() {
 
 

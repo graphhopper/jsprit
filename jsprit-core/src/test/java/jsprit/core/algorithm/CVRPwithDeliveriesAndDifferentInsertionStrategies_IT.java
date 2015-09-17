@@ -16,18 +16,21 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import junit.framework.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Collection;
 
 public class CVRPwithDeliveriesAndDifferentInsertionStrategies_IT {
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenWithTwoInsertionStrategiesWhereOnleOneIsInAlgo_itShouldWork() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
@@ -43,6 +46,7 @@ public class CVRPwithDeliveriesAndDifferentInsertionStrategies_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenWithTwoInsertionStrategiesWhereBothAreInAlgo_itShouldWork() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");

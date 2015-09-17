@@ -1,12 +1,13 @@
-package jsprit.core.algorithm.state;
+package jsprit.core.algorithm;
 
-import jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.util.Solutions;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Collection;
 
@@ -18,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 public class Solomon_IT {
 
     @Test
+    @Category(IntegrationTest.class)
     public void itShouldFindTheBestKnownSolution() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/solomon_c101.xml");

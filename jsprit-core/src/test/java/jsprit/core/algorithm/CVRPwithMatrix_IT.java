@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.analysis.SolutionAnalyser;
 import jsprit.core.problem.Location;
@@ -31,6 +32,7 @@ import jsprit.core.util.EuclideanDistanceCalculator;
 import jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
 import jsprit.core.util.Solutions;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +46,7 @@ public class CVRPwithMatrix_IT {
 
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenReturnToDepot_itShouldWorkWithMatrix() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
@@ -56,6 +59,7 @@ public class CVRPwithMatrix_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenNotReturnToDepot_itShouldWorkWithMatrix() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");
@@ -71,6 +75,7 @@ public class CVRPwithMatrix_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenCalcTimeWithSolutionAnalyser_itShouldWork() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/vrpnc1-jsprit-with-deliveries.xml");

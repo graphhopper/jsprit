@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import jsprit.core.problem.VehicleRoutingProblem;
@@ -25,6 +26,7 @@ import jsprit.core.problem.io.VrpXMLReader;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.util.Solutions;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Collection;
 
@@ -33,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 public class PickupsAndDeliveries_IT {
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenSolvingLR101InstanceOfLiLim_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/lilim_lr101.xml");
@@ -44,6 +47,7 @@ public class PickupsAndDeliveries_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenSolvingLR101InstanceOfLiLim_withJsprit_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/lilim_lr101.xml");

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
@@ -34,6 +35,7 @@ import jsprit.core.util.Solutions;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import jsprit.core.util.VehicleRoutingTransportCostsMatrix.Builder;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.*;
 import java.util.Collection;
@@ -45,6 +47,7 @@ public class RefuseCollection_IT {
 
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenReadingServices_itShouldCalculateCorrectly() {
 
 		/*
@@ -89,6 +92,7 @@ public class RefuseCollection_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenReadingServices_usingJsprit_itShouldCalculateCorrectly() {
 
 		/*
@@ -133,6 +137,7 @@ public class RefuseCollection_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenReadingPickups_itShouldCalculateCorrectly() {
 
 		/*
@@ -177,6 +182,7 @@ public class RefuseCollection_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void whenReadingDeliveries_itShouldCalculateCorrectly() {
 
 		/*

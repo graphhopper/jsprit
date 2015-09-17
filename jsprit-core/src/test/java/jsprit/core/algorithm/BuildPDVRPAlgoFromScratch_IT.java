@@ -16,6 +16,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import jsprit.core.algorithm.module.RuinAndRecreateModule;
 import jsprit.core.algorithm.recreate.BestInsertionBuilder;
@@ -42,6 +43,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Collection;
 
@@ -104,6 +106,7 @@ public class BuildPDVRPAlgoFromScratch_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void test() {
         try {
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

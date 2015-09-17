@@ -1,5 +1,6 @@
 package jsprit.core.algorithm;
 
+import jsprit.core.IntegrationTest;
 import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.analysis.SolutionAnalyser;
@@ -21,6 +22,7 @@ import jsprit.core.util.Solutions;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Created by schroeder on 22/07/15.
@@ -72,6 +74,7 @@ public class VariableDepartureAndWaitingTime_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void plainSetupShouldWork() {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10, 0)).build();
@@ -88,6 +91,7 @@ public class VariableDepartureAndWaitingTime_IT {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void withTimeWindowsShouldWork() {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         Service s1 = Service.Builder.newInstance("s1").setTimeWindow(TimeWindow.newInstance(1010, 1100)).setLocation(Location.newInstance(10, 0)).build();

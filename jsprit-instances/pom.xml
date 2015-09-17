@@ -43,6 +43,8 @@
         </pluginManagement>
     </build>
 
+
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
