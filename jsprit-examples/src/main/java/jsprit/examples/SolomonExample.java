@@ -67,7 +67,7 @@ public class SolomonExample {
         VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
 
 		/*
-		 * Solve the problem.
+         * Solve the problem.
 		 *
 		 *
 		 */

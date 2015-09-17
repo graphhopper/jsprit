@@ -78,7 +78,7 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
         Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
 //
         /*
-		 * build deliveries, (implicitly picked up in the depot)
+         * build deliveries, (implicitly picked up in the depot)
 		 * 1: (4,8)
 		 * 2: (4,12)
 		 * 3: (16,8)

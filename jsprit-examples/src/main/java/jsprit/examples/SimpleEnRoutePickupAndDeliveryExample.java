@@ -88,7 +88,7 @@ public class SimpleEnRoutePickupAndDeliveryExample {
         VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
 
 		/*
-		 * and search a solution
+         * and search a solution
 		 */
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 

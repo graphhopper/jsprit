@@ -74,7 +74,7 @@ public class SolomonWithRegretInsertionExample {
         vra.addListener(eventsRecorder);
 
 		/*
-		 * Solve the problem.
+         * Solve the problem.
 		 *
 		 *
 		 */

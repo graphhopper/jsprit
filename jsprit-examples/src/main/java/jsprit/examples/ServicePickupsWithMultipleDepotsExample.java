@@ -104,7 +104,7 @@ public class ServicePickupsWithMultipleDepotsExample {
         algorithm.setMaxIterations(10);
 
 		/*
-		 * and search a solution
+         * and search a solution
 		 */
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 

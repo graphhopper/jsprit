@@ -135,7 +135,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocation(), nextActLocation, endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
 			/*
-			 *  |--- newAct ---|
+             *  |--- newAct ---|
 			 *                       		                 |--- vehicle's arrival @nextAct
 			 *        latest arrival of vehicle @nextAct ---|
 			 */

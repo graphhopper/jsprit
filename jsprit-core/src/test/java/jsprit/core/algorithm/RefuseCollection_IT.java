@@ -104,7 +104,7 @@ public class RefuseCollection_IT {
         VehicleImpl bigVehicle = vehicleBuilder.build();
 
 		/*
-		 * start building the problem
+         * start building the problem
 		 */
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.setFleetSize(FleetSize.INFINITE);

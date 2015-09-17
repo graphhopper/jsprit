@@ -76,7 +76,7 @@ public class SolomonExampleWithSpecifiedVehicleEndLocationsWithoutTWs {
         vra.setMaxIterations(20000);
 //		vra.setPrematureBreak(100);
 //		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
-		/*
+        /*
 		 * Solve the problem.
 		 *
 		 *

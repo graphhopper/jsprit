@@ -371,7 +371,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         //ref: 10 + 50 + 20 = 80
         //new: 80 - 10 - 30 - 20 = 20
         /*
-		w(new) + w(next) - w_old(next) - min{start_delay(next),future_waiting}
+        w(new) + w(next) - w_old(next) - min{start_delay(next),future_waiting}
 		 */
     }
 

@@ -76,7 +76,7 @@ public class VRPWithBackhaulsExample {
         vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm vra = vraBuilder.build();
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
-		/*
+        /*
 		 * Solve the problem.
 		 *
 		 *

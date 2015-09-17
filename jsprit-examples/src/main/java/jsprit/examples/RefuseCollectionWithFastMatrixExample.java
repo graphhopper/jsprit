@@ -108,7 +108,7 @@ public class RefuseCollectionWithFastMatrixExample {
                 continue;
             }
             String[] lineTokens = line.split(",");
-			/*
+            /*
 			 * build service
 			 */
             Service service = Service.Builder.newInstance(lineTokens[0])

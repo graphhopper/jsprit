@@ -106,7 +106,7 @@ class TimeWindowConstraint implements HardActivityConstraint {
         double latestArrTimeAtNewAct = Math.min(newAct.getTheoreticalLatestOperationStartTime(), latestArrTimeAtNextAct -
             routingCosts.getBackwardTransportTime(nextActLocation, newAct.getLocation(), latestArrTimeAtNextAct, iFacts.getNewDriver(),
                 iFacts.getNewVehicle()) - newAct.getOperationTime());
-			/*
+            /*
 			 *  |--- prevAct ---|
 			 *                       		                 |--- vehicle's arrival @newAct
 			 *        latest arrival of vehicle @newAct ---|

@@ -61,7 +61,7 @@ public class MultipleDepotWithInitialRoutesExample {
          * build the problem
 		 */
         VehicleRoutingProblem vrp = vrpBuilder.build();
-		/*
+        /*
 		 * since job (service) 26 and 44 are already planned in initial route and thus static AND sequence is fixed they
 		 * should not be in jobMap anymore (only variable jobs are in jobMap)
 		 */

@@ -59,7 +59,7 @@ public class SolomonR101Example {
 //		new Plotter(vrp).plot("output/solomon_R101.png", "R101");
 
 		/*
-		 * Define the required vehicle-routing algorithms to solve the above problem.
+         * Define the required vehicle-routing algorithms to solve the above problem.
 		 *
 		 * The algorithm can be defined and configured in an xml-file.
 		 */

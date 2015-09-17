@@ -62,11 +62,12 @@ public class SimpleDepotBoundedPickupAndDeliveryExample {
 		/*
          * build pickups and deliveries at the required locations, each with a capacity-demand of 1.
 		 */
+
         Pickup pickup1 = Pickup.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
         Delivery delivery1 = Delivery.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
 
         Pickup pickup2 = Pickup.Builder.newInstance("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
-        Delivery delivery2 =  Delivery.Builder.newInstance("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
+        Delivery delivery2 = Delivery.Builder.newInstance("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -82,7 +83,7 @@ public class SimpleDepotBoundedPickupAndDeliveryExample {
         VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
 
 		/*
-		 * and search a solution
+         * and search a solution
 		 */
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 

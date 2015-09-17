@@ -41,7 +41,7 @@ public class Service extends AbstractJob {
      *
      * @author schroeder
      */
-    public static class Builder <T extends Service> {
+    public static class Builder<T extends Service> {
 
 
         /**

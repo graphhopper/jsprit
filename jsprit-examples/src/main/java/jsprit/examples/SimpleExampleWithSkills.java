@@ -110,7 +110,7 @@ public class SimpleExampleWithSkills {
         VehicleRoutingAlgorithm algorithm = vraBuilder.build();
 
 		/*
-		 * and search a solution
+         * and search a solution
 		 */
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 

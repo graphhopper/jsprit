@@ -92,7 +92,7 @@ public class MultipleDepotExample2 {
         vrpBuilder.setFleetSize(FleetSize.FINITE);
 
 		/*
-		 * build the problem
+         * build the problem
 		 */
         VehicleRoutingProblem vrp = vrpBuilder.build();
 

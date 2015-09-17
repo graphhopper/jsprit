@@ -169,7 +169,7 @@ public class TransportOfDisabledPeople {
         constraintManager.addConstraint(wheelchair_bus_passenger_pickup_constraint);
 
 		/*
-		 * get a sample algorithm.
+         * get a sample algorithm.
 		 *
 		 * Note that you need to make sure to prohibit vehicle-switching by adding the insertion-tag <vehicleSwitchAllowed>false</vehicleSwitchAllowed>.
 		 * This way you make sure that no vehicle can take over a route that is employed by another. Allowing this might make sense when dealing with

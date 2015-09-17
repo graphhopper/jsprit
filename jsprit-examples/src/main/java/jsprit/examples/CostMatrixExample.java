@@ -59,7 +59,7 @@ public class CostMatrixExample {
 
 
 		/*
-		 * Assume the following symmetric distance-matrix
+         * Assume the following symmetric distance-matrix
 		 * from,to,distance
 		 * 0,1,10.0
 		 * 0,2,20.0

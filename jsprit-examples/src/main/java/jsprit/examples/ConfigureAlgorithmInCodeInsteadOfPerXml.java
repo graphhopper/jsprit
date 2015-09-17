@@ -82,7 +82,7 @@ public class ConfigureAlgorithmInCodeInsteadOfPerXml {
         VehicleRoutingAlgorithm algorithm = VehicleRoutingAlgorithms.createAlgorithm(problem, algorithmConfig);
 
 		/*
-		 * and search a solution
+         * and search a solution
 		 */
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 

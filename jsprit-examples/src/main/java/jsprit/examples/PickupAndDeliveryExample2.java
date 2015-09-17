@@ -71,7 +71,7 @@ public class PickupAndDeliveryExample2 {
         VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_solomon.xml");
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
         /*
-		 * Solve the problem.
+         * Solve the problem.
 		 *
 		 *
 		 */
