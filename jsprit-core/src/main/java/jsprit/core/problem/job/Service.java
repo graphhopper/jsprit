@@ -41,7 +41,7 @@ public class Service extends AbstractJob {
      *
      * @author schroeder
      */
-    public static class Builder {
+    public static class Builder <T extends Service> {
 
 
         /**
@@ -90,7 +90,7 @@ public class Service extends AbstractJob {
          * @param name the name of service
          * @return the builder
          */
-        protected Builder setType(String name) {
+        protected Builder<T> setType(String name) {
             this.type = name;
             return this;
         }
@@ -101,7 +101,7 @@ public class Service extends AbstractJob {
          * @param location location
          * @return builder
          */
-        public Builder setLocation(Location location) {
+        public Builder<T> setLocation(Location location) {
             this.location = location;
             return this;
         }
@@ -131,7 +131,7 @@ public class Service extends AbstractJob {
          * @return the builder
          * @throws IllegalArgumentException if dimensionValue < 0
          */
-        public Builder addSizeDimension(int dimensionIndex, int dimensionValue) {
+        public Builder<T> addSizeDimension(int dimensionIndex, int dimensionValue) {
             if (dimensionValue < 0) throw new IllegalArgumentException("capacity value cannot be negative");
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
             return this;
@@ -146,7 +146,7 @@ public class Service extends AbstractJob {
          * @return builder
          * @throws IllegalArgumentException if timeWindow is null
          */
-        public Builder setTimeWindow(TimeWindow tw) {
+        public Builder<T> setTimeWindow(TimeWindow tw) {
             if (tw == null) throw new IllegalArgumentException("time-window arg must not be null");
             this.timeWindow = tw;
             return this;
@@ -158,20 +158,20 @@ public class Service extends AbstractJob {
          * @return {@link Service}
          * @throws IllegalStateException if neither locationId nor coordinate is set.
          */
-        public Service build() {
+        public T build() {
             if (location == null) throw new IllegalStateException("location is missing");
             this.setType("service");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
-            return new Service(this);
+            return (T) new Service(this);
         }
 
-        public Builder addRequiredSkill(String skill) {
+        public Builder<T> addRequiredSkill(String skill) {
             skillBuilder.addSkill(skill);
             return this;
         }
 
-        public Builder setName(String name) {
+        public Builder<T> setName(String name) {
             this.name = name;
             return this;
         }
