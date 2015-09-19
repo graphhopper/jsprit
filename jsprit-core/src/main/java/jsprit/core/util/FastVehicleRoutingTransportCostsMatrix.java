@@ -114,6 +114,14 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
         matrix = builder.matrix;
     }
 
+    /**
+     * First dim is from, second to and third indicates whether it is a distance value (index=0) or time value (index=1).
+     *
+     * @return
+     */
+    public double[][][] getMatrix(){
+        return matrix;
+    }
 
     @Override
     public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {

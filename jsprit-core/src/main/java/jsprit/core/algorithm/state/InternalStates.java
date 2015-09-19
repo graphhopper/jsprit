@@ -49,4 +49,6 @@ public class InternalStates {
     public static final StateId FUTURE_WAITING = new StateFactory.StateIdImpl("future_waiting", 13);
 
     public static final StateId EARLIEST_WITHOUT_WAITING = new StateFactory.StateIdImpl("earliest_without_waiting", 14);
+
+    public static final StateId SWITCH_NOT_FEASIBLE = new StateFactory.StateIdImpl("switch_not_feasible", 15);
 }

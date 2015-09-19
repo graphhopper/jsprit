@@ -25,6 +25,7 @@ import jsprit.core.algorithm.recreate.VehicleSwitched;
 import jsprit.core.algorithm.state.*;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.constraint.ConstraintManager;
+import jsprit.core.problem.constraint.SwitchNotFeasible;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -89,6 +90,7 @@ public class PrettyAlgorithmBuilder {
             constraintManager.addTimeWindowConstraint();
             constraintManager.addLoadConstraint();
             constraintManager.addSkillsConstraint();
+            constraintManager.addConstraint(new SwitchNotFeasible(stateManager));
             stateManager.updateLoadStates();
             stateManager.updateTimeWindowStates();
             UpdateVehicleDependentPracticalTimeWindows twUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts());
