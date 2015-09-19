@@ -29,9 +29,14 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
 import jsprit.core.util.Solutions;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -542,6 +547,34 @@ public class MeetTimeWindowConstraint_IT {
 
         assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
         assertTrue(containsJob(vrp.getJobs().get("2"), getRoute("19", Solutions.bestOf(solutions))));
+    }
+
+    @Test
+    public void driverTimesShouldBeMet() throws IOException {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/twbug.xml");
+        final FastVehicleRoutingTransportCostsMatrix matrix = createMatrix();
+        vrpBuilder.setRoutingCost(matrix);
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(vrp).buildAlgorithm();
+        algorithm.setMaxIterations(1000);
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
+        for(VehicleRoute r : solution.getRoutes()){
+            assertTrue(r.getVehicle().getEarliestDeparture() <= r.getDepartureTime());
+            assertTrue(r.getVehicle().getLatestArrival() >= r.getEnd().getArrTime());
+        }
+    }
+
+    private FastVehicleRoutingTransportCostsMatrix createMatrix() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/matrix.txt")));
+        String line;
+        FastVehicleRoutingTransportCostsMatrix.Builder builder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(11,false);
+        while((line = reader.readLine()) != null){
+            String[] split = line.split("\t");
+            builder.addTransportDistance(Integer.parseInt(split[0]),Integer.parseInt(split[1]),Double.parseDouble(split[2]));
+            builder.addTransportTime(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Double.parseDouble(split[3]));
+        }
+        return builder.build();
     }
 
 
