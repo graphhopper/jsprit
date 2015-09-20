@@ -18,6 +18,7 @@
  ******************************************************************************/
 package jsprit.core.algorithm;
 
+import jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import jsprit.core.algorithm.box.Jsprit;
 import jsprit.core.algorithm.box.SchrimpfFactory;
 import jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
@@ -550,7 +551,7 @@ public class MeetTimeWindowConstraint_IT {
     }
 
     @Test
-    public void driverTimesShouldBeMet() throws IOException {
+    public void whenUsingJsprit_driverTimesShouldBeMet() throws IOException {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(vrpBuilder).read("src/test/resources/twbug.xml");
         final FastVehicleRoutingTransportCostsMatrix matrix = createMatrix();
@@ -565,6 +566,39 @@ public class MeetTimeWindowConstraint_IT {
         }
     }
 
+    @Test
+    public void whenUsingSchrimpf_driverTimesShouldBeMet() throws IOException {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/twbug.xml");
+        final FastVehicleRoutingTransportCostsMatrix matrix = createMatrix();
+        vrpBuilder.setRoutingCost(matrix);
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(vrp);
+        algorithm.setMaxIterations(1000);
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
+        for(VehicleRoute r : solution.getRoutes()){
+            assertTrue(r.getVehicle().getEarliestDeparture() <= r.getDepartureTime());
+            assertTrue(r.getVehicle().getLatestArrival() >= r.getEnd().getArrTime());
+        }
+    }
+
+    @Test
+    public void whenUsingGreedySchrimpf_driverTimesShouldBeMet() throws IOException {
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpBuilder).read("src/test/resources/twbug.xml");
+        final FastVehicleRoutingTransportCostsMatrix matrix = createMatrix();
+        vrpBuilder.setRoutingCost(matrix);
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        VehicleRoutingAlgorithm algorithm = new GreedySchrimpfFactory().createAlgorithm(vrp);
+        algorithm.setMaxIterations(1000);
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
+        for(VehicleRoute r : solution.getRoutes()){
+            assertTrue(r.getVehicle().getEarliestDeparture() <= r.getDepartureTime());
+            assertTrue(r.getVehicle().getLatestArrival() >= r.getEnd().getArrTime());
+        }
+    }
+
+    
     private FastVehicleRoutingTransportCostsMatrix createMatrix() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/matrix.txt")));
         String line;

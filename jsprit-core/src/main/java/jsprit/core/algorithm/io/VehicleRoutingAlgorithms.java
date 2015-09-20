@@ -42,6 +42,7 @@ import jsprit.core.algorithm.termination.VariationCoefficientTermination;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import jsprit.core.problem.constraint.ConstraintManager;
+import jsprit.core.problem.constraint.SwitchNotFeasible;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
@@ -478,6 +479,7 @@ public class VehicleRoutingAlgorithms {
         constraintManager.addTimeWindowConstraint();
         constraintManager.addLoadConstraint();
         constraintManager.addSkillsConstraint();
+        constraintManager.addConstraint(new SwitchNotFeasible(stateManager));
 
         return readAndCreateAlgorithm(vrp, config, nuOfThreads, null, stateManager, constraintManager, true);
     }
