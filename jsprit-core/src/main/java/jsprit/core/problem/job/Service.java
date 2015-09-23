@@ -116,7 +116,7 @@ public class Service extends AbstractJob {
          * @return builder
          * @throws IllegalArgumentException if serviceTime < 0
          */
-        public Builder setServiceTime(double serviceTime) {
+        public Builder<T> setServiceTime(double serviceTime) {
             if (serviceTime < 0)
                 throw new IllegalArgumentException("serviceTime must be greater than or equal to zero");
             this.serviceTime = serviceTime;
