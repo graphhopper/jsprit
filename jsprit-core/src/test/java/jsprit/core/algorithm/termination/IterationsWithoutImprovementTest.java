@@ -11,51 +11,51 @@ import static org.mockito.Mockito.when;
 public class IterationsWithoutImprovementTest {
 
     @Test
-    public void itShouldTerminateAfter100(){
+    public void itShouldTerminateAfter100() {
         IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(100);
         SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
         when(discoveredSolution.isAccepted()).thenReturn(false);
         int terminatedAfter = 0;
-        for(int i=0;i<200;i++){
+        for (int i = 0; i < 200; i++) {
             boolean terminate = termination.isPrematureBreak(discoveredSolution);
-            if(terminate) {
+            if (terminate) {
                 terminatedAfter = i;
                 break;
             }
         }
-        Assert.assertEquals(100,terminatedAfter);
+        Assert.assertEquals(100, terminatedAfter);
     }
 
     @Test
-    public void itShouldTerminateAfter1(){
+    public void itShouldTerminateAfter1() {
         IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(1);
         SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
         when(discoveredSolution.isAccepted()).thenReturn(false);
         int terminatedAfter = 0;
-        for(int i=0;i<200;i++){
+        for (int i = 0; i < 200; i++) {
             boolean terminate = termination.isPrematureBreak(discoveredSolution);
-            if(terminate) {
+            if (terminate) {
                 terminatedAfter = i;
                 break;
             }
         }
-        Assert.assertEquals(1,terminatedAfter);
+        Assert.assertEquals(1, terminatedAfter);
     }
 
     @Test
-    public void itShouldTerminateAfter150(){
+    public void itShouldTerminateAfter150() {
         IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(100);
         SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
         int terminatedAfter = 0;
-        for(int i=0;i<200;i++){
+        for (int i = 0; i < 200; i++) {
             when(discoveredSolution.isAccepted()).thenReturn(false);
-            if(i == 49) when(discoveredSolution.isAccepted()).thenReturn(true);
+            if (i == 49) when(discoveredSolution.isAccepted()).thenReturn(true);
             boolean terminate = termination.isPrematureBreak(discoveredSolution);
-            if(terminate) {
+            if (terminate) {
                 terminatedAfter = i;
                 break;
             }
         }
-        Assert.assertEquals(150,terminatedAfter);
+        Assert.assertEquals(150, terminatedAfter);
     }
 }

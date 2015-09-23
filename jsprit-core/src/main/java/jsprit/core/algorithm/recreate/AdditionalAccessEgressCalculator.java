@@ -25,52 +25,50 @@ import jsprit.core.problem.vehicle.Vehicle;
 
 /**
  * Estimates additional access/egress costs when operating route with a new vehicle that has different start/end-location.
- * 
+ * <p/>
  * <p>If two vehicles have the same start/end-location and departure-time .getCosts(...) must return zero.
- * 
- * @author schroeder
  *
+ * @author schroeder
  */
 class AdditionalAccessEgressCalculator {
-	
-	private VehicleRoutingTransportCosts routingCosts;
-	
-	/**
-	 * Constructs the estimator that estimates additional access/egress costs when operating route with a new vehicle that has different start/end-location.
-	 * 
-	 * <p>If two vehicles have the same start/end-location and departure-time .getCosts(...) must return zero.
-	 * 
-	 * @author schroeder
-	 *
-	 */
-	public AdditionalAccessEgressCalculator(VehicleRoutingTransportCosts routingCosts) {
-		this.routingCosts = routingCosts;
-	}
-	
-	public double getCosts(JobInsertionContext insertionContext){
-		double delta_access = 0.0;
-		double delta_egress = 0.0;
-		VehicleRoute currentRoute = insertionContext.getRoute();
-		Vehicle newVehicle = insertionContext.getNewVehicle();
-		Driver newDriver = insertionContext.getNewDriver();
-		double newVehicleDepartureTime = insertionContext.getNewDepTime();
-		if(!currentRoute.isEmpty()){
-			double accessTransportCostNew = routingCosts.getTransportCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
-			double accessTransportCostOld = routingCosts.getTransportCost(currentRoute.getStart().getLocation(), currentRoute.getActivities().get(0).getLocation(), currentRoute.getDepartureTime(), currentRoute.getDriver(), currentRoute.getVehicle());
-			
-			delta_access = accessTransportCostNew - accessTransportCostOld;
-			
-			if(newVehicle.isReturnToDepot()){
-				TourActivity lastActivityBeforeEndOfRoute = currentRoute.getActivities().get(currentRoute.getActivities().size()-1);
-				double lastActivityEndTimeWithOldVehicleAndDepartureTime = lastActivityBeforeEndOfRoute.getEndTime();
-				double lastActivityEndTimeEstimationWithNewVehicleAndNewDepartureTime = Math.max(0.0, lastActivityEndTimeWithOldVehicleAndDepartureTime + (newVehicleDepartureTime - currentRoute.getDepartureTime()));
-				double egressTransportCostNew = routingCosts.getTransportCost(lastActivityBeforeEndOfRoute.getLocation(), newVehicle.getEndLocation() , lastActivityEndTimeEstimationWithNewVehicleAndNewDepartureTime, newDriver, newVehicle);
-				double egressTransportCostOld = routingCosts.getTransportCost(lastActivityBeforeEndOfRoute.getLocation(), currentRoute.getEnd().getLocation(), lastActivityEndTimeWithOldVehicleAndDepartureTime, currentRoute.getDriver(), currentRoute.getVehicle());
-				
-				delta_egress = egressTransportCostNew - egressTransportCostOld;
-			}
-		}
-		return delta_access + delta_egress;
-	}
-	
+
+    private VehicleRoutingTransportCosts routingCosts;
+
+    /**
+     * Constructs the estimator that estimates additional access/egress costs when operating route with a new vehicle that has different start/end-location.
+     * <p/>
+     * <p>If two vehicles have the same start/end-location and departure-time .getCosts(...) must return zero.
+     *
+     * @author schroeder
+     */
+    public AdditionalAccessEgressCalculator(VehicleRoutingTransportCosts routingCosts) {
+        this.routingCosts = routingCosts;
+    }
+
+    public double getCosts(JobInsertionContext insertionContext) {
+        double delta_access = 0.0;
+        double delta_egress = 0.0;
+        VehicleRoute currentRoute = insertionContext.getRoute();
+        Vehicle newVehicle = insertionContext.getNewVehicle();
+        Driver newDriver = insertionContext.getNewDriver();
+        double newVehicleDepartureTime = insertionContext.getNewDepTime();
+        if (!currentRoute.isEmpty()) {
+            double accessTransportCostNew = routingCosts.getTransportCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
+            double accessTransportCostOld = routingCosts.getTransportCost(currentRoute.getStart().getLocation(), currentRoute.getActivities().get(0).getLocation(), currentRoute.getDepartureTime(), currentRoute.getDriver(), currentRoute.getVehicle());
+
+            delta_access = accessTransportCostNew - accessTransportCostOld;
+
+            if (newVehicle.isReturnToDepot()) {
+                TourActivity lastActivityBeforeEndOfRoute = currentRoute.getActivities().get(currentRoute.getActivities().size() - 1);
+                double lastActivityEndTimeWithOldVehicleAndDepartureTime = lastActivityBeforeEndOfRoute.getEndTime();
+                double lastActivityEndTimeEstimationWithNewVehicleAndNewDepartureTime = Math.max(0.0, lastActivityEndTimeWithOldVehicleAndDepartureTime + (newVehicleDepartureTime - currentRoute.getDepartureTime()));
+                double egressTransportCostNew = routingCosts.getTransportCost(lastActivityBeforeEndOfRoute.getLocation(), newVehicle.getEndLocation(), lastActivityEndTimeEstimationWithNewVehicleAndNewDepartureTime, newDriver, newVehicle);
+                double egressTransportCostOld = routingCosts.getTransportCost(lastActivityBeforeEndOfRoute.getLocation(), currentRoute.getEnd().getLocation(), lastActivityEndTimeWithOldVehicleAndDepartureTime, currentRoute.getDriver(), currentRoute.getVehicle());
+
+                delta_egress = egressTransportCostNew - egressTransportCostOld;
+            }
+        }
+        return delta_access + delta_egress;
+    }
+
 }

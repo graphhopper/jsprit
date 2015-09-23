@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
-* Created by schroeder on 16/01/15.
-*/
+ * Created by schroeder on 16/01/15.
+ */
 class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsListener {
 
     private final double noiseProbability;
@@ -44,12 +44,12 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
     //@ToDo refactor determining max costs to allow skipping this
     private void determineMaxCosts(VehicleRoutingProblem vrp) {
         double max = 0.;
-        for(Job i : vrp.getJobs().values()){
+        for (Job i : vrp.getJobs().values()) {
             List<Location> fromLocations = getLocations(i);
-            for(Job j : vrp.getJobs().values()){
+            for (Job j : vrp.getJobs().values()) {
                 List<Location> toLocations = getLocations(j);
-                for(Location iLoc : fromLocations){
-                    for(Location jLoc : toLocations) {
+                for (Location iLoc : fromLocations) {
+                    for (Location jLoc : toLocations) {
                         max = Math.max(max, vrp.getTransportCosts().getTransportCost(iLoc, jLoc, 0, null, vrp.getVehicles().iterator().next()));
                     }
                 }
@@ -60,10 +60,9 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
 
     private List<Location> getLocations(Job j) {
         List<Location> locs = new ArrayList<Location>();
-        if(j instanceof Service) {
+        if (j instanceof Service) {
             locs.add(((Service) j).getLocation());
-        }
-        else if(j instanceof Shipment){
+        } else if (j instanceof Shipment) {
             locs.add(((Shipment) j).getPickupLocation());
             locs.add(((Shipment) j).getDeliveryLocation());
         }
@@ -72,15 +71,14 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
 
     @Override
     public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-        if(random.nextDouble() < noiseProbability){
+        if (random.nextDouble() < noiseProbability) {
             makeNoise = true;
-        }
-        else makeNoise = false;
+        } else makeNoise = false;
     }
 
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if(makeNoise) {
+        if (makeNoise) {
             return noiseLevel * maxCosts * random.nextDouble();
         }
         return 0;

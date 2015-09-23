@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
@@ -27,24 +27,20 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Implementation of {@link Vehicle}.
- * 
+ *
  * @author stefan schroeder
- * 
  */
 
-public class VehicleImpl extends AbstractVehicle{
-
-
+public class VehicleImpl extends AbstractVehicle {
 
 
     /**
-	 * Extension of {@link VehicleImpl} representing an unspecified vehicle with the id 'noVehicle'
-	 * (to avoid null).
-	 * 
-	 * @author schroeder
-	 *
-	 */
-	public static class NoVehicle extends AbstractVehicle {
+     * Extension of {@link VehicleImpl} representing an unspecified vehicle with the id 'noVehicle'
+     * (to avoid null).
+     *
+     * @author schroeder
+     */
+    public static class NoVehicle extends AbstractVehicle {
 
         private String id = "noVehicle";
 
@@ -92,18 +88,19 @@ public class VehicleImpl extends AbstractVehicle{
         public Skills getSkills() {
             return null;
         }
+    }
 
 		@Override
 		public Break getBreak() { return null; }
 	}
-	
+
 	/**
 	 * Builder that builds the vehicle.
-	 * 
+	 *
 	 * <p>By default, earliestDepartureTime is 0.0, latestDepartureTime is Double.MAX_VALUE,
 	 * it returns to the depot and its {@link VehicleType} is the DefaultType with typeId equal to 'default'
 	 * and a capacity of 0.
-	 * 
+	 *
 	 * @author stefan
 	 *
 	 */
@@ -113,13 +110,13 @@ public class VehicleImpl extends AbstractVehicle{
 
         private String id;
 
-		private double earliestStart = 0.0;
+        private double earliestStart = 0.0;
 
-		private double latestArrival = Double.MAX_VALUE;
+        private double latestArrival = Double.MAX_VALUE;
 
-		private boolean returnToDepot = true;
-		
-		private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
+        private boolean returnToDepot = true;
+
+        private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
 
         private Skills.Builder skillBuilder = Skills.Builder.newInstance();
 
@@ -135,10 +132,10 @@ public class VehicleImpl extends AbstractVehicle{
 			super();
 			this.id = id;
 		}
-		
+
 		/**
 		 * Sets the {@link VehicleType}.<br>
-		 * 
+		 *
 		 * @param type the type to be set
 		 * @throws IllegalStateException if type is null
 		 * @return this builder
@@ -148,16 +145,16 @@ public class VehicleImpl extends AbstractVehicle{
 			this.type = type;
 			return this;
 		}
-		
+
 		/**
 		 * Sets the flag whether the vehicle must return to depot or not.
-		 * 
+		 *
 		 * <p>If returnToDepot is true, the vehicle must return to specified end-location. If you
 		 * omit specifying the end-location, vehicle returns to start-location (that must to be set). If
 		 * you specify it, it returns to specified end-location.
-		 * 
+		 *
 		 * <p>If returnToDepot is false, the end-location of the vehicle is endogenous.
-		 * 
+		 *
 		 * @param returnToDepot true if vehicle need to return to depot, otherwise false
 		 * @return this builder
 		 */
@@ -168,22 +165,23 @@ public class VehicleImpl extends AbstractVehicle{
 
         /**
          * Sets start location.
+         *
          * @param startLocation start location
          * @return start location
          */
-        public Builder setStartLocation(Location startLocation){
+        public Builder setStartLocation(Location startLocation) {
             this.startLocation = startLocation;
             return this;
         }
 
-        public Builder setEndLocation(Location endLocation){
+        public Builder setEndLocation(Location endLocation) {
             this.endLocation = endLocation;
             return this;
         }
-		
+
 		/**
 		 * Sets earliest-start of vehicle which should be the lower bound of the vehicle's departure times.
-		 * 
+		 *
 		 * @param earliest_startTime the earliest start time / departure time of the vehicle at its start location
 		 * @return this builder
 		 */
@@ -191,10 +189,10 @@ public class VehicleImpl extends AbstractVehicle{
 			this.earliestStart = earliest_startTime;
 			return this;
 		}
-		
+
 		/**
 		 * Sets the latest arrival at vehicle's end-location which is the upper bound of the vehicle's arrival times.
-		 * 
+		 *
 		 * @param latest_arrTime the latest arrival time of the vehicle at its end location
 		 * @return this builder
 		 */
@@ -203,49 +201,74 @@ public class VehicleImpl extends AbstractVehicle{
 			return this;
 		}
 
-        public Builder addSkill(String skill){
+        /**
+         * Sets earliest-start of vehicle which should be the lower bound of the vehicle's departure times.
+         *
+         * @param earliest_startTime the earliest start time / departure time of the vehicle at its start location
+         * @return this builder
+         */
+        public Builder setEarliestStart(double earliest_startTime) {
+            this.earliestStart = earliest_startTime;
+            return this;
+        }
+
+        /**
+         * Sets the latest arrival at vehicle's end-location which is the upper bound of the vehicle's arrival times.
+         *
+         * @param latest_arrTime the latest arrival time of the vehicle at its end location
+         * @return this builder
+         */
+        public Builder setLatestArrival(double latest_arrTime) {
+            this.latestArrival = latest_arrTime;
+            return this;
+        }
+
+        public Builder addSkill(String skill) {
             skillBuilder.addSkill(skill);
             return this;
         }
-		
-		/**
-		 * Builds and returns the vehicle.
-		 * 
-		 * <p>if {@link VehicleType} is not set, default vehicle-type is set with id="default" and 
-		 * capacity=0
-		 * 
-		 * <p>if startLocationId || locationId is null (=> startLocationCoordinate || locationCoordinate must be set) then startLocationId=startLocationCoordinate.toString() 
-		 * and locationId=locationCoordinate.toString() [coord.toString() --> [x=x_val][y=y_val])
-		 * <p>if endLocationId is null and endLocationCoordinate is set then endLocationId=endLocationCoordinate.toString()
-		 * <p>if endLocationId==null AND endLocationCoordinate==null then endLocationId=startLocationId AND endLocationCoord=startLocationCoord
-		 * Thus endLocationId can never be null even returnToDepot is false.
-		 * 
-		 * @return vehicle
-		 * @throws IllegalStateException if both locationId and locationCoord is not set or (endLocationCoord!=null AND returnToDepot=false) 
-		 * or (endLocationId!=null AND returnToDepot=false)  
-		 */
-		public VehicleImpl build(){
-            if(startLocation != null && endLocation != null){
-                if( !startLocation.getId().equals(endLocation.getId()) && !returnToDepot) throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
+
+        /**
+         * Builds and returns the vehicle.
+         * <p/>
+         * <p>if {@link VehicleType} is not set, default vehicle-type is set with id="default" and
+         * capacity=0
+         * <p/>
+         * <p>if startLocationId || locationId is null (=> startLocationCoordinate || locationCoordinate must be set) then startLocationId=startLocationCoordinate.toString()
+         * and locationId=locationCoordinate.toString() [coord.toString() --> [x=x_val][y=y_val])
+         * <p>if endLocationId is null and endLocationCoordinate is set then endLocationId=endLocationCoordinate.toString()
+         * <p>if endLocationId==null AND endLocationCoordinate==null then endLocationId=startLocationId AND endLocationCoord=startLocationCoord
+         * Thus endLocationId can never be null even returnToDepot is false.
+         *
+         * @return vehicle
+         * @throws IllegalStateException if both locationId and locationCoord is not set or (endLocationCoord!=null AND returnToDepot=false)
+         *                               or (endLocationId!=null AND returnToDepot=false)
+         */
+        public VehicleImpl build() {
+            if (startLocation != null && endLocation != null) {
+                if (!startLocation.getId().equals(endLocation.getId()) && !returnToDepot)
+                    throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
                         "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
             }
             if (startLocation != null && endLocation == null) {
                 endLocation = startLocation;
             }
-            if(startLocation == null && endLocation == null) {
-				throw new IllegalStateException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
-			}
+            if (startLocation == null && endLocation == null) {
+                throw new IllegalStateException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
+            }
             skills = skillBuilder.build();
             return new VehicleImpl(this);
-		}
-		
-		/**
-		 * Returns new instance of vehicle builder.
-		 * 
-		 * @param vehicleId the id of the vehicle which must be a unique identifier among all vehicles
-		 * @return vehicle builder
-		 */
-		public static Builder newInstance(String vehicleId){ return new Builder(vehicleId); }
+        }
+
+        /**
+         * Returns new instance of vehicle builder.
+         *
+         * @param vehicleId the id of the vehicle which must be a unique identifier among all vehicles
+         * @return vehicle builder
+         */
+        public static Builder newInstance(String vehicleId) {
+            return new Builder(vehicleId);
+        }
 
         public Builder addSkills(Skills skills) {
             this.skillBuilder.addAllSkills(skills.values());
@@ -260,24 +283,26 @@ public class VehicleImpl extends AbstractVehicle{
 
 	/**
 	 * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
-	 * 
+	 *
 	 * <p>NoVehicle has id="noVehicle" and extends {@link VehicleImpl}
-	 * 
+	 *
 	 * @return emptyVehicle
 	 */
 	public static NoVehicle createNoVehicle(){
 		return new NoVehicle();
 	}
-	
+
 	private final String id;
 
-	private final VehicleType type;
+    private final String id;
 
-	private final double earliestDeparture;
+    private final VehicleType type;
 
-	private final double latestArrival;
-	
-	private final boolean returnToDepot;
+    private final double earliestDeparture;
+
+    private final double latestArrival;
+
+    private final boolean returnToDepot;
 
     private final Skills skills;
 
@@ -300,10 +325,10 @@ public class VehicleImpl extends AbstractVehicle{
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills, returnToDepot));
 	}
-	
+
 	/**
 	 * Returns String with attributes of this vehicle
-	 * 
+	 *
 	 * <p>String has the following format [attr1=val1][attr2=val2]...[attrn=valn]
 	 */
 	@Override
@@ -315,31 +340,45 @@ public class VehicleImpl extends AbstractVehicle{
                 "[isReturnToDepot=" + isReturnToDepot() + "]" +
                 "[skills="+ skills + "]";
 
-	}
+    /**
+     * Returns String with attributes of this vehicle
+     * <p/>
+     * <p>String has the following format [attr1=val1][attr2=val2]...[attrn=valn]
+     */
+    @Override
+    public String toString() {
+        return "[id=" + id + "]" +
+            "[type=" + type + "]" +
+            "[startLocation=" + startLocation + "]" +
+            "[endLocation=" + endLocation + "]" +
+            "[isReturnToDepot=" + isReturnToDepot() + "]" +
+            "[skills=" + skills + "]";
 
-	@Override
-	public double getEarliestDeparture() {
-		return earliestDeparture;
-	}
+    }
 
-	@Override
-	public double getLatestArrival() {
-		return latestArrival;
-	}
+    @Override
+    public double getEarliestDeparture() {
+        return earliestDeparture;
+    }
 
-	@Override
-	public VehicleType getType() {
-		return type;
-	}
+    @Override
+    public double getLatestArrival() {
+        return latestArrival;
+    }
 
-	@Override
-	public String getId() {
-		return id;
-	}
+    @Override
+    public VehicleType getType() {
+        return type;
+    }
 
-	public boolean isReturnToDepot() {
-		return returnToDepot;
-	}
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public boolean isReturnToDepot() {
+        return returnToDepot;
+    }
 
     @Override
     public Location getStartLocation() {
@@ -398,7 +437,7 @@ public class VehicleImpl extends AbstractVehicle{
 		return true;
 	}
 
-	
-	
-	
+
+
+
 }

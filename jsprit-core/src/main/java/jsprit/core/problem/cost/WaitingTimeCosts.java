@@ -11,8 +11,8 @@ public class WaitingTimeCosts implements VehicleRoutingActivityCosts {
 
     @Override
     public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
-        if(vehicle != null){
-            return vehicle.getType().getVehicleCostParams().perWaitingTimeUnit * Math.max(0.,tourAct.getTheoreticalEarliestOperationStartTime()-arrivalTime);
+        if (vehicle != null) {
+            return vehicle.getType().getVehicleCostParams().perWaitingTimeUnit * Math.max(0., tourAct.getTheoreticalEarliestOperationStartTime() - arrivalTime);
         }
         return 0;
     }

@@ -23,7 +23,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 
 /**
  * Updates and memorizes latest operation start times at activities.
- * 
+ *
  * @author schroeder
  *
  */

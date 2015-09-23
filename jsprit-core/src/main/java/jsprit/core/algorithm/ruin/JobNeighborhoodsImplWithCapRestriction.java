@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 
 /**
-* Created by schroeder on 07/01/15.
-*/
+ * Created by schroeder on 07/01/15.
+ */
 class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
     private static Logger logger = LogManager.getLogger(JobNeighborhoodsImpl.class);
@@ -29,13 +29,13 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
         this.vrp = vrp;
         this.jobDistance = jobDistance;
         this.capacity = capacity;
-        logger.debug("intialise " + this);
+        logger.debug("intialise {}", this);
     }
 
     @Override
-    public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo){
+    public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo) {
         TreeSet<ReferencedJob> tree = distanceNodeTree.get(neighborTo.getId());
-        if(tree == null) return new Iterator<Job>() {
+        if (tree == null) return new Iterator<Job>() {
 
             @Override
             public boolean hasNext() {
@@ -58,9 +58,9 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
     }
 
     @Override
-    public void initialise(){
-        logger.debug("calculates distances from EACH job to EACH job --> n^2="+Math.pow(vrp.getJobs().values().size(), 2) + " calculations, but 'only' "+(vrp.getJobs().values().size()*capacity)+ " are cached.");
-        if(capacity==0) return;
+    public void initialise() {
+        logger.debug("calculates distances from EACH job to EACH job --> n^2={} calculations, but 'only' {} are cached.", Math.pow(vrp.getJobs().values().size(), 2), (vrp.getJobs().values().size() * capacity));
+        if (capacity == 0) return;
         calculateDistancesFromJob2Job();
     }
 
@@ -71,27 +71,26 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
         int nuOfDistancesStored = 0;
         for (Job i : vrp.getJobs().values()) {
             TreeSet<ReferencedJob> treeSet = new TreeSet<ReferencedJob>(
-                    new Comparator<ReferencedJob>() {
-                        @Override
-                        public int compare(ReferencedJob o1, ReferencedJob o2) {
-                            if (o1.getDistance() <= o2.getDistance()) {
-                                return -1;
-                            } else {
-                                return 1;
-                            }
+                new Comparator<ReferencedJob>() {
+                    @Override
+                    public int compare(ReferencedJob o1, ReferencedJob o2) {
+                        if (o1.getDistance() <= o2.getDistance()) {
+                            return -1;
+                        } else {
+                            return 1;
                         }
-                    });
+                    }
+                });
             distanceNodeTree.put(i.getId(), treeSet);
             for (Job j : vrp.getJobs().values()) {
-                if(i==j) continue;
+                if (i == j) continue;
                 double distance = jobDistance.getDistance(i, j);
                 ReferencedJob refNode = new ReferencedJob(j, distance);
-                if(treeSet.size() < capacity){
+                if (treeSet.size() < capacity) {
                     treeSet.add(refNode);
                     nuOfDistancesStored++;
-                }
-                else{
-                    if(treeSet.last().getDistance() > distance){
+                } else {
+                    if (treeSet.last().getDistance() > distance) {
                         treeSet.pollLast();
                         treeSet.add(refNode);
                     }
@@ -101,13 +100,13 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
         }
         stopWatch.stop();
-        logger.debug("preprocessing comp-time: " + stopWatch + "; nuOfDistances stored: " + nuOfDistancesStored + "; estimated memory: " +
-                (distanceNodeTree.keySet().size()*64+nuOfDistancesStored*92) + " bytes");
+        logger.debug("preprocessing comp-time: {}; nuOfDistances stored: {}; estimated memory: {}" +
+            " bytes", stopWatch, nuOfDistancesStored, (distanceNodeTree.keySet().size() * 64 + nuOfDistancesStored * 92));
     }
 
     @Override
     public String toString() {
-        return "[name=neighborhoodWithCapRestriction][capacity="+capacity+"]";
+        return "[name=neighborhoodWithCapRestriction][capacity=" + capacity + "]";
     }
 
 }

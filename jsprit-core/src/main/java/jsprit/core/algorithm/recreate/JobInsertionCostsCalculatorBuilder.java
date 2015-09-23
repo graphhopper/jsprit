@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
@@ -86,9 +86,9 @@ public class JobInsertionCostsCalculatorBuilder {
 	private double timeSlice;
 
 	private int neighbors;
-	
+
 	private ConstraintManager constraintManager;
-	
+
 	private ActivityInsertionCostsCalculator activityInsertionCostCalculator = null;
 
 	private boolean allowVehicleSwitch = true;
@@ -97,10 +97,10 @@ public class JobInsertionCostsCalculatorBuilder {
 
 	/**
 	 * Constructs the builder.
-	 * 
-	 * <p>Some calculators require information from the overall algorithm or the higher-level insertion procedure. Thus listeners inform them. 
+	 *
+	 * <p>Some calculators require information from the overall algorithm or the higher-level insertion procedure. Thus listeners inform them.
 	 * These listeners are cached in the according list and can thus be added when its time to add them.
-	 * 
+	 *
 	 * @param insertionListeners
 	 * @param algorithmListeners
 	 */
@@ -113,7 +113,7 @@ public class JobInsertionCostsCalculatorBuilder {
 	/**
 	 * Sets activityStates. MUST be set.
 	 * @param stateManager
-	 * 
+	 *
 	 * @return
 	 */
 	public JobInsertionCostsCalculatorBuilder setStateManager(RouteAndActivityStateGetter stateManager){
@@ -123,7 +123,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
 	/**
 	 * Sets routingProblem. MUST be set.
-	 * 
+	 *
 	 * @param vehicleRoutingProblem
 	 * @return
 	 */
@@ -134,7 +134,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
 	/**
 	 * Sets fleetManager. MUST be set.
-	 * 
+	 *
 	 * @param fleetManager
 	 * @return
 	 */
@@ -145,7 +145,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
 	/**
 	 * Sets a flag to build a calculator based on local calculations.
-	 * 
+	 *
 	 * <p>Insertion of a job and job-activity is evaluated based on the previous and next activity.
 	 * @param addDefaultCostCalc
 	 */
@@ -154,7 +154,7 @@ public class JobInsertionCostsCalculatorBuilder {
 		this.addDefaultCostCalc  = addDefaultCostCalc;
         return this;
 	}
-	
+
 	public JobInsertionCostsCalculatorBuilder setActivityInsertionCostsCalculator(ActivityInsertionCostsCalculator activityInsertionCostsCalculator){
 		this.activityInsertionCostCalculator = activityInsertionCostsCalculator;
         return this;
@@ -162,7 +162,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
 	/**
 	 * Sets a flag to build a calculator that evaluates job insertion on route-level.
-	 * 
+	 *
 	 * @param forwardLooking
 	 * @param memory
 	 * @param addDefaultMarginalCostCalc
@@ -177,7 +177,7 @@ public class JobInsertionCostsCalculatorBuilder {
 	/**
 	 * Sets a flag to consider also fixed-cost when evaluating the insertion of a job. The weight of the fixed-cost can be determined by setting
 	 * weightofFixedCosts.
-	 * 
+	 *
 	 * @param weightOfFixedCosts
 	 */
 	public JobInsertionCostsCalculatorBuilder considerFixedCosts(double weightOfFixedCosts){
@@ -185,7 +185,7 @@ public class JobInsertionCostsCalculatorBuilder {
 		this.weightOfFixedCost = weightOfFixedCosts;
         return this;
 	}
-	
+
 	public JobInsertionCostsCalculatorBuilder experimentalTimeScheduler(double timeSlice, int neighbors){
 		timeScheduling = true;
 		this.timeSlice = timeSlice;
@@ -195,7 +195,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
 	/**
 	 * Builds the jobInsertionCalculator.
-	 *  
+	 *
 	 * @return jobInsertionCalculator.
 	 * @throws IllegalStateException if vrp == null or activityStates == null or fleetManager == null.
 	 */
@@ -240,7 +240,7 @@ public class JobInsertionCostsCalculatorBuilder {
 						+ "by omitting the xml-tag '<level forwardLooking=2 memory=1>route</level>' when defining your insertionStrategy in algo-config.xml file");
 			}
 		}
-		
+
 	}
 
 	private void addInsertionListeners(List<InsertionListener> list) {
@@ -272,7 +272,7 @@ public class JobInsertionCostsCalculatorBuilder {
                                        double depTimeAtPrevAct) {
 					return 0.;
 				}
-				
+
 			};
 		}
 		else{
@@ -328,13 +328,13 @@ public class JobInsertionCostsCalculatorBuilder {
 			routeLevelCostEstimator = new ActivityInsertionCostsCalculator(){
 
 				final ActivityInsertionCosts noInsertionCosts = new ActivityInsertionCosts(0.,0.);
-				
+
 				@Override
 				public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct,
                                        double depTimeAtPrevAct) {
 					return 0.;
 				}
-				
+
 			};
 		}
 		else{

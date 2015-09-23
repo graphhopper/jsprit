@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
@@ -25,26 +25,26 @@ import static org.junit.Assert.assertTrue;
 
 
 public class TestRefs {
-	
-	@Test
-	public void testReferencs(){
-		List<Start> starts = new ArrayList<Start>();
-		starts.add(Start.newInstance("foo0", 0.0, 0.0));
-		starts.add(Start.newInstance("foo1", 1.0, 1.0));
-		
-		doSmth(starts);
-		
-		assertTrue(starts.get(0).getLocation().getId().startsWith("foo"));
-		assertTrue(starts.get(1).getLocation().getId().startsWith("foo"));
-	}
 
-	private void doSmth(List<Start> starts) {
-		int count = 0;
-		for(@SuppressWarnings("unused") Start s : starts){
-			s = Start.newInstance("yo_"+count,0.0,0.0);
-			count++;
-		}
-		
-	}
+    @Test
+    public void testReferencs() {
+        List<Start> starts = new ArrayList<Start>();
+        starts.add(Start.newInstance("foo0", 0.0, 0.0));
+        starts.add(Start.newInstance("foo1", 1.0, 1.0));
+
+        doSmth(starts);
+
+        assertTrue(starts.get(0).getLocation().getId().startsWith("foo"));
+        assertTrue(starts.get(1).getLocation().getId().startsWith("foo"));
+    }
+
+    private void doSmth(List<Start> starts) {
+        int count = 0;
+        for (@SuppressWarnings("unused") Start s : starts) {
+            s = Start.newInstance("yo_" + count, 0.0, 0.0);
+            count++;
+        }
+
+    }
 
 }

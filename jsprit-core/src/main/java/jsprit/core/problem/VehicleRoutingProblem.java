@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem;
@@ -42,24 +42,24 @@ import java.util.*;
 
 /**
  * Contains and defines the vehicle routing problem.
- * 
+ *
  * <p>A routing problem is defined as jobs, vehicles, costs and constraints.
- * 
- * <p> To construct the problem, use VehicleRoutingProblem.Builder. Get an instance of this by using the static method VehicleRoutingProblem.Builder.newInstance(). 
- * 
+ *
+ * <p> To construct the problem, use VehicleRoutingProblem.Builder. Get an instance of this by using the static method VehicleRoutingProblem.Builder.newInstance().
+ *
  * <p>By default, fleetSize is INFINITE, transport-costs are calculated as euclidean-distance (CrowFlyCosts),
  * and activity-costs are set to zero.
- * 
- *  
- * 
+ *
+ *
+ *
  * @author stefan schroeder
  *
  */
 public class VehicleRoutingProblem {
-	
+
 	/**
 	 * Builder to build the routing-problem.
-	 * 
+	 *
 	 * @author stefan schroeder
 	 *
 	 */
@@ -69,29 +69,29 @@ public class VehicleRoutingProblem {
 
         /**
 		 * Returns a new instance of this builder.
-		 * 
+		 *
 		 * @return builder
 		 */
 		public static Builder newInstance(){ return new Builder(); }
 
 		private VehicleRoutingTransportCosts transportCosts;
-		
+
 		private VehicleRoutingActivityCosts activityCosts = new WaitingTimeCosts();
 
 		private Map<String,Job> jobs = new LinkedHashMap<String, Job>();
-		
+
 		private Map<String,Job> tentativeJobs = new LinkedHashMap<String,Job>();
-		
+
 		private Set<String> jobsInInitialRoutes = new HashSet<String>();
-		
+
 		private Map<String, Coordinate> tentative_coordinates = new HashMap<String, Coordinate>();
 
 		private FleetSize fleetSize = FleetSize.INFINITE;
-		
+
 		private Collection<VehicleType> vehicleTypes = new ArrayList<VehicleType>();
-		
+
 		private Collection<VehicleRoute> initialRoutes = new ArrayList<VehicleRoute>();
-		
+
 		private Set<Vehicle> uniqueVehicles = new HashSet<Vehicle>();
 
 		private boolean hasBreaks = false;
@@ -129,7 +129,7 @@ public class VehicleRoutingProblem {
 
         private final DefaultTourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
 
-		private void incJobIndexCounter(){
+        private void incJobIndexCounter(){
             jobIndexCounter++;
         }
 
@@ -141,7 +141,7 @@ public class VehicleRoutingProblem {
 
 		/**
 		 * Returns the unmodifiable map of collected locations (mapped by their location-id).
-		 * 
+		 *
 		 * @return map with locations
 		 */
 		public Map<String,Coordinate> getLocationMap(){
@@ -150,11 +150,11 @@ public class VehicleRoutingProblem {
 
 		/**
 		 * Returns the locations collected SO FAR by this builder.
-		 * 
+		 *
 		 * <p>Locations are cached when adding a shipment, service, depot, vehicle.
-		 * 
+		 *
 		 * @return locations
-		 * 
+		 *
 		 **/
 		public Locations getLocations(){
 			return new Locations() {
@@ -163,13 +163,13 @@ public class VehicleRoutingProblem {
 				public Coordinate getCoord(String id) {
 					return tentative_coordinates.get(id);
 				}
-				
+
 			};
 		}
 
 		/**
 		 * Sets routing costs.
-		 * 
+		 *
 		 * @param costs the routingCosts
 		 * @return builder
 		 * @see VehicleRoutingTransportCosts
@@ -178,13 +178,13 @@ public class VehicleRoutingProblem {
 			this.transportCosts = costs;
 			return this;
 		}
-		
+
 
 		/**
 		 * Sets the type of fleetSize.
-		 * 
+		 *
 		 * <p>FleetSize is either FleetSize.INFINITE or FleetSize.FINITE. By default it is FleetSize.INFINITE.
-		 * 
+		 *
 		 * @param fleetSize the fleet size used in this problem. it can either be FleetSize.INFINITE or FleetSize.FINITE
 		 * @return this builder
 		 */
@@ -195,9 +195,9 @@ public class VehicleRoutingProblem {
 
 		/**
 		 * Adds a job which is either a service or a shipment.
-		 * 
+		 *
 		 * <p>Note that job.getId() must be unique, i.e. no job (either it is a shipment or a service) is allowed to have an already allocated id.
-		 * 
+		 *
 		 * @param job job to be added
 		 * @return this builder
 		 * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
@@ -227,7 +227,7 @@ public class VehicleRoutingProblem {
             addLocationToTentativeLocations(job);
             return this;
         }
-		
+
 		private void addLocationToTentativeLocations(Job job) {
 			if(job instanceof Service) {
 				tentative_coordinates.put(((Service)job).getLocation().getId(), ((Service)job).getLocation().getCoordinate());
@@ -323,7 +323,7 @@ public class VehicleRoutingProblem {
 			}
 			return this;
 		}
-		
+
 		private void addShipment(Shipment job) {
 			if(jobs.containsKey(job.getId())){ logger.warn("job " + job + " already in job list. overrides existing job."); }
 			tentative_coordinates.put(job.getPickupLocation().getId(), job.getPickupLocation().getCoordinate());
@@ -333,8 +333,8 @@ public class VehicleRoutingProblem {
 
 		/**
 		 * Adds a vehicle.
-		 * 
-		 * 
+		 *
+		 *
 		 * @param vehicle vehicle to be added
 		 * @return this builder
          * @deprecated use addVehicle(AbstractVehicle vehicle) instead
@@ -383,9 +383,9 @@ public class VehicleRoutingProblem {
 
         /**
 		 * Sets the activity-costs.
-		 * 
+		 *
 		 * <p>By default it is set to zero.
-		 * 
+		 *
 		 * @param activityCosts activity costs of the problem
 		 * @return this builder
 		 * @see VehicleRoutingActivityCosts
@@ -397,9 +397,9 @@ public class VehicleRoutingProblem {
 
 		/**
 		 * Builds the {@link VehicleRoutingProblem}.
-		 * 
+		 *
 		 * <p>If {@link VehicleRoutingTransportCosts} are not set, {@link CrowFlyCosts} is used.
-		 * 
+		 *
 		 * @return {@link VehicleRoutingProblem}
 		 */
 		public VehicleRoutingProblem build() {
@@ -424,7 +424,7 @@ public class VehicleRoutingProblem {
 
 		/**
 		 * Adds a collection of jobs.
-		 * 
+		 *
 		 * @param jobs which is a collection of jobs that subclasses Job
 		 * @return this builder
 		 */
@@ -438,7 +438,7 @@ public class VehicleRoutingProblem {
 
 		/**
 		 * Adds a collection of vehicles.
-		 * 
+		 *
 		 * @param vehicles vehicles to be added
 		 * @return this builder
 		 */
@@ -449,19 +449,19 @@ public class VehicleRoutingProblem {
 			}
 			return this;
 		}
-		
+
 		/**
 		 * Gets an unmodifiable collection of already added vehicles.
-		 * 
+		 *
 		 * @return collection of vehicles
 		 */
 		public Collection<Vehicle> getAddedVehicles(){
 			return Collections.unmodifiableCollection(uniqueVehicles);
 		}
-		
+
 		/**
 		 * Gets an unmodifiable collection of already added vehicle-types.
-		 * 
+		 *
 		 * @return collection of vehicle-types
 		 */
 		public Collection<VehicleType> getAddedVehicleTypes(){
@@ -484,19 +484,19 @@ public class VehicleRoutingProblem {
 			return this;
 		}
 
-		
+
 }
-	
+
 	/**
 	 * Enum that characterizes the fleet-size.
-	 * 
+	 *
 	 * @author sschroeder
 	 *
 	 */
 	public static enum FleetSize {
 		FINITE, INFINITE
 	}
-	
+
 	/**
 	 * logger logging for this class
 	 */
@@ -506,14 +506,14 @@ public class VehicleRoutingProblem {
 	 * contains transportation costs, i.e. the costs traveling from location A to B
 	 */
 	private final VehicleRoutingTransportCosts transportCosts;
-	
+
 	/**
 	 * contains activity costs, i.e. the costs imposed by an activity
 	 */
 	private final VehicleRoutingActivityCosts activityCosts;
-	
+
 	/**
-	 * map of jobs, stored by jobId 
+	 * map of jobs, stored by jobId
 	 */
 	private final Map<String, Job> jobs;
 
@@ -521,15 +521,15 @@ public class VehicleRoutingProblem {
 	 * Collection that contains available vehicles.
 	 */
 	private final Collection<Vehicle> vehicles;
-	
+
 	/**
 	 * Collection that contains all available types.
 	 */
 	private final Collection<VehicleType> vehicleTypes;
-	
-	
+
+
 	private final Collection<VehicleRoute> initialVehicleRoutes;
-	
+
 	/**
 	 * An enum that indicates type of fleetSize. By default, it is INFINTE
 	 */
@@ -549,7 +549,7 @@ public class VehicleRoutingProblem {
         }
 
     };
-	
+
 	private VehicleRoutingProblem(Builder builder) {
 		this.jobs = builder.jobs;
 		this.fleetSize = builder.fleetSize;
@@ -561,8 +561,8 @@ public class VehicleRoutingProblem {
 		this.locations = builder.getLocations();
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
-		logger.info("setup problem: " + this);
-	}
+        logger.info("setup problem: {}", this);
+    }
 
     @Override
 	public String toString() {
@@ -572,18 +572,18 @@ public class VehicleRoutingProblem {
 
 	/**
 	 * Returns type of fleetSize, either INFINITE or FINITE.
-	 * 
+	 *
 	 * <p>By default, it is INFINITE.
-	 * 
+	 *
 	 * @return either FleetSize.INFINITE or FleetSize.FINITE
 	 */
 	public FleetSize getFleetSize() {
 		return fleetSize;
 	}
-	
+
 	/**
 	 * Returns the unmodifiable job map.
-	 * 
+	 *
 	 * @return unmodifiable jobMap
 	 */
 	public Map<String, Job> getJobs() {
@@ -605,18 +605,18 @@ public class VehicleRoutingProblem {
 
 	/**
 	 * Returns the entire, unmodifiable collection of types.
-	 * 
+	 *
 	 * @return unmodifiable collection of types
 	 * @see VehicleTypeImpl
 	 */
 	public Collection<VehicleType> getTypes(){
 		return Collections.unmodifiableCollection(vehicleTypes);
 	}
-	
-	
+
+
 	/**
 	 * Returns the entire, unmodifiable collection of vehicles.
-	 * 
+	 *
 	 * @return unmodifiable collection of vehicles
 	 * @see Vehicle
 	 */
@@ -626,7 +626,7 @@ public class VehicleRoutingProblem {
 
 	/**
 	 * Returns routing costs.
-	 * 
+	 *
 	 * @return routingCosts
 	 * @see VehicleRoutingTransportCosts
 	 */
@@ -679,5 +679,5 @@ public class VehicleRoutingProblem {
         }
         return acts;
     }
-	
+
 }

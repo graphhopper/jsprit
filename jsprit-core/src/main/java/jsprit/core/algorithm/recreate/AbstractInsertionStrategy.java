@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
-public abstract class AbstractInsertionStrategy implements InsertionStrategy{
+public abstract class AbstractInsertionStrategy implements InsertionStrategy {
 
     protected class Insertion {
 
@@ -84,9 +84,9 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
     }
 
     @Override
-    public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs){
+    public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
         insertionsListeners.informInsertionStarts(vehicleRoutes, unassignedJobs);
-        Collection<Job> badJobs = insertUnassignedJobs(vehicleRoutes,unassignedJobs);
+        Collection<Job> badJobs = insertUnassignedJobs(vehicleRoutes, unassignedJobs);
         insertionsListeners.informInsertionEndsListeners(vehicleRoutes);
         return badJobs;
     }
@@ -109,13 +109,13 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy{
 
     }
 
-    protected void insertJob(Job unassignedJob, InsertionData iData, VehicleRoute inRoute){
-        logger.trace("insert: [jobId=" + unassignedJob.getId() + "]" + iData );
+    protected void insertJob(Job unassignedJob, InsertionData iData, VehicleRoute inRoute) {
+        logger.trace("insert: [jobId={}]{}", unassignedJob.getId(), iData);
         insertionsListeners.informBeforeJobInsertion(unassignedJob, iData, inRoute);
-        if(!(inRoute.getVehicle().getId().equals(iData.getSelectedVehicle().getId()))){
+        if (!(inRoute.getVehicle().getId().equals(iData.getSelectedVehicle().getId()))) {
             insertionsListeners.informVehicleSwitched(inRoute, inRoute.getVehicle(), iData.getSelectedVehicle());
         }
-        for(Event e : iData.getEvents()){
+        for (Event e : iData.getEvents()) {
             eventListeners.inform(e);
         }
         insertionsListeners.informJobInserted(unassignedJob, inRoute, iData.getInsertionCost(), iData.getAdditionalTime());

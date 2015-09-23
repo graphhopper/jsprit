@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.examples;
@@ -38,40 +38,40 @@ import java.util.Collection;
 public class MultipleDepotWithInitialRoutesExample {
 
 
-	public static void main(String[] args) {
-		/*
-		 * some preparation - create output folder
+    public static void main(String[] args) {
+        /*
+         * some preparation - create output folder
 		 */
-		Examples.createOutputFolder();
-		
-		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		/*
-		 * Read cordeau-instance p01
+        Examples.createOutputFolder();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        /*
+         * Read cordeau-instance p01
 		 */
-		new VrpXMLReader(vrpBuilder).read("input/cordeau01.xml");
-		
+        new VrpXMLReader(vrpBuilder).read("input/cordeau01.xml");
+
 		/*
-		 * Add initial route with 1_4_vehicle and services 44, 26
+         * Add initial route with 1_4_vehicle and services 44, 26
 		 */
-		VehicleRoute initialRoute = VehicleRoute.Builder.newInstance(getVehicle("1_4_vehicle",vrpBuilder)).addService(getService("44",vrpBuilder))
-				.addService(getService("26",vrpBuilder)).build();
-		vrpBuilder.addInitialVehicleRoute(initialRoute);
-		
+        VehicleRoute initialRoute = VehicleRoute.Builder.newInstance(getVehicle("1_4_vehicle", vrpBuilder)).addService(getService("44", vrpBuilder))
+            .addService(getService("26", vrpBuilder)).build();
+        vrpBuilder.addInitialVehicleRoute(initialRoute);
+
 		/*
-		 * build the problem
+         * build the problem
 		 */
-		VehicleRoutingProblem vrp = vrpBuilder.build();
-		/*
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+        /*
 		 * since job (service) 26 and 44 are already planned in initial route and thus static AND sequence is fixed they
 		 * should not be in jobMap anymore (only variable jobs are in jobMap)
 		 */
-		assert !vrp.getJobs().containsKey("26") : "strange. service 26 should not be part of the problem";
-		assert !vrp.getJobs().containsKey("44") : "strange. service 44 should not be part of the problem";
-		
+        assert !vrp.getJobs().containsKey("26") : "strange. service 26 should not be part of the problem";
+        assert !vrp.getJobs().containsKey("44") : "strange. service 44 should not be part of the problem";
+
 		/*
 		 * plot to see how the problem looks like
 		 */
-		new Plotter(vrp).setLabel(Label.ID).plot("output/cordeau01_problem_withInitialRoute.png", "c");
+        new Plotter(vrp).setLabel(Label.ID).plot("output/cordeau01_problem_withInitialRoute.png", "c");
 
 		/*
 		 * solve the problem
@@ -79,30 +79,30 @@ public class MultipleDepotWithInitialRoutesExample {
 //		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
 //				.setProperty(Jsprit.Parameter.ITERATIONS,"10000").buildAlgorithm();
 
-		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_noVehicleSwitch.xml");
-		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-		
-		SolutionPrinter.print(Solutions.bestOf(solutions));
-		
-		new Plotter(vrp, Solutions.bestOf(solutions)).setLabel(Label.ID).plot("output/cordeau01_solution_withInitialRoute.png", "p01");
-		
-		
-	}
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_noVehicleSwitch.xml");
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-	private static Service getService(String serviceId, Builder vrpBuilder) {
-		for(Job j : vrpBuilder.getAddedJobs()){
-			if(j.getId().equals(serviceId)){
-				return (Service)j;
-			}
-		}
-		return null;
-	}
+        SolutionPrinter.print(Solutions.bestOf(solutions));
 
-	private static Vehicle getVehicle(String vehicleId, Builder vrpBuilder) {
-		for(Vehicle v : vrpBuilder.getAddedVehicles()){
-			if(v.getId().equals(vehicleId)) return v;
-		}
-		return null;
-	}
+        new Plotter(vrp, Solutions.bestOf(solutions)).setLabel(Label.ID).plot("output/cordeau01_solution_withInitialRoute.png", "p01");
+
+
+    }
+
+    private static Service getService(String serviceId, Builder vrpBuilder) {
+        for (Job j : vrpBuilder.getAddedJobs()) {
+            if (j.getId().equals(serviceId)) {
+                return (Service) j;
+            }
+        }
+        return null;
+    }
+
+    private static Vehicle getVehicle(String vehicleId, Builder vrpBuilder) {
+        for (Vehicle v : vrpBuilder.getAddedVehicles()) {
+            if (v.getId().equals(vehicleId)) return v;
+        }
+        return null;
+    }
 
 }

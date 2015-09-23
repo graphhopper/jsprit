@@ -22,7 +22,7 @@ import jsprit.core.problem.misc.JobInsertionContext;
  * Hard constraint that evaluates whether a new job (insertionContext.getJob()) can be inserted
  * existing route (insertionContext.getRoute()).
  */
-public interface HardRouteConstraint extends HardConstraint{
+public interface HardRouteConstraint extends HardConstraint {
 
     /**
      * Returns whether a job can be inserted in route.
@@ -33,6 +33,6 @@ public interface HardRouteConstraint extends HardConstraint{
      *                         time at this vehicle's start location (<code>insertionContext.getNewDepartureTime()</code>).
      * @return true if constraint is met, false otherwise
      */
-	public boolean fulfilled(JobInsertionContext insertionContext);
-	
+    public boolean fulfilled(JobInsertionContext insertionContext);
+
 }

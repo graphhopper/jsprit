@@ -22,39 +22,39 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 
-public final class PickupService extends AbstractActivity implements PickupActivity{
-	
-	private Service pickup;
-	
-	private double arrTime;
-	
-	private double depTime;
-	
-	public PickupService(Pickup pickup) {
-		super();
-		this.pickup = pickup;
-	}
-	
-	public PickupService(Service service){
-		this.pickup = service;
-	}
-	
-	private PickupService(PickupService pickupActivity){
-		this.pickup=pickupActivity.getJob();
-		this.arrTime=pickupActivity.getArrTime();
-		this.depTime=pickupActivity.getEndTime();
+public final class PickupService extends AbstractActivity implements PickupActivity {
+
+    private Service pickup;
+
+    private double arrTime;
+
+    private double depTime;
+
+    public PickupService(Pickup pickup) {
+        super();
+        this.pickup = pickup;
+    }
+
+    public PickupService(Service service) {
+        this.pickup = service;
+    }
+
+    private PickupService(PickupService pickupActivity) {
+        this.pickup = pickupActivity.getJob();
+        this.arrTime = pickupActivity.getArrTime();
+        this.depTime = pickupActivity.getEndTime();
         setIndex(pickupActivity.getIndex());
-	}
+    }
 
-	@Override
-	public String getName() {
-		return pickup.getType();
-	}
+    @Override
+    public String getName() {
+        return pickup.getType();
+    }
 
-	@Override
-	public String getLocationId() {
-		return pickup.getLocation().getId();
-	}
+    @Override
+    public String getLocationId() {
+        return pickup.getLocation().getId();
+    }
 
     @Override
     public Location getLocation() {
@@ -62,60 +62,60 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     }
 
     @Override
-	public double getTheoreticalEarliestOperationStartTime() {
-		return pickup.getTimeWindow().getStart();
-	}
+    public double getTheoreticalEarliestOperationStartTime() {
+        return pickup.getTimeWindow().getStart();
+    }
 
-	@Override
-	public double getTheoreticalLatestOperationStartTime() {
-		return pickup.getTimeWindow().getEnd();
-	}
+    @Override
+    public double getTheoreticalLatestOperationStartTime() {
+        return pickup.getTimeWindow().getEnd();
+    }
 
-	@Override
-	public double getOperationTime() {
-		return pickup.getServiceDuration();
-	}
+    @Override
+    public double getOperationTime() {
+        return pickup.getServiceDuration();
+    }
 
-	@Override
-	public double getArrTime() {
-		return arrTime;
-	}
+    @Override
+    public double getArrTime() {
+        return arrTime;
+    }
 
-	@Override
-	public double getEndTime() {
-		return depTime;
-	}
+    @Override
+    public double getEndTime() {
+        return depTime;
+    }
 
-	@Override
-	public void setArrTime(double arrTime) {
-		this.arrTime=arrTime;
-	}
+    @Override
+    public void setArrTime(double arrTime) {
+        this.arrTime = arrTime;
+    }
 
-	@Override
-	public void setEndTime(double endTime) {
-		this.depTime=endTime;
-	}
+    @Override
+    public void setEndTime(double endTime) {
+        this.depTime = endTime;
+    }
 
-	@Override
-	public TourActivity duplicate() {
-		return new PickupService(this);
-	}
+    @Override
+    public TourActivity duplicate() {
+        return new PickupService(this);
+    }
 
-	@Override
-	public Service getJob() {
-		return pickup;
-	}
+    @Override
+    public Service getJob() {
+        return pickup;
+    }
 
-	public String toString() {
-		return "[type="+getName()+"][locationId=" + getLocationId() 
-		+ "][size=" + getSize().toString()
-		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
-	}
+    public String toString() {
+        return "[type=" + getName() + "][locationId=" + getLocationId()
+            + "][size=" + getSize().toString()
+            + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+    }
 
-	@Override
-	public Capacity getSize() {
-		return pickup.getSize();
-	}
+    @Override
+    public Capacity getSize() {
+        return pickup.getSize();
+    }
 
 }

@@ -2,65 +2,65 @@
 
 <config>
 
-	<iterations>10</iterations>
-	
-	<construction>
-		<insertion name="bestInsertion"/>
-	</construction>
-	
-	<strategy>
-		<memory>1</memory>
-		<searchStrategies>
-			<searchStrategy name="randomRuinAndRecreate">
-				<selector name="selectBest"/>
-	  			<acceptor name="acceptNewRemoveWorst"/>  
-				<modules>
-					<module name="randomRuin">
-						<share>0.5</share>
-					</module>
-					<module name="bestInsertion">
-					</module>	
-				</modules>
-				<probability>0.4</probability>
-			</searchStrategy>
-			
-			<searchStrategy name="randomRuinSmall">
-				<selector name="selectBest"/>
-	  			<acceptor name="acceptNewRemoveWorst"/>  
-				<modules>
-					<module name="randomRuin">
-						<share>0.1</share>
-					</module>
-					<module name="bestInsertion"></module>
-				</modules>
-				<probability>0.4</probability>
-			</searchStrategy>
-			
-			<searchStrategy name="radialRuinAndRecreate">
-				<selector name="selectBest"/>
-				<acceptor name="acceptNewRemoveWorst"/>  
-				<modules>
-					<module name="radialRuin">
-						<share>0.3</share>
-						<distanceMeasure>euclid</distanceMeasure>
-					</module>
-					<module name="bestInsertion" id="1"></module>
-				</modules>
-				<probability>0.2</probability>
-			</searchStrategy>
-			
-<!-- 			<searchStrategy id="gendreauPostOpt"> -->
-<!-- 				<modules number="1"> -->
-<!-- 					<module name="gendreau"> -->
-<!-- 						<iterations>200</iterations> -->
-<!-- 		 				<share>0.2</share> -->
-<!-- 					</module> -->
-<!-- 				</modules> -->
-<!-- 				<probability>0.1</probability> -->
-<!-- 			</searchStrategy> -->
-		</searchStrategies>
-		
-	</strategy>
-	
+    <iterations>10</iterations>
+
+    <construction>
+        <insertion name="bestInsertion"/>
+    </construction>
+
+    <strategy>
+        <memory>1</memory>
+        <searchStrategies>
+            <searchStrategy name="randomRuinAndRecreate">
+                <selector name="selectBest"/>
+                <acceptor name="acceptNewRemoveWorst"/>
+                <modules>
+                    <module name="randomRuin">
+                        <share>0.5</share>
+                    </module>
+                    <module name="bestInsertion">
+                    </module>
+                </modules>
+                <probability>0.4</probability>
+            </searchStrategy>
+
+            <searchStrategy name="randomRuinSmall">
+                <selector name="selectBest"/>
+                <acceptor name="acceptNewRemoveWorst"/>
+                <modules>
+                    <module name="randomRuin">
+                        <share>0.1</share>
+                    </module>
+                    <module name="bestInsertion"></module>
+                </modules>
+                <probability>0.4</probability>
+            </searchStrategy>
+
+            <searchStrategy name="radialRuinAndRecreate">
+                <selector name="selectBest"/>
+                <acceptor name="acceptNewRemoveWorst"/>
+                <modules>
+                    <module name="radialRuin">
+                        <share>0.3</share>
+                        <distanceMeasure>euclid</distanceMeasure>
+                    </module>
+                    <module name="bestInsertion" id="1"></module>
+                </modules>
+                <probability>0.2</probability>
+            </searchStrategy>
+
+            <!-- 			<searchStrategy id="gendreauPostOpt"> -->
+            <!-- 				<modules number="1"> -->
+            <!-- 					<module name="gendreau"> -->
+            <!-- 						<iterations>200</iterations> -->
+            <!-- 		 				<share>0.2</share> -->
+            <!-- 					</module> -->
+            <!-- 				</modules> -->
+            <!-- 				<probability>0.1</probability> -->
+            <!-- 			</searchStrategy> -->
+        </searchStrategies>
+
+    </strategy>
+
 
 </config>

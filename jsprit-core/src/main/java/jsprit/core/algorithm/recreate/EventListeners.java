@@ -16,8 +16,8 @@ class EventListeners {
         listeners.add(new InsertBreakListener());
     }
 
-    public void inform(Event event){
-        for(EventListener l : listeners){
+    public void inform(Event event) {
+        for (EventListener l : listeners) {
             l.inform(event);
         }
     }

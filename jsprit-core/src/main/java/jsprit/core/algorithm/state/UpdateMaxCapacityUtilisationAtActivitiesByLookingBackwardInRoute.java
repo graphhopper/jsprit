@@ -24,40 +24,40 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 /**
  * Determines and memorizes the maximum capacity utilization at each activity by looking backward in route,
  * i.e. the maximum capacity utilization at previous activities.
- * 
- * @author schroeder
  *
+ * @author schroeder
  */
 class UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute implements ActivityVisitor, StateUpdater {
-	
-	private StateManager stateManager;
-	
-	private VehicleRoute route;
-	
-	private Capacity maxLoad;
+
+    private StateManager stateManager;
+
+    private VehicleRoute route;
+
+    private Capacity maxLoad;
 
     private Capacity defaultValue;
-	
-	public UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(StateManager stateManager) {
-		this.stateManager = stateManager;
+
+    public UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(StateManager stateManager) {
+        this.stateManager = stateManager;
         defaultValue = Capacity.Builder.newInstance().build();
-	}
+    }
 
-	@Override
-	public void begin(VehicleRoute route) {
-		this.route = route;
-		maxLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-        if(maxLoad == null) maxLoad = defaultValue;
-	}
+    @Override
+    public void begin(VehicleRoute route) {
+        this.route = route;
+        maxLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+        if (maxLoad == null) maxLoad = defaultValue;
+    }
 
-	@Override
-	public void visit(TourActivity act) {
-		maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class));
-		stateManager.putInternalTypedActivityState(act, InternalStates.PAST_MAXLOAD, maxLoad);
+    @Override
+    public void visit(TourActivity act) {
+        maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class));
+        stateManager.putInternalTypedActivityState(act, InternalStates.PAST_MAXLOAD, maxLoad);
 //		assert maxLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
 //		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can never be bigger than vehicleCap";
-	}
+    }
 
-	@Override
-	public void finish() {}
+    @Override
+    public void finish() {
+    }
 }

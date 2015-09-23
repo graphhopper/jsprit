@@ -36,12 +36,12 @@ import java.util.Collection;
 public class DeactivateTimeWindowsTest {
 
     @Test
-    public void activityTimesShouldIgnoreTimeWindows(){
+    public void activityTimesShouldIgnoreTimeWindows() {
         Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
-                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+            .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp, "src/test/resources/algorithmConfig.xml");
         vraBuilder.addDefaultCostCalculators();
         VehicleRoutingAlgorithm vra = vraBuilder.build(); //this should ignore any constraints
         vra.setMaxIterations(10);
@@ -52,16 +52,16 @@ public class DeactivateTimeWindowsTest {
     }
 
     @Test
-    public void whenNotActivatingViaStateManager_activityTimesShouldConsiderTimeWindows(){
+    public void whenNotActivatingViaStateManager_activityTimesShouldConsiderTimeWindows() {
         Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
-                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+            .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp, "src/test/resources/algorithmConfig.xml");
         vraBuilder.addDefaultCostCalculators();
         StateManager stateManager = new StateManager(vrp);
-        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm vra = vraBuilder.build(); //this should ignore any constraints
         vra.setMaxIterations(10);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
@@ -71,12 +71,12 @@ public class DeactivateTimeWindowsTest {
     }
 
     @Test
-    public void activityTimesShouldConsiderTimeWindows(){
+    public void activityTimesShouldConsiderTimeWindows() {
         Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
-                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+            .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp, "src/test/resources/algorithmConfig.xml");
         vraBuilder.addCoreConstraints();
         vraBuilder.addDefaultCostCalculators();
         VehicleRoutingAlgorithm vra = vraBuilder.build(); //this should ignore any constraints
@@ -88,18 +88,18 @@ public class DeactivateTimeWindowsTest {
     }
 
     @Test
-    public void whenActivatingViaStateManager_activityTimesShouldConsiderTimeWindows(){
+    public void whenActivatingViaStateManager_activityTimesShouldConsiderTimeWindows() {
         Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
-                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+            .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"src/test/resources/algorithmConfig.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp, "src/test/resources/algorithmConfig.xml");
         vraBuilder.addDefaultCostCalculators();
         StateManager stateManager = new StateManager(vrp);
         stateManager.updateTimeWindowStates();
-        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
         constraintManager.addTimeWindowConstraint();
-        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm vra = vraBuilder.build(); //this should ignore any constraints
         vra.setMaxIterations(10);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

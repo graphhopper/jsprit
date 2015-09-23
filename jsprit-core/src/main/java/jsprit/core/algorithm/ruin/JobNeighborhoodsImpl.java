@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 
 /**
-* Created by schroeder on 07/01/15.
-*/
+ * Created by schroeder on 07/01/15.
+ */
 class JobNeighborhoodsImpl implements JobNeighborhoods {
 
     private static Logger logger = LogManager.getLogger(JobNeighborhoodsImpl.class);
@@ -26,13 +26,13 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
         super();
         this.vrp = vrp;
         this.jobDistance = jobDistance;
-        logger.debug("intialise " + this);
+        logger.debug("intialise {}", this);
     }
 
     @Override
-    public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo){
+    public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo) {
         TreeSet<ReferencedJob> tree = distanceNodeTree.get(neighborTo.getId());
-        if(tree == null) return new Iterator<Job>() {
+        if (tree == null) return new Iterator<Job>() {
             @Override
             public boolean hasNext() {
                 return false;
@@ -53,7 +53,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
     }
 
     @Override
-    public void initialise(){
+    public void initialise() {
         logger.debug("calculates and memorizes distances from EACH job to EACH job --> n^2 calculations");
         calculateDistancesFromJob2Job();
     }
@@ -65,19 +65,19 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
         int nuOfDistancesStored = 0;
         for (Job i : vrp.getJobs().values()) {
             TreeSet<ReferencedJob> treeSet = new TreeSet<ReferencedJob>(
-                    new Comparator<ReferencedJob>() {
-                        @Override
-                        public int compare(ReferencedJob o1, ReferencedJob o2) {
-                            if (o1.getDistance() <= o2.getDistance()) {
-                                return -1;
-                            } else {
-                                return 1;
-                            }
+                new Comparator<ReferencedJob>() {
+                    @Override
+                    public int compare(ReferencedJob o1, ReferencedJob o2) {
+                        if (o1.getDistance() <= o2.getDistance()) {
+                            return -1;
+                        } else {
+                            return 1;
                         }
-                    });
+                    }
+                });
             distanceNodeTree.put(i.getId(), treeSet);
             for (Job j : vrp.getJobs().values()) {
-                if(i==j) continue;
+                if (i == j) continue;
                 double distance = jobDistance.getDistance(i, j);
                 ReferencedJob refNode = new ReferencedJob(j, distance);
                 treeSet.add(refNode);
@@ -86,8 +86,8 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
 
         }
         stopWatch.stop();
-        logger.debug("preprocessing comp-time: " + stopWatch + "; nuOfDistances stored: " + nuOfDistancesStored + "; estimated memory: " +
-                (distanceNodeTree.keySet().size()*64+nuOfDistancesStored*92) + " bytes");
+        logger.debug("preprocessing comp-time: {}; nuOfDistances stored: {}; estimated memory: {}" +
+            " bytes", stopWatch, nuOfDistancesStored, (distanceNodeTree.keySet().size() * 64 + nuOfDistancesStored * 92));
     }
 
 }

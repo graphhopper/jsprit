@@ -27,47 +27,45 @@ import jsprit.core.util.ActivityTimeTracker;
 
 /**
  * Updates total costs (i.e. transport and activity costs) at route and activity level.
- * 
+ * <p/>
  * <p>Thus it modifies <code>stateManager.getRouteState(route, StateTypes.COSTS)</code> and <br>
  * <code>stateManager.getActivityState(activity, StateTypes.COSTS)</code>
- *
  */
-public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
+public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
 
-	private VehicleRoutingActivityCosts activityCost;
+    private VehicleRoutingActivityCosts activityCost;
 
-	private ForwardTransportCost transportCost;
-	
-	private StateManager states;
-	
-	private double totalOperationCost = 0.0;
-	
-	private VehicleRoute vehicleRoute = null;
-	
-	private TourActivity prevAct = null;
-	
-	private double startTimeAtPrevAct = 0.0;
-	
-	private ActivityTimeTracker timeTracker;
-	
-	/**
-	 * Updates total costs (i.e. transport and activity costs) at route and activity level.
-	 * 
-	 * <p>Thus it modifies <code>stateManager.getRouteState(route, StateTypes.COSTS)</code> and <br>
-	 * <code>stateManager.getActivityState(activity, StateTypes.COSTS)</code>
-	 * 
-	 * 
-	 * @param activityCost
-	 * @param transportCost
-	 * @param states
-	 */
-	public UpdateVariableCosts(VehicleRoutingActivityCosts activityCost, VehicleRoutingTransportCosts transportCost, StateManager states) {
-		super();
-		this.activityCost = activityCost;
-		this.transportCost = transportCost;
-		this.states = states;
-		timeTracker = new ActivityTimeTracker(transportCost);
-	}
+    private ForwardTransportCost transportCost;
+
+    private StateManager states;
+
+    private double totalOperationCost = 0.0;
+
+    private VehicleRoute vehicleRoute = null;
+
+    private TourActivity prevAct = null;
+
+    private double startTimeAtPrevAct = 0.0;
+
+    private ActivityTimeTracker timeTracker;
+
+    /**
+     * Updates total costs (i.e. transport and activity costs) at route and activity level.
+     * <p/>
+     * <p>Thus it modifies <code>stateManager.getRouteState(route, StateTypes.COSTS)</code> and <br>
+     * <code>stateManager.getActivityState(activity, StateTypes.COSTS)</code>
+     *
+     * @param activityCost
+     * @param transportCost
+     * @param states
+     */
+    public UpdateVariableCosts(VehicleRoutingActivityCosts activityCost, VehicleRoutingTransportCosts transportCost, StateManager states) {
+        super();
+        this.activityCost = activityCost;
+        this.transportCost = transportCost;
+        this.states = states;
+        timeTracker = new ActivityTimeTracker(transportCost);
+    }
 
     public UpdateVariableCosts(VehicleRoutingActivityCosts activityCosts, VehicleRoutingTransportCosts transportCosts, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy) {
         this.activityCost = activityCosts;
@@ -77,44 +75,44 @@ public class UpdateVariableCosts implements ActivityVisitor,StateUpdater{
     }
 
     @Override
-	public void begin(VehicleRoute route) {
-		vehicleRoute = route;
-		timeTracker.begin(route);
-		prevAct = route.getStart();
-		startTimeAtPrevAct = timeTracker.getActEndTime();
-	}
+    public void begin(VehicleRoute route) {
+        vehicleRoute = route;
+        timeTracker.begin(route);
+        prevAct = route.getStart();
+        startTimeAtPrevAct = timeTracker.getActEndTime();
+    }
 
-	@Override
-	public void visit(TourActivity act) {
-		timeTracker.visit(act);
-		
-		double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), act.getLocation(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
-		double actCost = activityCost.getActivityCost(act, timeTracker.getActArrTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+    @Override
+    public void visit(TourActivity act) {
+        timeTracker.visit(act);
 
-		totalOperationCost += transportCost;
-		totalOperationCost += actCost;
+        double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), act.getLocation(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+        double actCost = activityCost.getActivityCost(act, timeTracker.getActArrTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 
-		states.putInternalTypedActivityState(act, InternalStates.COSTS, totalOperationCost);
+        totalOperationCost += transportCost;
+        totalOperationCost += actCost;
 
-		prevAct = act;
-		startTimeAtPrevAct = timeTracker.getActEndTime();
-	}
+        states.putInternalTypedActivityState(act, InternalStates.COSTS, totalOperationCost);
 
-	@Override
-	public void finish() {
-		timeTracker.finish();
-		double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), vehicleRoute.getEnd().getLocation(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
-		double actCost = activityCost.getActivityCost(vehicleRoute.getEnd(), timeTracker.getActEndTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+        prevAct = act;
+        startTimeAtPrevAct = timeTracker.getActEndTime();
+    }
 
-		totalOperationCost += transportCost;
-		totalOperationCost += actCost;
-		
-		states.putTypedInternalRouteState(vehicleRoute, InternalStates.COSTS, totalOperationCost);
-		
-		startTimeAtPrevAct = 0.0;
-		prevAct = null;
-		vehicleRoute = null;
-		totalOperationCost = 0.0;
-	}
+    @Override
+    public void finish() {
+        timeTracker.finish();
+        double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), vehicleRoute.getEnd().getLocation(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+        double actCost = activityCost.getActivityCost(vehicleRoute.getEnd(), timeTracker.getActEndTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+
+        totalOperationCost += transportCost;
+        totalOperationCost += actCost;
+
+        states.putTypedInternalRouteState(vehicleRoute, InternalStates.COSTS, totalOperationCost);
+
+        startTimeAtPrevAct = 0.0;
+        prevAct = null;
+        vehicleRoute = null;
+        totalOperationCost = 0.0;
+    }
 
 }

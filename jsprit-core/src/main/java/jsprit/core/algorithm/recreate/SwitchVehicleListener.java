@@ -7,13 +7,13 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by schroeder on 19/05/15.
  */
-class SwitchVehicleListener implements EventListener{
+class SwitchVehicleListener implements EventListener {
 
     private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void inform(Event event) {
-        if(event instanceof SwitchVehicle){
+        if (event instanceof SwitchVehicle) {
             SwitchVehicle switchVehicle = (SwitchVehicle) event;
             if(vehiclesDifferent((SwitchVehicle) event)) {
                 logger.trace("switch vehicle (" + ((SwitchVehicle) event).getRoute().getVehicle().getId() + " to " + ((SwitchVehicle) event).getVehicle().getId() + ")");

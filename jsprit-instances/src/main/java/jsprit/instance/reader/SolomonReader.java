@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.instance.reader;
@@ -36,136 +36,134 @@ import java.io.IOException;
 
 /**
  * Reader that reads the well-known solomon-instances.
- * 
+ * <p/>
  * <p>See: <a href="http://neo.lcc.uma.es/vrp/vrp-instances/capacitated-vrp-with-time-windows-instances/">neo.org</a>
- * 
- * @author stefan
  *
+ * @author stefan
  */
 
 public class SolomonReader {
 
-	/**
-	 * @param costProjectionFactor the costProjectionFactor to set
-	 */
-	public void setVariableCostProjectionFactor(double costProjectionFactor) {
-		this.variableCostProjectionFactor = costProjectionFactor;
-	}
+    /**
+     * @param costProjectionFactor the costProjectionFactor to set
+     */
+    public void setVariableCostProjectionFactor(double costProjectionFactor) {
+        this.variableCostProjectionFactor = costProjectionFactor;
+    }
 
-	private static Logger logger = LogManager.getLogger(SolomonReader.class);
-	
-	private final VehicleRoutingProblem.Builder vrpBuilder;
+    private static Logger logger = LogManager.getLogger(SolomonReader.class);
 
-	private double coordProjectionFactor = 1;
+    private final VehicleRoutingProblem.Builder vrpBuilder;
 
-	private double timeProjectionFactor = 1;
-	
-	private double variableCostProjectionFactor = 1;
-	
-	private double fixedCostPerVehicle = 0.0;
-	
-	public SolomonReader(VehicleRoutingProblem.Builder vrpBuilder) {
-		super();
-		this.vrpBuilder = vrpBuilder;
-	}
-	
-	public SolomonReader(VehicleRoutingProblem.Builder vrpBuilder, double fixedCostPerVehicle) {
-		super();
-		this.vrpBuilder = vrpBuilder;
-		this.fixedCostPerVehicle=fixedCostPerVehicle;
-	}
-	
-	public void read(String solomonFile){
-		vrpBuilder.setFleetSize(FleetSize.INFINITE);
-		BufferedReader reader = getReader(solomonFile);
-		int vehicleCapacity = 0;
-		
-		int counter = 0;
-		String line;
-		while((line = readLine(reader)) != null){
-			line = line.replace("\r", "");
-			line = line.trim();
-			String[] tokens = line.split(" +");
-			counter++;
-			if(counter == 5){
-				vehicleCapacity = Integer.parseInt(tokens[1]);
-				continue;
-			}
-			if(counter > 9){
-				if(tokens.length < 7) continue;
-                Coordinate coord = makeCoord(tokens[1],tokens[2]);
-				String customerId = tokens[0];
-				int demand = Integer.parseInt(tokens[3]);
-				double start = Double.parseDouble(tokens[4])*timeProjectionFactor;
-				double end = Double.parseDouble(tokens[5])*timeProjectionFactor;
-				double serviceTime = Double.parseDouble(tokens[6])*timeProjectionFactor;
-				if(counter == 10){
-					VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("solomonType").addCapacityDimension(0, vehicleCapacity);
-					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(fixedCostPerVehicle);
-					VehicleTypeImpl vehicleType = typeBuilder.build();
+    private double coordProjectionFactor = 1;
 
-					VehicleImpl vehicle = VehicleImpl.Builder.newInstance("solomonVehicle").setEarliestStart(start).setLatestArrival(end)
-							.setStartLocation(Location.Builder.newInstance().setId(customerId)
-									.setCoordinate(coord).build()).setType(vehicleType).build();
-					vrpBuilder.addVehicle(vehicle);
-					
-				}
-				else{
-					Service service = Service.Builder.newInstance(customerId).addSizeDimension(0, demand)
-							.setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime)
-							.setTimeWindow(TimeWindow.newInstance(start, end)).build();
-					vrpBuilder.addJob(service);
-				}
-			}
-		}
-		close(reader);
-	}
+    private double timeProjectionFactor = 1;
 
-	public void setCoordProjectionFactor(double coordProjectionFactor) {
-		this.coordProjectionFactor = coordProjectionFactor;
-	}
+    private double variableCostProjectionFactor = 1;
 
-	private void close(BufferedReader reader)  {
-		try {
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error(e);
-			System.exit(1);
-		}
-	}
+    private double fixedCostPerVehicle = 0.0;
 
-	private String readLine(BufferedReader reader) {
-		try {
-			return reader.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error(e);
-			System.exit(1);
-			return null;
-		}
-	}
-	
-	private Coordinate makeCoord(String xString, String yString) {
-		double x = Double.parseDouble(xString);
-		double y = Double.parseDouble(yString);
-		return new Coordinate(x*coordProjectionFactor,y*coordProjectionFactor);
-	}
+    public SolomonReader(VehicleRoutingProblem.Builder vrpBuilder) {
+        super();
+        this.vrpBuilder = vrpBuilder;
+    }
 
-	private BufferedReader getReader(String solomonFile) {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(solomonFile));
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-			logger.error(e1);
-			System.exit(1);
-		}
-		return reader;
-	}
+    public SolomonReader(VehicleRoutingProblem.Builder vrpBuilder, double fixedCostPerVehicle) {
+        super();
+        this.vrpBuilder = vrpBuilder;
+        this.fixedCostPerVehicle = fixedCostPerVehicle;
+    }
 
-	public void setTimeProjectionFactor(double timeProjection) {
-		this.timeProjectionFactor=timeProjection;
-		
-	}
+    public void read(String solomonFile) {
+        vrpBuilder.setFleetSize(FleetSize.INFINITE);
+        BufferedReader reader = getReader(solomonFile);
+        int vehicleCapacity = 0;
+
+        int counter = 0;
+        String line;
+        while ((line = readLine(reader)) != null) {
+            line = line.replace("\r", "");
+            line = line.trim();
+            String[] tokens = line.split(" +");
+            counter++;
+            if (counter == 5) {
+                vehicleCapacity = Integer.parseInt(tokens[1]);
+                continue;
+            }
+            if (counter > 9) {
+                if (tokens.length < 7) continue;
+                Coordinate coord = makeCoord(tokens[1], tokens[2]);
+                String customerId = tokens[0];
+                int demand = Integer.parseInt(tokens[3]);
+                double start = Double.parseDouble(tokens[4]) * timeProjectionFactor;
+                double end = Double.parseDouble(tokens[5]) * timeProjectionFactor;
+                double serviceTime = Double.parseDouble(tokens[6]) * timeProjectionFactor;
+                if (counter == 10) {
+                    VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("solomonType").addCapacityDimension(0, vehicleCapacity);
+                    typeBuilder.setCostPerDistance(1.0 * variableCostProjectionFactor).setFixedCost(fixedCostPerVehicle);
+                    VehicleTypeImpl vehicleType = typeBuilder.build();
+
+                    VehicleImpl vehicle = VehicleImpl.Builder.newInstance("solomonVehicle").setEarliestStart(start).setLatestArrival(end)
+                        .setStartLocation(Location.Builder.newInstance().setId(customerId)
+                            .setCoordinate(coord).build()).setType(vehicleType).build();
+                    vrpBuilder.addVehicle(vehicle);
+
+                } else {
+                    Service service = Service.Builder.newInstance(customerId).addSizeDimension(0, demand)
+                        .setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime)
+                        .setTimeWindow(TimeWindow.newInstance(start, end)).build();
+                    vrpBuilder.addJob(service);
+                }
+            }
+        }
+        close(reader);
+    }
+
+    public void setCoordProjectionFactor(double coordProjectionFactor) {
+        this.coordProjectionFactor = coordProjectionFactor;
+    }
+
+    private void close(BufferedReader reader) {
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("Exception:", e);
+            System.exit(1);
+        }
+    }
+
+    private String readLine(BufferedReader reader) {
+        try {
+            return reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("Exception:", e);
+            System.exit(1);
+            return null;
+        }
+    }
+
+    private Coordinate makeCoord(String xString, String yString) {
+        double x = Double.parseDouble(xString);
+        double y = Double.parseDouble(yString);
+        return new Coordinate(x * coordProjectionFactor, y * coordProjectionFactor);
+    }
+
+    private BufferedReader getReader(String solomonFile) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(solomonFile));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+            logger.error("Exception:", e1);
+            System.exit(1);
+        }
+        return reader;
+    }
+
+    public void setTimeProjectionFactor(double timeProjection) {
+        this.timeProjectionFactor = timeProjection;
+
+    }
 }

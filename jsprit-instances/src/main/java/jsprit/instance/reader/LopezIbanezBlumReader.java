@@ -27,42 +27,39 @@ public class LopezIbanezBlumReader {
         this.builder = builder;
     }
 
-    public void read(String instanceFile){
+    public void read(String instanceFile) {
         builder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         BufferedReader reader = getReader(instanceFile);
         String line;
         int noNodes = 0;
         int lineCount = 1;
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = null;
-        while((line = readLine(reader)) != null){
-            if(line.startsWith("#")) continue;
-            if(lineCount == 1){
+        while ((line = readLine(reader)) != null) {
+            if (line.startsWith("#")) continue;
+            if (lineCount == 1) {
                 noNodes = Integer.parseInt(line);
-                matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(noNodes,false);
+                matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(noNodes, false);
                 lineCount++;
                 continue;
-            }
-            else if(lineCount <= 1 + noNodes){
+            } else if (lineCount <= 1 + noNodes) {
                 String[] wimaTokens = line.split("\\s+");
                 int nodeIndex = lineCount - 2;
-                for(int toIndex=0;toIndex<wimaTokens.length;toIndex++){
-                    matrixBuilder.addTransportDistance(nodeIndex,toIndex, Double.parseDouble(wimaTokens[toIndex]));
+                for (int toIndex = 0; toIndex < wimaTokens.length; toIndex++) {
+                    matrixBuilder.addTransportDistance(nodeIndex, toIndex, Double.parseDouble(wimaTokens[toIndex]));
                     matrixBuilder.addTransportTime(nodeIndex, toIndex, Double.parseDouble(wimaTokens[toIndex]));
                 }
                 lineCount++;
                 continue;
-            }
-            else{
+            } else {
                 int nodeIndex = lineCount - 2 - noNodes;
                 String[] twTokens = line.split("\\s+");
-                if(nodeIndex == 0){
+                if (nodeIndex == 0) {
                     VehicleImpl travelingSalesman = VehicleImpl.Builder.newInstance("traveling_salesman").setStartLocation(Location.newInstance(nodeIndex))
-                            .setEarliestStart(Double.parseDouble(twTokens[0])).setLatestArrival(Double.parseDouble(twTokens[1])).build();
+                        .setEarliestStart(Double.parseDouble(twTokens[0])).setLatestArrival(Double.parseDouble(twTokens[1])).build();
                     builder.addVehicle(travelingSalesman);
-                }
-                else{
+                } else {
                     Service s = Service.Builder.newInstance("" + nodeIndex).setLocation(Location.newInstance(nodeIndex))
-                            .setTimeWindow(TimeWindow.newInstance(Double.parseDouble(twTokens[0]), Double.parseDouble(twTokens[1]))).build();
+                        .setTimeWindow(TimeWindow.newInstance(Double.parseDouble(twTokens[0]), Double.parseDouble(twTokens[1]))).build();
                     builder.addJob(s);
                 }
                 lineCount++;
@@ -77,20 +74,20 @@ public class LopezIbanezBlumReader {
         new LopezIbanezBlumReader(builder).read("input/Dumas/n20w20.001.txt");
         VehicleRoutingProblem vrp = builder.build();
         System.out.println("0->1: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(1), 0, null, null));
-        System.out.println("0->20: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(20),0,null,null));
-        System.out.println("4->18: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(4), Location.newInstance(18),0,null,null));
-        System.out.println("20->8: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(20), Location.newInstance(8),0,null,null));
-        System.out.println("18: " +  ((Service)vrp.getJobs().get(""+18)).getTimeWindow().getStart() + " " + ((Service)vrp.getJobs().get(""+18)).getTimeWindow().getEnd());
-        System.out.println("20: " +  ((Service)vrp.getJobs().get(""+20)).getTimeWindow().getStart() + " " + ((Service)vrp.getJobs().get(""+20)).getTimeWindow().getEnd());
-        System.out.println("1: " +  ((Service)vrp.getJobs().get(""+1)).getTimeWindow().getStart() + " " + ((Service)vrp.getJobs().get(""+1)).getTimeWindow().getEnd());
+        System.out.println("0->20: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(20), 0, null, null));
+        System.out.println("4->18: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(4), Location.newInstance(18), 0, null, null));
+        System.out.println("20->8: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(20), Location.newInstance(8), 0, null, null));
+        System.out.println("18: " + ((Service) vrp.getJobs().get("" + 18)).getTimeWindow().getStart() + " " + ((Service) vrp.getJobs().get("" + 18)).getTimeWindow().getEnd());
+        System.out.println("20: " + ((Service) vrp.getJobs().get("" + 20)).getTimeWindow().getStart() + " " + ((Service) vrp.getJobs().get("" + 20)).getTimeWindow().getEnd());
+        System.out.println("1: " + ((Service) vrp.getJobs().get("" + 1)).getTimeWindow().getStart() + " " + ((Service) vrp.getJobs().get("" + 1)).getTimeWindow().getEnd());
     }
 
-    private void close(BufferedReader reader)  {
+    private void close(BufferedReader reader) {
         try {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error(e);
+            logger.error("Exception:", e);
             System.exit(1);
         }
     }
@@ -100,7 +97,7 @@ public class LopezIbanezBlumReader {
             return reader.readLine();
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error(e);
+            logger.error("Exception:", e);
             System.exit(1);
             return null;
         }
@@ -112,7 +109,7 @@ public class LopezIbanezBlumReader {
             reader = new BufferedReader(new FileReader(solomonFile));
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
-            logger.error(e1);
+            logger.error("Exception:", e1);
             System.exit(1);
         }
         return reader;

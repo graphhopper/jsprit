@@ -30,27 +30,27 @@ public class TSPLIB95CostMatrixReader {
         this.costMatrixBuilder = costMatrixBuilder;
     }
 
-    public void read(String matrixFile){
+    public void read(String matrixFile) {
         BufferedReader reader = getBufferedReader(matrixFile);
         String line;
         boolean isEdgeWeights = false;
         int fromIndex = 0;
-        while( ( line = getLine(reader) ) != null ){
-            if(line.startsWith("EDGE_WEIGHT_SECTION")){
+        while ((line = getLine(reader)) != null) {
+            if (line.startsWith("EDGE_WEIGHT_SECTION")) {
                 isEdgeWeights = true;
                 continue;
             }
-            if(line.startsWith("DEMAND_SECTION")){
+            if (line.startsWith("DEMAND_SECTION")) {
                 isEdgeWeights = false;
                 continue;
             }
-            if(isEdgeWeights){
+            if (isEdgeWeights) {
                 String[] tokens = line.split("\\s+");
                 String fromId = "" + (fromIndex + 1);
-                for(int i=0;i<tokens.length;i++){
+                for (int i = 0; i < tokens.length; i++) {
                     double distance = Double.parseDouble(tokens[i]);
-                    String toId = "" + (i+1);
-                    costMatrixBuilder.addTransportDistance(fromId,toId,distance);
+                    String toId = "" + (i + 1);
+                    costMatrixBuilder.addTransportDistance(fromId, toId, distance);
                     costMatrixBuilder.addTransportTime(fromId, toId, distance);
                 }
                 fromIndex++;

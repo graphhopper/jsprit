@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem.job;
@@ -24,25 +24,24 @@ import jsprit.core.problem.Skills;
 
 /**
  * Basic interface for all jobs.
- * 
- * @author schroeder
  *
+ * @author schroeder
  */
 public interface Job extends HasId, HasIndex {
 
-	/**
-	 * Returns the unique identifier (id) of a job.
-	 *
-	 * @return id
-	 */
-	public String getId();
+    /**
+     * Returns the unique identifier (id) of a job.
+     *
+     * @return id
+     */
+    public String getId();
 
-	/**
-	 * Returns size, i.e. capacity-demand, of this job which can consist of an arbitrary number of capacity dimensions.
-	 * 
-	 * @return Capacity
-	 */
-	public Capacity getSize();
+    /**
+     * Returns size, i.e. capacity-demand, of this job which can consist of an arbitrary number of capacity dimensions.
+     *
+     * @return Capacity
+     */
+    public Capacity getSize();
 
     public Skills getRequiredSkills();
 

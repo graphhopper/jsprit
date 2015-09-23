@@ -26,7 +26,7 @@ public class GreatCircleDistanceCalculator {
 
     /**
      * Harversine method.
-     *
+     * <p/>
      * double lon1 = coord1.getX();
      * double lon2 = coord2.getX();
      * double lat1 = coord1.getY();
@@ -36,7 +36,7 @@ public class GreatCircleDistanceCalculator {
      * @param coord2 - to coord
      * @return great circle distance
      */
-    public  static double calculateDistance(Coordinate coord1, Coordinate coord2, DistanceUnit distanceUnit){
+    public static double calculateDistance(Coordinate coord1, Coordinate coord2, DistanceUnit distanceUnit) {
         double lon1 = coord1.getX();
         double lon2 = coord2.getX();
         double lat1 = coord1.getY();
@@ -50,7 +50,7 @@ public class GreatCircleDistanceCalculator {
         double a = Math.sin(delta_Lat / 2) * Math.sin(delta_Lat / 2) + Math.sin(delta_Lon / 2) * Math.sin(delta_Lon / 2) * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.asin(Math.sqrt(a));
         double distance = R * c;
-        if(distanceUnit.equals(DistanceUnit.Meter)){
+        if (distanceUnit.equals(DistanceUnit.Meter)) {
             distance = distance * 1000.;
         }
         return distance;
