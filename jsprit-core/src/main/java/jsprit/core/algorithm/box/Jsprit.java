@@ -17,6 +17,7 @@ import jsprit.core.problem.constraint.ConstraintManager;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.BreakActivity;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
@@ -485,8 +486,10 @@ public class Jsprit {
         vra.addListener(noiseMaker);
         vra.addListener(noise);
         vra.addListener(clusters);
+        vra.addListener(new RuinBreaks());
         handleExecutorShutdown(vra);
         vra.setMaxIterations(Integer.valueOf(properties.getProperty(Parameter.ITERATIONS.toString())));
+
         return vra;
 
     }
@@ -546,15 +549,24 @@ public class Jsprit {
             @Override
             public double getCosts(VehicleRoutingProblemSolution solution) {
                 double costs = 0.;
+
                 for (VehicleRoute route : solution.getRoutes()) {
                     costs += route.getVehicle().getType().getVehicleCostParams().fix;
+                    boolean hasBreak = false;
                     TourActivity prevAct = route.getStart();
                     for (TourActivity act : route.getActivities()) {
+                        if(act instanceof BreakActivity) hasBreak = true;
                         costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
                         costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                         prevAct = act;
                     }
                     costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+                    if(route.getVehicle().getBreak() != null){
+                        if(!hasBreak){
+                            //break defined but not assigned penalty
+                            costs += maxCosts * 2;
+                        }
+                    }
                 }
                 costs += solution.getUnassignedJobs().size() * maxCosts * 2;
                 return costs;

@@ -88,11 +88,12 @@ public class VehicleImpl extends AbstractVehicle {
         public Skills getSkills() {
             return null;
         }
-    }
+
 
 		@Override
 		public Break getBreak() { return null; }
-	}
+
+    }
 
 	/**
 	 * Builder that builds the vehicle.
@@ -178,28 +179,6 @@ public class VehicleImpl extends AbstractVehicle {
             this.endLocation = endLocation;
             return this;
         }
-
-		/**
-		 * Sets earliest-start of vehicle which should be the lower bound of the vehicle's departure times.
-		 *
-		 * @param earliest_startTime the earliest start time / departure time of the vehicle at its start location
-		 * @return this builder
-		 */
-		public Builder setEarliestStart(double earliest_startTime){
-			this.earliestStart = earliest_startTime;
-			return this;
-		}
-
-		/**
-		 * Sets the latest arrival at vehicle's end-location which is the upper bound of the vehicle's arrival times.
-		 *
-		 * @param latest_arrTime the latest arrival time of the vehicle at its end location
-		 * @return this builder
-		 */
-		public Builder setLatestArrival(double latest_arrTime){
-			this.latestArrival = latest_arrTime;
-			return this;
-		}
 
         /**
          * Sets earliest-start of vehicle which should be the lower bound of the vehicle's departure times.
@@ -292,8 +271,6 @@ public class VehicleImpl extends AbstractVehicle {
 		return new NoVehicle();
 	}
 
-	private final String id;
-
     private final String id;
 
     private final VehicleType type;
@@ -333,28 +310,14 @@ public class VehicleImpl extends AbstractVehicle {
 	 */
 	@Override
 	public String toString() {
-		return "[id="+id+"]" +
-                "[type="+type+"]" +
-                "[startLocation="+startLocation+"]" +
-                "[endLocation=" + endLocation+"]" +
-                "[isReturnToDepot=" + isReturnToDepot() + "]" +
-                "[skills="+ skills + "]";
-
-    /**
-     * Returns String with attributes of this vehicle
-     * <p/>
-     * <p>String has the following format [attr1=val1][attr2=val2]...[attrn=valn]
-     */
-    @Override
-    public String toString() {
         return "[id=" + id + "]" +
             "[type=" + type + "]" +
             "[startLocation=" + startLocation + "]" +
             "[endLocation=" + endLocation + "]" +
             "[isReturnToDepot=" + isReturnToDepot() + "]" +
             "[skills=" + skills + "]";
-
     }
+
 
     @Override
     public double getEarliestDeparture() {
@@ -437,7 +400,5 @@ public class VehicleImpl extends AbstractVehicle {
 		return true;
 	}
 
-
-
-
 }
+

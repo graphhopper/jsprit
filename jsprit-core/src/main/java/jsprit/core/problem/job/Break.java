@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem.job;
@@ -22,13 +22,13 @@ import jsprit.core.problem.Skills;
 
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
- * 
+ *
  * @author schroeder
  *
  */
 public class Break extends Service {
 
-	public static class Builder extends Service.Builder {
+	public static class Builder extends Service.Builder<Break> {
 
 		/**
 		 * Returns a new instance of builder that builds a pickup.
@@ -76,5 +76,5 @@ public class Break extends Service {
 	public boolean hasVariableLocation(){
 		return variableLocation;
 	}
-	
+
 }

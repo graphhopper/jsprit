@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.examples;
@@ -19,7 +19,6 @@ package jsprit.examples;
 import jsprit.analysis.toolbox.Plotter;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.box.Jsprit;
-import jsprit.core.algorithm.ruin.RuinBreaks;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Break;
@@ -56,7 +55,8 @@ public class BreakExample {
 		 */
 		Builder vehicleBuilder = Builder.newInstance("v1");
 		vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
-		Break myFirstBreak = (Break) Break.Builder.newInstance("myFirstBreak").setTimeWindow(TimeWindow.newInstance(10, 15)).setServiceTime(100).build();
+		Break myFirstBreak = Break.Builder.newInstance("myFirstBreak")
+            .setTimeWindow(TimeWindow.newInstance(10, 15)).setServiceTime(100).build();
 		vehicleBuilder.setBreak(myFirstBreak);
 		vehicleBuilder.setType(vehicleType);
 		VehicleImpl vehicle = vehicleBuilder.build();
@@ -68,41 +68,40 @@ public class BreakExample {
 		 */
 		Service service1 = Service.Builder.newInstance("1").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 7)).build();
 		Service service2 = Service.Builder.newInstance("2").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 13)).build();
-		
+
 		Service service3 = Service.Builder.newInstance("3").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 7)).build();
 		Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 13)).build();
-		
-		
+
+
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 		vrpBuilder.addVehicle(vehicle);
 		vrpBuilder.addJob(service1).addJob(service2).addJob(service3).addJob(service4).addVehicle(v2);
 		vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
 		VehicleRoutingProblem problem = vrpBuilder.build();
-		
+
 		/*
-		 * get the algorithm out-of-the-box. 
+		 * get the algorithm out-of-the-box.
 		 */
 		VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem)
 				.setProperty(Jsprit.Strategy.CLUSTER_REGRET,"0.")
 				.setProperty(Jsprit.Strategy.CLUSTER_BEST,"0.").buildAlgorithm();
-		algorithm.addListener(new RuinBreaks());
 		/*
 		 * and search a solution
 		 */
 		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
-		
+
 		/*
-		 * get the best 
+		 * get the best
 		 */
 		VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
 		SolutionPrinter.print(problem, bestSolution, SolutionPrinter.Print.VERBOSE);
-		
+
 		/*
 		 * plot
 		 */
 		new Plotter(problem,bestSolution).plot("output/plot","breaks");
-		
+
 
 	}
 

@@ -25,7 +25,7 @@ public class RuinBreaks implements RuinListener {
             Break aBreak = r.getVehicle().getBreak();
             if(aBreak != null){
                 r.getTourActivities().removeJob(aBreak);
-                logger.trace("ruin: " + aBreak.getId());
+                logger.trace("ruin: {}",aBreak.getId());
                 unassignedJobs.add(aBreak);
             }
         }
