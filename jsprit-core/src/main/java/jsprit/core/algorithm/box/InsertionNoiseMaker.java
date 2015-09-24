@@ -32,12 +32,20 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
 
     private double noiseLevel = 0.1;
 
-    private Random random = RandomNumberGeneration.getRandom();
+    private Random random = RandomNumberGeneration.newInstance();
+
+    private Random[] randomArray;
 
     public InsertionNoiseMaker(VehicleRoutingProblem vrp, double noiseLevel, double noiseProbability) {
         this.vrp = vrp;
         this.noiseLevel = noiseLevel;
         this.noiseProbability = noiseProbability;
+        randomArray = new Random[vrp.getNuActivities()+2];
+        for(int i=0;i<randomArray.length;i++){
+            Random r = new Random();
+            r.setSeed(random.nextLong());
+            randomArray[i] = r;
+        }
         determineMaxCosts(vrp);
     }
 
@@ -79,7 +87,7 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         if (makeNoise) {
-            return noiseLevel * maxCosts * random.nextDouble();
+            return noiseLevel * maxCosts * randomArray[newAct.getIndex()].nextDouble();
         }
         return 0;
     }
