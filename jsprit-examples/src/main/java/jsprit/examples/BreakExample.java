@@ -47,7 +47,7 @@ public class BreakExample {
 		 */
 		final int WEIGHT_INDEX = 0;
 		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType")
-				.addCapacityDimension(WEIGHT_INDEX, 2).setCostPerWaitingTime(1.);
+				.addCapacityDimension(WEIGHT_INDEX, 2).setCostPerWaitingTime(1.0);
 		VehicleType vehicleType = vehicleTypeBuilder.build();
 
 		/*

@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm.recreate;
@@ -80,16 +80,16 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator{
     public void setJobActivityFactory(JobActivityFactory jobActivityFactory){
         this.activityFactory = jobActivityFactory;
     }
-	
+
 	@Override
 	public String toString() {
 		return "[name=calculatesServiceInsertion]";
 	}
-	
+
 	/**
 	 * Calculates the marginal cost of inserting job i locally. This is based on the
 	 * assumption that cost changes can entirely covered by only looking at the predecessor i-1 and its successor i+1.
-	 *  
+	 *
 	 */
 	@Override
 	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
@@ -103,10 +103,6 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator{
 		BreakActivity breakAct2Insert = (BreakActivity) activityFactory.createActivities(breakToInsert).get(0);
         insertionContext.getAssociatedActivities().add(breakAct2Insert);
 
-		boolean differentVehicles = false;
-		if(!currentRoute.isEmpty()){
-			differentVehicles = currentRoute.getVehicle() != newVehicle;
-		}
         /*
         check hard constraints at route level
          */
