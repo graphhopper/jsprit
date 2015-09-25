@@ -13,4 +13,6 @@ public interface JobNeighborhoods {
 
     public void initialise();
 
+    public double getMaxDistance();
+
 }

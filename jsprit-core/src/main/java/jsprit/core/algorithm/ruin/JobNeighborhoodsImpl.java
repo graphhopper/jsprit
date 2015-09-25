@@ -22,6 +22,8 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
 
     private JobDistance jobDistance;
 
+    private double maxDistance = 0.;
+
     public JobNeighborhoodsImpl(VehicleRoutingProblem vrp, JobDistance jobDistance) {
         super();
         this.vrp = vrp;
@@ -58,6 +60,11 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
         calculateDistancesFromJob2Job();
     }
 
+    @Override
+    public double getMaxDistance() {
+        return 0;
+    }
+
     private void calculateDistancesFromJob2Job() {
         logger.debug("preprocess distances between locations ...");
         StopWatch stopWatch = new StopWatch();
@@ -79,6 +86,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
             for (Job j : vrp.getJobs().values()) {
                 if (i == j) continue;
                 double distance = jobDistance.getDistance(i, j);
+                if(distance > maxDistance) maxDistance = distance;
                 ReferencedJob refNode = new ReferencedJob(j, distance);
                 treeSet.add(refNode);
                 nuOfDistancesStored++;
