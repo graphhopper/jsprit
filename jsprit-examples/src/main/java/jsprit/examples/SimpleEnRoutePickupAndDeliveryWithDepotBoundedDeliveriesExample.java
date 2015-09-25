@@ -97,7 +97,7 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
         VehicleRoutingProblem problem = vrpBuilder.build();
 
 		/*
-		 * build the algorithm
+         * build the algorithm
 		 */
         VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(problem, "input/algorithmConfig.xml");
         vraBuilder.addCoreConstraints();

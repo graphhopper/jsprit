@@ -107,7 +107,7 @@ class TimeWindowConstraint implements HardActivityConstraint {
             routingCosts.getBackwardTransportTime(nextActLocation, newAct.getLocation(), latestArrTimeAtNextAct, iFacts.getNewDriver(),
                 iFacts.getNewVehicle()) - newAct.getOperationTime());
             /*
-			 *  |--- prevAct ---|
+             *  |--- prevAct ---|
 			 *                       		                 |--- vehicle's arrival @newAct
 			 *        latest arrival of vehicle @newAct ---|
 			 */

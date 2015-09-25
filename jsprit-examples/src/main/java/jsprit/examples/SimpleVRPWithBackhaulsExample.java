@@ -103,7 +103,7 @@ public class SimpleVRPWithBackhaulsExample {
         SolutionPrinter.print(bestSolution);
 
 		/*
-		 * plot
+         * plot
 		 */
         Plotter plotter = new Plotter(problem, bestSolution);
         plotter.setLabel(Label.SIZE);

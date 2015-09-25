@@ -109,7 +109,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
         VehicleType vehicleType = vehicleTypeBuilder.build();
 
 		/*
-		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
+         * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
         Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
         vehicleBuilder.setStartLocation(Location.newInstance(10, 10));

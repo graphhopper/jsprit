@@ -32,8 +32,8 @@ class ConcurrentInsertionNoiseMaker implements SoftActivityConstraint, Iteration
         this.noiseLevel = noiseLevel;
         this.noiseProbability = noiseProbability;
         this.maxCosts = maxCosts;
-        randomArray = new Random[vrp.getNuActivities()+2];
-        for(int i=0;i<randomArray.length;i++){
+        randomArray = new Random[vrp.getNuActivities() + 2];
+        for (int i = 0; i < randomArray.length; i++) {
             Random r = new Random();
             r.setSeed(random.nextLong());
             randomArray[i] = r;

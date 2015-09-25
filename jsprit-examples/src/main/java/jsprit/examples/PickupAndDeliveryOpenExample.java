@@ -69,7 +69,7 @@ public class PickupAndDeliveryOpenExample {
         VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_open.xml");
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
         /*
-		 * Solve the problem.
+         * Solve the problem.
 		 *
 		 *
 		 */

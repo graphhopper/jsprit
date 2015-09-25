@@ -62,7 +62,7 @@ public class MultipleDepotWithInitialRoutesExample {
 		 */
         VehicleRoutingProblem vrp = vrpBuilder.build();
         /*
-		 * since job (service) 26 and 44 are already planned in initial route and thus static AND sequence is fixed they
+         * since job (service) 26 and 44 are already planned in initial route and thus static AND sequence is fixed they
 		 * should not be in jobMap anymore (only variable jobs are in jobMap)
 		 */
         assert !vrp.getJobs().containsKey("26") : "strange. service 26 should not be part of the problem";

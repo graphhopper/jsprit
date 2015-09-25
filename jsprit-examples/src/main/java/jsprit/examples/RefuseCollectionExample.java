@@ -110,7 +110,7 @@ public class RefuseCollectionExample {
             }
             String[] lineTokens = line.split(",");
             /*
-			 * build service
+             * build service
 			 */
             Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocation(Location.newInstance(lineTokens[0])).build();
 			/*

@@ -186,7 +186,7 @@ public class TransportOfDisabledPeople {
         algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 
 		/*
-		 * and search a solution
+         * and search a solution
 		 */
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 

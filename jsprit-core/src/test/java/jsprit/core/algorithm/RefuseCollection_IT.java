@@ -115,7 +115,7 @@ public class RefuseCollection_IT {
         vrpBuilder.addVehicle(bigVehicle);
 
 		/*
-		 * create cost-matrix
+         * create cost-matrix
 		 */
         VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
 		/*

@@ -86,7 +86,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
             for (Job j : vrp.getJobs().values()) {
                 if (i == j) continue;
                 double distance = jobDistance.getDistance(i, j);
-                if(distance > maxDistance) maxDistance = distance;
+                if (distance > maxDistance) maxDistance = distance;
                 ReferencedJob refNode = new ReferencedJob(j, distance);
                 treeSet.add(refNode);
                 nuOfDistancesStored++;
