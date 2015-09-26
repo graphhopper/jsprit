@@ -66,16 +66,9 @@ public class TourActivities {
         }
     }
 
-
-    public static TourActivities emptyTour() {
-        return new TourActivities();
-    }
-
     private final ArrayList<TourActivity> tourActivities = new ArrayList<TourActivity>();
 
     private final Set<Job> jobs = new HashSet<Job>();
-
-    private final Set<TourActivity> activities = new HashSet<TourActivity>();
 
     private ReverseActivityIterator backward;
 
@@ -83,17 +76,8 @@ public class TourActivities {
         for (TourActivity tourAct : tour2copy.getActivities()) {
             TourActivity newAct = tourAct.duplicate();
             this.tourActivities.add(newAct);
-            addToActivitySet(newAct);
             addJob(newAct);
         }
-    }
-
-    private void addToActivitySet(TourActivity newAct) {
-        activities.add(newAct);
-    }
-
-    private void removeFromActivitySet(TourActivity act) {
-        activities.remove(act);
     }
 
     public TourActivities() {
@@ -148,7 +132,6 @@ public class TourActivities {
             if (c instanceof JobActivity) {
                 if (job.equals(((JobActivity) c).getJob())) {
                     tourActivities.remove(c);
-                    removeFromActivitySet(c);
                     activityRemoved = true;
                 }
             }
@@ -163,8 +146,9 @@ public class TourActivities {
      * @param activity to be looked up
      * @return true if this contains specified activity, false otherwise
      */
+    @Deprecated
     public boolean hasActivity(TourActivity activity) {
-        return activities.contains(activity);
+        return tourActivities.contains(activity);
     }
 
     /**
@@ -185,7 +169,6 @@ public class TourActivities {
         for (TourActivity act : acts) {
             if (act == activity) {
                 tourActivities.remove(act);
-                removeFromActivitySet(act);
                 actRemoved = true;
             } else {
                 if (act instanceof JobActivity && job != null) {
@@ -228,7 +211,6 @@ public class TourActivities {
         } else if (insertionIndex >= tourActivities.size()) {
             tourActivities.add(act);
         }
-        addToActivitySet(act);
         addJob(act);
     }
 
@@ -243,7 +225,6 @@ public class TourActivities {
         if (tourActivities.contains(act))
             throw new IllegalStateException("act " + act + " already in tour. cannot add act twice.");
         tourActivities.add(act);
-        addToActivitySet(act);
         addJob(act);
     }
 
