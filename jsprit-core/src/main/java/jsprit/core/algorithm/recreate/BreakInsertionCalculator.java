@@ -94,7 +94,9 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator{
 	@Override
 	public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
 		Break breakToInsert = (Break) jobToInsert;
-		if(newVehicle.getBreak() == null || newVehicle.getBreak() != breakToInsert) return InsertionData.createEmptyInsertionData();
+		if(newVehicle.getBreak() == null || newVehicle.getBreak() != breakToInsert) {
+            return InsertionData.createEmptyInsertionData();
+        }
 		if(currentRoute.isEmpty()) return InsertionData.createEmptyInsertionData();
 
 		JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
