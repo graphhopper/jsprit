@@ -519,7 +519,6 @@ public class VehicleRoutingAlgorithms {
                 @Override
                 public void uncaughtException(Thread arg0, Throwable arg1) {
                     System.err.println(arg1.toString());
-                    System.exit(0);
                 }
             });
             Runtime.getRuntime().addShutdownHook(new Thread() {

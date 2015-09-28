@@ -138,8 +138,7 @@ public class VrphGoldenReader {
         try {
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new RuntimeException(e);
         }
     }
 
@@ -148,8 +147,7 @@ public class VrphGoldenReader {
         try {
             readLine = reader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new RuntimeException(e);
         }
         return readLine;
     }
@@ -160,10 +158,8 @@ public class VrphGoldenReader {
             bufferedReader = new BufferedReader(new FileReader(new File(filename)));
             return bufferedReader;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new RuntimeException(e);
         }
-        return bufferedReader;
     }
 
     public static void main(String[] args) {

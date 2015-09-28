@@ -130,9 +130,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } catch (ExecutionException e) {
-                e.printStackTrace();
-                logger.error("Exception", e);
-                System.exit(1);
+                throw new RuntimeException(e);
             }
             VehicleRoute newRoute = VehicleRoute.emptyRoute();
             InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
