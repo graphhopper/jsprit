@@ -17,6 +17,7 @@
 package jsprit.core.problem.solution.route.activity;
 
 import jsprit.core.problem.job.Job;
+import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
 import java.util.*;
@@ -127,12 +128,17 @@ public class TourActivities {
             jobRemoved = jobs.remove(job);
         }
         boolean activityRemoved = false;
-        List<TourActivity> acts = new ArrayList<TourActivity>(tourActivities);
-        for (TourActivity c : acts) {
+        Iterator<TourActivity> iterator = tourActivities.iterator();
+        while(iterator.hasNext()){
+            TourActivity c = iterator.next();
             if (c instanceof JobActivity) {
-                if (job.equals(((JobActivity) c).getJob())) {
-                    tourActivities.remove(c);
+                Job underlyingJob = ((JobActivity) c).getJob();
+                if (job.equals(underlyingJob)) {
+                    iterator.remove();
                     activityRemoved = true;
+                    if(underlyingJob instanceof Service){
+                        break;
+                    }
                 }
             }
         }
