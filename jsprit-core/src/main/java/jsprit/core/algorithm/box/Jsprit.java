@@ -327,11 +327,18 @@ public class Jsprit {
         final double maxCosts = jobNeighborhoods.getMaxDistance();
 
         IterationStartsListener noiseConfigurator;
-
-        ConcurrentInsertionNoiseMaker noiseMaker = new ConcurrentInsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
-        noiseMaker.setRandom(random);
-        constraintManager.addConstraint(noiseMaker);
-        noiseConfigurator = noiseMaker;
+        if(noThreads > 1) {
+            ConcurrentInsertionNoiseMaker noiseMaker = new ConcurrentInsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
+            noiseMaker.setRandom(random);
+            constraintManager.addConstraint(noiseMaker);
+            noiseConfigurator = noiseMaker;
+        }
+        else {
+            InsertionNoiseMaker noiseMaker = new InsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
+            noiseMaker.setRandom(random);
+            constraintManager.addConstraint(noiseMaker);
+            noiseConfigurator = noiseMaker;
+        }
 
         RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
         radial.setRandom(random);
