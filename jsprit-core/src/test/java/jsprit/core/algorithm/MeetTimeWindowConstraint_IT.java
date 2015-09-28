@@ -560,7 +560,7 @@ public class MeetTimeWindowConstraint_IT {
         VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(vrp).buildAlgorithm();
         algorithm.setMaxIterations(1000);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
-        for(VehicleRoute r : solution.getRoutes()){
+        for (VehicleRoute r : solution.getRoutes()) {
             assertTrue(r.getVehicle().getEarliestDeparture() <= r.getDepartureTime());
             assertTrue(r.getVehicle().getLatestArrival() >= r.getEnd().getArrTime());
         }
@@ -576,7 +576,7 @@ public class MeetTimeWindowConstraint_IT {
         VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(vrp);
         algorithm.setMaxIterations(1000);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
-        for(VehicleRoute r : solution.getRoutes()){
+        for (VehicleRoute r : solution.getRoutes()) {
             assertTrue(r.getVehicle().getEarliestDeparture() <= r.getDepartureTime());
             assertTrue(r.getVehicle().getLatestArrival() >= r.getEnd().getArrTime());
         }
@@ -592,20 +592,20 @@ public class MeetTimeWindowConstraint_IT {
         VehicleRoutingAlgorithm algorithm = new GreedySchrimpfFactory().createAlgorithm(vrp);
         algorithm.setMaxIterations(1000);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
-        for(VehicleRoute r : solution.getRoutes()){
+        for (VehicleRoute r : solution.getRoutes()) {
             assertTrue(r.getVehicle().getEarliestDeparture() <= r.getDepartureTime());
             assertTrue(r.getVehicle().getLatestArrival() >= r.getEnd().getArrTime());
         }
     }
 
-    
+
     private FastVehicleRoutingTransportCostsMatrix createMatrix() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/matrix.txt")));
         String line;
-        FastVehicleRoutingTransportCostsMatrix.Builder builder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(11,false);
-        while((line = reader.readLine()) != null){
+        FastVehicleRoutingTransportCostsMatrix.Builder builder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(11, false);
+        while ((line = reader.readLine()) != null) {
             String[] split = line.split("\t");
-            builder.addTransportDistance(Integer.parseInt(split[0]),Integer.parseInt(split[1]),Double.parseDouble(split[2]));
+            builder.addTransportDistance(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Double.parseDouble(split[2]));
             builder.addTransportTime(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Double.parseDouble(split[3]));
         }
         return builder.build();

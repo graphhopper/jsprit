@@ -24,12 +24,14 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
     private int capacity;
 
+    private double maxDistance = 0.;
+
     public JobNeighborhoodsImplWithCapRestriction(VehicleRoutingProblem vrp, JobDistance jobDistance, int capacity) {
         super();
         this.vrp = vrp;
         this.jobDistance = jobDistance;
         this.capacity = capacity;
-        logger.debug("intialise {}", this);
+        logger.debug("initialize {}", this);
     }
 
     @Override
@@ -64,6 +66,11 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
         calculateDistancesFromJob2Job();
     }
 
+    @Override
+    public double getMaxDistance() {
+        return maxDistance;
+    }
+
     private void calculateDistancesFromJob2Job() {
         logger.debug("preprocess distances between locations ...");
         StopWatch stopWatch = new StopWatch();
@@ -85,6 +92,7 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
             for (Job j : vrp.getJobs().values()) {
                 if (i == j) continue;
                 double distance = jobDistance.getDistance(i, j);
+                if (distance > maxDistance) maxDistance = distance;
                 ReferencedJob refNode = new ReferencedJob(j, distance);
                 if (treeSet.size() < capacity) {
                     treeSet.add(refNode);

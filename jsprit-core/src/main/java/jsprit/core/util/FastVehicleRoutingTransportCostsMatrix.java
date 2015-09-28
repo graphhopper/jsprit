@@ -119,7 +119,7 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
      *
      * @return
      */
-    public double[][][] getMatrix(){
+    public double[][][] getMatrix() {
         return matrix;
     }
 

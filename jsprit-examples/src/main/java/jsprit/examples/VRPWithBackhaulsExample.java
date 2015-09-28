@@ -77,7 +77,7 @@ public class VRPWithBackhaulsExample {
         VehicleRoutingAlgorithm vra = vraBuilder.build();
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
         /*
-		 * Solve the problem.
+         * Solve the problem.
 		 *
 		 *
 		 */

@@ -91,7 +91,7 @@ public class MultipleDepotExample {
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
 		/*
-		 * plot to see how the problem looks like
+         * plot to see how the problem looks like
 		 */
 //		SolutionPlotter.plotVrpAsPNG(vrp, "output/problem01.png", "p01");
 

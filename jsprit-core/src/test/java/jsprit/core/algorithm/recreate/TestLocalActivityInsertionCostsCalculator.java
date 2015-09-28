@@ -409,7 +409,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         //new: 50 - 50 = 0
 
 		/*
-		activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
+        activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
 		 */
 		/*
 		old = 10 + 30 + 10 = 50

@@ -309,14 +309,29 @@ public class Jsprit {
             constraintManager = new ConstraintManager(vrp, stateManager);
         }
 
+        if (noThreads == null) {
+            noThreads = toInteger(getProperty(Parameter.THREADS.toString()));
+        }
+        if (noThreads > 1) {
+            if (es == null) {
+                setupExecutorInternally = true;
+                es = Executors.newFixedThreadPool(noThreads);
+            }
+        }
+
         double noiseLevel = toDouble(getProperty(Parameter.INSERTION_NOISE_LEVEL.toString()));
         double noiseProbability = toDouble(getProperty(Parameter.INSERTION_NOISE_PROB.toString()));
-        final InsertionNoiseMaker noiseMaker = new InsertionNoiseMaker(vrp, noiseLevel, noiseProbability);
-        noiseMaker.setRandom(random);
-        constraintManager.addConstraint(noiseMaker);
 
         JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
         jobNeighborhoods.initialise();
+        final double maxCosts = jobNeighborhoods.getMaxDistance();
+
+        IterationStartsListener noiseConfigurator;
+
+        ConcurrentInsertionNoiseMaker noiseMaker = new ConcurrentInsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
+        noiseMaker.setRandom(random);
+        constraintManager.addConstraint(noiseMaker);
+        noiseConfigurator = noiseMaker;
 
         RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
         radial.setRandom(random);
@@ -357,7 +372,7 @@ public class Jsprit {
                     public double makeNoise() {
                         if (random.nextDouble() < toDouble(getProperty(Parameter.RUIN_WORST_NOISE_PROB.toString()))) {
                             return toDouble(getProperty(Parameter.RUIN_WORST_NOISE_LEVEL.toString()))
-                                * noiseMaker.maxCosts * random.nextDouble();
+                                * maxCosts * random.nextDouble();
                         } else return 0.;
                     }
                 });
@@ -374,15 +389,7 @@ public class Jsprit {
 
         AbstractInsertionStrategy regret;
         final RegretInsertion.DefaultScorer scorer;
-        if (noThreads == null) {
-            noThreads = toInteger(getProperty(Parameter.THREADS.toString()));
-        }
-        if (noThreads > 1) {
-            if (es == null) {
-                setupExecutorInternally = true;
-                es = Executors.newFixedThreadPool(noThreads);
-            }
-        }
+
         if (es != null) {
             RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                 .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
@@ -435,7 +442,7 @@ public class Jsprit {
             }
         };
 
-        SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp, noiseMaker.maxCosts);
+        SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp, maxCosts);
         SearchStrategy radial_regret = new SearchStrategy(Strategy.RADIAL_REGRET.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
         radial_regret.addModule(new RuinAndRecreateModule(Strategy.RADIAL_REGRET.toString(), regret, radial));
 
@@ -483,7 +490,7 @@ public class Jsprit {
 
         VehicleRoutingAlgorithm vra = prettyBuilder.build();
         vra.addListener(schrimpfThreshold);
-        vra.addListener(noiseMaker);
+        vra.addListener(noiseConfigurator);
         vra.addListener(noise);
         vra.addListener(clusters);
         vra.addListener(new RuinBreaks());
