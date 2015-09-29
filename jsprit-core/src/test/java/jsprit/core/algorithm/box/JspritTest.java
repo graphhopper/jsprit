@@ -3,6 +3,8 @@ package jsprit.core.algorithm.box;
 import jsprit.core.algorithm.SearchStrategy;
 import jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import jsprit.core.algorithm.listener.StrategySelectedListener;
+import jsprit.core.algorithm.recreate.InsertionData;
+import jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
 import jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import jsprit.core.algorithm.ruin.listener.RuinListener;
 import jsprit.core.problem.Location;
@@ -186,7 +188,118 @@ public class JspritTest {
     }
 
     @Test
+    public void strategyDrawShouldBeReproducibleV2() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 2)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1, 2)).build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS,"4").buildAlgorithm();
+        vra.setMaxIterations(100);
+        final List<String> firstRecord = new ArrayList<String>();
+        vra.addListener(new StrategySelectedListener() {
+
+            @Override
+            public void informSelectedStrategy(SearchStrategy.DiscoveredSolution discoveredSolution, VehicleRoutingProblem vehicleRoutingProblem, Collection<VehicleRoutingProblemSolution> vehicleRoutingProblemSolutions) {
+                firstRecord.add(discoveredSolution.getStrategyId());
+            }
+
+        });
+        vra.searchSolutions();
+
+        RandomNumberGeneration.reset();
+        VehicleRoutingAlgorithm second = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS,"2").buildAlgorithm();
+        second.setMaxIterations(100);
+        final List<String> secondRecord = new ArrayList<String>();
+        second.addListener(new StrategySelectedListener() {
+
+            @Override
+            public void informSelectedStrategy(SearchStrategy.DiscoveredSolution discoveredSolution, VehicleRoutingProblem vehicleRoutingProblem, Collection<VehicleRoutingProblemSolution> vehicleRoutingProblemSolutions) {
+                secondRecord.add(discoveredSolution.getStrategyId());
+            }
+
+        });
+        second.searchSolutions();
+
+        for (int i = 0; i < 100; i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
+                org.junit.Assert.assertFalse(true);
+            }
+        }
+        org.junit.Assert.assertTrue(true);
+
+    }
+
+    @Test
     public void ruinedJobsShouldBeReproducible() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 2)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1, 2)).build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .setProperty(Jsprit.Strategy.WORST_REGRET,"0.")
+            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+            .setProperty(Jsprit.Parameter.THREADS, "2").buildAlgorithm();
+        vra.setMaxIterations(100);
+        final List<String> firstRecord = new ArrayList<String>();
+        vra.addListener(new RuinListener() {
+            @Override
+            public void ruinStarts(Collection<VehicleRoute> routes) {
+
+            }
+
+            @Override
+            public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+
+            }
+
+            @Override
+            public void removed(Job job, VehicleRoute fromRoute) {
+                firstRecord.add(job.getId());
+            }
+        });
+        vra.searchSolutions();
+
+        VehicleRoutingAlgorithm second = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS, "4")
+            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
+            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+            .buildAlgorithm();
+        second.setMaxIterations(100);
+        final List<String> secondRecord = new ArrayList<String>();
+        second.addListener(new RuinListener() {
+            @Override
+            public void ruinStarts(Collection<VehicleRoute> routes) {
+
+            }
+
+            @Override
+            public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+
+            }
+
+            @Override
+            public void removed(Job job, VehicleRoute fromRoute) {
+                secondRecord.add(job.getId());
+            }
+        });
+        second.searchSolutions();
+
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
+                Assert.assertFalse(true);
+            }
+        }
+        Assert.assertTrue(true);
+    }
+
+    @Test
+    public void ruinedJobsShouldBeReproducibleV2() {
         Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 2)).build();
         Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 2)).build();
@@ -284,6 +397,74 @@ public class JspritTest {
             }
         }
         Assert.assertTrue(true);
+    }
+
+    @Test
+    public void insertionShouldBeReproducibleV2() {
+        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 1)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 3)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1, 4)).build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
+
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .setProperty(Jsprit.Strategy.WORST_REGRET,"0.")
+            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+            .setProperty(Jsprit.Parameter.THREADS, "4").buildAlgorithm();
+        vra.setMaxIterations(100);
+        final List<String> firstRecord = new ArrayList<String>();
+        final List<Double> firstRecordCosts = new ArrayList<Double>();
+        vra.addListener(new BeforeJobInsertionListener() {
+            @Override
+            public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
+                String id = job.getId();
+                firstRecordCosts.add(data.getInsertionCost());
+                firstRecord.add(id);
+            }
+        });
+        vra.searchSolutions();
+
+        VehicleRoutingAlgorithm second = Jsprit.Builder.newInstance(vrp)
+            .setProperty(Jsprit.Strategy.WORST_REGRET,"0.")
+            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+            .setProperty(Jsprit.Parameter.THREADS, "5").buildAlgorithm();
+        second.setMaxIterations(100);
+        final List<String> secondRecord = new ArrayList<String>();
+        final List<Double> secondRecordCosts = new ArrayList<Double>();
+        second.addListener(new BeforeJobInsertionListener() {
+            @Override
+            public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
+                secondRecord.add(job.getId());
+                secondRecordCosts.add(data.getInsertionCost());
+            }
+        });
+        second.searchSolutions();
+
+//        for(int i=0;i<firstRecord.size();i++){
+//            System.out.print(firstRecord.get(i) + " (" + ((int)(firstRecordCosts.get(i)*100.))/100. + "), ");
+//        }
+//        System.out.println();
+//        for(int i=0;i<secondRecord.size();i++){
+//            System.out.print(secondRecord.get(i) + " (" + ((int)(firstRecordCosts.get(i)*100.))/100. + "), ");
+//        }
+
+        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        for (int i = 0; i < firstRecord.size(); i++) {
+            if (!firstRecord.get(i).equals(secondRecord.get(i))) {
+                Assert.assertFalse(true);
+            }
+        }
+        Assert.assertTrue(true);
+    }
+
+    @Test
+    public void compare(){
+        String s1 = "s2234";
+        String s2 = "s1";
+        int c = s1.compareTo(s2);
+        Assert.assertEquals(1,c);
     }
 
 

@@ -253,6 +253,11 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                 if (scoredJob.getScore() > bestScoredJob.getScore()) {
                     bestScoredJob = scoredJob;
                 }
+                else if (scoredJob.getScore() == bestScoredJob.getScore()){
+                    if(scoredJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0){
+                        bestScoredJob = scoredJob;
+                    }
+                }
             }
         }
         return bestScoredJob;
