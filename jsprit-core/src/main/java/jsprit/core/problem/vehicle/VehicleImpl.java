@@ -177,7 +177,7 @@ public class VehicleImpl extends AbstractVehicle {
          * @return this builder
          */
         public Builder setEarliestStart(double earliest_startTime) {
-            if(earliest_startTime < 0) throw new IllegalArgumentException("earliest start cannot be negative");
+            if(earliest_startTime < 0) throw new IllegalArgumentException("earliest start of vehicle " + id + " cannot be negative");
             this.earliestStart = earliest_startTime;
             return this;
         }
@@ -189,7 +189,7 @@ public class VehicleImpl extends AbstractVehicle {
          * @return this builder
          */
         public Builder setLatestArrival(double latest_arrTime) {
-            if(latest_arrTime < 0) throw new IllegalArgumentException("latest arrival time cannot be negative");
+            if(latest_arrTime < 0) throw new IllegalArgumentException("latest arrival time of vehicle " + id + " cannot be negative");
             this.latestArrival = latest_arrTime;
             return this;
         }
