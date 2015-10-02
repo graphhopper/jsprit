@@ -47,7 +47,7 @@ public class Skills {
          * @return builder
          */
         public Builder addSkill(String skill) {
-            skills.add(skill.toLowerCase());
+            skills.add(skill.trim().toLowerCase());
             return this;
         }
 

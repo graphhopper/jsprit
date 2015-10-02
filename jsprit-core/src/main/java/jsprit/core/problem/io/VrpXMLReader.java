@@ -163,9 +163,7 @@ public class VrpXMLReader {
         try {
             xmlConfig.load();
         } catch (ConfigurationException e) {
-            logger.error("Exception:", e);
-            e.printStackTrace();
-            System.exit(1);
+            throw new RuntimeException(e);
         }
         readProblemType(xmlConfig);
         readVehiclesAndTheirTypes(xmlConfig);

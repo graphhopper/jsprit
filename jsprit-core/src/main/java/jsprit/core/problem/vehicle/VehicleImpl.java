@@ -187,6 +187,7 @@ public class VehicleImpl extends AbstractVehicle {
          * @return this builder
          */
         public Builder setEarliestStart(double earliest_startTime) {
+            if(earliest_startTime < 0) throw new IllegalArgumentException("earliest start of vehicle " + id + " must not be negative");
             this.earliestStart = earliest_startTime;
             return this;
         }
@@ -198,6 +199,7 @@ public class VehicleImpl extends AbstractVehicle {
          * @return this builder
          */
         public Builder setLatestArrival(double latest_arrTime) {
+            if(latest_arrTime < 0) throw new IllegalArgumentException("latest arrival time of vehicle " + id + " must not be negative");
             this.latestArrival = latest_arrTime;
             return this;
         }
@@ -224,6 +226,7 @@ public class VehicleImpl extends AbstractVehicle {
          *                               or (endLocationId!=null AND returnToDepot=false)
          */
         public VehicleImpl build() {
+            if(latestArrival < earliestStart) throw new IllegalStateException("latest arrival of vehicle " + id + " must not be smaller than its start time");
             if (startLocation != null && endLocation != null) {
                 if (!startLocation.getId().equals(endLocation.getId()) && !returnToDepot)
                     throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +

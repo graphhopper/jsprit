@@ -77,9 +77,7 @@ public class AlgorithmConfigXmlReader {
         try {
             algorithmConfig.getXMLConfiguration().load();
         } catch (ConfigurationException e) {
-            log.error(e);
-            e.printStackTrace();
-            System.exit(1);
+            throw new RuntimeException(e);
         }
     }
 

@@ -35,6 +35,8 @@ import java.util.concurrent.Executors;
 
 public class Jsprit {
 
+    private final ActivityInsertionCostsCalculator activityInsertion;
+
     public enum Construction {
 
         BEST_INSERTION("best_insertion"), REGRET_INSERTION("regret_insertion");
@@ -132,6 +134,8 @@ public class Jsprit {
 
         private Random random = RandomNumberGeneration.newInstance();
 
+        private ActivityInsertionCostsCalculator activityInsertionCalculator;
+
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
         }
@@ -225,6 +229,11 @@ public class Jsprit {
             return this;
         }
 
+        public Builder setActivityInsertionCalculator(ActivityInsertionCostsCalculator activityInsertionCalculator){
+            this.activityInsertionCalculator = activityInsertionCalculator;
+            return this;
+        }
+
         public VehicleRoutingAlgorithm buildAlgorithm() {
             return new Jsprit(this).create(vrp);
         }
@@ -294,6 +303,7 @@ public class Jsprit {
         this.properties = builder.properties;
         this.objectiveFunction = builder.objectiveFunction;
         this.random = builder.random;
+        this.activityInsertion = builder.activityInsertionCalculator;
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
@@ -403,6 +413,7 @@ public class Jsprit {
                 .setConcurrentMode(es, noThreads)
                 .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                .setActivityInsertionCostCalculator(activityInsertion)
                 .build();
             scorer = getRegretScorer(vrp);
             regretInsertion.setScoringFunction(scorer);
@@ -412,6 +423,7 @@ public class Jsprit {
                 .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
+                .setActivityInsertionCostCalculator(activityInsertion)
                 .build();
             scorer = getRegretScorer(vrp);
             regretInsertion.setScoringFunction(scorer);
@@ -425,6 +437,7 @@ public class Jsprit {
                 .setInsertionStrategy(InsertionBuilder.Strategy.BEST)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                .setActivityInsertionCostCalculator(activityInsertion)
                 .build();
             best = bestInsertion;
         } else {
@@ -433,6 +446,7 @@ public class Jsprit {
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setConcurrentMode(es, noThreads)
+                .setActivityInsertionCostCalculator(activityInsertion)
                 .build();
             best = bestInsertion;
         }

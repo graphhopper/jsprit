@@ -63,4 +63,30 @@ public class SkillsTest {
         assertTrue(skills.containsSkill("skill2"));
     }
 
+    @Test
+    public void whenSkillsAddedPrecedingWhitespaceShouldNotMatter() {
+        Set<String> skillSet = new HashSet<String>();
+        skillSet.add(" skill1");
+        skillSet.add("Skill2");
+        Skills skills = Skills.Builder.newInstance().addAllSkills(skillSet).build();
+        assertTrue(skills.containsSkill("skill1"));
+        assertTrue(skills.containsSkill("skill2"));
+    }
+
+    @Test
+    public void whenSkillsAddedTrailingWhitespaceShouldNotMatter() {
+        Set<String> skillSet = new HashSet<String>();
+        skillSet.add("skill1 ");
+        skillSet.add("Skill2");
+        Skills skills = Skills.Builder.newInstance().addAllSkills(skillSet).build();
+        assertTrue(skills.containsSkill("skill1"));
+        assertTrue(skills.containsSkill("skill2"));
+    }
+
+    @Test
+    public void whenSkillsAddedTrailingWhitespaceShouldNotMatter2() {
+        Skills skills = Skills.Builder.newInstance().addSkill("skill1 ").build();
+        assertTrue(skills.containsSkill("skill1"));
+    }
+
 }
