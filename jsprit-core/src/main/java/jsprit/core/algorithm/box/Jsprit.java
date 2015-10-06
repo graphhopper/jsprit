@@ -591,8 +591,13 @@ public class Jsprit {
                     costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
                     if(route.getVehicle().getBreak() != null){
                         if(!hasBreak){
-                            //break defined but not assigned penalty
-                            costs += maxCosts * 2;
+                            //break defined and required but not assigned penalty
+                            if(route.getEnd().getArrTime() > route.getVehicle().getBreak().getTimeWindow().getEnd()){
+                                costs += maxCosts * 2 + route.getVehicle().getBreak().getServiceDuration() * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit;
+                            }
+                            else{
+                                costs -= maxCosts * 2;
+                            }
                         }
                     }
                 }

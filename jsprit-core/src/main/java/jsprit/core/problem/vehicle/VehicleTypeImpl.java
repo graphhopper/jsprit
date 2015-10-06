@@ -35,6 +35,8 @@ public class VehicleTypeImpl implements VehicleType {
      */
     public static class VehicleCostParams {
 
+
+
         public static VehicleTypeImpl.VehicleCostParams newInstance(double fix, double perTimeUnit, double perDistanceUnit) {
             return new VehicleCostParams(fix, perTimeUnit, perDistanceUnit);
         }
@@ -45,6 +47,7 @@ public class VehicleTypeImpl implements VehicleType {
         public final double perTransportTimeUnit;
         public final double perDistanceUnit;
         public final double perWaitingTimeUnit;
+        public final double perServiceTimeUnit;
 
         private VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit) {
             super();
@@ -53,6 +56,7 @@ public class VehicleTypeImpl implements VehicleType {
             this.perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = 0.;
+            this.perServiceTimeUnit = 0.;
         }
 
         public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit) {
@@ -61,6 +65,16 @@ public class VehicleTypeImpl implements VehicleType {
             this.perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = perWaitingTimeUnit;
+            this.perServiceTimeUnit = 0.;
+        }
+
+        public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit, double perServiceTimeUnit) {
+            this.fix = fix;
+            this.perTimeUnit = perTimeUnit;
+            this.perTransportTimeUnit = perTimeUnit;
+            this.perDistanceUnit = perDistanceUnit;
+            this.perWaitingTimeUnit = perWaitingTimeUnit;
+            this.perServiceTimeUnit = perServiceTimeUnit;
         }
 
         @Override
@@ -92,6 +106,7 @@ public class VehicleTypeImpl implements VehicleType {
         private double perDistance = 1.0;
         private double perTime = 0.0;
         private double perWaitingTime = 0.0;
+        private double perServiceTime = 0.0;
 
         private String profile = "car";
 
@@ -192,6 +207,12 @@ public class VehicleTypeImpl implements VehicleType {
         public VehicleTypeImpl.Builder setCostPerWaitingTime(double perWaitingTime) {
             if (perWaitingTime < 0.0) throw new IllegalStateException();
             this.perWaitingTime = perWaitingTime;
+            return this;
+        }
+
+        public VehicleTypeImpl.Builder setCostPerServiceTime(double perServiceTime) {
+            if (perServiceTime < 0.0) throw new IllegalStateException();
+            this.perServiceTime = perServiceTime;
             return this;
         }
 
@@ -303,7 +324,7 @@ public class VehicleTypeImpl implements VehicleType {
         typeId = builder.id;
         capacity = builder.capacity;
         maxVelocity = builder.maxVelo;
-        vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance, builder.perWaitingTime);
+        vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance, builder.perWaitingTime, builder.perServiceTime);
         capacityDimensions = builder.capacityDimensions;
         profile = builder.profile;
     }
