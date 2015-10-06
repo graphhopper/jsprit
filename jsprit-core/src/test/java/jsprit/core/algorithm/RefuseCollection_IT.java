@@ -118,7 +118,7 @@ public class RefuseCollection_IT {
          * create cost-matrix
 		 */
         VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
-		/*
+        /*
 		 * read demand quantities
 		 */
         readDemandQuantitiesAsServices(vrpBuilder);

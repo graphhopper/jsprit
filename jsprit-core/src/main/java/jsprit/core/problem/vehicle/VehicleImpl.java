@@ -24,7 +24,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-
 /**
  * Implementation of {@link Vehicle}.
  *
@@ -46,8 +45,8 @@ public class VehicleImpl extends AbstractVehicle {
 
         private VehicleType type = VehicleTypeImpl.Builder.newInstance("noType").build();
 
-		public NoVehicle() {
-		}
+        public NoVehicle() {
+        }
 
         @Override
         public double getEarliestDeparture() {
@@ -90,22 +89,23 @@ public class VehicleImpl extends AbstractVehicle {
         }
 
 
-		@Override
-		public Break getBreak() { return null; }
+        @Override
+        public Break getBreak() {
+            return null;
+        }
 
     }
 
-	/**
-	 * Builder that builds the vehicle.
-	 *
-	 * <p>By default, earliestDepartureTime is 0.0, latestDepartureTime is Double.MAX_VALUE,
-	 * it returns to the depot and its {@link VehicleType} is the DefaultType with typeId equal to 'default'
-	 * and a capacity of 0.
-	 *
-	 * @author stefan
-	 *
-	 */
-	public static class Builder {
+    /**
+     * Builder that builds the vehicle.
+     * <p/>
+     * <p>By default, earliestDepartureTime is 0.0, latestDepartureTime is Double.MAX_VALUE,
+     * it returns to the depot and its {@link VehicleType} is the DefaultType with typeId equal to 'default'
+     * and a capacity of 0.
+     *
+     * @author stefan
+     */
+    public static class Builder {
 
         static final Logger log = LogManager.getLogger(Builder.class.getName());
 
@@ -127,42 +127,42 @@ public class VehicleImpl extends AbstractVehicle {
 
         private Location endLocation;
 
-		private Break aBreak;
+        private Break aBreak;
 
-		private Builder(String id) {
-			super();
-			this.id = id;
-		}
+        private Builder(String id) {
+            super();
+            this.id = id;
+        }
 
-		/**
-		 * Sets the {@link VehicleType}.<br>
-		 *
-		 * @param type the type to be set
-		 * @throws IllegalStateException if type is null
-		 * @return this builder
-		 */
-		public Builder setType(VehicleType type){
-			if(type==null) throw new IllegalStateException("type cannot be null.");
-			this.type = type;
-			return this;
-		}
+        /**
+         * Sets the {@link VehicleType}.<br>
+         *
+         * @param type the type to be set
+         * @return this builder
+         * @throws IllegalStateException if type is null
+         */
+        public Builder setType(VehicleType type) {
+            if (type == null) throw new IllegalStateException("type cannot be null.");
+            this.type = type;
+            return this;
+        }
 
-		/**
-		 * Sets the flag whether the vehicle must return to depot or not.
-		 *
-		 * <p>If returnToDepot is true, the vehicle must return to specified end-location. If you
-		 * omit specifying the end-location, vehicle returns to start-location (that must to be set). If
-		 * you specify it, it returns to specified end-location.
-		 *
-		 * <p>If returnToDepot is false, the end-location of the vehicle is endogenous.
-		 *
-		 * @param returnToDepot true if vehicle need to return to depot, otherwise false
-		 * @return this builder
-		 */
-		public Builder setReturnToDepot(boolean returnToDepot){
-			this.returnToDepot = returnToDepot;
-			return this;
-		}
+        /**
+         * Sets the flag whether the vehicle must return to depot or not.
+         * <p/>
+         * <p>If returnToDepot is true, the vehicle must return to specified end-location. If you
+         * omit specifying the end-location, vehicle returns to start-location (that must to be set). If
+         * you specify it, it returns to specified end-location.
+         * <p/>
+         * <p>If returnToDepot is false, the end-location of the vehicle is endogenous.
+         *
+         * @param returnToDepot true if vehicle need to return to depot, otherwise false
+         * @return this builder
+         */
+        public Builder setReturnToDepot(boolean returnToDepot) {
+            this.returnToDepot = returnToDepot;
+            return this;
+        }
 
         /**
          * Sets start location.
@@ -187,7 +187,8 @@ public class VehicleImpl extends AbstractVehicle {
          * @return this builder
          */
         public Builder setEarliestStart(double earliest_startTime) {
-            if(earliest_startTime < 0) throw new IllegalArgumentException("earliest start of vehicle " + id + " must not be negative");
+            if (earliest_startTime < 0)
+                throw new IllegalArgumentException("earliest start of vehicle " + id + " must not be negative");
             this.earliestStart = earliest_startTime;
             return this;
         }
@@ -199,7 +200,8 @@ public class VehicleImpl extends AbstractVehicle {
          * @return this builder
          */
         public Builder setLatestArrival(double latest_arrTime) {
-            if(latest_arrTime < 0) throw new IllegalArgumentException("latest arrival time of vehicle " + id + " must not be negative");
+            if (latest_arrTime < 0)
+                throw new IllegalArgumentException("latest arrival time of vehicle " + id + " must not be negative");
             this.latestArrival = latest_arrTime;
             return this;
         }
@@ -226,7 +228,8 @@ public class VehicleImpl extends AbstractVehicle {
          *                               or (endLocationId!=null AND returnToDepot=false)
          */
         public VehicleImpl build() {
-            if(latestArrival < earliestStart) throw new IllegalStateException("latest arrival of vehicle " + id + " must not be smaller than its start time");
+            if (latestArrival < earliestStart)
+                throw new IllegalStateException("latest arrival of vehicle " + id + " must not be smaller than its start time");
             if (startLocation != null && endLocation != null) {
                 if (!startLocation.getId().equals(endLocation.getId()) && !returnToDepot)
                     throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
@@ -257,22 +260,22 @@ public class VehicleImpl extends AbstractVehicle {
             return this;
         }
 
-		public Builder setBreak(Break aBreak) {
-			this.aBreak = aBreak;
-			return this;
-		}
-	}
+        public Builder setBreak(Break aBreak) {
+            this.aBreak = aBreak;
+            return this;
+        }
+    }
 
-	/**
-	 * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
-	 *
-	 * <p>NoVehicle has id="noVehicle" and extends {@link VehicleImpl}
-	 *
-	 * @return emptyVehicle
-	 */
-	public static NoVehicle createNoVehicle(){
-		return new NoVehicle();
-	}
+    /**
+     * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
+     * <p/>
+     * <p>NoVehicle has id="noVehicle" and extends {@link VehicleImpl}
+     *
+     * @return emptyVehicle
+     */
+    public static NoVehicle createNoVehicle() {
+        return new NoVehicle();
+    }
 
     private final String id;
 
@@ -290,29 +293,29 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final Location startLocation;
 
-	private final Break aBreak;
+    private final Break aBreak;
 
-	private VehicleImpl(Builder builder){
-		id = builder.id;
-		type = builder.type;
-		earliestDeparture = builder.earliestStart;
-		latestArrival = builder.latestArrival;
-		returnToDepot = builder.returnToDepot;
-	    skills = builder.skills;
+    private VehicleImpl(Builder builder) {
+        id = builder.id;
+        type = builder.type;
+        earliestDeparture = builder.earliestStart;
+        latestArrival = builder.latestArrival;
+        returnToDepot = builder.returnToDepot;
+        skills = builder.skills;
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
-		aBreak = builder.aBreak;
+        aBreak = builder.aBreak;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills, returnToDepot));
-	}
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot));
+    }
 
-	/**
-	 * Returns String with attributes of this vehicle
-	 *
-	 * <p>String has the following format [attr1=val1][attr2=val2]...[attrn=valn]
-	 */
-	@Override
-	public String toString() {
+    /**
+     * Returns String with attributes of this vehicle
+     * <p/>
+     * <p>String has the following format [attr1=val1][attr2=val2]...[attrn=valn]
+     */
+    @Override
+    public String toString() {
         return "[id=" + id + "]" +
             "[type=" + type + "]" +
             "[startLocation=" + startLocation + "]" +
@@ -361,47 +364,47 @@ public class VehicleImpl extends AbstractVehicle {
         return skills;
     }
 
-	@Override
-	public Break getBreak() {
-		return aBreak;
-	}
+    @Override
+    public Break getBreak() {
+        return aBreak;
+    }
 
-	/* (non-Javadoc)
+    /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
 
-	/**
-	 * Two vehicles are equal if they have the same id and if their types are equal.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		VehicleImpl other = (VehicleImpl) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
+    /**
+     * Two vehicles are equal if they have the same id and if their types are equal.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        VehicleImpl other = (VehicleImpl) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        } else if (!type.equals(other.type))
+            return false;
+        return true;
+    }
 
 }
 

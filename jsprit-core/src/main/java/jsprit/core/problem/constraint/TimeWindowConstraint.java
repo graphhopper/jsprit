@@ -125,7 +125,7 @@ class TimeWindowConstraint implements HardActivityConstraint {
         double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
 			/*
-			 *  |--- newAct ---|
+             *  |--- newAct ---|
 			 *                       		                 |--- vehicle's arrival @nextAct
 			 *        latest arrival of vehicle @nextAct ---|
 			 */

@@ -24,57 +24,56 @@ import jsprit.core.problem.Skills;
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
  *
  * @author schroeder
- *
  */
 public class Break extends Service {
 
-	public static class Builder extends Service.Builder<Break> {
+    public static class Builder extends Service.Builder<Break> {
 
-		/**
-		 * Returns a new instance of builder that builds a pickup.
-		 *
-		 * @param id the id of the pickup
-		 * @return the builder
-		 */
-		public static Builder newInstance(String id){
-			return new Builder(id);
-		}
+        /**
+         * Returns a new instance of builder that builds a pickup.
+         *
+         * @param id the id of the pickup
+         * @return the builder
+         */
+        public static Builder newInstance(String id) {
+            return new Builder(id);
+        }
 
-		private boolean variableLocation = true;
+        private boolean variableLocation = true;
 
-		Builder(String id) {
-			super(id);
-		}
+        Builder(String id) {
+            super(id);
+        }
 
-		/**
-		 * Builds Pickup.
-		 *
-		 *<p>Pickup type is "pickup"
-		 *
-		 * @return pickup
-		 * @throws IllegalStateException if neither locationId nor coordinate has been set
-		 */
-		public Break build(){
-			if(location != null){
-				variableLocation = false;
-			}
-			this.setType("break");
-			super.capacity = Capacity.Builder.newInstance().build();
+        /**
+         * Builds Pickup.
+         * <p/>
+         * <p>Pickup type is "pickup"
+         *
+         * @return pickup
+         * @throws IllegalStateException if neither locationId nor coordinate has been set
+         */
+        public Break build() {
+            if (location != null) {
+                variableLocation = false;
+            }
+            this.setType("break");
+            super.capacity = Capacity.Builder.newInstance().build();
             super.skills = Skills.Builder.newInstance().build();
-			return new Break(this);
-		}
+            return new Break(this);
+        }
 
-	}
+    }
 
-	private boolean variableLocation = true;
+    private boolean variableLocation = true;
 
-	Break(Builder builder) {
-		super(builder);
-		this.variableLocation = builder.variableLocation;
-	}
+    Break(Builder builder) {
+        super(builder);
+        this.variableLocation = builder.variableLocation;
+    }
 
-	public boolean hasVariableLocation(){
-		return variableLocation;
-	}
+    public boolean hasVariableLocation() {
+        return variableLocation;
+    }
 
 }

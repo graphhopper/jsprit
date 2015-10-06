@@ -283,7 +283,7 @@ public class Plotter {
     }
 
     private void plot(VehicleRoutingProblem vrp, final Collection<VehicleRoute> routes, String pngFile, String title) {
-        log.info("plot to " + pngFile);
+        log.info("plot to {}", pngFile);
         XYSeriesCollection problem;
         XYSeriesCollection solution = null;
         final XYSeriesCollection shipments;

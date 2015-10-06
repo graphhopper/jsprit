@@ -135,9 +135,8 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
                     bestScoredJob = sJob;
                 } else if (sJob.getScore() > bestScoredJob.getScore()) {
                     bestScoredJob = sJob;
-                }
-                else if (sJob.getScore() == bestScoredJob.getScore()){
-                    if(sJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0){
+                } else if (sJob.getScore() == bestScoredJob.getScore()) {
+                    if (sJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0) {
                         bestScoredJob = sJob;
                     }
                 }

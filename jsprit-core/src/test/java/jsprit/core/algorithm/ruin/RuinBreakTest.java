@@ -21,10 +21,10 @@ import java.util.List;
 public class RuinBreakTest {
 
     @Test
-    public void itShouldRuinBreaks(){
+    public void itShouldRuinBreaks() {
         Break aBreak = Break.Builder.newInstance("break").build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc"))
-                .setBreak(aBreak).build();
+            .setBreak(aBreak).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(v).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(aBreak).build();
         TourActivity tourActivity = route.getActivities().get(0);
@@ -32,8 +32,8 @@ public class RuinBreakTest {
         Assert.assertTrue(tourActivity instanceof BreakActivity);
         RuinBreaks ruinBreaks = new RuinBreaks();
         List<Job> unassigned = new ArrayList<Job>();
-        ruinBreaks.ruinEnds(Arrays.asList(route),unassigned);
-        Assert.assertEquals(1,unassigned.size());
-        Assert.assertEquals(aBreak,unassigned.get(0));
+        ruinBreaks.ruinEnds(Arrays.asList(route), unassigned);
+        Assert.assertEquals(1, unassigned.size());
+        Assert.assertEquals(aBreak, unassigned.get(0));
     }
 }

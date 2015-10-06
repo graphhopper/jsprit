@@ -49,7 +49,7 @@ public class StopWatch implements AlgorithmStartsListener, AlgorithmEndsListener
     @Override
     public void informAlgorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
         stop();
-        log.info("computation time [in sec]: " + getCompTimeInSeconds());
+        log.info("computation time [in sec]: {}", getCompTimeInSeconds());
     }
 
     public void stop() {

@@ -124,7 +124,7 @@ public class SimpleExampleWithSkills {
         SolutionPrinter.print(problem, bestSolution, SolutionPrinter.Print.VERBOSE);
 
 		/*
-		 * plot
+         * plot
 		 */
 //		SolutionPlotter.plotSolutionAsPNG(problem, bestSolution, "output/solution.png", "solution");
 

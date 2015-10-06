@@ -131,7 +131,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 
 		/*
-		 * get the best
+         * get the best
 		 */
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 

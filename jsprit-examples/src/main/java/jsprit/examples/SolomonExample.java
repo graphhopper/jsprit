@@ -80,7 +80,7 @@ public class SolomonExample {
 
 
 		/*
-		 * print solution
+         * print solution
 		 */
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 

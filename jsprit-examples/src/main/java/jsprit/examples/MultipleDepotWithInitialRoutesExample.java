@@ -69,7 +69,7 @@ public class MultipleDepotWithInitialRoutesExample {
         assert !vrp.getJobs().containsKey("44") : "strange. service 44 should not be part of the problem";
 
 		/*
-		 * plot to see how the problem looks like
+         * plot to see how the problem looks like
 		 */
         new Plotter(vrp).setLabel(Label.ID).plot("output/cordeau01_problem_withInitialRoute.png", "c");
 

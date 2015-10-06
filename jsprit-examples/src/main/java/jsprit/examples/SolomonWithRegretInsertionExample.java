@@ -87,7 +87,7 @@ public class SolomonWithRegretInsertionExample {
 
 
 		/*
-		 * print solution
+         * print solution
 		 */
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 

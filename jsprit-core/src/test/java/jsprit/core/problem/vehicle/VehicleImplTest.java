@@ -30,27 +30,25 @@ import static org.junit.Assert.*;
 public class VehicleImplTest {
 
 
+    @Test(expected = IllegalStateException.class)
+    public void whenVehicleIsBuiltWithoutSettingNeitherLocationNorCoord_itThrowsAnIllegalStateException() {
+        @SuppressWarnings("unused")
+        Vehicle v = VehicleImpl.Builder.newInstance("v").build();
+    }
 
-	@Test(expected=IllegalStateException.class)
-	public void whenVehicleIsBuiltWithoutSettingNeitherLocationNorCoord_itThrowsAnIllegalStateException(){
-		@SuppressWarnings("unused")
-		Vehicle v = VehicleImpl.Builder.newInstance("v").build();
-	}
 
-
-	@Test
-	public void whenAddingDriverBreak_itShouldBeAddedCorrectly(){
-		VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
-		Break aBreak = (Break) Break.Builder.newInstance("break").setTimeWindow(TimeWindow.newInstance(100, 200)).setServiceTime(30).build();
-		Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start"))
-				.setType(type1).setEndLocation(Location.newInstance("start"))
-				.setBreak(aBreak).build();
-		assertNotNull(v.getBreak());
-		assertEquals(100.,v.getBreak().getTimeWindow().getStart(),0.1);
-		assertEquals(200.,v.getBreak().getTimeWindow().getEnd(),0.1);
-		assertEquals(30.,v.getBreak().getServiceDuration(),0.1);
-	}
-
+    @Test
+    public void whenAddingDriverBreak_itShouldBeAddedCorrectly() {
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+        Break aBreak = (Break) Break.Builder.newInstance("break").setTimeWindow(TimeWindow.newInstance(100, 200)).setServiceTime(30).build();
+        Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start"))
+            .setType(type1).setEndLocation(Location.newInstance("start"))
+            .setBreak(aBreak).build();
+        assertNotNull(v.getBreak());
+        assertEquals(100., v.getBreak().getTimeWindow().getStart(), 0.1);
+        assertEquals(200., v.getBreak().getTimeWindow().getEnd(), 0.1);
+        assertEquals(30., v.getBreak().getServiceDuration(), 0.1);
+    }
 
 
     @Test

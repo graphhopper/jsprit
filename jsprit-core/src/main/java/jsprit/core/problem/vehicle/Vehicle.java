@@ -72,5 +72,5 @@ public interface Vehicle extends HasId, HasIndex {
 
     public abstract Skills getSkills();
 
-	public abstract Break getBreak();
+    public abstract Break getBreak();
 }

@@ -115,7 +115,7 @@ public class RefuseCollectionWithFastMatrixExample {
                 .addSizeDimension(0, Integer.parseInt(lineTokens[1]))
                 .setLocation(Location.Builder.newInstance().setIndex(Integer.parseInt(lineTokens[0])).build())
                 .build();
-			/*
+            /*
 			 * and add it to problem
 			 */
             vrpBuilder.addJob(service);

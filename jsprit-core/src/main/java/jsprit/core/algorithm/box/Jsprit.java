@@ -229,7 +229,7 @@ public class Jsprit {
             return this;
         }
 
-        public Builder setActivityInsertionCalculator(ActivityInsertionCostsCalculator activityInsertionCalculator){
+        public Builder setActivityInsertionCalculator(ActivityInsertionCostsCalculator activityInsertionCalculator) {
             this.activityInsertionCalculator = activityInsertionCalculator;
             return this;
         }
@@ -337,13 +337,12 @@ public class Jsprit {
         final double maxCosts = jobNeighborhoods.getMaxDistance();
 
         IterationStartsListener noiseConfigurator;
-        if(noThreads > 1) {
+        if (noThreads > 1) {
             ConcurrentInsertionNoiseMaker noiseMaker = new ConcurrentInsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
             noiseMaker.setRandom(random);
             constraintManager.addConstraint(noiseMaker);
             noiseConfigurator = noiseMaker;
-        }
-        else {
+        } else {
             InsertionNoiseMaker noiseMaker = new InsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
             noiseMaker.setRandom(random);
             constraintManager.addConstraint(noiseMaker);
@@ -583,19 +582,18 @@ public class Jsprit {
                     boolean hasBreak = false;
                     TourActivity prevAct = route.getStart();
                     for (TourActivity act : route.getActivities()) {
-                        if(act instanceof BreakActivity) hasBreak = true;
+                        if (act instanceof BreakActivity) hasBreak = true;
                         costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
                         costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                         prevAct = act;
                     }
                     costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
-                    if(route.getVehicle().getBreak() != null){
-                        if(!hasBreak){
+                    if (route.getVehicle().getBreak() != null) {
+                        if (!hasBreak) {
                             //break defined and required but not assigned penalty
-                            if(route.getEnd().getArrTime() > route.getVehicle().getBreak().getTimeWindow().getEnd()){
+                            if (route.getEnd().getArrTime() > route.getVehicle().getBreak().getTimeWindow().getEnd()) {
                                 costs += maxCosts * 2 + route.getVehicle().getBreak().getServiceDuration() * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit;
-                            }
-                            else{
+                            } else {
                                 costs -= maxCosts * 2;
                             }
                         }

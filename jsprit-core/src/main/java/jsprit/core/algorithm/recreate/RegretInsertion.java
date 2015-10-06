@@ -31,16 +31,15 @@ import java.util.Collection;
 import java.util.List;
 
 /**
-* Insertion based on regret approach.
-*
-* <p>Basically calculates the insertion cost of the firstBest and the secondBest alternative. The score is then calculated as difference
-* between secondBest and firstBest, plus additional scoring variables that can defined in this.ScoringFunction.
-* The idea is that if the cost of the secondBest alternative is way higher than the first best, it seems to be important to insert this
-* customer immediatedly. If difference is not that high, it might not impact solution if this customer is inserted later.
-*
-* @author stefan schroeder
-*
-*/
+ * Insertion based on regret approach.
+ * <p/>
+ * <p>Basically calculates the insertion cost of the firstBest and the secondBest alternative. The score is then calculated as difference
+ * between secondBest and firstBest, plus additional scoring variables that can defined in this.ScoringFunction.
+ * The idea is that if the cost of the secondBest alternative is way higher than the first best, it seems to be important to insert this
+ * customer immediatedly. If difference is not that high, it might not impact solution if this customer is inserted later.
+ *
+ * @author stefan schroeder
+ */
 public class RegretInsertion extends AbstractInsertionStrategy {
 
     static class ScoredJob {
@@ -92,138 +91,137 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         }
     }
 
-	/**
-	 * Scorer to include other impacts on score such as time-window length or distance to depot.
-	 *
-	 * @author schroeder
-	 *
-	 */
-	static interface ScoringFunction {
+    /**
+     * Scorer to include other impacts on score such as time-window length or distance to depot.
+     *
+     * @author schroeder
+     */
+    static interface ScoringFunction {
 
-		public double score(InsertionData best, Job job);
+        public double score(InsertionData best, Job job);
 
-	}
+    }
 
-	/**
-	 * Scorer that includes the length of the time-window when scoring a job. The wider the time-window, the lower the score.
-	 *
-	 * <p>This is the default scorer, i.e.: score = (secondBest - firstBest) + this.TimeWindowScorer.score(job)
-	 *
-	 * @author schroeder
-	 *
-	 */
-	public static class DefaultScorer implements ScoringFunction {
+    /**
+     * Scorer that includes the length of the time-window when scoring a job. The wider the time-window, the lower the score.
+     * <p/>
+     * <p>This is the default scorer, i.e.: score = (secondBest - firstBest) + this.TimeWindowScorer.score(job)
+     *
+     * @author schroeder
+     */
+    public static class DefaultScorer implements ScoringFunction {
 
         private VehicleRoutingProblem vrp;
 
-        private double tw_param = - 0.5;
+        private double tw_param = -0.5;
 
-        private double depotDistance_param = + 0.1;
+        private double depotDistance_param = +0.1;
 
-        private double minTimeWindowScore = - 100000;
+        private double minTimeWindowScore = -100000;
 
         public DefaultScorer(VehicleRoutingProblem vrp) {
             this.vrp = vrp;
         }
 
-        public void setTimeWindowParam(double tw_param){ this.tw_param = tw_param; }
+        public void setTimeWindowParam(double tw_param) {
+            this.tw_param = tw_param;
+        }
 
-        public void setDepotDistanceParam(double depotDistance_param){ this.depotDistance_param = depotDistance_param; }
+        public void setDepotDistanceParam(double depotDistance_param) {
+            this.depotDistance_param = depotDistance_param;
+        }
 
         @Override
         public double score(InsertionData best, Job job) {
             double score;
-            if(job instanceof Service){
+            if (job instanceof Service) {
                 score = scoreService(best, job);
-            }
-            else if(job instanceof Shipment){
-                score = scoreShipment(best,job);
-            }
-            else throw new IllegalStateException("not supported");
+            } else if (job instanceof Shipment) {
+                score = scoreShipment(best, job);
+            } else throw new IllegalStateException("not supported");
             return score;
         }
 
         private double scoreShipment(InsertionData best, Job job) {
-            Shipment shipment = (Shipment)job;
+            Shipment shipment = (Shipment) job;
             double maxDepotDistance_1 = Math.max(
-                    getDistance(best.getSelectedVehicle().getStartLocation(),shipment.getPickupLocation()),
-                    getDistance(best.getSelectedVehicle().getStartLocation(),shipment.getDeliveryLocation())
+                getDistance(best.getSelectedVehicle().getStartLocation(), shipment.getPickupLocation()),
+                getDistance(best.getSelectedVehicle().getStartLocation(), shipment.getDeliveryLocation())
             );
             double maxDepotDistance_2 = Math.max(
-                    getDistance(best.getSelectedVehicle().getEndLocation(),shipment.getPickupLocation()),
-                    getDistance(best.getSelectedVehicle().getEndLocation(),shipment.getDeliveryLocation())
+                getDistance(best.getSelectedVehicle().getEndLocation(), shipment.getPickupLocation()),
+                getDistance(best.getSelectedVehicle().getEndLocation(), shipment.getDeliveryLocation())
             );
-            double maxDepotDistance = Math.max(maxDepotDistance_1,maxDepotDistance_2);
-            double minTimeToOperate = Math.min(shipment.getPickupTimeWindow().getEnd()-shipment.getPickupTimeWindow().getStart(),
-                    shipment.getDeliveryTimeWindow().getEnd()-shipment.getDeliveryTimeWindow().getStart());
-            return Math.max(tw_param * minTimeToOperate,minTimeWindowScore) + depotDistance_param * maxDepotDistance;
+            double maxDepotDistance = Math.max(maxDepotDistance_1, maxDepotDistance_2);
+            double minTimeToOperate = Math.min(shipment.getPickupTimeWindow().getEnd() - shipment.getPickupTimeWindow().getStart(),
+                shipment.getDeliveryTimeWindow().getEnd() - shipment.getDeliveryTimeWindow().getStart());
+            return Math.max(tw_param * minTimeToOperate, minTimeWindowScore) + depotDistance_param * maxDepotDistance;
         }
 
         private double scoreService(InsertionData best, Job job) {
             Location location = ((Service) job).getLocation();
             double maxDepotDistance = 0;
-            if(location != null) {
+            if (location != null) {
                 maxDepotDistance = Math.max(
-                        getDistance(best.getSelectedVehicle().getStartLocation(), location),
-                        getDistance(best.getSelectedVehicle().getEndLocation(), location)
+                    getDistance(best.getSelectedVehicle().getStartLocation(), location),
+                    getDistance(best.getSelectedVehicle().getEndLocation(), location)
                 );
             }
-            return Math.max(tw_param * (((Service)job).getTimeWindow().getEnd() - ((Service)job).getTimeWindow().getStart()),minTimeWindowScore) +
-                    depotDistance_param * maxDepotDistance;
+            return Math.max(tw_param * (((Service) job).getTimeWindow().getEnd() - ((Service) job).getTimeWindow().getStart()), minTimeWindowScore) +
+                depotDistance_param * maxDepotDistance;
         }
 
 
         private double getDistance(Location loc1, Location loc2) {
-            return vrp.getTransportCosts().getTransportCost(loc1,loc2,0.,null,null);
+            return vrp.getTransportCosts().getTransportCost(loc1, loc2, 0., null, null);
         }
 
-		@Override
-		public String toString() {
-			return "[name=defaultScorer][twParam="+tw_param+"][depotDistanceParam=" + depotDistance_param + "]";
-		}
+        @Override
+        public String toString() {
+            return "[name=defaultScorer][twParam=" + tw_param + "][depotDistanceParam=" + depotDistance_param + "]";
+        }
 
-	}
+    }
 
     private static Logger logger = LogManager.getLogger(RegretInsertion.class);
 
-	private ScoringFunction scoringFunction;
+    private ScoringFunction scoringFunction;
 
     private JobInsertionCostsCalculator insertionCostsCalculator;
 
 
     /**
-	 * Sets the scoring function.
-	 *
-	 * <p>By default, the this.TimeWindowScorer is used.
-	 *
-	 * @param scoringFunction to score
-	 */
-	public void setScoringFunction(ScoringFunction scoringFunction) {
-		this.scoringFunction = scoringFunction;
-	}
+     * Sets the scoring function.
+     * <p/>
+     * <p>By default, the this.TimeWindowScorer is used.
+     *
+     * @param scoringFunction to score
+     */
+    public void setScoringFunction(ScoringFunction scoringFunction) {
+        this.scoringFunction = scoringFunction;
+    }
 
-	public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
-		super(vehicleRoutingProblem);
+    public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
+        super(vehicleRoutingProblem);
         this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
-		this.insertionCostsCalculator = jobInsertionCalculator;
+        this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
         logger.debug("initialise {}", this);
     }
 
-	@Override
-	public String toString() {
-		return "[name=regretInsertion][additionalScorer="+scoringFunction+"]";
-	}
+    @Override
+    public String toString() {
+        return "[name=regretInsertion][additionalScorer=" + scoringFunction + "]";
+    }
 
 
-	/**
-	 * Runs insertion.
-	 *
-	 * <p>Before inserting a job, all unassigned jobs are scored according to its best- and secondBest-insertion plus additional scoring variables.
-	 *
-	 */
-	@Override
-	public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+    /**
+     * Runs insertion.
+     * <p/>
+     * <p>Before inserting a job, all unassigned jobs are scored according to its best- and secondBest-insertion plus additional scoring variables.
+     */
+    @Override
+    public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
         List<Job> jobs = new ArrayList<Job>(unassignedJobs);
 
@@ -231,14 +229,14 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
             ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
-            if(bestScoredJob != null){
-                if(bestScoredJob.isNewRoute()){
+            if (bestScoredJob != null) {
+                if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
                 }
-                insertJob(bestScoredJob.getJob(),bestScoredJob.getInsertionData(),bestScoredJob.getRoute());
+                insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
             }
-            for(Job bad : badJobList) {
+            for (Job bad : badJobList) {
                 jobs.remove(bad);
                 badJobs.add(bad);
             }
@@ -249,18 +247,17 @@ public class RegretInsertion extends AbstractInsertionStrategy {
     private ScoredJob nextJob(Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobs) {
         ScoredJob bestScoredJob = null;
         for (Job unassignedJob : unassignedJobList) {
-            ScoredJob scoredJob = getScoredJob(routes,unassignedJob,insertionCostsCalculator,scoringFunction);
-            if(scoredJob instanceof BadJob){
+            ScoredJob scoredJob = getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
+            if (scoredJob instanceof BadJob) {
                 badJobs.add(unassignedJob);
                 continue;
             }
-            if(bestScoredJob == null) bestScoredJob = scoredJob;
-            else{
-                if(scoredJob.getScore() > bestScoredJob.getScore()){
+            if (bestScoredJob == null) bestScoredJob = scoredJob;
+            else {
+                if (scoredJob.getScore() > bestScoredJob.getScore()) {
                     bestScoredJob = scoredJob;
-                }
-                else if (scoredJob.getScore() == bestScoredJob.getScore()){
-                    if(scoredJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0){
+                } else if (scoredJob.getScore() == bestScoredJob.getScore()) {
+                    if (scoredJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0) {
                         bestScoredJob = scoredJob;
                     }
                 }
@@ -307,31 +304,29 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                 secondBest = iData;
             }
         }
-        if(best == null){
+        if (best == null) {
             return new RegretInsertion.BadJob(unassignedJob);
         }
         double score = score(unassignedJob, best, secondBest, scoringFunction);
         ScoredJob scoredJob;
-        if(bestRoute == emptyRoute){
+        if (bestRoute == emptyRoute) {
             scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, true);
-        }
-        else scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, false);
+        } else scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, false);
         return scoredJob;
     }
 
 
     static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction) {
-        if(best == null){
-            throw new IllegalStateException("cannot insert job " +  unassignedJob.getId());
+        if (best == null) {
+            throw new IllegalStateException("cannot insert job " + unassignedJob.getId());
         }
         double score;
-        if(secondBest == null){ //either there is only one vehicle or there are more vehicles, but they cannot load unassignedJob
+        if (secondBest == null) { //either there is only one vehicle or there are more vehicles, but they cannot load unassignedJob
             //if only one vehicle, I want the job to be inserted with min iCosts
             //if there are more vehicles, I want this job to be prioritized since there are no alternatives
             score = Integer.MAX_VALUE - best.getInsertionCost() + scoringFunction.score(best, unassignedJob);
-        }
-        else{
-            score = (secondBest.getInsertionCost()-best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
+        } else {
+            score = (secondBest.getInsertionCost() - best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
         }
         return score;
     }

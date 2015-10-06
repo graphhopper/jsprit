@@ -13,24 +13,24 @@ class InsertBreakListener implements EventListener {
 
     @Override
     public void inform(Event event) {
-        if(event instanceof InsertBreak){
+        if (event instanceof InsertBreak) {
             InsertBreak insertActivity = (InsertBreak) event;
-            if(!insertActivity.getNewVehicle().isReturnToDepot()){
-                if(insertActivity.getIndex()>=insertActivity.getVehicleRoute().getActivities().size()){
+            if (!insertActivity.getNewVehicle().isReturnToDepot()) {
+                if (insertActivity.getIndex() >= insertActivity.getVehicleRoute().getActivities().size()) {
                     insertActivity.getVehicleRoute().getEnd().setLocation(insertActivity.getActivity().getLocation());
                 }
             }
             VehicleRoute vehicleRoute = ((InsertBreak) event).getVehicleRoute();
-            if(!vehicleRoute.isEmpty()){
-                if(vehicleRoute.getVehicle() != ((InsertBreak) event).getNewVehicle()){
-                    if(vehicleRoute.getVehicle().getBreak() != null){
+            if (!vehicleRoute.isEmpty()) {
+                if (vehicleRoute.getVehicle() != ((InsertBreak) event).getNewVehicle()) {
+                    if (vehicleRoute.getVehicle().getBreak() != null) {
                         boolean removed = vehicleRoute.getTourActivities().removeJob(vehicleRoute.getVehicle().getBreak());
-                        if(removed)
+                        if (removed)
                             logger.trace("remove old break " + vehicleRoute.getVehicle().getBreak());
                     }
                 }
             }
-            insertActivity.getVehicleRoute().getTourActivities().addActivity(insertActivity.getIndex(),((InsertBreak) event).getActivity());
+            insertActivity.getVehicleRoute().getTourActivities().addActivity(insertActivity.getIndex(), ((InsertBreak) event).getActivity());
         }
     }
 

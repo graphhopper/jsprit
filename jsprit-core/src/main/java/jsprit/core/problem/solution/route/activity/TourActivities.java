@@ -129,14 +129,14 @@ public class TourActivities {
         }
         boolean activityRemoved = false;
         Iterator<TourActivity> iterator = tourActivities.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             TourActivity c = iterator.next();
             if (c instanceof JobActivity) {
                 Job underlyingJob = ((JobActivity) c).getJob();
                 if (job.equals(underlyingJob)) {
                     iterator.remove();
                     activityRemoved = true;
-                    if(underlyingJob instanceof Service){
+                    if (underlyingJob instanceof Service) {
                         break;
                     }
                 }

@@ -59,7 +59,7 @@ public class AlgorithmSearchProgressChartListener implements IterationEndsListen
 
     @Override
     public void informAlgorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-        log.info("create chart " + filename);
+        log.info("create chart {}", filename);
         XYLineChartBuilder.saveChartAsPNG(chartBuilder.build(), filename);
     }
 

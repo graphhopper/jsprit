@@ -97,7 +97,7 @@ public class SimpleDepotBoundedPickupAndDeliveryExample {
         SolutionPrinter.print(bestSolution);
 
 		/*
-		 * plot
+         * plot
 		 */
         Plotter plotter = new Plotter(problem, bestSolution);
         plotter.setLabel(Label.SIZE);

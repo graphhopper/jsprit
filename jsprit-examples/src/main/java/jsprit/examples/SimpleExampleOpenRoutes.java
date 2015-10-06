@@ -96,7 +96,7 @@ public class SimpleExampleOpenRoutes {
         SolutionPrinter.print(bestSolution);
 
 		/*
-		 * plot
+         * plot
 		 */
 
         new Plotter(problem, bestSolution).plot("output/solution.png", "solution");

@@ -84,7 +84,7 @@ public class SolomonExampleWithSpecifiedVehicleEndLocationsWithoutTWs {
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
 		/*
-		 * Retrieve best solution.
+         * Retrieve best solution.
 		 */
         VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 

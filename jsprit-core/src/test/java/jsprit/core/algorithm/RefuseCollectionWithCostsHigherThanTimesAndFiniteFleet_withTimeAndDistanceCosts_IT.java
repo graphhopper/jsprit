@@ -171,7 +171,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_withTimeAndD
 			 */
             Service service = Service.Builder.newInstance(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
                 .setLocation(Location.newInstance(lineTokens[0])).build();
-			/*
+            /*
 			 * and add it to problem
 			 */
             vrpBuilder.addJob(service);

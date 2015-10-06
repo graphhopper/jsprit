@@ -69,7 +69,7 @@ public class SolomonR101Example {
 //		vra.setPrematureBreak(100);
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
         /*
-		 * Solve the problem.
+         * Solve the problem.
 		 *
 		 *
 		 */

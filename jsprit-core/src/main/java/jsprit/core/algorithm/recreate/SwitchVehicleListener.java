@@ -15,7 +15,7 @@ class SwitchVehicleListener implements EventListener {
     public void inform(Event event) {
         if (event instanceof SwitchVehicle) {
             SwitchVehicle switchVehicle = (SwitchVehicle) event;
-            if(vehiclesDifferent((SwitchVehicle) event)) {
+            if (vehiclesDifferent((SwitchVehicle) event)) {
                 logger.trace("switch vehicle (" + ((SwitchVehicle) event).getRoute().getVehicle().getId() + " to " + ((SwitchVehicle) event).getVehicle().getId() + ")");
                 Break aBreak = ((SwitchVehicle) event).getRoute().getVehicle().getBreak();
                 if (aBreak != null) {
@@ -23,7 +23,7 @@ class SwitchVehicleListener implements EventListener {
                     if (removed) logger.trace("remove " + aBreak.getId());
                 }
             }
-            switchVehicle.getRoute().setVehicleAndDepartureTime(switchVehicle.getVehicle(),((SwitchVehicle) event).getDepartureTime());
+            switchVehicle.getRoute().setVehicleAndDepartureTime(switchVehicle.getVehicle(), ((SwitchVehicle) event).getDepartureTime());
         }
     }
 

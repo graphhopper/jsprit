@@ -36,7 +36,6 @@ public class VehicleTypeImpl implements VehicleType {
     public static class VehicleCostParams {
 
 
-
         public static VehicleTypeImpl.VehicleCostParams newInstance(double fix, double perTimeUnit, double perDistanceUnit) {
             return new VehicleCostParams(fix, perTimeUnit, perDistanceUnit);
         }
