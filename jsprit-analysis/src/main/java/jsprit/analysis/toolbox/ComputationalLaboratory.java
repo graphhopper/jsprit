@@ -407,16 +407,19 @@ public class ComputationalLaboratory {
             for (final BenchmarkInstance p : benchmarkInstances) {
                 for (int run = 0; run < runs; run++) {
                     final int r = run;
-//					runAlgorithm(p, algorithm, r+1);
+                    try {
+                        executor.submit(new Runnable() {
 
-                    executor.submit(new Runnable() {
+                            @Override
+                            public void run() {
+                                runAlgorithm(p, algorithm, r + 1);
+                            }
 
-                        @Override
-                        public void run() {
-                            runAlgorithm(p, algorithm, r + 1);
-                        }
-
-                    });
+                        });
+                    }
+                    catch (Exception e){
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
@@ -425,7 +428,7 @@ public class ComputationalLaboratory {
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         System.out.println("benchmarking done [time=" + (System.currentTimeMillis() - startTime) / 1000 + "sec]");
         informEnd();
