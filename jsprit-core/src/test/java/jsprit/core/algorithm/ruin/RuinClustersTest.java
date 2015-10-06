@@ -10,11 +10,13 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.BreakActivity;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.VehicleImpl;
+import jsprit.core.util.RandomNumberGeneration;
 import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Random;
 
 /**
  * Created by schroeder on 06/03/15.
@@ -44,6 +46,8 @@ public class RuinClustersTest {
         JobNeighborhoods n = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()));
         n.initialise();
         RuinClusters rc = new RuinClusters(vrp, 5, n);
+        Random r = RandomNumberGeneration.newInstance();
+        rc.setRandom(r);
         Collection<Job> ruined = rc.ruinRoutes(Arrays.asList(vr1, vr2));
         Assert.assertEquals(5, ruined.size());
 
@@ -61,7 +65,7 @@ public class RuinClustersTest {
         Service s7 = Service.Builder.newInstance("s7").setLocation(Location.newInstance(9, 30)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
-            .setBreak((Break) Break.Builder.newInstance("break").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(20, 30)).build())
+            .setBreak(Break.Builder.newInstance("break").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(20, 30)).build())
             .setStartLocation(Location.newInstance(0, 0)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
@@ -74,7 +78,10 @@ public class RuinClustersTest {
 
         JobNeighborhoods n = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()));
         n.initialise();
+
         RuinClusters rc = new RuinClusters(vrp, 5, n);
+        Random r = RandomNumberGeneration.newInstance();
+        rc.setRandom(r);
         Collection<Job> ruined = rc.ruinRoutes(Arrays.asList(vr1, vr2));
         Assert.assertEquals(5, ruined.size());
 
