@@ -20,7 +20,9 @@ import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 class VehicleFleetManagerImpl implements VehicleFleetManager {
@@ -51,7 +53,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
         public Vehicle getVehicle() {
             return vehicleList.get(0);
-//			return vehicleList.getFirst();
         }
 
         public boolean isEmpty() {
@@ -64,19 +65,21 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     private Collection<Vehicle> vehicles;
 
-    private Set<Vehicle> lockedVehicles;
+    private TypeContainer[] vehicleTypes;
 
-    private Map<VehicleTypeKey, TypeContainer> typeMapOfAvailableVehicles;
+    private boolean[] locked;
 
-    private Map<VehicleTypeKey, Vehicle> penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
-
+    private Vehicle[] vehicleArr;
 
     public VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
         super();
         this.vehicles = vehicles;
-        this.lockedVehicles = new HashSet<Vehicle>();
-        makeMap();
-        logger.debug("initialise " + this);
+        int arrSize = vehicles.size() + 2;
+        locked = new boolean[arrSize];
+        vehicleArr = new Vehicle[arrSize];
+        vehicleTypes = new TypeContainer[arrSize];
+        initializeVehicleTypes();
+        logger.debug("initialise {}",this);
     }
 
     @Override
@@ -84,10 +87,12 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         return "[name=finiteVehicles]";
     }
 
-    private void makeMap() {
-        typeMapOfAvailableVehicles = new HashMap<VehicleTypeKey, TypeContainer>();
-        penaltyVehicles = new HashMap<VehicleTypeKey, Vehicle>();
+    private void initializeVehicleTypes() {
+        for(int i=0;i< vehicleTypes.length;i++){
+            vehicleTypes[i] = new TypeContainer();
+        }
         for (Vehicle v : vehicles) {
+            vehicleArr[v.getIndex()]=v;
             addVehicle(v);
         }
     }
@@ -96,19 +101,11 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         if (v.getType() == null) {
             throw new IllegalStateException("vehicle needs type");
         }
-        VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills(), v.isReturnToDepot());
-        if (!typeMapOfAvailableVehicles.containsKey(typeKey)) {
-            typeMapOfAvailableVehicles.put(typeKey, new TypeContainer());
-        }
-        typeMapOfAvailableVehicles.get(typeKey).add(v);
-
+        vehicleTypes[v.getVehicleTypeIdentifier().getIndex()].add(v);
     }
 
     private void removeVehicle(Vehicle v) {
-        VehicleTypeKey key = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills(), v.isReturnToDepot());
-        if (typeMapOfAvailableVehicles.containsKey(key)) {
-            typeMapOfAvailableVehicles.get(key).remove(v);
-        }
+        vehicleTypes[v.getVehicleTypeIdentifier().getIndex()].remove(v);
     }
 
 
@@ -121,13 +118,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
     @Override
     public Collection<Vehicle> getAvailableVehicles() {
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        for (VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()) {
-            if (!typeMapOfAvailableVehicles.get(key).isEmpty()) {
-                vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
-            } else {
-                if (penaltyVehicles.containsKey(key)) {
-                    vehicles.add(penaltyVehicles.get(key));
-                }
+        for(int i=0;i< vehicleTypes.length;i++){
+            if(!vehicleTypes[i].isEmpty()){
+                vehicles.add(vehicleTypes[i].getVehicle());
             }
         }
         return vehicles;
@@ -136,15 +129,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
     @Override
     public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation().getId(), withoutThisType.getEndLocation().getId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills(), withoutThisType.isReturnToDepot());
-        for (VehicleTypeKey key : typeMapOfAvailableVehicles.keySet()) {
-            if (key.equals(thisKey)) continue;
-            if (!typeMapOfAvailableVehicles.get(key).isEmpty()) {
-                vehicles.add(typeMapOfAvailableVehicles.get(key).getVehicle());
-            } else {
-                if (penaltyVehicles.containsKey(key)) {
-                    vehicles.add(penaltyVehicles.get(key));
-                }
+        for(int i=0;i< vehicleTypes.length;i++){
+            if(!vehicleTypes[i].isEmpty() && i != withoutThisType.getVehicleTypeIdentifier().getIndex()){
+                vehicles.add(vehicleTypes[i].getVehicle());
             }
         }
         return vehicles;
@@ -158,10 +145,12 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         if (vehicles.isEmpty() || vehicle instanceof NoVehicle) {
             return;
         }
-        boolean locked = lockedVehicles.add(vehicle);
-        removeVehicle(vehicle);
-        if (!locked) {
+        if(locked[vehicle.getIndex()]){
             throw new IllegalStateException("cannot lock vehicle twice " + vehicle.getId());
+        }
+        else{
+            locked[vehicle.getIndex()] = true;
+            removeVehicle(vehicle);
         }
     }
 
@@ -170,11 +159,10 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
      */
     @Override
     public void unlock(Vehicle vehicle) {
-        if (vehicles.isEmpty() || vehicle instanceof NoVehicle) {
+        if (vehicle == null || vehicles.isEmpty() || vehicle instanceof NoVehicle) {
             return;
         }
-        if (vehicle == null) return;
-        lockedVehicles.remove(vehicle);
+        locked[vehicle.getIndex()] = false;
         addVehicle(vehicle);
     }
 
@@ -183,7 +171,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
      */
     @Override
     public boolean isLocked(Vehicle vehicle) {
-        return lockedVehicles.contains(vehicle);
+        return locked[vehicle.getIndex()];
     }
 
     /* (non-Javadoc)
@@ -191,18 +179,11 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
      */
     @Override
     public void unlockAll() {
-        Collection<Vehicle> locked = new ArrayList<Vehicle>(lockedVehicles);
-        for (Vehicle v : locked) {
-            unlock(v);
+        for(int i=0;i<vehicleArr.length;i++){
+            if(locked[i]){
+                unlock(vehicleArr[i]);
+            }
         }
-        if (!lockedVehicles.isEmpty()) {
-            throw new IllegalStateException("no vehicle must be locked");
-        }
-    }
-
-    @Deprecated
-    public int sizeOfLockedVehicles() {
-        return lockedVehicles.size();
     }
 
 }
