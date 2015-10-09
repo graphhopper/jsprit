@@ -77,7 +77,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         int arrSize = vehicles.size() + 2;
         locked = new boolean[arrSize];
         vehicleArr = new Vehicle[arrSize];
-        vehicleTypes = new TypeContainer[arrSize];
         initializeVehicleTypes();
         logger.debug("initialise {}",this);
     }
@@ -88,6 +87,13 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
     }
 
     private void initializeVehicleTypes() {
+        int maxTypeIndex = 0;
+        for(Vehicle v : vehicles){
+            if(v.getVehicleTypeIdentifier().getIndex() > maxTypeIndex){
+                maxTypeIndex = v.getVehicleTypeIdentifier().getIndex();
+            }
+        }
+        vehicleTypes = new TypeContainer[maxTypeIndex+1];
         for(int i=0;i< vehicleTypes.length;i++){
             vehicleTypes[i] = new TypeContainer();
         }
