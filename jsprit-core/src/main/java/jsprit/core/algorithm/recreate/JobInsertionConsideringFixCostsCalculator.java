@@ -66,10 +66,10 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
         return insertionData;
     }
 
-    private double getFixCostContribution(final VehicleRoute currentRoute,
-                                          final Job jobToInsert, final Vehicle newVehicle) {
-        double relFixCost = getDeltaRelativeFixCost(currentRoute, newVehicle, jobToInsert);
-        double absFixCost = getDeltaAbsoluteFixCost(currentRoute, newVehicle, jobToInsert);
+    private double getFixCostContribution(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle) {
+        Capacity currentMaxLoadInRoute = getCurrentMaxLoadInRoute(currentRoute);
+        double relFixCost = getDeltaRelativeFixCost(currentRoute, newVehicle, jobToInsert,currentMaxLoadInRoute);
+        double absFixCost = getDeltaAbsoluteFixCost(currentRoute, newVehicle, jobToInsert,currentMaxLoadInRoute);
         double deltaFixCost = (1 - solution_completeness_ratio) * relFixCost + solution_completeness_ratio * absFixCost;
         double fixcost_contribution = weight_deltaFixCost * solution_completeness_ratio * deltaFixCost;
         return fixcost_contribution;
@@ -89,9 +89,8 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
         solution_completeness_ratio = ratio;
     }
 
-    private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
-        Capacity load = Capacity.addup(getCurrentMaxLoadInRoute(route), job.getSize());
-//		double load = getCurrentMaxLoadInRoute(route) + job.getCapacityDemand();
+    private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job, Capacity currentMaxLoadInRoute) {
+        Capacity load = Capacity.addup(currentMaxLoadInRoute, job.getSize());
         double currentFix = 0.0;
         if (route.getVehicle() != null) {
             if (!(route.getVehicle() instanceof NoVehicle)) {
@@ -104,11 +103,8 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
         return newVehicle.getType().getVehicleCostParams().fix - currentFix;
     }
 
-    private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job) {
-        Capacity currentLoad = getCurrentMaxLoadInRoute(route);
-//		int currentLoad = getCurrentMaxLoadInRoute(route);
+    private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job, Capacity currentLoad) {
         Capacity load = Capacity.addup(currentLoad, job.getSize());
-//		double load = currentLoad + job.getCapacityDemand();
         double currentRelFix = 0.0;
         if (route.getVehicle() != null) {
             if (!(route.getVehicle() instanceof NoVehicle)) {
