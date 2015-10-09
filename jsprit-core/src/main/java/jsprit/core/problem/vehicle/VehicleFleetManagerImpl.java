@@ -52,7 +52,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         }
 
         public Vehicle getVehicle() {
-            return vehicleList.get(0);
+            return vehicleList.get(vehicleList.size()-1);
         }
 
         public boolean isEmpty() {
