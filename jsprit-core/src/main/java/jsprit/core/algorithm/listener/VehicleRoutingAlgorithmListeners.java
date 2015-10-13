@@ -45,37 +45,6 @@ public class VehicleRoutingAlgorithmListeners {
             return l;
         }
 
-//		@Override
-//		public int hashCode() {
-//			final int prime = 31;
-//			int result = 1;
-//			result = prime * result + ((l == null) ? 0 : l.hashCode());
-//			result = prime * result
-//					+ ((priority == null) ? 0 : priority.hashCode());
-//			return result;
-//		}
-//		@Override
-//		public boolean equals(Object obj) {
-//			if (this == obj)
-//				return true;
-//			if (obj == null)
-//				return false;
-//			if (getClass() != obj.getClass())
-//				return false;
-//			PrioritizedVRAListener other = (PrioritizedVRAListener) obj;
-//			if (l == null) {
-//				if (other.l != null)
-//					return false;
-//			} else if (!l.equals(other.l))
-//				return false;
-//			if (priority == null) {
-//				if (other.priority != null)
-//					return false;
-//			} else if (!priority.equals(other.priority))
-//				return false;
-//			return true;
-//		}
-
     }
 
     public enum Priority {

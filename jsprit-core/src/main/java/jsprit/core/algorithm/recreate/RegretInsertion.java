@@ -19,6 +19,7 @@ package jsprit.core.algorithm.recreate;
 
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.job.Break;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -223,8 +225,28 @@ public class RegretInsertion extends AbstractInsertionStrategy {
     @Override
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
-        List<Job> jobs = new ArrayList<Job>(unassignedJobs);
 
+        Iterator<Job> jobIterator = unassignedJobs.iterator();
+        while (jobIterator.hasNext()){
+            Job job = jobIterator.next();
+            if(job instanceof Break){
+                VehicleRoute route = findRoute(routes,job);
+                if(route == null){
+                    badJobs.add(job);
+                }
+                else {
+                    InsertionData iData = insertionCostsCalculator.getInsertionData(route, job, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+                    if (iData instanceof InsertionData.NoInsertionFound) {
+                        badJobs.add(job);
+                    } else {
+                        insertJob(job, iData, route);
+                    }
+                }
+                jobIterator.remove();
+            }
+        }
+
+        List<Job> jobs = new ArrayList<Job>(unassignedJobs);
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
@@ -244,7 +266,14 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private ScoredJob nextJob(Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobs) {
+    private VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
+        for(VehicleRoute r : routes){
+            if(r.getVehicle().getBreak() == job) return r;
+        }
+        return null;
+    }
+
+    private ScoredJob nextJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobList, List<Job> badJobs) {
         ScoredJob bestScoredJob = null;
         for (Job unassignedJob : unassignedJobList) {
             ScoredJob scoredJob = getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
