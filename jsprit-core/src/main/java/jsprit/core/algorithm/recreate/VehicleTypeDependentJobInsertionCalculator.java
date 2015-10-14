@@ -93,6 +93,9 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
     }
 
     public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle vehicle, double newVehicleDepartureTime, final Driver driver, final double bestKnownCost) {
+        if(vehicle != null){
+            return insertionCalculator.getInsertionData(currentRoute, jobToInsert, vehicle, newVehicleDepartureTime, driver, bestKnownCost);
+        }
         Vehicle selectedVehicle = currentRoute.getVehicle();
         Driver selectedDriver = currentRoute.getDriver();
         InsertionData bestIData = InsertionData.createEmptyInsertionData();
@@ -120,6 +123,10 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
             }
         }
         return bestIData;
+    }
+
+    VehicleFleetManager getFleetManager(){
+        return fleetManager;
     }
 
     private boolean isVehicleWithInitialRoute(Vehicle selectedVehicle) {

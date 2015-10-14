@@ -27,10 +27,7 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Insertion based on regret approach.
@@ -185,11 +182,39 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
     }
 
+    static class VersionedInsertionData {
+
+        private InsertionData iData;
+
+        private VehicleRoute route;
+
+        private int version;
+
+        public VersionedInsertionData(InsertionData iData, int version, VehicleRoute route) {
+            this.iData = iData;
+            this.version = version;
+            this.route = route;
+        }
+
+        public InsertionData getiData() {
+            return iData;
+        }
+
+        public int getVersion() {
+            return version;
+        }
+
+        public VehicleRoute getRoute() {
+            return route;
+        }
+    }
+
     private static Logger logger = LogManager.getLogger(RegretInsertion.class);
 
     private ScoringFunction scoringFunction;
 
     private JobInsertionCostsCalculator insertionCostsCalculator;
+
 
 
     /**
@@ -247,23 +272,141 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         }
 
         List<Job> jobs = new ArrayList<Job>(unassignedJobs);
+        PriorityQueue<VersionedInsertionData>[] priorityQueues = new PriorityQueue[vrp.getJobs().values().size() + 2];
+        VehicleRoute lastModified = null;
+        boolean firstRun = true;
+        int updateRound = 0;
+        Map<VehicleRoute,Integer> updates = new HashMap<VehicleRoute, Integer>();
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
-            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
+            if(firstRun){
+                firstRun = false;
+                updateInsertionData(priorityQueues, routes, unassignedJobList, badJobList, updateRound, updates);
+            }
+            else{
+                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, badJobList, updateRound, updates);
+            }
+            updateRound++;
+            ScoredJob bestScoredJob = getBest(priorityQueues,updates,unassignedJobList,badJobList);
+//            InsertionData d = insertionCostsCalculator.getInsertionData(bestScoredJob.getRoute(), bestScoredJob.getJob(), NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+//
+//  ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
                 }
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
+                lastModified = bestScoredJob.getRoute();
             }
+            else throw new IllegalStateException("fooo");
             for (Job bad : badJobList) {
                 jobs.remove(bad);
                 badJobs.add(bad);
             }
         }
         return badJobs;
+    }
+
+    private ScoredJob getBest(PriorityQueue<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<Job> badJobs) {
+        ScoredJob bestScoredJob = null;
+        for(Job j : unassignedJobList){
+            VehicleRoute bestRoute = null;
+            InsertionData best = null;
+            InsertionData secondBest = null;
+            PriorityQueue<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
+            Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
+            while(iterator.hasNext()){
+                VersionedInsertionData versionedIData = iterator.next();
+                if(versionedIData.getiData() instanceof InsertionData.NoInsertionFound) continue;
+                int currentDataVersion = updates.get(versionedIData.getRoute());
+                if(versionedIData.getVersion() == currentDataVersion){
+                    if(best == null) {
+                        best = versionedIData.getiData();
+                        bestRoute = versionedIData.getRoute();
+                    }
+                    else {
+                        secondBest = versionedIData.getiData();
+                        break;
+                    }
+                }
+            }
+            VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
+            InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, j, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+            if(!(iData instanceof InsertionData.NoInsertionFound)){
+                if (best == null) {
+                    best = iData;
+                    bestRoute = emptyRoute;
+                } else if (iData.getInsertionCost() < best.getInsertionCost()) {
+                    secondBest = best;
+                    best = iData;
+                    bestRoute = emptyRoute;
+                } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
+                    secondBest = iData;
+                }
+            }
+            if (best == null) {
+                badJobs.add(j);
+                continue;
+            }
+            double score = score(j, best, secondBest, scoringFunction);
+            ScoredJob scoredJob;
+            if (bestRoute == emptyRoute) {
+                scoredJob = new ScoredJob(j, score, best, bestRoute, true);
+            } else scoredJob = new ScoredJob(j, score, best, bestRoute, false);
+
+            if(bestScoredJob == null){
+                bestScoredJob = scoredJob;
+            }
+            else if(scoredJob.getScore() > bestScoredJob.getScore()){
+                bestScoredJob = scoredJob;
+            }
+        }
+        return bestScoredJob;
+    }
+
+    private Comparator<VersionedInsertionData> getComparator(){
+        return new Comparator<VersionedInsertionData>() {
+            @Override
+            public int compare(VersionedInsertionData o1, VersionedInsertionData o2) {
+                if(o1.getiData().getInsertionCost() < o2.getiData().getInsertionCost()) return -1;
+                return 1;
+            }
+        };
+    }
+
+    private void updateInsertionData(PriorityQueue<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList, int updateRound, Map<VehicleRoute, Integer> updates) {
+        for (Job unassignedJob : unassignedJobList) {
+            if(priorityQueues[unassignedJob.getIndex()] == null){
+                priorityQueues[unassignedJob.getIndex()] = new PriorityQueue<VersionedInsertionData>(unassignedJobList.size(), getComparator());
+            }
+            for(VehicleRoute route : routes) {
+
+                InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+                priorityQueues[unassignedJob.getIndex()].add(new VersionedInsertionData(iData,updateRound,route));
+                updates.put(route,updateRound);
+            }
+
+//
+//
+//
+//            ScoredJob scoredJob = getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
+//            if (scoredJob instanceof BadJob) {
+//                badJobs.add(unassignedJob);
+//                continue;
+//            }
+//            if (bestScoredJob == null) bestScoredJob = scoredJob;
+//            else {
+//                if (scoredJob.getScore() > bestScoredJob.getScore()) {
+//                    bestScoredJob = scoredJob;
+//                } else if (scoredJob.getScore() == bestScoredJob.getScore()) {
+//                    if (scoredJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0) {
+//                        bestScoredJob = scoredJob;
+//                    }
+//                }
+//            }
+        }
     }
 
     private VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
