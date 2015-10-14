@@ -166,7 +166,10 @@ public class InsertionBuilder {
             }
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
-                insertion = new RegretInsertion(costCalculator, vrp);
+                RegretInsertion regret = new RegretInsertion(costCalculator, vrp);
+                regret.setFleetManager(fleetManager);
+                insertion = regret;
+
             } else {
                 insertion = new RegretInsertionConcurrent(costCalculator, vrp, executor);
             }

@@ -143,6 +143,14 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         return vehicles;
     }
 
+    @Override
+    public Vehicle getAvailableVehicle(VehicleTypeKey vehicleTypeIdentifier) {
+        if(!vehicleTypes[vehicleTypeIdentifier.getIndex()].isEmpty()){
+            return vehicleTypes[vehicleTypeIdentifier.getIndex()].getVehicle();
+        }
+        return null;
+    }
+
     /* (non-Javadoc)
      * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#lock(org.matsim.contrib.freight.vrp.basics.Vehicle)
      */

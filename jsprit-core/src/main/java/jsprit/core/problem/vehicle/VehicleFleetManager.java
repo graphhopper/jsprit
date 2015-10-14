@@ -66,4 +66,5 @@ public interface VehicleFleetManager {
 
     public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType);
 
+    public Vehicle getAvailableVehicle(VehicleTypeKey vehicleTypeIdentifier);
 }

@@ -26,7 +26,9 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.util.Coordinate;
 import junit.framework.Assert;
@@ -45,8 +47,10 @@ public class RegretInsertionTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
+        VehicleFleetManager fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
         RegretInsertion regretInsertion = new RegretInsertion(calculator, vrp);
+        regretInsertion.setFleetManager(fm);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
         regretInsertion.insertJobs(routes, vrp.getJobs().values());
@@ -61,8 +65,10 @@ public class RegretInsertionTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
+        VehicleFleetManager fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
         RegretInsertion regretInsertion = new RegretInsertion(calculator, vrp);
+        regretInsertion.setFleetManager(fm);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
         regretInsertion.insertJobs(routes, vrp.getJobs().values());
@@ -77,8 +83,10 @@ public class RegretInsertionTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
+        VehicleFleetManager fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
         RegretInsertion regretInsertion = new RegretInsertion(calculator, vrp);
+        regretInsertion.setFleetManager(fm);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
         CkeckJobSequence position = new CkeckJobSequence(2, s1);
@@ -102,8 +110,10 @@ public class RegretInsertionTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
+        VehicleFleetManager fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         JobInsertionCostsCalculator calculator = getShipmentCalculator(vrp);
         RegretInsertion regretInsertion = new RegretInsertion(calculator, vrp);
+        regretInsertion.setFleetManager(fm);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
         CkeckJobSequence position = new CkeckJobSequence(2, s2);

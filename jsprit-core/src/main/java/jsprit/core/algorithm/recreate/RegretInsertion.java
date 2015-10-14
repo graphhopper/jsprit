@@ -24,6 +24,9 @@ import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleFleetManager;
+import jsprit.core.problem.vehicle.VehicleImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -215,7 +218,11 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
     private JobInsertionCostsCalculator insertionCostsCalculator;
 
+    private VehicleFleetManager fleetManager;
 
+    public void setFleetManager(VehicleFleetManager fleetManager) {
+        this.fleetManager = fleetManager;
+    }
 
     /**
      * Sets the scoring function.
@@ -280,6 +287,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
+            if(!firstRun && lastModified == null) throw new IllegalStateException("fooo");
             if(firstRun){
                 firstRun = false;
                 updateInsertionData(priorityQueues, routes, unassignedJobList, badJobList, updateRound, updates);
@@ -289,9 +297,6 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             }
             updateRound++;
             ScoredJob bestScoredJob = getBest(priorityQueues,updates,unassignedJobList,badJobList);
-//            InsertionData d = insertionCostsCalculator.getInsertionData(bestScoredJob.getRoute(), bestScoredJob.getJob(), NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
-//
-//  ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -300,7 +305,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                 jobs.remove(bestScoredJob.getJob());
                 lastModified = bestScoredJob.getRoute();
             }
-            else throw new IllegalStateException("fooo");
+            else lastModified = null;
             for (Job bad : badJobList) {
                 jobs.remove(bad);
                 badJobs.add(bad);
@@ -319,7 +324,30 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
             while(iterator.hasNext()){
                 VersionedInsertionData versionedIData = iterator.next();
+                if(bestRoute != null){
+                    if(versionedIData.getRoute() == bestRoute){
+                        continue;
+                    }
+                }
                 if(versionedIData.getiData() instanceof InsertionData.NoInsertionFound) continue;
+                if(versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
+                    if (fleetManager.isLocked(versionedIData.getiData().getSelectedVehicle())) {
+                        Vehicle available = fleetManager.getAvailableVehicle(versionedIData.getiData().getSelectedVehicle().getVehicleTypeIdentifier());
+                        if (available != null) {
+                            InsertionData oldData = versionedIData.getiData();
+                            InsertionData newData = new InsertionData(oldData.getInsertionCost(), oldData.getPickupInsertionIndex(),
+                                oldData.getDeliveryInsertionIndex(), available, oldData.getSelectedDriver());
+                            newData.setVehicleDepartureTime(oldData.getVehicleDepartureTime());
+                            for(Event e : oldData.getEvents()){
+                                if(e instanceof SwitchVehicle){
+                                    newData.getEvents().add(new SwitchVehicle(versionedIData.getRoute(),available,oldData.getVehicleDepartureTime()));
+                                }
+                                else newData.getEvents().add(e);
+                            }
+                            versionedIData = new VersionedInsertionData(newData, versionedIData.getVersion(), versionedIData.getRoute());
+                        } else continue;
+                    }
+                }
                 int currentDataVersion = updates.get(versionedIData.getRoute());
                 if(versionedIData.getVersion() == currentDataVersion){
                     if(best == null) {
@@ -382,9 +410,20 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                 priorityQueues[unassignedJob.getIndex()] = new PriorityQueue<VersionedInsertionData>(unassignedJobList.size(), getComparator());
             }
             for(VehicleRoute route : routes) {
-
-                InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
-                priorityQueues[unassignedJob.getIndex()].add(new VersionedInsertionData(iData,updateRound,route));
+                Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
+                if(!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
+                    relevantVehicles.add(route.getVehicle());
+                    relevantVehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
+                }
+                else relevantVehicles.addAll(fleetManager.getAvailableVehicles());
+                for (Vehicle v : relevantVehicles) {
+                    double depTime = v.getEarliestDeparture();
+                    InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, v, depTime, route.getDriver(), Double.MAX_VALUE);
+                    if (iData instanceof InsertionData.NoInsertionFound) {
+                        continue;
+                    }
+                    priorityQueues[unassignedJob.getIndex()].add(new VersionedInsertionData(iData,updateRound,route));
+                }
                 updates.put(route,updateRound);
             }
 

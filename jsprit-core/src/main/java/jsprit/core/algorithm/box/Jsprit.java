@@ -424,6 +424,7 @@ public class Jsprit {
                 .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setActivityInsertionCostCalculator(activityInsertion)
                 .build();
+            regretInsertion.setFleetManager(fm);
             scorer = getRegretScorer(vrp);
             regretInsertion.setScoringFunction(scorer);
             regret = regretInsertion;
