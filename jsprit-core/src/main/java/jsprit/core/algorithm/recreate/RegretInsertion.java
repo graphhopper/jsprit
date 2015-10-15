@@ -47,6 +47,22 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
     private VehicleFleetManager fleetManager;
 
+    private Set<String> initialVehicleIds;
+
+    private boolean switchAllowed = true;
+
+
+
+    public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, VehicleFleetManager fleetManager) {
+        super(vehicleRoutingProblem);
+        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
+        this.insertionCostsCalculator = jobInsertionCalculator;
+        this.fleetManager = fleetManager;
+        this.vrp = vehicleRoutingProblem;
+        this.initialVehicleIds = getInitialVehicleIds(vehicleRoutingProblem);
+        logger.debug("initialise {}", this);
+    }
+
     /**
      * Sets the scoring function.
      * <p/>
@@ -58,13 +74,16 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         this.scoringFunction = scoringFunction;
     }
 
-    public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, VehicleFleetManager fleetManager) {
-        super(vehicleRoutingProblem);
-        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
-        this.insertionCostsCalculator = jobInsertionCalculator;
-        this.fleetManager = fleetManager;
-        this.vrp = vehicleRoutingProblem;
-        logger.debug("initialise {}", this);
+    public void setSwitchAllowed(boolean switchAllowed) {
+        this.switchAllowed = switchAllowed;
+    }
+
+    private Set<String> getInitialVehicleIds(VehicleRoutingProblem vehicleRoutingProblem) {
+        Set<String> ids = new HashSet<String>();
+        for(VehicleRoute r : vehicleRoutingProblem.getInitialVehicleRoutes()){
+            ids.add(r.getVehicle().getId());
+        }
+        return ids;
     }
 
     @Override
@@ -122,7 +141,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                 updates.put(lastModified,updateRound);
             }
             updateRound++;
-            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(fleetManager,insertionCostsCalculator,scoringFunction,priorityQueues,updates,unassignedJobList,badJobList);
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed,initialVehicleIds,fleetManager,insertionCostsCalculator,scoringFunction,priorityQueues,updates,unassignedJobList,badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -145,7 +164,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             if(priorityQueues[unassignedJob.getIndex()] == null){
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
             }
-            InsertionDataUpdater.update(fleetManager,insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes);
+            InsertionDataUpdater.update(switchAllowed, initialVehicleIds,fleetManager,insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes);
         }
     }
 

@@ -53,6 +53,11 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     private VehicleFleetManager fleetManager;
 
+    private Set<String> initialVehicleIds;
+
+    private boolean switchAllowed = true;
+
+
     /**
      * Sets the scoring function.
      * <p/>
@@ -71,12 +76,25 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         this.vrp = vehicleRoutingProblem;
         this.executor = executorService;
         this.fleetManager = fleetManager;
+        this.initialVehicleIds = getInitialVehicleIds(vehicleRoutingProblem);
         logger.debug("initialise " + this);
     }
 
     @Override
     public String toString() {
         return "[name=regretInsertion][additionalScorer=" + scoringFunction + "]";
+    }
+
+    public void setSwitchAllowed(boolean switchAllowed) {
+        this.switchAllowed = switchAllowed;
+    }
+
+    private Set<String> getInitialVehicleIds(VehicleRoutingProblem vehicleRoutingProblem) {
+        Set<String> ids = new HashSet<String>();
+        for(VehicleRoute r : vehicleRoutingProblem.getInitialVehicleRoutes()){
+            ids.add(r.getVehicle().getId());
+        }
+        return ids;
     }
 
 
@@ -131,7 +149,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
                 updates.put(lastModified,updateRound);
             }
             updateRound++;
-            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed,initialVehicleIds,fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -159,7 +177,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
             tasks.add(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                    return InsertionDataUpdater.update(fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, routes);
+                    return InsertionDataUpdater.update(switchAllowed,initialVehicleIds,fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, routes);
                 }
             });
         }

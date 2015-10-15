@@ -13,12 +13,12 @@ import java.util.*;
  */
 class InsertionDataUpdater {
 
-    static boolean update(VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, TreeSet<VersionedInsertionData> insertionDataSet, int updateRound, Job unassignedJob, Collection<VehicleRoute> routes) {
+    static boolean update(boolean addAllAvailable, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, TreeSet<VersionedInsertionData> insertionDataSet, int updateRound, Job unassignedJob, Collection<VehicleRoute> routes) {
         for(VehicleRoute route : routes) {
             Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
                 relevantVehicles.add(route.getVehicle());
-                relevantVehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
+                if(addAllAvailable && initialVehicleIds.contains(route.getVehicle().getId())) relevantVehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
             } else relevantVehicles.addAll(fleetManager.getAvailableVehicles());
             for (Vehicle v : relevantVehicles) {
                 double depTime = v.getEarliestDeparture();
@@ -31,6 +31,8 @@ class InsertionDataUpdater {
         }
         return true;
     }
+
+
 
     static VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
         for(VehicleRoute r : routes){
@@ -49,7 +51,7 @@ class InsertionDataUpdater {
         };
     }
 
-    static ScoredJob getBest(VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<Job> badJobs) {
+    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<Job> badJobs) {
         ScoredJob bestScoredJob = null;
         for(Job j : unassignedJobList){
             VehicleRoute bestRoute = null;
@@ -65,6 +67,8 @@ class InsertionDataUpdater {
                     }
                 }
                 if(versionedIData.getiData() instanceof InsertionData.NoInsertionFound) continue;
+                if(versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle() && !switchAllowed) continue;
+                if(versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle() && initialVehicleIds.contains(versionedIData.getRoute().getVehicle().getId())) continue;
                 if(versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
                     if (fleetManager.isLocked(versionedIData.getiData().getSelectedVehicle())) {
                         Vehicle available = fleetManager.getAvailableVehicle(versionedIData.getiData().getSelectedVehicle().getVehicleTypeIdentifier());
