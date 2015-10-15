@@ -279,7 +279,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         }
 
         List<Job> jobs = new ArrayList<Job>(unassignedJobs);
-        PriorityQueue<VersionedInsertionData>[] priorityQueues = new PriorityQueue[vrp.getJobs().values().size() + 2];
+        TreeSet<VersionedInsertionData>[] priorityQueues = new TreeSet[vrp.getJobs().values().size() + 2];
         VehicleRoute lastModified = null;
         boolean firstRun = true;
         int updateRound = 0;
@@ -314,13 +314,13 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private ScoredJob getBest(PriorityQueue<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<Job> badJobs) {
+    private ScoredJob getBest(TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<Job> badJobs) {
         ScoredJob bestScoredJob = null;
         for(Job j : unassignedJobList){
             VehicleRoute bestRoute = null;
             InsertionData best = null;
             InsertionData secondBest = null;
-            PriorityQueue<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
+            TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
             while(iterator.hasNext()){
                 VersionedInsertionData versionedIData = iterator.next();
@@ -378,6 +378,11 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                 badJobs.add(j);
                 continue;
             }
+//            else {
+//                if(best != null && secondBest != null) {
+//                    System.out.println("best " + best.getInsertionCost() + ", secondBest: " + secondBest.getInsertionCost());
+//                }
+//            }
             double score = score(j, best, secondBest, scoringFunction);
             ScoredJob scoredJob;
             if (bestRoute == emptyRoute) {
@@ -404,10 +409,10 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         };
     }
 
-    private void updateInsertionData(PriorityQueue<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList, int updateRound, Map<VehicleRoute, Integer> updates) {
+    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList, int updateRound, Map<VehicleRoute, Integer> updates) {
         for (Job unassignedJob : unassignedJobList) {
             if(priorityQueues[unassignedJob.getIndex()] == null){
-                priorityQueues[unassignedJob.getIndex()] = new PriorityQueue<VersionedInsertionData>(unassignedJobList.size(), getComparator());
+                priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(getComparator());
             }
             for(VehicleRoute route : routes) {
                 Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
