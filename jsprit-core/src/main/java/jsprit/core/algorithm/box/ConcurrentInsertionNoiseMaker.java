@@ -49,9 +49,9 @@ class ConcurrentInsertionNoiseMaker implements SoftActivityConstraint, Iteration
 
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-//        if (makeNoise) {
-//            return noiseLevel * maxCosts * randomArray[newAct.getIndex()].nextDouble();
-//        }
+        if (makeNoise) {
+            return noiseLevel * maxCosts * randomArray[newAct.getIndex()].nextDouble();
+        }
         return 0;
     }
 

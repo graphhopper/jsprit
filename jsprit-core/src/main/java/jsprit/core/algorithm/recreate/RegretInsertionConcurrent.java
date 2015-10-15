@@ -17,21 +17,17 @@
 
 package jsprit.core.algorithm.recreate;
 
-import jsprit.core.algorithm.recreate.RegretInsertion.DefaultScorer;
-import jsprit.core.algorithm.recreate.RegretInsertion.ScoredJob;
-import jsprit.core.algorithm.recreate.RegretInsertion.ScoringFunction;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Break;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.vehicle.VehicleFleetManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.*;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Insertion based on regret approach.
@@ -53,6 +49,13 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
     private final ExecutorCompletionService<ScoredJob> completionService;
+
+    private VehicleFleetManager fleetManager;
+
+
+    public void setFleetManager(VehicleFleetManager fleetManager) {
+        this.fleetManager = fleetManager;
+    }
 
     /**
      * Sets the scoring function.
@@ -95,7 +98,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         while (jobIterator.hasNext()){
             Job job = jobIterator.next();
             if(job instanceof Break){
-                VehicleRoute route = findRoute(routes,job);
+                VehicleRoute route = InsertionDataUpdater.findRoute(routes, job);
                 if(route == null){
                     badJobs.add(job);
                 }
@@ -112,72 +115,53 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         }
 
         List<Job> jobs = new ArrayList<Job>(unassignedJobs);
+        TreeSet<VersionedInsertionData>[] priorityQueues = new TreeSet[vrp.getJobs().values().size() + 2];
+        VehicleRoute lastModified = null;
+        boolean firstRun = true;
+        int updateRound = 0;
+        Map<VehicleRoute,Integer> updates = new HashMap<VehicleRoute, Integer>();
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
-            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
+            if(!firstRun && lastModified == null) throw new IllegalStateException("fooo");
+            if(firstRun){
+                firstRun = false;
+                updateInsertionData(priorityQueues, routes, unassignedJobList, badJobList, updateRound, updates);
+            }
+            else{
+                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, badJobList, updateRound, updates);
+            }
+            updateRound++;
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
                 }
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
+                lastModified = bestScoredJob.getRoute();
             }
-            for (Job j : badJobList) {
-                jobs.remove(j);
-                badJobs.add(j);
+            else lastModified = null;
+            for (Job bad : badJobList) {
+                jobs.remove(bad);
+                badJobs.add(bad);
             }
         }
         return badJobs;
     }
 
-    private ScoredJob nextJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList) {
-        ScoredJob bestScoredJob = null;
-
-        for (final Job unassignedJob : unassignedJobList) {
-            completionService.submit(new Callable<ScoredJob>() {
-
-                @Override
-                public ScoredJob call() throws Exception {
-                    return RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
-                }
-
-            });
-        }
-
-        try {
-            for (int i = 0; i < unassignedJobList.size(); i++) {
-                Future<ScoredJob> fsj = completionService.take();
-                ScoredJob sJob = fsj.get();
-                if (sJob instanceof RegretInsertion.BadJob) {
-                    badJobList.add(sJob.getJob());
-                    continue;
-                }
-                if (bestScoredJob == null) {
-                    bestScoredJob = sJob;
-                } else if (sJob.getScore() > bestScoredJob.getScore()) {
-                    bestScoredJob = sJob;
-                } else if (sJob.getScore() == bestScoredJob.getScore()) {
-                    if (sJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0) {
-                        bestScoredJob = sJob;
-                    }
-                }
+    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList, int updateRound, Map<VehicleRoute, Integer> updates) {
+        for (Job unassignedJob : unassignedJobList) {
+            if(priorityQueues[unassignedJob.getIndex()] == null){
+                priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+//            completionService.submit(ne)
+            InsertionDataUpdater.update(fleetManager,insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, updates, unassignedJob, routes);
         }
-
-        return bestScoredJob;
     }
 
-    private VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
-        for(VehicleRoute r : routes){
-            if(r.getVehicle().getBreak() == job) return r;
-        }
-        return null;
-    }
+
+
 
 
 }
