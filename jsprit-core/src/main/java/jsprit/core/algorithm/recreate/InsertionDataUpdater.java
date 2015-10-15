@@ -18,7 +18,9 @@ class InsertionDataUpdater {
             Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
                 relevantVehicles.add(route.getVehicle());
-                if(addAllAvailable && initialVehicleIds.contains(route.getVehicle().getId())) relevantVehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
+                if(addAllAvailable && !initialVehicleIds.contains(route.getVehicle().getId())){
+                    relevantVehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
+                }
             } else relevantVehicles.addAll(fleetManager.getAvailableVehicles());
             for (Vehicle v : relevantVehicles) {
                 double depTime = v.getEarliestDeparture();
@@ -67,8 +69,12 @@ class InsertionDataUpdater {
                     }
                 }
                 if(versionedIData.getiData() instanceof InsertionData.NoInsertionFound) continue;
-                if(versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle() && !switchAllowed) continue;
-                if(versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle() && initialVehicleIds.contains(versionedIData.getRoute().getVehicle().getId())) continue;
+                if(!(versionedIData.getRoute().getVehicle() instanceof VehicleImpl.NoVehicle)) {
+                    if (versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
+                        if (!switchAllowed) continue;
+                        if (initialVehicleIds.contains(versionedIData.getRoute().getVehicle().getId())) continue;
+                    }
+                }
                 if(versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
                     if (fleetManager.isLocked(versionedIData.getiData().getSelectedVehicle())) {
                         Vehicle available = fleetManager.getAvailableVehicle(versionedIData.getiData().getSelectedVehicle().getVehicleTypeIdentifier());
