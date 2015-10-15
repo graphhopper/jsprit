@@ -404,7 +404,7 @@ public class Jsprit {
         );
 
         AbstractInsertionStrategy regret;
-        final RegretInsertion.DefaultScorer scorer;
+        final DefaultScorer scorer;
 
         if (es != null) {
             RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
@@ -424,7 +424,6 @@ public class Jsprit {
                 .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setActivityInsertionCostCalculator(activityInsertion)
                 .build();
-            regretInsertion.setFleetManager(fm);
             scorer = getRegretScorer(vrp);
             regretInsertion.setScoringFunction(scorer);
             regret = regretInsertion;
@@ -522,9 +521,9 @@ public class Jsprit {
 
     }
 
-    private RegretInsertion.DefaultScorer getRegretScorer(VehicleRoutingProblem vrp) {
-        RegretInsertion.DefaultScorer scorer;
-        scorer = new RegretInsertion.DefaultScorer(vrp);
+    private DefaultScorer getRegretScorer(VehicleRoutingProblem vrp) {
+        DefaultScorer scorer;
+        scorer = new DefaultScorer(vrp);
         scorer.setTimeWindowParam(Double.valueOf(properties.getProperty(Parameter.REGRET_TIME_WINDOW_SCORER.toString())));
         scorer.setDepotDistanceParam(Double.valueOf(properties.getProperty(Parameter.REGRET_DISTANCE_SCORER.toString())));
         return scorer;

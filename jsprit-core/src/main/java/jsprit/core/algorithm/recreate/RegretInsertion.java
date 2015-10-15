@@ -47,10 +47,6 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
     private VehicleFleetManager fleetManager;
 
-    public void setFleetManager(VehicleFleetManager fleetManager) {
-        this.fleetManager = fleetManager;
-    }
-
     /**
      * Sets the scoring function.
      * <p/>
@@ -62,10 +58,11 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         this.scoringFunction = scoringFunction;
     }
 
-    public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
+    public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, VehicleFleetManager fleetManager) {
         super(vehicleRoutingProblem);
         this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
         this.insertionCostsCalculator = jobInsertionCalculator;
+        this.fleetManager = fleetManager;
         this.vrp = vehicleRoutingProblem;
         logger.debug("initialise {}", this);
     }
@@ -117,10 +114,12 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             if(!firstRun && lastModified == null) throw new IllegalStateException("fooo");
             if(firstRun){
                 firstRun = false;
-                updateInsertionData(priorityQueues, routes, unassignedJobList, badJobList, updateRound, updates);
+                updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound);
+                for(VehicleRoute r : routes) updates.put(r,updateRound);
             }
             else{
-                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, badJobList, updateRound, updates);
+                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, updateRound);
+                updates.put(lastModified,updateRound);
             }
             updateRound++;
             ScoredJob bestScoredJob = InsertionDataUpdater.getBest(fleetManager,insertionCostsCalculator,scoringFunction,priorityQueues,updates,unassignedJobList,badJobList);
@@ -141,12 +140,12 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList, int updateRound, Map<VehicleRoute, Integer> updates) {
+    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, int updateRound) {
         for (Job unassignedJob : unassignedJobList) {
             if(priorityQueues[unassignedJob.getIndex()] == null){
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
             }
-            InsertionDataUpdater.update(fleetManager,insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, updates, unassignedJob, routes);
+            InsertionDataUpdater.update(fleetManager,insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes);
         }
     }
 

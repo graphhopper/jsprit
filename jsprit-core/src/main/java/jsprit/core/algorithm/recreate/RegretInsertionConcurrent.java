@@ -26,8 +26,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * Insertion based on regret approach.
@@ -48,14 +49,9 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
-    private final ExecutorCompletionService<ScoredJob> completionService;
+    private final ExecutorService executor;
 
     private VehicleFleetManager fleetManager;
-
-
-    public void setFleetManager(VehicleFleetManager fleetManager) {
-        this.fleetManager = fleetManager;
-    }
 
     /**
      * Sets the scoring function.
@@ -68,12 +64,13 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         this.scoringFunction = scoringFunction;
     }
 
-    public RegretInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService) {
+    public RegretInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService, VehicleFleetManager fleetManager) {
         super(vehicleRoutingProblem);
         this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
-        completionService = new ExecutorCompletionService<ScoredJob>(executorService);
+        this.executor = executorService;
+        this.fleetManager = fleetManager;
         logger.debug("initialise " + this);
     }
 
@@ -123,13 +120,15 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
-            if(!firstRun && lastModified == null) throw new IllegalStateException("fooo");
+            if(!firstRun && lastModified == null) throw new IllegalStateException("ho. this must not be.");
             if(firstRun){
                 firstRun = false;
-                updateInsertionData(priorityQueues, routes, unassignedJobList, badJobList, updateRound, updates);
+                updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound);
+                for(VehicleRoute r : routes) updates.put(r,updateRound);
             }
             else{
-                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, badJobList, updateRound, updates);
+                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, updateRound);
+                updates.put(lastModified,updateRound);
             }
             updateRound++;
             ScoredJob bestScoredJob = InsertionDataUpdater.getBest(fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
@@ -150,13 +149,25 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList, int updateRound, Map<VehicleRoute, Integer> updates) {
-        for (Job unassignedJob : unassignedJobList) {
+    private void updateInsertionData(final TreeSet<VersionedInsertionData>[] priorityQueues, final Collection<VehicleRoute> routes, List<Job> unassignedJobList, final int updateRound) {
+        List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+        for (final Job unassignedJob : unassignedJobList) {
             if(priorityQueues[unassignedJob.getIndex()] == null){
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
             }
-//            completionService.submit(ne)
-            InsertionDataUpdater.update(fleetManager,insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, updates, unassignedJob, routes);
+            final TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[unassignedJob.getIndex()];
+            tasks.add(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return InsertionDataUpdater.update(fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, routes);
+                }
+            });
+        }
+        try {
+            List<Future<Boolean>> futures = executor.invokeAll(tasks);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
         }
     }
 

@@ -13,7 +13,7 @@ import java.util.*;
  */
 class InsertionDataUpdater {
 
-    static void update(VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, TreeSet<VersionedInsertionData> insertionDataSet, int updateRound, Map<VehicleRoute, Integer> updates, Job unassignedJob, Collection<VehicleRoute> routes) {
+    static boolean update(VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, TreeSet<VersionedInsertionData> insertionDataSet, int updateRound, Job unassignedJob, Collection<VehicleRoute> routes) {
         for(VehicleRoute route : routes) {
             Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
@@ -28,8 +28,8 @@ class InsertionDataUpdater {
                 }
                 insertionDataSet.add(new VersionedInsertionData(iData, updateRound, route));
             }
-            updates.put(route, updateRound);
         }
+        return true;
     }
 
     static VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {

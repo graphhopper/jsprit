@@ -166,12 +166,11 @@ public class InsertionBuilder {
             }
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
-                RegretInsertion regret = new RegretInsertion(costCalculator, vrp);
-                regret.setFleetManager(fleetManager);
+                RegretInsertion regret = new RegretInsertion(costCalculator, vrp, fleetManager);
                 insertion = regret;
 
             } else {
-                insertion = new RegretInsertionConcurrent(costCalculator, vrp, executor);
+                insertion = new RegretInsertionConcurrent(costCalculator, vrp, executor, fleetManager);
             }
         } else throw new IllegalStateException("you should never get here");
         for (InsertionListener l : iListeners) insertion.addListener(l);
