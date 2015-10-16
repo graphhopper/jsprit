@@ -98,7 +98,7 @@ public class SolutionAnalyserTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle)
             .addVehicle(vehicle2)
             .addJob(s1)
-            .addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
+            .addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE);
         vrpBuilder.setRoutingCost(new ManhattanCosts(vrpBuilder.getLocations()));
         vrp = vrpBuilder.build();
 

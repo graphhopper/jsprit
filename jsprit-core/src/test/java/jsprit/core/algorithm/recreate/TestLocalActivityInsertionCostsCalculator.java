@@ -174,7 +174,9 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(mock(VehicleRoutingProblem.class)));
+        VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
+        when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.INFINITE);
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrpMock));
         calc.setSolutionCompletenessRatio(1.);
 
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);

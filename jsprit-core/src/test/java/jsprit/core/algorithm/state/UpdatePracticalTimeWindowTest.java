@@ -41,6 +41,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class UpdatePracticalTimeWindowTest {
 
@@ -57,7 +58,9 @@ public class UpdatePracticalTimeWindowTest {
 
         routingCosts = CostFactory.createManhattanCosts();
 
-        stateManager = new StateManager(mock(VehicleRoutingProblem.class));
+        VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
+        when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.FINITE);
+        stateManager = new StateManager(vrpMock);
 
         reverseActivityVisitor = new ReverseRouteActivityVisitor();
         reverseActivityVisitor.addActivityVisitor(new UpdatePracticalTimeWindows(stateManager, routingCosts));

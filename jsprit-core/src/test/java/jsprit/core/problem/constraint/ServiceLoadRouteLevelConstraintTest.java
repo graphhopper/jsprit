@@ -70,7 +70,9 @@ public class ServiceLoadRouteLevelConstraintTest {
 
         constraint = new ServiceLoadRouteLevelConstraint(stateGetter);
 
-        stateManager = new StateManager(mock(VehicleRoutingProblem.class));
+        VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
+        when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.INFINITE);
+        stateManager = new StateManager(vrpMock);
         stateManager.updateLoadStates();
     }
 

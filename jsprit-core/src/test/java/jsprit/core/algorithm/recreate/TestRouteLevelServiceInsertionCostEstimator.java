@@ -48,6 +48,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by schroeder on 02.07.14.
@@ -103,7 +104,9 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         };
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(activityFactory).addService(s1).addService(s2).addService(s3).build();
 
-        stateManager = new StateManager(mock(VehicleRoutingProblem.class));
+        VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
+        when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.INFINITE);
+        stateManager = new StateManager(vrpMock);
         stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts, routingCosts, stateManager));
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
         constraintManager = new ConstraintManager(vrp, stateManager);

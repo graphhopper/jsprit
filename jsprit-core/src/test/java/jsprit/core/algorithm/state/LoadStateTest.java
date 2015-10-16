@@ -100,7 +100,9 @@ public class LoadStateTest {
         });
         shipment_route = shipmentRouteBuilder.addPickup(shipment1).addPickup(shipment2).addDelivery(shipment2).addDelivery(shipment1).build();
 
-        stateManager = new StateManager(mock(VehicleRoutingProblem.class));
+        VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
+        when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.FINITE);
+        stateManager = new StateManager(vrpMock);
         stateManager.updateLoadStates();
 
     }
