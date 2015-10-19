@@ -407,7 +407,7 @@ public class Jsprit {
         final DefaultScorer scorer;
 
         if (es != null) {
-            RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+            RegretInsertionConcurrentSlow regretInsertion = (RegretInsertionConcurrentSlow) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                 .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                 .setConcurrentMode(es, noThreads)
                 .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -418,7 +418,7 @@ public class Jsprit {
             regretInsertion.setScoringFunction(scorer);
             regret = regretInsertion;
         } else {
-            RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+            RegretInsertionSlow regretInsertion = (RegretInsertionSlow) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                 .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))

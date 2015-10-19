@@ -166,13 +166,13 @@ public class InsertionBuilder {
             }
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
-                RegretInsertion regret = new RegretInsertion(costCalculator, vrp, fleetManager);
-                regret.setSwitchAllowed(allowVehicleSwitch);
+                RegretInsertionSlow regret = new RegretInsertionSlow(costCalculator, vrp);
+//                regret.setSwitchAllowed(allowVehicleSwitch);
                 insertion = regret;
 
             } else {
-                RegretInsertionConcurrent regret = new RegretInsertionConcurrent(costCalculator, vrp, executor, fleetManager);
-                regret.setSwitchAllowed(allowVehicleSwitch);
+                RegretInsertionConcurrentSlow regret = new RegretInsertionConcurrentSlow(costCalculator, vrp, executor);
+//                regret.setSwitchAllowed(allowVehicleSwitch);
                 insertion = regret;
             }
         } else throw new IllegalStateException("you should never get here");
