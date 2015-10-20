@@ -30,6 +30,9 @@ import java.util.concurrent.ExecutorService;
 
 public class InsertionBuilder {
 
+    private boolean fastRegret;
+
+
     public enum Strategy {
         REGRET, BEST
     }
@@ -70,6 +73,8 @@ public class InsertionBuilder {
 
     private Strategy strategy = Strategy.BEST;
 
+    private boolean isFastRegret = false;
+
     public InsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         super();
         this.vrp = vrp;
@@ -97,6 +102,12 @@ public class InsertionBuilder {
         this.addDefaultCostCalc = addDefaultMarginalCostCalculation;
         return this;
     }
+
+    public InsertionBuilder setFastRegret(boolean fastRegret) {
+        this.isFastRegret = fastRegret;
+        return this;
+    }
+
 
     public InsertionBuilder setLocalLevel() {
         local = true;
@@ -166,14 +177,27 @@ public class InsertionBuilder {
             }
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
-                RegretInsertion regret = new RegretInsertion(costCalculator, vrp);
-//                regret.setSwitchAllowed(allowVehicleSwitch);
-                insertion = regret;
+                if(isFastRegret){
+                    RegretInsertionFast regret = new RegretInsertionFast(costCalculator, vrp, fleetManager);
+                    regret.setSwitchAllowed(allowVehicleSwitch);
+                    insertion = regret;
+                }
+                else {
+                    RegretInsertion regret = new RegretInsertion(costCalculator, vrp);
+                    insertion = regret;
+                }
 
             } else {
-                RegretInsertionConcurrent regret = new RegretInsertionConcurrent(costCalculator, vrp, executor);
-//                regret.setSwitchAllowed(allowVehicleSwitch);
-                insertion = regret;
+                if(isFastRegret){
+                    RegretInsertionConcurrentFast regret = new RegretInsertionConcurrentFast(costCalculator, vrp, executor, fleetManager);
+                    regret.setSwitchAllowed(allowVehicleSwitch);
+                    insertion = regret;
+                }
+                else{
+                    RegretInsertionConcurrent regret = new RegretInsertionConcurrent(costCalculator, vrp, executor);
+                    insertion = regret;
+                }
+
             }
         } else throw new IllegalStateException("you should never get here");
         for (InsertionListener l : iListeners) insertion.addListener(l);

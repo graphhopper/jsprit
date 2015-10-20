@@ -96,6 +96,7 @@ public class Jsprit {
         INSERTION_NOISE_PROB("insertion.noise_prob"),
         RUIN_WORST_NOISE_LEVEL("worst.noise_level"),
         RUIN_WORST_NOISE_PROB("worst.noise_prob"),
+        FAST_REGRET("regret.fast"),
         CONSTRUCTION("construction");
 
         String paraName;
@@ -182,6 +183,7 @@ public class Jsprit {
             defaults.put(Parameter.RUIN_WORST_NOISE_LEVEL.toString(), String.valueOf(0.15));
             defaults.put(Parameter.RUIN_WORST_NOISE_PROB.toString(), String.valueOf(0.2));
             defaults.put(Parameter.VEHICLE_SWITCH.toString(), String.valueOf(true));
+            defaults.put(Parameter.FAST_REGRET, String.valueOf(false));
             defaults.put(Parameter.CONSTRUCTION.toString(), Construction.REGRET_INSERTION.toString());
             return defaults;
         }
@@ -406,27 +408,57 @@ public class Jsprit {
         AbstractInsertionStrategy regret;
         final DefaultScorer scorer;
 
+        boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
-            RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
-                .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
-                .setConcurrentMode(es, noThreads)
-                .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
-                .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
-                .setActivityInsertionCostCalculator(activityInsertion)
-                .build();
-            scorer = getRegretScorer(vrp);
-            regretInsertion.setScoringFunction(scorer);
-            regret = regretInsertion;
+            if(fastRegret){
+                RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                    .setConcurrentMode(es, noThreads)
+                    .setFastRegret(true)
+                    .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
+                    .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                    .setActivityInsertionCostCalculator(activityInsertion)
+                    .build();
+                scorer = getRegretScorer(vrp);
+                regretInsertion.setScoringFunction(scorer);
+                regret = regretInsertion;
+            }
+            else {
+                RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                    .setConcurrentMode(es, noThreads)
+                    .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
+                    .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                    .setActivityInsertionCostCalculator(activityInsertion)
+                    .build();
+                scorer = getRegretScorer(vrp);
+                regretInsertion.setScoringFunction(scorer);
+                regret = regretInsertion;
+            }
         } else {
-            RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
-                .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
-                .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
-                .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
-                .setActivityInsertionCostCalculator(activityInsertion)
-                .build();
-            scorer = getRegretScorer(vrp);
-            regretInsertion.setScoringFunction(scorer);
-            regret = regretInsertion;
+            if(fastRegret) {
+                RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                    .setFastRegret(true)
+                    .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                    .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
+                    .setActivityInsertionCostCalculator(activityInsertion)
+                    .build();
+                scorer = getRegretScorer(vrp);
+                regretInsertion.setScoringFunction(scorer);
+                regret = regretInsertion;
+            }
+            else{
+                RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                    .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                    .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
+                    .setActivityInsertionCostCalculator(activityInsertion)
+                    .build();
+                scorer = getRegretScorer(vrp);
+                regretInsertion.setScoringFunction(scorer);
+                regret = regretInsertion;
+            }
         }
         regret.setRandom(random);
 
