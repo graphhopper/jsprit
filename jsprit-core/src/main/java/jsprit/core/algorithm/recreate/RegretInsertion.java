@@ -21,11 +21,13 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Break;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.vehicle.VehicleFleetManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Insertion based on regret approach.
@@ -39,29 +41,14 @@ import java.util.*;
  */
 public class RegretInsertion extends AbstractInsertionStrategy {
 
-    private static Logger logger = LogManager.getLogger(RegretInsertion.class);
+
+
+    private static Logger logger = LogManager.getLogger(RegretInsertionFast.class);
 
     private ScoringFunction scoringFunction;
 
     private JobInsertionCostsCalculator insertionCostsCalculator;
 
-    private VehicleFleetManager fleetManager;
-
-    private Set<String> initialVehicleIds;
-
-    private boolean switchAllowed = true;
-
-
-
-    public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, VehicleFleetManager fleetManager) {
-        super(vehicleRoutingProblem);
-        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
-        this.insertionCostsCalculator = jobInsertionCalculator;
-        this.fleetManager = fleetManager;
-        this.vrp = vehicleRoutingProblem;
-        this.initialVehicleIds = getInitialVehicleIds(vehicleRoutingProblem);
-        logger.debug("initialise {}", this);
-    }
 
     /**
      * Sets the scoring function.
@@ -74,16 +61,12 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         this.scoringFunction = scoringFunction;
     }
 
-    public void setSwitchAllowed(boolean switchAllowed) {
-        this.switchAllowed = switchAllowed;
-    }
-
-    private Set<String> getInitialVehicleIds(VehicleRoutingProblem vehicleRoutingProblem) {
-        Set<String> ids = new HashSet<String>();
-        for(VehicleRoute r : vehicleRoutingProblem.getInitialVehicleRoutes()){
-            ids.add(r.getVehicle().getId());
-        }
-        return ids;
+    public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
+        super(vehicleRoutingProblem);
+        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
+        this.insertionCostsCalculator = jobInsertionCalculator;
+        this.vrp = vehicleRoutingProblem;
+        logger.debug("initialise {}", this);
     }
 
     @Override
@@ -105,7 +88,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         while (jobIterator.hasNext()){
             Job job = jobIterator.next();
             if(job instanceof Break){
-                VehicleRoute route = InsertionDataUpdater.findRoute(routes, job);
+                VehicleRoute route = findRoute(routes,job);
                 if(route == null){
                     badJobs.add(job);
                 }
@@ -122,35 +105,17 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         }
 
         List<Job> jobs = new ArrayList<Job>(unassignedJobs);
-        TreeSet<VersionedInsertionData>[] priorityQueues = new TreeSet[vrp.getJobs().values().size() + 2];
-        VehicleRoute lastModified = null;
-        boolean firstRun = true;
-        int updateRound = 0;
-        Map<VehicleRoute,Integer> updates = new HashMap<VehicleRoute, Integer>();
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
-            if(!firstRun && lastModified == null) throw new IllegalStateException("fooo");
-            if(firstRun){
-                firstRun = false;
-                updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound);
-                for(VehicleRoute r : routes) updates.put(r,updateRound);
-            }
-            else{
-                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, updateRound);
-                updates.put(lastModified,updateRound);
-            }
-            updateRound++;
-            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed,initialVehicleIds,fleetManager,insertionCostsCalculator,scoringFunction,priorityQueues,updates,unassignedJobList,badJobList);
+            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
                 }
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
-                lastModified = bestScoredJob.getRoute();
             }
-            else lastModified = null;
             for (Job bad : badJobList) {
                 jobs.remove(bad);
                 badJobs.add(bad);
@@ -159,15 +124,99 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, int updateRound) {
-        for (Job unassignedJob : unassignedJobList) {
-            if(priorityQueues[unassignedJob.getIndex()] == null){
-                priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
-            }
-            InsertionDataUpdater.update(switchAllowed, initialVehicleIds,fleetManager,insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes);
+    private VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
+        for(VehicleRoute r : routes){
+            if(r.getVehicle().getBreak() == job) return r;
         }
+        return null;
     }
 
+    private ScoredJob nextJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobList, List<Job> badJobs) {
+        ScoredJob bestScoredJob = null;
+        for (Job unassignedJob : unassignedJobList) {
+            ScoredJob scoredJob = getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
+            if (scoredJob instanceof ScoredJob.BadJob) {
+                badJobs.add(unassignedJob);
+                continue;
+            }
+            if (bestScoredJob == null) bestScoredJob = scoredJob;
+            else {
+                if (scoredJob.getScore() > bestScoredJob.getScore()) {
+                    bestScoredJob = scoredJob;
+                } else if (scoredJob.getScore() == bestScoredJob.getScore()) {
+                    if (scoredJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0) {
+                        bestScoredJob = scoredJob;
+                    }
+                }
+            }
+        }
+        return bestScoredJob;
+    }
+
+    static ScoredJob getScoredJob(Collection<VehicleRoute> routes, Job unassignedJob, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction) {
+        InsertionData best = null;
+        InsertionData secondBest = null;
+        VehicleRoute bestRoute = null;
+
+        double benchmark = Double.MAX_VALUE;
+        for (VehicleRoute route : routes) {
+            if (secondBest != null) {
+                benchmark = secondBest.getInsertionCost();
+            }
+            InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
+            if (iData instanceof InsertionData.NoInsertionFound) continue;
+            if (best == null) {
+                best = iData;
+                bestRoute = route;
+            } else if (iData.getInsertionCost() < best.getInsertionCost()) {
+                secondBest = best;
+                best = iData;
+                bestRoute = route;
+            } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
+                secondBest = iData;
+            }
+        }
+
+        VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
+        InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
+        if (!(iData instanceof InsertionData.NoInsertionFound)) {
+            if (best == null) {
+                best = iData;
+                bestRoute = emptyRoute;
+            } else if (iData.getInsertionCost() < best.getInsertionCost()) {
+                secondBest = best;
+                best = iData;
+                bestRoute = emptyRoute;
+            } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
+                secondBest = iData;
+            }
+        }
+        if (best == null) {
+            return new ScoredJob.BadJob(unassignedJob);
+        }
+        double score = score(unassignedJob, best, secondBest, scoringFunction);
+        ScoredJob scoredJob;
+        if (bestRoute == emptyRoute) {
+            scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, true);
+        } else scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, false);
+        return scoredJob;
+    }
+
+
+    static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction) {
+        if (best == null) {
+            throw new IllegalStateException("cannot insert job " + unassignedJob.getId());
+        }
+        double score;
+        if (secondBest == null) { //either there is only one vehicle or there are more vehicles, but they cannot load unassignedJob
+            //if only one vehicle, I want the job to be inserted with min iCosts
+            //if there are more vehicles, I want this job to be prioritized since there are no alternatives
+            score = Integer.MAX_VALUE - best.getInsertionCost() + scoringFunction.score(best, unassignedJob);
+        } else {
+            score = (secondBest.getInsertionCost() - best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
+        }
+        return score;
+    }
 
 
 }

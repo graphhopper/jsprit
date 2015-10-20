@@ -21,14 +21,14 @@ import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.job.Break;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.vehicle.VehicleFleetManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * Insertion based on regret approach.
@@ -40,16 +40,23 @@ import java.util.concurrent.*;
  *
  * @author stefan schroeder
  */
-public class RegretInsertionConcurrentSlow extends AbstractInsertionStrategy {
+public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
 
 
-    private static Logger logger = LogManager.getLogger(RegretInsertionConcurrent.class);
+    private static Logger logger = LogManager.getLogger(RegretInsertionConcurrentFast.class);
 
     private ScoringFunction scoringFunction;
 
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
-    private final ExecutorCompletionService<ScoredJob> completionService;
+    private final ExecutorService executor;
+
+    private VehicleFleetManager fleetManager;
+
+    private Set<String> initialVehicleIds;
+
+    private boolean switchAllowed = true;
+
 
     /**
      * Sets the scoring function.
@@ -62,18 +69,32 @@ public class RegretInsertionConcurrentSlow extends AbstractInsertionStrategy {
         this.scoringFunction = scoringFunction;
     }
 
-    public RegretInsertionConcurrentSlow(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService) {
+    public RegretInsertionConcurrentFast(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService, VehicleFleetManager fleetManager) {
         super(vehicleRoutingProblem);
         this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
-        completionService = new ExecutorCompletionService<ScoredJob>(executorService);
+        this.executor = executorService;
+        this.fleetManager = fleetManager;
+        this.initialVehicleIds = getInitialVehicleIds(vehicleRoutingProblem);
         logger.debug("initialise " + this);
     }
 
     @Override
     public String toString() {
         return "[name=regretInsertion][additionalScorer=" + scoringFunction + "]";
+    }
+
+    public void setSwitchAllowed(boolean switchAllowed) {
+        this.switchAllowed = switchAllowed;
+    }
+
+    private Set<String> getInitialVehicleIds(VehicleRoutingProblem vehicleRoutingProblem) {
+        Set<String> ids = new HashSet<String>();
+        for(VehicleRoute r : vehicleRoutingProblem.getInitialVehicleRoutes()){
+            ids.add(r.getVehicle().getId());
+        }
+        return ids;
     }
 
 
@@ -92,7 +113,7 @@ public class RegretInsertionConcurrentSlow extends AbstractInsertionStrategy {
         while (jobIterator.hasNext()){
             Job job = jobIterator.next();
             if(job instanceof Break){
-                VehicleRoute route = findRoute(routes,job);
+                VehicleRoute route = InsertionDataUpdater.findRoute(routes, job);
                 if(route == null){
                     badJobs.add(job);
                 }
@@ -109,72 +130,67 @@ public class RegretInsertionConcurrentSlow extends AbstractInsertionStrategy {
         }
 
         List<Job> jobs = new ArrayList<Job>(unassignedJobs);
+        TreeSet<VersionedInsertionData>[] priorityQueues = new TreeSet[vrp.getJobs().values().size() + 2];
+        VehicleRoute lastModified = null;
+        boolean firstRun = true;
+        int updateRound = 0;
+        Map<VehicleRoute,Integer> updates = new HashMap<VehicleRoute, Integer>();
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
-            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
+            if(!firstRun && lastModified == null) throw new IllegalStateException("ho. this must not be.");
+            if(firstRun){
+                firstRun = false;
+                updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound);
+                for(VehicleRoute r : routes) updates.put(r,updateRound);
+            }
+            else{
+                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, updateRound);
+                updates.put(lastModified,updateRound);
+            }
+            updateRound++;
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed,initialVehicleIds,fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
                 }
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
+                lastModified = bestScoredJob.getRoute();
             }
-            for (Job j : badJobList) {
-                jobs.remove(j);
-                badJobs.add(j);
+            else lastModified = null;
+            for (Job bad : badJobList) {
+                jobs.remove(bad);
+                badJobs.add(bad);
             }
         }
         return badJobs;
     }
 
-    private ScoredJob nextJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList) {
-        ScoredJob bestScoredJob = null;
-
+    private void updateInsertionData(final TreeSet<VersionedInsertionData>[] priorityQueues, final Collection<VehicleRoute> routes, List<Job> unassignedJobList, final int updateRound) {
+        List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
         for (final Job unassignedJob : unassignedJobList) {
-            completionService.submit(new Callable<ScoredJob>() {
-
+            if(priorityQueues[unassignedJob.getIndex()] == null){
+                priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
+            }
+            final TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[unassignedJob.getIndex()];
+            tasks.add(new Callable<Boolean>() {
                 @Override
-                public ScoredJob call() throws Exception {
-                    return RegretInsertionSlow.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
+                public Boolean call() throws Exception {
+                    return InsertionDataUpdater.update(switchAllowed,initialVehicleIds,fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, routes);
                 }
-
             });
         }
-
         try {
-            for (int i = 0; i < unassignedJobList.size(); i++) {
-                Future<ScoredJob> fsj = completionService.take();
-                ScoredJob sJob = fsj.get();
-                if (sJob instanceof ScoredJob.BadJob) {
-                    badJobList.add(sJob.getJob());
-                    continue;
-                }
-                if (bestScoredJob == null) {
-                    bestScoredJob = sJob;
-                } else if (sJob.getScore() > bestScoredJob.getScore()) {
-                    bestScoredJob = sJob;
-                } else if (sJob.getScore() == bestScoredJob.getScore()) {
-                    if (sJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0) {
-                        bestScoredJob = sJob;
-                    }
-                }
-            }
+            List<Future<Boolean>> futures = executor.invokeAll(tasks);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
-
-        return bestScoredJob;
     }
 
-    private VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
-        for(VehicleRoute r : routes){
-            if(r.getVehicle().getBreak() == job) return r;
-        }
-        return null;
-    }
+
+
 
 
 }

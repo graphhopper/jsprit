@@ -143,7 +143,7 @@ public class BuildAlgorithmFromScratch {
         //regret insertion
         InsertionBuilder iBuilder = new InsertionBuilder(vrp, fleetManager, stateManager, constraintManager);
         iBuilder.setInsertionStrategy(InsertionBuilder.Strategy.REGRET);
-        RegretInsertion regret = (RegretInsertion) iBuilder.build();
+        RegretInsertionFast regret = (RegretInsertionFast) iBuilder.build();
         DefaultScorer scoringFunction = new DefaultScorer(vrp);
         scoringFunction.setDepotDistanceParam(0.2);
         scoringFunction.setTimeWindowParam(-.2);

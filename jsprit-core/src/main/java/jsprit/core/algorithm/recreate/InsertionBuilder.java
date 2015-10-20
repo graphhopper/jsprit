@@ -166,12 +166,12 @@ public class InsertionBuilder {
             }
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
-                RegretInsertionSlow regret = new RegretInsertionSlow(costCalculator, vrp);
+                RegretInsertion regret = new RegretInsertion(costCalculator, vrp);
 //                regret.setSwitchAllowed(allowVehicleSwitch);
                 insertion = regret;
 
             } else {
-                RegretInsertionConcurrentSlow regret = new RegretInsertionConcurrentSlow(costCalculator, vrp, executor);
+                RegretInsertionConcurrent regret = new RegretInsertionConcurrent(costCalculator, vrp, executor);
 //                regret.setSwitchAllowed(allowVehicleSwitch);
                 insertion = regret;
             }
