@@ -75,6 +75,7 @@ public class VehicleRoutingProblemTest {
 
         VehicleRoutingProblem vrp = builder.build();
         assertEquals(4, vrp.getVehicles().size());
+        assertEquals(1, vrp.getAllLocations().size());
 
     }
 
@@ -125,6 +126,7 @@ public class VehicleRoutingProblemTest {
         assertEquals(2, vrp.getJobs().size());
         assertEquals(s, vrp.getJobs().get("s"));
         assertEquals(s2, vrp.getJobs().get("s2"));
+        assertEquals(2,vrp.getAllLocations().size());
     }
 
     @Test
@@ -144,6 +146,7 @@ public class VehicleRoutingProblemTest {
         assertEquals(2, vrp.getJobs().size());
         assertEquals(s1, vrp.getJobs().get("s1"));
         assertEquals(s2, vrp.getJobs().get("s2"));
+        assertEquals(1,vrp.getAllLocations().size());
     }
 
 
@@ -304,6 +307,7 @@ public class VehicleRoutingProblemTest {
         assertEquals(1, builder.getAddedVehicleTypes().size());
         assertEquals(type, builder.getAddedVehicleTypes().iterator().next());
 
+
     }
 
     @Test
@@ -383,6 +387,7 @@ public class VehicleRoutingProblemTest {
 
         VehicleRoutingProblem vrp = vrpBuilder.build();
         assertEquals(2, vrp.getInitialVehicleRoutes().size());
+        assertEquals(2,vrp.getAllLocations().size());
     }
 
     @Test
@@ -410,6 +415,7 @@ public class VehicleRoutingProblemTest {
         vrpBuilder.addInitialVehicleRoute(initialRoute);
         VehicleRoutingProblem vrp = vrpBuilder.build();
         assertFalse(vrp.getJobs().containsKey("myService"));
+        assertEquals(3,vrp.getAllLocations().size());
     }
 
     @Test
@@ -420,10 +426,11 @@ public class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service);
         vrpBuilder.addJob(shipment);
-        vrpBuilder.build();
+        VehicleRoutingProblem vrp = vrpBuilder.build();
 
         assertEquals(1, service.getIndex());
         assertEquals(2, shipment.getIndex());
+        assertEquals(3,vrp.getAllLocations().size());
 
     }
 

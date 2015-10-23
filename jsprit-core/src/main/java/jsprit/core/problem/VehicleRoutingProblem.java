@@ -137,6 +137,8 @@ public class VehicleRoutingProblem {
             vehicleTypeIdIndexCounter++;
         }
 
+        private Set<Location> allLocations = new HashSet<Location>();
+
         /**
          * Returns the unmodifiable map of collected locations (mapped by their location-id).
          *
@@ -145,6 +147,8 @@ public class VehicleRoutingProblem {
         public Map<String, Coordinate> getLocationMap() {
             return Collections.unmodifiableMap(tentative_coordinates);
         }
+
+
 
         /**
          * Returns the locations collected SO FAR by this builder.
@@ -229,12 +233,23 @@ public class VehicleRoutingProblem {
 
         private void addLocationToTentativeLocations(Job job) {
             if (job instanceof Service) {
-                tentative_coordinates.put(((Service) job).getLocation().getId(), ((Service) job).getLocation().getCoordinate());
+                Location location = ((Service) job).getLocation();
+//                tentative_coordinates.put(location.getId(), location.getCoordinate());
+                addLocationToTentativeLocations(location);
             } else if (job instanceof Shipment) {
                 Shipment shipment = (Shipment) job;
-                tentative_coordinates.put(shipment.getPickupLocation().getId(), shipment.getPickupLocation().getCoordinate());
-                tentative_coordinates.put(shipment.getDeliveryLocation().getId(), shipment.getDeliveryLocation().getCoordinate());
+                Location pickupLocation = shipment.getPickupLocation();
+                addLocationToTentativeLocations(pickupLocation);
+//                tentative_coordinates.put(pickupLocation.getId(), pickupLocation.getCoordinate());
+                Location deliveryLocation = shipment.getDeliveryLocation();
+                addLocationToTentativeLocations(deliveryLocation);
+//                tentative_coordinates.put(deliveryLocation.getId(), deliveryLocation.getCoordinate());
             }
+        }
+
+        private void addLocationToTentativeLocations(Location location) {
+            tentative_coordinates.put(location.getId(), location.getCoordinate());
+            allLocations.add(location);
         }
 
         private void addJobToFinalJobMapAndCreateActivities(Job job) {
@@ -282,7 +297,7 @@ public class VehicleRoutingProblem {
                 if (act instanceof TourActivity.JobActivity) {
                     Job job = ((TourActivity.JobActivity) act).getJob();
                     jobsInInitialRoutes.add(job.getId());
-                    registerLocation(job);
+                    addLocationToTentativeLocations(job);
                     registerJobAndActivity(abstractAct, job);
                 }
             }
@@ -290,15 +305,7 @@ public class VehicleRoutingProblem {
             return this;
         }
 
-        private void registerLocation(Job job) {
-            if (job instanceof Service)
-                tentative_coordinates.put(((Service) job).getLocation().getId(), ((Service) job).getLocation().getCoordinate());
-            if (job instanceof Shipment) {
-                Shipment shipment = (Shipment) job;
-                tentative_coordinates.put(shipment.getPickupLocation().getId(), shipment.getPickupLocation().getCoordinate());
-                tentative_coordinates.put(shipment.getDeliveryLocation().getId(), shipment.getDeliveryLocation().getCoordinate());
-            }
-        }
+
 
         private void registerJobAndActivity(AbstractActivity abstractAct, Job job) {
             if (activityMap.containsKey(job)) activityMap.get(job).add(abstractAct);
@@ -326,8 +333,9 @@ public class VehicleRoutingProblem {
             if (jobs.containsKey(job.getId())) {
                 logger.warn("job " + job + " already in job list. overrides existing job.");
             }
-            tentative_coordinates.put(job.getPickupLocation().getId(), job.getPickupLocation().getCoordinate());
-            tentative_coordinates.put(job.getDeliveryLocation().getId(), job.getDeliveryLocation().getCoordinate());
+            addLocationToTentativeLocations(job);
+//            tentative_coordinates.put(job.getPickupLocation().getId(), job.getPickupLocation().getCoordinate());
+//            tentative_coordinates.put(job.getDeliveryLocation().getId(), job.getDeliveryLocation().getCoordinate());
             jobs.put(job.getId(), job);
         }
 
@@ -368,9 +376,11 @@ public class VehicleRoutingProblem {
                 vehicleTypes.add(vehicle.getType());
             }
             String startLocationId = vehicle.getStartLocation().getId();
-            tentative_coordinates.put(startLocationId, vehicle.getStartLocation().getCoordinate());
+            addLocationToTentativeLocations(vehicle.getStartLocation());
+//            tentative_coordinates.put(startLocationId, vehicle.getStartLocation().getCoordinate());
             if (!vehicle.getEndLocation().getId().equals(startLocationId)) {
-                tentative_coordinates.put(vehicle.getEndLocation().getId(), vehicle.getEndLocation().getCoordinate());
+                addLocationToTentativeLocations(vehicle.getEndLocation());
+//                tentative_coordinates.put(vehicle.getEndLocation().getId(), vehicle.getEndLocation().getCoordinate());
             }
             return this;
         }
@@ -477,7 +487,8 @@ public class VehicleRoutingProblem {
         }
 
         private Builder addService(Service service) {
-            tentative_coordinates.put(service.getLocation().getId(), service.getLocation().getCoordinate());
+//            tentative_coordinates.put(service.getLocation().getId(), service.getLocation().getCoordinate());
+            addLocationToTentativeLocations(service);
             if (jobs.containsKey(service.getId())) {
                 logger.warn("service " + service + " already in job list. overrides existing job.");
             }
@@ -530,6 +541,8 @@ public class VehicleRoutingProblem {
 
     private final Collection<VehicleRoute> initialVehicleRoutes;
 
+    private final Collection<Location> allLocations;
+
     /**
      * An enum that indicates type of fleetSize. By default, it is INFINTE
      */
@@ -561,6 +574,7 @@ public class VehicleRoutingProblem {
         this.locations = builder.getLocations();
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
+        this.allLocations = builder.allLocations;
         logger.info("setup problem: {}", this);
     }
 
@@ -644,10 +658,15 @@ public class VehicleRoutingProblem {
     /**
      * @return returns all location, i.e. from vehicles and jobs.
      */
+    @Deprecated
     public Locations getLocations() {
         return locations;
     }
 
+
+    public Collection<Location> getAllLocations(){
+        return allLocations;
+    }
     /**
      * @param job for which the corresponding activities needs to be returned
      * @return associated activities
