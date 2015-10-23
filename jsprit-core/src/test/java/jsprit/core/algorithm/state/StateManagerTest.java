@@ -194,7 +194,7 @@ public class StateManagerTest {
     @Test
     public void whenProblemStateIsSetAndStateManagerClearedAfterwards_itReturnsNull() {
         StateManager stateManager = new StateManager(vrpMock);
-        StateId id = StateFactory.createId("problemState");
+        StateId id = stateManager.createStateId("problemState");
         stateManager.putProblemState(id, Boolean.class, true);
         stateManager.clear();
         Boolean problemState = stateManager.getProblemState(id, Boolean.class);

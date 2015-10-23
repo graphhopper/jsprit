@@ -45,33 +45,6 @@ import java.util.*;
  */
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 
-    static class States_ {
-
-        private Map<StateId, Object> states = new HashMap<StateId, Object>();
-
-        public <T> void putState(StateId id, Class<T> type, T state) {
-            states.put(id, type.cast(state));
-        }
-
-        public <T> T getState(StateId id, Class<T> type) {
-            if (states.containsKey(id)) {
-                return type.cast(states.get(id));
-            }
-            return null;
-        }
-
-        public boolean containsKey(StateId stateId) {
-            return states.containsKey(stateId);
-        }
-
-        public void clear() {
-            states.clear();
-        }
-
-    }
-
-    private States_ problemStates_ = new States_();
-
     private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
 
     private ReverseRouteActivityVisitor revRouteActivityVisitor = new ReverseRouteActivityVisitor();
@@ -97,6 +70,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     private int nuActivities;
 
     private int nuVehicleTypeKeys;
+
+    private Object[] problemStates;
 
     private Object[][] activityStates;
 
@@ -135,6 +110,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter + 1];
             routeStatesArr = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
             vehicleDependentRouteStatesArr = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
+            problemStates = new Object[stateIndexCounter+1];
         }
         StateId id = StateFactory.createId(name, stateIndexCounter);
         incStateIndexCounter();
@@ -170,6 +146,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             routeStateMap = new HashMap<VehicleRoute, Object[]>();
             vehicleDependentRouteStateMap = new HashMap<VehicleRoute, Object[][]>();
         }
+        problemStates = new Object[initialStateArrayLength];
     }
 
     private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
@@ -190,7 +167,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param <T>     the type of the state value
      */
     public <T> void putProblemState(StateId stateId, Class<T> type, T state) {
-        problemStates_.putState(stateId, type, state);
+        problemStates[stateId.getIndex()] = state;
+//         problemStates.putState(stateId, type, state);
     }
 
     /**
@@ -203,7 +181,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @return the state value that is associated to the specified stateId or null if no value is associated
      */
     public <T> T getProblemState(StateId stateId, Class<T> type) {
-        return problemStates_.getState(stateId, type);
+        return type.cast(problemStates[stateId.getIndex()]);
     }
 
     /**
@@ -220,7 +198,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             routeStateMap.clear();
             vehicleDependentRouteStateMap.clear();
         }
-        problemStates_.clear();
+        Arrays.fill(problemStates,null);
     }
 
     private void fill_threeDimArr(Object[][][] states, Object o) {
