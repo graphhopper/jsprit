@@ -97,6 +97,7 @@ public class Jsprit {
         RUIN_WORST_NOISE_LEVEL("worst.noise_level"),
         RUIN_WORST_NOISE_PROB("worst.noise_prob"),
         FAST_REGRET("regret.fast"),
+        MAX_TRANSPORT_COSTS("max_transport_costs"),
         CONSTRUCTION("construction");
 
         String paraName;
@@ -336,7 +337,14 @@ public class Jsprit {
 
         JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
         jobNeighborhoods.initialise();
-        final double maxCosts = jobNeighborhoods.getMaxDistance();
+
+        final double maxCosts;
+        if(properties.containsKey(Parameter.MAX_TRANSPORT_COSTS.toString())){
+            maxCosts = Double.parseDouble(getProperty(Parameter.MAX_TRANSPORT_COSTS.toString()));
+        }
+        else{
+            maxCosts = jobNeighborhoods.getMaxDistance();
+        }
 
         IterationStartsListener noiseConfigurator;
         if (noThreads > 1) {
