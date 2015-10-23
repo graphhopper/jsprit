@@ -221,7 +221,7 @@ public class VehicleRoutingProblem {
          */
         public Builder addJob(AbstractJob job) {
             if (tentativeJobs.containsKey(job.getId()))
-                throw new IllegalStateException("jobList already contains a job with id " + job.getId() + ". make sure you use unique ids for your jobs (i.e. service and shipments)");
+                throw new IllegalStateException("vehicle routing problem already contains a service or shipment with id " + job.getId() + ". make sure you use unique ids for all services and shipments");
             if (!(job instanceof Service || job instanceof Shipment))
                 throw new IllegalStateException("job must be either a service or a shipment");
             job.setIndex(jobIndexCounter);
