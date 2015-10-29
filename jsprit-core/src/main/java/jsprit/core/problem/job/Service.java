@@ -175,6 +175,20 @@ public class Service extends AbstractJob {
             this.name = name;
             return this;
         }
+
+        public Builder<T> addAllRequiredSkills(Skills skills){
+            for(String s : skills.values()){
+                skillBuilder.addSkill(s);
+            }
+            return this;
+        }
+
+        public Builder<T> addAllSizeDimensions(Capacity size){
+            for(int i=0;i<size.getNuOfDimensions();i++){
+                capacityBuilder.addDimension(i,size.get(i));
+            }
+            return this;
+        }
     }
 
 
