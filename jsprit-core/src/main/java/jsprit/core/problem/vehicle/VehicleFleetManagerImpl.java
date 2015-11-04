@@ -17,12 +17,14 @@
 package jsprit.core.problem.vehicle;
 
 import jsprit.core.problem.vehicle.VehicleImpl.NoVehicle;
+import jsprit.core.util.RandomNumberGeneration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 
 class VehicleFleetManagerImpl implements VehicleFleetManager {
@@ -35,9 +37,15 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
         private ArrayList<Vehicle> vehicleList;
 
+        private Random random = RandomNumberGeneration.getRandom();
+
         public TypeContainer() {
             super();
             vehicleList = new ArrayList<Vehicle>();
+        }
+
+        public void setRandom(Random random) {
+            this.random = random;
         }
 
         void add(Vehicle vehicle) {
@@ -52,7 +60,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         }
 
         public Vehicle getVehicle() {
-            return vehicleList.get(vehicleList.size()-1);
+            int randomIndex = random.nextInt(vehicleList.size());
+            return vehicleList.get(randomIndex);
         }
 
         public boolean isEmpty() {
@@ -71,6 +80,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     private Vehicle[] vehicleArr;
 
+    private Random random = RandomNumberGeneration.getRandom();
+
     public VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
         super();
         this.vehicles = vehicles;
@@ -79,6 +90,10 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         vehicleArr = new Vehicle[arrSize];
         initializeVehicleTypes();
         logger.debug("initialise {}",this);
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
     }
 
     @Override
@@ -95,7 +110,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         }
         vehicleTypes = new TypeContainer[maxTypeIndex+1];
         for(int i=0;i< vehicleTypes.length;i++){
-            vehicleTypes[i] = new TypeContainer();
+            TypeContainer typeContainer = new TypeContainer();
+            typeContainer.setRandom(random);
+            vehicleTypes[i] = typeContainer;
         }
         for (Vehicle v : vehicles) {
             vehicleArr[v.getIndex()]=v;

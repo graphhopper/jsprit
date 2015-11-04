@@ -313,7 +313,11 @@ public class Jsprit {
         VehicleFleetManager fm;
         if (vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE)) {
             fm = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
-        } else fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
+        } else {
+            FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vrp.getVehicles());
+            finiteFleetManagerFactory.setRandom(random);
+            fm = finiteFleetManagerFactory.createFleetManager();
+        }
 
         if (stateManager == null) {
             stateManager = new StateManager(vrp);

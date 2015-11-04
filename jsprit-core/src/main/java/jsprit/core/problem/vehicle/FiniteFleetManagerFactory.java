@@ -16,7 +16,10 @@
  ******************************************************************************/
 package jsprit.core.problem.vehicle;
 
+import jsprit.core.util.RandomNumberGeneration;
+
 import java.util.Collection;
+import java.util.Random;
 
 /**
  * Factory that creates a finite fleetmanager.
@@ -27,6 +30,8 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
 
     private Collection<Vehicle> vehicles;
 
+    private Random random = RandomNumberGeneration.getRandom();
+
     /**
      * Constucts the factory.
      *
@@ -35,6 +40,10 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
     public FiniteFleetManagerFactory(Collection<Vehicle> vehicles) {
         super();
         this.vehicles = vehicles;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
     }
 
     /**
@@ -47,7 +56,9 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
     public VehicleFleetManager createFleetManager() {
         if (vehicles == null) throw new IllegalStateException("vehicles is null. this must not be.");
         if (vehicles.isEmpty()) throw new IllegalStateException("vehicle-collection is empty. this must not be");
-        return new VehicleFleetManagerImpl(vehicles);
+        VehicleFleetManagerImpl vehicleFleetManager = new VehicleFleetManagerImpl(vehicles);
+        vehicleFleetManager.setRandom(random);
+        return vehicleFleetManager;
     }
 
 }
