@@ -210,7 +210,6 @@ public class VehicleTypeImpl implements VehicleType {
         }
 
         public VehicleTypeImpl.Builder setCostPerServiceTime(double perServiceTime) {
-            if (perServiceTime < 0.0) throw new IllegalStateException();
             this.perServiceTime = perServiceTime;
             return this;
         }
