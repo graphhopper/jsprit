@@ -248,6 +248,7 @@
                 </xs:complexType>
             </xs:element>
             <xs:element name="allowVehicleSwitch" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="fastRegret" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
             <xs:element name="experimental" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
