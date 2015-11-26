@@ -103,6 +103,11 @@ class InsertionFactory {
 
             if (insertionName.equals("regretInsertion")) {
                 iBuilder.setInsertionStrategy(InsertionBuilder.Strategy.REGRET);
+
+                String fastRegret = config.getString("fastRegret");
+                if (fastRegret != null) {
+                    iBuilder.setFastRegret(Boolean.parseBoolean(fastRegret));
+                }
             }
             return iBuilder.build();
         } else throw new IllegalStateException("cannot create insertionStrategy, since it has no name.");
