@@ -25,52 +25,49 @@ import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
 /**
  * Ensures load constraint for inserting ServiceActivity.
- * 
+ * <p/>
  * <p>When using this, you need to use<br>
- * 
- * 
- * @author schroeder
  *
+ * @author schroeder
  */
-class ServiceLoadActivityLevelConstraint implements HardActivityConstraint {
-	
-	private RouteAndActivityStateGetter stateManager;
+public class ServiceLoadActivityLevelConstraint implements HardActivityConstraint {
+
+    private RouteAndActivityStateGetter stateManager;
 
     private Capacity defaultValue;
-	
-	public ServiceLoadActivityLevelConstraint(RouteAndActivityStateGetter stateManager) {
-		super();
-		this.stateManager = stateManager;
-        defaultValue = Capacity.Builder.newInstance().build();
-	}
 
-	@Override
-	public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-		Capacity futureMaxLoad;
-		Capacity prevMaxLoad;
-		if(prevAct instanceof Start){
-			futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXLOAD, Capacity.class);
-            if(futureMaxLoad == null) futureMaxLoad = defaultValue;
-			prevMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-            if(prevMaxLoad == null) prevMaxLoad = defaultValue;
-		}
-		else{
-			futureMaxLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MAXLOAD, Capacity.class);
-            if(futureMaxLoad == null) futureMaxLoad = defaultValue;
-			prevMaxLoad = stateManager.getActivityState(prevAct, InternalStates.PAST_MAXLOAD, Capacity.class);
-            if(prevMaxLoad == null) prevMaxLoad = defaultValue;
-			
-		}
-		if(newAct instanceof PickupService || newAct instanceof ServiceActivity){
-			if(!Capacity.addup(newAct.getSize(), futureMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())){
-				return ConstraintsStatus.NOT_FULFILLED;
-			}
-		}
-		if(newAct instanceof DeliverService){
-			if(!Capacity.addup(Capacity.invert(newAct.getSize()), prevMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())){
-				return ConstraintsStatus.NOT_FULFILLED_BREAK;
-			}
-		}
-		return ConstraintsStatus.FULFILLED;
-	}		
+    public ServiceLoadActivityLevelConstraint(RouteAndActivityStateGetter stateManager) {
+        super();
+        this.stateManager = stateManager;
+        defaultValue = Capacity.Builder.newInstance().build();
+    }
+
+    @Override
+    public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+        Capacity futureMaxLoad;
+        Capacity prevMaxLoad;
+        if (prevAct instanceof Start) {
+            futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXLOAD, Capacity.class);
+            if (futureMaxLoad == null) futureMaxLoad = defaultValue;
+            prevMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+            if (prevMaxLoad == null) prevMaxLoad = defaultValue;
+        } else {
+            futureMaxLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MAXLOAD, Capacity.class);
+            if (futureMaxLoad == null) futureMaxLoad = defaultValue;
+            prevMaxLoad = stateManager.getActivityState(prevAct, InternalStates.PAST_MAXLOAD, Capacity.class);
+            if (prevMaxLoad == null) prevMaxLoad = defaultValue;
+
+        }
+        if (newAct instanceof PickupService || newAct instanceof ServiceActivity) {
+            if (!Capacity.addup(newAct.getSize(), futureMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+                return ConstraintsStatus.NOT_FULFILLED;
+            }
+        }
+        if (newAct instanceof DeliverService) {
+            if (!Capacity.addup(Capacity.invert(newAct.getSize()), prevMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+                return ConstraintsStatus.NOT_FULFILLED_BREAK;
+            }
+        }
+        return ConstraintsStatus.FULFILLED;
+    }
 }

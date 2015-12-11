@@ -17,10 +17,8 @@
 
 package jsprit.core.algorithm.recreate;
 
-import jsprit.core.algorithm.recreate.RegretInsertion.DefaultScorer;
-import jsprit.core.algorithm.recreate.RegretInsertion.ScoredJob;
-import jsprit.core.algorithm.recreate.RegretInsertion.ScoringFunction;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.job.Break;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import org.apache.logging.log4j.LogManager;
@@ -28,80 +26,101 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.*;
 
 /**
-* Insertion based on regret approach.
-*
-* <p>Basically calculates the insertion cost of the firstBest and the secondBest alternative. The score is then calculated as difference
-* between secondBest and firstBest, plus additional scoring variables that can defined in this.ScoringFunction.
-* The idea is that if the cost of the secondBest alternative is way higher than the first best, it seems to be important to insert this
-* customer immediatedly. If difference is not that high, it might not impact solution if this customer is inserted later.
-*
-* @author stefan schroeder
-*
-*/
+ * Insertion based on regret approach.
+ * <p/>
+ * <p>Basically calculates the insertion cost of the firstBest and the secondBest alternative. The score is then calculated as difference
+ * between secondBest and firstBest, plus additional scoring variables that can defined in this.ScoringFunction.
+ * The idea is that if the cost of the secondBest alternative is way higher than the first best, it seems to be important to insert this
+ * customer immediatedly. If difference is not that high, it might not impact solution if this customer is inserted later.
+ *
+ * @author stefan schroeder
+ */
 public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
 
-    private static Logger logger = LogManager.getLogger(RegretInsertionConcurrent.class);
+    private static Logger logger = LogManager.getLogger(RegretInsertionConcurrentFast.class);
 
-	private ScoringFunction scoringFunction;
+    private ScoringFunction scoringFunction;
 
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
     private final ExecutorCompletionService<ScoredJob> completionService;
 
     /**
-	 * Sets the scoring function.
-	 *
-	 * <p>By default, the this.TimeWindowScorer is used.
-	 *
-	 * @param scoringFunction to score
-	 */
-	public void setScoringFunction(ScoringFunction scoringFunction) {
-		this.scoringFunction = scoringFunction;
-	}
+     * Sets the scoring function.
+     * <p/>
+     * <p>By default, the this.TimeWindowScorer is used.
+     *
+     * @param scoringFunction to score
+     */
+    public void setScoringFunction(ScoringFunction scoringFunction) {
+        this.scoringFunction = scoringFunction;
+    }
 
-	public RegretInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService) {
-		super(vehicleRoutingProblem);
+    public RegretInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService) {
+        super(vehicleRoutingProblem);
         this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
-		this.insertionCostsCalculator = jobInsertionCalculator;
+        this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
         completionService = new ExecutorCompletionService<ScoredJob>(executorService);
-		logger.debug("initialise " + this);
-	}
+        logger.debug("initialise " + this);
+    }
 
-	@Override
-	public String toString() {
-		return "[name=regretInsertion][additionalScorer="+scoringFunction+"]";
-	}
+    @Override
+    public String toString() {
+        return "[name=regretInsertion][additionalScorer=" + scoringFunction + "]";
+    }
 
 
-	/**
-	 * Runs insertion.
-	 *
-	 * <p>Before inserting a job, all unassigned jobs are scored according to its best- and secondBest-insertion plus additional scoring variables.
-	 *
-	 */
-	@Override
-	public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+    /**
+     * Runs insertion.
+     * <p/>
+     * <p>Before inserting a job, all unassigned jobs are scored according to its best- and secondBest-insertion plus additional scoring variables.
+     *
+     * @throws java.lang.RuntimeException if smth went wrong with thread execution
+     */
+    @Override
+    public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
-        List<Job> jobs = new ArrayList<Job>(unassignedJobs);
 
+        Iterator<Job> jobIterator = unassignedJobs.iterator();
+        while (jobIterator.hasNext()){
+            Job job = jobIterator.next();
+            if(job instanceof Break){
+                VehicleRoute route = findRoute(routes,job);
+                if(route == null){
+                    badJobs.add(job);
+                }
+                else {
+                    InsertionData iData = insertionCostsCalculator.getInsertionData(route, job, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+                    if (iData instanceof InsertionData.NoInsertionFound) {
+                        badJobs.add(job);
+                    } else {
+                        insertJob(job, iData, route);
+                    }
+                }
+                jobIterator.remove();
+            }
+        }
+
+        List<Job> jobs = new ArrayList<Job>(unassignedJobs);
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
             ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
-            if(bestScoredJob != null){
-                if(bestScoredJob.isNewRoute()){
+            if (bestScoredJob != null) {
+                if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
                 }
-                insertJob(bestScoredJob.getJob(),bestScoredJob.getInsertionData(),bestScoredJob.getRoute());
+                insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
             }
-            for(Job j : badJobList) {
+            for (Job j : badJobList) {
                 jobs.remove(j);
                 badJobs.add(j);
             }
@@ -123,38 +142,39 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
             });
         }
 
-        try{
-            for(int i=0; i < unassignedJobList.size(); i++){
+        try {
+            for (int i = 0; i < unassignedJobList.size(); i++) {
                 Future<ScoredJob> fsj = completionService.take();
                 ScoredJob sJob = fsj.get();
-                if(sJob instanceof RegretInsertion.BadJob){
+                if (sJob instanceof ScoredJob.BadJob) {
                     badJobList.add(sJob.getJob());
                     continue;
                 }
-                if(bestScoredJob == null){
+                if (bestScoredJob == null) {
                     bestScoredJob = sJob;
-                }
-                else if(sJob.getScore() > bestScoredJob.getScore()){
+                } else if (sJob.getScore() > bestScoredJob.getScore()) {
                     bestScoredJob = sJob;
+                } else if (sJob.getScore() == bestScoredJob.getScore()) {
+                    if (sJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0) {
+                        bestScoredJob = sJob;
+                    }
                 }
             }
-        }
-        catch(InterruptedException e){
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        }
-        catch (ExecutionException e) {
-            e.printStackTrace();
-            logger.error(e.getCause().toString());
-            System.exit(1);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
 
         return bestScoredJob;
     }
 
-
-
-
-
+    private VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
+        for(VehicleRoute r : routes){
+            if(r.getVehicle().getBreak() == job) return r;
+        }
+        return null;
+    }
 
 
 }

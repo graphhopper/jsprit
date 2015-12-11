@@ -26,7 +26,9 @@ import jsprit.core.problem.job.Service;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
+import jsprit.core.problem.vehicle.VehicleFleetManager;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.util.Coordinate;
 import junit.framework.Assert;
@@ -38,77 +40,81 @@ import java.util.Collection;
 public class RegretInsertionTest {
 
     @Test
-    public void noRoutesShouldBeCorrect(){
+    public void noRoutesShouldBeCorrect() {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 10)).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 5)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
+        VehicleFleetManager fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
-        RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
+        RegretInsertionFast regretInsertion = new RegretInsertionFast(calculator, vrp, fm);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
-        regretInsertion.insertJobs(routes,vrp.getJobs().values());
-        Assert.assertEquals(1,routes.size());
+        regretInsertion.insertJobs(routes, vrp.getJobs().values());
+        Assert.assertEquals(1, routes.size());
     }
 
     @Test
-    public void noJobsInRouteShouldBeCorrect(){
+    public void noJobsInRouteShouldBeCorrect() {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 10)).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 5)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
+        VehicleFleetManager fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
-        RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
+        RegretInsertionFast regretInsertion = new RegretInsertionFast(calculator, vrp, fm);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
-        regretInsertion.insertJobs(routes,vrp.getJobs().values());
+        regretInsertion.insertJobs(routes, vrp.getJobs().values());
         Assert.assertEquals(2, routes.iterator().next().getActivities().size());
     }
 
     @Test
-    public void s1ShouldBeAddedFirst(){
+    public void s1ShouldBeAddedFirst() {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 10)).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 5)).build();
 
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
+        VehicleFleetManager fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         JobInsertionCostsCalculator calculator = getCalculator(vrp);
-        RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
+        RegretInsertionFast regretInsertion = new RegretInsertionFast(calculator, vrp, fm);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
         CkeckJobSequence position = new CkeckJobSequence(2, s1);
         regretInsertion.addListener(position);
-        regretInsertion.insertJobs(routes,vrp.getJobs().values());
+        regretInsertion.insertJobs(routes, vrp.getJobs().values());
         Assert.assertTrue(position.isCorrect());
     }
 
     @Test
-    public void shipment1ShouldBeAddedFirst(){
+    public void shipment1ShouldBeAddedFirst() {
         Shipment s1 = Shipment.Builder.newInstance("s1")
-                .setPickupLocation(Location.Builder.newInstance().setId("pick1").setCoordinate(Coordinate.newInstance(-1, 10)).build())
-                .setDeliveryLocation(Location.Builder.newInstance().setId("del1").setCoordinate(Coordinate.newInstance(1, 10)).build())
-                .build();
+            .setPickupLocation(Location.Builder.newInstance().setId("pick1").setCoordinate(Coordinate.newInstance(-1, 10)).build())
+            .setDeliveryLocation(Location.Builder.newInstance().setId("del1").setCoordinate(Coordinate.newInstance(1, 10)).build())
+            .build();
 
         Shipment s2 = Shipment.Builder.newInstance("s2")
-                .setPickupLocation(Location.Builder.newInstance().setId("pick2").setCoordinate(Coordinate.newInstance(-1, 20)).build())
-                .setDeliveryLocation(Location.Builder.newInstance().setId("del2").setCoordinate(Coordinate.newInstance(1, 20)).build())
-                .build();
+            .setPickupLocation(Location.Builder.newInstance().setId("pick2").setCoordinate(Coordinate.newInstance(-1, 20)).build())
+            .setDeliveryLocation(Location.Builder.newInstance().setId("del2").setCoordinate(Coordinate.newInstance(1, 20)).build())
+            .build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
 
+        VehicleFleetManager fm = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         JobInsertionCostsCalculator calculator = getShipmentCalculator(vrp);
-        RegretInsertion regretInsertion = new RegretInsertion(calculator,vrp);
+        RegretInsertionFast regretInsertion = new RegretInsertionFast(calculator, vrp, fm);
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
         CkeckJobSequence position = new CkeckJobSequence(2, s2);
         regretInsertion.addListener(position);
-        regretInsertion.insertJobs(routes,vrp.getJobs().values());
+        regretInsertion.insertJobs(routes, vrp.getJobs().values());
         Assert.assertTrue(position.isCorrect());
     }
 
@@ -118,11 +124,10 @@ public class RegretInsertionTest {
             @Override
             public InsertionData getInsertionData(VehicleRoute currentRoute, Job newJob, Vehicle newVehicle, double newVehicleDepartureTime, Driver newDriver, double bestKnownCosts) {
                 Vehicle vehicle = vrp.getVehicles().iterator().next();
-                if(newJob.getId().equals("s1")){
-                    return new InsertionData(10,0,0,vehicle,newDriver);
-                }
-                else{
-                    return new InsertionData(20,0,0,vehicle,newDriver);
+                if (newJob.getId().equals("s1")) {
+                    return new InsertionData(10, 0, 0, vehicle, newDriver);
+                } else {
+                    return new InsertionData(20, 0, 0, vehicle, newDriver);
                 }
             }
         };
@@ -146,7 +151,7 @@ public class RegretInsertionTest {
 
         @Override
         public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
-            if(job == this.job && atPosition == positionCounter){
+            if (job == this.job && atPosition == positionCounter) {
                 correct = true;
             }
             positionCounter++;
@@ -162,16 +167,15 @@ public class RegretInsertionTest {
 
             @Override
             public InsertionData getInsertionData(VehicleRoute currentRoute, Job newJob, Vehicle newVehicle, double newVehicleDepartureTime, Driver newDriver, double bestKnownCosts) {
-                Service service = (Service)newJob;
+                Service service = (Service) newJob;
                 Vehicle vehicle = vrp.getVehicles().iterator().next();
                 InsertionData iData;
-                if(currentRoute.isEmpty()){
+                if (currentRoute.isEmpty()) {
                     double mc = getCost(service.getLocation(), vehicle.getStartLocation());
-                    iData = new InsertionData(2*mc,-1,0,vehicle,newDriver);
-                    iData.getEvents().add(new InsertActivity(currentRoute,vehicle,vrp.copyAndGetActivities(newJob).get(0),0));
-                    iData.getEvents().add(new SwitchVehicle(currentRoute,vehicle,newVehicleDepartureTime));
-                }
-                else {
+                    iData = new InsertionData(2 * mc, -1, 0, vehicle, newDriver);
+                    iData.getEvents().add(new InsertActivity(currentRoute, vehicle, vrp.copyAndGetActivities(newJob).get(0), 0));
+                    iData.getEvents().add(new SwitchVehicle(currentRoute, vehicle, newVehicleDepartureTime));
+                } else {
                     double best = Double.MAX_VALUE;
                     int bestIndex = 0;
                     int index = 0;
@@ -190,22 +194,22 @@ public class RegretInsertionTest {
                         best = mc;
                         bestIndex = index;
                     }
-                    iData = new InsertionData(best,-1,bestIndex,vehicle,newDriver);
-                    iData.getEvents().add(new InsertActivity(currentRoute,vehicle,vrp.copyAndGetActivities(newJob).get(0),bestIndex));
-                    iData.getEvents().add(new SwitchVehicle(currentRoute,vehicle,newVehicleDepartureTime));
+                    iData = new InsertionData(best, -1, bestIndex, vehicle, newDriver);
+                    iData.getEvents().add(new InsertActivity(currentRoute, vehicle, vrp.copyAndGetActivities(newJob).get(0), bestIndex));
+                    iData.getEvents().add(new SwitchVehicle(currentRoute, vehicle, newVehicleDepartureTime));
                 }
                 return iData;
             }
 
             private double getMarginalCost(Service service, TourActivity prevAct, TourActivity act) {
-                double prev_new = getCost(prevAct.getLocation(),service.getLocation());
-                double new_act = getCost(service.getLocation(),act.getLocation());
-                double prev_act = getCost(prevAct.getLocation(),act.getLocation());
+                double prev_new = getCost(prevAct.getLocation(), service.getLocation());
+                double new_act = getCost(service.getLocation(), act.getLocation());
+                double prev_act = getCost(prevAct.getLocation(), act.getLocation());
                 return prev_new + new_act - prev_act;
             }
 
             private double getCost(Location loc1, Location loc2) {
-                return vrp.getTransportCosts().getTransportCost(loc1,loc2,0.,null,null);
+                return vrp.getTransportCosts().getTransportCost(loc1, loc2, 0., null, null);
             }
         };
 

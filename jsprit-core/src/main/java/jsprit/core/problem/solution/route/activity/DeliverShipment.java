@@ -24,61 +24,61 @@ import jsprit.core.problem.job.Shipment;
 
 import java.util.List;
 
-public final class DeliverShipment extends AbstractActivity implements DeliveryActivity{
+public final class DeliverShipment extends AbstractActivity implements DeliveryActivity {
 
-	private Shipment shipment;
-	
-	private double endTime;
-	
-	private double arrTime;
-	
-	private Capacity capacity;
-	
-	public DeliverShipment(Shipment shipment) {
-		super();
-		this.shipment = shipment;
-		this.capacity = Capacity.invert(shipment.getSize());
-	}
+    private Shipment shipment;
+
+    private double endTime;
+
+    private double arrTime;
+
+    private Capacity capacity;
+
+    public DeliverShipment(Shipment shipment) {
+        super();
+        this.shipment = shipment;
+        this.capacity = Capacity.invert(shipment.getSize());
+    }
 
     @Deprecated
-	public DeliverShipment(DeliverShipment deliveryShipmentActivity) {
-		this.shipment = (Shipment) deliveryShipmentActivity.getJob();
-		this.arrTime = deliveryShipmentActivity.getArrTime();
-		this.endTime = deliveryShipmentActivity.getEndTime();
-		this.capacity = deliveryShipmentActivity.getSize();
+    public DeliverShipment(DeliverShipment deliveryShipmentActivity) {
+        this.shipment = (Shipment) deliveryShipmentActivity.getJob();
+        this.arrTime = deliveryShipmentActivity.getArrTime();
+        this.endTime = deliveryShipmentActivity.getEndTime();
+        this.capacity = deliveryShipmentActivity.getSize();
         setIndex(deliveryShipmentActivity.getIndex());
-	}
+    }
 
-	@Override
-	public Job getJob() {
-		return shipment;
-	}
+    @Override
+    public Job getJob() {
+        return shipment;
+    }
 
-	@Override
-	public void setTheoreticalEarliestOperationStartTime(double earliest) {
+    @Override
+    public void setTheoreticalEarliestOperationStartTime(double earliest) {
 
-	}
+    }
 
-	@Override
-	public void setTheoreticalLatestOperationStartTime(double latest) {
+    @Override
+    public void setTheoreticalLatestOperationStartTime(double latest) {
 
-	}
+    }
 
-	@Override
-	public List<TimeWindow> getTimeWindows() {
+    @Override
+    public List<TimeWindow> getTimeWindows() {
 //		return shipment.getDeliveryTimeWindow();
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public String getName() {
-		return "deliverShipment";
-	}
+    @Override
+    public String getName() {
+        return "deliverShipment";
+    }
 
-	@Override
-	public String getLocationId() {
-		return shipment.getDeliveryLocation().getId();
-	}
+    @Override
+    public String getLocationId() {
+        return shipment.getDeliveryLocation().getId();
+    }
 
     @Override
     public Location getLocation() {
@@ -86,54 +86,54 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     }
 
     @Override
-	public double getTheoreticalEarliestOperationStartTime() {
-		return shipment.getDeliveryTimeWindow().getStart();
-	}
+    public double getTheoreticalEarliestOperationStartTime() {
+        return shipment.getDeliveryTimeWindow().getStart();
+    }
 
-	@Override
-	public double getTheoreticalLatestOperationStartTime() {
-		return shipment.getDeliveryTimeWindow().getEnd();
-	}
+    @Override
+    public double getTheoreticalLatestOperationStartTime() {
+        return shipment.getDeliveryTimeWindow().getEnd();
+    }
 
-	@Override
-	public double getOperationTime() {
-		return shipment.getDeliveryServiceTime();
-	}
+    @Override
+    public double getOperationTime() {
+        return shipment.getDeliveryServiceTime();
+    }
 
-	@Override
-	public double getArrTime() {
-		return arrTime;
-	}
+    @Override
+    public double getArrTime() {
+        return arrTime;
+    }
 
-	@Override
-	public double getEndTime() {
-		return endTime;
-	}
+    @Override
+    public double getEndTime() {
+        return endTime;
+    }
 
-	@Override
-	public void setArrTime(double arrTime) {
-		this.arrTime=arrTime;
-	}
+    @Override
+    public void setArrTime(double arrTime) {
+        this.arrTime = arrTime;
+    }
 
-	@Override
-	public void setEndTime(double endTime) {
-		this.endTime=endTime;
-	}
+    @Override
+    public void setEndTime(double endTime) {
+        this.endTime = endTime;
+    }
 
-	@Override
-	public TourActivity duplicate() {
-		return new DeliverShipment(this);
-	}
-	
-	public String toString() {
-		return "[type="+getName()+"][locationId=" + getLocationId() 
-		+ "][size=" + getSize().toString()
-		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
-	}
+    @Override
+    public TourActivity duplicate() {
+        return new DeliverShipment(this);
+    }
 
-	@Override
-	public Capacity getSize() {
-		return capacity;
-	}
+    public String toString() {
+        return "[type=" + getName() + "][locationId=" + getLocationId()
+            + "][size=" + getSize().toString()
+            + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+    }
+
+    @Override
+    public Capacity getSize() {
+        return capacity;
+    }
 }

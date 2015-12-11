@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
  *
@@ -52,7 +51,7 @@ public class AdditionalDistanceConstraintExample {
 
         private final VehicleRoutingTransportCostsMatrix costMatrix;
 
-//        private final StateFactory.StateId distanceStateId;    //v1.3.1
+        //        private final StateFactory.StateId distanceStateId;    //v1.3.1
         private final StateId distanceStateId; //head of development - upcoming release
 
         private VehicleRoute vehicleRoute;
@@ -61,8 +60,8 @@ public class AdditionalDistanceConstraintExample {
 
         private TourActivity prevAct;
 
-//        public DistanceUpdater(StateFactory.StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix costMatrix) { //v1.3.1
-            public DistanceUpdater(StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix transportCosts) { //head of development - upcoming release (v1.4)
+        //        public DistanceUpdater(StateFactory.StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix costMatrix) { //v1.3.1
+        public DistanceUpdater(StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix transportCosts) { //head of development - upcoming release (v1.4)
             this.costMatrix = transportCosts;
             this.stateManager = stateManager;
             this.distanceStateId = distanceStateId;
@@ -77,18 +76,18 @@ public class AdditionalDistanceConstraintExample {
 
         @Override
         public void visit(TourActivity tourActivity) {
-            distance += getDistance(prevAct,tourActivity);
+            distance += getDistance(prevAct, tourActivity);
             prevAct = tourActivity;
         }
 
         @Override
         public void finish() {
-            distance += getDistance(prevAct,vehicleRoute.getEnd());
+            distance += getDistance(prevAct, vehicleRoute.getEnd());
 //            stateManager.putTypedRouteState(vehicleRoute,distanceStateId,Double.class,distance); //v1.3.1
             stateManager.putRouteState(vehicleRoute, distanceStateId, distance); //head of development - upcoming release (v1.4)
         }
 
-        double getDistance(TourActivity from, TourActivity to){
+        double getDistance(TourActivity from, TourActivity to) {
             return costMatrix.getDistance(from.getLocation().getId(), to.getLocation().getId());
         }
     }
@@ -101,10 +100,10 @@ public class AdditionalDistanceConstraintExample {
 
         private final double maxDistance;
 
-//        private final StateFactory.StateId distanceStateId; //v1.3.1
+        //        private final StateFactory.StateId distanceStateId; //v1.3.1
         private final StateId distanceStateId; //head of development - upcoming release (v1.4)
 
-//        DistanceConstraint(double maxDistance, StateFactory.StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix costsMatrix) { //v1.3.1
+        //        DistanceConstraint(double maxDistance, StateFactory.StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix costsMatrix) { //v1.3.1
         DistanceConstraint(double maxDistance, StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix transportCosts) { //head of development - upcoming release (v1.4)
             this.costsMatrix = transportCosts;
             this.maxDistance = maxDistance;
@@ -114,21 +113,21 @@ public class AdditionalDistanceConstraintExample {
 
         @Override
         public ConstraintsStatus fulfilled(JobInsertionContext context, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double v) {
-            double additionalDistance = getDistance(prevAct,newAct) + getDistance(newAct,nextAct) - getDistance(prevAct,nextAct);
+            double additionalDistance = getDistance(prevAct, newAct) + getDistance(newAct, nextAct) - getDistance(prevAct, nextAct);
             Double routeDistance = stateManager.getRouteState(context.getRoute(), distanceStateId, Double.class);
-            if(routeDistance == null) routeDistance = 0.;
+            if (routeDistance == null) routeDistance = 0.;
             double newRouteDistance = routeDistance + additionalDistance;
-            if(newRouteDistance > maxDistance) {
+            if (newRouteDistance > maxDistance) {
                 return ConstraintsStatus.NOT_FULFILLED;
-            }
-            else return ConstraintsStatus.FULFILLED;
+            } else return ConstraintsStatus.FULFILLED;
         }
 
-        double getDistance(TourActivity from, TourActivity to){
+        double getDistance(TourActivity from, TourActivity to) {
             return costsMatrix.getDistance(from.getLocation().getId(), to.getLocation().getId());
         }
 
     }
+
     public static void main(String[] args) {
 
         //route length 618
@@ -139,7 +138,7 @@ public class AdditionalDistanceConstraintExample {
         vrpBuilder.setRoutingCost(costMatrix);
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp,"input/algorithmConfig_solomon.xml");
+        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp, "input/algorithmConfig_solomon.xml");
 
 //        StateManager stateManager = new StateManager(vrp.getTransportCosts());  //v1.3.1
         StateManager stateManager = new StateManager(vrp); //head of development - upcoming release (v1.4)
@@ -149,13 +148,13 @@ public class AdditionalDistanceConstraintExample {
         stateManager.addStateUpdater(new DistanceUpdater(distanceStateId, stateManager, costMatrix));
 //        stateManager.updateLoadStates();
 
-        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-        constraintManager.addConstraint(new DistanceConstraint(120.,distanceStateId,stateManager,costMatrix), ConstraintManager.Priority.CRITICAL);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        constraintManager.addConstraint(new DistanceConstraint(120., distanceStateId, stateManager, costMatrix), ConstraintManager.Priority.CRITICAL);
 //        constraintManager.addLoadConstraint();
 
 //        vraBuilder.addCoreConstraints();
         vraBuilder.addDefaultCostCalculators();
-        vraBuilder.setStateAndConstraintManager(stateManager,constraintManager);
+        vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
 
         VehicleRoutingAlgorithm vra = vraBuilder.build();
 //        vra.setMaxIterations(250); //v1.3.1
@@ -165,18 +164,18 @@ public class AdditionalDistanceConstraintExample {
 
         SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
 
-        new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/plot","plot");
+        new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/plot", "plot");
     }
 
     private static VehicleRoutingTransportCostsMatrix createMatrix(VehicleRoutingProblem.Builder vrpBuilder) {
         VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
-        for(String from : vrpBuilder.getLocationMap().keySet()){
-            for(String to : vrpBuilder.getLocationMap().keySet()){
+        for (String from : vrpBuilder.getLocationMap().keySet()) {
+            for (String to : vrpBuilder.getLocationMap().keySet()) {
                 Coordinate fromCoord = vrpBuilder.getLocationMap().get(from);
                 Coordinate toCoord = vrpBuilder.getLocationMap().get(to);
                 double distance = EuclideanDistanceCalculator.calculateDistance(fromCoord, toCoord);
-                matrixBuilder.addTransportDistance(from,to,distance);
-                matrixBuilder.addTransportTime(from,to,(distance / 2.));
+                matrixBuilder.addTransportDistance(from, to, distance);
+                matrixBuilder.addTransportTime(from, to, (distance / 2.));
             }
         }
         return matrixBuilder.build();

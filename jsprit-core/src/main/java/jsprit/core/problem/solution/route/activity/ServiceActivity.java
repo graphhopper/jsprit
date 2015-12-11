@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.problem.solution.route.activity;
@@ -25,123 +25,139 @@ import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceActivity extends AbstractActivity implements JobActivity{
-	
-	@Deprecated
-	public static int counter = 0;
-	
-	public double arrTime;
-	
-	public double endTime;
+public class ServiceActivity extends AbstractActivity implements JobActivity {
 
-	private double theoreticalEarliest;
+    @Deprecated
+    public static int counter = 0;
 
-	private double theoreticalLatest;
-	/**
-	 * @return the arrTime
-	 */
-	public double getArrTime() {
-		return arrTime;
-	}
+    public double arrTime;
 
-	/**
-	 * @param arrTime the arrTime to set
-	 */
-	public void setArrTime(double arrTime) {
-		this.arrTime = arrTime;
-	}
+    public double endTime;
 
-	/**
-	 * @return the endTime
-	 */
-	public double getEndTime() {
-		return endTime;
-	}
+    private double theoreticalEarliest;
 
-	/**
-	 * @param endTime the endTime to set
-	 */
-	public void setEndTime(double endTime) {
-		this.endTime = endTime;
-	}
+    private double theoreticalLatest;
 
-	public static ServiceActivity copyOf(ServiceActivity serviceActivity){
-		return new ServiceActivity(serviceActivity);
-	}
-	
-	public static ServiceActivity newInstance(Service service){
-		return new ServiceActivity(service);
-	}
+    /**
+     * @return the arrTime
+     */
+    public double getArrTime() {
+        return arrTime;
+    }
 
-	
-	private final Service service;
+    /**
+     * @param arrTime the arrTime to set
+     */
+    public void setArrTime(double arrTime) {
+        this.arrTime = arrTime;
+    }
 
-	private List<TimeWindow> timeWindows;
-			
-	protected ServiceActivity(Service service) {
-		counter++;
-		this.service = service;
-		timeWindows = new ArrayList<TimeWindow>(service.getTimeWindows(0.));
-	}
-	
-	protected ServiceActivity(ServiceActivity serviceActivity) {
-		counter++;
-		this.service = serviceActivity.getJob();
-		this.arrTime = serviceActivity.getArrTime();
-		this.endTime = serviceActivity.getEndTime();
+    /**
+     * @return the endTime
+     */
+    public double getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * @param endTime the endTime to set
+     */
+    public void setEndTime(double endTime) {
+        this.endTime = endTime;
+    }
+
+    public static ServiceActivity copyOf(ServiceActivity serviceActivity) {
+        return new ServiceActivity(serviceActivity);
+    }
+
+    public static ServiceActivity newInstance(Service service) {
+        return new ServiceActivity(service);
+    }
+
+
+    private final Service service;
+
+    private List<TimeWindow> timeWindows;
+
+    protected ServiceActivity(Service service) {
+        counter++;
+        this.service = service;
+        timeWindows = new ArrayList<TimeWindow>(service.getTimeWindows(0.));
+    }
+
+    protected ServiceActivity(ServiceActivity serviceActivity) {
+        counter++;
+        this.service = serviceActivity.getJob();
+        this.arrTime = serviceActivity.getArrTime();
+        this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());
-		timeWindows = new ArrayList<TimeWindow>(serviceActivity.getTimeWindows());
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((service == null) ? 0 : service.hashCode());
-		return result;
-	}
+        timeWindows = new ArrayList<TimeWindow>(serviceActivity.getTimeWindows());
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ServiceActivity other = (ServiceActivity) obj;
-		if (service == null) {
-			if (other.service != null)
-				return false;
-		} else if (!service.equals(other.service))
-			return false;
-		return true;
-	}
 
-	public double getTheoreticalEarliestOperationStartTime() {
-		return theoreticalEarliest;
-	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((service == null) ? 0 : service.hashCode());
+        return result;
+    }
 
-	public double getTheoreticalLatestOperationStartTime() {
-		return theoreticalLatest;
-	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ServiceActivity other = (ServiceActivity) obj;
+        if (service == null) {
+            if (other.service != null)
+                return false;
+        } else if (!service.equals(other.service))
+            return false;
+        return true;
+    }
 
-	@Override
-	public double getOperationTime() {
-		return service.getServiceDuration();
-	}
+    public double getTheoreticalEarliestOperationStartTime() {
+        return theoreticalEarliest;
+    }
 
-	@Override
-	public String getLocationId() {
-		return service.getLocation().getId();
-	}
+    public double getTheoreticalLatestOperationStartTime() {
+        return theoreticalLatest;
+    }
+
+    @Override
+    public void setTheoreticalEarliestOperationStartTime(double earliest) {
+        theoreticalEarliest = earliest;
+    }
+
+    @Override
+    public void setTheoreticalLatestOperationStartTime(double latest) {
+        theoreticalLatest = latest;
+    }
+
+    @Override
+    public List<TimeWindow> getTimeWindows() {
+        return timeWindows;
+    }
+
+    @Override
+    public double getOperationTime() {
+        return service.getServiceDuration();
+    }
+
+    @Override
+    public String getLocationId() {
+        return service.getLocation().getId();
+    }
 
     @Override
     public Location getLocation() {
@@ -150,49 +166,33 @@ public class ServiceActivity extends AbstractActivity implements JobActivity{
 
 
     @Override
-	public Service getJob() {
-		return service;
-	}
+    public Service getJob() {
+        return service;
+    }
 
-	
-	@Override
-	public String toString() {
-		return "[type="+getName()+"][locationId=" + getLocationId() 
-		+ "][size=" + getSize().toString()
-		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
-	}
 
-	@Override
-	public void setTheoreticalEarliestOperationStartTime(double earliest) {
-		theoreticalEarliest = earliest;
-	}
+    @Override
+    public String toString() {
+        return "[type=" + getName() + "][locationId=" + getLocationId()
+            + "][size=" + getSize().toString()
+            + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+    }
 
-	@Override
-	public void setTheoreticalLatestOperationStartTime(double latest) {
-		theoreticalLatest = latest;
-	}
+    @Override
+    public String getName() {
+        return service.getType();
+    }
 
-	@Override
-	public List<TimeWindow> getTimeWindows() {
-		return timeWindows;
-	}
+    @Override
+    public TourActivity duplicate() {
+        return new ServiceActivity(this);
+    }
 
-	@Override
-	public String getName() {
-		return service.getType();
-	}
+    @Override
+    public Capacity getSize() {
+        return service.getSize();
+    }
 
-	@Override
-	public TourActivity duplicate() {
-		return new ServiceActivity(this);
-	}
-
-	@Override
-	public Capacity getSize() {
-		return service.getSize();
-	}
-	
-	
 
 }

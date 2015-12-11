@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm.ruin;
@@ -23,41 +23,36 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import java.util.Collection;
 
 
-
-
-
 /**
- * 
  * @author stefan schroeder
- * 
  */
 
 public interface RuinStrategy {
-	
-	/**
-	 * Ruins a current solution, i.e. a collection of vehicle-routes and 
-	 * returns a collection of removed and thus unassigned jobs.
-	 * 
-	 * @param {@link VehicleRoute}
-	 * @return Collection of {@link Job}
-	 */
-	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes);
 
-	/**
-	 * Removes targetJob as well as its neighbors with a size of (nOfJobs2BeRemoved-1). 
-	 */
+    /**
+     * Ruins a current solution, i.e. a collection of vehicle-routes and
+     * returns a collection of removed and thus unassigned jobs.
+     *
+     * @param {@link VehicleRoute}
+     * @return Collection of {@link Job}
+     */
+    public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes);
+
+    /**
+     * Removes targetJob as well as its neighbors with a size of (nOfJobs2BeRemoved-1).
+     */
     @Deprecated
-	public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved);
-	
-	/**
-	 * Adds a ruin-listener.
-	 * 
-	 * @param {@link RuinListener}
-	 */
-	public void addListener(RuinListener ruinListener);
-	
-	public void removeListener(RuinListener ruinListener);
-	
-	public Collection<RuinListener> getListeners();
+    public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved);
+
+    /**
+     * Adds a ruin-listener.
+     *
+     * @param {@link RuinListener}
+     */
+    public void addListener(RuinListener ruinListener);
+
+    public void removeListener(RuinListener ruinListener);
+
+    public Collection<RuinListener> getListeners();
 
 }

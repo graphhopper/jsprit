@@ -24,64 +24,47 @@ import jsprit.core.problem.job.Delivery;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DeliverService extends AbstractActivity implements DeliveryActivity{
-	
-	private Delivery delivery;
-	
-	private Capacity capacity;
-	
-	private double arrTime;
-	
-	private double endTime;
+public final class DeliverService extends AbstractActivity implements DeliveryActivity {
 
-	private double theoreticalEarliest;
+    private Delivery delivery;
 
-	private double theoreticalLatest;
+    private Capacity capacity;
 
-	private List<TimeWindow> timeWindows;
-	
-	public DeliverService(Delivery delivery) {
-		super();
-		this.delivery = delivery;
-		capacity = Capacity.invert(delivery.getSize());
-		timeWindows = new ArrayList<TimeWindow>(delivery.getTimeWindows(0.));
-	}
-	
-	private DeliverService(DeliverService deliveryActivity){
-		this.delivery=deliveryActivity.getJob();
-		this.arrTime=deliveryActivity.getArrTime();
-		this.endTime=deliveryActivity.getEndTime();
-		this.theoreticalEarliest = deliveryActivity.getTheoreticalEarliestOperationStartTime();
-		this.theoreticalLatest = deliveryActivity.getTheoreticalLatestOperationStartTime();
-		capacity = deliveryActivity.getSize();
+    private double arrTime;
+
+    private double endTime;
+
+    private double theoreticalEarliest;
+
+    private double theoreticalLatest;
+
+    private List<TimeWindow> timeWindows;
+
+    public DeliverService(Delivery delivery) {
+        super();
+        this.delivery = delivery;
+        capacity = Capacity.invert(delivery.getSize());
+        timeWindows = new ArrayList<TimeWindow>(delivery.getTimeWindows(0.));
+    }
+
+    private DeliverService(DeliverService deliveryActivity) {
+        this.delivery = deliveryActivity.getJob();
+        this.arrTime = deliveryActivity.getArrTime();
+        this.endTime = deliveryActivity.getEndTime();
+        capacity = deliveryActivity.getSize();
         setIndex(deliveryActivity.getIndex());
-		timeWindows = new ArrayList<TimeWindow>(delivery.getTimeWindows(0.));
-	}
+        timeWindows = new ArrayList<TimeWindow>(delivery.getTimeWindows(0.));
+    }
 
-	@Override
-	public void setTheoreticalEarliestOperationStartTime(double earliest) {
-		theoreticalEarliest = earliest;
-	}
+    @Override
+    public String getName() {
+        return delivery.getType();
+    }
 
-	@Override
-	public void setTheoreticalLatestOperationStartTime(double latest) {
-		theoreticalLatest = latest;
-	}
-
-	@Override
-	public List<TimeWindow> getTimeWindows() {
-		return timeWindows;
-	}
-
-	@Override
-	public String getName() {
-		return delivery.getType();
-	}
-
-	@Override
-	public String getLocationId() {
-		return delivery.getLocation().getId();
-	}
+    @Override
+    public String getLocationId() {
+        return delivery.getLocation().getId();
+    }
 
     @Override
     public Location getLocation() {
@@ -89,59 +72,74 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     @Override
-	public double getTheoreticalEarliestOperationStartTime() {
-		return theoreticalEarliest;
-	}
+    public void setTheoreticalEarliestOperationStartTime(double earliest) {
+        theoreticalEarliest = earliest;
+    }
 
-	@Override
-	public double getTheoreticalLatestOperationStartTime() {
-		return theoreticalLatest;
-	}
+    @Override
+    public void setTheoreticalLatestOperationStartTime(double latest) {
+        theoreticalLatest = latest;
+    }
 
-	@Override
-	public double getOperationTime() {
-		return delivery.getServiceDuration();
-	}
+    @Override
+    public List<TimeWindow> getTimeWindows() {
+        return timeWindows;
+    }
 
-	@Override
-	public double getArrTime() {
-		return arrTime;
-	}
+    @Override
+    public double getTheoreticalEarliestOperationStartTime() {
+        return theoreticalEarliest;
+    }
 
-	@Override
-	public double getEndTime() {
-		return endTime;
-	}
+    @Override
+    public double getTheoreticalLatestOperationStartTime() {
+        return theoreticalLatest;
+    }
 
-	@Override
-	public void setArrTime(double arrTime) {
-		this.arrTime=arrTime;
-	}
+    @Override
+    public double getOperationTime() {
+        return delivery.getServiceDuration();
+    }
 
-	@Override
-	public void setEndTime(double endTime) {
-		this.endTime=endTime;
-	}
+    @Override
+    public double getArrTime() {
+        return arrTime;
+    }
 
-	@Override
-	public TourActivity duplicate() {
-		return new DeliverService(this);
-	}
+    @Override
+    public double getEndTime() {
+        return endTime;
+    }
 
-	@Override
-	public Delivery getJob() {
-		return delivery;
-	}
+    @Override
+    public void setArrTime(double arrTime) {
+        this.arrTime = arrTime;
+    }
 
-	public String toString() {
-		return "[type="+getName()+"][locationId=" + getLocationId() 
-		+ "][size=" + getSize().toString()
-		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
-	}
+    @Override
+    public void setEndTime(double endTime) {
+        this.endTime = endTime;
+    }
 
-	@Override
-	public Capacity getSize() {
-		return capacity;
-	}
+    @Override
+    public TourActivity duplicate() {
+        return new DeliverService(this);
+    }
+
+    @Override
+    public Delivery getJob() {
+        return delivery;
+    }
+
+    public String toString() {
+        return "[type=" + getName() + "][locationId=" + getLocationId()
+            + "][size=" + getSize().toString()
+            + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+    }
+
+    @Override
+    public Capacity getSize() {
+        return capacity;
+    }
 }

@@ -47,21 +47,21 @@ public class LoadStateTest {
     private StateManager stateManager;
 
     @Before
-    public void doBefore(){
+    public void doBefore() {
         Vehicle vehicle = mock(Vehicle.class);
         VehicleType type = mock(VehicleType.class);
-        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0,20).build());
+        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 20).build());
         when(vehicle.getType()).thenReturn(type);
 
         VehicleRoutingProblem.Builder serviceProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Service s1 = Service.Builder.newInstance("s").addSizeDimension(0,10).setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0,5).setLocation(Location.newInstance("loc")).build();
+        Service s1 = Service.Builder.newInstance("s").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
         serviceProblemBuilder.addJob(s1).addJob(s2);
         final VehicleRoutingProblem serviceProblem = serviceProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder pdProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0,10).setLocation(Location.newInstance("loc")).build();
-        Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0,5).setLocation(Location.newInstance("loc")).build();
+        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
         pdProblemBuilder.addJob(pickup).addJob(delivery);
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
 
@@ -100,66 +100,68 @@ public class LoadStateTest {
         });
         shipment_route = shipmentRouteBuilder.addPickup(shipment1).addPickup(shipment2).addDelivery(shipment2).addDelivery(shipment1).build();
 
-        stateManager = new StateManager(mock(VehicleRoutingProblem.class));
+        VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
+        when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.FINITE);
+        stateManager = new StateManager(vrpMock);
         stateManager.updateLoadStates();
 
     }
 
 
     @Test
-    public void loadAtEndShouldBe15(){
+    public void loadAtEndShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Capacity routeState = stateManager.getRouteState(serviceRoute, InternalStates.LOAD_AT_END, Capacity.class);
-        assertEquals(15,routeState.get(0));
+        assertEquals(15, routeState.get(0));
     }
 
     @Test
-    public void loadAtBeginningShouldBe0(){
+    public void loadAtBeginningShouldBe0() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Capacity routeState = stateManager.getRouteState(serviceRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-        assertEquals(0,routeState.get(0));
+        assertEquals(0, routeState.get(0));
     }
 
     @Test
-    public void loadAtAct1ShouldBe10(){
+    public void loadAtAct1ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(serviceRoute.getActivities().get(0), InternalStates.LOAD, Capacity.class);
-        assertEquals(10,atAct1.get(0));
+        assertEquals(10, atAct1.get(0));
     }
 
     @Test
-    public void loadAtAct2ShouldBe15(){
+    public void loadAtAct2ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(serviceRoute.getActivities().get(1), InternalStates.LOAD, Capacity.class);
-        assertEquals(15,atAct2.get(0));
+        assertEquals(15, atAct2.get(0));
     }
 
     @Test
-    public void futureMaxLoatAtAct1ShouldBe15(){
+    public void futureMaxLoatAtAct1ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(serviceRoute.getActivities().get(0), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct1.get(0));
+        assertEquals(15, atAct1.get(0));
     }
 
     @Test
-    public void futureMaxLoatAtAct2ShouldBe15(){
+    public void futureMaxLoatAtAct2ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(serviceRoute.getActivities().get(1), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct2.get(0));
+        assertEquals(15, atAct2.get(0));
     }
 
     @Test
-    public void pastMaxLoatAtAct1ShouldBe0(){
+    public void pastMaxLoatAtAct1ShouldBe0() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(serviceRoute.getActivities().get(0), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(10,atAct1.get(0));
+        assertEquals(10, atAct1.get(0));
     }
 
     @Test
-    public void pastMaxLoatAtAct2ShouldBe10(){
+    public void pastMaxLoatAtAct2ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(serviceRoute.getActivities().get(1), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct2.get(0));
+        assertEquals(15, atAct2.get(0));
     }
 
     /*
@@ -167,59 +169,59 @@ public class LoadStateTest {
     pickup 10 and deliver 5
      */
     @Test
-    public void when_pdroute_loadAtEndShouldBe10(){
+    public void when_pdroute_loadAtEndShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity routeState = stateManager.getRouteState(pickup_delivery_route, InternalStates.LOAD_AT_END, Capacity.class);
-        assertEquals(10,routeState.get(0));
+        assertEquals(10, routeState.get(0));
     }
 
     @Test
-    public void when_pdroute_loadAtBeginningShouldBe5(){
+    public void when_pdroute_loadAtBeginningShouldBe5() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity routeState = stateManager.getRouteState(pickup_delivery_route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-        assertEquals(5,routeState.get(0));
+        assertEquals(5, routeState.get(0));
     }
 
     @Test
-    public void when_pdroute_loadAtAct1ShouldBe15(){
+    public void when_pdroute_loadAtAct1ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(0), InternalStates.LOAD, Capacity.class);
-        assertEquals(15,atAct1.get(0));
+        assertEquals(15, atAct1.get(0));
     }
 
     @Test
-    public void when_pdroute_loadAtAct2ShouldBe10(){
+    public void when_pdroute_loadAtAct2ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(1), InternalStates.LOAD, Capacity.class);
-        assertEquals(10,atAct2.get(0));
+        assertEquals(10, atAct2.get(0));
     }
 
     @Test
-    public void when_pdroute_futureMaxLoatAtAct1ShouldBe15(){
+    public void when_pdroute_futureMaxLoatAtAct1ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(0), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct1.get(0));
+        assertEquals(15, atAct1.get(0));
     }
 
     @Test
-    public void when_pdroute_futureMaxLoatAtAct2ShouldBe10(){
+    public void when_pdroute_futureMaxLoatAtAct2ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(1), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(10,atAct2.get(0));
+        assertEquals(10, atAct2.get(0));
     }
 
     @Test
-    public void when_pdroute_pastMaxLoatAtAct1ShouldBe15(){
+    public void when_pdroute_pastMaxLoatAtAct1ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(0), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct1.get(0));
+        assertEquals(15, atAct1.get(0));
     }
 
     @Test
-    public void when_pdroute_pastMaxLoatAtAct2ShouldBe10(){
+    public void when_pdroute_pastMaxLoatAtAct2ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(1), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct2.get(0));
+        assertEquals(15, atAct2.get(0));
     }
 
     /*
@@ -230,100 +232,100 @@ public class LoadStateTest {
 
      */
     @Test
-    public void when_shipmentroute_loadAtEndShouldBe0(){
+    public void when_shipmentroute_loadAtEndShouldBe0() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity routeState = stateManager.getRouteState(shipment_route, InternalStates.LOAD_AT_END, Capacity.class);
-        assertEquals(0,routeState.get(0));
+        assertEquals(0, routeState.get(0));
     }
 
     @Test
-    public void when_shipmentroute_loadAtBeginningShouldBe0(){
+    public void when_shipmentroute_loadAtBeginningShouldBe0() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity routeState = stateManager.getRouteState(shipment_route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-        assertEquals(0,routeState.get(0));
+        assertEquals(0, routeState.get(0));
     }
 
     @Test
-    public void when_shipmentroute_loadAtAct1ShouldBe10(){
+    public void when_shipmentroute_loadAtAct1ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(shipment_route.getActivities().get(0), InternalStates.LOAD, Capacity.class);
-        assertEquals(10,atAct1.get(0));
+        assertEquals(10, atAct1.get(0));
     }
 
     @Test
-    public void when_shipmentroute_loadAtAct2ShouldBe15(){
+    public void when_shipmentroute_loadAtAct2ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(shipment_route.getActivities().get(1), InternalStates.LOAD, Capacity.class);
-        assertEquals(15,atAct2.get(0));
+        assertEquals(15, atAct2.get(0));
     }
 
     @Test
-    public void when_shipmentroute_loadAtAct3ShouldBe10(){
+    public void when_shipmentroute_loadAtAct3ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct = stateManager.getActivityState(shipment_route.getActivities().get(2), InternalStates.LOAD, Capacity.class);
         assertEquals(10, atAct.get(0));
     }
 
     @Test
-    public void when_shipmentroute_loadAtAct4ShouldBe0(){
+    public void when_shipmentroute_loadAtAct4ShouldBe0() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct = stateManager.getActivityState(shipment_route.getActivities().get(3), InternalStates.LOAD, Capacity.class);
         assertEquals(0, atAct.get(0));
     }
 
     @Test
-    public void when_shipmentroute_futureMaxLoatAtAct1ShouldBe15(){
+    public void when_shipmentroute_futureMaxLoatAtAct1ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(shipment_route.getActivities().get(0), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct1.get(0));
+        assertEquals(15, atAct1.get(0));
     }
 
     @Test
-    public void when_shipmentroute_futureMaxLoatAtAct2ShouldBe15(){
+    public void when_shipmentroute_futureMaxLoatAtAct2ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(shipment_route.getActivities().get(1), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct2.get(0));
+        assertEquals(15, atAct2.get(0));
     }
 
     @Test
-    public void when_shipmentroute_futureMaxLoatAtAct3ShouldBe10(){
+    public void when_shipmentroute_futureMaxLoatAtAct3ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct = stateManager.getActivityState(shipment_route.getActivities().get(2), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(10,atAct.get(0));
+        assertEquals(10, atAct.get(0));
     }
 
     @Test
-    public void when_shipmentroute_futureMaxLoatAtAct4ShouldBe0(){
+    public void when_shipmentroute_futureMaxLoatAtAct4ShouldBe0() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct = stateManager.getActivityState(shipment_route.getActivities().get(3), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(0,atAct.get(0));
+        assertEquals(0, atAct.get(0));
     }
 
     @Test
-    public void when_shipmentroute_pastMaxLoatAtAct1ShouldBe10(){
+    public void when_shipmentroute_pastMaxLoatAtAct1ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(shipment_route.getActivities().get(0), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(10,atAct1.get(0));
+        assertEquals(10, atAct1.get(0));
     }
 
     @Test
-    public void when_shipmentroute_pastMaxLoatAtAct2ShouldBe10(){
+    public void when_shipmentroute_pastMaxLoatAtAct2ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(shipment_route.getActivities().get(1), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct2.get(0));
+        assertEquals(15, atAct2.get(0));
     }
 
     @Test
-    public void when_shipmentroute_pastMaxLoatAtAct3ShouldBe15(){
+    public void when_shipmentroute_pastMaxLoatAtAct3ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct = stateManager.getActivityState(shipment_route.getActivities().get(2), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct.get(0));
+        assertEquals(15, atAct.get(0));
     }
 
     @Test
-    public void when_shipmentroute_pastMaxLoatAtAct4ShouldBe15(){
+    public void when_shipmentroute_pastMaxLoatAtAct4ShouldBe15() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Capacity atAct = stateManager.getActivityState(shipment_route.getActivities().get(3), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(15,atAct.get(0));
+        assertEquals(15, atAct.get(0));
     }
 }

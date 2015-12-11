@@ -26,63 +26,63 @@ import java.util.Collection;
 
 /**
  * Updates and memorizes latest operation start times at activities.
- * 
- * @author schroeder
  *
+ * @author schroeder
  */
-class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater{
+class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater {
 
-	private StateManager states;
-	
-	private VehicleRoute route;
-	
-	private VehicleRoutingTransportCosts transportCosts;
-	
-	private double latestArrTimeAtPrevAct;
-	
-	private TourActivity prevAct;
-	
-	public UpdatePracticalTimeWindows(StateManager states, VehicleRoutingTransportCosts tpCosts) {
-		super();
-		this.states = states;
-		this.transportCosts = tpCosts;
-	}
+    private StateManager states;
 
-	@Override
-	public void begin(VehicleRoute route) {
-		this.route = route;
-		latestArrTimeAtPrevAct = route.getEnd().getTheoreticalLatestOperationStartTime();
-		prevAct = route.getEnd();
-	}
+    private VehicleRoute route;
 
-	@Override
-	public void visit(TourActivity activity) {
-		double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
-		Collection<TimeWindow> timeWindows = activity.getTimeWindows();
-		double latestArrivalTime = getLatestArrivalTime(timeWindows,potentialLatestArrivalTimeAtCurrAct);
-		states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
-		
-		latestArrTimeAtPrevAct = latestArrivalTime;
-		prevAct = activity;
-	}
+    private VehicleRoutingTransportCosts transportCosts;
 
-	private double getLatestArrivalTime(Collection<TimeWindow> timeWindows, double potentialLatestArrivalTimeAtCurrAct) {
-		TimeWindow last = null;
-		for(TimeWindow tw : timeWindows){
-			if(tw.getStart() <= potentialLatestArrivalTimeAtCurrAct && tw.getEnd() >= potentialLatestArrivalTimeAtCurrAct){
-				return potentialLatestArrivalTimeAtCurrAct;
-			}
-			else if(tw.getStart() > potentialLatestArrivalTimeAtCurrAct){
-				if(last == null){
-					return potentialLatestArrivalTimeAtCurrAct;
-				}
-				else return last.getEnd();
-			}
-			last = tw;
-		}
-		return last.getEnd();
-	}
+    private double latestArrTimeAtPrevAct;
 
-	@Override
-	public void finish() {}
+    private TourActivity prevAct;
+
+    public UpdatePracticalTimeWindows(StateManager states, VehicleRoutingTransportCosts tpCosts) {
+        super();
+        this.states = states;
+        this.transportCosts = tpCosts;
+    }
+
+    @Override
+    public void begin(VehicleRoute route) {
+        this.route = route;
+        latestArrTimeAtPrevAct = route.getEnd().getTheoreticalLatestOperationStartTime();
+        prevAct = route.getEnd();
+    }
+
+    @Override
+    public void visit(TourActivity activity) {
+        double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(),route.getVehicle()) - activity.getOperationTime();
+        Collection<TimeWindow> timeWindows = activity.getTimeWindows();
+        double latestArrivalTime = getLatestArrivalTime(timeWindows,potentialLatestArrivalTimeAtCurrAct);
+        states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
+
+        latestArrTimeAtPrevAct = latestArrivalTime;
+        prevAct = activity;
+    }
+
+    private double getLatestArrivalTime(Collection<TimeWindow> timeWindows, double potentialLatestArrivalTimeAtCurrAct) {
+        TimeWindow last = null;
+        for(TimeWindow tw : timeWindows){
+            if(tw.getStart() <= potentialLatestArrivalTimeAtCurrAct && tw.getEnd() >= potentialLatestArrivalTimeAtCurrAct){
+                return potentialLatestArrivalTimeAtCurrAct;
+            }
+            else if(tw.getStart() > potentialLatestArrivalTimeAtCurrAct){
+                if(last == null){
+                    return potentialLatestArrivalTimeAtCurrAct;
+                }
+                else return last.getEnd();
+            }
+            last = tw;
+        }
+        return last.getEnd();
+    }
+
+    @Override
+    public void finish() {
+    }
 }

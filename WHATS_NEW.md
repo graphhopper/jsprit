@@ -1,6 +1,11 @@
 WHATS NEW
 ==========
 ------------------------------
+<b>2015-08-10</b> new release **v1.6.1**
+
+Jsprit results are now reproducible since every time the algorithm runs, a unique random number generator (always starting with a
+ predefined seed) is invoked. If one does not want this behaviour, one can always specify custom random number generators.
+
 <b>2015-03-12</b> new release **v1.6**
 
 When reviewing the feedback from our users, we realized that jsprit cannot solve certain kinds of problems adequately.

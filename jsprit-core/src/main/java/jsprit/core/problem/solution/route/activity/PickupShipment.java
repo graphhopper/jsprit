@@ -26,54 +26,54 @@ import java.util.List;
 
 public final class PickupShipment extends AbstractActivity implements PickupActivity{
 
-	private Shipment shipment;
-	
-	private double endTime;
-	
-	private double arrTime;
-	
-	public PickupShipment(Shipment shipment) {
-		super();
-		this.shipment = shipment;
-	}
+    private Shipment shipment;
+
+    private double endTime;
+
+    private double arrTime;
+
+    public PickupShipment(Shipment shipment) {
+        super();
+        this.shipment = shipment;
+    }
 
     @Deprecated
-	public PickupShipment(PickupShipment pickupShipmentActivity) {
-		this.shipment = (Shipment) pickupShipmentActivity.getJob();
-		this.arrTime = pickupShipmentActivity.getArrTime();
-		this.endTime = pickupShipmentActivity.getEndTime();
+    public PickupShipment(PickupShipment pickupShipmentActivity) {
+        this.shipment = (Shipment) pickupShipmentActivity.getJob();
+        this.arrTime = pickupShipmentActivity.getArrTime();
+        this.endTime = pickupShipmentActivity.getEndTime();
         setIndex(pickupShipmentActivity.getIndex());
-	}
+    }
 
-	@Override
-	public Job getJob() {
-		return shipment;
-	}
+    @Override
+    public Job getJob() {
+        return shipment;
+    }
 
-	@Override
-	public void setTheoreticalEarliestOperationStartTime(double earliest) {
+    @Override
+    public void setTheoreticalEarliestOperationStartTime(double earliest) {
 
-	}
+    }
 
-	@Override
-	public void setTheoreticalLatestOperationStartTime(double latest) {
+    @Override
+    public void setTheoreticalLatestOperationStartTime(double latest) {
 
-	}
+    }
 
-	@Override
-	public List<TimeWindow> getTimeWindows() {
-		return null;
-	}
+    @Override
+    public List<TimeWindow> getTimeWindows() {
+        return null;
+    }
 
-	@Override
-	public String getName() {
-		return "pickupShipment";
-	}
+    @Override
+    public String getName() {
+        return "pickupShipment";
+    }
 
-	@Override
-	public String getLocationId() {
-		return shipment.getPickupLocation().getId();
-	}
+    @Override
+    public String getLocationId() {
+        return shipment.getPickupLocation().getId();
+    }
 
     @Override
     public Location getLocation() {
@@ -81,57 +81,56 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     }
 
     @Override
-	public double getTheoreticalEarliestOperationStartTime() {
-		return shipment.getPickupTimeWindow().getStart();
-	}
+    public double getTheoreticalEarliestOperationStartTime() {
+        return shipment.getPickupTimeWindow().getStart();
+    }
 
-	@Override
-	public double getTheoreticalLatestOperationStartTime() {
-		return shipment.getPickupTimeWindow().getEnd();
-	}
+    @Override
+    public double getTheoreticalLatestOperationStartTime() {
+        return shipment.getPickupTimeWindow().getEnd();
+    }
 
-	@Override
-	public double getOperationTime() {
-		return shipment.getPickupServiceTime();
-	}
+    @Override
+    public double getOperationTime() {
+        return shipment.getPickupServiceTime();
+    }
 
-	@Override
-	public double getArrTime() {
-		return arrTime;
-	}
+    @Override
+    public double getArrTime() {
+        return arrTime;
+    }
 
-	@Override
-	public double getEndTime() {
-		return endTime;
-	}
+    @Override
+    public double getEndTime() {
+        return endTime;
+    }
 
-	@Override
-	public void setArrTime(double arrTime) {
-		this.arrTime=arrTime;
-	}
+    @Override
+    public void setArrTime(double arrTime) {
+        this.arrTime = arrTime;
+    }
 
-	@Override
-	public void setEndTime(double endTime) {
-		this.endTime=endTime;
-	}
+    @Override
+    public void setEndTime(double endTime) {
+        this.endTime = endTime;
+    }
 
-	@Override
-	public TourActivity duplicate() {
-		return new PickupShipment(this);
-	}
-	
-	public String toString() {
-		return "[type="+getName()+"][locationId=" + getLocationId() 
-		+ "][size=" + getSize().toString()
-		+ "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-		+ "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
-	}
+    @Override
+    public TourActivity duplicate() {
+        return new PickupShipment(this);
+    }
 
-	@Override
-	public Capacity getSize() {
-		return shipment.getSize();
-	}
+    public String toString() {
+        return "[type=" + getName() + "][locationId=" + getLocationId()
+            + "][size=" + getSize().toString()
+            + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+    }
 
+    @Override
+    public Capacity getSize() {
+        return shipment.getSize();
+    }
 
 
 }

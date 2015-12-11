@@ -1,4 +1,3 @@
-
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Copyright (C) 2014  Stefan Schroeder
   ~
@@ -16,320 +15,298 @@
   ~ License along with this library.  If not, see <http://www.gnu.org/licenses />.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <groupId>jsprit</groupId>
-  <artifactId>jsprit</artifactId>
-  <version>1.6.1-SNAPSHOT</version>
-  
-  <packaging>pom</packaging>
-  
-  <name>jsprit</name>
-  <description>A toolkit to solve vehicle routing problems.</description>
-  <url>https://github.com/jsprit/jsprit</url>
-  <inceptionYear>2013</inceptionYear>
-  
-  <licenses>
-  	<license>
-  		<name>GNU Lesser General Public Licence, version 3.0</name>
-  		<url>http://opensource.org/licenses/LGPL-3.0</url>
-  	</license>
-  </licenses>
-  
-  <developers>
-  	<developer>
-  		<name>Stefan Schroeder</name>
-  		<email>stefan.schroeder@jspr.it</email>
-  	</developer>
-  </developers>
-  
-  <prerequisites>
-  	<maven>3.0.4</maven>
-  </prerequisites>
-  
-  <scm>
-  	<connection>scm:git:git@github.com:jsprit/jsprit.git</connection>
-  	<developerConnection>scm:git:https://github.com/jsprit/jsprit.git</developerConnection>
-  	<url>http://github.com/jsprit/jsprit/tree/master</url>
-  	<tag>HEAD</tag>
-  </scm>
-  
-  <issueManagement>
-  	<system>github</system>
-  	<url>https://github.com/jsprit/jsprit/issues</url>
-  </issueManagement>
-  
-  <distributionManagement>
-  	<snapshotRepository>
-           <id>jsprit-snapshots</id>
-           <url>https://github.com/jsprit/mvn-rep/raw/master/snapshots</url>
-     </snapshotRepository>
-  
-  	<repository>
-           <id>jsprit-releases</id>
-           <url>https://github.com/jsprit/mvn-rep/raw/master/releases</url>
-     </repository>
-  </distributionManagement>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <modules> 
-   	<module>jsprit-core</module> 
-   	<module>jsprit-analysis</module>
-   	<module>jsprit-examples</module> 
-   	<module>jsprit-instances</module>  
-   </modules>
-  
-  <properties>
-  	<jdkVersion>1.6</jdkVersion>
-  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  	<junit.version>4.10</junit.version>
-  	<mockito.version>1.9.5</mockito.version>
-  	<logger.version>2.0</logger.version>
-    <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+    <groupId>jsprit</groupId>
+    <artifactId>jsprit</artifactId>
+    <version>1.6.2-SNAPSHOT</version>
 
-  </properties>
-  
-  <build>
-  	<sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>src/test/java</testSourceDirectory>
-    <directory>target</directory>
-    <outputDirectory>target/classes</outputDirectory>
-    <testOutputDirectory>target/test-classes</testOutputDirectory>
-    <finalName>${project.artifactId}-${project.version}</finalName>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>src/test/resources</directory>
-      </testResource>
-    </testResources>
-    
-    <pluginManagement>	
-    	<plugins>
-    	<plugin>
-        	<groupId>org.eclipse.m2e</groupId>
-        	<artifactId>lifecycle-mapping</artifactId>
-        	<version>1.0.0</version>
-        	<configuration>
-          		<lifecycleMappingMetadata>
-            		<pluginExecutions>
-              			<pluginExecution>
-                			<pluginExecutionFilter>
-                  				<groupId>org.apache.maven.plugins</groupId>
-                  				<artifactId>maven-enforcer-plugin</artifactId>
-                  				<versionRange>[1.0.0,)</versionRange>
-                  				<goals>
-                    				<goal>enforce</goal>
-                  				</goals>
-                			</pluginExecutionFilter>
-                			<action>
-                  				<ignore />
-                			</action>
-              			</pluginExecution>
-            		</pluginExecutions>
-          		</lifecycleMappingMetadata>
-        	</configuration>
-      	</plugin>
-  		</plugins>
-    </pluginManagement>
-    <plugins>
-<!--     	<plugin> -->
-<!--         	<groupId>org.eclipse.m2e</groupId> -->
-<!--         	<artifactId>lifecycle-mapping</artifactId> -->
-<!--         	<version>1.0.0</version> -->
-<!--         	<configuration> -->
-<!--           		<lifecycleMappingMetadata> -->
-<!--             		<pluginExecutions> -->
-<!--               			<pluginExecution> -->
-<!--                 			<pluginExecutionFilter> -->
-<!--                   				<groupId>org.apache.maven.plugins</groupId> -->
-<!--                   				<artifactId>maven-enforcer-plugin</artifactId> -->
-<!--                   				<versionRange>[1.0.0,)</versionRange> -->
-<!--                   				<goals> -->
-<!--                     				<goal>enforce</goal> -->
-<!--                   				</goals> -->
-<!--                 			</pluginExecutionFilter> -->
-<!--                 			<action> -->
-<!--                   				<ignore /> -->
-<!--                 			</action> -->
-<!--               			</pluginExecution> -->
-<!--             		</pluginExecutions> -->
-<!--           		</lifecycleMappingMetadata> -->
-<!--         	</configuration> -->
-<!--       	</plugin> -->
-   		<plugin>
-        	<artifactId>maven-enforcer-plugin</artifactId>
-            <version>1.1.1</version>
-             <executions>
-             	<execution>
-                	<id>enforce-versions</id>
-                    <phase>initialize</phase>
-                    <goals>
-                    	<goal>enforce</goal>
-                    </goals>
-                     <configuration>
-                     	<fail>true</fail>
-                        <rules>
-                        	<requireMavenVersion>
+    <packaging>pom</packaging>
+
+    <name>jsprit</name>
+    <description>A toolkit to solve vehicle routing problems.</description>
+    <url>https://github.com/jsprit/jsprit</url>
+    <inceptionYear>2013</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public Licence, version 3.0</name>
+            <url>http://opensource.org/licenses/LGPL-3.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Stefan Schroeder</name>
+            <email>stefan.schroeder@jspr.it</email>
+        </developer>
+    </developers>
+
+    <prerequisites>
+        <maven>3.0.4</maven>
+    </prerequisites>
+
+    <scm>
+        <connection>scm:git:git@github.com:jsprit/jsprit.git</connection>
+        <developerConnection>scm:git:https://github.com/jsprit/jsprit.git</developerConnection>
+        <url>http://github.com/jsprit/jsprit/tree/master</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/jsprit/jsprit/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>jsprit-snapshots</id>
+            <url>https://github.com/jsprit/mvn-rep/raw/master/snapshots</url>
+        </snapshotRepository>
+
+        <repository>
+            <id>jsprit-releases</id>
+            <url>https://github.com/jsprit/mvn-rep/raw/master/releases</url>
+        </repository>
+    </distributionManagement>
+
+    <modules>
+        <module>jsprit-core</module>
+        <module>jsprit-analysis</module>
+        <module>jsprit-examples</module>
+        <module>jsprit-instances</module>
+    </modules>
+
+    <properties>
+        <jdkVersion>1.6</jdkVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.version>4.10</junit.version>
+        <mockito.version>1.9.5</mockito.version>
+        <logger.version>2.0</logger.version>
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+
+    </properties>
+
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <directory>target</directory>
+        <outputDirectory>target/classes</outputDirectory>
+        <testOutputDirectory>target/test-classes</testOutputDirectory>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-enforcer-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>enforce</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <fail>true</fail>
+                            <rules>
+                                <requireMavenVersion>
                                     Some plugin features require a recent Maven runtime to work properly
-                             	<message>Current version of Maven ${maven.version} required to build the project should be ${project.prerequisites.maven}, or higher!</message>
-                                <version>[${project.prerequisites.maven},)</version>
-                            </requireMavenVersion>
-                            <requireJavaVersion>
-                                <message>Current JDK version ${java.version} should be ${jdkVersion}, or higher!</message>
-                                <version>${jdkVersion}</version>
-                            </requireJavaVersion>
-                        </rules>
-                     </configuration>
-                </execution>
-            </executions>
-        </plugin>
-        <plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.1</version>
-			<configuration>
-				<source>${jdkVersion}</source>
-				<target>${jdkVersion}</target>
-				<showWarnings>true</showWarnings>
-				<showDeprecation>true</showDeprecation>
-				<encoding>${project.build.sourceEncoding}</encoding>
-			<!-- configure initial and maximal memory for compiling -->
-				<fork>true</fork>
-				<meminitial>128m</meminitial>
-				<maxmem>512m</maxmem>
-				<compilerArguments>
-					<Xmaxwarns>4000</Xmaxwarns>
-					<Xmaxerrs>100</Xmaxerrs>
-				</compilerArguments>
-			</configuration>
-		</plugin>
-   
-   		<plugin>
-    		<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-eclipse-plugin</artifactId>
-			<version>2.8</version>
-			<configuration>
-				<classpathContainers>
-					<classpathContainer>
-						org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6
-					</classpathContainer>
-				</classpathContainers>
-			</configuration>
-		</plugin>
-		
-		<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-source-plugin</artifactId>
-  			<version>2.2.1</version>
-  			<executions>
-    			<execution>
-      				<id>attach-sources</id>
-      				<goals>
-        				<goal>jar</goal>
-      				</goals>
-    			</execution>
-  			</executions>
-		</plugin>
-		
-		<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-javadoc-plugin</artifactId>
-  			<version>2.9.1</version>
-  			<executions>
-    			<execution>
-      				<id>attach-javadocs</id>
-      				<goals>
-        				<goal>jar</goal>
-      				</goals>
-    			</execution>
-  			</executions>
-		</plugin>
-		
-		<plugin>
-        	<groupId>org.apache.maven.plugins</groupId>
-        	<artifactId>maven-release-plugin</artifactId>
-        	<version>2.5</version>
-        	<configuration>
-          		<tagNameFormat>v@{project.version}</tagNameFormat>
-        	</configuration>
-      </plugin>
+                                    <message>Current version of Maven ${maven.version} required to build the project
+                                        should be ${project.prerequisites.maven}, or higher!
+                                    </message>
+                                    <version>[${project.prerequisites.maven},)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <message>Current JDK version ${java.version} should be ${jdkVersion}, or higher!
+                                    </message>
+                                    <version>${jdkVersion}</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${jdkVersion}</source>
+                    <target>${jdkVersion}</target>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <!-- configure initial and maximal memory for compiling -->
+                    <fork>true</fork>
+                    <meminitial>128m</meminitial>
+                    <maxmem>512m</maxmem>
+                    <compilerArguments>
+                        <Xmaxwarns>4000</Xmaxwarns>
+                        <Xmaxerrs>100</Xmaxerrs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <classpathContainers>
+                        <classpathContainer>
+                            org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6
+                        </classpathContainer>
+                    </classpathContainers>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
 
 
-    </plugins>
-    
-    
-  </build>
-  
-  <reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-			</plugin>
-            
-		</plugins>
-	</reporting>
-  
-  
-		<dependencies>
-  			<dependency>
-        		<groupId>junit</groupId>
-        		<artifactId>junit</artifactId>
-        		<version>${junit.version}</version>
-        		<scope>test</scope>
-      		</dependency>
-      		
-      		<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-all</artifactId>
-				<version>${mockito.version}</version>
-				<scope>test</scope>
-			</dependency>
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${logger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>${logger.version}</version>
-            </dependency>
+        </plugins>
 
 
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+            </plugin>
+
+        </plugins>
+    </reporting>
 
 
-      		 <!--<dependency>-->
-				<!--<groupId>log4j</groupId>-->
-				<!--<artifactId>log4j</artifactId>-->
-				<!--<version>${logger.version}</version>-->
-				<!--<exclusions>-->
-				<!--<exclusion>-->
-					<!--<groupId>javax.mail</groupId>-->
-					<!--<artifactId>mail</artifactId>-->
-				<!--</exclusion>-->
-				<!--<exclusion>-->
-					<!--<groupId>javax.jms</groupId>-->
-					<!--<artifactId>jms</artifactId>-->
-				<!--</exclusion>-->
-				<!--<exclusion>-->
-					<!--<groupId>com.sun.jdmk</groupId>-->
-					<!--<artifactId>jmxtools</artifactId>-->
-				<!--</exclusion>-->
-				<!--<exclusion>-->
-					<!--<groupId>com.sun.jmx</groupId>-->
-					<!--<artifactId>jmxri</artifactId>-->
-				<!--</exclusion>-->
-			<!--</exclusions>-->
-			<!--</dependency>	-->
-  		</dependencies>  
-  
-  
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${logger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${logger.version}</version>
+        </dependency>
+
+
+        <!--<dependency>-->
+        <!--<groupId>log4j</groupId>-->
+        <!--<artifactId>log4j</artifactId>-->
+        <!--<version>${logger.version}</version>-->
+        <!--<exclusions>-->
+        <!--<exclusion>-->
+        <!--<groupId>javax.mail</groupId>-->
+        <!--<artifactId>mail</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+        <!--<groupId>javax.jms</groupId>-->
+        <!--<artifactId>jms</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+        <!--<groupId>com.sun.jdmk</groupId>-->
+        <!--<artifactId>jmxtools</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+        <!--<groupId>com.sun.jmx</groupId>-->
+        <!--<artifactId>jmxri</artifactId>-->
+        <!--</exclusion>-->
+        <!--</exclusions>-->
+        <!--</dependency>	-->
+    </dependencies>
+
 
 </project>

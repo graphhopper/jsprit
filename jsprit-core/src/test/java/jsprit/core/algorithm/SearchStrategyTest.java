@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.algorithm;
@@ -33,204 +33,202 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-
-
 public class SearchStrategyTest {
-	
-	@Test(expected=IllegalStateException.class)
-	public void whenANullModule_IsAdded_throwException(){
-		SolutionSelector select = mock(SolutionSelector.class);
-		SolutionAcceptor accept = mock(SolutionAcceptor.class);
-		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
-		
-		SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
-		strat.addModule(null);
-		
-	}
-	
-	@Test
-	public void whenStratRunsWithOneModule_runItOnes(){
-		SolutionSelector select = mock(SolutionSelector.class);
-		SolutionAcceptor accept = mock(SolutionAcceptor.class);
-		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
-		
-		final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
-		final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
-		
-		when(select.selectSolution(null)).thenReturn(newSol);
-		
-		final Collection<Integer> runs = new ArrayList<Integer>();
-		
-		SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
-		SearchStrategyModule mod = new SearchStrategyModule() {
-			
-			@Override
-			public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-				runs.add(1);
-				return vrpSolution;
-			}
 
-			@Override
-			public String getName() {
-				return null;
-			}
+    @Test(expected = IllegalStateException.class)
+    public void whenANullModule_IsAdded_throwException() {
+        SolutionSelector select = mock(SolutionSelector.class);
+        SolutionAcceptor accept = mock(SolutionAcceptor.class);
+        SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
 
-			@Override
-			public void addModuleListener(
-					SearchStrategyModuleListener moduleListener) {
+        SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
+        strat.addModule(null);
 
-			}
-		};
-		strat.addModule(mod);
-		strat.run(vrp, null);
-		
-		assertEquals(runs.size(), 1);
-	}
-	
-	@Test
-	public void whenStratRunsWithTwoModule_runItTwice(){
-		SolutionSelector select = mock(SolutionSelector.class);
-		SolutionAcceptor accept = mock(SolutionAcceptor.class);
-		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
-		
-		final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
-		final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
-		
-		when(select.selectSolution(null)).thenReturn(newSol);
-		
-		final Collection<Integer> runs = new ArrayList<Integer>();
-		
-		SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
-		
-		SearchStrategyModule mod = new SearchStrategyModule() {
-			
-			@Override
-			public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-				runs.add(1);
-				return vrpSolution;
-			}
+    }
 
-			@Override
-			public String getName() {
-				return null;
-			}
+    @Test
+    public void whenStratRunsWithOneModule_runItOnes() {
+        SolutionSelector select = mock(SolutionSelector.class);
+        SolutionAcceptor accept = mock(SolutionAcceptor.class);
+        SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
 
-			@Override
-			public void addModuleListener(
-					SearchStrategyModuleListener moduleListener) {
+        final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+        final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
 
-			}
-		};
-		SearchStrategyModule mod2 = new SearchStrategyModule() {
-			
-			@Override
-			public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-				runs.add(1);
-				return vrpSolution;
-			}
+        when(select.selectSolution(null)).thenReturn(newSol);
 
-			@Override
-			public String getName() {
-				return null;
-			}
+        final Collection<Integer> runs = new ArrayList<Integer>();
 
-			@Override
-			public void addModuleListener(
-					SearchStrategyModuleListener moduleListener) {
+        SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
+        SearchStrategyModule mod = new SearchStrategyModule() {
 
-			}
-		};
-		strat.addModule(mod);
-		strat.addModule(mod2);
-		strat.run(vrp, null);
-		
-		assertEquals(runs.size(), 2);
-	}
-	
-	@Test
-	public void whenStratRunsWithNModule_runItNTimes(){
-		SolutionSelector select = mock(SolutionSelector.class);
-		SolutionAcceptor accept = mock(SolutionAcceptor.class);
-		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
-		
-		final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
-		final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
-		
-		when(select.selectSolution(null)).thenReturn(newSol);
-		
-		int N = new Random().nextInt(1000);
-		
-		final Collection<Integer> runs = new ArrayList<Integer>();
-		
-		SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
-		
-		for(int i=0;i<N;i++){
-			SearchStrategyModule mod = new SearchStrategyModule() {
+            @Override
+            public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
+                runs.add(1);
+                return vrpSolution;
+            }
 
-				@Override
-				public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-					runs.add(1);
-					return vrpSolution;
-				}
+            @Override
+            public String getName() {
+                return null;
+            }
 
-				@Override
-				public String getName() {
-					return null;
-				}
+            @Override
+            public void addModuleListener(
+                SearchStrategyModuleListener moduleListener) {
 
-				@Override
-				public void addModuleListener(
-						SearchStrategyModuleListener moduleListener) {
+            }
+        };
+        strat.addModule(mod);
+        strat.run(vrp, null);
 
-				}
-			};
-			strat.addModule(mod);
-		}
-		strat.run(vrp, null);
-		assertEquals(runs.size(), N);
-	}
-	
-	@Test(expected=IllegalStateException.class) 
-	public void whenSelectorDeliversNullSolution_throwException(){
-		SolutionSelector select = mock(SolutionSelector.class);
-		SolutionAcceptor accept = mock(SolutionAcceptor.class);
-		SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
-		
-		final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
-		
-		when(select.selectSolution(null)).thenReturn(null);
-		
-		int N = new Random().nextInt(1000);
-		
-		final Collection<Integer> runs = new ArrayList<Integer>();
-		
-		SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
-		
-		for(int i=0;i<N;i++){
-			SearchStrategyModule mod = new SearchStrategyModule() {
+        assertEquals(runs.size(), 1);
+    }
 
-				@Override
-				public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-					runs.add(1);
-					return vrpSolution;
-				}
+    @Test
+    public void whenStratRunsWithTwoModule_runItTwice() {
+        SolutionSelector select = mock(SolutionSelector.class);
+        SolutionAcceptor accept = mock(SolutionAcceptor.class);
+        SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
 
-				@Override
-				public String getName() {
-					return null;
-				}
+        final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+        final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
 
-				@Override
-				public void addModuleListener(
-						SearchStrategyModuleListener moduleListener) {
+        when(select.selectSolution(null)).thenReturn(newSol);
 
-				}
-			};
-			strat.addModule(mod);
-		}
-		strat.run(vrp, null);
-		assertEquals(runs.size(), N);
-	}
-	
+        final Collection<Integer> runs = new ArrayList<Integer>();
+
+        SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
+
+        SearchStrategyModule mod = new SearchStrategyModule() {
+
+            @Override
+            public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
+                runs.add(1);
+                return vrpSolution;
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public void addModuleListener(
+                SearchStrategyModuleListener moduleListener) {
+
+            }
+        };
+        SearchStrategyModule mod2 = new SearchStrategyModule() {
+
+            @Override
+            public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
+                runs.add(1);
+                return vrpSolution;
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public void addModuleListener(
+                SearchStrategyModuleListener moduleListener) {
+
+            }
+        };
+        strat.addModule(mod);
+        strat.addModule(mod2);
+        strat.run(vrp, null);
+
+        assertEquals(runs.size(), 2);
+    }
+
+    @Test
+    public void whenStratRunsWithNModule_runItNTimes() {
+        SolutionSelector select = mock(SolutionSelector.class);
+        SolutionAcceptor accept = mock(SolutionAcceptor.class);
+        SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
+
+        final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+        final VehicleRoutingProblemSolution newSol = mock(VehicleRoutingProblemSolution.class);
+
+        when(select.selectSolution(null)).thenReturn(newSol);
+
+        int N = new Random().nextInt(1000);
+
+        final Collection<Integer> runs = new ArrayList<Integer>();
+
+        SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
+
+        for (int i = 0; i < N; i++) {
+            SearchStrategyModule mod = new SearchStrategyModule() {
+
+                @Override
+                public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
+                    runs.add(1);
+                    return vrpSolution;
+                }
+
+                @Override
+                public String getName() {
+                    return null;
+                }
+
+                @Override
+                public void addModuleListener(
+                    SearchStrategyModuleListener moduleListener) {
+
+                }
+            };
+            strat.addModule(mod);
+        }
+        strat.run(vrp, null);
+        assertEquals(runs.size(), N);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenSelectorDeliversNullSolution_throwException() {
+        SolutionSelector select = mock(SolutionSelector.class);
+        SolutionAcceptor accept = mock(SolutionAcceptor.class);
+        SolutionCostCalculator calc = mock(SolutionCostCalculator.class);
+
+        final VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
+
+        when(select.selectSolution(null)).thenReturn(null);
+
+        int N = new Random().nextInt(1000);
+
+        final Collection<Integer> runs = new ArrayList<Integer>();
+
+        SearchStrategy strat = new SearchStrategy("strat", select, accept, calc);
+
+        for (int i = 0; i < N; i++) {
+            SearchStrategyModule mod = new SearchStrategyModule() {
+
+                @Override
+                public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
+                    runs.add(1);
+                    return vrpSolution;
+                }
+
+                @Override
+                public String getName() {
+                    return null;
+                }
+
+                @Override
+                public void addModuleListener(
+                    SearchStrategyModuleListener moduleListener) {
+
+                }
+            };
+            strat.addModule(mod);
+        }
+        strat.run(vrp, null);
+        assertEquals(runs.size(), N);
+    }
+
 
 }

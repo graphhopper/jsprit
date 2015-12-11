@@ -22,17 +22,17 @@ import jsprit.core.algorithm.state.ActivityStartsAsSoonAsNextTimeWindowOpens;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 
 public class CalculationUtils {
-	
 
-	/**
-	 * Calculates actEndTime assuming that activity can at earliest start at act.getTheoreticalEarliestOperationStartTime().
-	 * 
-	 * @param actArrTime
-	 * @param act
-	 * @return
-	 */
-	public static double getActivityEndTime(double actArrTime, TourActivity act){
-		return new ActivityStartsAsSoonAsNextTimeWindowOpens().getActivityStartTime(act,actArrTime) +  act.getOperationTime();
+
+    /**
+     * Calculates actEndTime assuming that activity can at earliest start at act.getTheoreticalEarliestOperationStartTime().
+     *
+     * @param actArrTime
+     * @param act
+     * @return
+     */
+    public static double getActivityEndTime(double actArrTime, TourActivity act){
+        return new ActivityStartsAsSoonAsNextTimeWindowOpens().getActivityStartTime(act, actArrTime) +  act.getOperationTime();
 //		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
-	}
+    }
 }

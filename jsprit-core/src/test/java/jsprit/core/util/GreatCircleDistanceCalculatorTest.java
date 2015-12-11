@@ -26,7 +26,7 @@ import org.junit.Test;
 public class GreatCircleDistanceCalculatorTest {
 
     @Test
-    public void test(){
+    public void test() {
         double lon1 = 8.3858333;
         double lat1 = 49.0047222;
 
@@ -34,15 +34,15 @@ public class GreatCircleDistanceCalculatorTest {
         double lat2 = 54.0833333;
 
         double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
-                Coordinate.newInstance(lon1,lat1),
-                Coordinate.newInstance(lon2,lat2),
-                DistanceUnit.Kilometer
+            Coordinate.newInstance(lon1, lat1),
+            Coordinate.newInstance(lon2, lat2),
+            DistanceUnit.Kilometer
         );
-        Assert.assertEquals(600,greatCircle,30.);
+        Assert.assertEquals(600, greatCircle, 30.);
     }
 
     @Test
-    public void testMeter(){
+    public void testMeter() {
         double lon1 = 8.3858333;
         double lat1 = 49.0047222;
 
@@ -50,11 +50,11 @@ public class GreatCircleDistanceCalculatorTest {
         double lat2 = 54.0833333;
 
         double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
-                Coordinate.newInstance(lon1,lat1),
-                Coordinate.newInstance(lon2,lat2),
-                DistanceUnit.Meter
+            Coordinate.newInstance(lon1, lat1),
+            Coordinate.newInstance(lon2, lat2),
+            DistanceUnit.Meter
         );
-        Assert.assertEquals(600000,greatCircle,30000.);
+        Assert.assertEquals(600000, greatCircle, 30000.);
     }
 
 }

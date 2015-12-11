@@ -13,10 +13,11 @@ class EventListeners {
     public EventListeners() {
         listeners.add(new InsertActivityListener());
         listeners.add(new SwitchVehicleListener());
+        listeners.add(new InsertBreakListener());
     }
 
-    public void inform(Event event){
-        for(EventListener l : listeners){
+    public void inform(Event event) {
+        for (EventListener l : listeners) {
             l.inform(event);
         }
     }

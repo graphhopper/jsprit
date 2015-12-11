@@ -18,8 +18,8 @@
 package jsprit.core.util;
 
 /**
-* Created by schroeder on 04.12.14.
-*/
+ * Created by schroeder on 04.12.14.
+ */
 public enum DistanceUnit {
 
     Meter("m"), Kilometer("km");
@@ -30,7 +30,7 @@ public enum DistanceUnit {
         this.abbr = abbr;
     }
 
-    public String abbreviation(){
+    public String abbreviation() {
         return abbr;
     }
 }

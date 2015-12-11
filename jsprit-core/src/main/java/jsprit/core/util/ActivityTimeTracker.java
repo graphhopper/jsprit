@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.core.util;
@@ -24,7 +24,7 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 
-public class ActivityTimeTracker implements ActivityVisitor{
+public class ActivityTimeTracker implements ActivityVisitor {
 
     public static enum ActivityPolicy {
 
@@ -32,22 +32,22 @@ public class ActivityTimeTracker implements ActivityVisitor{
 
     }
 
-	private ForwardTransportTime transportTime;
-	
-	private TourActivity prevAct = null;
-	
-	private double startAtPrevAct;
-	
-	private VehicleRoute route;
-	
-	private boolean beginFirst = false;
-	
-	private double actArrTime;
-	
-	private double actEndTime;
+    private ForwardTransportTime transportTime;
 
-	private ActivityStartStrategy startStrategy;
-	
+    private TourActivity prevAct = null;
+
+    private double startAtPrevAct;
+
+    private VehicleRoute route;
+
+    private boolean beginFirst = false;
+
+    private double actArrTime;
+
+    private double actEndTime;
+
+    private ActivityStartStrategy startStrategy;
+
 	public ActivityTimeTracker(ForwardTransportTime transportTime) {
 		super();
 		this.transportTime = transportTime;
@@ -63,61 +63,51 @@ public class ActivityTimeTracker implements ActivityVisitor{
 		else this.startStrategy = new ActivityStartsAsSoonAsNextTimeWindowOpens();
     }
 
-	public ActivityTimeTracker(ForwardTransportTime transportTime, ActivityStartStrategy startStrategy) {
-		super();
-		this.transportTime = transportTime;
-		this.startStrategy = startStrategy;
-	}
+    public ActivityTimeTracker(ForwardTransportTime transportTime, ActivityStartStrategy startStrategy) {
+        super();
+        this.transportTime = transportTime;
+        this.startStrategy = startStrategy;
+    }
 
-	public double getActArrTime(){
-		return actArrTime;
-	}
-	
-	public double getActEndTime(){
-		return actEndTime;
-	}
-	
-	@Override
-	public void begin(VehicleRoute route) {
-		prevAct = route.getStart();
-//		System.out.println(prevAct);
-		startAtPrevAct = prevAct.getEndTime();
+    public double getActArrTime() {
+        return actArrTime;
+    }
+
+    public double getActEndTime() {
+        return actEndTime;
+    }
+
+    @Override
+    public void begin(VehicleRoute route) {
+        prevAct = route.getStart();
+        startAtPrevAct = prevAct.getEndTime();
         actEndTime = startAtPrevAct;
         this.route = route;
         beginFirst = true;
-	}
+    }
 
-	@Override
-	public void visit(TourActivity activity) {
-		if(!beginFirst) throw new IllegalStateException("never called begin. this however is essential here");
-		double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
-		double arrivalTimeAtCurrAct = startAtPrevAct + transportTime; 
-		actArrTime = arrivalTimeAtCurrAct;
-//		System.out.println("oldArrTime: " + activity.getArrTime());
-//		System.out.println(actArrTime + " " +  activity + " tws: " + activity.getTimeWindows().toString());
+    @Override
+    public void visit(TourActivity activity) {
+        if(!beginFirst) throw new IllegalStateException("never called begin. this however is essential here");
+        double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
+        double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
+        actArrTime = arrivalTimeAtCurrAct;
+        assert actArrTime <= activity.getTimeWindows().get(activity.getTimeWindows().size()-1).getEnd() : "that should not be";
+        double operationEndTime = startStrategy.getActivityStartTime(activity,arrivalTimeAtCurrAct) + activity.getOperationTime();
+        actEndTime = operationEndTime;
+        prevAct = activity;
+        startAtPrevAct = operationEndTime;
+    }
 
-		assert actArrTime <= activity.getTimeWindows().get(activity.getTimeWindows().size()-1).getEnd() : "that should not be";
+    @Override
+    public void finish() {
+        double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), route.getEnd().getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
+        double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
+        actArrTime = arrivalTimeAtCurrAct;
+        assert actArrTime <= route.getVehicle().getLatestArrival() : "oohh. this should not be";
+        actEndTime = arrivalTimeAtCurrAct;
+        beginFirst = false;
+    }
 
-		double operationEndTime = startStrategy.getActivityStartTime(activity,arrivalTimeAtCurrAct) + activity.getOperationTime();
-		actEndTime = operationEndTime;
-		prevAct = activity;
-		startAtPrevAct = operationEndTime;
-	}
-
-	@Override
-	public void finish() {
-		double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), route.getEnd().getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
-		double arrivalTimeAtCurrAct = startAtPrevAct + transportTime; 
-		actArrTime = arrivalTimeAtCurrAct;
-
-//		System.out.println("end arr time: " + actArrTime);
-		assert actArrTime <= route.getVehicle().getLatestArrival() : "oohh. this should not be";
-
-		actEndTime = arrivalTimeAtCurrAct;
-		beginFirst = false;
-	}
-	
-	
-	
 
 }
