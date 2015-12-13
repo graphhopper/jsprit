@@ -66,6 +66,10 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
         timeTracker.visit(activity);
         activity.setArrTime(timeTracker.getActArrTime());
         activity.setEndTime(timeTracker.getActEndTime());
+        double theoreticalLatestOperationStartTime = activity.getTheoreticalLatestOperationStartTime();
+        if(activity.getArrTime() > theoreticalLatestOperationStartTime){
+            throw new IllegalStateException("arrTime > latestArrTime");
+        }
     }
 
     @Override

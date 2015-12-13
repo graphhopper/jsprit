@@ -1,6 +1,5 @@
 package jsprit.core.algorithm.state;
 
-import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 
 /**
@@ -10,19 +9,20 @@ public class ActivityStartsAsSoonAsNextTimeWindowOpens implements ActivityStartS
 
     @Override
     public double getActivityStartTime(TourActivity activity, double arrivalTime) {
-        TimeWindow last = null;
-        for(int i=activity.getTimeWindows().size()-1; i >= 0; i--){
-            TimeWindow tw = activity.getTimeWindows().get(i);
-            if(tw.getStart() <= arrivalTime && tw.getEnd() >= arrivalTime){
-                return arrivalTime;
-            }
-            else if(arrivalTime > tw.getEnd()){
-                if(last != null) return last.getStart();
-                else return arrivalTime;
-            }
-            last = tw;
-        }
-        return Math.max(arrivalTime,last.getStart());
+        return Math.max(arrivalTime,activity.getTheoreticalEarliestOperationStartTime());
+//        TimeWindow last = null;
+//        for(int i=activity.getTimeWindows().size()-1; i >= 0; i--){
+//            TimeWindow tw = activity.getTimeWindows().get(i);
+//            if(tw.getStart() <= arrivalTime && tw.getEnd() >= arrivalTime){
+//                return arrivalTime;
+//            }
+//            else if(arrivalTime > tw.getEnd()){
+//                if(last != null) return last.getStart();
+//                else return arrivalTime;
+//            }
+//            last = tw;
+//        }
+//        return Math.max(arrivalTime,last.getStart());
     }
 
 }

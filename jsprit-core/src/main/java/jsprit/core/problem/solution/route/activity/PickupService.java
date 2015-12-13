@@ -57,6 +57,8 @@ public final class PickupService extends AbstractActivity implements PickupActiv
         this.depTime = pickupActivity.getEndTime();
         setIndex(pickupActivity.getIndex());
         timeWindows = new ArrayList<TimeWindow>(pickup.getTimeWindows(0.));
+        this.theoreticalEarliest = pickupActivity.getTheoreticalEarliestOperationStartTime();
+        this.theoreticalLatest = pickupActivity.getTheoreticalLatestOperationStartTime();
     }
 
     @Override

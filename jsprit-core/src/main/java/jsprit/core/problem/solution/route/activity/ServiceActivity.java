@@ -92,6 +92,8 @@ public class ServiceActivity extends AbstractActivity implements JobActivity {
         this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());
         timeWindows = new ArrayList<TimeWindow>(serviceActivity.getTimeWindows());
+        this.theoreticalEarliest = serviceActivity.getTheoreticalEarliestOperationStartTime();
+        this.theoreticalLatest = serviceActivity.getTheoreticalLatestOperationStartTime();
     }
 
 

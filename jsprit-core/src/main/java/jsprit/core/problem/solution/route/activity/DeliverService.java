@@ -54,6 +54,8 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         capacity = deliveryActivity.getSize();
         setIndex(deliveryActivity.getIndex());
         timeWindows = new ArrayList<TimeWindow>(delivery.getTimeWindows(0.));
+        this.theoreticalEarliest = deliveryActivity.getTheoreticalEarliestOperationStartTime();
+        this.theoreticalLatest = deliveryActivity.getTheoreticalLatestOperationStartTime();
     }
 
     @Override
