@@ -22,8 +22,6 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Shipment;
 
-import java.util.List;
-
 public final class DeliverShipment extends AbstractActivity implements DeliveryActivity {
 
     private Shipment shipment;
@@ -33,6 +31,10 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     private double arrTime;
 
     private Capacity capacity;
+
+    private double earliest = 0;
+
+    private double latest = Double.MAX_VALUE;
 
     public DeliverShipment(Shipment shipment) {
         super();
@@ -47,6 +49,8 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
         this.endTime = deliveryShipmentActivity.getEndTime();
         this.capacity = deliveryShipmentActivity.getSize();
         setIndex(deliveryShipmentActivity.getIndex());
+        this.earliest = deliveryShipmentActivity.getTheoreticalEarliestOperationStartTime();
+        this.latest = deliveryShipmentActivity.getTheoreticalLatestOperationStartTime();
     }
 
     @Override
@@ -56,18 +60,12 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
     @Override
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
-
+        this.earliest = earliest;
     }
 
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
-
-    }
-
-    @Override
-    public List<TimeWindow> getTimeWindows() {
-//		return shipment.getDeliveryTimeWindow();
-        return null;
+        this.latest = latest;
     }
 
     @Override
@@ -87,12 +85,12 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
     @Override
     public double getTheoreticalEarliestOperationStartTime() {
-        return shipment.getDeliveryTimeWindow().getStart();
+        return earliest;
     }
 
     @Override
     public double getTheoreticalLatestOperationStartTime() {
-        return shipment.getDeliveryTimeWindow().getEnd();
+        return latest;
     }
 
     @Override

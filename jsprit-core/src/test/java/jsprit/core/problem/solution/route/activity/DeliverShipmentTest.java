@@ -36,6 +36,8 @@ public class DeliverShipmentTest {
             .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
             .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         deliver = new DeliverShipment(shipment);
+        deliver.setTheoreticalEarliestOperationStartTime(shipment.getDeliveryTimeWindow().getStart());
+        deliver.setTheoreticalLatestOperationStartTime(shipment.getDeliveryTimeWindow().getEnd());
     }
 
     @Test

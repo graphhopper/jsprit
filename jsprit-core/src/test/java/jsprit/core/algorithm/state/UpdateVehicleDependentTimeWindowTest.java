@@ -8,6 +8,7 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
@@ -192,7 +193,7 @@ public class UpdateVehicleDependentTimeWindowTest {
                 .setRoutingCost(routingCosts).build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
-                .addService(service).addService(service2).build();
+                .addService(service).addService(service2, TimeWindow.newInstance(70,80)).build();
 
         StateManager stateManager = new StateManager(vrp);
         UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,routingCosts);

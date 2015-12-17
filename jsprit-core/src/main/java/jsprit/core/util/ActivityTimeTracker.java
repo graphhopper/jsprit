@@ -16,13 +16,9 @@
  ******************************************************************************/
 package jsprit.core.util;
 
-import jsprit.core.algorithm.state.ActivityStartAsSoonAsArrived;
-import jsprit.core.algorithm.state.ActivityStartStrategy;
-import jsprit.core.algorithm.state.ActivityStartsAsSoonAsNextTimeWindowOpens;
 import jsprit.core.problem.cost.ForwardTransportTime;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.ActivityVisitor;
-import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.solution.route.activity.*;
 
 public class ActivityTimeTracker implements ActivityVisitor {
 
@@ -51,7 +47,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
 	public ActivityTimeTracker(ForwardTransportTime transportTime) {
 		super();
 		this.transportTime = transportTime;
-		this.startStrategy = new ActivityStartsAsSoonAsNextTimeWindowOpens();
+		this.startStrategy = new ActivityStartsAsSoonAsTimeWindowOpens();
 	}
 
     public ActivityTimeTracker(ForwardTransportTime transportTime, ActivityPolicy activityPolicy) {
@@ -60,7 +56,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
 		if(activityPolicy.equals(ActivityPolicy.AS_SOON_AS_ARRIVED)){
 			this.startStrategy = new ActivityStartAsSoonAsArrived();
 		}
-		else this.startStrategy = new ActivityStartsAsSoonAsNextTimeWindowOpens();
+		else this.startStrategy = new ActivityStartsAsSoonAsTimeWindowOpens();
     }
 
     public ActivityTimeTracker(ForwardTransportTime transportTime, ActivityStartStrategy startStrategy) {
@@ -92,7 +88,6 @@ public class ActivityTimeTracker implements ActivityVisitor {
         double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
         actArrTime = arrivalTimeAtCurrAct;
-        assert actArrTime <= activity.getTimeWindows().get(activity.getTimeWindows().size()-1).getEnd() : "that should not be";
         double operationEndTime = startStrategy.getActivityStartTime(activity,arrivalTimeAtCurrAct) + activity.getOperationTime();
         actEndTime = operationEndTime;
         prevAct = activity;
@@ -104,7 +99,6 @@ public class ActivityTimeTracker implements ActivityVisitor {
         double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), route.getEnd().getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
         actArrTime = arrivalTimeAtCurrAct;
-        assert actArrTime <= route.getVehicle().getLatestArrival() : "oohh. this should not be";
         actEndTime = arrivalTimeAtCurrAct;
         beginFirst = false;
     }

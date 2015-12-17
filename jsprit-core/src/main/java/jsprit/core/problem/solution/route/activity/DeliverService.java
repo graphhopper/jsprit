@@ -21,9 +21,6 @@ import jsprit.core.problem.Capacity;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Delivery;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class DeliverService extends AbstractActivity implements DeliveryActivity {
 
     private Delivery delivery;
@@ -34,17 +31,14 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private double endTime;
 
-    private double theoreticalEarliest;
+    private double theoreticalEarliest = 0;
 
-    private double theoreticalLatest;
-
-    private List<TimeWindow> timeWindows;
+    private double theoreticalLatest = Double.MAX_VALUE;
 
     public DeliverService(Delivery delivery) {
         super();
         this.delivery = delivery;
         capacity = Capacity.invert(delivery.getSize());
-        timeWindows = new ArrayList<TimeWindow>(delivery.getTimeWindows(0.));
     }
 
     private DeliverService(DeliverService deliveryActivity) {
@@ -53,7 +47,6 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         this.endTime = deliveryActivity.getEndTime();
         capacity = deliveryActivity.getSize();
         setIndex(deliveryActivity.getIndex());
-        timeWindows = new ArrayList<TimeWindow>(delivery.getTimeWindows(0.));
         this.theoreticalEarliest = deliveryActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = deliveryActivity.getTheoreticalLatestOperationStartTime();
     }
@@ -83,10 +76,6 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         theoreticalLatest = latest;
     }
 
-    @Override
-    public List<TimeWindow> getTimeWindows() {
-        return timeWindows;
-    }
 
     @Override
     public double getTheoreticalEarliestOperationStartTime() {

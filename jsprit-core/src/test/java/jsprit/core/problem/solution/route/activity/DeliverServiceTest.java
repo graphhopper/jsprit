@@ -32,10 +32,12 @@ public class DeliverServiceTest {
 
     @Before
     public void doBefore() {
-        service = (Delivery) Delivery.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
+        service = Delivery.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
             setTimeWindow(TimeWindow.newInstance(1., 2.)).
             addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         deliver = new DeliverService(service);
+        deliver.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
+        deliver.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
 
     @Test

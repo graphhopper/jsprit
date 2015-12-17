@@ -1,6 +1,4 @@
-package jsprit.core.algorithm.state;
-
-import jsprit.core.problem.solution.route.activity.TourActivity;
+package jsprit.core.problem.solution.route.activity;
 
 /**
  * Created by schroeder on 08/07/15.

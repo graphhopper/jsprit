@@ -29,6 +29,7 @@ import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.DeliverShipment;
 import jsprit.core.problem.solution.route.activity.PickupService;
 import jsprit.core.problem.solution.route.activity.PickupShipment;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
@@ -52,6 +53,8 @@ public class TestInserter {
         when(vehicle.getEndLocation()).thenReturn(loc("vehLoc"));
         when(vehicle.isReturnToDepot()).thenReturn(true);
         when(vehicle.getId()).thenReturn("vehId");
+
+        when(service.getTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addService(service).build();
         //start - pick(shipment) - del(shipment) - end
@@ -87,6 +90,8 @@ public class TestInserter {
         when(vehicle.getEndLocation()).thenReturn(Location.newInstance("vehLoc"));
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getId()).thenReturn("vehId");
+
+        when(service.getTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addService(service).build();
         Service serviceToInsert = mock(Service.class);
@@ -125,6 +130,9 @@ public class TestInserter {
         when(vehicle.isReturnToDepot()).thenReturn(true);
         when(vehicle.getId()).thenReturn("vehId");
 
+        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
+
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
         Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocation(Location.newInstance("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
@@ -161,6 +169,9 @@ public class TestInserter {
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getId()).thenReturn("vehId");
 
+        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
+
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
         Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocation(Location.newInstance("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
@@ -188,6 +199,9 @@ public class TestInserter {
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
 
+        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
+
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
         Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).build();
@@ -212,6 +226,9 @@ public class TestInserter {
         when(shipment.getSize()).thenReturn(capacity);
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
+
+        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
@@ -238,6 +255,9 @@ public class TestInserter {
         when(shipment.getDeliveryLocation()).thenReturn(Location.Builder.newInstance().setId("oldShipmentDelLoc").build());
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setId("vehLoc").build()).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setId("newVehLoc").build()).setType(mock(VehicleType.class)).build();
+
+        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end

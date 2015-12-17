@@ -82,7 +82,7 @@ public class ServiceActivity extends AbstractActivity implements JobActivity {
     protected ServiceActivity(Service service) {
         counter++;
         this.service = service;
-        timeWindows = new ArrayList<TimeWindow>(service.getTimeWindows(0.));
+        timeWindows = new ArrayList<TimeWindow>(service.getTimeWindows());
     }
 
     protected ServiceActivity(ServiceActivity serviceActivity) {
@@ -91,7 +91,6 @@ public class ServiceActivity extends AbstractActivity implements JobActivity {
         this.arrTime = serviceActivity.getArrTime();
         this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());
-        timeWindows = new ArrayList<TimeWindow>(serviceActivity.getTimeWindows());
         this.theoreticalEarliest = serviceActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = serviceActivity.getTheoreticalLatestOperationStartTime();
     }
@@ -144,11 +143,6 @@ public class ServiceActivity extends AbstractActivity implements JobActivity {
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         theoreticalLatest = latest;
-    }
-
-    @Override
-    public List<TimeWindow> getTimeWindows() {
-        return timeWindows;
     }
 
     @Override

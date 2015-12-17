@@ -20,9 +20,6 @@ import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.Capacity;
 import jsprit.core.problem.Location;
 
-import java.util.Arrays;
-import java.util.List;
-
 public final class Start extends AbstractActivity implements TourActivity {
 
     public final static String ACTIVITY_NAME = "start";
@@ -109,12 +106,6 @@ public final class Start extends AbstractActivity implements TourActivity {
     public void setTheoreticalLatestOperationStartTime(double time) {
         this.theoretical_latestOperationStartTime = time;
     }
-
-    @Override
-    public List<TimeWindow> getTimeWindows() {
-        return Arrays.asList(TimeWindow.newInstance(theoretical_earliestOperationStartTime,theoretical_latestOperationStartTime));
-    }
-
 
     @Deprecated
     @Override

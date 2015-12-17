@@ -21,8 +21,6 @@ import jsprit.core.problem.HasIndex;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Job;
 
-import java.util.List;
-
 /**
  * Basic interface for tour-activities.
  * <p/>
@@ -35,8 +33,6 @@ public interface TourActivity extends HasIndex {
 	public void setTheoreticalEarliestOperationStartTime(double earliest);
 
 	public void setTheoreticalLatestOperationStartTime(double latest);
-
-	public List<TimeWindow> getTimeWindows();
 
     /**
      * Basic interface of job-activies.

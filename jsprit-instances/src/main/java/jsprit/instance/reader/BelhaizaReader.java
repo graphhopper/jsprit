@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.instance.reader;
@@ -35,16 +35,18 @@ import java.io.IOException;
 
 /**
  * Reader that reads the well-known solomon-instances.
- * 
+ *
  * <p>See: <a href="http://neo.lcc.uma.es/vrp/vrp-instances/capacitated-vrp-with-time-windows-instances/">neo.org</a>
- * 
+ *
  * @author stefan
  *
  */
 
 public class BelhaizaReader {
 
-	/**
+    private int fixedCosts;
+
+    /**
 	 * @param costProjectionFactor the costProjectionFactor to set
 	 */
 	public void setVariableCostProjectionFactor(double costProjectionFactor) {
@@ -73,7 +75,7 @@ public class BelhaizaReader {
 		this.vrpBuilder = vrpBuilder;
 		this.fixedCostPerVehicle=fixedCostPerVehicle;
 	}
-	
+
 	public void read(String solomonFile){
 		vrpBuilder.setFleetSize(FleetSize.INFINITE);
 		BufferedReader reader = getReader(solomonFile);
@@ -95,8 +97,10 @@ public class BelhaizaReader {
 				double serviceTime = Double.parseDouble(tokens[3])*timeProjectionFactor;
 				if(counter == 3){
 					VehicleTypeImpl.Builder typeBuilder = VehicleTypeImpl.Builder.newInstance("solomonType").addCapacityDimension(0, vehicleCapacity);
-					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(fixedCostPerVehicle);
-					VehicleTypeImpl vehicleType = typeBuilder.build();
+					typeBuilder.setCostPerDistance(1.0*variableCostProjectionFactor).setFixedCost(fixedCostPerVehicle)
+                    .setCostPerWaitingTime(0.8);
+                    System.out.println("fix: " + fixedCostPerVehicle + "; perDistance: 1.0; perWaitingTime: 0.8");
+                    VehicleTypeImpl vehicleType = typeBuilder.build();
 					double end = Double.parseDouble(tokens[8])*timeProjectionFactor;
 					for(int i=0;i<10;i++) {
 						VehicleImpl vehicle = VehicleImpl.Builder.newInstance("solomonVehicle"+(i+1)).setEarliestStart(0.).setLatestArrival(end)
@@ -104,7 +108,7 @@ public class BelhaizaReader {
 										.setCoordinate(coord).build()).setType(vehicleType).build();
 						vrpBuilder.addVehicle(vehicle);
 					}
-					
+
 				}
 				else{
 					Service.Builder serviceBuilder = Service.Builder.newInstance(customerId);
@@ -146,7 +150,7 @@ public class BelhaizaReader {
 			return null;
 		}
 	}
-	
+
 	private Coordinate makeCoord(String xString, String yString) {
 		double x = Double.parseDouble(xString);
 		double y = Double.parseDouble(yString);
@@ -167,6 +171,10 @@ public class BelhaizaReader {
 
 	public void setTimeProjectionFactor(double timeProjection) {
 		this.timeProjectionFactor=timeProjection;
-		
+
 	}
+
+    public void setFixedCosts(int fixedCosts) {
+        this.fixedCostPerVehicle = fixedCosts;
+    }
 }

@@ -171,6 +171,8 @@ public class TestLocalActivityInsertionCostsCalculator {
         TourActivity prevAct = vrp.getActivities(prevS).get(0);
         TourActivity newAct = vrp.getActivities(newS).get(0);
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(40);
+        nextAct.setTheoreticalLatestOperationStartTime(80);
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
@@ -204,6 +206,9 @@ public class TestLocalActivityInsertionCostsCalculator {
         Start prevAct = new Start(Location.newInstance(0, 0), 0, 100);
         TourActivity newAct = vrp.getActivities(newS).get(0);
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(40);
+        nextAct.setTheoreticalLatestOperationStartTime(50);
+
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
@@ -228,6 +233,9 @@ public class TestLocalActivityInsertionCostsCalculator {
         Start prevAct = new Start(Location.newInstance(0, 0), 0, 100);
         TourActivity newAct = vrp.getActivities(newS).get(0);
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(140);
+        nextAct.setTheoreticalLatestOperationStartTime(150);
+
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v2).setJobActivityFactory(vrp.getJobActivityFactory()).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v2, null, 0.);
@@ -248,6 +256,9 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         Start prevAct = new Start(Location.newInstance(0, 0), 0, 100);
         TourActivity newAct = vrp.getActivities(newS).get(0);
+        newAct.setTheoreticalEarliestOperationStartTime(100);
+        newAct.setTheoreticalLatestOperationStartTime(150);
+
         End nextAct = new End(Location.newInstance(0, 0), 0, 100);
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).build();
@@ -273,6 +284,9 @@ public class TestLocalActivityInsertionCostsCalculator {
         TourActivity prevAct = vrp.getActivities(prevS).get(0);
         TourActivity newAct = vrp.getActivities(newS).get(0);
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(40);
+        nextAct.setTheoreticalLatestOperationStartTime(50);
+
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
@@ -296,7 +310,13 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         TourActivity prevAct = vrp.getActivities(prevS).get(0);
         TourActivity newAct = vrp.getActivities(newS).get(0);
+        newAct.setTheoreticalEarliestOperationStartTime(100);
+        newAct.setTheoreticalLatestOperationStartTime(120);
+
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(40);
+        nextAct.setTheoreticalLatestOperationStartTime(500);
+
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
@@ -323,7 +343,13 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         TourActivity prevAct = vrp.getActivities(prevS).get(0);
         TourActivity newAct = vrp.getActivities(newS).get(0);
+        newAct.setTheoreticalEarliestOperationStartTime(100);
+        newAct.setTheoreticalLatestOperationStartTime(120);
+
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(400);
+        nextAct.setTheoreticalLatestOperationStartTime(500);
+
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).addService(afterNextS).build();
 
@@ -358,7 +384,21 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         TourActivity prevAct = vrp.getActivities(prevS).get(0);
         TourActivity newAct = vrp.getActivities(newS).get(0);
+        newAct.setTheoreticalEarliestOperationStartTime(100);
+        newAct.setTheoreticalLatestOperationStartTime(120);
+
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(40);
+        nextAct.setTheoreticalLatestOperationStartTime(500);
+
+        TourActivity afterNextAct = vrp.getActivities(afterNextS).get(0);
+        afterNextAct.setTheoreticalEarliestOperationStartTime(80);
+        afterNextAct.setTheoreticalLatestOperationStartTime(500);
+
+        TourActivity afterAfterNextAct = vrp.getActivities(afterAfterNextS).get(0);
+        afterAfterNextAct.setTheoreticalEarliestOperationStartTime(100);
+        afterAfterNextAct.setTheoreticalLatestOperationStartTime(500);
+
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).addService(afterNextS).addService(afterAfterNextS).build();
 
@@ -396,7 +436,20 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         TourActivity prevAct = vrp.getActivities(prevS).get(0);
         TourActivity newAct = vrp.getActivities(newS).get(0);
+        newAct.setTheoreticalEarliestOperationStartTime(100);
+        newAct.setTheoreticalLatestOperationStartTime(120);
+
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(40);
+        nextAct.setTheoreticalLatestOperationStartTime(500);
+
+        TourActivity afterNextAct = vrp.getActivities(afterNextS).get(0);
+        afterNextAct.setTheoreticalEarliestOperationStartTime(80);
+        afterNextAct.setTheoreticalLatestOperationStartTime(500);
+
+        TourActivity afterAfterNextAct = vrp.getActivities(afterAfterNextS).get(0);
+        afterAfterNextAct.setTheoreticalEarliestOperationStartTime(100);
+        afterAfterNextAct.setTheoreticalLatestOperationStartTime(500);
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).addService(afterNextS).addService(afterAfterNextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
@@ -438,7 +491,21 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         TourActivity prevAct = vrp.getActivities(prevS).get(0);
         TourActivity newAct = vrp.getActivities(newS).get(0);
+        newAct.setTheoreticalEarliestOperationStartTime(100);
+        newAct.setTheoreticalLatestOperationStartTime(120);
+
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(40);
+        nextAct.setTheoreticalLatestOperationStartTime(500);
+
+        TourActivity afterNextAct = vrp.getActivities(afterNextS).get(0);
+        afterNextAct.setTheoreticalEarliestOperationStartTime(80);
+        afterNextAct.setTheoreticalLatestOperationStartTime(500);
+
+        TourActivity afterAfterNextAct = vrp.getActivities(afterAfterNextS).get(0);
+        afterAfterNextAct.setTheoreticalEarliestOperationStartTime(100);
+        afterAfterNextAct.setTheoreticalLatestOperationStartTime(500);
+
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).addService(afterNextS).addService(afterAfterNextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
@@ -478,13 +545,29 @@ public class TestLocalActivityInsertionCostsCalculator {
             .addJob(afterNextS).addJob(afterAfterNextS).build();
 
         TourActivity prevAct = vrp.getActivities(prevS).get(0);
+
         TourActivity newAct = vrp.getActivities(newS).get(0);
+        newAct.setTheoreticalEarliestOperationStartTime(50);
+        newAct.setTheoreticalLatestOperationStartTime(70);
+
         TourActivity nextAct = vrp.getActivities(nextS).get(0);
+        nextAct.setTheoreticalEarliestOperationStartTime(40);
+        nextAct.setTheoreticalLatestOperationStartTime(70);
+
+        TourActivity afterNextAct = vrp.getActivities(afterNextS).get(0);
+        afterNextAct.setTheoreticalEarliestOperationStartTime(50);
+        afterNextAct.setTheoreticalEarliestOperationStartTime(100);
+
+        TourActivity afterAfterNextAct = vrp.getActivities(afterAfterNextS).get(0);
+        afterAfterNextAct.setTheoreticalEarliestOperationStartTime(100);
+        afterAfterNextAct.setTheoreticalEarliestOperationStartTime(500);
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).addService(afterNextS).addService(afterAfterNextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
 
         StateManager stateManager = getStateManager(vrp, route);
+        stateManager.updateTimeWindowStates();
+        stateManager.informInsertionStarts(Arrays.asList(route),new ArrayList<Job>());
 
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);

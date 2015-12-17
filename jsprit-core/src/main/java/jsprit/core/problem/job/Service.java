@@ -82,14 +82,14 @@ public class Service extends AbstractJob {
 
         protected Location location;
 
-        protected TimeWindows timeWindows = new TimeWindowsImpl();
+        protected TimeWindowsImpl timeWindows;
 
 		private boolean twAdded = false;
 
 		Builder(String id){
 			this.id = id;
 			timeWindows = new TimeWindowsImpl();
-			((TimeWindowsImpl)timeWindows).add(timeWindow);
+			timeWindows.add(timeWindow);
 		}
 
         /**
@@ -133,11 +133,6 @@ public class Service extends AbstractJob {
             return this;
         }
 
-        public Builder<T> setTimeWindows(TimeWindows timeWindows){
-            this.timeWindows = timeWindows;
-            return this;
-        }
-
         /**
          * Adds capacity dimension.
          *
@@ -156,7 +151,7 @@ public class Service extends AbstractJob {
             if(tw == null) throw new IllegalArgumentException("time-window arg must not be null");
             this.timeWindow = tw;
             this.timeWindows = new TimeWindowsImpl();
-            ((TimeWindowsImpl) timeWindows).add(tw);
+            timeWindows.add(tw);
             return this;
         }
 
@@ -166,15 +161,7 @@ public class Service extends AbstractJob {
                 timeWindows = new TimeWindowsImpl();
                 twAdded = true;
             }
-            for(TimeWindow tw : ((TimeWindowsImpl)timeWindows).getTimeWindows()){
-                if(timeWindow.getStart() > tw.getStart() && timeWindow.getStart() < tw.getEnd()){
-                    throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
-                }
-                if(timeWindow.getEnd() > tw.getStart() && timeWindow.getEnd() < tw.getEnd()){
-                    throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
-                }
-            }
-            ((TimeWindowsImpl) timeWindows).add(timeWindow);
+            timeWindows.add(timeWindow);
             return this;
         }
 
@@ -251,8 +238,8 @@ public class Service extends AbstractJob {
 		timeWindowManager = builder.timeWindows;
 	}
 
-	public Collection<TimeWindow> getTimeWindows(double arrTime){
-		return timeWindowManager.getTimeWindows(arrTime);
+	public Collection<TimeWindow> getTimeWindows(){
+		return timeWindowManager.getTimeWindows();
 	}
 
     @Override
@@ -281,11 +268,13 @@ public class Service extends AbstractJob {
 
     /**
      * Returns the time-window a service(-operation) is allowed to start.
+     * It is recommended to use getTimeWindows() instead. If you still use this, it returns the first time window of getTimeWindows() collection.
      *
      * @return time window
+     *
      */
     public TimeWindow getTimeWindow() {
-        return timeWindow;
+        return timeWindowManager.getTimeWindows().iterator().next();
     }
 
     /**

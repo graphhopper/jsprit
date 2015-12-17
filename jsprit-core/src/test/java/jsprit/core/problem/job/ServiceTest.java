@@ -23,7 +23,9 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 
 public class ServiceTest {
 
@@ -153,6 +155,27 @@ public class ServiceTest {
     }
 
     @Test
+    public void whenAddingSeveralTimeWindows_itShouldBeSetCorrectly(){
+        TimeWindow tw1 = TimeWindow.newInstance(1.0, 2.0);
+        TimeWindow tw2 = TimeWindow.newInstance(3.0, 5.0);
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .addTimeWindow(tw1)
+            .addTimeWindow(tw2)
+            .build();
+        assertEquals(2, s.getTimeWindows().size());
+        assertThat(s.getTimeWindows(),hasItem(is(tw1)));
+        assertThat(s.getTimeWindows(),hasItem(is(tw2)));
+    }
+
+    @Test
+    public void whenAddingTimeWindow_itShouldBeSetCorrectly(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .addTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
+        assertEquals(1.0, s.getTimeWindow().getStart(), 0.01);
+        assertEquals(2.0, s.getTimeWindow().getEnd(), 0.01);
+    }
+
+    @Test
     public void whenAddingSkills_theyShouldBeAddedCorrectly() {
         Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
@@ -189,7 +212,7 @@ public class ServiceTest {
 		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
 				.addTimeWindow(TimeWindow.newInstance(0., 10.)).addTimeWindow(TimeWindow.newInstance(20., 30.))
 				.setName("name").build();
-		assertEquals(2,s.getTimeWindows(0.).size());
+		assertEquals(2,s.getTimeWindows().size());
 	}
 
 	@Test(expected = IllegalStateException.class)

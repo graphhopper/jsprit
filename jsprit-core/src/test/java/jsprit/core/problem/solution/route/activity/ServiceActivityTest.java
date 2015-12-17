@@ -36,6 +36,8 @@ public class ServiceActivityTest {
             setTimeWindow(TimeWindow.newInstance(1., 2.)).
             addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         serviceActivity = ServiceActivity.newInstance(service);
+        serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
+        serviceActivity.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
 
     @Test

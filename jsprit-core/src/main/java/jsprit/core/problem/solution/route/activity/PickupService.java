@@ -22,9 +22,6 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Pickup;
 import jsprit.core.problem.job.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class PickupService extends AbstractActivity implements PickupActivity {
 
     private Service pickup;
@@ -33,22 +30,17 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private double depTime;
 
-    private double theoreticalEarliest;
+    private double theoreticalEarliest = 0;
 
-    private double theoreticalLatest;
-
-    private List<TimeWindow> timeWindows;
-
+    private double theoreticalLatest = Double.MAX_VALUE;
 
     public PickupService(Pickup pickup) {
         super();
         this.pickup = pickup;
-        timeWindows = new ArrayList<TimeWindow>(pickup.getTimeWindows(0.));
     }
 
     public PickupService(Service service) {
         this.pickup = service;
-        timeWindows = new ArrayList<TimeWindow>(service.getTimeWindows(0.));
     }
 
     private PickupService(PickupService pickupActivity) {
@@ -56,7 +48,6 @@ public final class PickupService extends AbstractActivity implements PickupActiv
         this.arrTime = pickupActivity.getArrTime();
         this.depTime = pickupActivity.getEndTime();
         setIndex(pickupActivity.getIndex());
-        timeWindows = new ArrayList<TimeWindow>(pickup.getTimeWindows(0.));
         this.theoreticalEarliest = pickupActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = pickupActivity.getTheoreticalLatestOperationStartTime();
     }
@@ -94,11 +85,6 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.theoreticalLatest = latest;
-    }
-
-    @Override
-    public List<TimeWindow> getTimeWindows() {
-        return timeWindows;
     }
 
     @Override

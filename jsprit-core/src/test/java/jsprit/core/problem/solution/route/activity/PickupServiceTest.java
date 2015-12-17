@@ -36,6 +36,8 @@ public class PickupServiceTest {
             setTimeWindow(TimeWindow.newInstance(1., 2.)).
             addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         pickup = new PickupService(service);
+        pickup.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
+        pickup.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
 
     @Test

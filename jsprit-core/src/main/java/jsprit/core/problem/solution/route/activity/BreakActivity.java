@@ -23,8 +23,6 @@ import jsprit.core.problem.job.Break;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
-import java.util.List;
-
 public class BreakActivity extends AbstractActivity implements JobActivity {
 
     public static int counter = 0;
@@ -73,9 +71,9 @@ public class BreakActivity extends AbstractActivity implements JobActivity {
 
     private final Break aBreak;
 
-    private double earliest;
+    private double earliest = 0;
 
-    private double latest;
+    private double latest = Double.MAX_VALUE;
 
     protected BreakActivity(Break aBreak) {
         counter++;
@@ -89,6 +87,8 @@ public class BreakActivity extends AbstractActivity implements JobActivity {
         this.endTime = breakActivity.getEndTime();
         this.location = breakActivity.getLocation();
         setIndex(breakActivity.getIndex());
+        this.earliest = breakActivity.getTheoreticalEarliestOperationStartTime();
+        this.latest = breakActivity.getTheoreticalLatestOperationStartTime();
     }
 
 
@@ -172,11 +172,6 @@ public class BreakActivity extends AbstractActivity implements JobActivity {
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.latest = latest;
-    }
-
-    @Override
-    public List<TimeWindow> getTimeWindows() {
-        return null;
     }
 
     @Override

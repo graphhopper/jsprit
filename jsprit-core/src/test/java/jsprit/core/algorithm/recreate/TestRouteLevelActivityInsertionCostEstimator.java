@@ -84,6 +84,15 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         final VehicleRoutingProblem vrp = vrpBuilder.addJob(s1).addJob(s2).addJob(s3).build();
 
+        vrp.getActivities(s1).get(0).setTheoreticalEarliestOperationStartTime(10);
+        vrp.getActivities(s1).get(0).setTheoreticalLatestOperationStartTime(10);
+
+        vrp.getActivities(s2).get(0).setTheoreticalEarliestOperationStartTime(20);
+        vrp.getActivities(s2).get(0).setTheoreticalLatestOperationStartTime(20);
+
+        vrp.getActivities(s3).get(0).setTheoreticalEarliestOperationStartTime(30);
+        vrp.getActivities(s3).get(0).setTheoreticalLatestOperationStartTime(30);
+
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new JobActivityFactory() {
             @Override
             public List<AbstractActivity> createActivities(Job job) {
@@ -123,6 +132,9 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     public void whenNewActWithTWAndServiceTimeInBetweenFirstAndSecond_and_forwardLookingIs0_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setServiceTime(10.).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
         PickupActivity pickupService = new PickupService(s4);
+        pickupService.setTheoreticalEarliestOperationStartTime(5);
+        pickupService.setTheoreticalLatestOperationStartTime(5);
+
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
@@ -177,6 +189,8 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     public void whenNewActWithTWInBetweenSecondAndThird_and_forwardLookingIs3_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
         PickupActivity pickupService = new PickupService(s4);
+        pickupService.setTheoreticalEarliestOperationStartTime(5);
+        pickupService.setTheoreticalLatestOperationStartTime(5);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(3);

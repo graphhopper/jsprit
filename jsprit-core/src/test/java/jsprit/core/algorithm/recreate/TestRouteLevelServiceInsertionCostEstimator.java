@@ -96,6 +96,15 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         vrpBuilder.addVehicle(vehicle);
         vrp = vrpBuilder.build();
 
+        vrp.getActivities(s1).get(0).setTheoreticalEarliestOperationStartTime(10);
+        vrp.getActivities(s1).get(0).setTheoreticalLatestOperationStartTime(10);
+
+        vrp.getActivities(s2).get(0).setTheoreticalEarliestOperationStartTime(20);
+        vrp.getActivities(s2).get(0).setTheoreticalLatestOperationStartTime(20);
+
+        vrp.getActivities(s3).get(0).setTheoreticalEarliestOperationStartTime(30);
+        vrp.getActivities(s3).get(0).setTheoreticalLatestOperationStartTime(30);
+
         activityFactory = new JobActivityFactory() {
             @Override
             public List<AbstractActivity> createActivities(Job job) {
@@ -169,7 +178,10 @@ public class TestRouteLevelServiceInsertionCostEstimator {
             public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
-                    acts.add(new PickupService(s4));
+                    PickupService pickupService = new PickupService(s4);
+                    pickupService.setTheoreticalEarliestOperationStartTime(5);
+                    pickupService.setTheoreticalLatestOperationStartTime(5);
+                    acts.add(pickupService);
                 }
                 return acts;
             }
@@ -195,7 +207,10 @@ public class TestRouteLevelServiceInsertionCostEstimator {
             public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
-                    acts.add(new PickupService(s4));
+                    PickupService pickupService = new PickupService(s4);
+                    pickupService.setTheoreticalEarliestOperationStartTime(5);
+                    pickupService.setTheoreticalLatestOperationStartTime(5);
+                    acts.add(pickupService);
                 }
                 return acts;
             }
@@ -220,7 +235,10 @@ public class TestRouteLevelServiceInsertionCostEstimator {
             public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
-                    acts.add(new PickupService(s4));
+                    PickupService pickupService = new PickupService(s4);
+                    pickupService.setTheoreticalEarliestOperationStartTime(3);
+                    pickupService.setTheoreticalLatestOperationStartTime(3);
+                    acts.add(pickupService);
                 }
                 return acts;
             }

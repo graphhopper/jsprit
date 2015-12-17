@@ -7,6 +7,6 @@ import java.util.Collection;
  */
 public interface TimeWindows {
 
-    public Collection<TimeWindow> getTimeWindows(double time);
+    public Collection<TimeWindow> getTimeWindows();
 
 }

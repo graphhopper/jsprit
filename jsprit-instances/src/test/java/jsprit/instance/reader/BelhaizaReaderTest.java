@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Copyright (C) 2013  Stefan Schroeder
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jsprit.instance.reader;
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 
 
 public class BelhaizaReaderTest {
-	
+
 	@Test
 	public void whenReadingBelhaizaInstance_nuOfCustomersIsCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -58,7 +58,7 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem vrp = builder.build();
 		assertEquals(FleetSize.INFINITE,vrp.getFleetSize());
 	}
-	
+
 	@Test
 	public void whenReadingBelhaizaInstance_vehicleCapacitiesAreCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -68,7 +68,7 @@ public class BelhaizaReaderTest {
 			assertEquals(200,v.getType().getCapacityDimensions().get(0));
 		}
 	}
-	
+
 	@Test
 	public void whenReadingBelhaizaInstance_vehicleLocationsAreCorrect_and_correspondToDepotLocation(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -79,7 +79,7 @@ public class BelhaizaReaderTest {
 			assertEquals(50.0,v.getStartLocation().getCoordinate().getY(),0.01);
 		}
 	}
-	
+
 	@Test
 	public void whenReadingBelhaizaInstance_demandOfCustomerOneIsCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -87,7 +87,7 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem vrp = builder.build();
 		assertEquals(10,vrp.getJobs().get("1").getSize().get(0));
 	}
-	
+
 	@Test
 	public void whenReadingBelhaizaInstance_serviceDurationOfCustomerTwoIsCorrect(){
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -101,7 +101,7 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new BelhaizaReader(builder).read(getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(5,((Service)vrp.getJobs().get("1")).getTimeWindows(0.).size());
+		assertEquals(5,((Service)vrp.getJobs().get("1")).getTimeWindows().size());
 	}
 
 	@Test
@@ -109,7 +109,7 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new BelhaizaReader(builder).read(getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(10,((Service)vrp.getJobs().get("2")).getTimeWindows(0.).size());
+		assertEquals(10,((Service)vrp.getJobs().get("2")).getTimeWindows().size());
 	}
 
 	@Test
@@ -117,8 +117,8 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new BelhaizaReader(builder).read(getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(20.,((Service)vrp.getJobs().get("1")).getTimeWindows(0.).iterator().next().getStart(),0.1);
-		assertEquals(31.,((Service)vrp.getJobs().get("1")).getTimeWindows(0.).iterator().next().getEnd(),0.1);
+		assertEquals(20.,((Service)vrp.getJobs().get("1")).getTimeWindows().iterator().next().getStart(),0.1);
+		assertEquals(31.,((Service)vrp.getJobs().get("1")).getTimeWindows().iterator().next().getEnd(),0.1);
 	}
 
 	@Test
@@ -126,7 +126,7 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new BelhaizaReader(builder).read(getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		List<TimeWindow> timeWindows = new ArrayList<TimeWindow>(((Service)vrp.getJobs().get("1")).getTimeWindows(0.));
+		List<TimeWindow> timeWindows = new ArrayList<TimeWindow>(((Service)vrp.getJobs().get("1")).getTimeWindows());
 		assertEquals(118.,timeWindows.get(1).getStart(),0.1);
 		assertEquals(148.,timeWindows.get(1).getEnd(),0.1);
 	}
@@ -136,7 +136,7 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new BelhaizaReader(builder).read(getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		List<TimeWindow> timeWindows = new ArrayList<TimeWindow>(((Service)vrp.getJobs().get("1")).getTimeWindows(0.));
+		List<TimeWindow> timeWindows = new ArrayList<TimeWindow>(((Service)vrp.getJobs().get("1")).getTimeWindows());
 		assertEquals(235.,timeWindows.get(2).getStart(),0.1);
 		assertEquals(258.,timeWindows.get(2).getEnd(),0.1);
 	}
@@ -146,7 +146,7 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new BelhaizaReader(builder).read(getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		List<TimeWindow> timeWindows = new ArrayList<TimeWindow>(((Service)vrp.getJobs().get("1")).getTimeWindows(0.));
+		List<TimeWindow> timeWindows = new ArrayList<TimeWindow>(((Service)vrp.getJobs().get("1")).getTimeWindows());
 		assertEquals(343.,timeWindows.get(3).getStart(),0.1);
 		assertEquals(355.,timeWindows.get(3).getEnd(),0.1);
 	}
@@ -156,7 +156,7 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new BelhaizaReader(builder).read(getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		List<TimeWindow> timeWindows = new ArrayList<TimeWindow>(((Service)vrp.getJobs().get("1")).getTimeWindows(0.));
+		List<TimeWindow> timeWindows = new ArrayList<TimeWindow>(((Service)vrp.getJobs().get("1")).getTimeWindows());
 		assertEquals(441.,timeWindows.get(4).getStart(),0.1);
 		assertEquals(457.,timeWindows.get(4).getEnd(),0.1);
 	}
