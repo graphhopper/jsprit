@@ -20,4 +20,11 @@ public class TimeWindowsImplTest {
         tws.add(TimeWindow.newInstance(50, 100));
         tws.add(TimeWindow.newInstance(40,150));
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void overlappingTW3_shouldThrowException(){
+        TimeWindowsImpl tws = new TimeWindowsImpl();
+        tws.add(TimeWindow.newInstance(50, 100));
+        tws.add(TimeWindow.newInstance(50, 100));
+    }
 }

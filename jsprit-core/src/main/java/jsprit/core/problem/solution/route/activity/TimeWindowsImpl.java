@@ -19,6 +19,9 @@ public class TimeWindowsImpl implements TimeWindows {
             if(timeWindow.getEnd() > tw.getStart() && timeWindow.getEnd() < tw.getEnd()){
                 throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
             }
+            if(timeWindow.getStart() <= tw.getStart() && timeWindow.getEnd() >= tw.getEnd()){
+                throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
+            }
         }
         timeWindows.add(timeWindow);
     }
