@@ -19,4 +19,9 @@ public class WaitingTimeCosts implements VehicleRoutingActivityCosts {
         return 0;
     }
 
+    @Override
+    public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+        return tourAct.getOperationTime();
+    }
+
 }
