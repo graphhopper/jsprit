@@ -105,7 +105,7 @@ public class MultipleDepotExample {
 
         SolutionPrinter.print(Solutions.bestOf(solutions));
 
-        new Plotter(vrp, Solutions.bestOf(solutions)).plot("output/p01_solution.png", "p01");
+        new Plotter(vrp, Solutions.bestOf(solutions)).setLabel(Plotter.Label.ID).plot("output/p01_solution.png", "p01");
 
         new GraphStreamViewer(vrp, Solutions.bestOf(solutions)).setRenderDelay(100).display();
 

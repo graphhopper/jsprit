@@ -72,6 +72,11 @@ public class ShipmentInsertionCalculatorTest {
             return 0;
         }
 
+        @Override
+        public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+            return tourAct.getOperationTime();
+        }
+
     };
 
     HardRouteConstraint hardRouteLevelConstraint = new HardRouteConstraint() {
@@ -102,7 +107,7 @@ public class ShipmentInsertionCalculatorTest {
     private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
         ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
         constraintManager.addConstraint(hardRouteLevelConstraint);
-        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
     }
 
     @Test
@@ -254,8 +259,8 @@ public class ShipmentInsertionCalculatorTest {
         constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager), Priority.CRITICAL);
         constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(), Priority.CRITICAL);
 
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator,
-            constraintManager);
+        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts,
+            activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
@@ -289,8 +294,8 @@ public class ShipmentInsertionCalculatorTest {
         stateManager.informInsertionStarts(Arrays.asList(route), null);
 
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
-        ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
+        ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         switcher.put(Pickup.class, serviceInsertionCalc);
         switcher.put(Service.class, serviceInsertionCalc);
         switcher.put(Shipment.class, insertionCalculator);

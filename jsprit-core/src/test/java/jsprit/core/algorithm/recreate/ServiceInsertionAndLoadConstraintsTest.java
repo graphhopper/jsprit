@@ -63,6 +63,11 @@ public class ServiceInsertionAndLoadConstraintsTest {
             return 0;
         }
 
+        @Override
+        public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+            return tourAct.getOperationTime();
+        }
+
     };
 
     HardActivityConstraint hardActivityLevelConstraint = new HardActivityConstraint() {
@@ -103,7 +108,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
     private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
         ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
         constraintManager.addConstraint(hardRouteLevelConstraint);
-        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
     }
 
     @Test
@@ -137,9 +142,9 @@ public class ServiceInsertionAndLoadConstraintsTest {
         stateManager.informInsertionStarts(Arrays.asList(route), null);
 
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
-        ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
+        ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         serviceInsertionCalc.setJobActivityFactory(activityFactory);
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityInsertionCostsCalculator, constraintManager);
+        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(activityFactory);
 
         switcher.put(Pickup.class, serviceInsertionCalc);

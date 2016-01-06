@@ -19,6 +19,7 @@ package jsprit.core.util;
 
 import jsprit.core.problem.solution.route.activity.TourActivity;
 
+@Deprecated
 public class CalculationUtils {
 
 

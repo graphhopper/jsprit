@@ -19,6 +19,7 @@ package jsprit.core.algorithm.recreate;
 import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.constraint.*;
 import jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Job;
@@ -29,7 +30,6 @@ import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.Start;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
-import jsprit.core.util.CalculationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,15 +54,18 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
 
     private VehicleRoutingTransportCosts transportCosts;
 
+    private final VehicleRoutingActivityCosts activityCosts;
+
     private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
 
     private JobActivityFactory activityFactory;
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
+    public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.transportCosts = routingCosts;
+        this.activityCosts = activityCosts;
         hardRouteLevelConstraint = constraintManager;
         hardActivityLevelConstraint = constraintManager;
         softActivityConstraint = constraintManager;
@@ -141,7 +144,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
                 break;
             }
             double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
-            prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
+            prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
             prevAct = nextAct;
             actIndex++;
         }

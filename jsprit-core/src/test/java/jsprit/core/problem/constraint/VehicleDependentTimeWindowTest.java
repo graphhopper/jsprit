@@ -22,7 +22,9 @@ import jsprit.core.algorithm.state.StateManager;
 import jsprit.core.algorithm.state.UpdateActivityTimes;
 import jsprit.core.algorithm.state.UpdateVehicleDependentPracticalTimeWindows;
 import jsprit.core.problem.*;
+import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import jsprit.core.problem.cost.WaitingTimeCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.misc.JobInsertionContext;
@@ -52,6 +54,8 @@ public class VehicleDependentTimeWindowTest {
 
     private VehicleRoutingTransportCosts routingCosts;
 
+    private VehicleRoutingActivityCosts activityCosts;
+
     private VehicleImpl v3;
     private VehicleImpl v4;
     private VehicleImpl v5;
@@ -61,6 +65,9 @@ public class VehicleDependentTimeWindowTest {
     public void doBefore() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         routingCosts = CostFactory.createEuclideanCosts();
+
+        activityCosts = new WaitingTimeCosts();
+
         vrpBuilder.setRoutingCost(routingCosts);
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
@@ -112,7 +119,7 @@ public class VehicleDependentTimeWindowTest {
 
         final VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
 
-        UpdateVehicleDependentPracticalTimeWindows timeWindow_updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts);
+        UpdateVehicleDependentPracticalTimeWindows timeWindow_updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts, activityCosts);
         timeWindow_updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
 
             @Override
@@ -125,7 +132,7 @@ public class VehicleDependentTimeWindowTest {
 
         });
         stateManager.addStateUpdater(timeWindow_updater);
-        stateManager.addStateUpdater(new UpdateActivityTimes(routingCosts));
+        stateManager.addStateUpdater(new UpdateActivityTimes(routingCosts, activityCosts));
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
     }
 
@@ -155,7 +162,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
         assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
@@ -170,7 +177,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
         assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
@@ -185,7 +192,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         /*
         driverTime = 10 + 10 + 30 + 20 + 30 = 100
          */
@@ -207,7 +214,7 @@ public class VehicleDependentTimeWindowTest {
         driverTime = 10 + 10 + 31 + 21 + 30 = 102
          */
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(1), serviceAct, route.getActivities().get(2), 20.);
         assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
@@ -225,7 +232,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v2, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
 
@@ -244,7 +251,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v3, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
         assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
@@ -262,7 +269,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v4, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
         assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
@@ -280,7 +287,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(1), serviceAct, route.getActivities().get(2), 30.);
         assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
@@ -298,7 +305,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(0), serviceAct, route.getActivities().get(1), 10.);
         assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
@@ -316,7 +323,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
         assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
@@ -332,7 +339,7 @@ public class VehicleDependentTimeWindowTest {
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v5, route.getDriver(), 60.);
 
-        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
 
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 90.);
         assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));

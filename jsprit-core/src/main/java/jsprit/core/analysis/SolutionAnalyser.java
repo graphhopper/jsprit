@@ -23,6 +23,7 @@ import jsprit.core.problem.Capacity;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
 import jsprit.core.problem.cost.TransportDistance;
+import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.SolutionCostCalculator;
 import jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -231,6 +232,8 @@ public class SolutionAnalyser {
 
         private StateManager stateManager;
 
+        private final VehicleRoutingActivityCosts activityCosts;
+
         private ActivityTimeTracker.ActivityPolicy activityPolicy;
 
         private VehicleRoute route;
@@ -245,13 +248,14 @@ public class SolutionAnalyser {
 
         double prevActDeparture;
 
-        private SumUpActivityTimes(StateId waiting_time_id, StateId transport_time_id, StateId service_time_id, StateId too_late_id, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy) {
+        private SumUpActivityTimes(StateId waiting_time_id, StateId transport_time_id, StateId service_time_id, StateId too_late_id, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy, VehicleRoutingActivityCosts activityCosts) {
             this.waiting_time_id = waiting_time_id;
             this.transport_time_id = transport_time_id;
             this.service_time_id = service_time_id;
             this.too_late_id = too_late_id;
             this.stateManager = stateManager;
             this.activityPolicy = activityPolicy;
+            this.activityCosts = activityCosts;
         }
 
         @Override
@@ -280,7 +284,7 @@ public class SolutionAnalyser {
             sum_transport_time += transportTime;
             prevActDeparture = activity.getEndTime();
             //service time
-            sum_service_time += activity.getOperationTime();
+            sum_service_time += activityCosts.getActivityDuration(activity,activity.getArrTime(),route.getDriver(),route.getVehicle());
 
             stateManager.putActivityState(activity, transport_time_id, sum_transport_time);
 
@@ -547,7 +551,7 @@ public class SolutionAnalyser {
         this.stateManager.updateLoadStates();
         this.stateManager.updateSkillStates();
         activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
-        this.stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), activityPolicy));
+        this.stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), activityPolicy, vrp.getActivityCosts()));
         this.stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
         waiting_time_id = stateManager.createStateId("waiting-time");
         transport_time_id = stateManager.createStateId("transport-time");
@@ -561,7 +565,7 @@ public class SolutionAnalyser {
         last_transport_distance_id = stateManager.createStateId("last-transport-distance");
         last_transport_time_id = stateManager.createStateId("last-transport-time");
 
-        stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id, too_late_id, stateManager, activityPolicy));
+        stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id, too_late_id, stateManager, activityPolicy, vrp.getActivityCosts()));
         stateManager.addStateUpdater(new DistanceUpdater(distance_id, stateManager, distanceCalculator));
         stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id, shipment_id, stateManager));
         stateManager.addStateUpdater(new SkillUpdater(stateManager, skill_id));

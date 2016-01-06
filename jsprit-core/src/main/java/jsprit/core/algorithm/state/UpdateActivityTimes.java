@@ -17,6 +17,7 @@
 package jsprit.core.algorithm.state;
 
 import jsprit.core.problem.cost.ForwardTransportTime;
+import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
@@ -45,13 +46,13 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
      * <code>activity.getArrTime()</code> and
      * <code>activity.getEndTime()</code>
      */
-    public UpdateActivityTimes(ForwardTransportTime transportTime) {
+    public UpdateActivityTimes(ForwardTransportTime transportTime, VehicleRoutingActivityCosts activityCosts) {
         super();
-        timeTracker = new ActivityTimeTracker(transportTime);
+        timeTracker = new ActivityTimeTracker(transportTime,activityCosts );
     }
 
-    public UpdateActivityTimes(ForwardTransportTime transportTime, ActivityTimeTracker.ActivityPolicy activityPolicy) {
-        timeTracker = new ActivityTimeTracker(transportTime, activityPolicy);
+    public UpdateActivityTimes(ForwardTransportTime transportTime, ActivityTimeTracker.ActivityPolicy activityPolicy, VehicleRoutingActivityCosts activityCosts) {
+        timeTracker = new ActivityTimeTracker(transportTime, activityPolicy, activityCosts);
     }
 
     @Override

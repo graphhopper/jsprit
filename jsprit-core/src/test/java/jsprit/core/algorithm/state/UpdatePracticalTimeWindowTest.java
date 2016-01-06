@@ -22,7 +22,9 @@ import jsprit.core.problem.AbstractActivity;
 import jsprit.core.problem.JobActivityFactory;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.VehicleRoutingProblem;
+import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import jsprit.core.problem.cost.WaitingTimeCosts;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Delivery;
 import jsprit.core.problem.job.Job;
@@ -47,6 +49,8 @@ public class UpdatePracticalTimeWindowTest {
 
     private VehicleRoutingTransportCosts routingCosts;
 
+    private VehicleRoutingActivityCosts activityCosts;
+
     private ReverseRouteActivityVisitor reverseActivityVisitor;
 
     private StateManager stateManager;
@@ -57,13 +61,14 @@ public class UpdatePracticalTimeWindowTest {
     public void doBefore() {
 
         routingCosts = CostFactory.createManhattanCosts();
+        activityCosts = new WaitingTimeCosts();
 
         VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
         when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.FINITE);
         stateManager = new StateManager(vrpMock);
 
         reverseActivityVisitor = new ReverseRouteActivityVisitor();
-        reverseActivityVisitor.addActivityVisitor(new UpdatePracticalTimeWindows(stateManager, routingCosts));
+        reverseActivityVisitor.addActivityVisitor(new UpdatePracticalTimeWindows(stateManager, routingCosts, activityCosts));
 
         Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").setLocation(Location.newInstance("0,20")).setTimeWindow(TimeWindow.newInstance(0, 30)).build();
         Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").setLocation(Location.newInstance("20,20")).setTimeWindow(TimeWindow.newInstance(10, 40)).build();

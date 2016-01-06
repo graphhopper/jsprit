@@ -17,6 +17,7 @@
 package jsprit.core.util;
 
 import jsprit.core.problem.cost.ForwardTransportTime;
+import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import jsprit.core.problem.solution.route.activity.TourActivity;
@@ -29,7 +30,9 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     }
 
-    private ForwardTransportTime transportTime;
+    private final ForwardTransportTime transportTime;
+
+    private final VehicleRoutingActivityCosts activityCosts;
 
     private TourActivity prevAct = null;
 
@@ -45,15 +48,17 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     private ActivityPolicy activityPolicy = ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
 
-    public ActivityTimeTracker(ForwardTransportTime transportTime) {
+    public ActivityTimeTracker(ForwardTransportTime transportTime, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.transportTime = transportTime;
+        this.activityCosts = activityCosts;
     }
 
-    public ActivityTimeTracker(ForwardTransportTime transportTime, ActivityPolicy activityPolicy) {
+    public ActivityTimeTracker(ForwardTransportTime transportTime, ActivityPolicy activityPolicy, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.transportTime = transportTime;
         this.activityPolicy = activityPolicy;
+        this.activityCosts = activityCosts;
     }
 
     public double getActArrTime() {
@@ -88,7 +93,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
             operationStartTime = actArrTime;
         } else operationStartTime = actArrTime;
 
-        double operationEndTime = operationStartTime + activity.getOperationTime();
+        double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,actArrTime,route.getDriver(),route.getVehicle());
 
         actEndTime = operationEndTime;
 

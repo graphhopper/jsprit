@@ -82,7 +82,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         when(tpCosts.getTransportCost(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(3.0);
         when(tpCosts.getTransportTime(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
 
-        actCosts = mock(VehicleRoutingActivityCosts.class);
+        actCosts = new WaitingTimeCosts();
         calc = new LocalActivityInsertionCostsCalculator(tpCosts, actCosts, mock(StateManager.class));
     }
 
@@ -502,8 +502,8 @@ public class TestLocalActivityInsertionCostsCalculator {
 
     private StateManager getStateManager(VehicleRoutingProblem vrp, VehicleRoute route) {
         StateManager stateManager = new StateManager(vrp);
-        stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts()));
-        stateManager.addStateUpdater(new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts()));
+        stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), vrp.getActivityCosts()));
+        stateManager.addStateUpdater(new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts(), actCosts));
         stateManager.addStateUpdater(new UpdateFutureWaitingTimes(stateManager, vrp.getTransportCosts()));
         stateManager.informInsertionStarts(Arrays.asList(route), new ArrayList<Job>());
         return stateManager;

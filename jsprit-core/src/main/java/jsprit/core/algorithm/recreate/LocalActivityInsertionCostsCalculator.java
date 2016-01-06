@@ -25,7 +25,6 @@ import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import jsprit.core.problem.vehicle.Vehicle;
-import jsprit.core.util.CalculationUtils;
 
 /**
  * Calculates activity insertion costs locally, i.e. by comparing the additional costs of insertion the new activity k between
@@ -61,7 +60,7 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
         double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
-        double newAct_endTime = CalculationUtils.getActivityEndTime(newAct_arrTime, newAct);
+        double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         double act_costs_newAct = activityCosts.getActivityCost(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
@@ -70,7 +69,7 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
         double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double nextAct_arrTime = newAct_endTime + tp_time_newAct_nextAct;
-        double endTime_nextAct_new = CalculationUtils.getActivityEndTime(nextAct_arrTime, nextAct);
+        double endTime_nextAct_new = Math.max(nextAct_arrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double act_costs_nextAct = activityCosts.getActivityCost(nextAct, nextAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct + solutionCompletenessRatio * activityCostsWeight * (act_costs_newAct + act_costs_nextAct);
@@ -82,7 +81,7 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
         } else {
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
             double arrTime_nextAct = depTimeAtPrevAct + routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
-            double endTime_nextAct_old = CalculationUtils.getActivityEndTime(arrTime_nextAct, nextAct);
+            double endTime_nextAct_old = Math.max(arrTime_nextAct, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, nextAct_arrTime, iFacts.getRoute().getDriver(),iFacts.getRoute().getVehicle());
             double actCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct, iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
 
             double endTimeDelay_nextAct = Math.max(0, endTime_nextAct_new - endTime_nextAct_old);

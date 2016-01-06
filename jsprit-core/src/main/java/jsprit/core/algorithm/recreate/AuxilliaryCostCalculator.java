@@ -67,7 +67,7 @@ final class AuxilliaryCostCalculator {
             double transportTime = routingCosts.getTransportTime(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             cost += transportCost;
             double actStartTime = departureTimePrevAct + transportTime;
-            departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
+            departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(act,actStartTime,driver,vehicle);
             cost += activityCosts.getActivityCost(act, actStartTime, driver, vehicle);
             prevAct = act;
         }

@@ -17,19 +17,22 @@
 package jsprit.core.algorithm.recreate;
 
 import jsprit.core.problem.constraint.SoftActivityConstraint;
+import jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.TourActivity;
-import jsprit.core.util.CalculationUtils;
 
 public class VariableTransportCostCalculator implements SoftActivityConstraint {
 
-    private VehicleRoutingTransportCosts routingCosts;
+    private final VehicleRoutingTransportCosts routingCosts;
 
-    public VariableTransportCostCalculator(VehicleRoutingTransportCosts routingCosts) {
+    private final VehicleRoutingActivityCosts activityCosts;
+
+    public VariableTransportCostCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.routingCosts = routingCosts;
+        this.activityCosts = activityCosts;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
         double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
-        double newAct_endTime = CalculationUtils.getActivityEndTime(newAct_arrTime, newAct);
+        double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,newAct_arrTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
 
         //open routes
         if (nextAct instanceof End) {
