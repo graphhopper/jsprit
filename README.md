@@ -34,8 +34,8 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 Any contribution is welcome. Feel free to improve jsprit and make pull requests. If you want to contribute, but don't know how?
 Currently, we need help to improve
 
-- IO (VrpXMLReader and -writer) - Maintenance and update with new features
-- Visualisation (Plotter and GraphStream) - Maintenance and new features
+- IO ([VrpXMLReader](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/problem/io/VrpXMLReader.java) and [-writer](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/problem/io/VrpXMLWriter.java)) - Maintenance and update with new features
+- Visualisation ([Plotter](https://github.com/jsprit/jsprit/blob/master/jsprit-analysis/src/main/java/jsprit/analysis/toolbox/Plotter.java) and [GraphStreamViewer](https://github.com/jsprit/jsprit/blob/master/jsprit-analysis/src/main/java/jsprit/analysis/toolbox/GraphStreamViewer.java)) - Maintenance and new features
 
 So, if you want to help, feel free to contact jsprit.vehicle.routing@gmail.com.
 
