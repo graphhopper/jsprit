@@ -136,8 +136,27 @@ public class VrpXMLReader {
 
     public void read(String filename) {
         logger.debug("read vrp: {}", filename);
+        XMLConfiguration xmlConfig = createXMLConfiguration();
+        try {
+            xmlConfig.load(filename);
+        } catch (ConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        read(xmlConfig);
+    }
+
+    public void read(InputStream fileContents) {
+        XMLConfiguration xmlConfig = createXMLConfiguration();
+        try {
+            xmlConfig.load(fileContents);
+        } catch (ConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        read(xmlConfig);
+    }
+
+    private XMLConfiguration createXMLConfiguration() {
         XMLConfiguration xmlConfig = new XMLConfiguration();
-        xmlConfig.setFileName(filename);
         xmlConfig.setAttributeSplittingDisabled(true);
         xmlConfig.setDelimiterParsingDisabled(true);
 
@@ -160,11 +179,10 @@ public class VrpXMLReader {
                 logger.debug("cannot find schema-xsd file (vrp_xml_schema.xsd). try to read xml without xml-file-validation.");
             }
         }
-        try {
-            xmlConfig.load();
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        return xmlConfig;
+    }
+
+    private void read(XMLConfiguration xmlConfig) {
         readProblemType(xmlConfig);
         readVehiclesAndTheirTypes(xmlConfig);
 
