@@ -6,13 +6,15 @@
      </problemType>
      <vehicles>
           <vehicle>
-               <id>v1</id>
-               <typeId>vehType</typeId>
+               <id>v</id>
+               <typeId>type</typeId>
                <startLocation>
-                    <id>loc</id>
+                    <id>startLoc</id>
+                    <coord x="1.0" y="2.0"/>
                </startLocation>
                <endLocation>
-                    <id>loc</id>
+                    <id>endLoc</id>
+                    <coord x="4.0" y="5.0"/>
                </endLocation>
                <timeSchedule>
                     <start>0.0</start>
@@ -23,9 +25,19 @@
      </vehicles>
      <vehicleTypes>
           <type>
-               <id>vehType</id>
+               <id>type</id>
                <capacity-dimensions>
-                    <dimension index="0">20</dimension>
+                    <dimension index="0">100</dimension>
+                    <dimension index="1">1000</dimension>
+                    <dimension index="2">0</dimension>
+                    <dimension index="3">0</dimension>
+                    <dimension index="4">0</dimension>
+                    <dimension index="5">0</dimension>
+                    <dimension index="6">0</dimension>
+                    <dimension index="7">0</dimension>
+                    <dimension index="8">0</dimension>
+                    <dimension index="9">0</dimension>
+                    <dimension index="10">10000</dimension>
                </capacity-dimensions>
                <costs>
                     <fixed>0.0</fixed>
@@ -34,57 +46,4 @@
                </costs>
           </type>
      </vehicleTypes>
-     <services>
-          <service id="1" type="service">
-               <location>
-                    <id>loc</id>
-               </location>
-               <capacity-dimensions>
-                    <dimension index="0">1</dimension>
-               </capacity-dimensions>
-               <duration>2.0</duration>
-               <timeWindows>
-                    <timeWindow>
-                         <start>0.0</start>
-                         <end>1.7976931348623157E308</end>
-                    </timeWindow>
-               </timeWindows>
-          </service>
-          <service id="2" type="service">
-               <location>
-                    <id>loc2</id>
-               </location>
-               <capacity-dimensions>
-                    <dimension index="0">1</dimension>
-               </capacity-dimensions>
-               <duration>4.0</duration>
-               <timeWindows>
-                    <timeWindow>
-                         <start>0.0</start>
-                         <end>1.7976931348623157E308</end>
-                    </timeWindow>
-               </timeWindows>
-          </service>
-     </services>
-     <solutions>
-          <solution>
-               <cost>10.0</cost>
-               <routes>
-                    <route>
-                         <driverId>noDriver</driverId>
-                         <vehicleId>v1</vehicleId>
-                         <start>0.0</start>
-                         <act type="service">
-                              <serviceId>1</serviceId>
-                              <arrTime>0.0</arrTime>
-                              <endTime>0.0</endTime>
-                         </act>
-                         <end>0.0</end>
-                    </route>
-               </routes>
-               <unassignedJobs>
-                    <job id="2"/>
-               </unassignedJobs>
-          </solution>
-     </solutions>
 </problem>
