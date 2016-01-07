@@ -29,6 +29,16 @@ This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
 
 ##[Get Started](https://github.com/jsprit/jsprit/wiki/Getting-Started)
 
+##[Contribution]
+
+Any contribution is welcome. Feel free to improve jsprit and make pull requests. If you want to contribute, but don't know how?
+Currently, we need help to improve
+
+- IO (VrpXMLReader and -writer) - Maintenance and update with new features
+- Visualisation (Plotter and GraphStream) - Maintenance and new features
+
+So, if you want to help, feel free to contact jsprit.vehicle.routing@gmail.com.
+
 ##[Acknowledgement](https://github.com/jsprit/jsprit/wiki/Acknowledgement)
 
 ##Contact
