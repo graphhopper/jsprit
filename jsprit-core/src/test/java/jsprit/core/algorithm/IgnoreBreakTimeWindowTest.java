@@ -12,6 +12,7 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
+import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Solutions;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -43,10 +44,6 @@ public class IgnoreBreakTimeWindowTest {
          * build services at the required locations, each with a capacity-demand of 1.
 		 */
 
-        Service service2 = Service.Builder.newInstance("1").setLocation(Location.newInstance(0, 0))
-            .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(14., 14.))
-            .build();
-
 
         Service service4 = Service.Builder.newInstance("2").setLocation(Location.newInstance(0, 0))
             .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(17,17)).build();
@@ -68,7 +65,7 @@ public class IgnoreBreakTimeWindowTest {
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
             .addVehicle(vehicle2)
-            .addJob(service2).addJob(service4)
+            .addJob(service4)
             .addJob(service5).addJob(service7)
             .addJob(service8).addJob(service10).addJob(service11)
             .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
@@ -78,6 +75,8 @@ public class IgnoreBreakTimeWindowTest {
         vra.setMaxIterations(50);
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
 
         Assert.assertTrue(breakShouldBeTime(solution));
     }
