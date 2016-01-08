@@ -12,7 +12,6 @@ import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import jsprit.core.problem.vehicle.VehicleType;
 import jsprit.core.problem.vehicle.VehicleTypeImpl;
-import jsprit.core.reporting.SolutionPrinter;
 import jsprit.core.util.Solutions;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -76,7 +75,6 @@ public class IgnoreBreakTimeWindowTest {
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
 
-        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
 
         Assert.assertTrue(breakShouldBeTime(solution));
     }
