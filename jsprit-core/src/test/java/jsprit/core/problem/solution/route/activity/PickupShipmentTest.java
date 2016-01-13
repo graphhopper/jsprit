@@ -36,6 +36,8 @@ public class PickupShipmentTest {
             .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
             .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         pickup = new PickupShipment(shipment);
+        pickup.setTheoreticalEarliestOperationStartTime(shipment.getPickupTimeWindow().getStart());
+        pickup.setTheoreticalLatestOperationStartTime(shipment.getPickupTimeWindow().getEnd());
     }
 
     @Test

@@ -32,6 +32,10 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
     private Capacity capacity;
 
+    private double earliest = 0;
+
+    private double latest = Double.MAX_VALUE;
+
     public DeliverShipment(Shipment shipment) {
         super();
         this.shipment = shipment;
@@ -45,11 +49,23 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
         this.endTime = deliveryShipmentActivity.getEndTime();
         this.capacity = deliveryShipmentActivity.getSize();
         setIndex(deliveryShipmentActivity.getIndex());
+        this.earliest = deliveryShipmentActivity.getTheoreticalEarliestOperationStartTime();
+        this.latest = deliveryShipmentActivity.getTheoreticalLatestOperationStartTime();
     }
 
     @Override
     public Job getJob() {
         return shipment;
+    }
+
+    @Override
+    public void setTheoreticalEarliestOperationStartTime(double earliest) {
+        this.earliest = earliest;
+    }
+
+    @Override
+    public void setTheoreticalLatestOperationStartTime(double latest) {
+        this.latest = latest;
     }
 
     @Override
@@ -69,12 +85,12 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
     @Override
     public double getTheoreticalEarliestOperationStartTime() {
-        return shipment.getDeliveryTimeWindow().getStart();
+        return earliest;
     }
 
     @Override
     public double getTheoreticalLatestOperationStartTime() {
-        return shipment.getDeliveryTimeWindow().getEnd();
+        return latest;
     }
 
     @Override

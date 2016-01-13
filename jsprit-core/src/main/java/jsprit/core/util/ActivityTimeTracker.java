@@ -18,8 +18,7 @@ package jsprit.core.util;
 
 import jsprit.core.problem.cost.ForwardTransportTime;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.ActivityVisitor;
-import jsprit.core.problem.solution.route.activity.TourActivity;
+import jsprit.core.problem.solution.route.activity.*;
 
 public class ActivityTimeTracker implements ActivityVisitor {
 
@@ -43,17 +42,27 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     private double actEndTime;
 
-    private ActivityPolicy activityPolicy = ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
+    private ActivityStartStrategy startStrategy;
 
-    public ActivityTimeTracker(ForwardTransportTime transportTime) {
-        super();
-        this.transportTime = transportTime;
-    }
+	public ActivityTimeTracker(ForwardTransportTime transportTime) {
+		super();
+		this.transportTime = transportTime;
+		this.startStrategy = new ActivityStartsAsSoonAsTimeWindowOpens();
+	}
 
     public ActivityTimeTracker(ForwardTransportTime transportTime, ActivityPolicy activityPolicy) {
         super();
         this.transportTime = transportTime;
-        this.activityPolicy = activityPolicy;
+		if(activityPolicy.equals(ActivityPolicy.AS_SOON_AS_ARRIVED)){
+			this.startStrategy = new ActivityStartAsSoonAsArrived();
+		}
+		else this.startStrategy = new ActivityStartsAsSoonAsTimeWindowOpens();
+    }
+
+    public ActivityTimeTracker(ForwardTransportTime transportTime, ActivityStartStrategy startStrategy) {
+        super();
+        this.transportTime = transportTime;
+        this.startStrategy = startStrategy;
     }
 
     public double getActArrTime() {
@@ -75,36 +84,22 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     @Override
     public void visit(TourActivity activity) {
-        if (!beginFirst) throw new IllegalStateException("never called begin. this however is essential here");
+        if(!beginFirst) throw new IllegalStateException("never called begin. this however is essential here");
         double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
-
         actArrTime = arrivalTimeAtCurrAct;
-        double operationStartTime;
-
-        if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
-            operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), arrivalTimeAtCurrAct);
-        } else if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_ARRIVED)) {
-            operationStartTime = actArrTime;
-        } else operationStartTime = actArrTime;
-
-        double operationEndTime = operationStartTime + activity.getOperationTime();
-
+        double operationEndTime = startStrategy.getActivityStartTime(activity,arrivalTimeAtCurrAct) + activity.getOperationTime();
         actEndTime = operationEndTime;
-
         prevAct = activity;
         startAtPrevAct = operationEndTime;
-
     }
 
     @Override
     public void finish() {
         double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), route.getEnd().getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
-
         actArrTime = arrivalTimeAtCurrAct;
         actEndTime = arrivalTimeAtCurrAct;
-
         beginFirst = false;
     }
 

@@ -31,6 +31,10 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private double endTime;
 
+    private double theoreticalEarliest = 0;
+
+    private double theoreticalLatest = Double.MAX_VALUE;
+
     public DeliverService(Delivery delivery) {
         super();
         this.delivery = delivery;
@@ -43,6 +47,8 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         this.endTime = deliveryActivity.getEndTime();
         capacity = deliveryActivity.getSize();
         setIndex(deliveryActivity.getIndex());
+        this.theoreticalEarliest = deliveryActivity.getTheoreticalEarliestOperationStartTime();
+        this.theoreticalLatest = deliveryActivity.getTheoreticalLatestOperationStartTime();
     }
 
     @Override
@@ -61,13 +67,24 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     @Override
+    public void setTheoreticalEarliestOperationStartTime(double earliest) {
+        theoreticalEarliest = earliest;
+    }
+
+    @Override
+    public void setTheoreticalLatestOperationStartTime(double latest) {
+        theoreticalLatest = latest;
+    }
+
+
+    @Override
     public double getTheoreticalEarliestOperationStartTime() {
-        return delivery.getTimeWindow().getStart();
+        return theoreticalEarliest;
     }
 
     @Override
     public double getTheoreticalLatestOperationStartTime() {
-        return delivery.getTimeWindow().getEnd();
+        return theoreticalLatest;
     }
 
     @Override

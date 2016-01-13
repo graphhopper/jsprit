@@ -97,10 +97,12 @@ public final class Start extends AbstractActivity implements TourActivity {
         return theoretical_latestOperationStartTime;
     }
 
+    @Deprecated
     public void setTheoreticalEarliestOperationStartTime(double time) {
         this.theoretical_earliestOperationStartTime = time;
     }
 
+    @Deprecated
     public void setTheoreticalLatestOperationStartTime(double time) {
         this.theoretical_latestOperationStartTime = time;
     }

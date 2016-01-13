@@ -8,6 +8,7 @@ import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.job.Job;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleFleetManager;
@@ -176,6 +177,42 @@ public class UpdateVehicleDependentTimeWindowTest {
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1WithVehicle3() {
         assertEquals(70., stateManager.getActivityState(route.getActivities().get(0), vehicle3,
             InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+    }
+
+
+    @Test
+    public void twUpdateShouldWorkWithMultipleTWs(){
+        //
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
+        Service service = Service.Builder.newInstance("s1").setLocation(Location.newInstance("10,0"))
+                .addTimeWindow(10,20).addTimeWindow(30,40).build();
+        Service service2 = Service.Builder.newInstance("s2")
+                .addTimeWindow(20,30).addTimeWindow(40,60).addTimeWindow(70,80).setLocation(Location.newInstance("20,0")).build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2).addVehicle(vehicle)
+                .setRoutingCost(routingCosts).build();
+
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
+                .addService(service).addService(service2, TimeWindow.newInstance(70,80)).build();
+
+        StateManager stateManager = new StateManager(vrp);
+        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,routingCosts);
+        updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
+
+            @Override
+            public Collection<Vehicle> get(VehicleRoute route) {
+                Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
+                vehicles.add(route.getVehicle());
+//                vehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
+                return vehicles;
+            }
+
+        });
+        stateManager.addStateUpdater(updater);
+        stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
+
+        assertEquals(80.,stateManager.getActivityState(route.getActivities().get(1),vehicle,
+                InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
     }
 
 

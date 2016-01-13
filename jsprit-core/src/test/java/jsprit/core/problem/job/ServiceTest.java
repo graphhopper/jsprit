@@ -23,7 +23,9 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 
 public class ServiceTest {
 
@@ -112,62 +114,86 @@ public class ServiceTest {
     }
 
 
+	@Test
+	public void whenSettingLocationCoord_itShouldBeSetCorrectly(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance(1, 2)).build();
+		assertEquals(1.0,s.getLocation().getCoordinate().getX(),0.01);
+		assertEquals(2.0,s.getLocation().getCoordinate().getY(),0.01);
+        assertEquals(1.0,s.getLocation().getCoordinate().getX(),0.01);
+        assertEquals(2.0,s.getLocation().getCoordinate().getY(),0.01);
+	}
+
+	@Test(expected=IllegalStateException.class)
+	public void whenSettingNeitherLocationIdNorCoord_throwsException(){
+		@SuppressWarnings("unused")
+		Service s = Service.Builder.newInstance("s").build();
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void whenServiceTimeSmallerZero_throwIllegalStateException(){
+		@SuppressWarnings("unused")
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setServiceTime(-1).build();
+	}
+
+	@Test
+	public void whenSettingServiceTime_itShouldBeSetCorrectly(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setServiceTime(1).build();
+		assertEquals(1.0,s.getServiceDuration(),0.01);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void whenTimeWindowIsNull_throwException(){
+		@SuppressWarnings("unused")
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setTimeWindow(null).build();
+	}
+
+	@Test
+	public void whenSettingTimeWindow_itShouldBeSetCorrectly(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
+		assertEquals(1.0,s.getTimeWindow().getStart(),0.01);
+		assertEquals(2.0,s.getTimeWindow().getEnd(),0.01);
+	}
+
+	@Test
+	public void whenAddingSkills_theyShouldBeAddedCorrectly(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+				.addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
+	}
+
+	@Test
+	public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+				.addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
+		assertTrue(s.getRequiredSkills().containsSkill("drill"));
+		assertTrue(s.getRequiredSkills().containsSkill("drilL"));
+	}
+
     @Test
-    public void whenSettingLocationCoord_itShouldBeSetCorrectly() {
-        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance(1, 2)).build();
-        assertEquals(1.0, s.getLocation().getCoordinate().getX(), 0.01);
-        assertEquals(2.0, s.getLocation().getCoordinate().getY(), 0.01);
-        assertEquals(1.0, s.getLocation().getCoordinate().getX(), 0.01);
-        assertEquals(2.0, s.getLocation().getCoordinate().getY(), 0.01);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void whenSettingNeitherLocationIdNorCoord_throwsException() {
-        @SuppressWarnings("unused")
-        Service s = Service.Builder.newInstance("s").build();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void whenServiceTimeSmallerZero_throwIllegalStateException() {
-        @SuppressWarnings("unused")
-        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setServiceTime(-1).build();
+    public void whenAddingSeveralTimeWindows_itShouldBeSetCorrectly(){
+        TimeWindow tw1 = TimeWindow.newInstance(1.0, 2.0);
+        TimeWindow tw2 = TimeWindow.newInstance(3.0, 5.0);
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .addTimeWindow(tw1)
+            .addTimeWindow(tw2)
+            .build();
+        assertEquals(2, s.getTimeWindows().size());
+        assertThat(s.getTimeWindows(),hasItem(is(tw1)));
+        assertThat(s.getTimeWindows(),hasItem(is(tw2)));
     }
 
     @Test
-    public void whenSettingServiceTime_itShouldBeSetCorrectly() {
-        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setServiceTime(1).build();
-        assertEquals(1.0, s.getServiceDuration(), 0.01);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void whenTimeWindowIsNull_throwException() {
-        @SuppressWarnings("unused")
-        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setTimeWindow(null).build();
-    }
-
-    @Test
-    public void whenSettingTimeWindow_itShouldBeSetCorrectly() {
-        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
+    public void whenAddingTimeWindow_itShouldBeSetCorrectly(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .addTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
         assertEquals(1.0, s.getTimeWindow().getStart(), 0.01);
         assertEquals(2.0, s.getTimeWindow().getEnd(), 0.01);
     }
 
-    @Test
-    public void whenAddingSkills_theyShouldBeAddedCorrectly() {
-        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
-        assertTrue(s.getRequiredSkills().containsSkill("drill"));
-        assertTrue(s.getRequiredSkills().containsSkill("drill"));
-        assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
-    }
 
-    @Test
-    public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
-        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
-        assertTrue(s.getRequiredSkills().containsSkill("drill"));
-        assertTrue(s.getRequiredSkills().containsSkill("drilL"));
-    }
+
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
@@ -183,5 +209,29 @@ public class ServiceTest {
             .setName("name").build();
         assertEquals("name", s.getName());
     }
+
+	@Test
+	public void shouldKnowMultipleTimeWindows(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+				.addTimeWindow(TimeWindow.newInstance(0., 10.)).addTimeWindow(TimeWindow.newInstance(20., 30.))
+				.setName("name").build();
+		assertEquals(2,s.getTimeWindows().size());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void whenMultipleTWOverlap_throwEx(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+				.addTimeWindow(TimeWindow.newInstance(0.,10.))
+				.addTimeWindow(TimeWindow.newInstance(5., 30.))
+				.setName("name").build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void whenMultipleTWOverlap2_throwEx(){
+		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+				.addTimeWindow(TimeWindow.newInstance(20., 30.))
+				.addTimeWindow(TimeWindow.newInstance(0., 25.))
+				.setName("name").build();
+	}
 
 }

@@ -1,3 +1,4 @@
+
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Copyright (C) 2014  Stefan Schroeder
   ~
@@ -81,7 +82,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 

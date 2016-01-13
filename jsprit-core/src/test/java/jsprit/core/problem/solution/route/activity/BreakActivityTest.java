@@ -33,9 +33,11 @@ public class BreakActivityTest {
 
     @Before
     public void doBefore() {
-        service = (Break) Break.Builder.newInstance("service")
+        service = Break.Builder.newInstance("service")
             .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3).build();
         serviceActivity = BreakActivity.newInstance(service);
+        serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
+        serviceActivity.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
 
     @Test

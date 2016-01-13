@@ -71,6 +71,10 @@ public class BreakActivity extends AbstractActivity implements JobActivity {
 
     private final Break aBreak;
 
+    private double earliest = 0;
+
+    private double latest = Double.MAX_VALUE;
+
     protected BreakActivity(Break aBreak) {
         counter++;
         this.aBreak = aBreak;
@@ -83,6 +87,8 @@ public class BreakActivity extends AbstractActivity implements JobActivity {
         this.endTime = breakActivity.getEndTime();
         this.location = breakActivity.getLocation();
         setIndex(breakActivity.getIndex());
+        this.earliest = breakActivity.getTheoreticalEarliestOperationStartTime();
+        this.latest = breakActivity.getTheoreticalLatestOperationStartTime();
     }
 
 
@@ -118,11 +124,11 @@ public class BreakActivity extends AbstractActivity implements JobActivity {
     }
 
     public double getTheoreticalEarliestOperationStartTime() {
-        return aBreak.getTimeWindow().getStart();
+        return earliest;
     }
 
     public double getTheoreticalLatestOperationStartTime() {
-        return aBreak.getTimeWindow().getEnd();
+        return latest;
     }
 
     @Override
@@ -156,6 +162,16 @@ public class BreakActivity extends AbstractActivity implements JobActivity {
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+    }
+
+    @Override
+    public void setTheoreticalEarliestOperationStartTime(double earliest) {
+        this.earliest = earliest;
+    }
+
+    @Override
+    public void setTheoreticalLatestOperationStartTime(double latest) {
+        this.latest = latest;
     }
 
     @Override

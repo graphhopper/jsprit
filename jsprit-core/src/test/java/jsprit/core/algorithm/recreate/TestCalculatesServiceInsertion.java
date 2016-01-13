@@ -124,6 +124,7 @@ public class TestCalculatesServiceInsertion {
         states.updateLoadStates();
         states.updateTimeWindowStates();
 
+
         ConstraintManager cManager = new ConstraintManager(vrp, states);
         cManager.addLoadConstraint();
         cManager.addTimeWindowConstraint();

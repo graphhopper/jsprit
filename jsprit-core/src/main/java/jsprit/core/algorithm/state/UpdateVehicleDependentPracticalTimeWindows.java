@@ -21,6 +21,7 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.route.RouteVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 
@@ -97,6 +98,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
             double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
                 latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activity.getOperationTime();
             double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
+//                getLatestArrivalTime(activity.getTimeWindows(), potentialLatestArrivalTimeAtCurrAct);
             if (latestArrivalTime < activity.getTheoreticalEarliestOperationStartTime()) {
                 stateManager.putTypedInternalRouteState(route, vehicle, InternalStates.SWITCH_NOT_FEASIBLE, true);
             }
@@ -107,8 +109,8 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
     }
 
 
-    public void finish() {
-    }
+    public void finish() {}
+
 
 }
 

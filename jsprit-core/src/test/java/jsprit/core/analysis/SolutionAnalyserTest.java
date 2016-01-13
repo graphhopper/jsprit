@@ -90,7 +90,9 @@ public class SolutionAnalyserTest {
         Service s3 = Service.Builder.newInstance("s3")
             .setTimeWindow(TimeWindow.newInstance(10, 20))
             .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1))).addSizeDimension(0, 2).build();
+
         Service s4 = Service.Builder.newInstance("s4").setLocation(TestUtils.loc(Coordinate.newInstance(10, 10))).addSizeDimension(0, 3).build();
+
         Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
             .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
             .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).addSizeDimension(0, 10).build();
@@ -120,12 +122,12 @@ public class SolutionAnalyserTest {
             .setLatestArrival(150.)
             .build();
 
-        Pickup s1 = (Pickup) Pickup.Builder.newInstance("s1")
+        Pickup s1 = Pickup.Builder.newInstance("s1")
             .setTimeWindow(TimeWindow.newInstance(10, 20))
             .setLocation(Location.newInstance(-10, 1))
             .addSizeDimension(0, 10)
             .build();
-        Delivery s2 = (Delivery) Delivery.Builder.newInstance("s2")
+        Delivery s2 = Delivery.Builder.newInstance("s2")
             .setLocation(Location.newInstance(-10, 10))
             .setTimeWindow(TimeWindow.newInstance(10, 20))
             .addSizeDimension(0, 20)
@@ -137,12 +139,12 @@ public class SolutionAnalyserTest {
             .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
             .build();
 
-        Pickup s3 = (Pickup) Pickup.Builder.newInstance("s3")
+        Pickup s3 = Pickup.Builder.newInstance("s3")
             .setTimeWindow(TimeWindow.newInstance(10, 20))
             .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1)))
             .addSizeDimension(0, 10)
             .build();
-        Delivery s4 = (Delivery) Delivery.Builder.newInstance("s4").setLocation(Location.newInstance(10, 10))
+        Delivery s4 = Delivery.Builder.newInstance("s4").setLocation(Location.newInstance(10, 10))
             .addSizeDimension(0, 20)
             .setTimeWindow(TimeWindow.newInstance(10, 20))
             .build();

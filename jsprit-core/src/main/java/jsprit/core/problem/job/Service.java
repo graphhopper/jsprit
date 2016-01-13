@@ -21,7 +21,11 @@ import jsprit.core.problem.Capacity;
 import jsprit.core.problem.Location;
 import jsprit.core.problem.Skills;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
+import jsprit.core.problem.solution.route.activity.TimeWindows;
+import jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 import jsprit.core.util.Coordinate;
+
+import java.util.Collection;
 
 /**
  * Service implementation of a job.
@@ -78,9 +82,15 @@ public class Service extends AbstractJob {
 
         protected Location location;
 
-        Builder(String id) {
-            this.id = id;
-        }
+        protected TimeWindowsImpl timeWindows;
+
+		private boolean twAdded = false;
+
+		Builder(String id){
+			this.id = id;
+			timeWindows = new TimeWindowsImpl();
+			timeWindows.add(timeWindow);
+		}
 
         /**
          * Protected method to set the type-name of the service.
@@ -137,19 +147,26 @@ public class Service extends AbstractJob {
             return this;
         }
 
-        /**
-         * Sets the time-window of this service.
-         * <p/>
-         * <p>The time-window indicates the time period a service/activity/operation is allowed to start.
-         *
-         * @param tw the time-window to be set
-         * @return builder
-         * @throws IllegalArgumentException if timeWindow is null
-         */
-        public Builder<T> setTimeWindow(TimeWindow tw) {
-            if (tw == null) throw new IllegalArgumentException("time-window arg must not be null");
+        public Builder<T> setTimeWindow(TimeWindow tw){
+            if(tw == null) throw new IllegalArgumentException("time-window arg must not be null");
             this.timeWindow = tw;
+            this.timeWindows = new TimeWindowsImpl();
+            timeWindows.add(tw);
             return this;
+        }
+
+        public Builder<T> addTimeWindow(TimeWindow timeWindow) {
+            if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
+            if(!twAdded){
+                timeWindows = new TimeWindowsImpl();
+                twAdded = true;
+            }
+            timeWindows.add(timeWindow);
+            return this;
+        }
+
+        public Builder<T> addTimeWindow(double earliest, double latest) {
+            return addTimeWindow(TimeWindow.newInstance(earliest, latest));
         }
 
         /**
@@ -191,7 +208,6 @@ public class Service extends AbstractJob {
         }
     }
 
-
     private final String id;
 
     private final String type;
@@ -208,6 +224,8 @@ public class Service extends AbstractJob {
 
     private final Location location;
 
+    private final TimeWindows timeWindowManager;
+
     Service(Builder builder) {
         id = builder.id;
         serviceTime = builder.serviceTime;
@@ -217,7 +235,12 @@ public class Service extends AbstractJob {
         skills = builder.skills;
         name = builder.name;
         location = builder.location;
-    }
+		timeWindowManager = builder.timeWindows;
+	}
+
+	public Collection<TimeWindow> getTimeWindows(){
+		return timeWindowManager.getTimeWindows();
+	}
 
     @Override
     public String getId() {
@@ -245,11 +268,13 @@ public class Service extends AbstractJob {
 
     /**
      * Returns the time-window a service(-operation) is allowed to start.
+     * It is recommended to use getTimeWindows() instead. If you still use this, it returns the first time window of getTimeWindows() collection.
      *
      * @return time window
+     *
      */
     public TimeWindow getTimeWindow() {
-        return timeWindow;
+        return timeWindowManager.getTimeWindows().iterator().next();
     }
 
     /**

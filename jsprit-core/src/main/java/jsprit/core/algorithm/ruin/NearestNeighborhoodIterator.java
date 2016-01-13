@@ -29,8 +29,8 @@ class NearestNeighborhoodIterator implements Iterator<Job> {
     public boolean hasNext() {
         if (jobCount < nJobs) {
             boolean hasNext = jobIter.hasNext();
-            if (!hasNext)
-                log.warn("more jobs are requested then iterator can iterate over. probably the number of neighbors memorized in JobNeighborhoods is too small");
+//            if (!hasNext)
+//                log.warn("more jobs are requested then iterator can iterate over. probably the number of neighbors memorized in JobNeighborhoods is too small");
             return hasNext;
         }
         return false;

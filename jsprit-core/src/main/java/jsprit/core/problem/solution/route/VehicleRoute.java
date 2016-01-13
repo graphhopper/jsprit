@@ -212,7 +212,8 @@ public class VehicleRoute {
         }
 
         /**
-         * Adds a service to this route.
+         * Adds a service to this route. Activity is initialized with .getTimeWindow(). If you want to explicitly set another time window
+         * use .addService(Service service, TimeWindow timeWindow)
          * <p/>
          * <p>This implies that for this service a serviceActivity is created with {@link TourActivityFactory} and added to the sequence of tourActivities.
          * <p/>
@@ -223,9 +224,15 @@ public class VehicleRoute {
          * @throws IllegalArgumentException if service is null
          */
         public Builder addService(Service service) {
+            return addService(service,service.getTimeWindow());
+        }
+
+        public Builder addService(Service service, TimeWindow timeWindow) {
             if (service == null) throw new IllegalArgumentException("service must not be null");
             List<AbstractActivity> acts = jobActivityFactory.createActivities(service);
             TourActivity act = acts.get(0);
+            act.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+            act.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
             tourActivities.addActivity(act);
             return this;
         }
@@ -238,8 +245,12 @@ public class VehicleRoute {
          */
         public Builder addPickup(Pickup pickup) {
             if (pickup == null) throw new IllegalArgumentException("pickup must not be null");
-            addService(pickup);
-            return this;
+            return addService(pickup);
+        }
+
+        public Builder addPickup(Pickup pickup, TimeWindow timeWindow) {
+            if (pickup == null) throw new IllegalArgumentException("pickup must not be null");
+            return addService(pickup,timeWindow);
         }
 
         /**
@@ -250,8 +261,12 @@ public class VehicleRoute {
          */
         public Builder addDelivery(Delivery delivery) {
             if (delivery == null) throw new IllegalArgumentException("delivery must not be null");
-            addService(delivery);
-            return this;
+            return addService(delivery);
+        }
+
+        public Builder addDelivery(Delivery delivery, TimeWindow timeWindow) {
+            if (delivery == null) throw new IllegalArgumentException("delivery must not be null");
+            return addService(delivery,timeWindow);
         }
 
         /**
@@ -262,10 +277,16 @@ public class VehicleRoute {
          * @throws IllegalStateException if method has already been called with the specified shipment.
          */
         public Builder addPickup(Shipment shipment) {
+            return addPickup(shipment, shipment.getPickupTimeWindow());
+        }
+
+        public Builder addPickup(Shipment shipment, TimeWindow pickupTimeWindow) {
             if (openShipments.contains(shipment))
                 throw new IllegalStateException("shipment has already been added. cannot add it twice.");
             List<AbstractActivity> acts = jobActivityFactory.createActivities(shipment);
             TourActivity act = acts.get(0);
+            act.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
+            act.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
             tourActivities.addActivity(act);
             openShipments.add(shipment);
             openActivities.put(shipment, acts.get(1));
@@ -280,8 +301,14 @@ public class VehicleRoute {
          * @throws IllegalStateException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
          */
         public Builder addDelivery(Shipment shipment) {
+            return addDelivery(shipment,shipment.getDeliveryTimeWindow());
+        }
+
+        public Builder addDelivery(Shipment shipment, TimeWindow deliveryTimeWindow) {
             if (openShipments.contains(shipment)) {
                 TourActivity act = openActivities.get(shipment);
+                act.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
+                act.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
                 tourActivities.addActivity(act);
                 openShipments.remove(shipment);
             } else {

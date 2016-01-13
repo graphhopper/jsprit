@@ -27,6 +27,7 @@ import jsprit.core.problem.misc.JobInsertionContext;
 import jsprit.core.problem.solution.route.VehicleRoute;
 import jsprit.core.problem.solution.route.activity.End;
 import jsprit.core.problem.solution.route.activity.Start;
+import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.util.CalculationUtils;
@@ -108,6 +109,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
 
         double bestCost = bestKnownCosts;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
+		TimeWindow bestTimeWindow = null;
 
         /*
         generate new start and end for new vehicle
@@ -121,38 +123,46 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         int actIndex = 0;
         Iterator<TourActivity> activityIterator = currentRoute.getActivities().iterator();
         boolean tourEnd = false;
-        while (!tourEnd) {
+        while(!tourEnd){
             TourActivity nextAct;
-            if (activityIterator.hasNext()) nextAct = activityIterator.next();
-            else {
+            if(activityIterator.hasNext()) nextAct = activityIterator.next();
+            else{
                 nextAct = end;
                 tourEnd = true;
             }
-            ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-            if (status.equals(ConstraintsStatus.FULFILLED)) {
-                //from job2insert induced costs at activity level
-                double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-                double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-                if (additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost) {
-                    bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
-                    insertionIndex = actIndex;
+            boolean not_fulfilled_break = true;
+			for(TimeWindow timeWindow : service.getTimeWindows()) {
+                deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+                deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
+                ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+                if (status.equals(ConstraintsStatus.FULFILLED)) {
+                    double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+                    double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+                    if (additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost) {
+                        bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
+                        insertionIndex = actIndex;
+                        bestTimeWindow = timeWindow;
+                    }
+                    not_fulfilled_break = false;
+                } else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
+                    not_fulfilled_break = false;
                 }
-            } else if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
-                break;
-            }
+			}
+            if(not_fulfilled_break) break;
             double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
             prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
             prevAct = nextAct;
             actIndex++;
         }
-        if (insertionIndex == InsertionData.NO_INDEX) {
+        if(insertionIndex == InsertionData.NO_INDEX) {
             return InsertionData.createEmptyInsertionData();
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
+        deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
+        deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliveryAct2Insert, insertionIndex));
-        insertionData.getEvents().add(new SwitchVehicle(currentRoute, newVehicle, newVehicleDepartureTime));
+        insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
         return insertionData;
     }
-
 }

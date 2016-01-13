@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (C) 2014  Stefan Schroeder
  *
@@ -29,7 +30,7 @@ public class CalculationUtils {
      * @param act
      * @return
      */
-    public static double getActivityEndTime(double actArrTime, TourActivity act) {
-        return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
+    public static double getActivityEndTime(double actArrTime, TourActivity act){
+		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
     }
 }

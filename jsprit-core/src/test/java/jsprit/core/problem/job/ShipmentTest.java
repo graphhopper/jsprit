@@ -22,7 +22,9 @@ import jsprit.core.util.Coordinate;
 import jsprit.core.util.TestUtils;
 import org.junit.Test;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 
 public class ShipmentTest {
 
@@ -222,6 +224,80 @@ public class ShipmentTest {
         assertEquals(1.0, s.getDeliveryTimeWindow().getStart(), 0.01);
         assertEquals(2.0, s.getDeliveryTimeWindow().getEnd(), 0.01);
     }
+
+    @Test
+    public void whenUsingAddDeliveryTimeWindow_itShouldBeDoneCorrectly() {
+        Shipment s = Shipment.Builder.newInstance("s").addDeliveryTimeWindow(TimeWindow.newInstance(1, 2))
+            .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        assertEquals(1.0, s.getDeliveryTimeWindow().getStart(), 0.01);
+        assertEquals(2.0, s.getDeliveryTimeWindow().getEnd(), 0.01);
+    }
+
+    @Test
+    public void whenUsingAddDeliveryTimeWindow2_itShouldBeDoneCorrectly() {
+        Shipment s = Shipment.Builder.newInstance("s").addDeliveryTimeWindow(1, 2)
+            .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        assertEquals(1.0, s.getDeliveryTimeWindow().getStart(), 0.01);
+        assertEquals(2.0, s.getDeliveryTimeWindow().getEnd(), 0.01);
+    }
+
+    @Test
+    public void whenAddingMultipleDeliveryTimeWindows_itShouldBeDoneCorrectly() {
+        TimeWindow tw1 = TimeWindow.newInstance(1,2);
+        TimeWindow tw2 = TimeWindow.newInstance(4,5);
+        Shipment s = Shipment.Builder.newInstance("s").addDeliveryTimeWindow(tw1).addDeliveryTimeWindow(tw2)
+            .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        assertEquals(s.getDeliveryTimeWindows().size(),2);
+        assertThat(s.getDeliveryTimeWindows(),hasItem(is(tw1)));
+        assertThat(s.getDeliveryTimeWindows(),hasItem(is(tw2)));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenAddingMultipleOverlappingDeliveryTimeWindows_itShouldThrowException() {
+        Shipment s = Shipment.Builder.newInstance("s").addDeliveryTimeWindow(1, 3).addDeliveryTimeWindow(2,5)
+            .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        assertEquals(1.0, s.getDeliveryTimeWindow().getStart(), 0.01);
+        assertEquals(2.0, s.getDeliveryTimeWindow().getEnd(), 0.01);
+    }
+
+
+
+    @Test
+    public void whenUsingAddPickupTimeWindow_itShouldBeDoneCorrectly() {
+        Shipment s = Shipment.Builder.newInstance("s").addPickupTimeWindow(TimeWindow.newInstance(1, 2))
+            .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        assertEquals(1.0, s.getPickupTimeWindow().getStart(), 0.01);
+        assertEquals(2.0, s.getPickupTimeWindow().getEnd(), 0.01);
+    }
+
+    @Test
+    public void whenUsingAddPickupTimeWindow2_itShouldBeDoneCorrectly() {
+        Shipment s = Shipment.Builder.newInstance("s").addPickupTimeWindow(1, 2)
+            .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        assertEquals(1.0, s.getPickupTimeWindow().getStart(), 0.01);
+        assertEquals(2.0, s.getPickupTimeWindow().getEnd(), 0.01);
+    }
+
+    @Test
+    public void whenAddingMultiplePickupTimeWindows_itShouldBeDoneCorrectly() {
+        TimeWindow tw1 = TimeWindow.newInstance(1,2);
+        TimeWindow tw2 = TimeWindow.newInstance(4,5);
+        Shipment s = Shipment.Builder.newInstance("s").addPickupTimeWindow(tw1).addPickupTimeWindow(tw2)
+            .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        assertEquals(s.getPickupTimeWindows().size(),2);
+        assertThat(s.getPickupTimeWindows(), hasItem(is(tw1)));
+        assertThat(s.getPickupTimeWindows(), hasItem(is(tw2)));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenAddingMultipleOverlappingPickupTimeWindows_itShouldThrowException() {
+        Shipment s = Shipment.Builder.newInstance("s").addPickupTimeWindow(1, 3).addPickupTimeWindow(2,5)
+            .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        assertEquals(1.0, s.getPickupTimeWindow().getStart(), 0.01);
+        assertEquals(2.0, s.getPickupTimeWindow().getEnd(), 0.01);
+    }
+
+
 
     @Test(expected = IllegalArgumentException.class)
     public void whenShipmentHasNegativeCapacityVal_throwIllegalStateExpception() {
