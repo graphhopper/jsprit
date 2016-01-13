@@ -22,9 +22,6 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.job.Service;
 import jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ServiceActivity extends AbstractActivity implements JobActivity {
 
     @Deprecated

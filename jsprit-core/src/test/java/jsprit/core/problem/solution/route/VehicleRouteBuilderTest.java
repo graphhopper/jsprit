@@ -21,7 +21,6 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.driver.Driver;
 import jsprit.core.problem.job.Shipment;
 import jsprit.core.problem.solution.route.activity.TimeWindow;
-import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.vehicle.Vehicle;
 import jsprit.core.problem.vehicle.VehicleImpl;
 import org.junit.Test;

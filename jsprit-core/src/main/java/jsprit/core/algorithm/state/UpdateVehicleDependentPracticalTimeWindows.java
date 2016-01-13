@@ -21,7 +21,6 @@ import jsprit.core.problem.Location;
 import jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import jsprit.core.problem.solution.route.RouteVisitor;
 import jsprit.core.problem.solution.route.VehicleRoute;
-import jsprit.core.problem.solution.route.activity.TimeWindow;
 import jsprit.core.problem.solution.route.activity.TourActivity;
 import jsprit.core.problem.vehicle.Vehicle;
 
