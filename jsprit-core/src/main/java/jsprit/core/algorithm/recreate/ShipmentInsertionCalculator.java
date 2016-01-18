@@ -141,6 +141,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
             for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
                 pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
+                ActivityContext activityContext = new ActivityContext();
+                activityContext.setInsertionIndex(i);
+                insertionContext.setActivityContext(activityContext);
                 ConstraintsStatus pickupShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
                 if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
@@ -184,7 +187,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                     for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
                         deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
                         deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
-
+                        ActivityContext activityContext_ = new ActivityContext();
+                        activityContext.setInsertionIndex(j);
+                        insertionContext.setActivityContext(activityContext_);
                         ConstraintsStatus deliverShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                         if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
                             double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);

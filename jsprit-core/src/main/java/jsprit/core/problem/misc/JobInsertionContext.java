@@ -42,7 +42,9 @@ public class JobInsertionContext {
 
     private List<TourActivity> associatedActivities = new ArrayList<TourActivity>();
 
-    private ActivityContext pickupContext;
+    private ActivityContext activityContext;
+
+    private ActivityContext relatedActivityContext;
 
     /**
      * Returns the existing route where the .getJob() needs to be inserted in.
@@ -116,10 +118,10 @@ public class JobInsertionContext {
     /**
      * Sets pickup context.
      *
-     * @param pickupContext pickup context
+     * @param relatedActivityContext pickup context
      */
-    public void setRelatedActivityContext(ActivityContext pickupContext) {
-        this.pickupContext = pickupContext;
+    public void setRelatedActivityContext(ActivityContext relatedActivityContext) {
+        this.relatedActivityContext = relatedActivityContext;
     }
 
     /**
@@ -128,6 +130,14 @@ public class JobInsertionContext {
      * @return pickup context
      */
     public ActivityContext getRelatedActivityContext() {
-        return this.pickupContext;
+        return this.relatedActivityContext;
+    }
+
+    public void setActivityContext(ActivityContext activityContext){
+        this.activityContext = activityContext;
+    }
+
+    public ActivityContext getActivityContext(){
+        return this.activityContext;
     }
 }
