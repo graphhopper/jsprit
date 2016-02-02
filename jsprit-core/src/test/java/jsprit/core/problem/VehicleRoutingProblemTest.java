@@ -445,6 +445,29 @@ public class VehicleRoutingProblemTest {
 
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void whenAddingTwoServicesWithTheSameId_itShouldThrowException() {
+        Service service1 = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
+        Service service2 = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        vrpBuilder.addJob(service1);
+        vrpBuilder.addJob(service2);
+        @SuppressWarnings("UnusedDeclaration") VehicleRoutingProblem vrp = vrpBuilder.build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenAddingTwoShipmentsWithTheSameId_itShouldThrowException() {
+        Shipment shipment1 = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
+            .setDeliveryLocation(Location.newInstance("del")).build();
+        Shipment shipment2 = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
+            .setDeliveryLocation(Location.newInstance("del")).build();
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        vrpBuilder.addJob(shipment1);
+        vrpBuilder.addJob(shipment2);
+        @SuppressWarnings("UnusedDeclaration") VehicleRoutingProblem vrp = vrpBuilder.build();
+
+    }
+
     @Test
     public void whenAddingTwoVehicles_theyShouldHaveProperIndices() {
         VehicleImpl veh1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("start", Coordinate.newInstance(0, 1)))
