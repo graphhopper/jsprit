@@ -297,6 +297,17 @@ public class VehicleRoutingProblemTest {
         return Location.Builder.newInstance().setId(i).build();
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void whenAddingVehiclesWithSameId_itShouldThrowException(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
+        VehicleImpl vehicle1 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
+        builder.addVehicle(vehicle1);
+        builder.addVehicle(vehicle2);
+
+    }
+
     @Test
     public void whenAddingAVehicle_getAddedVehicleTypesShouldReturnItsType() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
