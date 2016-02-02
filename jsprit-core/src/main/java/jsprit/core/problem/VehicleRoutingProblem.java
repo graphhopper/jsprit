@@ -91,6 +91,8 @@ public class VehicleRoutingProblem {
 
         private Set<Vehicle> uniqueVehicles = new HashSet<Vehicle>();
 
+        private Set<String> addedVehicleIds = new HashSet<String>();
+
         private boolean hasBreaks = false;
 
         private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
@@ -289,7 +291,10 @@ public class VehicleRoutingProblem {
          * @return the builder
          */
         public Builder addInitialVehicleRoute(VehicleRoute route) {
-            addVehicle((AbstractVehicle) route.getVehicle());
+            if(!addedVehicleIds.contains(route.getVehicle().getId())){
+                addVehicle((AbstractVehicle) route.getVehicle());
+                addedVehicleIds.add(route.getVehicle().getId());
+            }
             for (TourActivity act : route.getActivities()) {
                 AbstractActivity abstractAct = (AbstractActivity) act;
                 abstractAct.setIndex(activityIndexCounter);
@@ -360,6 +365,10 @@ public class VehicleRoutingProblem {
          * @return this builder
          */
         public Builder addVehicle(AbstractVehicle vehicle) {
+            if(addedVehicleIds.contains(vehicle.getId())){
+                throw new IllegalStateException("problem already contains a vehicle with id " + vehicle.getId() + ". choose unique ids for each vehicle.");
+            }
+            else addedVehicleIds.add(vehicle.getId());
             if (!uniqueVehicles.contains(vehicle)) {
                 vehicle.setIndex(vehicleIndexCounter);
                 incVehicleIndexCounter();

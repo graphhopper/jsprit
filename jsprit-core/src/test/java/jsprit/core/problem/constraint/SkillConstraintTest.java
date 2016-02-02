@@ -51,7 +51,7 @@ public class SkillConstraintTest {
     public void doBefore() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").build();
         vehicle = VehicleImpl.Builder.newInstance("v").addSkill("skill1").addSkill("skill2").addSkill("skill3").addSkill("skill4").setStartLocation(Location.newInstance("start")).setType(type).build();
-        vehicle2 = VehicleImpl.Builder.newInstance("v").addSkill("skill4").addSkill("skill5").setStartLocation(Location.newInstance("start")).setType(type).build();
+        vehicle2 = VehicleImpl.Builder.newInstance("v2").addSkill("skill4").addSkill("skill5").setStartLocation(Location.newInstance("start")).setType(type).build();
 
         Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
         Service service2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();

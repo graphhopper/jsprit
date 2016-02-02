@@ -326,7 +326,7 @@ public class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
-        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
 
         builder.addVehicle(vehicle);
         builder.addVehicle(vehicle2);
@@ -342,7 +342,7 @@ public class VehicleRoutingProblemTest {
         VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type2").build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
-        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type2).build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type2).build();
 
         builder.addVehicle(vehicle);
         builder.addVehicle(vehicle2);
