@@ -3,18 +3,18 @@ WHATS NEW
 ------------------------------
 <b>2016-02-02</b> new release **v1.6.2**
 
-Consideration of Waiting Times:
+<b>Consideration of Waiting Times</b>:
 This takes waiting times at customer sites into account. If costs for waiting is specified then
 instead of just waiting at customer sites for time windows to open, the algorithm seeks to serve other customers to reduce total completion time.
 To see how this can be specified, look at [this example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/MultipleTimeWindowExample2.java#L50)
 
-Multiple Time Windows:
+<b>Multiple Time Windows</b>:
 To see how this can be specified, look at [this example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/MultipleTimeWindowExample.java#L61)
 
-Driver Breaks:
+<b>Driver Breaks</b>:
 To see how this can be specified, look at [this example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/BreakExample.java)
 
-Fast Regret:
+<b>Fast Regret</b>:
 Fast regret boosts your computation, i.e. it reduces computation time significantly. However, it can only be use currently if no complicated dependencies between jobs and activities are defined.
 To see how this can be specified, look at [this example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/MultipleDepotExample2.java#L108)
 
