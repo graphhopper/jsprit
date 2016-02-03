@@ -18,6 +18,7 @@ To see how this can be specified, look at [this example](https://github.com/jspr
 Fast regret boosts your computation, i.e. it reduces computation time significantly. However, it can only be use currently if no complicated dependencies between jobs and activities are defined.
 To see how this can be specified, look at [this example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/MultipleDepotExample2.java#L108)
 
+wow
 
 <b>2015-08-10</b> new release **v1.6.1**
 
