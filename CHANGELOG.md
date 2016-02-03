@@ -3,7 +3,7 @@ Change-log
 
 **v1.6.2** @ 2016-02-2
 
-- [detailed changelog ](https://rawgit.com/jsprit/misc-rep/master/changelog_1.6.1_to_1.6.2.html)
+- [detailed changelog ](https://rawgit.com/jsprit/misc-rep/master/changelog_1.6.1_1.6.2.html)
 
 **v1.6.1** @ 2015-08-10
 - feature [#165](https://github.com/jsprit/jsprit/issues/156)
