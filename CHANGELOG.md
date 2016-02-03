@@ -1,6 +1,10 @@
 Change-log
 ==========
 
+**v1.6.2** @ 2016-02-2
+
+- [detailed changelog ](https://rawgit.com/jsprit/misc-rep/master/changelog_1.6.1_to_1.6.2.html)
+
 **v1.6.1** @ 2015-08-10
 - feature [#165](https://github.com/jsprit/jsprit/issues/156)
 - feature [#169](https://github.com/jsprit/jsprit/issues/159)
@@ -14,16 +18,16 @@ Change-log
 
 
 **v1.6** @ 2015-03-12
-<b>! Break change !</b> 
+<b>! Break change !</b>
 
 new features: see [Whats new](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
 
 - [detailed changelog ](https://github.com/jsprit/misc-rep/blob/master/changelog_1.5_to_1.6.txt)
 
 **v1.5** @ 2014-12-12
-<b>! Break change !</b> 
+<b>! Break change !</b>
 
-It only breaks your code if you already build your algorithm from scratch since strategies now need to have unique ids. just add a unique id to the SearchStrategy constructor. 
+It only breaks your code if you already build your algorithm from scratch since strategies now need to have unique ids. just add a unique id to the SearchStrategy constructor.
 
 new features: see [Whats new](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
 
@@ -44,7 +48,7 @@ new feature: core.analysis.SolutionAnalyser
 - [detailed changelog](https://github.com/jsprit/misc-rep/blob/master/changelog_1.3.1_to_1.4.txt)
 - migrated from log4j1x to log4j2 (if you do not use Maven, see how the dependencies changed: [https://github.com/jsprit/jsprit/wiki/jsprit-core](https://github.com/jsprit/jsprit/wiki/jsprit-core)
 - new feature: skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java)
-- new feature: unassigned job list 
+- new feature: unassigned job list
 - countless improvements of javadocs
 
 <em>jsprit-core</em>
@@ -57,7 +61,7 @@ new feature: core.analysis.SolutionAnalyser
 - constructor new StateManager(VehicleRoutingTransportCosts costs) does not exist anymore, but is new StateManager(VehicleRoutingProblem vrp)
 - StateManager.addDefault... methods do not exists anymore. Client must now decide what to do when state does not exist.
 - deprecated core.problem.VehicleRoutingProblem.Builder.addVehicle(Vehicle v) and added core.problem.VehicleRoutingProblem.Builder.addVehicle(AbstractVehicle v)
-- deprecated core.problem.VehicleRoutingProblem.Builder.addJob(Job j) and added core.problem.VehicleRoutingProblem.Builder.addJob(AbstractJob j) 
+- deprecated core.problem.VehicleRoutingProblem.Builder.addJob(Job j) and added core.problem.VehicleRoutingProblem.Builder.addJob(AbstractJob j)
 - <b>this [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/MultipleProductsWithLoadConstraintExample.java) might make migrating from v1.3.1 to v1.4 easier (since both versions are implemented - v1.3.1 was commented out) </b>
 
 - bugfix [#107](https://github.com/jsprit/jsprit/issues/107)
