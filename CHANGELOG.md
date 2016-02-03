@@ -118,20 +118,20 @@ and considered by the meta-heuristic [#57](https://github.com/jsprit/jsprit/issu
 - added feature: multiple capacity dimensions ([#55](https://github.com/jsprit/jsprit/issues/55))
 - added feature: different start and end locations of routes ([#74](https://github.com/jsprit/jsprit/issues/74))
 - added a number of unit-tests
-- reworked jsprit.core.algorithm.state.StateManager to deal with any state-object
-- jsprit.core.problem.io.VrpXMLReader$ServiceBuilderFactory: Parameter 3 of 'public jsprit.core.problem.job.Service$Builder createBuilder(java.lang.String, java.lang.String, int)' has changed its type to java.lang.Integer
-- jsprit.core.problem.job.Job: Method 'public jsprit.core.problem.Capacity getSize()' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.job.Service$Builder: Removed field demand
-- jsprit.core.problem.solution.route.activity.ServiceActivity: Removed field capacityDemand
-- jsprit.core.problem.solution.route.activity.TourActivity: Method 'public jsprit.core.problem.Capacity getSize()'  has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter: Method 'public java.lang.Object getActivityState(jsprit.core.problem.solution.route.activity.TourActivity, jsprit.core.algorithm.state.StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter: Method 'public java.lang.Object getRouteState(jsprit.core.problem.solution.route.VehicleRoute, jsprit.core.algorithm.state.StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.vehicle.Vehicle: Method 'public jsprit.core.util.Coordinate getEndLocationCoordinate()' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.vehicle.Vehicle: Method 'public java.lang.String getEndLocationId()' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.vehicle.Vehicle: Method 'public jsprit.core.util.Coordinate getStartLocationCoordinate()' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.vehicle.Vehicle: Method 'public java.lang.String getStartLocationId()' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.vehicle.VehicleFleetManager: Method 'public java.util.Collection getAvailableVehicles(jsprit.core.problem.vehicle.Vehicle)' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.problem.vehicle.VehicleType: Method 'public jsprit.core.problem.Capacity getCapacityDimensions()' has been added to an interface <b>[potential Break Change]</b>
+- reworked StateManager to deal with any state-object
+- VrpXMLReader$ServiceBuilderFactory: Parameter 3 of 'public Service$Builder createBuilder(java.lang.String, java.lang.String, int)' has changed its type to java.lang.Integer
+- Job: Method 'public Capacity getSize()' has been added to an interface <b>[potential Break Change]</b>
+- Service$Builder: Removed field demand
+- ServiceActivity: Removed field capacityDemand
+- TourActivity: Method 'public Capacity getSize()'  has been added to an interface <b>[potential Break Change]</b>
+- RouteAndActivityStateGetter: Method 'public java.lang.Object getActivityState(TourActivity, StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
+- RouteAndActivityStateGetter: Method 'public java.lang.Object getRouteState(VehicleRoute, StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
+- Vehicle: Method 'public Coordinate getEndLocationCoordinate()' has been added to an interface <b>[potential Break Change]</b>
+- Vehicle: Method 'public java.lang.String getEndLocationId()' has been added to an interface <b>[potential Break Change]</b>
+- Vehicle: Method 'public Coordinate getStartLocationCoordinate()' has been added to an interface <b>[potential Break Change]</b>
+- Vehicle: Method 'public java.lang.String getStartLocationId()' has been added to an interface <b>[potential Break Change]</b>
+- VehicleFleetManager: Method 'public java.util.Collection getAvailableVehicles(Vehicle)' has been added to an interface <b>[potential Break Change]</b>
+- VehicleType: Method 'public Capacity getCapacityDimensions()' has been added to an interface <b>[potential Break Change]</b>
 - jsprit.core.util.VrpVerifier: Class jsprit.core.util.VrpVerifier removed <b>[potential Break Change]</b>
 
 
