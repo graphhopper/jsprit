@@ -104,7 +104,9 @@ public class MultipleDepotExample2 {
 		/*
          * solve the problem
 		 */
-        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS, "5").buildAlgorithm();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+            .setProperty(Jsprit.Parameter.THREADS, "5").buildAlgorithm();
         vra.setMaxIterations(2000);
         vra.getAlgorithmListeners().addListener(new StopWatch(), Priority.HIGH);
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/progress.png"));
