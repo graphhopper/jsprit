@@ -36,10 +36,13 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 
     private VehicleRoutingTransportCosts routingCosts;
 
-    public VehicleDependentTimeWindowConstraints(RouteAndActivityStateGetter states, VehicleRoutingTransportCosts routingCosts) {
+    private VehicleRoutingActivityCosts activityCosts;
+
+    public VehicleDependentTimeWindowConstraints(RouteAndActivityStateGetter states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.states = states;
         this.routingCosts = routingCosts;
+        this.activityCosts = activityCosts;
     }
 
     @Override
@@ -82,9 +85,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 			 *                    |--- prevAct ---|
 			 *  |--- newAct ---|
 			 */
-        double newAct_theoreticalLatestOperationStartTime = newAct.getTheoreticalLatestOperationStartTime();
-
-        if (newAct_theoreticalLatestOperationStartTime < prevAct.getTheoreticalEarliestOperationStartTime()) {
+        if (newAct.getTheoreticalLatestOperationStartTime() < prevAct.getTheoreticalEarliestOperationStartTime()) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
 
@@ -102,17 +103,17 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
              *                     |--- newAct ---|
 			 *  |--- nextAct ---|
 			 */
-        if(newAct_theoreticalEarliestOperationStartTime > nextAct.getTheoreticalLatestOperationStartTime()){
+        if (newAct.getTheoreticalEarliestOperationStartTime() > nextAct.getTheoreticalLatestOperationStartTime()) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
         //			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
         double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double endTimeAtNewAct = CalculationUtils.getActivityEndTime(arrTimeAtNewAct, newAct);
+        double endTimeAtNewAct = Math.max(arrTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, arrTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
         double latestArrTimeAtNewAct =
-            Math.min(newAct_theoreticalLatestOperationStartTime,
+            Math.min(newAct.getTheoreticalLatestOperationStartTime(),
                 latestArrTimeAtNextAct -
-                    routingCosts.getBackwardTransportTime(newAct.getLocation(),nextActLocation,latestArrTimeAtNextAct,iFacts.getNewDriver(),iFacts.getNewVehicle())
-                    - newAct.getOperationTime()
+                    routingCosts.getBackwardTransportTime(newAct.getLocation(), nextActLocation, latestArrTimeAtNextAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
+                    - activityCosts.getActivityDuration(newAct, arrTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
             );
 
 			/*

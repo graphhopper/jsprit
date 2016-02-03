@@ -58,6 +58,11 @@ public class TestDepartureTimeOpt {
                 return waiting + late;
             }
 
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
+            }
+
         });
         VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addVehicle(vehicle).build();
 
@@ -84,6 +89,11 @@ public class TestDepartureTimeOpt {
                 double waiting = Math.max(0, tourAct.getTheoreticalEarliestOperationStartTime() - arrivalTime) * 1;
                 double late = Math.max(0, arrivalTime - tourAct.getTheoreticalLatestOperationStartTime()) * 100;
                 return waiting + late;
+            }
+
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
             }
 
         });
@@ -113,6 +123,11 @@ public class TestDepartureTimeOpt {
                 return waiting + late;
             }
 
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
+            }
+
         });
         VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addVehicle(vehicle).build();
 
@@ -139,6 +154,11 @@ public class TestDepartureTimeOpt {
                 double waiting = Math.max(0, tourAct.getTheoreticalEarliestOperationStartTime() - arrivalTime) * 1;
                 double late = Math.max(0, arrivalTime - tourAct.getTheoreticalLatestOperationStartTime()) * 100;
                 return waiting + late;
+            }
+
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
             }
 
         });
@@ -173,6 +193,11 @@ public class TestDepartureTimeOpt {
                 return waiting + late;
             }
 
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
+            }
+
         });
         VehicleRoutingProblem vrp = vrpBuilder.addJob(service).addJob(service2).addVehicle(vehicle).build();
 
@@ -203,6 +228,11 @@ public class TestDepartureTimeOpt {
                 double waiting = Math.max(0, tourAct.getTheoreticalEarliestOperationStartTime() - arrivalTime) * 1;
                 double late = Math.max(0, arrivalTime - tourAct.getTheoreticalLatestOperationStartTime()) * 100;
                 return waiting + late;
+            }
+
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
             }
 
         });

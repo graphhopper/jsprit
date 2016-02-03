@@ -58,5 +58,6 @@ public interface VehicleRoutingActivityCosts {
      */
     public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle);
 
+    public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle);
 
 }

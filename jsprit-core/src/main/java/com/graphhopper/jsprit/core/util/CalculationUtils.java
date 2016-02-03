@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
+@Deprecated
 public class CalculationUtils {
 
 

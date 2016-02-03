@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -31,14 +32,13 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import com.graphhopper.jsprit.core.util.CalculationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
 
 /**
- * Calculator that calculates the best insertion position for a {@link com.graphhopper.jsprit.core.problem.job.Service}.
+ * Calculator that calculates the best insertion position for a {@link Service}.
  *
  * @author schroeder
  */
@@ -56,15 +56,18 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
 
     private VehicleRoutingTransportCosts transportCosts;
 
+    private final VehicleRoutingActivityCosts activityCosts;
+
     private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
 
     private JobActivityFactory activityFactory;
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
+    public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.transportCosts = routingCosts;
+        this.activityCosts = activityCosts;
         hardRouteLevelConstraint = constraintManager;
         hardActivityLevelConstraint = constraintManager;
         softActivityConstraint = constraintManager;
@@ -154,7 +157,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
 			}
             if(not_fulfilled_break) break;
             double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
-            prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
+            prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
             prevAct = nextAct;
             actIndex++;
         }

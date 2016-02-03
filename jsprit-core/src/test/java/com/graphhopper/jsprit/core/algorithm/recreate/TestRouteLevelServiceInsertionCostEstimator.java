@@ -83,6 +83,11 @@ public class TestRouteLevelServiceInsertionCostEstimator {
                 return Math.max(0., arrivalTime - tourAct.getTheoreticalLatestOperationStartTime());
             }
 
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
+            }
+
         };
         vrpBuilder.setActivityCosts(activityCosts);
 

@@ -31,6 +31,8 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
 
     private VehicleRoutingTransportCosts routingCosts;
 
+    private VehicleRoutingActivityCosts activityCosts;
+
     /**
      * Constructs the calculator that calculates additional transportation costs induced by inserting new activity.
      * <p/>
@@ -38,10 +40,12 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
      * <p>If newVehicle.isReturnToDepot == false then the additional costs of inserting act_new between act_i and end is c(act_i,act_new) [since act_new is then the new end-of-route]
      *
      * @param routingCosts
+     * @param activityCosts
      */
-    public AdditionalTransportationCosts(VehicleRoutingTransportCosts routingCosts) {
+    public AdditionalTransportationCosts(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.routingCosts = routingCosts;
+        this.activityCosts = activityCosts;
     }
 
     /**
@@ -56,7 +60,7 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
         double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
-        double newAct_endTime = CalculationUtils.getActivityEndTime(newAct_arrTime, newAct);
+        double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,newAct_arrTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
 
         //open routes
         if (nextAct instanceof End) {

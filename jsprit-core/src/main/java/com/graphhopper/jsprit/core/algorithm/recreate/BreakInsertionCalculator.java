@@ -40,7 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Calculator that calculates the best insertion position for a {@link com.graphhopper.jsprit.core.problem.job.Service}.
+ * Calculator that calculates the best insertion position for a {@link jsprit.core.problem.job.Service}.
  *
  * @author schroeder
  */
@@ -58,15 +58,18 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
 
     private VehicleRoutingTransportCosts transportCosts;
 
+    private final VehicleRoutingActivityCosts activityCosts;
+
     private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
 
     private JobActivityFactory activityFactory;
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public BreakInsertionCalculator(VehicleRoutingTransportCosts routingCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
+    public BreakInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.transportCosts = routingCosts;
+        this.activityCosts = activityCosts;
         hardRouteLevelConstraint = constraintManager;
         hardActivityLevelConstraint = constraintManager;
         softActivityConstraint = constraintManager;
@@ -161,7 +164,7 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
                 }
             }
             double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
-            prevActStartTime = CalculationUtils.getActivityEndTime(nextActArrTime, nextAct);
+            prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
             prevAct = nextAct;
             actIndex++;
             if (breakThis) break;

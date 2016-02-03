@@ -264,6 +264,11 @@ public class VehicleRoutingProblemTest {
                 return 4.0;
             }
 
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
+            }
+
         });
 
         VehicleRoutingProblem problem = builder.build();

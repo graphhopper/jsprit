@@ -4,7 +4,9 @@ import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -40,6 +42,8 @@ public class UpdateVehicleDependentTimeWindowTest {
 
     private VehicleRoutingTransportCosts routingCosts;
 
+    private VehicleRoutingActivityCosts activityCosts;
+
     private VehicleFleetManager fleetManager;
 
     private VehicleRoutingProblem vrp;
@@ -49,6 +53,7 @@ public class UpdateVehicleDependentTimeWindowTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
         routingCosts = CostFactory.createEuclideanCosts();
+        activityCosts = new WaitingTimeCosts();
         vrpBuilder.setRoutingCost(routingCosts);
 
         vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
@@ -85,7 +90,7 @@ public class UpdateVehicleDependentTimeWindowTest {
 
 
         stateManager = new StateManager(vrp);
-        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts);
+        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts, activityCosts);
         updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
 
             @Override
@@ -104,7 +109,7 @@ public class UpdateVehicleDependentTimeWindowTest {
     @Test
     public void whenSwitchIsNotAllowed_itShouldCalOnlyStatesOfCurrentVehicle() {
         stateManager = new StateManager(vrp);
-        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts);
+        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts, activityCosts);
 
         stateManager.addStateUpdater(updater);
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());

@@ -73,6 +73,11 @@ public class TestRouteLevelActivityInsertionCostEstimator {
                 return Math.max(0., arrivalTime - tourAct.getTheoreticalLatestOperationStartTime());
             }
 
+            @Override
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return tourAct.getOperationTime();
+            }
+
         };
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(10., 10.)).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("20,0")).setTimeWindow(TimeWindow.newInstance(20., 20.)).build();
