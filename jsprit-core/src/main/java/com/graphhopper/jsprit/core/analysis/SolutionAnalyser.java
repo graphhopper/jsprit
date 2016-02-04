@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
+import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -283,7 +284,7 @@ public class SolutionAnalyser {
             sum_transport_time += transportTime;
             prevActDeparture = activity.getEndTime();
             //service time
-            sum_service_time += activityCosts.getActivityDuration(activity,activity.getArrTime(),route.getDriver(),route.getVehicle());
+            sum_service_time += activityCosts.getActivityDuration(activity, activity.getArrTime(), route.getDriver(), route.getVehicle());
 
             stateManager.putActivityState(activity, transport_time_id, sum_transport_time);
 

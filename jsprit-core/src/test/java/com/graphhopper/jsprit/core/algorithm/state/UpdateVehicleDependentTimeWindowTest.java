@@ -201,7 +201,7 @@ public class UpdateVehicleDependentTimeWindowTest {
                 .addService(service).addService(service2, TimeWindow.newInstance(70, 80)).build();
 
         StateManager stateManager = new StateManager(vrp);
-        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,routingCosts);
+        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager,routingCosts,activityCosts);
         updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
 
             @Override
