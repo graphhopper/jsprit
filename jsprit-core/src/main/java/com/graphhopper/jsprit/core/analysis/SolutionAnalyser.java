@@ -20,7 +20,6 @@ package com.graphhopper.jsprit.core.analysis;
 import com.graphhopper.jsprit.core.algorithm.VariablePlusFixedSolutionCostCalculatorFactory;
 import com.graphhopper.jsprit.core.algorithm.state.*;
 import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -54,15 +53,6 @@ public class SolutionAnalyser {
 
     private final static String LOAD_DELIVERED = "load-delivered";
 
-    /**
-     * @deprecated use TransportDistance instead
-     */
-    @Deprecated
-    public static interface DistanceCalculator {
-
-        public double getDistance(Location from, Location to);
-
-    }
 
     private static class LoadAndActivityCounter implements StateUpdater, ActivityVisitor {
 
@@ -304,7 +294,7 @@ public class SolutionAnalyser {
     private static class LastTransportUpdater implements StateUpdater, ActivityVisitor {
         private final StateManager stateManager;
         private final VehicleRoutingTransportCosts transportCost;
-        private final DistanceCalculator distanceCalculator;
+        private final TransportDistance distanceCalculator;
         private final StateId last_transport_distance_id;
         private final StateId last_transport_time_id;
         private final StateId last_transport_cost_id;
@@ -313,7 +303,7 @@ public class SolutionAnalyser {
         private VehicleRoute route;
 
 
-        private LastTransportUpdater(StateManager stateManager, VehicleRoutingTransportCosts transportCost, DistanceCalculator distanceCalculator, StateId last_distance_id, StateId last_time_id, StateId last_cost_id) {
+        private LastTransportUpdater(StateManager stateManager, VehicleRoutingTransportCosts transportCost, TransportDistance distanceCalculator, StateId last_distance_id, StateId last_time_id, StateId last_cost_id) {
             this.stateManager = stateManager;
             this.transportCost = transportCost;
             this.distanceCalculator = distanceCalculator;
@@ -368,13 +358,13 @@ public class SolutionAnalyser {
 
         private double sum_distance = 0.;
 
-        private DistanceCalculator distanceCalculator;
+        private TransportDistance distanceCalculator;
 
         private TourActivity prevAct;
 
         private VehicleRoute route;
 
-        private DistanceUpdater(StateId distance_id, StateManager stateManager, DistanceCalculator distanceCalculator) {
+        private DistanceUpdater(StateId distance_id, StateManager stateManager, TransportDistance distanceCalculator) {
             this.distance_id = distance_id;
             this.stateManager = stateManager;
             this.distanceCalculator = distanceCalculator;
@@ -451,7 +441,7 @@ public class SolutionAnalyser {
 
     private StateManager stateManager;
 
-    private DistanceCalculator distanceCalculator;
+    private TransportDistance distanceCalculator;
 
     private StateId waiting_time_id;
 
@@ -510,10 +500,9 @@ public class SolutionAnalyser {
      * @param vrp
      * @param solution
      * @param distanceCalculator
-     * @deprecated use SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, final TransportDistance distanceCalculator) instead
+     *
      */
-    @Deprecated
-    public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, DistanceCalculator distanceCalculator) {
+    public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, TransportDistance distanceCalculator) {
         this.vrp = vrp;
         this.solution = solution;
         this.distanceCalculator = distanceCalculator;
@@ -522,21 +511,7 @@ public class SolutionAnalyser {
         refreshStates();
     }
 
-    public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, final TransportDistance distanceCalculator) {
-        this.vrp = vrp;
-        this.solution = solution;
-        this.distanceCalculator = new DistanceCalculator() {
-            @Override
-            public double getDistance(Location from, Location to) {
-                return distanceCalculator.getDistance(from, to);
-            }
-        };
-        initialise();
-        this.solutionCostCalculator = new VariablePlusFixedSolutionCostCalculatorFactory(stateManager).createCalculator();
-        refreshStates();
-    }
-
-    public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, SolutionCostCalculator solutionCostCalculator, DistanceCalculator distanceCalculator) {
+    public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, SolutionCostCalculator solutionCostCalculator, TransportDistance distanceCalculator) {
         this.vrp = vrp;
         this.solution = solution;
         this.distanceCalculator = distanceCalculator;
@@ -684,7 +659,7 @@ public class SolutionAnalyser {
     }
 
     private void verifyThatRouteContainsAct(TourActivity activity, VehicleRoute route) {
-        if (!route.getTourActivities().hasActivity(activity)) {
+        if (!route.getActivities().contains(activity)) {
             throw new IllegalArgumentException("specified route does not contain specified activity " + activity);
         }
     }

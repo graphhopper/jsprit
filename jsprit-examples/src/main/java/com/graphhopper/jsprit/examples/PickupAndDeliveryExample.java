@@ -25,6 +25,7 @@ import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
@@ -97,7 +98,7 @@ public class PickupAndDeliveryExample {
         plotter.plot("output/pd_solomon_r101_solution.png", "pd_r101");
 
         //some stats
-        SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new SolutionAnalyser.DistanceCalculator() {
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
 
             @Override
             public double getDistance(Location from, Location to) {

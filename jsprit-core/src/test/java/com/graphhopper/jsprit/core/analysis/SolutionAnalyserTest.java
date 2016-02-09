@@ -2212,7 +2212,7 @@ public class SolutionAnalyserTest {
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity deliverShipment = route.getActivities().get(2);
         route.getTourActivities().removeActivity(deliverShipment);
-        assertFalse(route.getTourActivities().hasActivity(deliverShipment));
+        assertFalse(route.getActivities().contains(deliverShipment));
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
@@ -2233,7 +2233,7 @@ public class SolutionAnalyserTest {
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity pickupShipment = route.getActivities().get(1);
         route.getTourActivities().removeActivity(pickupShipment);
-        assertFalse(route.getTourActivities().hasActivity(pickupShipment));
+        assertFalse(route.getActivities().contains(pickupShipment));
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
@@ -2254,7 +2254,7 @@ public class SolutionAnalyserTest {
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity pickupShipment = route.getActivities().get(1);
         route.getTourActivities().removeActivity(pickupShipment);
-        assertFalse(route.getTourActivities().hasActivity(pickupShipment));
+        assertFalse(route.getActivities().contains(pickupShipment));
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
@@ -2275,7 +2275,7 @@ public class SolutionAnalyserTest {
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity pickupShipment = route.getActivities().get(1);
         route.getTourActivities().removeActivity(pickupShipment);
-        assertFalse(route.getTourActivities().hasActivity(pickupShipment));
+        assertFalse(route.getActivities().contains(pickupShipment));
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {

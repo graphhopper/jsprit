@@ -37,6 +37,7 @@ import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -203,7 +204,7 @@ public class BuildAlgorithmFromScratch {
 
             @Override
             public double getCosts(VehicleRoutingProblemSolution solution) {
-                SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new SolutionAnalyser.DistanceCalculator() {
+                SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
                     @Override
                     public double getDistance(Location from, Location to) {
                         return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);

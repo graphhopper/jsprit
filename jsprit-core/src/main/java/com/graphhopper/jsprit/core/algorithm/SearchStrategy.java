@@ -55,11 +55,6 @@ public class SearchStrategy {
             return accepted;
         }
 
-        @Deprecated
-        public String getStrategyName() {
-            return strategyId;
-        }
-
         public String getStrategyId() {
             return strategyId;
         }

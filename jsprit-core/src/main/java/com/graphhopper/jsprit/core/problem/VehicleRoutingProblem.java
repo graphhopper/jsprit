@@ -203,9 +203,8 @@ public class VehicleRoutingProblem {
          * @param job job to be added
          * @return this builder
          * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
-         * @deprecated use addJob(AbstractJob job) instead
+         *
          */
-        @Deprecated
         public Builder addJob(Job job) {
             if (!(job instanceof AbstractJob)) throw new IllegalArgumentException("job must be of type AbstractJob");
             return addJob((AbstractJob) job);
@@ -348,9 +347,7 @@ public class VehicleRoutingProblem {
          *
          * @param vehicle vehicle to be added
          * @return this builder
-         * @deprecated use addVehicle(AbstractVehicle vehicle) instead
-         */
-        @Deprecated
+         * */
         public Builder addVehicle(Vehicle vehicle) {
             if (!(vehicle instanceof AbstractVehicle))
                 throw new IllegalStateException("vehicle must be an AbstractVehicle");
@@ -445,13 +442,13 @@ public class VehicleRoutingProblem {
          * @param jobs which is a collection of jobs that subclasses Job
          * @return this builder
          */
-        @SuppressWarnings("deprecation")
         public Builder addAllJobs(Collection<? extends Job> jobs) {
             for (Job j : jobs) {
                 addJob(j);
             }
             return this;
         }
+
 
         /**
          * Adds a collection of vehicles.
@@ -662,15 +659,6 @@ public class VehicleRoutingProblem {
     public VehicleRoutingActivityCosts getActivityCosts() {
         return activityCosts;
     }
-
-    /**
-     * @return returns all location, i.e. from vehicles and jobs.
-     */
-    @Deprecated
-    public Locations getLocations() {
-        return locations;
-    }
-
 
     public Collection<Location> getAllLocations(){
         return allLocations;

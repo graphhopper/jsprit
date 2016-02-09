@@ -193,11 +193,6 @@ public class TestAlgorithmReader {
                 return null;
             }
 
-            @Override
-            public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes,
-                                        Job targetJob, int nOfJobs2BeRemoved) {
-                return null;
-            }
 
             @Override
             public void addListener(RuinListener ruinListener) {

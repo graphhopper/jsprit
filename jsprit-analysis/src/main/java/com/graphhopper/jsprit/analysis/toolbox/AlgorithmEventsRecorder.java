@@ -102,12 +102,6 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         initialiseGraph(vrp);
     }
 
-    @Deprecated
-    public AlgorithmEventsRecorder(VehicleRoutingProblem vrp, String dgsFileLocation, boolean renderShipments) {
-        this.renderShipments = renderShipments;
-        new AlgorithmEventsRecorder(vrp, dgsFileLocation);
-    }
-
     public void setRecordingRange(int startIteration, int endIteration) {
         this.start_recording_at = startIteration;
         this.end_recording_at = endIteration;

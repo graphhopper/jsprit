@@ -25,7 +25,6 @@ import com.graphhopper.jsprit.core.problem.job.*;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivityFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl.Builder;
@@ -70,12 +69,6 @@ public class VrpXMLReader {
         }
     }
 
-    @Deprecated
-    interface JobConfigReader {
-
-        void readConfig(XMLConfiguration vrpProblem);
-    }
-
     private static Logger logger = LogManager.getLogger(VrpXMLReader.class);
 
     private VehicleRoutingProblem.Builder vrpBuilder;
@@ -94,21 +87,7 @@ public class VrpXMLReader {
 
     private ServiceBuilderFactory serviceBuilderFactory = new DefaultServiceBuilderFactory();
 
-    private Collection<JobConfigReader> jobConfigReaders = new ArrayList<VrpXMLReader.JobConfigReader>();
 
-    @Deprecated
-    public void addJobConfigReader(JobConfigReader reader) {
-        jobConfigReaders.add(reader);
-    }
-
-    @Deprecated
-    public void setTourActivityFactory(TourActivityFactory tourActivityFactory) {
-    }
-
-    @Deprecated
-    public void setServiceBuilderFactory(ServiceBuilderFactory serviceBuilderFactory) {
-        this.serviceBuilderFactory = serviceBuilderFactory;
-    }
 
     /**
      * @param schemaValidation the schemaValidation to set
@@ -287,7 +266,6 @@ public class VrpXMLReader {
 
                 VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
                 routeBuilder.setDepartureTime(departureTime);
-                routeBuilder.setRouteEndArrivalTime(Double.parseDouble(end));
                 List<HierarchicalConfiguration> actConfigs = routeConfig.configurationsAt("act");
                 for (HierarchicalConfiguration actConfig : actConfigs) {
                     String type = actConfig.getString("[@type]");

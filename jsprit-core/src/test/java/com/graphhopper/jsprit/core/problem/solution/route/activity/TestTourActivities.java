@@ -121,12 +121,12 @@ public class TestTourActivities {
     public void removingActivityShouldWork() {
         tour.addActivity(act);
         assertTrue(tour.servesJob(service));
-        assertTrue(tour.hasActivity(act));
+        assertTrue(tour.getActivities().contains(act));
 
         tour.removeActivity(act);
 
         assertTrue(tour.isEmpty());
-        assertFalse(tour.hasActivity(act));
+        assertFalse(tour.getActivities().contains(act));
         assertFalse(tour.servesJob(service));
         assertEquals(0, tour.jobSize());
     }
@@ -136,12 +136,11 @@ public class TestTourActivities {
         tour.addActivity(act);
 
         assertTrue(tour.servesJob(service));
-        assertTrue(tour.hasActivity(act));
 
         TourActivities acts = TourActivities.copyOf(tour);
 
         assertTrue(acts.servesJob(service));
-        assertTrue(acts.hasActivity(act));
+        assertTrue(acts.getActivities().contains(act));
     }
 
     @Test
@@ -158,15 +157,15 @@ public class TestTourActivities {
         assertEquals(1, tour.jobSize());
         assertEquals(2, tour.getActivities().size());
         assertTrue(tour.getActivities().contains(pickupShipment));
-        assertTrue(tour.hasActivity(pickupShipment));
-        assertTrue(tour.hasActivity(deliverShipment));
+        assertTrue(tour.getActivities().contains(pickupShipment));
+        assertTrue(tour.getActivities().contains(deliverShipment));
 
         tour.removeActivity(pickupShipment);
 
         assertEquals(1, tour.jobSize());
         assertEquals(1, tour.getActivities().size());
-        assertTrue(tour.hasActivity(deliverShipment));
-        assertFalse(tour.hasActivity(pickupShipment));
+        assertTrue(tour.getActivities().contains(deliverShipment));
+        assertFalse(tour.getActivities().contains(pickupShipment));
         assertFalse(tour.getActivities().contains(pickupShipment));
 
     }
@@ -185,8 +184,8 @@ public class TestTourActivities {
         assertEquals(1, tour.jobSize());
         assertEquals(2, tour.getActivities().size());
         assertTrue(tour.getActivities().contains(pickupShipment));
-        assertTrue(tour.hasActivity(pickupShipment));
-        assertTrue(tour.hasActivity(deliverShipment));
+        assertTrue(tour.getActivities().contains(pickupShipment));
+        assertTrue(tour.getActivities().contains(deliverShipment));
 
         TourActivities copiedTour = TourActivities.copyOf(tour);
 
@@ -206,8 +205,8 @@ public class TestTourActivities {
         assertEquals(1, tour.jobSize());
         assertEquals(2, tour.getActivities().size());
         assertTrue(tour.getActivities().contains(pickupShipment));
-        assertTrue(tour.hasActivity(pickupShipment));
-        assertTrue(tour.hasActivity(deliverShipment));
+        assertTrue(tour.getActivities().contains(pickupShipment));
+        assertTrue(tour.getActivities().contains(deliverShipment));
 
         TourActivities copiedTour = TourActivities.copyOf(tour);
 
@@ -227,8 +226,8 @@ public class TestTourActivities {
         assertEquals(1, tour.jobSize());
         assertEquals(2, tour.getActivities().size());
         assertTrue(tour.getActivities().contains(pickupShipment));
-        assertTrue(tour.hasActivity(pickupShipment));
-        assertTrue(tour.hasActivity(deliverShipment));
+        assertTrue(tour.getActivities().contains(pickupShipment));
+        assertTrue(tour.getActivities().contains(deliverShipment));
 
         TourActivities copiedTour = TourActivities.copyOf(tour);
 

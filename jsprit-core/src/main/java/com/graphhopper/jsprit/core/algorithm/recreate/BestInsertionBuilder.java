@@ -163,17 +163,6 @@ public class BestInsertionBuilder {
         return bestInsertion;
     }
 
-    /**
-     * @param timeSlice  the time slice
-     * @param nNeighbors number of neighbors
-     * @deprecated this is experimental and can disappear.
-     */
-    @Deprecated
-    public void experimentalTimeScheduler(double timeSlice, int nNeighbors) {
-        this.timeSlice = timeSlice;
-        this.nNeighbors = nNeighbors;
-        timeScheduling = true;
-    }
 
     public void setAllowVehicleSwitch(boolean allowVehicleSwitch) {
         this.allowVehicleSwitch = allowVehicleSwitch;

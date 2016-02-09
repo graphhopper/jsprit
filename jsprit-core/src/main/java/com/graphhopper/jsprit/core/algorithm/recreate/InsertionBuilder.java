@@ -204,18 +204,6 @@ public class InsertionBuilder {
         return insertion;
     }
 
-    /**
-     * @param timeSlice  the time slice
-     * @param nNeighbors number of neighbors
-     * @deprecated this is experimental and can disappear.
-     */
-    @Deprecated
-    public void experimentalTimeScheduler(double timeSlice, int nNeighbors) {
-        this.timeSlice = timeSlice;
-        this.nNeighbors = nNeighbors;
-        timeScheduling = true;
-    }
-
     public InsertionBuilder setAllowVehicleSwitch(boolean allowVehicleSwitch) {
         this.allowVehicleSwitch = allowVehicleSwitch;
         return this;

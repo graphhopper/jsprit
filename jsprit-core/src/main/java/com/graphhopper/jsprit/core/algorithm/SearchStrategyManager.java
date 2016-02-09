@@ -51,18 +51,6 @@ public class SearchStrategyManager {
         return Collections.unmodifiableList(strategies);
     }
 
-    /**
-     * Returns the probabilities.
-     * [schroeder (2014.11.21): Now they are actually no propabilities anymore but weights. The resulting probabilities
-     * are calculated here with the sum of weights]
-     *
-     * @return list of probabilities
-     */
-    @Deprecated
-    public List<Double> getProbabilities() {
-        return Collections.unmodifiableList(weights);
-    }
-
     public List<Double> getWeights() {
         return Collections.unmodifiableList(weights);
     }

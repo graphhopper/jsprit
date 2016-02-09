@@ -147,17 +147,6 @@ public class TourActivities {
     }
 
     /**
-     * Returns true if this contains specified activity.
-     *
-     * @param activity to be looked up
-     * @return true if this contains specified activity, false otherwise
-     */
-    @Deprecated
-    public boolean hasActivity(TourActivity activity) {
-        return tourActivities.contains(activity);
-    }
-
-    /**
      * Removes activity from this activity sequence. Removes its corresponding job as well, if there are no other activities
      * related to this job.
      *

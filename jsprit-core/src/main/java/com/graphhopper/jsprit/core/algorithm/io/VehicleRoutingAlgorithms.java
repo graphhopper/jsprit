@@ -795,11 +795,6 @@ public class VehicleRoutingAlgorithms {
             typedMap.put(acceptorKey, acceptor);
             return acceptor;
         }
-        if (acceptorName.equals("greedyAcceptance_minVehFirst")) {
-            GreedyAcceptance_minVehFirst acceptor = new GreedyAcceptance_minVehFirst(solutionMemory);
-            typedMap.put(acceptorKey, acceptor);
-            return acceptor;
-        }
         if (acceptorName.equals("schrimpfAcceptance")) {
             String nuWarmupIterations = strategyConfig.getString("acceptor.warmup");
             double alpha = strategyConfig.getDouble("acceptor.alpha");

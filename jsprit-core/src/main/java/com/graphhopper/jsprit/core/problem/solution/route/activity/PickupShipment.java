@@ -39,8 +39,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
         this.shipment = shipment;
     }
 
-    @Deprecated
-    public PickupShipment(PickupShipment pickupShipmentActivity) {
+    private PickupShipment(PickupShipment pickupShipmentActivity) {
         this.shipment = (Shipment) pickupShipmentActivity.getJob();
         this.arrTime = pickupShipmentActivity.getArrTime();
         this.endTime = pickupShipmentActivity.getEndTime();
@@ -67,11 +66,6 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     @Override
     public String getName() {
         return "pickupShipment";
-    }
-
-    @Override
-    public String getLocationId() {
-        return shipment.getPickupLocation().getId();
     }
 
     @Override
@@ -120,7 +114,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     }
 
     public String toString() {
-        return "[type=" + getName() + "][locationId=" + getLocationId()
+        return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";

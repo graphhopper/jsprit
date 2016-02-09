@@ -289,11 +289,6 @@ public class GraphStreamViewer {
         return this;
     }
 
-    @Deprecated
-    public GraphStreamViewer setEnableAutoLayout(boolean enableAutoLayout) {
-        return this;
-    }
-
     public GraphStreamViewer setRenderShipments(boolean renderShipments) {
         this.renderShipments = renderShipments;
         return this;

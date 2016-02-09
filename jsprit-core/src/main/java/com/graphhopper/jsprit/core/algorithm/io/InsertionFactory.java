@@ -91,11 +91,6 @@ class InsertionFactory {
                             "if latter, you can also omit the tag. this has to be changed in algorithm-config-xml-file");
                 }
             }
-            String timeSliceString = config.getString("experimental[@timeSlice]");
-            String neighbors = config.getString("experimental[@neighboringSlices]");
-            if (timeSliceString != null && neighbors != null) {
-                iBuilder.experimentalTimeScheduler(Double.parseDouble(timeSliceString), Integer.parseInt(neighbors));
-            }
             String allowVehicleSwitch = config.getString("allowVehicleSwitch");
             if (allowVehicleSwitch != null) {
                 iBuilder.setAllowVehicleSwitch(Boolean.parseBoolean(allowVehicleSwitch));

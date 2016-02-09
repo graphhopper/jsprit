@@ -49,13 +49,6 @@ public class StartTest {
     }
 
     @Test
-    public void whenSettingLocationId_itShouldBeSetCorrectly() {
-        Start start = Start.newInstance("loc", 1., 2.);
-        start.setLocationId("newLoc");
-        assertEquals("newLoc", start.getLocation().getId());
-    }
-
-    @Test
     public void whenSettingEarliestStart_itShouldBeSetCorrectly() {
         Start start = Start.newInstance("loc", 1., 2.);
         start.setTheoreticalEarliestOperationStartTime(5.);

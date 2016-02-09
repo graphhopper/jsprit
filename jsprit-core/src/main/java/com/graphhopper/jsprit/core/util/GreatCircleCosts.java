@@ -49,25 +49,10 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
         this.detour = detour;
     }
 
-    private Locations locations;
-
     private DistanceUnit distanceUnit = DistanceUnit.Kilometer;
 
-    @Deprecated
-    public GreatCircleCosts(Locations locations) {
+   public GreatCircleCosts() {
         super();
-        this.locations = locations;
-    }
-
-    public GreatCircleCosts() {
-        super();
-    }
-
-    @Deprecated
-    public GreatCircleCosts(Locations locations, DistanceUnit distanceUnit) {
-        super();
-        this.locations = locations;
-        this.distanceUnit = distanceUnit;
     }
 
     public GreatCircleCosts(DistanceUnit distanceUnit) {
@@ -96,12 +81,9 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
     private double calculateDistance(Location fromLocation, Location toLocation) {
         Coordinate from = null;
         Coordinate to = null;
-        if (fromLocation.getCoordinate() != null & toLocation.getCoordinate() != null) {
+        if (fromLocation.getCoordinate() != null && toLocation.getCoordinate() != null) {
             from = fromLocation.getCoordinate();
             to = toLocation.getCoordinate();
-        } else if (locations != null) {
-            from = locations.getCoord(fromLocation.getId());
-            to = locations.getCoord(toLocation.getId());
         }
         if (from == null || to == null) throw new NullPointerException("either from or to location is null");
         return GreatCircleDistanceCalculator.calculateDistance(from, to, distanceUnit) * detour;
@@ -110,19 +92,6 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
     @Override
     public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
         return calculateDistance(from, to) / speed;
-    }
-
-    /**
-     * @param fromId
-     * @param toId
-     * @return
-     * @deprecated use getDistance(Location from, Location to) instead
-     */
-    @Deprecated
-    public double getDistance(String fromId, String toId) {
-        Coordinate fromCoordinate = locations.getCoord(fromId);
-        Coordinate toCoordinate = locations.getCoord(toId);
-        return GreatCircleDistanceCalculator.calculateDistance(fromCoordinate, toCoordinate, distanceUnit) * detour;
     }
 
     @Override

@@ -19,15 +19,10 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.util.Coordinate;
 
 public final class End extends AbstractActivity implements TourActivity {
 
-    @Deprecated
-    public static int creation = 0;
-
     public static End newInstance(String locationId, double earliestArrival, double latestArrival) {
-        creation++;
         return new End(locationId, earliestArrival, latestArrival);
     }
 
@@ -37,17 +32,6 @@ public final class End extends AbstractActivity implements TourActivity {
 
     private final static Capacity capacity = Capacity.Builder.newInstance().build();
 
-    private Coordinate coordinate;
-
-    @Deprecated
-    Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    @Deprecated
-    void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
 
     private double endTime = -1;
 
@@ -112,21 +96,8 @@ public final class End extends AbstractActivity implements TourActivity {
         this.endTime = endTime;
     }
 
-    @Deprecated
-    public void setLocationId(String locationId) {
-        if (locationId == null) return;
-        this.location = Location.Builder.newInstance().setId(locationId).build();
-    }
-
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    @Deprecated
-    @Override
-    public String getLocationId() {
-        if (location == null) return null;
-        return location.getId();
     }
 
     @Override

@@ -42,8 +42,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
         this.capacity = Capacity.invert(shipment.getSize());
     }
 
-    @Deprecated
-    public DeliverShipment(DeliverShipment deliveryShipmentActivity) {
+    private DeliverShipment(DeliverShipment deliveryShipmentActivity) {
         this.shipment = (Shipment) deliveryShipmentActivity.getJob();
         this.arrTime = deliveryShipmentActivity.getArrTime();
         this.endTime = deliveryShipmentActivity.getEndTime();
@@ -71,11 +70,6 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     @Override
     public String getName() {
         return "deliverShipment";
-    }
-
-    @Override
-    public String getLocationId() {
-        return shipment.getDeliveryLocation().getId();
     }
 
     @Override
@@ -124,7 +118,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     }
 
     public String toString() {
-        return "[type=" + getName() + "][locationId=" + getLocationId()
+        return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";

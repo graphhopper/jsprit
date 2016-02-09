@@ -68,7 +68,7 @@ public class VehicleRoutingAlgorithmTest {
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
             stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
-        when(stratManager.getProbabilities()).thenReturn(Arrays.asList(1.0));
+        when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
         algorithm.setMaxIterations(1000);
         CountIterations counter = new CountIterations();
         algorithm.addListener(counter);
@@ -82,7 +82,7 @@ public class VehicleRoutingAlgorithmTest {
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
             stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
-        when(stratManager.getProbabilities()).thenReturn(Arrays.asList(1.0));
+        when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
         algorithm.setMaxIterations(1000);
         CountIterations counter = new CountIterations();
         algorithm.addListener(counter);
@@ -96,7 +96,7 @@ public class VehicleRoutingAlgorithmTest {
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
             stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
-        when(stratManager.getProbabilities()).thenReturn(Arrays.asList(1.0));
+        when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
         algorithm.setMaxIterations(1000);
         PrematureAlgorithmTermination termination = new PrematureAlgorithmTermination() {
 
@@ -121,7 +121,7 @@ public class VehicleRoutingAlgorithmTest {
         SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
-        when(stratManager.getProbabilities()).thenReturn(Arrays.asList(1.0));
+        when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
         algorithm.setMaxIterations(1000);
         PrematureAlgorithmTermination termination = new PrematureAlgorithmTermination() {
 
@@ -147,7 +147,7 @@ public class VehicleRoutingAlgorithmTest {
         SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
-        when(stratManager.getProbabilities()).thenReturn(Arrays.asList(1.0));
+        when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
         algorithm.setMaxIterations(1000);
         PrematureAlgorithmTermination termination = new PrematureAlgorithmTermination() {
 

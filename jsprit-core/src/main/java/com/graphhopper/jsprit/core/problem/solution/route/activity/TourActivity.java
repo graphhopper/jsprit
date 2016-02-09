@@ -60,15 +60,6 @@ public interface TourActivity extends HasIndex {
     public abstract String getName();
 
     /**
-     * Returns the activity's locationId.
-     *
-     * @return locationId
-     * @deprecated use location
-     */
-    @Deprecated
-    public abstract String getLocationId();
-
-    /**
      * Returns location.
      *
      * @return location

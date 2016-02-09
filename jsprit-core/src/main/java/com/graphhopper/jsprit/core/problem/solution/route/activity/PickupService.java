@@ -58,11 +58,6 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     }
 
     @Override
-    public String getLocationId() {
-        return pickup.getLocation().getId();
-    }
-
-    @Override
     public Location getLocation() {
         return pickup.getLocation();
     }
@@ -123,7 +118,7 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     }
 
     public String toString() {
-        return "[type=" + getName() + "][locationId=" + getLocationId()
+        return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";

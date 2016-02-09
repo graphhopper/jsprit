@@ -31,6 +31,7 @@ public class CalculationUtils {
      * @param act
      * @return
      */
+    @Deprecated
     public static double getActivityEndTime(double actArrTime, TourActivity act){
 		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
     }

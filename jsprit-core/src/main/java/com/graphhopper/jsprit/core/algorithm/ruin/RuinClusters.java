@@ -106,14 +106,6 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
         return unassignedJobs;
     }
 
-    /**
-     * Removes nOfJobs2BeRemoved from vehicleRoutes, including targetJob.
-     */
-    @Override
-    public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
-        throw new IllegalStateException("not supported");
-    }
-
     private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
         if (vrp.getJobs().values().size() == 0) return;
         Map<Job, VehicleRoute> mappedRoutes = map(vehicleRoutes);

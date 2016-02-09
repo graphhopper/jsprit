@@ -60,12 +60,6 @@ public class CordeauReader {
         this.vrpBuilder = vrpBuilder;
     }
 
-    @Deprecated
-    public CordeauReader(VehicleRoutingProblem.Builder vrpBuilder, boolean penaltyVehicles) {
-        super();
-        this.vrpBuilder = vrpBuilder;
-    }
-
     public void read(String fileName) {
         vrpBuilder.setFleetSize(FleetSize.FINITE);
         BufferedReader reader = getReader(fileName);

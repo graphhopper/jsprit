@@ -48,12 +48,6 @@ public class EndTest {
         assertEquals(4., end.getEndTime(), 0.01);
     }
 
-    @Test
-    public void whenSettingLocationId_itShouldBeSetCorrectly() {
-        End end = End.newInstance("loc", 1., 2.);
-        end.setLocationId("newLoc");
-        assertEquals("newLoc", end.getLocation().getId());
-    }
 
     @Test
     public void whenSettingEarliestStart_itShouldBeSetCorrectly() {

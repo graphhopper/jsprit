@@ -26,7 +26,10 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.*;
 
 
@@ -78,11 +81,6 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
     private int nuOfBatches;
 
     private ExecutorCompletionService<Insertion> completionService;
-
-    @Deprecated
-    public void setRandom(Random random) {
-        super.random = random;
-    }
 
     public BestInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, ExecutorService executorService, int nuOfBatches, VehicleRoutingProblem vehicleRoutingProblem) {
         super(vehicleRoutingProblem);

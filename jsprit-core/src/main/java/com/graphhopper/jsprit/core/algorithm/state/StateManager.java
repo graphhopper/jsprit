@@ -634,8 +634,4 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         addActivityVisitor(new UpdateSkills(this));
     }
 
-    @Deprecated
-    public void addCoreUpdater() {
-
-    }
 }

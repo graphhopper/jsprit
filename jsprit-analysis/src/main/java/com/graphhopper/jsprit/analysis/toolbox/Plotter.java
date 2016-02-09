@@ -16,6 +16,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.analysis.toolbox;
 
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.*;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -23,7 +24,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.Coordinate;
-import com.graphhopper.jsprit.core.util.Locations;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jfree.chart.*;
@@ -459,28 +459,34 @@ public class Plotter {
     }
 
     private XYSeriesCollection makeSolutionSeries(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) throws NoLocationFoundException {
-        Locations locations = retrieveLocations(vrp);
+        Map<String,Coordinate> coords = makeMap(vrp.getAllLocations());
         XYSeriesCollection coll = new XYSeriesCollection();
         int counter = 1;
         for (VehicleRoute route : routes) {
             if (route.isEmpty()) continue;
             XYSeries series = new XYSeries(counter, false, true);
 
-            Coordinate startCoord = getCoordinate(locations.getCoord(route.getStart().getLocation().getId()));
+            Coordinate startCoord = getCoordinate(coords.get(route.getStart().getLocation().getId()));
             series.add(startCoord.getX() * scalingFactor, startCoord.getY() * scalingFactor);
 
             for (TourActivity act : route.getTourActivities().getActivities()) {
-                Coordinate coord = getCoordinate(locations.getCoord(act.getLocation().getId()));
+                Coordinate coord = getCoordinate(coords.get(act.getLocation().getId()));
                 series.add(coord.getX() * scalingFactor, coord.getY() * scalingFactor);
             }
 
-            Coordinate endCoord = getCoordinate(locations.getCoord(route.getEnd().getLocation().getId()));
+            Coordinate endCoord = getCoordinate(coords.get(route.getEnd().getLocation().getId()));
             series.add(endCoord.getX() * scalingFactor, endCoord.getY() * scalingFactor);
 
             coll.addSeries(series);
             counter++;
         }
         return coll;
+    }
+
+    private Map<String, Coordinate> makeMap(Collection<Location> allLocations) {
+        Map<String, Coordinate> coords = new HashMap<String, Coordinate>();
+        for(Location l : allLocations) coords.put(l.getId(),l.getCoordinate());
+        return coords;
     }
 
     private XYSeriesCollection makeShipmentSeries(Collection<Job> jobs) throws NoLocationFoundException {
@@ -619,8 +625,5 @@ public class Plotter {
         activitiesByDataItem.put(item, activity);
     }
 
-    private Locations retrieveLocations(VehicleRoutingProblem vrp) throws NoLocationFoundException {
-        return vrp.getLocations();
-    }
 
 }

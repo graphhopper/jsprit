@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.*;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -408,15 +409,17 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenAddingInitialRoute_locationOfVehicleMustBeMemorized() {
+        Location start = TestUtils.loc("start", Coordinate.newInstance(0, 1));
+        Location end = Location.newInstance("end");
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v")
-            .setStartLocation(TestUtils.loc("start", Coordinate.newInstance(0, 1)))
-            .setEndLocation(Location.newInstance("end")).build();
+            .setStartLocation(start)
+            .setEndLocation(end).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, DriverImpl.noDriver()).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addInitialVehicleRoute(route);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(0., vrp.getLocations().getCoord("start").getX(), 0.01);
-        assertEquals(1., vrp.getLocations().getCoord("start").getY(), 0.01);
+        assertThat(vrp.getAllLocations(),hasItem(start));
+        assertThat(vrp.getAllLocations(),hasItem(end));
     }
 
     @Test

@@ -136,11 +136,6 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     }
 
     @Override
-    public String getLocationId() {
-        return aBreak.getLocation().getId();
-    }
-
-    @Override
     public Location getLocation() {
         return location;
     }

@@ -70,19 +70,6 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
 
     public abstract Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes);
 
-
-    @Override
-    @Deprecated
-    public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
-        ruinListeners.ruinStarts(vehicleRoutes);
-        Collection<Job> unassigned = ruinRoutes(vehicleRoutes, targetJob, nOfJobs2BeRemoved);
-        ruinListeners.ruinEnds(vehicleRoutes, unassigned);
-        return unassigned;
-    }
-
-    @Deprecated
-    public abstract Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved);
-
     @Override
     public void addListener(RuinListener ruinListener) {
         ruinListeners.addListener(ruinListener);

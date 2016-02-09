@@ -22,15 +22,12 @@ import com.graphhopper.jsprit.core.problem.Location;
 
 public final class Start extends AbstractActivity implements TourActivity {
 
-    public final static String ACTIVITY_NAME = "start";
-
     @Deprecated
-    public static int creation;
-
+    public final static String ACTIVITY_NAME = "start";
+    
     private final static Capacity capacity = Capacity.Builder.newInstance().build();
 
     public static Start newInstance(String locationId, double theoreticalStart, double theoreticalEnd) {
-        creation++;
         return new Start(locationId, theoreticalStart, theoreticalEnd);
     }
 
@@ -50,8 +47,7 @@ public final class Start extends AbstractActivity implements TourActivity {
 
     private Location location;
 
-    @Deprecated
-    public Start(String locationId, double theoreticalStart, double theoreticalEnd) {
+    private Start(String locationId, double theoreticalStart, double theoreticalEnd) {
         super();
         if (locationId != null) this.location = Location.Builder.newInstance().setId(locationId).build();
         this.theoretical_earliestOperationStartTime = theoreticalStart;
@@ -81,12 +77,6 @@ public final class Start extends AbstractActivity implements TourActivity {
         return theoretical_earliestOperationStartTime;
     }
 
-    @Deprecated
-    public void setLocationId(String locationId) {
-        if (locationId == null) return;
-        this.location = Location.Builder.newInstance().setId(locationId).build();
-    }
-
     public void setLocation(Location location) {
         this.location = location;
     }
@@ -97,21 +87,13 @@ public final class Start extends AbstractActivity implements TourActivity {
         return theoretical_latestOperationStartTime;
     }
 
-    @Deprecated
+
     public void setTheoreticalEarliestOperationStartTime(double time) {
         this.theoretical_earliestOperationStartTime = time;
     }
 
-    @Deprecated
     public void setTheoreticalLatestOperationStartTime(double time) {
         this.theoretical_latestOperationStartTime = time;
-    }
-
-    @Deprecated
-    @Override
-    public String getLocationId() {
-        if (location == null) return null;
-        return location.getId();
     }
 
     @Override

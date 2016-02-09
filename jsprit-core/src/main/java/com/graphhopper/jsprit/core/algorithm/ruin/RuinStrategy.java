@@ -39,12 +39,6 @@ public interface RuinStrategy {
     public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes);
 
     /**
-     * Removes targetJob as well as its neighbors with a size of (nOfJobs2BeRemoved-1).
-     */
-    @Deprecated
-    public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved);
-
-    /**
      * Adds a ruin-listener.
      *
      * @param {@link RuinListener}

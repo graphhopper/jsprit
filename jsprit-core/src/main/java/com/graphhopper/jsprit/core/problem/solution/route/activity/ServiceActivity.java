@@ -23,9 +23,6 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class ServiceActivity extends AbstractActivity implements TourActivity.JobActivity {
 
-    @Deprecated
-    public static int counter = 0;
-
     public double arrTime;
 
     public double endTime;
@@ -74,12 +71,10 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     private final Service service;
 
     protected ServiceActivity(Service service) {
-        counter++;
         this.service = service;
     }
 
     protected ServiceActivity(ServiceActivity serviceActivity) {
-        counter++;
         this.service = serviceActivity.getJob();
         this.arrTime = serviceActivity.getArrTime();
         this.endTime = serviceActivity.getEndTime();
@@ -144,11 +139,6 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     }
 
     @Override
-    public String getLocationId() {
-        return service.getLocation().getId();
-    }
-
-    @Override
     public Location getLocation() {
         return service.getLocation();
     }
@@ -162,7 +152,7 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     @Override
     public String toString() {
-        return "[type=" + getName() + "][locationId=" + getLocationId()
+        return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";

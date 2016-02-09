@@ -79,14 +79,6 @@ public final class RuinWorst extends AbstractRuinStrategy {
         return unassignedJobs;
     }
 
-    /**
-     * Removes nOfJobs2BeRemoved from vehicleRoutes, including targetJob.
-     */
-    @Override
-    public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
-        throw new UnsupportedOperationException("ruinRoutes not supported");
-    }
-
     private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
         LinkedList<Job> availableJobs = new LinkedList<Job>(vrp.getJobs().values());
         int toRemove = nOfJobs2BeRemoved;

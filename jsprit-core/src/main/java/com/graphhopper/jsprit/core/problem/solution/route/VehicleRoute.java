@@ -139,32 +139,6 @@ public class VehicleRoute {
 
         };
 
-        /**
-         * Sets the serviceActivityFactory to create serviceActivities.
-         * <p/>
-         * <p>By default {@link DefaultTourActivityFactory} is used.
-         *
-         * @param serviceActivityFactory the factory to create serviceActivities
-         */
-        @Deprecated
-        public Builder setServiceActivityFactory(TourActivityFactory serviceActivityFactory) {
-            this.serviceActivityFactory = serviceActivityFactory;
-            return this;
-        }
-
-        /**
-         * Sets the shipmentActivityFactory to create shipmentActivities.
-         * <p/>
-         * <p>By default {@link DefaultShipmentActivityFactory} is used.
-         *
-         * @param shipmentActivityFactory the factory to create shipmentActivities
-         */
-        @Deprecated
-        public Builder setShipmentActivityFactory(TourShipmentActivityFactory shipmentActivityFactory) {
-            this.shipmentActivityFactory = shipmentActivityFactory;
-            return this;
-        }
-
         public Builder setJobActivityFactory(JobActivityFactory jobActivityFactory) {
             this.jobActivityFactory = jobActivityFactory;
             return this;
@@ -192,21 +166,6 @@ public class VehicleRoute {
             if (departureTime < start.getEndTime())
                 throw new IllegalArgumentException("departureTime < vehicle.getEarliestDepartureTime(). this must not be.");
             start.setEndTime(departureTime);
-            return this;
-        }
-
-        /**
-         * Sets the end-time of the route, i.e. which is the time the vehicle has to be at its end-location at latest.
-         *
-         * @param endTime endTime of route
-         * @return this builder
-         * @throws IllegalArgumentException if endTime > vehicle.getLatestArrival()
-         */
-        @Deprecated
-        public Builder setRouteEndArrivalTime(double endTime) {
-            if (endTime > vehicle.getLatestArrival())
-                throw new IllegalArgumentException("endTime > vehicle.getLatestArrival(). this must not be.");
-            end.setArrTime(endTime);
             return this;
         }
 

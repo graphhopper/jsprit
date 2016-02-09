@@ -33,6 +33,7 @@ import java.util.*;
  *
  * @author stefan
  */
+@Deprecated
 public final class RuinRadialMultipleCenters extends AbstractRuinStrategy {
 
     private Logger logger = LogManager.getLogger(RuinRadialMultipleCenters.class);
@@ -94,16 +95,6 @@ public final class RuinRadialMultipleCenters extends AbstractRuinStrategy {
             }
         }
         return ruined;
-    }
-
-    /**
-     * Removes targetJob and its neighborhood and returns the removed jobs.
-     *
-     * @deprecated will be private
-     */
-    @Deprecated
-    public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
-        return ruinRoutes_(vehicleRoutes, targetJob, nOfJobs2BeRemoved, null);
     }
 
     private Collection<Job> ruinRoutes_(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved, Set<Job> available) {

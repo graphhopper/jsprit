@@ -57,11 +57,6 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     @Override
-    public String getLocationId() {
-        return delivery.getLocation().getId();
-    }
-
-    @Override
     public Location getLocation() {
         return delivery.getLocation();
     }
@@ -123,7 +118,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     public String toString() {
-        return "[type=" + getName() + "][locationId=" + getLocationId()
+        return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
