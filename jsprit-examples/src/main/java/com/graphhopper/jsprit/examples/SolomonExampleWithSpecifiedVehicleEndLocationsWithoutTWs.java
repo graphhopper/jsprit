@@ -101,7 +101,7 @@ public class SolomonExampleWithSpecifiedVehicleEndLocationsWithoutTWs {
         solPlotter.plot("output/solomon_C101_specifiedVehicleEndLocations_withoutTWs_solution.png", "C101");
 
 
-        new GraphStreamViewer(vrp, solution).setRenderDelay(50).labelWith(Label.ID).setEnableAutoLayout(true).display();
+        new GraphStreamViewer(vrp, solution).setRenderDelay(50).labelWith(Label.ID).display();
 
 
     }
