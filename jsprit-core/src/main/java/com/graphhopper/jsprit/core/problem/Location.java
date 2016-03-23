@@ -61,6 +61,8 @@ public final class Location implements HasIndex, HasId {
 
         private int index = Location.NO_INDEX;
 
+        private double setupTime = 0.0;
+
         private Coordinate coordinate;
 
         public static Builder newInstance() {
@@ -76,6 +78,12 @@ public final class Location implements HasIndex, HasId {
         public Builder setCoordinate(Coordinate coordinate) {
             this.coordinate = coordinate;
             return this;
+        }
+
+        public Builder setSetupTime(double setupTime) {
+          if (setupTime < 0) throw new IllegalArgumentException("timeShift must be >= 0");
+          this.setupTime = setupTime;
+          return this;
         }
 
         public Builder setId(String id) {
@@ -104,11 +112,14 @@ public final class Location implements HasIndex, HasId {
 
     private final Coordinate coordinate;
 
+    private final double setupTime;
+
     private final String id;
 
     private Location(Builder builder) {
         this.index = builder.index;
         this.coordinate = builder.coordinate;
+        this.setupTime = builder.setupTime;
         this.id = builder.id;
     }
 
@@ -120,6 +131,10 @@ public final class Location implements HasIndex, HasId {
     @Override
     public int getIndex() {
         return index;
+    }
+
+    public double getSetupTime() {
+    	return setupTime;
     }
 
     public Coordinate getCoordinate() {
@@ -135,6 +150,7 @@ public final class Location implements HasIndex, HasId {
 
         if (index != location.index) return false;
         if (coordinate != null ? !coordinate.equals(location.coordinate) : location.coordinate != null) return false;
+        if (setupTime != 0.0 ? !(setupTime == location.getSetupTime()) : location.setupTime != 0.0) return false;
         if (id != null ? !id.equals(location.id) : location.id != null) return false;
 
         return true;
@@ -150,6 +166,6 @@ public final class Location implements HasIndex, HasId {
 
     @Override
     public String toString() {
-        return "[id=" + id + "][index=" + index + "][coordinate=" + coordinate + "]";
+        return "[id=" + id + "][index=" + index + "][coordinate=" + coordinate + "][shift=" + setupTime + "]";
     }
 }

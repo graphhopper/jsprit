@@ -30,7 +30,11 @@ public abstract class AbstractForwardVehicleRoutingTransportCosts implements Veh
 
     @Override
     public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
-        return getTransportTime(from, to, arrivalTime, driver, vehicle);
+    	double timeShift = 0;
+    	if(from != to && to != vehicle.getStartLocation() && from != vehicle.getEndLocation()){
+    		timeShift = -to.getSetupTime();
+    	}
+        return timeShift + getTransportTime(from, to, arrivalTime, driver, vehicle);
     }
 
     @Override
