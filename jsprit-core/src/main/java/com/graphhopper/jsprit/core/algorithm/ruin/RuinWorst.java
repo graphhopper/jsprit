@@ -143,7 +143,13 @@ public final class RuinWorst extends AbstractRuinStrategy {
     }
 
     private double c(TourActivity from, TourActivity to, Vehicle vehicle) {
-        return vrp.getTransportCosts().getTransportCost(from.getLocation(), to.getLocation(), from.getEndTime(), DriverImpl.noDriver(), vehicle);
+    	double setupCost = 0.0;
+        double coef = 1.0;
+        if(vehicle != null)
+        	coef = vehicle.getCoefSetupTime();
+        if(!from.getLocation().equals(to.getLocation()))
+        	setupCost = to.getSetupTime() * coef * vehicle.getType().getVehicleCostParams().perTransportTimeUnit;
+        return setupCost + vrp.getTransportCosts().getTransportCost(from.getLocation(), to.getLocation(), from.getEndTime(), DriverImpl.noDriver(), vehicle);
     }
 
     @Override

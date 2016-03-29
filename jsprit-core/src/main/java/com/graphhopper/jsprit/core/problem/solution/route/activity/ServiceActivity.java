@@ -31,6 +31,8 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     private double theoreticalLatest;
 
+    private double setup;
+
     /**
      * @return the arrTime
      */
@@ -81,6 +83,7 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
         setIndex(serviceActivity.getIndex());
         this.theoreticalEarliest = serviceActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = serviceActivity.getTheoreticalLatestOperationStartTime();
+        this.setup = serviceActivity.getSetupTime();
     }
 
 
@@ -155,7 +158,8 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override
@@ -172,6 +176,16 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     public Capacity getSize() {
         return service.getSize();
     }
+
+	@Override
+	public void setSetupTime(double setup) {
+		this.setup = setup;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
+	}
 
 
 }

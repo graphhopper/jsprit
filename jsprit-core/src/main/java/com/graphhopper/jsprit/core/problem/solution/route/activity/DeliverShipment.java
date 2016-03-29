@@ -36,10 +36,13 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
     private double latest = Double.MAX_VALUE;
 
+    private double setup = 0;
+
     public DeliverShipment(Shipment shipment) {
         super();
         this.shipment = shipment;
         this.capacity = Capacity.invert(shipment.getSize());
+        this.setup = shipment.getDeliverySetupTime();
     }
 
     private DeliverShipment(DeliverShipment deliveryShipmentActivity) {
@@ -50,6 +53,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
         setIndex(deliveryShipmentActivity.getIndex());
         this.earliest = deliveryShipmentActivity.getTheoreticalEarliestOperationStartTime();
         this.latest = deliveryShipmentActivity.getTheoreticalLatestOperationStartTime();
+        this.setup = deliveryShipmentActivity.getSetupTime();
     }
 
     @Override
@@ -65,6 +69,10 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.latest = latest;
+    }
+
+    public void setSetupTime(double setup) {
+    	this.setup = setup;
     }
 
     @Override
@@ -85,6 +93,10 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     @Override
     public double getTheoreticalLatestOperationStartTime() {
         return latest;
+    }
+
+    public double getSetupTime() {
+    	return setup;
     }
 
     @Override
@@ -121,7 +133,8 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override

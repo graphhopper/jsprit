@@ -106,6 +106,10 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
          */
         double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
 
+        double coef = 1.0;
+        if(newVehicle != null)
+        	coef = newVehicle.getCoefSetupTime();
+        
         double bestCost = bestKnownCosts;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
 
@@ -161,7 +165,13 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                 double pickupAIC = calculate(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
 
                 TourActivity prevAct_deliveryLoop = pickupShipment;
-                double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
+
+                double shipmentPickupSetupTime = 0.0;
+                if(!prevAct.getLocation().equals(pickupShipment.getLocation()))
+                	shipmentPickupSetupTime = pickupShipment.getSetupTime() * coef;
+                double transportTime_prevAct_pickupShipment = shipmentPickupSetupTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
+
+                double shipmentPickupArrTime = prevActEndTime + transportTime_prevAct_pickupShipment;
                 double shipmentPickupEndTime = Math.max(shipmentPickupArrTime, pickupShipment.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(pickupShipment, shipmentPickupArrTime, newDriver, newVehicle);
 
                 pickupContext.setArrivalTime(shipmentPickupArrTime);
@@ -213,7 +223,11 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                     }
                     if (deliveryInsertionNotFulfilledBreak) break;
                     //update prevAct and endTime
-                    double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
+                    double setupTime_prevActdLoop_nextAct_dLoop = 0.0;
+                    if(!prevAct_deliveryLoop.getLocation().equals(nextAct_deliveryLoop.getLocation()))
+                    	setupTime_prevActdLoop_nextAct_dLoop = nextAct_deliveryLoop.getSetupTime() * coef;
+                    double transportTime_prevActdLoop_nextActdLoop = setupTime_prevActdLoop_nextAct_dLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
+                    double nextActArrTime = prevActEndTime_deliveryLoop + transportTime_prevActdLoop_nextActdLoop;
                     prevActEndTime_deliveryLoop = Math.max(nextActArrTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct_deliveryLoop,nextActArrTime,newDriver,newVehicle);
                     prevAct_deliveryLoop = nextAct_deliveryLoop;
                     j++;
@@ -223,7 +237,11 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                 break;
             }
             //update prevAct and endTime
-            double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);
+            double setupTime_prevAct_nextAct = 0.0;
+            if(!prevAct.getLocation().equals(nextAct.getLocation()))
+            	setupTime_prevAct_nextAct = nextAct.getSetupTime() * coef;
+            double transportTime_prevAct_nextAct = setupTime_prevAct_nextAct + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);
+            double nextActArrTime = prevActEndTime + transportTime_prevAct_nextAct;
             prevActEndTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
             prevAct = nextAct;
             i++;

@@ -170,6 +170,13 @@ public class SolutionPrinter {
                 }
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
                     route.getVehicle());
+
+                double coef = 1.0;
+                if(route.getVehicle() != null)
+                	coef = route.getVehicle().getCoefSetupTime();
+                if(!prevAct.getLocation().equals(act.getLocation()))
+                	c += act.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 costs += c;
                 out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()),

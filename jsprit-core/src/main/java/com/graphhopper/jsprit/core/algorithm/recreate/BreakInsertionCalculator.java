@@ -118,6 +118,10 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
          */
         double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
 
+        double coef = 1.0;
+        if(newVehicle != null)
+        	coef = newVehicle.getCoefSetupTime();
+
         double bestCost = bestKnownCosts;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
 
@@ -163,7 +167,11 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
                     breakThis = false;
                 }
             }
-            double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
+            double setup_time_nextAct = 0.0;
+            if(!prevAct.getLocation().equals(nextAct.getLocation()))
+            	setup_time_nextAct = nextAct.getSetupTime() * coef;
+            double transportTime_prevAct_nextAct = setup_time_nextAct + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
+            double nextActArrTime = prevActStartTime + transportTime_prevAct_nextAct;
             prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
             prevAct = nextAct;
             actIndex++;

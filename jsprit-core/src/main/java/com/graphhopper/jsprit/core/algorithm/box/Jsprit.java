@@ -628,10 +628,15 @@ public class Jsprit {
 
                 for (VehicleRoute route : solution.getRoutes()) {
                     costs += route.getVehicle().getType().getVehicleCostParams().fix;
+                    double coef = 1.0;
+                    if(route.getVehicle() != null)
+                    	coef = route.getVehicle().getCoefSetupTime();
                     boolean hasBreak = false;
                     TourActivity prevAct = route.getStart();
                     for (TourActivity act : route.getActivities()) {
                         if (act instanceof BreakActivity) hasBreak = true;
+                        if(!prevAct.getLocation().equals(act.getLocation()))
+                        	costs += act.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
                         costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
                         costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                         prevAct = act;

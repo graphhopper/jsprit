@@ -332,7 +332,13 @@ public class SolutionAnalyser {
         }
 
         private double transportCost(TourActivity activity) {
-            return transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
+        	double setupCost = 0.0;
+            double coef = 1.0;
+            if(route.getVehicle() != null)
+            	coef = route.getVehicle().getCoefSetupTime();
+            if(!prevAct.getLocation().equals(activity.getLocation()))
+            	setupCost = activity.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+            return setupCost + transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
         }
 
         private double transportTime(TourActivity activity) {

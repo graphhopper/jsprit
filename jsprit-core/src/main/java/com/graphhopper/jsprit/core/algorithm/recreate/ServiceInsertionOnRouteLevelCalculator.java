@@ -140,6 +140,9 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
         double best_insertion_costs = best_known_insertion_costs;
         Service service = (Service) jobToInsert;
 
+        double coef = 1.0;
+        if(newVehicle != null)
+        	coef = newVehicle.getCoefSetupTime();
 
         /**
          * some inis
@@ -189,8 +192,13 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
             /**
              * calculate transport and activity costs with new vehicle (without inserting k)
              */
-            double transportCost_prevAct_nextAct_newVehicle = transportCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
-            double transportTime_prevAct_nextAct_newVehicle = transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
+            double setup_time_prevAct_nextAct_newVehicle = 0.0;
+            if(!prevAct.getLocation().equals(nextAct.getLocation()))
+            	setup_time_prevAct_nextAct_newVehicle = nextAct.getSetupTime() * coef;
+            double setup_cost_prevAct_nextAct_newVehicle = setup_time_prevAct_nextAct_newVehicle * newVehicle.getType().getVehicleCostParams().perTransportTimeUnit;
+            double transportCost_prevAct_nextAct_newVehicle = setup_cost_prevAct_nextAct_newVehicle + transportCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
+            double transportTime_prevAct_nextAct_newVehicle = setup_time_prevAct_nextAct_newVehicle + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
+            
             double arrTime_nextAct_newVehicle = prevActDepTime_newVehicle + transportTime_prevAct_nextAct_newVehicle;
             double activityCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct_newVehicle, newDriver, newVehicle);
 

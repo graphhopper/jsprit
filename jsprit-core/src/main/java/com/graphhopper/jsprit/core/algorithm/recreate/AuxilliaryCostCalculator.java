@@ -50,6 +50,9 @@ final class AuxilliaryCostCalculator {
         if (path.isEmpty()) {
             return 0.0;
         }
+        double coef = 1.0;
+        if(vehicle != null)
+        	coef = vehicle.getCoefSetupTime();
         double cost = 0.0;
         Iterator<TourActivity> actIter = path.iterator();
         TourActivity prevAct = actIter.next();
@@ -63,8 +66,12 @@ final class AuxilliaryCostCalculator {
                     return cost;
                 }
             }
-            double transportCost = routingCosts.getTransportCost(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
-            double transportTime = routingCosts.getTransportTime(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
+            double setup_time_prevAct_act = 0.0;
+            if(!prevAct.getLocation().equals(act.getLocation()))
+            	setup_time_prevAct_act = act.getSetupTime() * coef;
+            double setupCost = setup_time_prevAct_act * vehicle.getType().getVehicleCostParams().perTransportTimeUnit;
+            double transportCost = setupCost + routingCosts.getTransportCost(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
+            double transportTime = setup_time_prevAct_act + routingCosts.getTransportTime(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             cost += transportCost;
             double actStartTime = departureTimePrevAct + transportTime;
             departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(act,actStartTime,driver,vehicle);

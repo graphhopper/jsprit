@@ -44,6 +44,8 @@ public final class End extends AbstractActivity implements TourActivity {
 
     private Location location;
 
+    private double setup = 0;
+
     public void setTheoreticalEarliestOperationStartTime(double theoreticalEarliestOperationStartTime) {
         theoretical_earliestOperationStartTime = theoreticalEarliestOperationStartTime;
     }
@@ -77,6 +79,7 @@ public final class End extends AbstractActivity implements TourActivity {
         theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime();
         arrTime = end.getArrTime();
         endTime = end.getEndTime();
+        setup = end.getSetupTime();
         setIndex(-2);
     }
 
@@ -143,5 +146,15 @@ public final class End extends AbstractActivity implements TourActivity {
     public Capacity getSize() {
         return capacity;
     }
+
+	@Override
+	public void setSetupTime(double setupTime) {
+		this.setup = setupTime;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
+	}
 
 }

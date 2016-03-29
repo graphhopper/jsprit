@@ -56,9 +56,16 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
+        double coef = 1.0;
+        if(iFacts.getNewVehicle() != null)
+        	coef = iFacts.getNewVehicle().getCoefSetupTime();
+    	double setup_time_prevAct_newAct = 0.0;
+        if(!prevAct.getLocation().equals(newAct.getLocation()))
+        	setup_time_prevAct_newAct = newAct.getSetupTime() * coef;
+    	double setup_cost_prevAct_newAct = setup_time_prevAct_newAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+        double tp_costs_prevAct_newAct = setup_cost_prevAct_newAct + routingCosts.getTransportCost(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double tp_time_prevAct_newAct = setup_time_prevAct_newAct + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
-        double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
         double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
@@ -66,8 +73,13 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 
         if (isEnd(nextAct) && !toDepot(iFacts.getNewVehicle())) return tp_costs_prevAct_newAct;
 
-        double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double setup_time_newAct_nextAct = 0.0;
+        if(!newAct.getLocation().equals(nextAct.getLocation()))
+        	setup_time_newAct_nextAct = nextAct.getSetupTime() * coef;
+        double setup_cost_newAct_nextAct = setup_time_newAct_nextAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+        double tp_costs_newAct_nextAct = setup_cost_newAct_nextAct + routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double tp_time_newAct_nextAct = setup_time_newAct_nextAct + routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        
         double nextAct_arrTime = newAct_endTime + tp_time_newAct_nextAct;
         double endTime_nextAct_new = Math.max(nextAct_arrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, nextAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double act_costs_nextAct = activityCosts.getActivityCost(nextAct, nextAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
@@ -79,9 +91,15 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts += tp_costs_prevAct_nextAct;
         } else {
-            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
-            double arrTime_nextAct = depTimeAtPrevAct + routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
-            double endTime_nextAct_old = Math.max(arrTime_nextAct, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, arrTime_nextAct, iFacts.getRoute().getDriver(),iFacts.getRoute().getVehicle());
+            double setup_time_prevAct_nextAct = 0.0;
+            if(!prevAct.getLocation().equals(nextAct.getLocation()))
+            	setup_time_prevAct_nextAct = nextAct.getSetupTime() * coef;
+        	double setup_cost_prevAct_nextAct =  setup_time_prevAct_nextAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+            double tp_costs_prevAct_nextAct = setup_cost_prevAct_nextAct + routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
+            double tp_time_prevAct_nextAct = setup_time_prevAct_nextAct + routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
+            
+            double arrTime_nextAct = depTimeAtPrevAct + tp_time_prevAct_nextAct;
+            double endTime_nextAct_old = Math.max(arrTime_nextAct, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, nextAct_arrTime, iFacts.getRoute().getDriver(),iFacts.getRoute().getVehicle());
             double actCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct, iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
 
             double endTimeDelay_nextAct = Math.max(0, endTime_nextAct_new - endTime_nextAct_old);

@@ -35,10 +35,13 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private double theoreticalLatest = Double.MAX_VALUE;
 
+    private double setup = 0.0;
+
     public DeliverService(Delivery delivery) {
         super();
         this.delivery = delivery;
         capacity = Capacity.invert(delivery.getSize());
+        this.setup = delivery.getSetupDuration();
     }
 
     private DeliverService(DeliverService deliveryActivity) {
@@ -49,6 +52,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         setIndex(deliveryActivity.getIndex());
         this.theoreticalEarliest = deliveryActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = deliveryActivity.getTheoreticalLatestOperationStartTime();
+        this.setup = deliveryActivity.getSetupTime();
     }
 
     @Override
@@ -121,11 +125,22 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override
     public Capacity getSize() {
         return capacity;
     }
+
+	@Override
+	public void setSetupTime(double setup) {
+		this.setup = setup;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
+	}
 }

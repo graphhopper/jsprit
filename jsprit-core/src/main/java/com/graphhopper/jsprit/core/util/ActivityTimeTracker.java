@@ -20,6 +20,7 @@ import com.graphhopper.jsprit.core.problem.cost.ForwardTransportTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 public class ActivityTimeTracker implements ActivityVisitor {
@@ -81,7 +82,16 @@ public class ActivityTimeTracker implements ActivityVisitor {
     @Override
     public void visit(TourActivity activity) {
         if (!beginFirst) throw new IllegalStateException("never called begin. this however is essential here");
-        double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
+        double setup_time_prevAct_activity = 0.0;
+        double coef = 1.0;
+        if(route.getVehicle() != null)
+        	coef = route.getVehicle().getCoefSetupTime();
+
+        if(!prevAct.getLocation().equals(activity.getLocation()))
+        	setup_time_prevAct_activity = activity.getSetupTime() * coef;
+
+        double transportTime = setup_time_prevAct_activity + this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
+    
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
 
         actArrTime = arrivalTimeAtCurrAct;
