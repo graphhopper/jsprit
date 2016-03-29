@@ -129,8 +129,11 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
             throw new IllegalArgumentException("index of from " + from + " to " + to + " < 0 ");
         int timeIndex = 1;
         double timeShift = 0;
+        double coef = 1.0;
+        if(vehicle != null)
+        	coef = vehicle.getCoefSetupTime();
         if(from != to && from.getIndex() >= 0 && to.getIndex() >=0){
-        	timeShift = to.getSetupTime();
+        	timeShift = to.getSetupTime() * coef;
         }
         return timeShift + get(from.getIndex(), to.getIndex(), timeIndex);
     }

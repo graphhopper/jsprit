@@ -204,8 +204,12 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
     @Override
     public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
     	double timeShift = 0;
+
+        double coef = 1.0;
+        if(vehicle != null)
+        	coef = vehicle.getCoefSetupTime();
     	if(from != to && from.getIndex() >= 0 && to.getIndex() >=0){
-    		timeShift = to.getSetupTime();
+    		timeShift = to.getSetupTime() * coef;
     	}
         return timeShift + getTime(from.getId(), to.getId());
     }
