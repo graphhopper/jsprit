@@ -61,7 +61,14 @@ public class ManhattanCosts extends AbstractForwardVehicleRoutingTransportCosts 
 
     @Override
     public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
-        return calculateDistance(from, to) / speed;
+    	double timeShift = 0;
+        double coef = 1.0;
+        if(vehicle != null)
+        	coef = vehicle.getCoefSetupTime();
+    	if(from != to && from.getIndex() >= 0 && to.getIndex() >=0){
+    		timeShift = to.getSetupTime() * coef;
+    	}
+        return timeShift + calculateDistance(from, to) / speed;
     }
 
     private double calculateDistance(Location fromLocation, Location toLocation) {
