@@ -106,10 +106,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     public StateId createStateId(String name) {
         if (createdStateIds.containsKey(name)) return createdStateIds.get(name);
         if (stateIndexCounter >= activityStates[0].length) {
-            activityStates = new Object[vrp.getNuActivities() + 1][stateIndexCounter + 1];
+            activityStates = new Object[nuActivities][stateIndexCounter + 1];
             vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter + 1];
-            routeStatesArr = new Object[vrp.getNuActivities()+1][stateIndexCounter+1];
-            vehicleDependentRouteStatesArr = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter+1];
+            routeStatesArr = new Object[vrp.getVehicles().size() + 2][stateIndexCounter+1];
+            vehicleDependentRouteStatesArr = new Object[vrp.getVehicles().size() + 2][nuVehicleTypeKeys][stateIndexCounter+1];
             problemStates = new Object[stateIndexCounter+1];
         }
         StateId id = StateFactory.createId(name, stateIndexCounter);
