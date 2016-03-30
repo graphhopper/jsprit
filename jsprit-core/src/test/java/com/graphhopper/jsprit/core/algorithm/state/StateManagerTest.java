@@ -334,4 +334,25 @@ public class StateManagerTest {
         assertNull(stateManager.getActivityState(act, vehicle, id, Double.class));
         assertNull(stateManager.getActivityState(act, vehicle2, id, Double.class));
     }
+
+    @Test
+    public void arrayIniShouldWork(){
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
+
+        //getting the indices created in vrpBuilder
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleRoutingProblem vrp = vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(vehicle).addVehicle(vehicle2).build();
+
+        VehicleRoute route = mock(VehicleRoute.class);
+        when(route.getVehicle()).thenReturn(vehicle2);
+
+        StateManager stateManager = new StateManager(vrp);
+        StateId myState = null;
+        for(int i=0;i<10;i++){
+            myState = stateManager.createStateId("myState"+i);
+        }
+        stateManager.putTypedInternalRouteState(route,myState,1.);
+    }
 }
