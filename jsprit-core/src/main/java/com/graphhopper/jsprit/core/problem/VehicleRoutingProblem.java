@@ -88,9 +88,9 @@ public class VehicleRoutingProblem {
 
         private Collection<VehicleRoute> initialRoutes = new ArrayList<VehicleRoute>();
 
-        private Set<Vehicle> uniqueVehicles = new HashSet<Vehicle>();
+        private Set<Vehicle> uniqueVehicles = new LinkedHashSet<Vehicle>();
 
-        private Set<String> addedVehicleIds = new HashSet<String>();
+        private Set<String> addedVehicleIds = new LinkedHashSet<String>();
 
         private boolean hasBreaks = false;
 
