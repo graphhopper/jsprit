@@ -81,18 +81,21 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     private Random random = RandomNumberGeneration.getRandom();
 
-    public VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
+    VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
         super();
         this.vehicles = vehicles;
         int arrSize = vehicles.size() + 2;
         locked = new boolean[arrSize];
         vehicleArr = new Vehicle[arrSize];
-        initializeVehicleTypes();
-        logger.debug("initialise {}",this);
     }
 
-    public void setRandom(Random random) {
+    void setRandom(Random random) {
         this.random = random;
+    }
+
+    void init(){
+        initializeVehicleTypes();
+        logger.debug("initialise {}",this);
     }
 
     @Override

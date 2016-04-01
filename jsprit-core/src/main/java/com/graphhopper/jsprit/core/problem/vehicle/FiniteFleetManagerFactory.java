@@ -58,6 +58,7 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
         if (vehicles.isEmpty()) throw new IllegalStateException("vehicle-collection is empty. this must not be");
         VehicleFleetManagerImpl vehicleFleetManager = new VehicleFleetManagerImpl(vehicles);
         vehicleFleetManager.setRandom(random);
+        vehicleFleetManager.init();
         return vehicleFleetManager;
     }
 
