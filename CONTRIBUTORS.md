@@ -1,6 +1,7 @@
 The following people have contributed code, bug fixes and ideas.
 
  * [Abraham Gausachs](https://github.com/agausachs)
+ * [braktar](https://github.com/braktar)
  * [Giulio Collura](https://github.com/gcollura)
  * [Heinrich Filter](https://github.com/HeinrichFilter)
  * Josh Pilkington
