@@ -20,10 +20,7 @@ import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 class VehicleFleetManagerImpl implements VehicleFleetManager {
@@ -36,15 +33,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
         private ArrayList<Vehicle> vehicleList;
 
-        private Random random = RandomNumberGeneration.getRandom();
-
-        public TypeContainer() {
+        TypeContainer() {
             super();
             vehicleList = new ArrayList<Vehicle>();
-        }
-
-        public void setRandom(Random random) {
-            this.random = random;
         }
 
         void add(Vehicle vehicle) {
@@ -58,13 +49,16 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
             vehicleList.remove(vehicle);
         }
 
-        public Vehicle getVehicle() {
-            int randomIndex = random.nextInt(vehicleList.size());
-            return vehicleList.get(randomIndex);
+        Vehicle getVehicle() {
+            return vehicleList.get(0);
         }
 
-        public boolean isEmpty() {
+        boolean isEmpty() {
             return vehicleList.isEmpty();
+        }
+
+        void shuffle(Random random){
+            Collections.shuffle(vehicleList,random);
         }
 
     }
@@ -113,7 +107,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         vehicleTypes = new TypeContainer[maxTypeIndex+1];
         for(int i=0;i< vehicleTypes.length;i++){
             TypeContainer typeContainer = new TypeContainer();
-            typeContainer.setRandom(random);
             vehicleTypes[i] = typeContainer;
         }
         for (Vehicle v : vehicles) {
@@ -162,6 +155,12 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         return vehicles;
     }
 
+    void shuffle(){
+        for(int i=0;i< vehicleTypes.length;i++){
+            vehicleTypes[i].shuffle(random);
+        }
+    }
+
     @Override
     public Vehicle getAvailableVehicle(VehicleTypeKey vehicleTypeIdentifier) {
         if(!vehicleTypes[vehicleTypeIdentifier.getIndex()].isEmpty()){
@@ -184,6 +183,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         else{
             locked[vehicle.getIndex()] = true;
             removeVehicle(vehicle);
+            if(random.nextDouble() < 0.1) shuffle();
         }
     }
 
