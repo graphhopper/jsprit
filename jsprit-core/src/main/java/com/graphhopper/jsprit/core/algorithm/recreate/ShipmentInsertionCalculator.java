@@ -191,7 +191,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                         deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
                         deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
                         ActivityContext activityContext_ = new ActivityContext();
-                        activityContext.setInsertionIndex(j);
+                        activityContext_.setInsertionIndex(j);
                         insertionContext.setActivityContext(activityContext_);
                         ConstraintsStatus deliverShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                         if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
