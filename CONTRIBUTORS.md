@@ -5,7 +5,7 @@ The following people have contributed code, bug fixes and ideas.
  * [Giulio Collura](https://github.com/gcollura)
  * [Heinrich Filter](https://github.com/HeinrichFilter)
  * Josh Pilkington
- * [Julia Loikova]()
+ * [Julia Loikova](https://github.com/Jullil)
  * [muzuro](https://github.com/muzuro)
  * [Peter Karich](https://github.com/karussell)
  * [Philip Welch](http://www.opendoorlogistics.com/)
