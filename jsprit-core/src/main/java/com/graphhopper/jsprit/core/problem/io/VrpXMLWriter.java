@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.problem.io;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -148,6 +149,8 @@ public class VrpXMLWriter {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").serviceId", job.getId());
                     } else if (job instanceof Shipment) {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").shipmentId", job.getId());
+                    } else if (job instanceof Break) {
+                    	xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
                     } else {
                         throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
                     }
@@ -183,6 +186,8 @@ public class VrpXMLWriter {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").serviceId", job.getId());
                         } else if (job instanceof Shipment) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").shipmentId", job.getId());
+                        } else if (job instanceof Break) {
+                        	xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
                         } else {
                             throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
                         }
@@ -330,6 +335,11 @@ public class VrpXMLWriter {
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").timeSchedule.start", vehicle.getEarliestDeparture());
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").timeSchedule.end", vehicle.getLatestArrival());
 
+            if (vehicle.getBreak() != null) {
+	            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.timeWindow.start", vehicle.getBreak().getTimeWindow().getStart());
+	            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.timeWindow.end", vehicle.getBreak().getTimeWindow().getEnd());
+	            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.duration", vehicle.getBreak().getServiceDuration());
+	        }
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").returnToDepot", vehicle.isReturnToDepot());
 
             //write skills
