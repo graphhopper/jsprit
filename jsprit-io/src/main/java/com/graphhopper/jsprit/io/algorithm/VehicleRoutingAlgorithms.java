@@ -26,6 +26,9 @@ import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmLis
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
+import com.graphhopper.jsprit.core.algorithm.ruin.ClusterRuinStrategyFactory;
+import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoods;
+import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoodsFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RadialRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RandomRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
@@ -839,18 +842,25 @@ public class VehicleRoutingAlgorithms {
             if (ruin_name == null) throw new IllegalStateException("module.ruin[@name] is missing.");
             String ruin_id = moduleConfig.getString("ruin[@id]");
             if (ruin_id == null) ruin_id = "noId";
-            String shareToRuinString = moduleConfig.getString("ruin.share");
-            if (shareToRuinString == null) throw new IllegalStateException("module.ruin.share is missing.");
-            double shareToRuin = Double.valueOf(shareToRuinString);
             final RuinStrategy ruin;
             ModKey ruinKey = makeKey(ruin_name, ruin_id);
             if (ruin_name.equals("randomRuin")) {
+                String shareToRuinString = moduleConfig.getString("ruin.share");
+                if (shareToRuinString == null) throw new IllegalStateException("module.ruin.share is missing.");
+                double shareToRuin = Double.valueOf(shareToRuinString);
                 ruin = getRandomRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin);
             } else if (ruin_name.equals("radialRuin")) {
+                String shareToRuinString = moduleConfig.getString("ruin.share");
+                if (shareToRuinString == null) throw new IllegalStateException("module.ruin.share is missing.");
+                double shareToRuin = Double.valueOf(shareToRuinString);
                 JobDistance jobDistance = new AvgServiceAndShipmentDistance(vrp.getTransportCosts());
                 ruin = getRadialRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin, jobDistance);
-            } else
-                throw new IllegalStateException("ruin[@name] " + ruin_name + " is not known. Use either randomRuin or radialRuin.");
+            } else if (ruin_name.equals("clusterRuin")) {
+                String initialNumberJobsToRemoveString = moduleConfig.getString("ruin.initRemoveJobs");
+                if (initialNumberJobsToRemoveString == null) throw new IllegalStateException("module.ruin.initRemoveJobs is missing.");
+                int initialNumberJobsToRemove = Integer.valueOf(initialNumberJobsToRemoveString);
+            	ruin = getClusterRuin(vrp, routeStates, definedClasses, ruinKey, initialNumberJobsToRemove);
+            } else throw new IllegalStateException("ruin[@name] " + ruin_name + " is not known. Use either randomRuin or radialRuin.");
 
             String insertionName = moduleConfig.getString("insertion[@name]");
             if (insertionName == null)
@@ -877,7 +887,8 @@ public class VehicleRoutingAlgorithms {
             "\n\tcurrently there are following modules available: " +
             "\n\tbestInsertion" +
             "\n\trandomRuin" +
-            "\n\tradialRuin");
+            "\n\tradialRuin" +
+            "\n\tclusterRuin");
     }
 
     private static RuinStrategy getRadialRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, double shareToRuin, JobDistance jobDistance) {
@@ -886,6 +897,17 @@ public class VehicleRoutingAlgorithms {
         if (ruin == null) {
             ruin = new RadialRuinStrategyFactory(shareToRuin, jobDistance).createStrategy(vrp);
             definedClasses.put(stratKey, ruin);
+        }
+        return ruin;
+    }
+
+    private static RuinStrategy getClusterRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, int initialNumberJobsToRemove) {
+    	JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()));
+    	RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
+        RuinStrategy ruin = definedClasses.get(stratKey);
+        if (ruin == null) {
+        	ruin = new ClusterRuinStrategyFactory(initialNumberJobsToRemove, jobNeighborhoods).createStrategy(vrp);
+        	definedClasses.put(stratKey, ruin);
         }
         return ruin;
     }
