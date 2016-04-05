@@ -564,6 +564,7 @@ public class VrpXMLReader {
                     typeBuilder.addCapacityDimension(index, value);
                 }
             }
+
             Double fix = typeConfig.getDouble("costs.fixed");
             Double timeC = typeConfig.getDouble("costs.time");
             Double distC = typeConfig.getDouble("costs.distance");
@@ -670,6 +671,16 @@ public class VrpXMLReader {
                 String[] skillTokens = cleaned.split("[,;]");
                 for (String skill : skillTokens) builder.addSkill(skill.toLowerCase());
             }
+
+            // read break
+            String breakStartString = vehicleConfig.getString("breaks.timeWindow.start");
+            String breakEndString = vehicleConfig.getString("breaks.timeWindow.end");
+            String breakDurationString = vehicleConfig.getString("breaks.duration");
+            if(breakStartString!=null && breakEndString!=null && breakDurationString!=null )
+            	builder.setBreak(Break.Builder.newInstance(vehicleId)
+            				.addTimeWindow(Double.parseDouble(breakStartString), Double.parseDouble(breakEndString))
+            				.setServiceTime(Double.parseDouble(breakDurationString)).build());
+
 
             //build vehicle
             VehicleImpl vehicle = builder.build();
