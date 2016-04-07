@@ -146,8 +146,10 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
             List<Location> locations = Arrays.asList(prevAct.getLocation(), nextAct.getLocation());
             for (Location location : locations) {
                 breakAct2Insert.setLocation(location);
-                breakAct2Insert.setTheoreticalEarliestOperationStartTime(breakToInsert.getTimeWindow().getStart());
-                breakAct2Insert.setTheoreticalLatestOperationStartTime(breakToInsert.getTimeWindow().getEnd());
+                breakAct2Insert.setTheoreticalEarliestOperationStartTime(breakToInsert.getTimeWindow().getHardStart());
+                breakAct2Insert.setSoftEarliestoperationStartTime(breakToInsert.getTimeWindow().getSoftStart());
+                breakAct2Insert.setSoftLatestOperationStartTime(breakToInsert.getTimeWindow().getSoftEnd());
+                breakAct2Insert.setTheoreticalLatestOperationStartTime(breakToInsert.getTimeWindow().getHardEnd());
                 ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
                     //from job2insert induced costs at activity level

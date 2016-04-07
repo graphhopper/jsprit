@@ -34,6 +34,10 @@ public interface TourActivity extends HasIndex {
 
 	public void setTheoreticalLatestOperationStartTime(double latest);
 
+	public void setSoftEarliestoperationStartTime(double softEarliest);
+
+	public void setSoftLatestOperationStartTime(double softLatest);
+
     /**
      * Basic interface of job-activies.
      * <p>
@@ -80,6 +84,11 @@ public interface TourActivity extends HasIndex {
      *
      * @return latest start time
      */
+
+    public abstract double getSoftLowerBoundOperationStartTime();
+
+    public abstract double getSoftUpperBoundOperationStartTime();
+
     public abstract double getTheoreticalLatestOperationStartTime();
 
     /**

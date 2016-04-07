@@ -16,6 +16,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -33,10 +34,13 @@ final class AuxilliaryCostCalculator {
 
     private final VehicleRoutingActivityCosts activityCosts;
 
+    private SoftTimeWindowCost softCosts;
+
     public AuxilliaryCostCalculator(final VehicleRoutingTransportCosts routingCosts, final VehicleRoutingActivityCosts actCosts) {
         super();
         this.routingCosts = routingCosts;
         this.activityCosts = actCosts;
+        this.softCosts = new SoftTimeWindowCost();
     }
 
     /**
@@ -67,6 +71,7 @@ final class AuxilliaryCostCalculator {
             double transportTime = routingCosts.getTransportTime(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             cost += transportCost;
             double actStartTime = departureTimePrevAct + transportTime;
+            cost += softCosts.getSoftTimeWindowCost(act, actStartTime, vehicle);
             departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(act,actStartTime,driver,vehicle);
             cost += activityCosts.getActivityCost(act, actStartTime, driver, vehicle);
             prevAct = act;

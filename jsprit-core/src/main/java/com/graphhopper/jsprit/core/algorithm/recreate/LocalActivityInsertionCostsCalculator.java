@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -41,6 +42,8 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 
     private VehicleRoutingActivityCosts activityCosts;
 
+    private SoftTimeWindowCost softCosts;
+
     private double activityCostsWeight = 1.;
 
     private double solutionCompletenessRatio = 1.;
@@ -52,6 +55,7 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
         this.routingCosts = routingCosts;
         this.activityCosts = actCosts;
         this.stateManager = stateManager;
+        this.softCosts = new SoftTimeWindowCost();
     }
 
     @Override
@@ -62,6 +66,7 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
         double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
+        tp_costs_prevAct_newAct += softCosts.getSoftTimeWindowCost(newAct, newAct_arrTime, iFacts.getNewVehicle());
         double act_costs_newAct = activityCosts.getActivityCost(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         if (isEnd(nextAct) && !toDepot(iFacts.getNewVehicle())) return tp_costs_prevAct_newAct;
@@ -69,6 +74,8 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
         double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double nextAct_arrTime = newAct_endTime + tp_time_newAct_nextAct;
+
+        tp_costs_newAct_nextAct += softCosts.getSoftTimeWindowCost(nextAct, nextAct_arrTime, iFacts.getNewVehicle());
         double endTime_nextAct_new = Math.max(nextAct_arrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, nextAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double act_costs_nextAct = activityCosts.getActivityCost(nextAct, nextAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
@@ -84,6 +91,7 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
             double endTime_nextAct_old = Math.max(arrTime_nextAct, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, arrTime_nextAct, iFacts.getRoute().getDriver(),iFacts.getRoute().getVehicle());
             double actCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct, iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
 
+            tp_costs_prevAct_nextAct += softCosts.getSoftTimeWindowCost(nextAct, arrTime_nextAct, iFacts.getNewVehicle());
             double endTimeDelay_nextAct = Math.max(0, endTime_nextAct_new - endTime_nextAct_old);
             Double futureWaiting = stateManager.getActivityState(nextAct, iFacts.getRoute().getVehicle(), InternalStates.FUTURE_WAITING, Double.class);
             if (futureWaiting == null) futureWaiting = 0.;

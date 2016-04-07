@@ -137,6 +137,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
             boolean not_fulfilled_break = true;
 			for(TimeWindow timeWindow : service.getTimeWindows()) {
                 deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+                deliveryAct2Insert.setSoftEarliestoperationStartTime(timeWindow.getSoftStart());
+                deliveryAct2Insert.setSoftLatestOperationStartTime(timeWindow.getSoftEnd());
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                 ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(actIndex);
@@ -166,6 +168,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
         deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
+        deliveryAct2Insert.setSoftEarliestoperationStartTime(bestTimeWindow.getSoftStart());
+        deliveryAct2Insert.setSoftLatestOperationStartTime(bestTimeWindow.getSoftEnd());
         deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliveryAct2Insert, insertionIndex));
         insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));

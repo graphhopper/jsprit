@@ -17,6 +17,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -28,6 +29,8 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
     private final VehicleRoutingTransportCosts routingCosts;
 
     private final VehicleRoutingActivityCosts activityCosts;
+
+    private SoftTimeWindowCost softCosts;
 
     public VariableTransportCostCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
@@ -43,6 +46,7 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
         double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,newAct_arrTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
 
+        tp_costs_prevAct_newAct += softCosts.getSoftTimeWindowCost(newAct, newAct_arrTime, iFacts.getNewVehicle());
         //open routes
         if (nextAct instanceof End) {
             if (!iFacts.getNewVehicle().isReturnToDepot()) {
@@ -51,6 +55,9 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
         }
 
         double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double nextAct_arrTime = newAct_endTime + tp_time_newAct_nextAct;
+        tp_costs_newAct_nextAct += softCosts.getSoftTimeWindowCost(newAct, nextAct_arrTime, iFacts.getNewVehicle());
         double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct;
 
         double oldCosts;
@@ -58,7 +65,10 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         } else {
-            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
+            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
+            double tp_time_prevAct_nextAct = routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double nexAct_arrTime_old = depTimeAtPrevAct + tp_time_prevAct_nextAct;
+            tp_costs_prevAct_nextAct += softCosts.getSoftTimeWindowCost(nextAct, nexAct_arrTime_old, iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         }
         return totalCosts - oldCosts;
