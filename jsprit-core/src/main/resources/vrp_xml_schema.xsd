@@ -62,6 +62,7 @@
                                         <xs:element name="timeSchedule" type="timeWindowType"/>
                                         <xs:element name="returnToDepot" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="skills" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                        <xs:element name="breaks" type="breaksType" minOccurs="0" maxOccurs="1"/>
                                     </xs:all>
                                     <xs:attribute name="type" type="xs:string" use="optional"/>
                                 </xs:complexType>
@@ -366,6 +367,20 @@
             <xs:element name="coord" type="coordType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="index" type="xs:int" minOccurs="0" maxOccurs="1"/>
         </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="breaksType">
+        <xs:sequence>
+            <xs:element name="timeWindows" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+	                <xs:sequence>
+	                  <xs:element name="timeWindow" type="timeWindowType" minOccurs="1"
+	                          maxOccurs="unbounded"/>
+	                </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            <xs:element name="duration" type="xs:double" minOccurs="1" maxOccurs="1" default="0.0"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="coordType">

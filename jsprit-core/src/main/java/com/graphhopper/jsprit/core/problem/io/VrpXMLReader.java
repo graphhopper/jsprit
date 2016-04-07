@@ -390,11 +390,11 @@ public class VrpXMLReader {
             if (pickupServiceTime != null) builder.setPickupServiceTime(Double.parseDouble(pickupServiceTime));
 
             //pickup-tw
-            String pickupTWStart = shipmentConfig.getString("pickup.timeWindows.timeWindow(0).start");
-            String pickupTWEnd = shipmentConfig.getString("pickup.timeWindows.timeWindow(0).end");
-            if (pickupTWStart != null && pickupTWEnd != null) {
-                TimeWindow pickupTW = TimeWindow.newInstance(Double.parseDouble(pickupTWStart), Double.parseDouble(pickupTWEnd));
-                builder.setPickupTimeWindow(pickupTW);
+            List<HierarchicalConfiguration> pickupTWConfigs = shipmentConfig.configurationsAt("pickup.timeWindows.timeWindow");
+            if (!pickupTWConfigs.isEmpty()) {
+                for (HierarchicalConfiguration pu_twConfig : pickupTWConfigs) {
+                    builder.addPickupTimeWindow(TimeWindow.newInstance(pu_twConfig.getDouble("start"), pu_twConfig.getDouble("end")));
+                }
             }
 
             //delivery location
@@ -424,11 +424,11 @@ public class VrpXMLReader {
             if (deliveryServiceTime != null) builder.setDeliveryServiceTime(Double.parseDouble(deliveryServiceTime));
 
             //delivery-tw
-            String delTWStart = shipmentConfig.getString("delivery.timeWindows.timeWindow(0).start");
-            String delTWEnd = shipmentConfig.getString("delivery.timeWindows.timeWindow(0).end");
-            if (delTWStart != null && delTWEnd != null) {
-                TimeWindow delTW = TimeWindow.newInstance(Double.parseDouble(delTWStart), Double.parseDouble(delTWEnd));
-                builder.setDeliveryTimeWindow(delTW);
+            List<HierarchicalConfiguration> deliveryTWConfigs = shipmentConfig.configurationsAt("delivery.timeWindows.timeWindow");
+            if (!deliveryTWConfigs.isEmpty()) {
+                for (HierarchicalConfiguration dl_twConfig : deliveryTWConfigs) {
+                    builder.addDeliveryTimeWindow(TimeWindow.newInstance(dl_twConfig.getDouble("start"), dl_twConfig.getDouble("end")));
+                }
             }
 
             //read skills
@@ -514,7 +514,7 @@ public class VrpXMLReader {
             List<HierarchicalConfiguration> deliveryTWConfigs = serviceConfig.configurationsAt("timeWindows.timeWindow");
             if (!deliveryTWConfigs.isEmpty()) {
                 for (HierarchicalConfiguration twConfig : deliveryTWConfigs) {
-                    builder.setTimeWindow(TimeWindow.newInstance(twConfig.getDouble("start"), twConfig.getDouble("end")));
+                    builder.addTimeWindow(TimeWindow.newInstance(twConfig.getDouble("start"), twConfig.getDouble("end")));
                 }
             }
 
@@ -564,6 +564,7 @@ public class VrpXMLReader {
                     typeBuilder.addCapacityDimension(index, value);
                 }
             }
+
             Double fix = typeConfig.getDouble("costs.fixed");
             Double timeC = typeConfig.getDouble("costs.time");
             Double distC = typeConfig.getDouble("costs.distance");
@@ -670,6 +671,19 @@ public class VrpXMLReader {
                 String[] skillTokens = cleaned.split("[,;]");
                 for (String skill : skillTokens) builder.addSkill(skill.toLowerCase());
             }
+
+            // read break
+            List<HierarchicalConfiguration> breakTWConfigs = vehicleConfig.configurationsAt("break.timeWindows.timeWindow");
+            if (!breakTWConfigs.isEmpty()) {
+                String breakDurationString = vehicleConfig.getString("breaks.duration");
+                Break.Builder current_break = Break.Builder.newInstance(vehicleId);
+                current_break.setServiceTime(Double.parseDouble(breakDurationString));
+                for (HierarchicalConfiguration twConfig : breakTWConfigs) {
+                	current_break.addTimeWindow(TimeWindow.newInstance(twConfig.getDouble("start"), twConfig.getDouble("end")));
+                }
+                builder.setBreak(current_break.build());
+            }
+
 
             //build vehicle
             VehicleImpl vehicle = builder.build();
