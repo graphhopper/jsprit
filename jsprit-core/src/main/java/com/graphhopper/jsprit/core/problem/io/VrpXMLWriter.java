@@ -25,6 +25,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -229,9 +230,15 @@ public class VrpXMLWriter {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")[@index]", i);
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")", service.getSize().get(i));
             }
+
+            Collection<TimeWindow> tws = service.getTimeWindows();
+            int index = 0;
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ").duration", service.getServiceDuration());
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(0).start", service.getTimeWindow().getStart());
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(0).end", service.getTimeWindow().getEnd());
+            for(TimeWindow tw : tws) {
+	            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(" + index + ").start", tw.getStart());
+	            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(" + index + ").end", tw.getEnd());
+	            ++index;
+            }
 
             //skills
             String skillString = getSkillString(service);
@@ -265,10 +272,14 @@ public class VrpXMLWriter {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.index", shipment.getPickupLocation().getIndex());
             }
 
+            Collection<TimeWindow> pu_tws = shipment.getPickupTimeWindows();
+            int index = 0;
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.duration", shipment.getPickupServiceTime());
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(0).start", shipment.getPickupTimeWindow().getStart());
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(0).end", shipment.getPickupTimeWindow().getEnd());
-
+            for(TimeWindow tw : pu_tws) {
+	            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(" + index + ").start", tw.getStart());
+	            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
+	            ++index;
+	        }
 
             if (shipment.getDeliveryLocation().getId() != null)
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.id", shipment.getDeliveryLocation().getId());
@@ -280,9 +291,14 @@ public class VrpXMLWriter {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.index", shipment.getDeliveryLocation().getIndex());
             }
 
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.duration", shipment.getDeliveryServiceTime());
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(0).start", shipment.getDeliveryTimeWindow().getStart());
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(0).end", shipment.getDeliveryTimeWindow().getEnd());
+            Collection<TimeWindow> del_tws = shipment.getDeliveryTimeWindows();
+        	xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.duration", shipment.getDeliveryServiceTime());
+        	index = 0;
+            for(TimeWindow tw : del_tws) {
+            	xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(" + index + ").start", tw.getStart());
+            	xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
+            	++index;
+            }
 
             for (int i = 0; i < shipment.getSize().getNuOfDimensions(); i++) {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")[@index]", i);
@@ -336,9 +352,14 @@ public class VrpXMLWriter {
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").timeSchedule.end", vehicle.getLatestArrival());
 
             if (vehicle.getBreak() != null) {
-	            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.timeWindow.start", vehicle.getBreak().getTimeWindow().getStart());
-	            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.timeWindow.end", vehicle.getBreak().getTimeWindow().getEnd());
+                Collection<TimeWindow> tws = vehicle.getBreak().getTimeWindows();
+                int index = 0;
 	            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.duration", vehicle.getBreak().getServiceDuration());
+                for(TimeWindow tw : tws) {
+		            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.timeWindows.timeWindow(" + index + ").start", tw.getStart());
+		            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
+		            ++index;
+                }
 	        }
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").returnToDepot", vehicle.isReturnToDepot());
 
