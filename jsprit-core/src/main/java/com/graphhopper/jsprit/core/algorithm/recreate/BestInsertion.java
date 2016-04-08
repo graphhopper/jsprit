@@ -88,6 +88,7 @@ public final class BestInsertion extends AbstractInsertionStrategy {
             }
             if (bestInsertion == null) badJobs.add(unassignedJob);
             else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
+//            nextInsertion();
         }
         return badJobs;
     }

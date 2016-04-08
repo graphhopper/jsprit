@@ -18,6 +18,7 @@ package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
@@ -51,9 +52,9 @@ public class UpdateFutureWaitingTimes implements ReverseActivityVisitor, StateUp
     @Override
     public void visit(TourActivity activity) {
         states.putInternalTypedActivityState(activity, route.getVehicle(), InternalStates.FUTURE_WAITING, futureWaiting);
-//		if(!(activity instanceof BreakActivity)) {
-        futureWaiting += Math.max(activity.getTheoreticalEarliestOperationStartTime() - activity.getArrTime(), 0);
-//		}
+		if(!(activity instanceof BreakActivity)) {
+            futureWaiting += Math.max(activity.getTheoreticalEarliestOperationStartTime() - activity.getArrTime(), 0);
+		}
     }
 
     @Override
