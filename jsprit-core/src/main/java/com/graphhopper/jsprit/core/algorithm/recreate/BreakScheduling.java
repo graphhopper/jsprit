@@ -34,13 +34,11 @@ public class BreakScheduling implements JobInsertedListener, RuinListener {
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
         Break aBreak = inRoute.getVehicle().getBreak();
-//        if(job2insert == aBreak) return;
         if(aBreak != null){
             boolean removed = inRoute.getTourActivities().removeJob(aBreak);
             if(removed){
                 stateManager.removed(aBreak,inRoute);
                 stateManager.reCalculateStates(inRoute);
-                //updateRoute --> alles wichtiges states
             }
             if(inRoute.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
                 InsertionData iData = breakInsertionCalculator.getInsertionData(inRoute, aBreak, inRoute.getVehicle(), inRoute.getDepartureTime(), inRoute.getDriver(), Double.MAX_VALUE);
@@ -48,12 +46,9 @@ public class BreakScheduling implements JobInsertedListener, RuinListener {
                     for(Event e : iData.getEvents()){
                         eventListeners.inform(e);
                     }
-                    //inform job inserted
                     stateManager.informJobInserted(aBreak,inRoute,0,0);
                 }
             }
-
-
         }
     }
 

@@ -557,6 +557,7 @@ public class Jsprit {
         vra.addListener(noiseConfigurator);
         vra.addListener(noise);
         vra.addListener(clusters);
+
         vra.addListener(new BreakScheduling(vrp,stateManager,constraintManager));
 //        vra.addListener(new RuinBreaks());
         handleExecutorShutdown(vra);

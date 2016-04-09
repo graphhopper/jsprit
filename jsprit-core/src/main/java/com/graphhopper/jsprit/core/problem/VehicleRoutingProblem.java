@@ -583,6 +583,7 @@ public class VehicleRoutingProblem {
         logger.info("setup problem: {}", this);
     }
 
+
     @Override
     public String toString() {
         return "[fleetSize=" + fleetSize + "][#jobs=" + jobs.size() + "][#vehicles=" + vehicles.size() + "][#vehicleTypes=" + vehicleTypes.size() + "][" +
