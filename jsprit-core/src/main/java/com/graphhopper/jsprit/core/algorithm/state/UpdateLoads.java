@@ -113,5 +113,9 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
         }
     }
 
+    public void informRouteChanged(VehicleRoute route){
+        insertionStarts(route);
+    }
+
 
 }

@@ -576,12 +576,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     public void reCalculateStates(VehicleRoute route){
-        insertionListeners.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
-        for (RouteVisitor v : routeVisitors) {
-            v.visit(route);
-        }
-        routeActivityVisitor.visit(route);
-        revRouteActivityVisitor.visit(route);
+        informInsertionStarts(Arrays.asList(route),Collections.<Job>emptyList());
     }
 
     @Override
