@@ -54,6 +54,8 @@ public class SolutionAnalyser {
     private final static String LOAD_DELIVERED = "load-delivered";
 
 
+
+
     private static class LoadAndActivityCounter implements StateUpdater, ActivityVisitor {
 
         private final StateManager stateManager;
@@ -491,6 +493,8 @@ public class SolutionAnalyser {
     private Capacity deliveryLoad;
     private Capacity deliveryLoadAtEnd;
 
+    private double maxOperationTime;
+
 
     private Double total_costs;
 
@@ -558,6 +562,7 @@ public class SolutionAnalyser {
 
     private void recalculateSolutionIndicators() {
         for (VehicleRoute route : solution.getRoutes()) {
+            maxOperationTime = Math.max(maxOperationTime,getOperationTime(route));
             tp_distance += getDistance(route);
             tp_time += getTransportTime(route);
             waiting_time += getWaitingTime(route);
@@ -583,6 +588,7 @@ public class SolutionAnalyser {
     }
 
     private void clearSolutionIndicators() {
+        maxOperationTime = 0.;
         tp_distance = 0.;
         tp_time = 0.;
         waiting_time = 0.;
@@ -1123,6 +1129,8 @@ public class SolutionAnalyser {
     public Double getOperationTime() {
         return operation_time;
     }
+
+    public Double getMaxOperationTime() { return maxOperationTime; }
 
     /**
      * @return total waiting time for specified solution
