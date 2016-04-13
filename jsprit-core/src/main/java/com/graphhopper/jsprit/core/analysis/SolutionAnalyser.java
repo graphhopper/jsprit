@@ -337,7 +337,7 @@ public class SolutionAnalyser {
             if(route.getVehicle() != null)
             	coef = route.getVehicle().getCoefSetupTime();
             if(!prevAct.getLocation().equals(activity.getLocation()))
-            	setupCost = activity.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+            	setupCost = activity.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
             return setupCost + transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
         }
 

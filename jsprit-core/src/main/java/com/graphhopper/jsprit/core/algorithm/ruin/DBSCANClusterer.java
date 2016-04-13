@@ -193,7 +193,7 @@ public class DBSCANClusterer {
             if(r.getVehicle() != null)
             	coef = r.getVehicle().getCoefSetupTime();
             if(!act1.getLocation().equals(act2.getLocation()))
-            	setupCost = act2.getSetupTime() * coef * r.getVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+            	setupCost = act2.getSetupTime() * coef * r.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
             double dist = setupCost + costs.getTransportCost(act1.getLocation(), act2.getLocation(),
                 0., null, r.getVehicle());
             if (dist < min) min = dist;

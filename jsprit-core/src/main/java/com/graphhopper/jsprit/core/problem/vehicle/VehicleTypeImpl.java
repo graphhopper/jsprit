@@ -47,6 +47,7 @@ public class VehicleTypeImpl implements VehicleType {
         public final double perDistanceUnit;
         public final double perWaitingTimeUnit;
         public final double perServiceTimeUnit;
+        public final double perSetupTimeUnit;
 
         private VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit) {
             super();
@@ -56,6 +57,7 @@ public class VehicleTypeImpl implements VehicleType {
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = 0.;
             this.perServiceTimeUnit = 0.;
+            this.perSetupTimeUnit = 0.;
         }
 
         public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit) {
@@ -65,20 +67,22 @@ public class VehicleTypeImpl implements VehicleType {
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = perWaitingTimeUnit;
             this.perServiceTimeUnit = 0.;
+            this.perSetupTimeUnit = 0.;
         }
 
-        public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit, double perServiceTimeUnit) {
+        public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit, double perServiceTimeUnit, double perSetupTimeUnit) {
             this.fix = fix;
             this.perTimeUnit = perTimeUnit;
             this.perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = perWaitingTimeUnit;
             this.perServiceTimeUnit = perServiceTimeUnit;
+            this.perSetupTimeUnit = perSetupTimeUnit;
         }
 
         @Override
         public String toString() {
-            return "[fixed=" + fix + "][perTime=" + perTransportTimeUnit + "][perDistance=" + perDistanceUnit + "][perWaitingTimeUnit=" + perWaitingTimeUnit + "]";
+            return "[fixed=" + fix + "][perTime=" + perTransportTimeUnit + "][perDistance=" + perDistanceUnit + "][perWaitingTimeUnit=" + perWaitingTimeUnit + "][perSetupTimeUnit=" + perSetupTimeUnit + "]";
         }
     }
 
@@ -106,6 +110,7 @@ public class VehicleTypeImpl implements VehicleType {
         private double perTime = 0.0;
         private double perWaitingTime = 0.0;
         private double perServiceTime = 0.0;
+        private double perSetupTime = 0.0;
 
         private String profile = "car";
 
@@ -212,6 +217,11 @@ public class VehicleTypeImpl implements VehicleType {
         public VehicleTypeImpl.Builder setCostPerServiceTime(double perServiceTime) {
             this.perServiceTime = perServiceTime;
             return this;
+        }
+
+        public VehicleTypeImpl.Builder setCostPerSetupTime(double perSetupTime) {
+        	this.perSetupTime = perSetupTime;
+        	return this;
         }
 
         /**
@@ -322,7 +332,7 @@ public class VehicleTypeImpl implements VehicleType {
         typeId = builder.id;
         capacity = builder.capacity;
         maxVelocity = builder.maxVelo;
-        vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance, builder.perWaitingTime, builder.perServiceTime);
+        vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance, builder.perWaitingTime, builder.perServiceTime, builder.perSetupTime);
         capacityDimensions = builder.capacityDimensions;
         profile = builder.profile;
     }

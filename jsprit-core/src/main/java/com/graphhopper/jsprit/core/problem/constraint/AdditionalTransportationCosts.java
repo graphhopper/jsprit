@@ -63,7 +63,7 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
     	double setup_time_prevAct_newAct = 0.0;
     	if(!prevAct.getLocation().equals(newAct.getLocation()))
     		setup_time_prevAct_newAct = newAct.getSetupTime() * coef;
-    	double setup_cost_prevAct_newAct = setup_time_prevAct_newAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+    	double setup_cost_prevAct_newAct = setup_time_prevAct_newAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
         double tp_costs_prevAct_newAct = setup_cost_prevAct_newAct + routingCosts.getTransportCost(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double tp_time_prevAct_newAct = setup_time_prevAct_newAct + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
@@ -80,19 +80,19 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
         double setup_time_newAct_nextAct = 0.0;
     	if(!newAct.getLocation().equals(nextAct.getLocation()))
     		setup_time_newAct_nextAct = nextAct.getSetupTime() * coef;
-    	double setup_cost_newAct_nextAct = setup_time_newAct_nextAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+    	double setup_cost_newAct_nextAct = setup_time_newAct_nextAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
         double tp_costs_newAct_nextAct = setup_cost_newAct_nextAct + routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct;
 
         double oldCosts;
         if (iFacts.getRoute().isEmpty()) {
-            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        	double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         } else {
         	double setup_time_prevAct_nextAct = 0.0;
             if(!prevAct.getLocation().equals(nextAct.getLocation()))
             	setup_time_prevAct_nextAct = nextAct.getSetupTime() * coef;
-            double setup_costs_prevAct_nextAct = setup_time_prevAct_nextAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+            double setup_costs_prevAct_nextAct = setup_time_prevAct_nextAct * iFacts.getNewVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
             double tp_costs_prevAct_nextAct = setup_costs_prevAct_nextAct + routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         }

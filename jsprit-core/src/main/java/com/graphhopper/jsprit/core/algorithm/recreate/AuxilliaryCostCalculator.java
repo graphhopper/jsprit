@@ -69,7 +69,7 @@ final class AuxilliaryCostCalculator {
             double setup_time_prevAct_act = 0.0;
             if(!prevAct.getLocation().equals(act.getLocation()))
             	setup_time_prevAct_act = act.getSetupTime() * coef;
-            double setupCost = setup_time_prevAct_act * vehicle.getType().getVehicleCostParams().perTransportTimeUnit;
+            double setupCost = setup_time_prevAct_act * vehicle.getType().getVehicleCostParams().perSetupTimeUnit;
             double transportCost = setupCost + routingCosts.getTransportCost(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             double transportTime = setup_time_prevAct_act + routingCosts.getTransportTime(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             cost += transportCost;
