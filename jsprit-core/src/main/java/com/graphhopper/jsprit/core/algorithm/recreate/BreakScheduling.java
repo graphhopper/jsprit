@@ -8,6 +8,8 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -16,6 +18,8 @@ import java.util.*;
  */
 public class BreakScheduling implements JobInsertedListener, RuinListener {
 
+    private final static Logger logger = LogManager.getLogger();
+
     private final StateManager stateManager;
 
     private final BreakInsertionCalculator breakInsertionCalculator;
@@ -23,6 +27,8 @@ public class BreakScheduling implements JobInsertedListener, RuinListener {
     private final EventListeners eventListeners;
 
     private Set<VehicleRoute> modifiedRoutes = new HashSet<VehicleRoute>();
+
+    private boolean firstRuin = true;
 
     public BreakScheduling(VehicleRoutingProblem vrp, StateManager stateManager, ConstraintManager constraintManager) {
         this.stateManager = stateManager;
@@ -37,12 +43,14 @@ public class BreakScheduling implements JobInsertedListener, RuinListener {
         if(aBreak != null){
             boolean removed = inRoute.getTourActivities().removeJob(aBreak);
             if(removed){
+                logger.trace("ruin: {}", aBreak.getId());
                 stateManager.removed(aBreak,inRoute);
                 stateManager.reCalculateStates(inRoute);
             }
             if(inRoute.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
                 InsertionData iData = breakInsertionCalculator.getInsertionData(inRoute, aBreak, inRoute.getVehicle(), inRoute.getDepartureTime(), inRoute.getDriver(), Double.MAX_VALUE);
                 if(!(iData instanceof InsertionData.NoInsertionFound)){
+                    logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);
                     for(Event e : iData.getEvents()){
                         eventListeners.inform(e);
                     }
@@ -59,6 +67,11 @@ public class BreakScheduling implements JobInsertedListener, RuinListener {
 
     @Override
     public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
+        if(firstRuin){
+            firstRuin = false;
+            modifiedRoutes.clear();
+            modifiedRoutes.addAll(routes);
+        }
         for(VehicleRoute route : modifiedRoutes){
             Break aBreak = route.getVehicle().getBreak();
             route.getTourActivities().removeJob(aBreak);
