@@ -226,6 +226,7 @@ public class TourActivities {
     private void addJob(TourActivity act) {
         if (act instanceof JobActivity) {
             Job job = ((JobActivity) act).getJob();
+            if(job instanceof Service) assert !jobs.contains(job);
             jobs.add(job);
         }
     }

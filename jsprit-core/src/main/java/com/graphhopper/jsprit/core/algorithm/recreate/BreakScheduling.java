@@ -1,5 +1,6 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
@@ -16,7 +17,7 @@ import java.util.*;
 /**
  * Created by schroeder on 07/04/16.
  */
-public class BreakScheduling implements JobInsertedListener, RuinListener {
+public class BreakScheduling implements InsertionStartsListener,JobInsertedListener, RuinListener {
 
     private final static Logger logger = LogManager.getLogger();
 
@@ -67,29 +68,68 @@ public class BreakScheduling implements JobInsertedListener, RuinListener {
 
     @Override
     public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-        if(firstRuin){
-            firstRuin = false;
-            modifiedRoutes.clear();
-            modifiedRoutes.addAll(routes);
-        }
-        for(VehicleRoute route : modifiedRoutes){
+//        if(firstRuin){
+//            firstRuin = false;
+//            modifiedRoutes.clear();
+//            modifiedRoutes.addAll(routes);
+//        }
+        for(VehicleRoute route : routes){
             Break aBreak = route.getVehicle().getBreak();
-            route.getTourActivities().removeJob(aBreak);
+            boolean removed = route.getTourActivities().removeJob(aBreak);
+            if(removed) logger.trace("ruin: {}", aBreak.getId());
         }
         List<Break> breaks = new ArrayList<Break>();
-        if(!modifiedRoutes.isEmpty()) {
+//        if(!modifiedRoutes.isEmpty()) {
             for (Job j : unassignedJobs) {
                 if (j instanceof Break) {
                     breaks.add((Break) j);
                 }
             }
-        }
+//        }
         for(Break b : breaks){ unassignedJobs.remove(b); }
-        modifiedRoutes.clear();
+//        modifiedRoutes.clear();
     }
 
     @Override
     public void removed(Job job, VehicleRoute fromRoute) {
         if(fromRoute.getVehicle().getBreak() != null) modifiedRoutes.add(fromRoute);
+    }
+
+    @Override
+    public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
+        for(VehicleRoute route : vehicleRoutes){
+            Break aBreak = route.getVehicle().getBreak();
+            if(aBreak != null && !route.getTourActivities().servesJob(aBreak)){
+                if(route.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
+                    InsertionData iData = breakInsertionCalculator.getInsertionData(route, aBreak, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
+                    if(!(iData instanceof InsertionData.NoInsertionFound)){
+                        logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);
+                        for(Event e : iData.getEvents()){
+                            eventListeners.inform(e);
+                        }
+                        stateManager.informJobInserted(aBreak,route,0,0);
+                    }
+                }
+            }
+//            if(aBreak != null){
+//                boolean removed = route.getTourActivities().removeJob(aBreak);
+//                if(removed){
+//                    logger.trace("ruin: {}", aBreak.getId());
+//                    stateManager.removed(aBreak,route);
+//                    stateManager.reCalculateStates(route);
+//                }
+//                if(route.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
+//                    InsertionData iData = breakInsertionCalculator.getInsertionData(route, aBreak, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
+//                    if(!(iData instanceof InsertionData.NoInsertionFound)){
+//                        logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);
+//                        for(Event e : iData.getEvents()){
+//                            eventListeners.inform(e);
+//                        }
+//                        stateManager.informJobInserted(aBreak,route,0,0);
+//                    }
+//                }
+//            }
+        }
+
     }
 }

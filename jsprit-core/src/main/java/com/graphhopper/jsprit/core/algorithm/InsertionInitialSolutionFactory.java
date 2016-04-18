@@ -25,7 +25,6 @@ import com.graphhopper.jsprit.core.problem.solution.InitialSolutionFactory;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,9 +61,9 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
 
     private List<Job> getUnassignedJobs(VehicleRoutingProblem vrp) {
         ArrayList<Job> jobs = new ArrayList<Job>(vrp.getJobs().values());
-        for (Vehicle v : vrp.getVehicles()) {
-            if (v.getBreak() != null) jobs.add(v.getBreak());
-        }
+//        for (Vehicle v : vrp.getVehicles()) {
+//            if (v.getBreak() != null) jobs.add(v.getBreak());
+//        }
         return jobs;
     }
 
