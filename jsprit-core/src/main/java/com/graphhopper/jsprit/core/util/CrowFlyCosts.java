@@ -90,7 +90,14 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts im
         } catch (NullPointerException e) {
             throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
         }
-        return distance / speed;
+    	double timeShift = 0;
+        double coef = 1.0;
+        if(vehicle != null)
+        	coef = vehicle.getCoefSetupTime();
+    	if(from != to && from.getIndex() >= 0 && to.getIndex() >=0){
+    		timeShift = to.getSetupTime() * coef;
+    	}
+        return timeShift + distance / speed;
     }
 
     @Override

@@ -94,6 +94,11 @@ public class VehicleImpl extends AbstractVehicle {
             return null;
         }
 
+		@Override
+		public double getCoefSetupTime() {
+			return 0;
+		}
+
     }
 
     /**
@@ -128,6 +133,8 @@ public class VehicleImpl extends AbstractVehicle {
         private Location endLocation;
 
         private Break aBreak;
+
+        private double coefSetupTime = 1.0;
 
         private Builder(String id) {
             super();
@@ -264,6 +271,11 @@ public class VehicleImpl extends AbstractVehicle {
             this.aBreak = aBreak;
             return this;
         }
+
+        public Builder setCoefSetupTime(double coefSetupTime) {
+        	this.coefSetupTime = coefSetupTime;
+        	return this;
+        }
     }
 
     /**
@@ -295,6 +307,8 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final Break aBreak;
 
+    private final double coefSetupTime;
+
     private VehicleImpl(Builder builder) {
         id = builder.id;
         type = builder.type;
@@ -305,6 +319,7 @@ public class VehicleImpl extends AbstractVehicle {
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
+        coefSetupTime = builder.coefSetupTime;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot));
     }
@@ -405,6 +420,11 @@ public class VehicleImpl extends AbstractVehicle {
             return false;
         return true;
     }
+
+	@Override
+	public double getCoefSetupTime() {
+		return coefSetupTime;
+	}
 
 }
 

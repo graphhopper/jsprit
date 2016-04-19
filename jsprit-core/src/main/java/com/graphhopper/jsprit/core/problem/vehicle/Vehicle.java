@@ -68,6 +68,8 @@ public interface Vehicle extends HasId, HasIndex {
 
     public abstract Location getEndLocation();
 
+    public abstract double getCoefSetupTime();
+
     public abstract VehicleTypeKey getVehicleTypeIdentifier();
 
     public abstract Skills getSkills();
