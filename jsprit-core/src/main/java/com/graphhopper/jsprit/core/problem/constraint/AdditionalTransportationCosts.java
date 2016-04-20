@@ -49,7 +49,7 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
         super();
         this.routingCosts = routingCosts;
         this.activityCosts = activityCosts;
-        this.softCosts = new SoftTimeWindowCost();
+        this.softCosts = new SoftTimeWindowCost(routingCosts);
     }
 
     /**
@@ -64,7 +64,6 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
         double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
-        tp_costs_prevAct_newAct += softCosts.getSoftTimeWindowCost(newAct, newAct_arrTime, iFacts.getNewVehicle());
         double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,newAct_arrTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
 
         //open routes
@@ -75,10 +74,8 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
         }
 
         double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double nextAct_arrTime = depTimeAtPrevAct + tp_time_newAct_nextAct;
-        tp_costs_newAct_nextAct += softCosts.getSoftTimeWindowCost(nextAct, nextAct_arrTime, iFacts.getNewVehicle());
-        double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct;
+        double soft_cost_newAct = softCosts.getSoftTimeWindowCost(iFacts.getRoute(), prevAct, newAct, nextAct, depTimeAtPrevAct);
+        double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct + soft_cost_newAct;
 
         double oldCosts;
         if (iFacts.getRoute().isEmpty()) {
@@ -86,9 +83,6 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
             oldCosts = tp_costs_prevAct_nextAct;
         } else {
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
-            double tp_time_prevAct_nextAct = routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
-            double nextAct_arrTime_old = depTimeAtPrevAct + tp_time_prevAct_nextAct;
-            tp_costs_prevAct_nextAct += softCosts.getSoftTimeWindowCost(nextAct, nextAct_arrTime_old, iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         }
 

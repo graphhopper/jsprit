@@ -314,7 +314,7 @@ public class SolutionAnalyser {
             this.last_transport_distance_id = last_distance_id;
             this.last_transport_time_id = last_time_id;
             this.last_transport_cost_id = last_cost_id;
-            this.softCosts = new SoftTimeWindowCost();
+            this.softCosts = new SoftTimeWindowCost(transportCost);
         }
 
         @Override

@@ -93,7 +93,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
         this.hardRouteLevelConstraint = hardRouteLevelConstraint;
         this.hardActivityLevelConstraint = hardActivityLevelConstraint;
         auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(transportCosts, activityCosts);
-        this.softCosts = new SoftTimeWindowCost();
+        this.softCosts = new SoftTimeWindowCost(transportCosts);
         logger.debug("initialise {}", this);
     }
 
