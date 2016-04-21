@@ -36,11 +36,11 @@ final class AuxilliaryCostCalculator {
 
     private SoftTimeWindowCost softCosts;
 
-    public AuxilliaryCostCalculator(final VehicleRoutingTransportCosts routingCosts, final VehicleRoutingActivityCosts actCosts) {
+    public AuxilliaryCostCalculator(final VehicleRoutingTransportCosts routingCosts, final SoftTimeWindowCost softCosts, final VehicleRoutingActivityCosts actCosts) {
         super();
         this.routingCosts = routingCosts;
         this.activityCosts = actCosts;
-        this.softCosts = new SoftTimeWindowCost(routingCosts);
+        this.softCosts = softCosts;
     }
 
     /**

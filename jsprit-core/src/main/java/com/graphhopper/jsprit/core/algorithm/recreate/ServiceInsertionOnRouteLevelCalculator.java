@@ -85,15 +85,15 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
         logger.debug("set [solutionMemory={}]", memorySize);
     }
 
-    public ServiceInsertionOnRouteLevelCalculator(VehicleRoutingTransportCosts vehicleRoutingCosts, VehicleRoutingActivityCosts costFunc, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteConstraint hardRouteLevelConstraint, HardActivityConstraint hardActivityLevelConstraint) {
+    public ServiceInsertionOnRouteLevelCalculator(VehicleRoutingTransportCosts vehicleRoutingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts costFunc, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteConstraint hardRouteLevelConstraint, HardActivityConstraint hardActivityLevelConstraint) {
         super();
         this.transportCosts = vehicleRoutingCosts;
         this.activityCosts = costFunc;
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
         this.hardRouteLevelConstraint = hardRouteLevelConstraint;
         this.hardActivityLevelConstraint = hardActivityLevelConstraint;
-        auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(transportCosts, activityCosts);
-        this.softCosts = new SoftTimeWindowCost(transportCosts);
+        auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(transportCosts, softCosts, activityCosts);
+        this.softCosts = softCosts;
         logger.debug("initialise {}", this);
     }
 

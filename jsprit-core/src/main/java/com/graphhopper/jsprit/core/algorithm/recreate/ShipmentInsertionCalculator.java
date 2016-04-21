@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -53,6 +54,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
     private ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
     private VehicleRoutingTransportCosts transportCosts;
+    
+    private SoftTimeWindowCost softCosts;
 
     private VehicleRoutingActivityCosts activityCosts;
 
@@ -60,7 +63,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
+    public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
         this.hardRouteLevelConstraint = constraintManager;
@@ -69,7 +72,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         this.softRouteConstraint = constraintManager;
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
-        additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
+        this.softCosts = softCosts;
+        additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts, softCosts);
         logger.debug("initialise {}", this);
     }
 

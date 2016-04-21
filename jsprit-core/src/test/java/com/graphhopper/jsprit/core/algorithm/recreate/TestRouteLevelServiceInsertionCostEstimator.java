@@ -25,6 +25,7 @@ import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -59,6 +60,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
     private VehicleRoutingTransportCosts routingCosts;
 
+    private SoftTimeWindowCost softCosts;
+
     private VehicleRoutingActivityCosts activityCosts;
 
     private StateManager stateManager;
@@ -74,6 +77,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
         routingCosts = CostFactory.createEuclideanCosts();
+        softCosts = new SoftTimeWindowCost(routingCosts, false);
         vrpBuilder.setRoutingCost(routingCosts);
 
         activityCosts = new VehicleRoutingActivityCosts() {
@@ -121,7 +125,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
         when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.INFINITE);
         stateManager = new StateManager(vrpMock);
-        stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts, routingCosts, stateManager));
+        stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts, routingCosts, softCosts, stateManager));
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
         constraintManager = new ConstraintManager(vrp, stateManager);
     }
@@ -129,9 +133,9 @@ public class TestRouteLevelServiceInsertionCostEstimator {
     @Test
     public void whenNewServiceNeedToBeInserted_itShouldReturnCorrectInsertionCosts() {
         final Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, vrp.getSoftTimeWindowCost(), activityCosts, stateManager);
         estimator.setForwardLooking(0);
-        ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
+        ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts, vrp.getSoftTimeWindowCost(),
             activityCosts, estimator, constraintManager, constraintManager);
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
@@ -151,9 +155,9 @@ public class TestRouteLevelServiceInsertionCostEstimator {
     @Test
     public void whenNewServiceNeedToBeInserted_itShouldReturnCorrectInsertionIndex() {
         final Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, vrp.getSoftTimeWindowCost(), activityCosts, stateManager);
         estimator.setForwardLooking(0);
-        final ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
+        final ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts, vrp.getSoftTimeWindowCost(), 
             activityCosts, estimator, constraintManager, constraintManager);
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
@@ -173,9 +177,9 @@ public class TestRouteLevelServiceInsertionCostEstimator {
     @Test
     public void whenNewServiceWithServiceTimeNeedToBeInserted_itShouldReturnCorrectInsertionData() {
         final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, vrp.getSoftTimeWindowCost(), activityCosts, stateManager);
         estimator.setForwardLooking(0);
-        ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
+        ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts, vrp.getSoftTimeWindowCost(),
             activityCosts, estimator, constraintManager, constraintManager);
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
@@ -202,9 +206,9 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
 //        PickupActivity pickupService = new PickupService(s4);
         VehicleRoute emptyroute = VehicleRoute.emptyRoute();
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, vrp.getSoftTimeWindowCost(), activityCosts, stateManager);
         estimator.setForwardLooking(0);
-        ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
+        ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts, vrp.getSoftTimeWindowCost(), 
             activityCosts, estimator, constraintManager, constraintManager);
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
@@ -230,9 +234,9 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         final Service s4 = Service.Builder.newInstance("s4").setServiceTime(10.).setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(3., 3.)).build();
 //        PickupActivity pickupService = new PickupService(s4);
         VehicleRoute emptyroute = VehicleRoute.emptyRoute();
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, vrp.getSoftTimeWindowCost(), activityCosts, stateManager);
         estimator.setForwardLooking(0);
-        ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
+        ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts, vrp.getSoftTimeWindowCost(), 
             activityCosts, estimator, constraintManager, constraintManager);
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {

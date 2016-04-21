@@ -151,8 +151,8 @@ public class Jsprit {
 
         private Builder(VehicleRoutingProblem vrp) {
             this.vrp = vrp;
+            this.softCosts = vrp.getSoftTimeWindowCost();
             properties = new Properties(createDefaultProperties());
-            this.softCosts = new SoftTimeWindowCost(vrp.getTransportCosts());
         }
 
         private Properties createDefaultProperties() {

@@ -44,9 +44,9 @@ class AdditionalAccessEgressCalculator {
      *
      * @author schroeder
      */
-    public AdditionalAccessEgressCalculator(VehicleRoutingTransportCosts routingCosts) {
+    public AdditionalAccessEgressCalculator(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts) {
         this.routingCosts = routingCosts;
-        this.softCosts = new SoftTimeWindowCost(routingCosts);
+        this.softCosts = softCosts;
     }
 
     public double getCosts(JobInsertionContext insertionContext) {
@@ -57,7 +57,7 @@ class AdditionalAccessEgressCalculator {
         Driver newDriver = insertionContext.getNewDriver();
         double newVehicleDepartureTime = insertionContext.getNewDepTime();
         if (!currentRoute.isEmpty()) {
-        	double newArrTime = newVehicleDepartureTime+routingCosts.getBackwardTransportTime(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
+            double newArrTime = newVehicleDepartureTime+routingCosts.getBackwardTransportTime(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
             double accessTransportCostNew = softCosts.getSoftTimeWindowCost(currentRoute.getActivities().get(0),newArrTime,newVehicle) + routingCosts.getTransportCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
             double accessTransportCostOld = softCosts.getSoftTimeWindowCost(currentRoute.getActivities().get(0), currentRoute.getActivities().get(0).getArrTime(), currentRoute.getVehicle()) + routingCosts.getTransportCost(currentRoute.getStart().getLocation(), currentRoute.getActivities().get(0).getLocation(), currentRoute.getDepartureTime(), currentRoute.getDriver(), currentRoute.getVehicle());
 

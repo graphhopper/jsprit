@@ -32,10 +32,20 @@ public class TimeWindow {
      * @return TimeWindow
      * @throw IllegalArgumentException either if start or end < 0.0 or end < start
      */
-    public static TimeWindow newInstance(double hardStart, double hardEnd) {
-        return new TimeWindow(hardStart, hardEnd);
+    public static TimeWindow newInstance(double start, double end) {
+        return new TimeWindow(start, end);
     }
     
+    /**
+     * Returns new instance of TimeWindow with soft bounds.
+     *
+     * @param hardStart
+     * @param softStart
+     * @param softEnd
+     * @param hardEnd
+     * @return TimeWindow
+     * @throw IllegalArgumentException either if start or end < 0.0 or hardEnd < softEnd < softStart < hardStart
+     */
     public static TimeWindow newInstance(double hardStart, double softStart, double softEnd, double hardEnd) {
     	return new TimeWindow(hardStart, softStart, softEnd, hardEnd);
     }
@@ -52,16 +62,16 @@ public class TimeWindow {
      * @param end
      * @throw IllegalArgumentException either if start or end < 0.0 or end < start
      */
-    public TimeWindow(double hardStart, double hardEnd) {
+    public TimeWindow(double start, double end) {
         super();
-        if (hardStart < 0.0 || hardEnd < 0.0)
-            throw new IllegalArgumentException("neither time window start nor end must be < 0.0: " + "[start=" + hardStart + "][end=" + hardEnd + "]");
-        if (hardEnd < hardStart)
-            throw new IllegalArgumentException("time window end cannot be smaller than its start: " + "[start=" + hardStart + "][end=" + hardEnd + "]");
-        this.hardStart = hardStart;
-        this.hardEnd = hardEnd;
-        this.softStart = hardStart;
-        this.softEnd = hardEnd;
+        if (start < 0.0 || end < 0.0)
+            throw new IllegalArgumentException("neither time window start nor end must be < 0.0: " + "[start=" + start + "][end=" + end + "]");
+        if (end < start)
+            throw new IllegalArgumentException("time window end cannot be smaller than its start: " + "[start=" + start + "][end=" + end + "]");
+        this.hardStart = start;
+        this.hardEnd = end;
+        this.softStart = start;
+        this.softEnd = end;
     }
     
     public TimeWindow(double hardStart, double softStart, double softEnd, double hardEnd) {
@@ -95,25 +105,25 @@ public class TimeWindow {
     }
 
     public double getHardStart() {
-    	return hardStart;
+        return hardStart;
     }
 
     public double getHardEnd() {
-    	return hardEnd;
+        return hardEnd;
     }
 
     public double getSoftStart() {
-    	return softStart;
+        return softStart;
     }
 
     public double getSoftEnd() {
-    	return softEnd;
+        return softEnd;
     }
 
     @Override
     public String toString() {
-    	if(hardStart!= softStart || softEnd != hardEnd)
-    		return "[start=" + hardStart + "][softStart=" + softStart + "][softEnd=" + softEnd +"[end=" + hardEnd + "]";
+        if(hardStart!= softStart || softEnd != hardEnd)
+    	    return "[start=" + hardStart + "][softStart=" + softStart + "][softEnd=" + softEnd +"[end=" + hardEnd + "]";
         return "[start=" + hardStart + "][end=" + hardEnd + "]";
     }
 
@@ -133,6 +143,11 @@ public class TimeWindow {
         return result;
     }
 
+    public boolean hasSoftBound() {
+        if ( hardStart != softStart || softEnd != hardEnd)
+    	    return true;
+        return false;
+    }
     /**
      * Two timeWindows are equal if they have the same start AND endTime.
      */
@@ -151,11 +166,11 @@ public class TimeWindow {
             .doubleToLongBits(other.hardStart))
             return false;
         if (Double.doubleToLongBits(softStart) != Double
-                .doubleToLongBits(other.softStart))
-        	return false;
+            .doubleToLongBits(other.softStart))
+            return false;
         if (Double.doubleToLongBits(softEnd) != Double
-                .doubleToLongBits(other.softEnd))
-        	return false;
+            .doubleToLongBits(other.softEnd))
+            return false;
         return true;
     }
 

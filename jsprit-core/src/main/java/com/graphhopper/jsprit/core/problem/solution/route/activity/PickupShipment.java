@@ -63,26 +63,26 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
         this.earliest = earliest;
         if(this.softEarliest < earliest)
-        	this.softEarliest = earliest;
+            this.softEarliest = earliest;
     }
 
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.latest = latest;
         if(this.softLatest > latest)
-        	this.softLatest = latest;
+            this.softLatest = latest;
     }
 
     public void setSoftEarliestoperationStartTime(double earliest) {
-    	this.softEarliest = earliest;
-    	if(this.earliest > earliest)
-    		this.earliest = earliest;
+        this.softEarliest = earliest;
+        if(this.earliest > earliest)
+            this.earliest = earliest;
     }
 
     public void setSoftLatestOperationStartTime(double latest) {
-    	this.softLatest = latest;
-    	if(this.latest < latest)
-    		this.latest = latest;
+        this.softLatest = latest;
+        if(this.latest < latest)
+            this.latest = latest;
     }
 
     @Override
@@ -149,11 +149,11 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
 	@Override
 	public double getSoftLowerBoundOperationStartTime() {
-		return softEarliest;
+        return softEarliest;
 	}
 
 	@Override
 	public double getSoftUpperBoundOperationStartTime() {
-		return softLatest;
+        return softLatest;
 	}
 }

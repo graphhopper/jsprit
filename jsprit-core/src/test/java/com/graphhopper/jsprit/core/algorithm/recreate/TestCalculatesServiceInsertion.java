@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -130,7 +131,7 @@ public class TestCalculatesServiceInsertion {
 
         VehicleRoutingActivityCosts actCosts = mock(VehicleRoutingActivityCosts.class);
 
-        serviceInsertion = new ServiceInsertionCalculator(costs, vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, actCosts, states), cManager);
+        serviceInsertion = new ServiceInsertionCalculator(costs, vrp.getSoftTimeWindowCost(), vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, vrp.getSoftTimeWindowCost(), actCosts, states), cManager);
         serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
             @Override
             public List<AbstractActivity> createActivities(Job job) {
@@ -204,7 +205,7 @@ public class TestCalculatesServiceInsertion {
     @Test
     public void whenInsertingJobAndCurrRouteIsEmpty_accessEggressCalcShouldReturnZero() {
         VehicleRoute route = VehicleRoute.Builder.newInstance(VehicleImpl.createNoVehicle(), DriverImpl.noDriver()).build();
-        AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
+        AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs, vrp.getSoftTimeWindowCost());
         Job job = Service.Builder.newInstance("1").addSizeDimension(0, 0).setLocation(Location.newInstance("1")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
         JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
         assertEquals(0.0, accessEgressCalc.getCosts(iContex), 0.01);
@@ -216,7 +217,7 @@ public class TestCalculatesServiceInsertion {
             .addService(first)
             .build();
 
-        AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
+        AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs, vrp.getSoftTimeWindowCost());
         JobInsertionContext iContex = new JobInsertionContext(route, first, newVehicle, mock(Driver.class), 0.0);
         assertEquals(0.0, accessEgressCalc.getCosts(iContex), 0.01);
     }
@@ -248,7 +249,7 @@ public class TestCalculatesServiceInsertion {
 
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setStartLocation(Location.newInstance("newV")).build();
 
-        AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(routingCosts);
+        AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(routingCosts, vrp.getSoftTimeWindowCost());
         Job job = Service.Builder.newInstance("service2").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build();
         JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
         assertEquals(8.0, accessEgressCalc.getCosts(iContex), 0.01);

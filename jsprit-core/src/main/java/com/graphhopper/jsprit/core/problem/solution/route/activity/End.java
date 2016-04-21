@@ -146,12 +146,12 @@ public final class End extends AbstractActivity implements TourActivity {
 
 	@Override
 	public double getSoftLowerBoundOperationStartTime() {
-		return theoretical_earliestOperationStartTime;
+        return theoretical_earliestOperationStartTime;
 	}
 
 	@Override
 	public double getSoftUpperBoundOperationStartTime() {
-		return theoretical_latestOperationStartTime;
+        return theoretical_latestOperationStartTime;
 	}
 
 	@Override

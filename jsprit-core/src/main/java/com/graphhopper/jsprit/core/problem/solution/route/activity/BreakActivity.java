@@ -176,26 +176,26 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
         this.earliest = earliest;
         if(this.soft_earliest < earliest)
-        	this.soft_earliest = earliest;
+            this.soft_earliest = earliest;
     }
 
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.latest = latest;
         if(this.soft_latest > latest)
-        	this.soft_latest = latest;
+            this.soft_latest = latest;
     }
 
     public void setSoftEarliestoperationStartTime(double earliest) {
-    	this.soft_earliest = earliest;
-    	if(this.earliest > earliest)
-    		this.earliest = earliest;
+        this.soft_earliest = earliest;
+        if(this.earliest > earliest)
+            this.earliest = earliest;
     }
 
     public void setSoftLatestOperationStartTime(double latest) {
-    	this.soft_latest = latest;
-    	if(this.latest < latest)
-    		this.latest = latest;
+        this.soft_latest = latest;
+        if(this.latest < latest)
+            this.latest = latest;
     }
 
     @Override
@@ -215,12 +215,12 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
 	@Override
 	public double getSoftLowerBoundOperationStartTime() {
-		return this.soft_earliest;
+        return this.soft_earliest;
 	}
 
 	@Override
 	public double getSoftUpperBoundOperationStartTime() {
-		return this.soft_latest;
+        return this.soft_latest;
 	}
 
 

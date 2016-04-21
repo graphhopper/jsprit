@@ -147,7 +147,6 @@ public class SolutionPrinter {
     }
 
     private static void printVerbose(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
-    	SoftTimeWindowCost softCosts = new SoftTimeWindowCost(problem.getTransportCosts());
         String leftAlgin = "| %-7s | %-20s | %-21s | %-15s | %-15s | %-15s | %-15s |%n";
         out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
         out.printf("| detailed solution                                                                                                              |%n");
@@ -173,7 +172,7 @@ public class SolutionPrinter {
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
                     route.getVehicle());
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
-                c += softCosts.getSoftTimeWindowCost(act, act.getArrTime(), route.getVehicle());
+                c += problem.getSoftTimeWindowCost().getSoftTimeWindowCost(act, act.getArrTime(), route.getVehicle());
                 costs += c;
                 out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()),
                     Math.round(act.getEndTime()), Math.round(costs));

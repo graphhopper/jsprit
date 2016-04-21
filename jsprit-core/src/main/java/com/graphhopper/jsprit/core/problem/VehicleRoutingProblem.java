@@ -16,6 +16,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.problem;
 
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
@@ -27,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -73,6 +75,10 @@ public class VehicleRoutingProblem {
         }
 
         private VehicleRoutingTransportCosts transportCosts;
+        
+        private SoftTimeWindowCost softCosts;
+        
+        private boolean softCostsActiv = false;;
 
         private VehicleRoutingActivityCosts activityCosts = new WaitingTimeCosts();
 
@@ -350,6 +356,11 @@ public class VehicleRoutingProblem {
                 logger.warn("job " + job + " already in job list. overrides existing job.");
             }
             addLocationToTentativeLocations(job);
+
+            for( TimeWindow tw : job.getDeliveryTimeWindows()) 
+                if(tw.hasSoftBound()) softCostsActiv = true;
+            for( TimeWindow tw : job.getPickupTimeWindows()) 
+                if(tw.hasSoftBound()) softCostsActiv = true;
 //            tentative_coordinates.put(job.getPickupLocation().getId(), job.getPickupLocation().getCoordinate());
 //            tentative_coordinates.put(job.getDeliveryLocation().getId(), job.getDeliveryLocation().getCoordinate());
             jobs.put(job.getId(), job);
@@ -432,6 +443,8 @@ public class VehicleRoutingProblem {
             if (transportCosts == null) {
                 transportCosts = new CrowFlyCosts(getLocations());
             }
+
+            this.softCosts = new SoftTimeWindowCost(transportCosts, this.softCostsActiv);
             for (Job job : tentativeJobs.values()) {
                 if (!jobsInInitialRoutes.contains(job.getId())) {
                     addJobToFinalJobMapAndCreateActivities(job);
@@ -510,6 +523,9 @@ public class VehicleRoutingProblem {
             if (jobs.containsKey(service.getId())) {
                 logger.warn("service " + service + " already in job list. overrides existing job.");
             }
+            for( TimeWindow tw : service.getTimeWindows()) 
+                if(tw.hasSoftBound()) softCostsActiv = true;
+            
             jobs.put(service.getId(), service);
             return this;
         }
@@ -541,6 +557,7 @@ public class VehicleRoutingProblem {
      */
     private final VehicleRoutingActivityCosts activityCosts;
 
+    private final SoftTimeWindowCost softCosts;
     /**
      * map of jobs, stored by jobId
      */
@@ -593,6 +610,8 @@ public class VehicleRoutingProblem {
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
         this.allLocations = builder.allLocations;
+        this.softCosts = builder.softCosts;
+        this.softCosts.setHasSoftTimeWindows(builder.softCostsActiv);
         logger.info("setup problem: {}", this);
     }
 
@@ -710,5 +729,9 @@ public class VehicleRoutingProblem {
         }
         return acts;
     }
+
+    public SoftTimeWindowCost getSoftTimeWindowCost() {
+	    return softCosts;
+	}
 
 }

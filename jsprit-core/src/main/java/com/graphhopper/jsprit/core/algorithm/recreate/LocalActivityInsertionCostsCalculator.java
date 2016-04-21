@@ -50,12 +50,12 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 
     private RouteAndActivityStateGetter stateManager;
 
-    public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, RouteAndActivityStateGetter stateManager) {
+    public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts actCosts, RouteAndActivityStateGetter stateManager) {
         super();
         this.routingCosts = routingCosts;
         this.activityCosts = actCosts;
         this.stateManager = stateManager;
-        this.softCosts = new SoftTimeWindowCost(routingCosts);
+        this.softCosts = softCosts;
     }
 
     @Override

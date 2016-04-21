@@ -45,11 +45,11 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
      * @param routingCosts
      * @param activityCosts
      */
-    public AdditionalTransportationCosts(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
+    public AdditionalTransportationCosts(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.routingCosts = routingCosts;
         this.activityCosts = activityCosts;
-        this.softCosts = new SoftTimeWindowCost(routingCosts);
+        this.softCosts = softCosts;
     }
 
     /**
