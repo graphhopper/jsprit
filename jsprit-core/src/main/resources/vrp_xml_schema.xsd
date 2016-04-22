@@ -60,6 +60,8 @@
                                         <xs:element name="endLocation" type="locationType" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="typeId" type="xs:string" minOccurs="1" maxOccurs="1"/>
                                         <xs:element name="timeSchedule" type="timeWindowType"/>
+                                        <xs:element name="setupCoef" type="xs:decimal" minOccurs="0"
+                                                                maxOccurs="1" default="1.0"/>
                                         <xs:element name="returnToDepot" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="skills" type="xs:string" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="breaks" type="breaksType" minOccurs="0" maxOccurs="1"/>
@@ -110,6 +112,8 @@
                                                                 maxOccurs="1" default="0.0"/>
                                                     <xs:element name="wait" type="xs:decimal" minOccurs="0"
                                                                 maxOccurs="1" default="0.0"/>
+                                                    <xs:element name="setup" type="xs:decimal" minOccurs="0"
+                                                                maxOccurs="1" default="0.0"/>
                                                 </xs:all>
                                             </xs:complexType>
                                         </xs:element>
@@ -152,6 +156,8 @@
                                         </xs:element>
                                         <xs:element name="duration" type="xs:decimal" minOccurs="0" maxOccurs="1"
                                                     default="0.0"/>
+                                        <xs:element name="setupDuration" type="xs:decimal" minOccurs="0" maxOccurs="1"
+                                                    default="0.0"/>            
                                         <xs:element name="timeWindows" minOccurs="0" maxOccurs="1">
                                             <xs:complexType>
                                                 <xs:sequence>
@@ -187,6 +193,8 @@
                                                                 maxOccurs="1"/>
                                                     <xs:element name="duration" type="xs:decimal" minOccurs="0"
                                                                 maxOccurs="1" default="0.0"/>
+                                                    <xs:element name="setupDuration" type="xs:decimal" minOccurs="0" maxOccurs="1"
+                                                                default="0.0"/> 
                                                     <xs:element name="timeWindows" minOccurs="0" maxOccurs="1">
                                                         <xs:complexType>
                                                             <xs:sequence>
@@ -209,6 +217,8 @@
                                                                 maxOccurs="1"/>
                                                     <xs:element name="duration" type="xs:decimal" minOccurs="0"
                                                                 maxOccurs="1" default="0.0"/>
+                                                    <xs:element name="setupDuration" type="xs:decimal" minOccurs="0" maxOccurs="1"
+                                                                default="0.0"/> 
                                                     <xs:element name="timeWindows" minOccurs="0" maxOccurs="1">
                                                         <xs:complexType>
                                                             <xs:sequence>
