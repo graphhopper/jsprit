@@ -18,6 +18,7 @@ package com.graphhopper.jsprit.core.reporting;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -146,6 +147,7 @@ public class SolutionPrinter {
     }
 
     private static void printVerbose(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
+        SetupTime setupCosts = new SetupTime();
         String leftAlgin = "| %-7s | %-20s | %-21s | %-15s | %-15s | %-15s | %-15s |%n";
         out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
         out.printf("| detailed solution                                                                                                              |%n");
@@ -171,12 +173,7 @@ public class SolutionPrinter {
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
                     route.getVehicle());
 
-                double coef = 1.0;
-                if(route.getVehicle() != null)
-                	coef = route.getVehicle().getCoefSetupTime();
-                if(!prevAct.getLocation().equals(act.getLocation()))
-                	c += act.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
-
+                c += setupCosts.getSetupCost(prevAct, act, route.getVehicle());
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 costs += c;
                 out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()),

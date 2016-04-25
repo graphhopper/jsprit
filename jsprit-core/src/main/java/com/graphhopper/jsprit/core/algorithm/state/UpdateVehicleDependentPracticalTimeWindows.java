@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.RouteVisitor;
@@ -62,6 +63,8 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
 
     private final VehicleRoutingActivityCosts activityCosts;
 
+    private SetupTime setupCosts = new SetupTime();
+
     private VehicleRoute route;
 
     private double[] latest_arrTimes_at_prevAct;
@@ -100,14 +103,9 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
 
     public void visit(TourActivity activity) {
         for (Vehicle vehicle : vehicles) {
-            double coef = 1.0;
-            if(vehicle != null)
-            	coef = vehicle.getCoefSetupTime();
             double latestArrTimeAtPrevAct = latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             Location prevLocation = location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
-            double setup_time_activity_prevLocation = 0.0;
-            if(!activity.getLocation().equals(prevLocation))
-            	setup_time_activity_prevLocation = setup_time_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] * coef;
+            double setup_time_activity_prevLocation = setupCosts.getSetupTime(activity.getLocation(), prevLocation, setup_time_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()], route.getVehicle());
             double transport_time_activity_prevLocation = setup_time_activity_prevLocation + transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
                     latestArrTimeAtPrevAct, route.getDriver(), vehicle);
             double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transport_time_activity_prevLocation - activityCosts.getActivityDuration(activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());

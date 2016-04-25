@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -57,6 +58,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
     private VehicleRoutingTransportCosts transportCosts;
 
     private final VehicleRoutingActivityCosts activityCosts;
+
+    private SetupTime setupCosts = new SetupTime();
 
     private ActivityInsertionCostsCalculator additionalTransportCostsCalculator;
 
@@ -111,10 +114,6 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
          */
         double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
 
-        double coef = 1.0;
-        if(newVehicle != null)
-        	coef = newVehicle.getCoefSetupTime();
-
         double bestCost = bestKnownCosts;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
 		TimeWindow bestTimeWindow = null;
@@ -160,9 +159,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
                 }
 			}
             if(not_fulfilled_break) break;
-            double setup_time_nextAct = 0.0;
-            if(!prevAct.getLocation().equals(nextAct.getLocation()))
-            	setup_time_nextAct = nextAct.getSetupTime() * coef;
+            double setup_time_nextAct = setupCosts.getSetupTime(prevAct, nextAct, newVehicle);
             double transportTime_prevAct_nextAct = setup_time_nextAct + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
             double nextActArrTime = prevActStartTime  + transportTime_prevAct_nextAct;
             prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);

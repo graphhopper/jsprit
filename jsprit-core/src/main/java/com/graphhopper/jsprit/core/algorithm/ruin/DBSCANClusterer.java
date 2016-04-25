@@ -1,6 +1,7 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -92,6 +93,8 @@ public class DBSCANClusterer {
     }
 
     private VehicleRoutingTransportCosts costs;
+
+    private SetupTime setupCosts = new SetupTime();
 
     private int minNoOfJobsInCluster = 1;
 
@@ -188,12 +191,7 @@ public class DBSCANClusterer {
         for (int i = 0; i < noDistanceSamples; i++) {
             TourActivity act1 = RandomUtils.nextItem(r.getActivities(), random);
             TourActivity act2 = RandomUtils.nextItem(r.getActivities(), random);
-            double setupCost = 0.0;
-            double coef = 1.0;
-            if(r.getVehicle() != null)
-            	coef = r.getVehicle().getCoefSetupTime();
-            if(!act1.getLocation().equals(act2.getLocation()))
-            	setupCost = act2.getSetupTime() * coef * r.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
+            double setupCost = setupCosts.getSetupCost(act1, act2, r.getVehicle());
             double dist = setupCost + costs.getTransportCost(act1.getLocation(), act2.getLocation(),
                 0., null, r.getVehicle());
             if (dist < min) min = dist;

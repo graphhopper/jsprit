@@ -14,6 +14,7 @@ import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -299,6 +300,8 @@ public class Jsprit {
     private Properties properties;
 
     private Random random;
+
+    private SetupTime setupCosts = new SetupTime();
 
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
@@ -628,15 +631,11 @@ public class Jsprit {
 
                 for (VehicleRoute route : solution.getRoutes()) {
                     costs += route.getVehicle().getType().getVehicleCostParams().fix;
-                    double coef = 1.0;
-                    if(route.getVehicle() != null)
-                    	coef = route.getVehicle().getCoefSetupTime();
                     boolean hasBreak = false;
                     TourActivity prevAct = route.getStart();
                     for (TourActivity act : route.getActivities()) {
                         if (act instanceof BreakActivity) hasBreak = true;
-                        if(!prevAct.getLocation().equals(act.getLocation()))
-                        	costs += act.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
+                        costs += setupCosts.getSetupCost(prevAct, act, route.getVehicle());
                         costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
                         costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                         prevAct = act;

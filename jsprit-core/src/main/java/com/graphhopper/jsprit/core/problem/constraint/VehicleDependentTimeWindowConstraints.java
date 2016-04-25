@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -38,6 +39,8 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 
     private VehicleRoutingActivityCosts activityCosts;
 
+    private SetupTime setupCosts = new SetupTime();
+
     public VehicleDependentTimeWindowConstraints(RouteAndActivityStateGetter states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.states = states;
@@ -51,9 +54,6 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         double setup_time_nextActLocation = 0.0;
         Double latestArrTimeAtNextAct;
         Location nextActLocation;
-        double coef = 1.0;
-        if(iFacts.getNewVehicle() != null)
-        	coef = iFacts.getNewVehicle().getCoefSetupTime();
         if (nextAct instanceof End) {
             latestArrTimeAtNextAct = latestVehicleArrival;
             nextActLocation = iFacts.getNewVehicle().getEndLocation();
@@ -67,7 +67,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             }
             
             nextActLocation = nextAct.getLocation();
-            setup_time_nextActLocation = nextAct.getSetupTime() * coef;
+            setup_time_nextActLocation = setupCosts.getSetupTime(nextAct, iFacts.getNewVehicle());
         }
 
 			/*
@@ -100,10 +100,9 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 			 *                                          |- earliest arrival of vehicle
 			 *                       |--- nextAct ---|
 			 */
-        double setup_time_prevAct_nextActLocation = 0.0;
+        double transportTime_prevAct_nextActLocation = routingCosts.getTransportTime(prevAct.getLocation(), nextActLocation, prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         if(!prevAct.getLocation().equals(nextActLocation))
-        	setup_time_prevAct_nextActLocation = setup_time_nextActLocation;
-        double transportTime_prevAct_nextActLocation = setup_time_prevAct_nextActLocation + routingCosts.getTransportTime(prevAct.getLocation(), nextActLocation, prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        	transportTime_prevAct_nextActLocation += setup_time_nextActLocation;
         double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + transportTime_prevAct_nextActLocation;
         if (arrTimeAtNextOnDirectRouteWithNewVehicle > latestArrTimeAtNextAct) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
@@ -117,9 +116,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             return ConstraintsStatus.NOT_FULFILLED;
         }
         //			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
-        double setup_time_prevAct_newAct = 0.0;
-        if(!prevAct.getLocation().equals(newAct.getLocation()))
-        	setup_time_prevAct_newAct = newAct.getSetupTime() * coef;
+        double setup_time_prevAct_newAct = setupCosts.getSetupTime(prevAct, newAct, iFacts.getNewVehicle());
         double transportTime_prevAct_newAct = setup_time_prevAct_newAct + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double arrTimeAtNewAct = prevActDepTime + transportTime_prevAct_newAct;
         double endTimeAtNewAct = Math.max(arrTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, arrTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());

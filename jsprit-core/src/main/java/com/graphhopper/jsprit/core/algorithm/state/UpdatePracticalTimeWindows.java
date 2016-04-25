@@ -16,6 +16,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.algorithm.state;
 
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -37,6 +38,8 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
 
     private VehicleRoutingActivityCosts activityCosts;
 
+    private SetupTime setupCosts = new SetupTime();
+
     private double latestArrTimeAtPrevAct;
 
     private TourActivity prevAct;
@@ -57,13 +60,8 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
 
     @Override
     public void visit(TourActivity activity) {
-        double coef = 1.0;
-        if(route.getVehicle() != null)
-        	coef = route.getVehicle().getCoefSetupTime();
-    	double setup_time_activity_prevAct = 0.0;
-    	if(!activity.getLocation().equals(prevAct.getLocation()))
-    		setup_time_activity_prevAct = prevAct.getSetupTime() * coef;
-    	double transport_time_activity_prevAct = setup_time_activity_prevAct + transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
+        double setup_time_activity_prevAct = setupCosts.getSetupTime(activity, prevAct, route.getVehicle());
+        double transport_time_activity_prevAct = setup_time_activity_prevAct + transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
         double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transport_time_activity_prevAct  - activityCosts.getActivityDuration(activity,latestArrTimeAtPrevAct,route.getDriver(),route.getVehicle());
         double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
 

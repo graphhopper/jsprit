@@ -594,6 +594,7 @@ public class VrpXMLReader {
             Double fix = typeConfig.getDouble("costs.fixed");
             Double timeC = typeConfig.getDouble("costs.time");
             Double distC = typeConfig.getDouble("costs.distance");
+            
             if(typeConfig.containsKey("costs.service")){
                 Double serviceC = typeConfig.getDouble("costs.service");
                 if (serviceC != null) typeBuilder.setCostPerServiceTime(serviceC);
@@ -603,7 +604,11 @@ public class VrpXMLReader {
                 Double waitC = typeConfig.getDouble("costs.wait");
                 if (waitC != null) typeBuilder.setCostPerWaitingTime(waitC);
             }
-            Double setupC = typeConfig.getDouble("costs.setup");
+
+            Double setupC = null;
+            boolean SetupCostExists = typeConfig.containsKey("costs.setup");
+            if(SetupCostExists)
+            	setupC = typeConfig.getDouble("costs.setup");
 
             if (fix != null) typeBuilder.setFixedCost(fix);
             if (timeC != null) typeBuilder.setCostPerTransportTime(timeC);

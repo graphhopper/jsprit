@@ -22,6 +22,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -52,6 +53,8 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
     private final VehicleRoutingTransportCosts transportCosts;
 
     private final VehicleRoutingActivityCosts activityCosts;
+
+    private SetupTime setupCosts = new SetupTime();
 
     private AuxilliaryCostCalculator auxilliaryPathCostCalculator;
 
@@ -140,10 +143,6 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
         double best_insertion_costs = best_known_insertion_costs;
         Service service = (Service) jobToInsert;
 
-        double coef = 1.0;
-        if(newVehicle != null)
-        	coef = newVehicle.getCoefSetupTime();
-
         /**
          * some inis
          */
@@ -192,9 +191,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
             /**
              * calculate transport and activity costs with new vehicle (without inserting k)
              */
-            double setup_time_prevAct_nextAct_newVehicle = 0.0;
-            if(!prevAct.getLocation().equals(nextAct.getLocation()))
-            	setup_time_prevAct_nextAct_newVehicle = nextAct.getSetupTime() * coef;
+            double setup_time_prevAct_nextAct_newVehicle = setupCosts.getSetupTime(prevAct, nextAct, newVehicle);
             double setup_cost_prevAct_nextAct_newVehicle = setup_time_prevAct_nextAct_newVehicle * newVehicle.getType().getVehicleCostParams().perSetupTimeUnit;
             double transportCost_prevAct_nextAct_newVehicle = setup_cost_prevAct_nextAct_newVehicle + transportCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
             double transportTime_prevAct_nextAct_newVehicle = setup_time_prevAct_nextAct_newVehicle + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
