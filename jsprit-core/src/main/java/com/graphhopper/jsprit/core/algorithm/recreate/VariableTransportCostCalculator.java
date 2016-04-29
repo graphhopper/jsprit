@@ -63,11 +63,11 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
 
         double oldCosts;
         if (iFacts.getRoute().isEmpty()) {
-        	double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double setup_costs_prevAct_nextAct = setupCosts.getSetupCost(prevAct, nextAct, iFacts.getNewVehicle());
+            double tp_costs_prevAct_nextAct = setup_costs_prevAct_nextAct + routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         } else {
-            double setup_time_prevAct_nextAct = setupCosts.getSetupTime(prevAct, nextAct, iFacts.getNewVehicle());
-            double setup_costs_prevAct_nextAct = setupCosts.getSetupCost(setup_time_prevAct_nextAct, iFacts.getNewVehicle());
+            double setup_costs_prevAct_nextAct = setupCosts.getSetupCost(prevAct, nextAct, iFacts.getNewVehicle());
             double tp_costs_prevAct_nextAct = setup_costs_prevAct_nextAct + routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         }

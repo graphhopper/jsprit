@@ -87,18 +87,18 @@ public class ActivityTimeTracker implements ActivityVisitor {
         if (!beginFirst) throw new IllegalStateException("never called begin. this however is essential here");
         double setup_time_prevAct_activity = setupCosts.getSetupTime(prevAct, activity, route.getVehicle());
         
-        double transportTime = setup_time_prevAct_activity + this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
+        double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
     
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
-
         actArrTime = arrivalTimeAtCurrAct;
+        double readyTimeAtCurrAct = arrivalTimeAtCurrAct + setup_time_prevAct_activity;
         double operationStartTime;
 
         if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
-            operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), arrivalTimeAtCurrAct);
+            operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), readyTimeAtCurrAct);
         } else if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_ARRIVED)) {
-            operationStartTime = actArrTime;
-        } else operationStartTime = actArrTime;
+            operationStartTime = readyTimeAtCurrAct;
+        } else operationStartTime = readyTimeAtCurrAct;
 
         double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,actArrTime,route.getDriver(),route.getVehicle());
 
