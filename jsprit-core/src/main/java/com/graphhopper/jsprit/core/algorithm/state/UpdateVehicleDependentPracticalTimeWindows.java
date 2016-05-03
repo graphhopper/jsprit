@@ -67,7 +67,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
 
     private VehicleRoute route;
 
-    private double[] latest_arrTimes_at_prevAct;
+    private double[] latest_ReadyTimes_at_prevAct;
 
     private Location[] location_of_prevAct;
     
@@ -80,7 +80,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         this.stateManager = stateManager;
         this.transportCosts = tpCosts;
         this.activityCosts = activityCosts;
-        latest_arrTimes_at_prevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
+        latest_ReadyTimes_at_prevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
         location_of_prevAct = new Location[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
         setup_time_of_prevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
     }
@@ -94,7 +94,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         this.route = route;
         vehicles = vehiclesToUpdate.get(route);
         for (Vehicle vehicle : vehicles) {
-            latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
+            latest_ReadyTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getEndLocation();
             setup_time_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = 0.0;
         }
@@ -103,18 +103,19 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
 
     public void visit(TourActivity activity) {
         for (Vehicle vehicle : vehicles) {
-            double latestArrTimeAtPrevAct = latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
+            double latestReadyTimeAtPrevAct = latest_ReadyTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             Location prevLocation = location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             double setup_time_activity_prevLocation = setupCosts.getSetupTime(activity.getLocation(), prevLocation, setup_time_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()], route.getVehicle());
-            double transport_time_activity_prevLocation = setup_time_activity_prevLocation + transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
+            double latestArrTimeAtPrevAct = latestReadyTimeAtPrevAct - setup_time_activity_prevLocation;
+            double transport_time_activity_prevLocation = transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
                     latestArrTimeAtPrevAct, route.getDriver(), vehicle);
-            double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transport_time_activity_prevLocation - activityCosts.getActivityDuration(activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
-            double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
-            if (latestArrivalTime < activity.getTheoreticalEarliestOperationStartTime()) {
+            double potentialLatestReadyTimeAtCurrAct = latestArrTimeAtPrevAct - transport_time_activity_prevLocation - activityCosts.getActivityDuration(activity, latestReadyTimeAtPrevAct, route.getDriver(), route.getVehicle());
+            double latestReadyTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestReadyTimeAtCurrAct);
+            if (latestReadyTime < activity.getTheoreticalEarliestOperationStartTime()) {
                 stateManager.putTypedInternalRouteState(route, vehicle, InternalStates.SWITCH_NOT_FEASIBLE, true);
             }
-            stateManager.putInternalTypedActivityState(activity, vehicle, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
-            latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = latestArrivalTime;
+            stateManager.putInternalTypedActivityState(activity, vehicle, InternalStates.LATEST_OPERATION_START_TIME, latestReadyTime);
+            latest_ReadyTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = latestReadyTime;
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = activity.getLocation();
             setup_time_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = activity.getSetupTime();
         }

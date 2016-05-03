@@ -143,6 +143,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
         double best_insertion_costs = best_known_insertion_costs;
         Service service = (Service) jobToInsert;
 
+
         /**
          * some inis
          */
@@ -192,23 +193,24 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
              * calculate transport and activity costs with new vehicle (without inserting k)
              */
             double setup_time_prevAct_nextAct_newVehicle = setupCosts.getSetupTime(prevAct, nextAct, newVehicle);
-            double setup_cost_prevAct_nextAct_newVehicle = setup_time_prevAct_nextAct_newVehicle * newVehicle.getType().getVehicleCostParams().perSetupTimeUnit;
-            double transportCost_prevAct_nextAct_newVehicle = setup_cost_prevAct_nextAct_newVehicle + transportCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
-            double transportTime_prevAct_nextAct_newVehicle = setup_time_prevAct_nextAct_newVehicle + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
+            double setup_cost_prevAct_nextAct_newVehicle = setupCosts.getSetupCost(setup_time_prevAct_nextAct_newVehicle, newVehicle);
+            double transportCost_prevAct_nextAct_newVehicle = transportCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
+            double transportTime_prevAct_nextAct_newVehicle = transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
             
             double arrTime_nextAct_newVehicle = prevActDepTime_newVehicle + transportTime_prevAct_nextAct_newVehicle;
-            double activityCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct_newVehicle, newDriver, newVehicle);
+            double readyTime_nextAct_newVehicle = arrTime_nextAct_newVehicle + setup_time_prevAct_nextAct_newVehicle;
+            double activityCost_nextAct = activityCosts.getActivityCost(nextAct, readyTime_nextAct_newVehicle, newDriver, newVehicle);
 
             /**
              * memorize transport and activity costs with new vehicle without inserting k
              */
-            sumOf_prevCosts_newVehicle += transportCost_prevAct_nextAct_newVehicle + activityCost_nextAct;
+            sumOf_prevCosts_newVehicle += transportCost_prevAct_nextAct_newVehicle + setup_cost_prevAct_nextAct_newVehicle + activityCost_nextAct;
 //			activity2costWithNewVehicle.put(nextAct, sumOf_prevCosts_newVehicle);
 
             /**
              * departure time at nextAct with new vehicle
              */
-            double depTime_nextAct_newVehicle = Math.max(arrTime_nextAct_newVehicle, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, arrTime_nextAct_newVehicle,newDriver,newVehicle);
+            double depTime_nextAct_newVehicle = Math.max(readyTime_nextAct_newVehicle, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, readyTime_nextAct_newVehicle,newDriver,newVehicle);
 
             /**
              * set previous to next

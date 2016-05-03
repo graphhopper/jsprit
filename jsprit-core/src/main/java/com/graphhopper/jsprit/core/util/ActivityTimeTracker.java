@@ -100,7 +100,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
             operationStartTime = readyTimeAtCurrAct;
         } else operationStartTime = readyTimeAtCurrAct;
 
-        double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,actArrTime,route.getDriver(),route.getVehicle());
+        double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,readyTimeAtCurrAct,route.getDriver(),route.getVehicle());
 
         actEndTime = operationEndTime;
 

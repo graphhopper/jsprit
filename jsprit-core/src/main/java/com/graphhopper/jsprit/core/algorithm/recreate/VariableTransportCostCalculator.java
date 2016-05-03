@@ -43,11 +43,12 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
     	
         double setup_time_prevAct_newAct = setupCosts.getSetupTime(prevAct, newAct, iFacts.getNewVehicle());
         double setup_costs_prevAct_newAct = setupCosts.getSetupCost(setup_time_prevAct_newAct, iFacts.getNewVehicle());
-        double tp_costs_prevAct_newAct = setup_costs_prevAct_newAct + routingCosts.getTransportCost(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double tp_time_prevAct_newAct = setup_time_prevAct_newAct + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
-        double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,newAct_arrTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double newAct_readyTime = newAct_arrTime + setup_time_prevAct_newAct;
+        double newAct_endTime = Math.max(newAct_readyTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,newAct_readyTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
 
         //open routes
         if (nextAct instanceof End) {
@@ -58,18 +59,17 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
 
         double setup_time_newAct_nextAct = setupCosts.getSetupTime(newAct, nextAct, iFacts.getNewVehicle());
         double setup_costs_newAct_nextAct = setupCosts.getSetupCost(setup_time_newAct_nextAct, iFacts.getNewVehicle());
-        double tp_costs_newAct_nextAct = setup_costs_newAct_nextAct + routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct;
+        double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double totalCosts = tp_costs_prevAct_newAct + setup_costs_prevAct_newAct + tp_costs_newAct_nextAct + setup_costs_newAct_nextAct;
 
         double oldCosts;
         if (iFacts.getRoute().isEmpty()) {
-            double setup_costs_prevAct_nextAct = setupCosts.getSetupCost(prevAct, nextAct, iFacts.getNewVehicle());
-            double tp_costs_prevAct_nextAct = setup_costs_prevAct_nextAct + routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         } else {
             double setup_costs_prevAct_nextAct = setupCosts.getSetupCost(prevAct, nextAct, iFacts.getNewVehicle());
-            double tp_costs_prevAct_nextAct = setup_costs_prevAct_nextAct + routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
-            oldCosts = tp_costs_prevAct_nextAct;
+            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
+            oldCosts = tp_costs_prevAct_nextAct + setup_costs_prevAct_nextAct;
         }
         return totalCosts - oldCosts;
     }

@@ -40,7 +40,7 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
 
     private SetupTime setupCosts = new SetupTime();
 
-    private double latestArrTimeAtPrevAct;
+    private double latestReadyTimeAtPrevAct;
 
     private TourActivity prevAct;
 
@@ -54,20 +54,20 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
     @Override
     public void begin(VehicleRoute route) {
         this.route = route;
-        latestArrTimeAtPrevAct = route.getEnd().getTheoreticalLatestOperationStartTime();
+        latestReadyTimeAtPrevAct = route.getEnd().getTheoreticalLatestOperationStartTime();
         prevAct = route.getEnd();
     }
 
     @Override
     public void visit(TourActivity activity) {
         double setup_time_activity_prevAct = setupCosts.getSetupTime(activity, prevAct, route.getVehicle());
-        double transport_time_activity_prevAct = setup_time_activity_prevAct + transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
-        double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transport_time_activity_prevAct  - activityCosts.getActivityDuration(activity,latestArrTimeAtPrevAct,route.getDriver(),route.getVehicle());
-        double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
+        double transport_time_activity_prevAct = transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestReadyTimeAtPrevAct, route.getDriver(), route.getVehicle());
+        double potentialLatestReadyTimeAtCurrAct = latestReadyTimeAtPrevAct - setup_time_activity_prevAct - transport_time_activity_prevAct - activityCosts.getActivityDuration(activity,latestReadyTimeAtPrevAct,route.getDriver(),route.getVehicle());
+        double latestReadyTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestReadyTimeAtCurrAct);
 
-        states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
+        states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestReadyTime);
 
-        latestArrTimeAtPrevAct = latestArrivalTime;
+        latestReadyTimeAtPrevAct = latestReadyTime;
         prevAct = activity;
     }
 
