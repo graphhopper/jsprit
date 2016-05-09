@@ -29,7 +29,7 @@ import java.util.*;
 
 /**
  * Insertion based on regret approach.
- * <p/>
+ * <p>
  * <p>Basically calculates the insertion cost of the firstBest and the secondBest alternative. The score is then calculated as difference
  * between secondBest and firstBest, plus additional scoring variables that can defined in this.ScoringFunction.
  * The idea is that if the cost of the secondBest alternative is way higher than the first best, it seems to be important to insert this
@@ -65,7 +65,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     /**
      * Sets the scoring function.
-     * <p/>
+     * <p>
      * <p>By default, the this.TimeWindowScorer is used.
      *
      * @param scoringFunction to score
@@ -94,7 +94,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     /**
      * Runs insertion.
-     * <p/>
+     * <p>
      * <p>Before inserting a job, all unassigned jobs are scored according to its best- and secondBest-insertion plus additional scoring variables.
      */
     @Override

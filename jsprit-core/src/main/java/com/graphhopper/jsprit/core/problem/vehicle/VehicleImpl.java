@@ -98,7 +98,7 @@ public class VehicleImpl extends AbstractVehicle {
 
     /**
      * Builder that builds the vehicle.
-     * <p/>
+     * <p>
      * <p>By default, earliestDepartureTime is 0.0, latestDepartureTime is Double.MAX_VALUE,
      * it returns to the depot and its {@link VehicleType} is the DefaultType with typeId equal to 'default'
      * and a capacity of 0.
@@ -149,11 +149,11 @@ public class VehicleImpl extends AbstractVehicle {
 
         /**
          * Sets the flag whether the vehicle must return to depot or not.
-         * <p/>
+         * <p>
          * <p>If returnToDepot is true, the vehicle must return to specified end-location. If you
          * omit specifying the end-location, vehicle returns to start-location (that must to be set). If
          * you specify it, it returns to specified end-location.
-         * <p/>
+         * <p>
          * <p>If returnToDepot is false, the end-location of the vehicle is endogenous.
          *
          * @param returnToDepot true if vehicle need to return to depot, otherwise false
@@ -213,10 +213,10 @@ public class VehicleImpl extends AbstractVehicle {
 
         /**
          * Builds and returns the vehicle.
-         * <p/>
+         * <p>
          * <p>if {@link VehicleType} is not set, default vehicle-type is set with id="default" and
          * capacity=0
-         * <p/>
+         * <p>
          * <p>if startLocationId || locationId is null (=> startLocationCoordinate || locationCoordinate must be set) then startLocationId=startLocationCoordinate.toString()
          * and locationId=locationCoordinate.toString() [coord.toString() --> [x=x_val][y=y_val])
          * <p>if endLocationId is null and endLocationCoordinate is set then endLocationId=endLocationCoordinate.toString()
@@ -268,7 +268,7 @@ public class VehicleImpl extends AbstractVehicle {
 
     /**
      * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
-     * <p/>
+     * <p>
      * <p>NoVehicle has id="noVehicle" and extends {@link VehicleImpl}
      *
      * @return emptyVehicle
@@ -311,7 +311,7 @@ public class VehicleImpl extends AbstractVehicle {
 
     /**
      * Returns String with attributes of this vehicle
-     * <p/>
+     * <p>
      * <p>String has the following format [attr1=val1][attr2=val2]...[attrn=valn]
      */
     @Override

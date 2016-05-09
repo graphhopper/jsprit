@@ -95,7 +95,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 
     /**
      * Removes a fraction of jobs from vehicleRoutes.
-     * <p/>
+     * <p>
      * <p>The number of jobs is calculated as follows: Math.ceil(vrp.getJobs().values().size() * fractionOfAllNodes2beRuined).
      */
     @Override

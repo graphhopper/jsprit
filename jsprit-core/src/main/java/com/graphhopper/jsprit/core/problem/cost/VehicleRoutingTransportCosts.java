@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.problem.cost;
 
 /**
  * Interface for transportCost and transportTime.
- * <p/>
+ * <p>
  * <p>Transport here is what happens between two activities within the transport system, i.e. in the physical transport network. And
  * must give the answer of how long does it take from A to B, and how much does this cost.
  *

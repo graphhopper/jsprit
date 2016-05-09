@@ -29,10 +29,10 @@ import java.util.Collection;
 
 /**
  * Service implementation of a job.
- * <p/>
+ * <p>
  * <p>A service distinguishes itself from a shipment such that it has only one location. Thus a service
  * is a single point in space (where a service-activity occurs).
- * <p/>
+ * <p>
  * <p>Note that two services are equal if they have the same id.
  *
  * @author schroeder
@@ -94,7 +94,7 @@ public class Service extends AbstractJob {
 
         /**
          * Protected method to set the type-name of the service.
-         * <p/>
+         * <p>
          * <p>Currently there are {@link Service}, {@link Pickup} and {@link Delivery}.
          *
          * @param name the name of service
@@ -118,7 +118,7 @@ public class Service extends AbstractJob {
 
         /**
          * Sets the serviceTime of this service.
-         * <p/>
+         * <p>
          * <p>It is understood as time that a service or its implied activity takes at the service-location, for instance
          * to unload goods.
          *
@@ -286,7 +286,7 @@ public class Service extends AbstractJob {
 
     /**
      * Returns a string with the service's attributes.
-     * <p/>
+     * <p>
      * <p>String is built as follows: [attr1=val1][attr2=val2]...
      */
     @Override

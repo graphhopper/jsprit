@@ -121,7 +121,7 @@ public class SearchStrategy {
 
     /**
      * Runs the search-strategy and its according modules, and returns DiscoveredSolution.
-     * <p/>
+     * <p>
      * <p>This involves three basic steps: 1) Selecting a solution from solutions (input parameter) according to {@link com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector}, 2) running the modules
      * ({@link SearchStrategyModule}) on the selectedSolution and 3) accepting the new solution according to {@link com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor}.
      * <p> Note that after 1) the selected solution is copied, thus the original solution is not modified.

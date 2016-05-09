@@ -21,7 +21,7 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 
 /**
  * Implementation of {@link VehicleType}.
- * <p/>
+ * <p>
  * <p>Two vehicle-types are equal if they have the same typeId.
  *
  * @author schroeder
@@ -134,7 +134,7 @@ public class VehicleTypeImpl implements VehicleType {
 
         /**
          * Sets the fixed costs of the vehicle-type.
-         * <p/>
+         * <p>
          * <p>by default it is 0.
          *
          * @param fixedCost
@@ -149,7 +149,7 @@ public class VehicleTypeImpl implements VehicleType {
 
         /**
          * Sets the cost per distance unit, for instance € per meter.
-         * <p/>
+         * <p>
          * <p>by default it is 1.0
          *
          * @param perDistance
@@ -164,7 +164,7 @@ public class VehicleTypeImpl implements VehicleType {
 
         /**
          * Sets cost per time unit, for instance € per second.
-         * <p/>
+         * <p>
          * <p>by default it is 0.0
          *
          * @param perTime
@@ -181,7 +181,7 @@ public class VehicleTypeImpl implements VehicleType {
 
         /**
          * Sets cost per time unit, for instance € per second.
-         * <p/>
+         * <p>
          * <p>by default it is 0.0
          *
          * @param perTime
@@ -196,7 +196,7 @@ public class VehicleTypeImpl implements VehicleType {
 
         /**
          * Sets cost per waiting time unit, for instance € per second.
-         * <p/>
+         * <p>
          * <p>by default it is 0.0
          *
          * @param perWaitingTime
@@ -248,7 +248,7 @@ public class VehicleTypeImpl implements VehicleType {
 
         /**
          * Sets capacity dimensions.
-         * <p/>
+         * <p>
          * <p>Note if you use this you cannot use <code>addCapacityDimension(int dimIndex, int dimVal)</code> anymore. Thus either build
          * your dimensions with <code>addCapacityDimension(int dimIndex, int dimVal)</code> or set the already built dimensions with
          * this method.

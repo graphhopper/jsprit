@@ -39,8 +39,8 @@ public class SolutionPrinter {
 
     /**
      * Enum to indicate verbose-level.
-     * <p/>
-     * <p/>
+     * <p>
+     * <p>
      * Print.CONCISE and Print.VERBOSE are available.
      *
      * @author stefan schroeder

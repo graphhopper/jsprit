@@ -39,7 +39,7 @@ public class ComputationalLaboratory {
 
     /**
      * Listener-interface to listen to calculation.
-     * <p/>
+     * <p>
      * <p>Note that calculations are run concurrently, i.e. a unique task that is distributed to an available thread is
      * {algorithm, instance, run}.
      *
@@ -381,7 +381,7 @@ public class ComputationalLaboratory {
 
     /**
      * Runs experiments.
-     * <p/>
+     * <p>
      * <p>If nuThreads > 1 it runs them concurrently, i.e. individual runs are distributed to available threads. Therefore
      * a unique task is defined by its algorithmName, instanceName and its runNumber.
      * <p>If you have one algorithm called "myAlgorithm" and one instance called "myInstance", and you need to run "myAlgorithm" on "myInstance" three times

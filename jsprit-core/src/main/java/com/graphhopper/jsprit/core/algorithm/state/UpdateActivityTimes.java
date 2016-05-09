@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
 
 /**
  * Updates arrival and end times of activities.
- * <p/>
+ * <p>
  * <p>Note that this modifies arrTime and endTime of each activity in a route.
  *
  * @author stefan
@@ -39,9 +39,9 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
 
     /**
      * Updates arrival and end times of activities.
-     * <p/>
+     * <p>
      * <p>Note that this modifies arrTime and endTime of each activity in a route.
-     * <p/>
+     * <p>
      * <p>ArrTimes and EndTimes can be retrieved by <br>
      * <code>activity.getArrTime()</code> and
      * <code>activity.getEndTime()</code>

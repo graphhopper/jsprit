@@ -75,7 +75,7 @@ public class JobInsertionContext {
 
     /**
      * Returns the driver that should operate the new route, i.e. route <code>this.getRoute()</code> + new job <code>this.getJob()</code>.
-     * <p/>
+     * <p>
      * <p>Currently the driver is just a mock, it has no functions</p>
      *
      * @return the newDriver

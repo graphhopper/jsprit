@@ -42,7 +42,7 @@ public class Pickup extends Service {
 
         /**
          * Builds Pickup.
-         * <p/>
+         * <p>
          * <p>Pickup type is "pickup"
          *
          * @return pickup

@@ -76,7 +76,7 @@ public class VehicleRoutingAlgorithmBuilder {
 
     /**
      * Sets custom objective function.
-     * <p/>
+     * <p>
      * <p>If objective function is not set, a default function is applied (which basically minimizes
      * fixed and variable transportation costs ({@link VariablePlusFixedSolutionCostCalculatorFactory}).
      *
@@ -99,7 +99,7 @@ public class VehicleRoutingAlgorithmBuilder {
 
     /**
      * Adds core constraints.
-     * <p/>
+     * <p>
      * <p>Thus, it adds vehicle-capacity, time-window and skills constraints and their
      * required stateUpdater.
      */
@@ -113,7 +113,7 @@ public class VehicleRoutingAlgorithmBuilder {
      * By default, marginal transportation costs are calculated. Thus when inserting
      * act_k between act_i and act_j, marginal (additional) transportation costs
      * are basically c(act_i,act_k)+c(act_k,act_j)-c(act_i,act_j).
-     * <p/>
+     * <p>
      * <p>Do not use this method, if you plan to control the insertion heuristic
      * entirely via hard- and soft-constraints.
      */
@@ -145,7 +145,7 @@ public class VehicleRoutingAlgorithmBuilder {
 
     /**
      * Builds and returns the algorithm.
-     * <p/>
+     * <p>
      * <p>If algorithmConfigFile is set, it reads the configuration.
      *
      * @return the algorithm

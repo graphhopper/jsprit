@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivity
 
 /**
  * Ensures load constraint for inserting ServiceActivity.
- * <p/>
+ * <p>
  * <p>When using this, you need to use<br>
  *
  * @author schroeder

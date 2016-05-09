@@ -35,7 +35,7 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
 
     /**
      * Constructs the calculator that calculates additional transportation costs induced by inserting new activity.
-     * <p/>
+     * <p>
      * <p>It is calculated at local level, i.e. the additional costs of inserting act_new between act_i and act_j is c(act_i,act_new,newVehicle)+c(act_new,act_j,newVehicle)-c(act_i,act_j,oldVehicle)
      * <p>If newVehicle.isReturnToDepot == false then the additional costs of inserting act_new between act_i and end is c(act_i,act_new) [since act_new is then the new end-of-route]
      *
@@ -50,7 +50,7 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
 
     /**
      * Returns additional transportation costs induced by inserting newAct.
-     * <p/>
+     * <p>
      * <p>It is calculated at local level, i.e. the additional costs of inserting act_new between act_i and act_j is c(act_i,act_new,newVehicle)+c(act_new,act_j,newVehicle)-c(act_i,act_j,oldVehicle)
      * <p>If newVehicle.isReturnToDepot == false then the additional costs of inserting act_new between act_i and end is c(act_i,act_new) [since act_new is then the new end-of-route]
      */

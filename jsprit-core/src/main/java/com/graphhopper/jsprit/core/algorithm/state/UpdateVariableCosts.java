@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
 
 /**
  * Updates total costs (i.e. transport and activity costs) at route and activity level.
- * <p/>
+ * <p>
  * <p>Thus it modifies <code>stateManager.getRouteState(route, StateTypes.COSTS)</code> and <br>
  * <code>stateManager.getActivityState(activity, StateTypes.COSTS)</code>
  */
@@ -51,7 +51,7 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
 
     /**
      * Updates total costs (i.e. transport and activity costs) at route and activity level.
-     * <p/>
+     * <p>
      * <p>Thus it modifies <code>stateManager.getRouteState(route, StateTypes.COSTS)</code> and <br>
      * <code>stateManager.getActivityState(activity, StateTypes.COSTS)</code>
      *

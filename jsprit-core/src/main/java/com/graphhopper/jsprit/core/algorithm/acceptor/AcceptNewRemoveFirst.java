@@ -18,7 +18,7 @@ public class AcceptNewRemoveFirst implements SolutionAcceptor {
     /**
      * Accepts every solution if solution memory allows. If memory occupied, than accepts new solution only if better than the worst in memory.
      * Consequently, the worst solution is removed from solutions, and the new solution added.
-     * <p/>
+     * <p>
      * <p>Note that this modifies Collection<VehicleRoutingProblemSolution> solutions.
      */
     @Override

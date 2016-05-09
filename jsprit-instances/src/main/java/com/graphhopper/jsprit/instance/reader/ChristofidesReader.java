@@ -35,7 +35,7 @@ import java.io.IOException;
 
 /**
  * Reader that reads Christophides, Mingozzi and Toth instances.
- * <p/>
+ * <p>
  * <p>Files and file-description can be found <a href="http://neo.lcc.uma.es/vrp/vrp-instances/capacitated-vrp-instances/">here</a>.
  *
  * @author stefan schroeder

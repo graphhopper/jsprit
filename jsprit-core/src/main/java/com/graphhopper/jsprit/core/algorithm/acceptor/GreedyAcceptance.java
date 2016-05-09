@@ -23,7 +23,7 @@ import java.util.Collection;
 
 /**
  * Acceptor that accepts solutions to be memorized only better solutions.
- * <p/>
+ * <p>
  * <p>If there is enough memory, every solution will be accepted. If there is no memory anymore and the solution
  * to be evaluated is better than the worst, the worst will be replaced by the new solution.</p>
  */
@@ -38,7 +38,7 @@ public class GreedyAcceptance implements SolutionAcceptor {
     /**
      * Accepts every solution if solution memory allows. If memory occupied, than accepts new solution only if better than the worst in memory.
      * Consequently, the worst solution is removed from solutions, and the new solution added.
-     * <p/>
+     * <p>
      * <p>Note that this modifies Collection<VehicleRoutingProblemSolution> solutions.
      */
     @Override

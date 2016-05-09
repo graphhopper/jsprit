@@ -34,10 +34,10 @@ import java.util.Collection;
 
 /**
  * Terminates algorithm prematurely based on variationCoefficient (http://en.wikipedia.org/wiki/Coefficient_of_variation).
- * <p/>
+ * <p>
  * <p>Note, that this must be registered as AlgorithmListener <br>
  * It will be activated by:<br>
- * <p/>
+ * <p>
  * <code>algorithm.setPrematureAlgorithmTermination(this);</code><br>
  * <code>algorithm.addListener(this);</code>
  *

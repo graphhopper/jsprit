@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivity
 /**
  * Ensures that capacity constraint is met, i.e. that current load plus
  * new job size does not exceeds capacity of new vehicle.
- * <p/>
+ * <p>
  * <p>If job is neither Pickup, Delivery nor Service, it returns true.
  *
  * @author stefan

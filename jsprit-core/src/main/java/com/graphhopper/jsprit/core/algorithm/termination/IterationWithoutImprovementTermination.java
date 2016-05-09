@@ -22,9 +22,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Terminates algorithm prematurely based on iterations without any improvement (i.e. new solution acceptance).
- * <p/>
+ * <p>
  * <p>Termination will be activated by:<br>
- * <p/>
+ * <p>
  * <code>algorithm.setPrematureAlgorithmTermination(this);</code><br>
  *
  * @author stefan schroeder

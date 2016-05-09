@@ -30,7 +30,7 @@ import java.util.Collection;
 
 /**
  * VehicleRoutingAlgorithm-Listener to record the solution-search-progress.
- * <p/>
+ * <p>
  * <p>Register this listener in VehicleRoutingAlgorithm.
  *
  * @author stefan schroeder

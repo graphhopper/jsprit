@@ -6,15 +6,15 @@
      </problemType>
      <vehicles>
           <vehicle>
-               <id>v3</id>
-               <typeId>vehType2</typeId>
+               <id>v1</id>
+               <typeId>vehType</typeId>
                <startLocation>
-                    <id>startLoc</id>
-                    <coord x="10.0" y="100.0"/>
+                    <id>depotLoc2</id>
+                    <coord x="100.0" y="100.0"/>
                </startLocation>
                <endLocation>
-                    <id>endLoc</id>
-                    <coord x="1000.0" y="2000.0"/>
+                    <id>depotLoc2</id>
+                    <coord x="100.0" y="100.0"/>
                </endLocation>
                <timeSchedule>
                     <start>0.0</start>
@@ -38,6 +38,23 @@
                     <end>1000.0</end>
                </timeSchedule>
                <returnToDepot>false</returnToDepot>
+          </vehicle>
+          <vehicle>
+               <id>v3</id>
+               <typeId>vehType2</typeId>
+               <startLocation>
+                    <id>startLoc</id>
+                    <coord x="10.0" y="100.0"/>
+               </startLocation>
+               <endLocation>
+                    <id>endLoc</id>
+                    <coord x="1000.0" y="2000.0"/>
+               </endLocation>
+               <timeSchedule>
+                    <start>0.0</start>
+                    <end>1000.0</end>
+               </timeSchedule>
+               <returnToDepot>true</returnToDepot>
           </vehicle>
           <vehicle>
                <id>v4</id>
@@ -66,23 +83,6 @@
                <endLocation>
                     <id>endLoc</id>
                     <coord x="1000.0" y="2000.0"/>
-               </endLocation>
-               <timeSchedule>
-                    <start>0.0</start>
-                    <end>1000.0</end>
-               </timeSchedule>
-               <returnToDepot>true</returnToDepot>
-          </vehicle>
-          <vehicle>
-               <id>v1</id>
-               <typeId>vehType</typeId>
-               <startLocation>
-                    <id>depotLoc2</id>
-                    <coord x="100.0" y="100.0"/>
-               </startLocation>
-               <endLocation>
-                    <id>depotLoc2</id>
-                    <coord x="100.0" y="100.0"/>
                </endLocation>
                <timeSchedule>
                     <start>0.0</start>

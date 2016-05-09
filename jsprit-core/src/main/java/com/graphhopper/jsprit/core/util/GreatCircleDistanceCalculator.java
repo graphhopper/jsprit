@@ -26,7 +26,7 @@ public class GreatCircleDistanceCalculator {
 
     /**
      * Harversine method.
-     * <p/>
+     * <p>
      * double lon1 = coord1.getX();
      * double lon2 = coord2.getX();
      * double lat1 = coord1.getY();

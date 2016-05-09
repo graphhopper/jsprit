@@ -302,7 +302,7 @@ public class GraphStreamViewer {
     /**
      * Sets the camera-view. Center describes the center-focus of the camera and zoomFactor its
      * zoomFactor.
-     * <p/>
+     * <p>
      * <p>a zoomFactor < 1 zooms in and > 1 out.
      *
      * @param centerX    x coordinate of center

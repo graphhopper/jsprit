@@ -6,8 +6,8 @@
      </problemType>
      <vehicles>
           <vehicle>
-               <id>v2</id>
-               <typeId>vehType2</typeId>
+               <id>v1</id>
+               <typeId>vehType</typeId>
                <startLocation>
                     <id>loc</id>
                </startLocation>
@@ -21,8 +21,8 @@
                <returnToDepot>true</returnToDepot>
           </vehicle>
           <vehicle>
-               <id>v1</id>
-               <typeId>vehType</typeId>
+               <id>v2</id>
+               <typeId>vehType2</typeId>
                <startLocation>
                     <id>loc</id>
                </startLocation>

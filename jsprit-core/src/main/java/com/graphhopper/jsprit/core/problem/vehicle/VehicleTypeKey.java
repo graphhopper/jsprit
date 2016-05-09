@@ -23,7 +23,7 @@ import com.graphhopper.jsprit.core.problem.Skills;
 
 /**
  * Key to identify similar vehicles
- * <p/>
+ * <p>
  * <p>Two vehicles are equal if they share the same type, the same start and end-location and the same earliestStart and latestStart.
  *
  * @author stefan

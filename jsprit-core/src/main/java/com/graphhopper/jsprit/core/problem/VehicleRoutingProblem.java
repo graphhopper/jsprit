@@ -41,11 +41,11 @@ import java.util.*;
 
 /**
  * Contains and defines the vehicle routing problem.
- * <p/>
+ * <p>
  * <p>A routing problem is defined as jobs, vehicles, costs and constraints.
- * <p/>
+ * <p>
  * <p> To construct the problem, use VehicleRoutingProblem.Builder. Get an instance of this by using the static method VehicleRoutingProblem.Builder.newInstance().
- * <p/>
+ * <p>
  * <p>By default, fleetSize is INFINITE, transport-costs are calculated as euclidean-distance (CrowFlyCosts),
  * and activity-costs are set to zero.
  *
@@ -153,7 +153,7 @@ public class VehicleRoutingProblem {
 
         /**
          * Returns the locations collected SO FAR by this builder.
-         * <p/>
+         * <p>
          * <p>Locations are cached when adding a shipment, service, depot, vehicle.
          *
          * @return locations
@@ -184,7 +184,7 @@ public class VehicleRoutingProblem {
 
         /**
          * Sets the type of fleetSize.
-         * <p/>
+         * <p>
          * <p>FleetSize is either FleetSize.INFINITE or FleetSize.FINITE. By default it is FleetSize.INFINITE.
          *
          * @param fleetSize the fleet size used in this problem. it can either be FleetSize.INFINITE or FleetSize.FINITE
@@ -197,7 +197,7 @@ public class VehicleRoutingProblem {
 
         /**
          * Adds a job which is either a service or a shipment.
-         * <p/>
+         * <p>
          * <p>Note that job.getId() must be unique, i.e. no job (either it is a shipment or a service) is allowed to have an already allocated id.
          *
          * @param job job to be added
@@ -212,7 +212,7 @@ public class VehicleRoutingProblem {
 
         /**
          * Adds a job which is either a service or a shipment.
-         * <p/>
+         * <p>
          * <p>Note that job.getId() must be unique, i.e. no job (either it is a shipment or a service) is allowed to have an already allocated id.
          *
          * @param job job to be added
@@ -396,7 +396,7 @@ public class VehicleRoutingProblem {
 
         /**
          * Sets the activity-costs.
-         * <p/>
+         * <p>
          * <p>By default it is set to zero.
          *
          * @param activityCosts activity costs of the problem
@@ -410,7 +410,7 @@ public class VehicleRoutingProblem {
 
         /**
          * Builds the {@link VehicleRoutingProblem}.
-         * <p/>
+         * <p>
          * <p>If {@link VehicleRoutingTransportCosts} are not set, {@link CrowFlyCosts} is used.
          *
          * @return {@link VehicleRoutingProblem}
@@ -592,7 +592,7 @@ public class VehicleRoutingProblem {
 
     /**
      * Returns type of fleetSize, either INFINITE or FINITE.
-     * <p/>
+     * <p>
      * <p>By default, it is INFINITE.
      *
      * @return either FleetSize.INFINITE or FleetSize.FINITE

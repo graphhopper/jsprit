@@ -95,7 +95,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
     /**
      * Constructs the builder.
-     * <p/>
+     * <p>
      * <p>Some calculators require information from the overall algorithm or the higher-level insertion procedure. Thus listeners inform them.
      * These listeners are cached in the according list and can thus be added when its time to add them.
      *
@@ -143,7 +143,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
     /**
      * Sets a flag to build a calculator based on local calculations.
-     * <p/>
+     * <p>
      * <p>Insertion of a job and job-activity is evaluated based on the previous and next activity.
      *
      * @param addDefaultCostCalc

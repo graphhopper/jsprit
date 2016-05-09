@@ -28,16 +28,16 @@ import java.util.Collection;
 
 /**
  * Shipment is an implementation of Job and consists of a pickup and a delivery of something.
- * <p/>
+ * <p>
  * <p>It distinguishes itself from {@link Service} as two locations are involved a pickup where usually
  * something is loaded to the transport unit and a delivery where something is unloaded.
- * <p/>
+ * <p>
  * <p>By default serviceTimes of both pickup and delivery is 0.0 and timeWindows of both is [0.0, Double.MAX_VALUE],
- * <p/>
+ * <p>
  * <p>A shipment can be built with a builder. You can get an instance of the builder by coding <code>Shipment.Builder.newInstance(...)</code>.
  * This way you can specify the shipment. Once you build the shipment, it is immutable, i.e. fields/attributes cannot be changed anymore and
  * you can only 'get' the specified values.
- * <p/>
+ * <p>
  * <p>Note that two shipments are equal if they have the same id.
  *
  * @author schroeder
@@ -117,7 +117,7 @@ public class Shipment extends AbstractJob {
 
         /**
          * Sets pickupServiceTime.
-         * <p/>
+         * <p>
          * <p>ServiceTime is intended to be the time the implied activity takes at the pickup-location.
          *
          * @param serviceTime the service time / duration the pickup of the associated shipment takes
@@ -133,7 +133,7 @@ public class Shipment extends AbstractJob {
         /**
          * Sets the timeWindow for the pickup, i.e. the time-period in which a pickup operation is
          * allowed to START.
-         * <p/>
+         * <p>
          * <p>By default timeWindow is [0.0, Double.MAX_VALUE}
          *
          * @param timeWindow the time window within the pickup operation/activity can START
@@ -163,7 +163,7 @@ public class Shipment extends AbstractJob {
 
         /**
          * Sets the delivery service-time.
-         * <p/>
+         * <p>
          * <p>ServiceTime is intended to be the time the implied activity takes at the delivery-location.
          *
          * @param deliveryServiceTime the service time / duration of shipment's delivery
@@ -179,7 +179,7 @@ public class Shipment extends AbstractJob {
         /**
          * Sets the timeWindow for the delivery, i.e. the time-period in which a delivery operation is
          * allowed to start.
-         * <p/>
+         * <p>
          * <p>By default timeWindow is [0.0, Double.MAX_VALUE}
          *
          * @param timeWindow the time window within the associated delivery is allowed to START
@@ -315,7 +315,7 @@ public class Shipment extends AbstractJob {
 
     /**
      * Returns the pickup service-time.
-     * <p/>
+     * <p>
      * <p>By default service-time is 0.0.
      *
      * @return service-time

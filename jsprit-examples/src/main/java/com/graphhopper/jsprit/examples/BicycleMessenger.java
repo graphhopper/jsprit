@@ -64,17 +64,17 @@ import java.util.Map;
 
 /**
  * This class provides the/a solution to the following problem:
- * <p/>
+ * <p>
  * Statement of the problem (see Stackoverflow: http://stackoverflow.com/questions/19080537/bicycle-messenger-tsppd-with-optaplanner/20412598#20412598):
- * <p/>
+ * <p>
  * Optimize the routes for a bicycle messenger service!
  * Assume 5 messengers that have to pick up 30 envelopes distributed through the city. These 5 messengers are distributed through the city as well. Thus
  * there is no single depot and they do not need to go back to their original starting location.
- * <p/>
+ * <p>
  * Additional hard constraints:
  * 1) Every messenger can carry up to fifteen envelopes
  * 2) The way an evelopes travels should be less than three times the direct route (so delivery does not take too long)
- * <p/>
+ * <p>
  * Thus this problem is basically a Capacitated VRP with Pickups and Deliveries, Multiple Depots, Open Routes and Time Windows/Restrictions.
  *
  * @author stefan schroeder
@@ -144,7 +144,7 @@ public class BicycleMessenger {
 
     /**
      * When inserting the activities of an envelope which are pickup and deliver envelope, this constraint makes insertion procedure to ignore messengers that are too far away to meet the 3*directTime-Constraint.
-     * <p/>
+     * <p>
      * <p>one does not need this constraint. but it is faster. the earlier the solution-space can be constraint the better/faster.
      *
      * @author schroeder
@@ -172,7 +172,7 @@ public class BicycleMessenger {
 
     /**
      * updates the state "latest-activity-start-time" (required above) once route/activity states changed, i.e. when removing or inserting an envelope-activity
-     * <p/>
+     * <p>
      * <p>thus once either the insertion-procedure starts or an envelope has been inserted, this visitor runs through the route in reverse order (i.e. starting with the end of the route) and
      * calculates the latest-activity-start-time (or latest-activity-arrival-time) which is the time to just meet the constraints of subsequent activities.
      *

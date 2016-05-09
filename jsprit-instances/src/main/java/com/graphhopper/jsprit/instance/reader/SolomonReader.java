@@ -36,7 +36,7 @@ import java.io.IOException;
 
 /**
  * Reader that reads the well-known solomon-instances.
- * <p/>
+ * <p>
  * <p>See: <a href="http://neo.lcc.uma.es/vrp/vrp-instances/capacitated-vrp-with-time-windows-instances/">neo.org</a>
  *
  * @author stefan

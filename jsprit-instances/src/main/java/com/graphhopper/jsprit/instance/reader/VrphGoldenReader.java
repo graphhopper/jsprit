@@ -33,7 +33,7 @@ import java.io.*;
  * Reads modified files from Taillard's website
  * http://mistic.heig-vd.ch/taillard/problemes.dir/vrp.dir/vrp.html. You can find the modified version here:
  * jsprit-instances/instances/vrph.
- * <p/>
+ * <p>
  * <p>See {@link VrphType} what kind of problems can be generated
  *
  * @author schroeder

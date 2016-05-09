@@ -31,7 +31,7 @@ public interface SolutionAcceptor {
 
     /**
      * Accepts solution or not, and returns true if a new solution has been accepted.
-     * <p/>
+     * <p>
      * <p>If the solution is accepted, it is added to solutions, i.e. the solutions-collections is modified.
      *
      * @param solutions   collection of existing solutions

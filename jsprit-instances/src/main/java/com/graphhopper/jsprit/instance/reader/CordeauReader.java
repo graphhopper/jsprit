@@ -38,10 +38,10 @@ import java.util.List;
 
 /**
  * Reader that reads instances developed by:
- * <p/>
+ * <p>
  * <p>Cordeau, J.-F., Gendreau, M. and Laporte, G. (1997), A tabu search heuristic for periodic and multi-depot vehicle routing problems.
  * Networks, 30: 105–119. doi: 10.1002/(SICI)1097-0037(199709)30:2<105::AID-NET5>3.0.CO;2-G
- * <p/>
+ * <p>
  * <p>Files and file-description can be found <a href="http://neo.lcc.uma.es/vrp/vrp-instances/multiple-depot-vrp-instances/">here</a>.
  *
  * @author stefan schroeder

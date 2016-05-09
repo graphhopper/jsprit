@@ -18,7 +18,7 @@ package com.graphhopper.jsprit.core.problem;
 
 /**
  * Capacity with an arbitrary number of capacity-dimension.
- * <p/>
+ * <p>
  * <p>Note that this assumes the the values of each capacity dimension can be added up and subtracted
  *
  * @author schroeder
@@ -27,7 +27,7 @@ public class Capacity {
 
     /**
      * Adds up two capacities, i.e. sums up each and every capacity dimension, and returns the resulting Capacity.
-     * <p/>
+     * <p>
      * <p>Note that this assumes that capacity dimension can be added up.
      *
      * @param cap1 capacity to be added up
@@ -83,7 +83,7 @@ public class Capacity {
     /**
      * Divides every dimension of numerator capacity by the corresponding dimension of denominator capacity,
      * , and averages each quotient.
-     * <p/>
+     * <p>
      * <p>If both nominator.get(i) and denominator.get(i) equal to 0, dimension i is ignored.
      * <p>If both capacities are have only dimensions with dimensionVal=0, it returns 0.0
      *
@@ -146,7 +146,7 @@ public class Capacity {
 
         /**
          * add capacity dimension
-         * <p/>
+         * <p>
          * <p>Note that it automatically resizes dimensions according to index, i.e. if index=7 there are 8 dimensions.
          * New dimensions then are initialized with 0
          *
@@ -215,7 +215,7 @@ public class Capacity {
 
     /**
      * Returns value of capacity-dimension with specified index.
-     * <p/>
+     * <p>
      * <p>If capacity dimension does not exist, it returns 0 (rather than IndexOutOfBoundsException).
      *
      * @param index dimension index of the capacity value to be retrieved

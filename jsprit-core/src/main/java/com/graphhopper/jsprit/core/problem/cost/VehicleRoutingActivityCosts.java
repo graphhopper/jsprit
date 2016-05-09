@@ -22,7 +22,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 /**
  * Interface for overall routing and operation costs.
- * <p/>
+ * <p>
  * <p>This calculates activity and leg-based costs. If you want to consider for example costs incurred by missed time-windows, you can do it here.
  *
  * @author schroeder
@@ -46,7 +46,7 @@ public interface VehicleRoutingActivityCosts {
 
     /**
      * Calculates and returns the activity cost at tourAct.
-     * <p/>
+     * <p>
      * <p>Here waiting-times, service-times and missed time-windows can be considered.
      *
      * @param tourAct

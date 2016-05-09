@@ -24,7 +24,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 /**
  * A {@link com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivityVisitor} that looks forward in the vehicle route and determines
  * the maximum capacity utilization (in terms of loads) at subsequent activities.
- * <p/>
+ * <p>
  * <p>Assume a vehicle route with the following activity sequence {start,pickup(1,4),delivery(2,3),pickup(3,2),end} where
  * pickup(1,2) = pickup(id,cap-demand).<br>
  * Future maxLoad for each activity are calculated as follows:<br>

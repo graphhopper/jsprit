@@ -25,10 +25,10 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 /**
  * Updates load at activity level.
- * <p/>
+ * <p>
  * <p>Note that this assumes that StateTypes.LOAD_AT_DEPOT is already updated, i.e. it starts by setting loadAtDepot to StateTypes.LOAD_AT_DEPOT.
  * If StateTypes.LOAD_AT_DEPOT is not set, it starts with 0 load at depot.
- * <p/>
+ * <p>
  * <p>Thus it DEPENDS on StateTypes.LOAD_AT_DEPOT
  *
  * @author stefan

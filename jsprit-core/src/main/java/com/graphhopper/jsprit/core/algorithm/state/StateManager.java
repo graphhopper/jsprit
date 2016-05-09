@@ -37,7 +37,7 @@ import java.util.*;
 
 /**
  * Manages states.
- * <p/>
+ * <p>
  * <p>Some condition, rules or constraints are stateful. This StateManager manages these states, i.e. it offers
  * methods to add, store and retrieve states based on the problem, vehicle-routes and tour-activities.
  *
@@ -95,7 +95,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     /**
      * Create and returns a stateId with the specified state-name.
-     * <p/>
+     * <p>
      * <p>If a stateId with the specified name has already been created, it returns the created stateId.</p>
      * <p>If the specified is equal to a name that is already used internally, it throws an IllegalStateException</p>
      *
@@ -485,11 +485,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     /**
      * Adds state updater.
-     * <p/>
+     * <p>
      * <p>Note that a state update occurs if route and/or activity states have changed, i.e. if jobs are removed
      * or inserted into a route. Thus here, it is assumed that a state updater is either of type InsertionListener,
      * RuinListener, ActivityVisitor, ReverseActivityVisitor, RouteVisitor, ReverseRouteVisitor.
-     * <p/>
+     * <p>
      * <p>The following rule pertain for activity/route visitors:These visitors visits all activities/route in a route subsequently in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
      * and, second, if a job has been inserted and thus if a route has changed.
      *

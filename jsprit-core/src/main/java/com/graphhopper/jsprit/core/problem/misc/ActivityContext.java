@@ -48,14 +48,14 @@ public class ActivityContext {
 
     /**
      * Returns the insertion index of the associated vehicle.
-     * <p/>
+     * <p>
      * <p>The associated activity is not inserted yet. The actual insertion position is still to be evaluated.
      * Thus this insertion index is related to the potential insertion index which is the position before
      * the activity at this index in the existing route.
-     * <p/>
+     * <p>
      * if insertionIndex == 0, the associated activity will be inserted between start of vehicle and the first
      * activity in activity sequence.
-     * <p/>
+     * <p>
      * if insertionIndex == relatedRoute.getActivities().size(), the associated activity will be inserted between
      * the last activity in the activity sequence and the end of vehicle.
      *

@@ -29,10 +29,10 @@ import java.util.Collection;
 
 /**
  * Terminates algorithm prematurely based on specified time.
- * <p/>
+ * <p>
  * <p>Note, TimeTermination must be registered as AlgorithmListener <br>
  * TimeTermination will be activated by:<br>
- * <p/>
+ * <p>
  * <code>algorithm.setPrematureAlgorithmTermination(this);</code><br>
  * <code>algorithm.addListener(this);</code>
  *

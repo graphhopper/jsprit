@@ -46,7 +46,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 
     /**
      * true if a vehicle(-type) is allowed to take over the whole route that was previously served by another vehicle
-     * <p/>
+     * <p>
      * <p>vehicleSwitch allowed makes sense if fleet consists of vehicles with different capacities such that one
      * can start with a small vehicle, but as the number of customers grows bigger vehicles can be operated, i.e.
      * bigger vehicles can take over the route that was previously served by a small vehicle.

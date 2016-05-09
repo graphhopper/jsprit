@@ -28,7 +28,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivity
 
 /**
  * Constraint that ensures capacity constraint at each activity.
- * <p/>
+ * <p>
  * <p>This is critical to consistently calculate pd-problems with capacity constraints. Critical means
  * that is MUST be visited. It also assumes that pd-activities are visited in the order they occur in a tour.
  *
@@ -42,7 +42,7 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 
     /**
      * Constructs the constraint ensuring capacity constraint at each activity.
-     * <p/>
+     * <p>
      * <p>This is critical to consistently calculate pd-problems with capacity constraints. Critical means
      * that is MUST be visited. It also assumes that pd-activities are visited in the order they occur in a tour.
      *

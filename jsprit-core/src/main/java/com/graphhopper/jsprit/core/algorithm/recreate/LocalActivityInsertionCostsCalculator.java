@@ -30,7 +30,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
  * Calculates activity insertion costs locally, i.e. by comparing the additional costs of insertion the new activity k between
  * activity i (prevAct) and j (nextAct).
  * Additional costs are then basically calculated as delta c = c_ik + c_kj - c_ij.
- * <p/>
+ * <p>
  * <p>Note once time has an effect on costs this class requires activity endTimes.
  *
  * @author stefan

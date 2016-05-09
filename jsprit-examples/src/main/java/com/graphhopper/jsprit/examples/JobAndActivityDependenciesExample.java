@@ -43,7 +43,7 @@ import java.util.Collection;
 
 /**
  * Illustrates dependencies between jobs.
- * <p/>
+ * <p>
  * The hard requirement here is that three jobs with name "get key", "use key" and "deliver key" need to
  * be not only in loose sequence in one particular route but also one after another (without any other activities
  * between them).

@@ -16,9 +16,8 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.examples;
 
-import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
-import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer.Label;
-import com.graphhopper.jsprit.analysis.toolbox.Plotter;
+import com.graphhopper.jsprit.analysis.toolbox.AlgorithmEventsRecorder;
+import com.graphhopper.jsprit.analysis.toolbox.AlgorithmEventsViewer;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
@@ -56,7 +55,11 @@ public class SolomonOpenExample {
 		 */
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        new Plotter(vrp).plot("output/solomon_C101_open.png", "C101");
+//        new Plotter(vrp).plot("output/solomon_C101_open.png", "C101");
+
+
+        AlgorithmEventsRecorder eventsRecorder = new AlgorithmEventsRecorder(vrp, "output/events.dgs.gz");
+        eventsRecorder.setRecordingRange(0, 50);
 
 		/*
          * Define the required vehicle-routing algorithms to solve the above problem.
@@ -65,9 +68,13 @@ public class SolomonOpenExample {
 		 */
 //		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
 //		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_fix.xml");
-        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS, "4")
+        .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+            .setProperty(Jsprit.Parameter.CONSTRUCTION, Jsprit.Construction.BEST_INSERTION.toString()).buildAlgorithm();
 //		vra.setPrematureBreak(100);
 //		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+        vra.addListener(eventsRecorder);
+        vra.setMaxIterations(200);
         /*
          * Solve the problem.
 		 *
@@ -91,8 +98,13 @@ public class SolomonOpenExample {
 //		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/solomon_C101_open_solution.png","C101");
 
 
-        new GraphStreamViewer(vrp, solution).setRenderDelay(150).labelWith(Label.ID).display();
+//        new GraphStreamViewer(vrp, solution).setRenderDelay(100).labelWith(Label.ID).display();
 
+
+        AlgorithmEventsViewer viewer = new AlgorithmEventsViewer();
+        viewer.setRuinDelay(8);
+        viewer.setRecreationDelay(2);
+        viewer.display("output/events.dgs.gz");
 
     }
 

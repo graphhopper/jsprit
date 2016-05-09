@@ -33,7 +33,7 @@ import java.util.Collection;
 /**
  * Updates load at start and end of route as well as at each activity. And update is triggered when either
  * activityVisitor has been started, the insertion process has been started or a job has been inserted.
- * <p/>
+ * <p>
  * <p>Note that this only works properly if you register this class as ActivityVisitor AND InsertionStartsListener AND JobInsertedListener.
  * The reason behind is that activity states are dependent on route-level states and vice versa. If this is properly registered,
  * this dependency is solved automatically.

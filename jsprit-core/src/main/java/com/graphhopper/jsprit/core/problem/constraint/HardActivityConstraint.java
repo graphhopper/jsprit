@@ -35,37 +35,37 @@ public interface HardActivityConstraint extends HardConstraint {
 
     /**
      * Returns whether newAct can be inserted in between prevAct and nextAct.
-     * <p/>
-     * <p/>
+     * <p>
+     * <p>
      * When you check activities, you need to understand the following:
-     * <p/>
+     * <p>
      * Let us assume an existing route;
-     * <p/>
+     * <p>
      * start, ..., i-1, i, j, j+1, ..., end
-     * <p/>
+     * <p>
      * When inserting a shipment, two activities will be inserted, pickupShipment k_pick and deliverShipment k_deliver,
      * i.e. jsprit loops through this route (activity sequence) and checks hard and soft constraints and calculates (marginal) insertion costs. For
      * the activity sequence above, it means:
-     * <p/>
+     * <p>
      * start, k_pick, start+1 (prevAct, newAct, nextAct)<br>
      * ...<br>
      * i-1, k_pick, i<br>
      * i, k_pick, j<br>
      * ...<br>
-     * <p/>
+     * <p>
      * accordingly:<br>
      * start, k_pick, k_delivery (prevAct, newAct, nextAct)<br>
      * ...<br>
      * i-1, k_delivery, i<br>
      * i, k_delivery, j<br>
      * ...<br>
-     * <p/>
+     * <p>
      * You specify a hard activity constraint, you to check whether for example k_pick can be inserted between prevActivity and nextActivity at all.
      * If so, your hard constraint should return ConstraintsStatus.FULFILLED.<br>
      * If not, you can return ConstraintsStatus.NOT_FULFILLED or ConstraintsStatus.NOT_FULFILLED_BREAK.<br>
-     * <p/>
+     * <p>
      * Latter should be used, if your constraint can never be fulfilled anymore when looping further through your route.
-     * <p/>
+     * <p>
      * Since constraint checking at activity level is rather time consuming (you need to do this thousand/millions times),
      * you can memorize states behind activities to avoid additional loopings through your activity sequence and thus to
      * check your constraint locally (only by looking at prevAct, newAct, nextAct) in constant time.

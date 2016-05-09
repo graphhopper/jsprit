@@ -18,7 +18,7 @@ package com.graphhopper.jsprit.core.problem.solution;
 
 /**
  * Interface for all solutionCostCalculators which should be the objective-functions of the problem.
- * <p/>
+ * <p>
  * <p>It evaluates VehicleRoutingProblemSolution and returns its costs.
  *
  * @author schroeder

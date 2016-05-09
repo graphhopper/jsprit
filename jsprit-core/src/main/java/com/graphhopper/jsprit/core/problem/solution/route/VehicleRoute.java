@@ -48,7 +48,7 @@ public class VehicleRoute {
 
     /**
      * Returns an empty route.
-     * <p/>
+     * <p>
      * <p>An empty route has an empty list of tour-activities, no driver (DriverImpl.noDriver()) and no vehicle (VehicleImpl.createNoVehicle()).
      *
      * @return empty route
@@ -68,7 +68,7 @@ public class VehicleRoute {
 
         /**
          * Returns new instance of this builder.
-         * <p/>
+         * <p>
          * <p><b>Construction-settings of vehicleRoute:</b>
          * <p>startLocation == vehicle.getStartLocationId()
          * <p>endLocation == vehicle.getEndLocationId()
@@ -88,7 +88,7 @@ public class VehicleRoute {
 
         /**
          * Returns new instance of this builder.
-         * <p/>
+         * <p>
          * <p><b>Construction-settings of vehicleRoute:</b>
          * <p>startLocation == vehicle.getStartLocationId()
          * <p>endLocation == vehicle.getEndLocationId()
@@ -155,7 +155,7 @@ public class VehicleRoute {
 
         /**
          * Sets the departure-time of the route, i.e. which is the time the vehicle departs from start-location.
-         * <p/>
+         * <p>
          * <p><b>Note</b> that departureTime cannot be lower than earliestDepartureTime of vehicle.
          *
          * @param departureTime departure time of vehicle being employed for this route
@@ -172,9 +172,9 @@ public class VehicleRoute {
         /**
          * Adds a service to this route. Activity is initialized with .getTimeWindow(). If you want to explicitly set another time window
          * use .addService(Service service, TimeWindow timeWindow)
-         * <p/>
+         * <p>
          * <p>This implies that for this service a serviceActivity is created with {@link TourActivityFactory} and added to the sequence of tourActivities.
-         * <p/>
+         * <p>
          * <p>The resulting activity occurs in the activity-sequence in the order adding/inserting.
          *
          * @param service to be added
@@ -370,7 +370,7 @@ public class VehicleRoute {
 
     /**
      * Sets the vehicle and its departureTime from <code>vehicle.getStartLocationId()</code>.
-     * <p/>
+     * <p>
      * <p>This implies the following:<br>
      * if start and end are null, new start and end activities are created.<br>
      * <p>startActivity is initialized with the start-location of the specified vehicle (<code>vehicle.getStartLocationId()</code>). the time-window of this activity is initialized

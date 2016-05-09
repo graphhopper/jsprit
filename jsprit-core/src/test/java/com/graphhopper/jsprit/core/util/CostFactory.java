@@ -24,7 +24,7 @@ public class CostFactory {
 
     /**
      * Return manhattanCosts.
-     * <p/>
+     * <p>
      * This retrieves coordinates from locationIds. LocationId has to be locId="{x},{y}". For example,
      * locId="10,10" is interpreted such that x=10 and y=10.
      *
@@ -47,7 +47,7 @@ public class CostFactory {
 
     /**
      * Return euclideanCosts.
-     * <p/>
+     * <p>
      * This retrieves coordinates from locationIds. LocationId has to be locId="{x},{y}". For example,
      * locId="10,10" is interpreted such that x=10 and y=10.
      *

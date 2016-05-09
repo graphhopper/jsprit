@@ -49,13 +49,13 @@ public class LuiShenReader {
 
     /**
      * Reads input files to build Liu Shen problem.
-     * <p/>
+     * <p>
      * <p>The instance-file is a solomon file. The vehicle-file is a
      * txt-file that has the following columns:
      * <p>Vehicle;Capacity;Cost_a;Cost_b;Cost_c
      * <p>Concrete vehicleType:
      * <p>A;100;300;60;30
-     * <p/>
+     * <p>
      * <p>In the example above, the vehicle-type with typeId A has
      * a capacity of 100, and fixed costs of 100 in cost scenario "a",
      * 300 in "b" and 30 in "c".

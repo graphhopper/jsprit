@@ -54,7 +54,7 @@ import java.util.Collection;
  * 18 9 56 13
  * 19 62 48 15
  * 20 66 14 22
- * <p/>
+ * <p>
  * vehicles (id,cap,fixed costs, perDistance, #vehicles) at location (40,40)
  * 1 120 1000 1.0 2
  * 2 160 1500 1.1 1

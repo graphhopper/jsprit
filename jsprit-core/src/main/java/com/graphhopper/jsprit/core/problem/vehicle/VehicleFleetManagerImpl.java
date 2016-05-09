@@ -129,7 +129,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     /**
      * Returns a collection of available vehicles.
-     * <p/>
+     * <p>
      * <p>If there is no vehicle with a certain type and location anymore, it looks up whether a penalty vehicle has been specified with
      * this type and location. If so, it returns this penalty vehicle. If not, no vehicle with this type and location is returned.
      */

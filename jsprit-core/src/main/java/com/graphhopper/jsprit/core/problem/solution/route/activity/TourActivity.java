@@ -23,7 +23,7 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 
 /**
  * Basic interface for tour-activities.
- * <p/>
+ * <p>
  * <p>A tour activity is the basic element of a tour, which is consequently a sequence of tour-activities.
  *
  * @author schroeder
@@ -36,7 +36,7 @@ public interface TourActivity extends HasIndex {
 
     /**
      * Basic interface of job-activies.
-     * <p/>
+     * <p>
      * <p>A job activity is related to a {@link Job}.
      *
      * @author schroeder
@@ -84,7 +84,7 @@ public interface TourActivity extends HasIndex {
 
     /**
      * Returns the operation-time this activity takes.
-     * <p/>
+     * <p>
      * <p>Note that this is not necessarily the duration of this activity, but the
      * service time a pickup/delivery actually takes, that is for example <code>service.getServiceTime()</code>.
      *

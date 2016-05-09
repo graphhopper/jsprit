@@ -29,21 +29,21 @@ import java.util.Collection;
 
 /**
  * ThresholdAcceptance-Function defined by Schrimpf et al. (2000).
- * <p/>
+ * <p>
  * <p>The <b>idea</b> can be described as follows: Most problems do not only have one unique minimum (maximum) but
  * a number of local minima (maxima). To avoid to get stuck in a local minimum at the beginning of a search
  * this threshold-acceptance function accepts also worse solution at the beginning (in contrary to a greedy
  * approach which only accepts better solutions), and converges to a greedy approach at the end. <br>
  * The difficulty is to define (i) an appropriate initial threshold and (ii) a corresponding function describing
  * how the threshold converges to zero, i.e. the greedy threshold.
- * <p/>
+ * <p>
  * <p>ad i) The initial threshold is determined by a random walk through the search space.
  * The random walk currently runs with the following algorithm: src/main/resources/randomWalk.xml. It runs
  * as long as it is specified in nuOfWarmupIterations. In the first iteration or walk respectively the algorithm generates a solution.
  * This solution in turn is the basis of the next walk yielding to another solution value ... and so on.
  * Each solution value is memorized since the initial threshold is essentially a function of the standard deviation of these solution values.
  * To be more precise: initial threshold = stddev(solution values) / 2.
- * <p/>
+ * <p>
  * <p>ad ii) The threshold of iteration i is determined as follows:
  * threshold(i) = initialThreshold * Math.exp(-Math.log(2) * (i / nuOfTotalIterations) / alpha)
  * To get a better understanding of the threshold-function go to Wolfram Alpha and plot the following line
@@ -55,7 +55,7 @@ import java.util.Collection;
  * alpha = 0.1<br>
  * x corresponds to i iterations and<br>
  * y to the threshold(i)
- * <p/>
+ * <p>
  * <p>Gerhard Schrimpf, Johannes Schneider, Hermann Stamm- Wilbrandt, and Gunter Dueck (2000).
  * Record breaking optimization results using the ruin and recreate principle.
  * Journal of Computational Physics, 159(2):139 – 171, 2000. ISSN 0021-9991. doi: 10.1006/jcph.1999. 6413.

@@ -182,7 +182,7 @@ public class VehicleRoutingAlgorithm {
 
     /**
      * Runs the vehicle routing algorithm and returns a number of generated solutions.
-     * <p/>
+     * <p>
      * <p>The algorithm runs as long as it is specified in nuOfIterations and prematureBreak. In each iteration it selects a searchStrategy according
      * to searchStrategyManager and runs the strategy to improve solutions.
      * <p>Note that clients are allowed to observe/listen the algorithm. See {@link com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener} and its according listeners.

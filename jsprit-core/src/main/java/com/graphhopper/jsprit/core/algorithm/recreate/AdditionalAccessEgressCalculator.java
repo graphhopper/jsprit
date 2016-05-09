@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 /**
  * Estimates additional access/egress costs when operating route with a new vehicle that has different start/end-location.
- * <p/>
+ * <p>
  * <p>If two vehicles have the same start/end-location and departure-time .getCosts(...) must return zero.
  *
  * @author schroeder
@@ -36,7 +36,7 @@ class AdditionalAccessEgressCalculator {
 
     /**
      * Constructs the estimator that estimates additional access/egress costs when operating route with a new vehicle that has different start/end-location.
-     * <p/>
+     * <p>
      * <p>If two vehicles have the same start/end-location and departure-time .getCosts(...) must return zero.
      *
      * @author schroeder
