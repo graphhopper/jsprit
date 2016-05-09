@@ -48,6 +48,8 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     private double actArrTime;
 
+    private double actReadyTime;
+
     private double actEndTime;
 
     private ActivityPolicy activityPolicy = ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
@@ -67,6 +69,10 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     public double getActArrTime() {
         return actArrTime;
+    }
+
+    public double getActReadyTime() {
+        return actReadyTime;
     }
 
     public double getActEndTime() {
@@ -91,16 +97,16 @@ public class ActivityTimeTracker implements ActivityVisitor {
     
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
         actArrTime = arrivalTimeAtCurrAct;
-        double readyTimeAtCurrAct = arrivalTimeAtCurrAct + setup_time_prevAct_activity;
+        actReadyTime = arrivalTimeAtCurrAct + setup_time_prevAct_activity;
         double operationStartTime;
 
         if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
-            operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), readyTimeAtCurrAct);
+            operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), actReadyTime);
         } else if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_ARRIVED)) {
-            operationStartTime = readyTimeAtCurrAct;
-        } else operationStartTime = readyTimeAtCurrAct;
+            operationStartTime = actReadyTime;
+        } else operationStartTime = actReadyTime;
 
-        double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,readyTimeAtCurrAct,route.getDriver(),route.getVehicle());
+        double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,actReadyTime,route.getDriver(),route.getVehicle());
 
         actEndTime = operationEndTime;
 

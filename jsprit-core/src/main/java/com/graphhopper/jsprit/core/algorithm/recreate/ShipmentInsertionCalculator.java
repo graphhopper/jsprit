@@ -173,6 +173,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                 double shipmentPickupEndTime = Math.max(shipmentPickupReadyTime, pickupShipment.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(pickupShipment, shipmentPickupReadyTime, newDriver, newVehicle);
 
                 pickupContext.setArrivalTime(shipmentPickupArrTime);
+                pickupContext.setReadyTime(shipmentPickupReadyTime);
                 pickupContext.setEndTime(shipmentPickupEndTime);
                 pickupContext.setInsertionIndex(i);
                 insertionContext.setRelatedActivityContext(pickupContext);

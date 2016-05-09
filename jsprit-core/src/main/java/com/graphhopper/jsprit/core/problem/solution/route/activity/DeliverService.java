@@ -29,6 +29,8 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private double arrTime;
 
+    public double readyTime;
+
     private double endTime;
 
     private double theoreticalEarliest = 0;
@@ -143,4 +145,14 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 	public double getSetupTime() {
 		return setup;
 	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
+    }
 }

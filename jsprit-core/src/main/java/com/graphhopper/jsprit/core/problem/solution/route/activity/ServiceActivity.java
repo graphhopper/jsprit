@@ -25,6 +25,8 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     public double arrTime;
 
+    public double readyTime;
+
     public double endTime;
 
     private double theoreticalEarliest;
@@ -186,6 +188,16 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 	public double getSetupTime() {
 		return setup;
 	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
+    }
 
 
 }

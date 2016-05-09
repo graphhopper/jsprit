@@ -30,6 +30,8 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
     private double arrTime;
 
+    public double readyTime;
+
     private double earliest = 0;
 
     private double latest = Double.MAX_VALUE;
@@ -136,6 +138,16 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     @Override
     public Capacity getSize() {
         return shipment.getSize();
+    }
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
     }
 
 

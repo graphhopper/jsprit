@@ -24,6 +24,8 @@ public class ActivityContext {
 
     private double arrivalTime;
 
+    private double readyTime;
+
     private double endTime;
 
     private int insertionIndex;
@@ -35,6 +37,10 @@ public class ActivityContext {
      */
     public double getArrivalTime() {
         return arrivalTime;
+    }
+
+    public double getReadyTime() {
+        return readyTime;
     }
 
     /**
@@ -72,6 +78,10 @@ public class ActivityContext {
      */
     public void setArrivalTime(double arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
     }
 
     /**

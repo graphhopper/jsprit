@@ -16,7 +16,6 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.algorithm.state;
 
-import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
@@ -36,11 +35,7 @@ public class UpdateFutureWaitingTimes implements ReverseActivityVisitor, StateUp
 
     private VehicleRoutingTransportCosts transportCosts;
 
-    private SetupTime setupCosts = new SetupTime();
-
     private double futureWaiting;
-
-    private TourActivity prevAct;
 
     public UpdateFutureWaitingTimes(StateManager states, VehicleRoutingTransportCosts tpCosts) {
         super();
@@ -52,17 +47,14 @@ public class UpdateFutureWaitingTimes implements ReverseActivityVisitor, StateUp
     public void begin(VehicleRoute route) {
         this.route = route;
         this.futureWaiting = 0.;
-        prevAct = route.getEnd();
     }
 
     @Override
     public void visit(TourActivity activity) {
         states.putInternalTypedActivityState(activity, route.getVehicle(), InternalStates.FUTURE_WAITING, futureWaiting);
-        double setup_time_activity_prevAct = setupCosts.getSetupTime(activity, prevAct, route.getVehicle());
 		if(!(activity instanceof BreakActivity)) {
-            futureWaiting += Math.max(activity.getTheoreticalEarliestOperationStartTime() - setup_time_activity_prevAct - activity.getArrTime(), 0);
+            futureWaiting += Math.max(activity.getTheoreticalEarliestOperationStartTime() - activity.getReadyTime(), 0);
 		}
-		prevAct = activity;
     }
 
     @Override
