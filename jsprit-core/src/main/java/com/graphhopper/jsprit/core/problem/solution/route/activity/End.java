@@ -80,6 +80,7 @@ public final class End extends AbstractActivity implements TourActivity {
         theoretical_earliestOperationStartTime = end.getTheoreticalEarliestOperationStartTime();
         theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime();
         arrTime = end.getArrTime();
+        readyTime = end.getReadyTime();
         endTime = end.getEndTime();
         setup = end.getSetupTime();
         setIndex(-2);

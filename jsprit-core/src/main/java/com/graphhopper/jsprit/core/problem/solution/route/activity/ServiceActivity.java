@@ -81,6 +81,7 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     protected ServiceActivity(ServiceActivity serviceActivity) {
         this.service = serviceActivity.getJob();
         this.arrTime = serviceActivity.getArrTime();
+        this.readyTime = serviceActivity.getReadyTime();
         this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());
         this.theoreticalEarliest = serviceActivity.getTheoreticalEarliestOperationStartTime();

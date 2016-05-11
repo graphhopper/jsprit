@@ -50,6 +50,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     private DeliverShipment(DeliverShipment deliveryShipmentActivity) {
         this.shipment = (Shipment) deliveryShipmentActivity.getJob();
         this.arrTime = deliveryShipmentActivity.getArrTime();
+        this.readyTime = deliveryShipmentActivity.getReadyTime();
         this.endTime = deliveryShipmentActivity.getEndTime();
         this.capacity = deliveryShipmentActivity.getSize();
         setIndex(deliveryShipmentActivity.getIndex());

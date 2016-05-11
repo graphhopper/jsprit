@@ -300,6 +300,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
             start.setLocation(Location.newInstance(newVehicle.getStartLocation().getId()));
             start.setTheoreticalEarliestOperationStartTime(newVehicle.getEarliestDeparture());
             start.setTheoreticalLatestOperationStartTime(Double.MAX_VALUE);
+            start.setReadyTime(newVehicleDepartureTime);
             start.setEndTime(newVehicleDepartureTime);
         }
 

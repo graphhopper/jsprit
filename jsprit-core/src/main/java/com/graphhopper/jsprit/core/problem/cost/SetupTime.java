@@ -42,5 +42,15 @@ public class SetupTime {
     public double getSetupCost(double setupTime, Vehicle vehicle){
 	    return vehicle.getType().getVehicleCostParams().perSetupTimeUnit * setupTime;
     }
+
+    public double getSetupCost(Location from, TourActivity to, Vehicle vehicle) {
+        double setupTime = 0.;
+        double coef = 0.;
+        if(vehicle != null)
+            coef = vehicle.getCoefSetupTime();
+        if(!from.equals(to.getLocation()))
+            setupTime = to.getSetupTime() * coef;
+        return setupTime;
+    }
     
 }

@@ -90,6 +90,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         counter++;
         this.aBreak = (Break) breakActivity.getJob();
         this.arrTime = breakActivity.getArrTime();
+        this.readyTime = breakActivity.getReadyTime();
         this.endTime = breakActivity.getEndTime();
         this.location = breakActivity.getLocation();
         setIndex(breakActivity.getIndex());

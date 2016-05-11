@@ -52,6 +52,7 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     private PickupService(PickupService pickupActivity) {
         this.pickup = pickupActivity.getJob();
         this.arrTime = pickupActivity.getArrTime();
+        this.readyTime = pickupActivity.getReadyTime();
         this.depTime = pickupActivity.getEndTime();
         setIndex(pickupActivity.getIndex());
         this.theoreticalEarliest = pickupActivity.getTheoreticalEarliestOperationStartTime();

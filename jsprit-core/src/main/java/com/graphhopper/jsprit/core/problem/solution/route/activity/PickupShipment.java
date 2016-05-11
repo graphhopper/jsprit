@@ -47,6 +47,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     private PickupShipment(PickupShipment pickupShipmentActivity) {
         this.shipment = (Shipment) pickupShipmentActivity.getJob();
         this.arrTime = pickupShipmentActivity.getArrTime();
+        this.readyTime = pickupShipmentActivity.getReadyTime();
         this.endTime = pickupShipmentActivity.getEndTime();
         setIndex(pickupShipmentActivity.getIndex());
         this.earliest = pickupShipmentActivity.getTheoreticalEarliestOperationStartTime();

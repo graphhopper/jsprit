@@ -59,6 +59,7 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
     public void begin(VehicleRoute route) {
         timeTracker.begin(route);
         this.route = route;
+        route.getStart().setReadyTime(timeTracker.getActReadyTime());
         route.getStart().setEndTime(timeTracker.getActEndTime());
     }
 

@@ -49,6 +49,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     private DeliverService(DeliverService deliveryActivity) {
         this.delivery = deliveryActivity.getJob();
         this.arrTime = deliveryActivity.getArrTime();
+        this.readyTime = deliveryActivity.getReadyTime();
         this.endTime = deliveryActivity.getEndTime();
         capacity = deliveryActivity.getSize();
         setIndex(deliveryActivity.getIndex());
