@@ -6,8 +6,8 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 public class ActivityStartsAsSoonAsTimeWindowOpens implements ActivityStartStrategy {
 
     @Override
-    public double getActivityStartTime(TourActivity activity, double arrivalTime) {
-        return Math.max(activity.getTheoreticalEarliestOperationStartTime(),arrivalTime);
+    public double getActivityStartTime(TourActivity activity, double readyTime) {
+        return Math.max(activity.getTheoreticalEarliestOperationStartTime(),readyTime);
     }
 
 }

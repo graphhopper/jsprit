@@ -635,9 +635,8 @@ public class Jsprit {
                     TourActivity prevAct = route.getStart();
                     for (TourActivity act : route.getActivities()) {
                         if (act instanceof BreakActivity) hasBreak = true;
-                        double setupTime = setupCosts.getSetupTime(prevAct, act, route.getVehicle());
-                        double actReadyTime = act.getArrTime() + setupTime;
-                        costs += setupCosts.getSetupCost(setupTime, route.getVehicle());
+                        double actReadyTime = act.getReadyTime();
+                        costs += setupCosts.getSetupCost(prevAct, act, route.getVehicle());
                         costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
                         costs += vrp.getActivityCosts().getActivityCost(act, actReadyTime, route.getDriver(), route.getVehicle());
                         prevAct = act;
