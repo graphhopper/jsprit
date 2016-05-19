@@ -17,6 +17,7 @@
 package com.graphhopper.jsprit.core.reporting;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -53,11 +54,13 @@ public class SolutionPrinter {
     private static class Jobs {
         int nServices;
         int nShipments;
+        int nBreaks;
 
-        public Jobs(int nServices, int nShipments) {
+        public Jobs(int nServices, int nShipments, int nBreaks) {
             super();
             this.nServices = nServices;
             this.nShipments = nShipments;
+            this.nBreaks = nBreaks;
         }
     }
 
@@ -113,6 +116,7 @@ public class SolutionPrinter {
         Jobs jobs = getNuOfJobs(problem);
         out.format(leftAlign, "noServices", jobs.nServices);
         out.format(leftAlign, "noShipments", jobs.nShipments);
+        out.format(leftAlign, "noBreaks", jobs.nBreaks);
         out.format(leftAlign, "fleetsize", problem.getFleetSize().toString());
         out.format("+--------------------------+%n");
 
@@ -194,6 +198,7 @@ public class SolutionPrinter {
     private static Jobs getNuOfJobs(VehicleRoutingProblem problem) {
         int nShipments = 0;
         int nServices = 0;
+        int nBreaks = 0;
         for (Job j : problem.getJobs().values()) {
             if (j instanceof Shipment) {
                 nShipments++;
@@ -201,8 +206,11 @@ public class SolutionPrinter {
             if (j instanceof Service) {
                 nServices++;
             }
+            if (j instanceof Break) {
+                nBreaks++;
+            }
         }
-        return new Jobs(nServices, nShipments);
+        return new Jobs(nServices, nShipments, nBreaks);
     }
 
 }

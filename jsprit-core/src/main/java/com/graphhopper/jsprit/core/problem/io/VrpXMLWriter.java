@@ -354,10 +354,10 @@ public class VrpXMLWriter {
             if (vehicle.getBreak() != null) {
                 Collection<TimeWindow> tws = vehicle.getBreak().getTimeWindows();
                 int index = 0;
-	            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.duration", vehicle.getBreak().getServiceDuration());
+	            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").breaks.duration", vehicle.getBreak().getServiceDuration());
                 for(TimeWindow tw : tws) {
-		            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.timeWindows.timeWindow(" + index + ").start", tw.getStart());
-		            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").break.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
+		            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").breaks.timeWindows.timeWindow(" + index + ").start", tw.getStart());
+		            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").breaks.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
 		            ++index;
                 }
 	        }
