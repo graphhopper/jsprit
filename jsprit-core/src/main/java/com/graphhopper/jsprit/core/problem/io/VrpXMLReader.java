@@ -213,27 +213,33 @@ public class VrpXMLReader {
                 if (endTimeS != null) endTime = Double.parseDouble(endTimeS);
 
                 String serviceId = actConfig.getString("serviceId");
-                if (serviceId != null) {
-                    Service service = getService(serviceId);
-                    if (service == null)
-                        throw new IllegalStateException("service to serviceId " + serviceId + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
-                    //!!!since job is part of initial route, it does not belong to jobs in problem, i.e. variable jobs that can be assigned/scheduled
-                    freezedJobIds.add(serviceId);
-                    routeBuilder.addService(service);
-                } else {
-                    String shipmentId = actConfig.getString("shipmentId");
-                    if (shipmentId == null)
-                        throw new IllegalStateException("either serviceId or shipmentId is missing");
-                    Shipment shipment = getShipment(shipmentId);
-                    if (shipment == null)
-                        throw new IllegalStateException("shipment to shipmentId " + shipmentId + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
-                    freezedJobIds.add(shipmentId);
-                    if (type.equals("pickupShipment")) {
-                        routeBuilder.addPickup(shipment);
-                    } else if (type.equals("deliverShipment")) {
-                        routeBuilder.addDelivery(shipment);
-                    } else
-                        throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+                if(type.equals("break")) {
+                    Break currentbreak = getBreak(vehicleId);
+                    routeBuilder.addBreak(currentbreak);
+                }
+                else {
+                    if (serviceId != null) {
+                        Service service = getService(serviceId);
+                        if (service == null)
+                            throw new IllegalStateException("service to serviceId " + serviceId + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
+                        //!!!since job is part of initial route, it does not belong to jobs in problem, i.e. variable jobs that can be assigned/scheduled
+                        freezedJobIds.add(serviceId);
+                        routeBuilder.addService(service);
+                    } else {
+                        String shipmentId = actConfig.getString("shipmentId");
+                        if (shipmentId == null)
+                            throw new IllegalStateException("either serviceId or shipmentId is missing");
+                        Shipment shipment = getShipment(shipmentId);
+                        if (shipment == null)
+                            throw new IllegalStateException("shipment to shipmentId " + shipmentId + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
+                        freezedJobIds.add(shipmentId);
+                        if (type.equals("pickupShipment")) {
+                            routeBuilder.addPickup(shipment);
+                        } else if (type.equals("deliverShipment")) {
+                            routeBuilder.addDelivery(shipment);
+                        } else
+                            throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+                    }
                 }
             }
             VehicleRoute route = routeBuilder.build();
@@ -276,24 +282,29 @@ public class VrpXMLReader {
                     if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
                     String endTimeS = actConfig.getString("endTime");
                     if (endTimeS != null) endTime = Double.parseDouble(endTimeS);
-
-                    String serviceId = actConfig.getString("serviceId");
-                    if (serviceId != null) {
-                        Service service = getService(serviceId);
-                        routeBuilder.addService(service);
-                    } else {
-                        String shipmentId = actConfig.getString("shipmentId");
-                        if (shipmentId == null)
-                            throw new IllegalStateException("either serviceId or shipmentId is missing");
-                        Shipment shipment = getShipment(shipmentId);
-                        if (shipment == null)
-                            throw new IllegalStateException("shipment with id " + shipmentId + " does not exist.");
-                        if (type.equals("pickupShipment")) {
-                            routeBuilder.addPickup(shipment);
-                        } else if (type.equals("deliverShipment")) {
-                            routeBuilder.addDelivery(shipment);
-                        } else
-                            throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+                    if(type.equals("break")) {
+                        Break currentbreak = getBreak(vehicleId);
+                        routeBuilder.addBreak(currentbreak);
+                    }
+                    else {
+                        String serviceId = actConfig.getString("serviceId");
+                        if (serviceId != null) {
+                            Service service = getService(serviceId);
+                            routeBuilder.addService(service);
+                        } else {
+                            String shipmentId = actConfig.getString("shipmentId");
+                            if (shipmentId == null)
+                                throw new IllegalStateException("either serviceId or shipmentId is missing");
+                            Shipment shipment = getShipment(shipmentId);
+                            if (shipment == null)
+                                throw new IllegalStateException("shipment with id " + shipmentId + " does not exist.");
+                            if (type.equals("pickupShipment")) {
+                                routeBuilder.addPickup(shipment);
+                            } else if (type.equals("deliverShipment")) {
+                                routeBuilder.addDelivery(shipment);
+                            } else
+                                throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+                        }
                     }
                 }
                 routes.add(routeBuilder.build());
@@ -322,6 +333,10 @@ public class VrpXMLReader {
 
     private Vehicle getVehicle(String vehicleId) {
         return vehicleMap.get(vehicleId);
+    }
+
+    private Break getBreak(String vehicleId) {
+        return vehicleMap.get(vehicleId).getBreak();
     }
 
     private void readProblemType(XMLConfiguration vrpProblem) {
@@ -673,7 +688,7 @@ public class VrpXMLReader {
             }
 
             // read break
-            List<HierarchicalConfiguration> breakTWConfigs = vehicleConfig.configurationsAt("break.timeWindows.timeWindow");
+            List<HierarchicalConfiguration> breakTWConfigs = vehicleConfig.configurationsAt("breaks.timeWindows.timeWindow");
             if (!breakTWConfigs.isEmpty()) {
                 String breakDurationString = vehicleConfig.getString("breaks.duration");
                 Break.Builder current_break = Break.Builder.newInstance(vehicleId);
