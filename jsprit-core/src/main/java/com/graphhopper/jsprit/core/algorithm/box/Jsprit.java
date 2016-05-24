@@ -14,6 +14,7 @@ import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -568,8 +569,7 @@ public class Jsprit {
     }
 
     private DefaultScorer getRegretScorer(VehicleRoutingProblem vrp) {
-        DefaultScorer scorer;
-        scorer = new DefaultScorer(vrp);
+        DefaultScorer scorer = new DefaultScorer(vrp);
         scorer.setTimeWindowParam(Double.valueOf(properties.getProperty(Parameter.REGRET_TIME_WINDOW_SCORER.toString())));
         scorer.setDepotDistanceParam(Double.valueOf(properties.getProperty(Parameter.REGRET_DISTANCE_SCORER.toString())));
         return scorer;
@@ -638,14 +638,16 @@ public class Jsprit {
                         if (!hasBreak) {
                             //break defined and required but not assigned penalty
                             if (route.getEnd().getArrTime() > route.getVehicle().getBreak().getTimeWindow().getEnd()) {
-                                costs += maxCosts * 2 + route.getVehicle().getBreak().getServiceDuration() * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit;
+                                costs += maxCosts * 1 + route.getVehicle().getBreak().getServiceDuration() * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit;
                             } else {
-                                costs -= maxCosts * 2;
+//                                costs -= maxCosts * 2;
                             }
                         }
                     }
                 }
-                costs += solution.getUnassignedJobs().size() * maxCosts * 2;
+                for(Job j : solution.getUnassignedJobs()){
+                    costs += maxCosts * (4 - j.getPriority());
+                }
                 return costs;
             }
         };

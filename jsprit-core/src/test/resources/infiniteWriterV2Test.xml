@@ -2,27 +2,12 @@
 <problem xmlns="http://www.w3schools.com"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
      <problemType>
-          <fleetSize>FINITE</fleetSize>
+          <fleetSize>INFINITE</fleetSize>
      </problemType>
      <vehicles>
           <vehicle>
                <id>v1</id>
                <typeId>vehType</typeId>
-               <startLocation>
-                    <id>loc</id>
-               </startLocation>
-               <endLocation>
-                    <id>loc</id>
-               </endLocation>
-               <timeSchedule>
-                    <start>0.0</start>
-                    <end>1.7976931348623157E308</end>
-               </timeSchedule>
-               <returnToDepot>true</returnToDepot>
-          </vehicle>
-          <vehicle>
-               <id>v2</id>
-               <typeId>vehType2</typeId>
                <startLocation>
                     <id>loc</id>
                </startLocation>
@@ -48,16 +33,58 @@
                     <time>0.0</time>
                </costs>
           </type>
-          <type>
-               <id>vehType2</id>
-               <capacity-dimensions>
-                    <dimension index="0">200</dimension>
-               </capacity-dimensions>
-               <costs>
-                    <fixed>0.0</fixed>
-                    <distance>1.0</distance>
-                    <time>0.0</time>
-               </costs>
-          </type>
      </vehicleTypes>
+     <services>
+          <service id="1" type="service">
+               <location>
+                    <id>loc</id>
+               </location>
+               <capacity-dimensions>
+                    <dimension index="0">1</dimension>
+               </capacity-dimensions>
+               <duration>2.0</duration>
+               <timeWindows>
+                    <timeWindow>
+                         <start>0.0</start>
+                         <end>1.7976931348623157E308</end>
+                    </timeWindow>
+               </timeWindows>
+          </service>
+          <service id="2" type="service">
+               <location>
+                    <id>loc2</id>
+               </location>
+               <capacity-dimensions>
+                    <dimension index="0">1</dimension>
+               </capacity-dimensions>
+               <duration>4.0</duration>
+               <timeWindows>
+                    <timeWindow>
+                         <start>0.0</start>
+                         <end>1.7976931348623157E308</end>
+                    </timeWindow>
+               </timeWindows>
+          </service>
+     </services>
+     <solutions>
+          <solution>
+               <cost>10.0</cost>
+               <routes>
+                    <route>
+                         <driverId>noDriver</driverId>
+                         <vehicleId>v1</vehicleId>
+                         <start>0.0</start>
+                         <act type="service">
+                              <serviceId>1</serviceId>
+                              <arrTime>0.0</arrTime>
+                              <endTime>0.0</endTime>
+                         </act>
+                         <end>0.0</end>
+                    </route>
+               </routes>
+               <unassignedJobs>
+                    <job id="2"/>
+               </unassignedJobs>
+          </solution>
+     </solutions>
 </problem>

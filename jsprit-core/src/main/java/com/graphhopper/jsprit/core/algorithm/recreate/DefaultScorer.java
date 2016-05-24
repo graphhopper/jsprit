@@ -13,9 +13,9 @@ public class DefaultScorer implements ScoringFunction  {
 
     private VehicleRoutingProblem vrp;
 
-    private double tw_param = -0.5;
+    private double timeWindowParam = -0.5;
 
-    private double depotDistance_param = +0.1;
+    private double depotDistanceParam = +0.1;
 
     private double minTimeWindowScore = -100000;
 
@@ -24,11 +24,11 @@ public class DefaultScorer implements ScoringFunction  {
     }
 
     public void setTimeWindowParam(double tw_param) {
-        this.tw_param = tw_param;
+        this.timeWindowParam = tw_param;
     }
 
     public void setDepotDistanceParam(double depotDistance_param) {
-        this.depotDistance_param = depotDistance_param;
+        this.depotDistanceParam = depotDistance_param;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class DefaultScorer implements ScoringFunction  {
         double maxDepotDistance = Math.max(maxDepotDistance_1, maxDepotDistance_2);
         double minTimeToOperate = Math.min(shipment.getPickupTimeWindow().getEnd() - shipment.getPickupTimeWindow().getStart(),
             shipment.getDeliveryTimeWindow().getEnd() - shipment.getDeliveryTimeWindow().getStart());
-        return Math.max(tw_param * minTimeToOperate, minTimeWindowScore) + depotDistance_param * maxDepotDistance;
+        return Math.max(timeWindowParam * minTimeToOperate, minTimeWindowScore) + depotDistanceParam * maxDepotDistance;
     }
 
     private double scoreService(InsertionData best, Job job) {
@@ -67,8 +67,8 @@ public class DefaultScorer implements ScoringFunction  {
                 getDistance(best.getSelectedVehicle().getEndLocation(), location)
             );
         }
-        return Math.max(tw_param * (((Service) job).getTimeWindow().getEnd() - ((Service) job).getTimeWindow().getStart()), minTimeWindowScore) +
-            depotDistance_param * maxDepotDistance;
+        return Math.max(timeWindowParam * (((Service) job).getTimeWindow().getEnd() - ((Service) job).getTimeWindow().getStart()), minTimeWindowScore) +
+            depotDistanceParam * maxDepotDistance;
     }
 
 
@@ -78,6 +78,6 @@ public class DefaultScorer implements ScoringFunction  {
 
     @Override
     public String toString() {
-        return "[name=defaultScorer][twParam=" + tw_param + "][depotDistanceParam=" + depotDistance_param + "]";
+        return "[name=defaultScorer][twParam=" + timeWindowParam + "][depotDistanceParam=" + depotDistanceParam + "]";
     }
 }

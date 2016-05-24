@@ -23,10 +23,7 @@ import com.graphhopper.jsprit.core.util.NoiseMaker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -65,6 +62,7 @@ public final class BestInsertion extends AbstractInsertionStrategy {
         List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
         List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
         Collections.shuffle(unassignedJobList, random);
+        sometimesSortPriorities(unassignedJobList);
         for (Job unassignedJob : unassignedJobList) {
             Insertion bestInsertion = null;
             double bestInsertionCost = Double.MAX_VALUE;
@@ -91,6 +89,17 @@ public final class BestInsertion extends AbstractInsertionStrategy {
 //            nextInsertion();
         }
         return badJobs;
+    }
+
+    private void sometimesSortPriorities(List<Job> unassignedJobList) {
+        if(random.nextDouble() < 0.5){
+            Collections.sort(unassignedJobList, new Comparator<Job>() {
+                @Override
+                public int compare(Job o1, Job o2) {
+                    return o1.getPriority() - o2.getPriority();
+                }
+            });
+        }
     }
 
 }
