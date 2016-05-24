@@ -20,6 +20,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.TestUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -382,4 +383,45 @@ public class ShipmentTest {
         assertEquals("del", s.getDeliveryLocation().getId());
         assertEquals("del", s.getDeliveryLocation().getId());
     }
+
+    @Test
+    public void whenSettingPriorities_itShouldBeSetCorrectly(){
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
+            .setDeliveryLocation(Location.newInstance("loc"))
+            .setPriority(1).build();
+        Assert.assertEquals(1, s.getPriority());
+    }
+
+    @Test
+    public void whenSettingPriorities_itShouldBeSetCorrectly2(){
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
+            .setDeliveryLocation(Location.newInstance("loc"))
+            .setPriority(3).build();
+        Assert.assertEquals(3, s.getPriority());
+    }
+
+    @Test
+    public void whenNotSettingPriorities_defaultShouldBe2(){
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
+            .setDeliveryLocation(Location.newInstance("loc"))
+            .build();
+        Assert.assertEquals(2, s.getPriority());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenSettingIncorrectPriorities_itShouldThrowException(){
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
+            .setDeliveryLocation(Location.newInstance("loc"))
+            .setPriority(30).build();
+
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenSettingIncorrectPriorities_itShouldThrowException2(){
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
+            .setDeliveryLocation(Location.newInstance("loc"))
+            .setPriority(0).build();
+
+    }
+
 }

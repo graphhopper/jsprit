@@ -39,13 +39,14 @@ import java.util.Collection;
  */
 public class Service extends AbstractJob {
 
-
     /**
      * Builder that builds a service.
      *
      * @author schroeder
      */
     public static class Builder<T extends Service> {
+
+
 
 
         /**
@@ -85,6 +86,8 @@ public class Service extends AbstractJob {
         protected TimeWindowsImpl timeWindows;
 
 		private boolean twAdded = false;
+
+        private int priority = 2;
 
 		Builder(String id){
 			this.id = id;
@@ -206,6 +209,20 @@ public class Service extends AbstractJob {
             }
             return this;
         }
+
+        /**
+         * Set priority to service. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+         * <p>
+         * Default is 2 = medium.
+         *
+         * @param priority
+         * @return builder
+         */
+        public Builder<T> setPriority(int priority) {
+            if(priority < 1 || priority > 3) throw new IllegalStateException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            this.priority = priority;
+            return this;
+        }
     }
 
     private final String id;
@@ -226,6 +243,8 @@ public class Service extends AbstractJob {
 
     private final TimeWindows timeWindowManager;
 
+    private final int priority;
+
     Service(Builder builder) {
         id = builder.id;
         serviceTime = builder.serviceTime;
@@ -236,6 +255,7 @@ public class Service extends AbstractJob {
         name = builder.name;
         location = builder.location;
 		timeWindowManager = builder.timeWindows;
+        priority = builder.priority;
 	}
 
 	public Collection<TimeWindow> getTimeWindows(){
@@ -336,6 +356,17 @@ public class Service extends AbstractJob {
     @Override
     public String getName() {
         return name;
+    }
+
+    /**
+     * Get priority of service. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * <p>
+     * Default is 2 = medium.
+     *
+     * @return priority
+     */
+    public int getPriority() {
+        return priority;
     }
 
 }
