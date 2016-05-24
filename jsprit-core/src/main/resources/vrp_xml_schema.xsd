@@ -106,6 +106,10 @@
                                                                 maxOccurs="1" default="0.0"/>
                                                     <xs:element name="time" type="xs:decimal" minOccurs="0"
                                                                 maxOccurs="1" default="0.0"/>
+                                                    <xs:element name="service" type="xs:decimal" minOccurs="0"
+                                                                maxOccurs="1" default="0.0"/>
+                                                    <xs:element name="wait" type="xs:decimal" minOccurs="0"
+                                                                maxOccurs="1" default="0.0"/>
                                                 </xs:all>
                                             </xs:complexType>
                                         </xs:element>
