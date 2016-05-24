@@ -541,7 +541,7 @@ public class VrpXMLReader {
                 builder.setServiceTime(serviceConfig.getDouble("duration"));
             }
             if (serviceConfig.containsKey("setupDuration")) {
-                builder.setServiceTime(serviceConfig.getDouble("setupDuration"));
+                builder.setSetupTime(serviceConfig.getDouble("setupDuration"));
             }
             List<HierarchicalConfiguration> deliveryTWConfigs = serviceConfig.configurationsAt("timeWindows.timeWindow");
             if (!deliveryTWConfigs.isEmpty()) {
