@@ -214,6 +214,7 @@ public class VrpXMLWriter {
                         }
                     }
                     xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").arrTime", act.getArrTime());
+                    xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").readyTime", act.getReadyTime());
                     xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").endTime", act.getEndTime());
                     actCounter++;
                 }
