@@ -46,6 +46,7 @@ public class Shipment extends AbstractJob {
 
 
 
+
     /**
      * Builder that builds the shipment.
      *
@@ -84,6 +85,8 @@ public class Shipment extends AbstractJob {
         private boolean pickupTimeWindowAdded = false;
 
         private TimeWindowsImpl pickupTimeWindows;
+
+        private int priority = 2;
 
         /**
          * Returns new instance of this builder.
@@ -263,6 +266,20 @@ public class Shipment extends AbstractJob {
         public Builder addPickupTimeWindow(double earliest, double latest) {
             return addPickupTimeWindow(TimeWindow.newInstance(earliest, latest));
         }
+
+        /**
+         * Set priority to shipment. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+         * <p>
+         * Default is 2 = medium.
+         *
+         * @param priority
+         * @return builder
+         */
+        public Builder setPriority(int priority) {
+            if(priority < 1 || priority > 3) throw new IllegalStateException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            this.priority = priority;
+            return this;
+        }
     }
 
     private final String id;
@@ -289,6 +306,8 @@ public class Shipment extends AbstractJob {
 
     private final TimeWindowsImpl pickupTimeWindows;
 
+    private final int priority;
+
     Shipment(Builder builder) {
         this.id = builder.id;
         this.pickupServiceTime = builder.pickupServiceTime;
@@ -302,6 +321,7 @@ public class Shipment extends AbstractJob {
         this.deliveryLocation_ = builder.deliveryLocation_;
         this.deliveryTimeWindows = builder.deliveryTimeWindows;
         this.pickupTimeWindows = builder.pickupTimeWindows;
+        this.priority = builder.priority;
     }
 
     @Override
@@ -409,5 +429,14 @@ public class Shipment extends AbstractJob {
         return name;
     }
 
-
+    /**
+     * Get priority of shipment. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * <p>
+     * Default is 2 = medium.
+     *
+     * @return priority
+     */
+    public int getPriority() {
+        return priority;
+    }
 }

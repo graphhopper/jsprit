@@ -18,6 +18,7 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -233,5 +234,40 @@ public class ServiceTest {
 				.addTimeWindow(TimeWindow.newInstance(0., 25.))
 				.setName("name").build();
 	}
+
+    @Test
+    public void whenSettingPriorities_itShouldBeSetCorrectly(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .setPriority(1).build();
+        Assert.assertEquals(1, s.getPriority());
+    }
+
+    @Test
+    public void whenSettingPriorities_itShouldBeSetCorrectly2(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .setPriority(3).build();
+        Assert.assertEquals(3, s.getPriority());
+    }
+
+    @Test
+    public void whenNotSettingPriorities_defaultShouldBe2(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .build();
+        Assert.assertEquals(2, s.getPriority());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenSettingIncorrectPriorities_itShouldThrowException(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .setPriority(30).build();
+
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenSettingIncorrectPriorities_itShouldThrowException2(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .setPriority(0).build();
+
+    }
 
 }

@@ -18,7 +18,6 @@ package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.IntegrationTest;
 import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
-import com.graphhopper.jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -143,7 +142,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
         vrpBuilder.setRoutingCost(matrixBuilder.build());
         VehicleRoutingProblem vrp = vrpBuilder.build();
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
-        vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
+//        vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
         SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);

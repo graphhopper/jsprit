@@ -26,10 +26,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 
 
@@ -101,6 +98,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
         List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
         Collections.shuffle(unassignedJobList, random);
+        sometimesSortPriorities(unassignedJobList);
         List<Batch> batches = distributeRoutes(vehicleRoutes, nuOfBatches);
         for (final Job unassignedJob : unassignedJobList) {
             Insertion bestInsertion = null;
@@ -141,6 +139,17 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
             else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
         }
         return badJobs;
+    }
+
+    private void sometimesSortPriorities(List<Job> unassignedJobList) {
+        if(random.nextDouble() < 0.5){
+            Collections.sort(unassignedJobList, new Comparator<Job>() {
+                @Override
+                public int compare(Job o1, Job o2) {
+                    return o1.getPriority() - o2.getPriority();
+                }
+            });
+        }
     }
 
     private Insertion getBestInsertion(Batch batch, Job unassignedJob) {

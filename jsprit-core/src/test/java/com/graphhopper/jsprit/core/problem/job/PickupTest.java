@@ -17,6 +17,7 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.Location;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -30,7 +31,7 @@ public class PickupTest {
 
     @Test
     public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
-        Pickup one = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
+        Pickup one = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
             .addSizeDimension(0, 2)
             .addSizeDimension(1, 4)
             .build();
@@ -42,7 +43,7 @@ public class PickupTest {
 
     @Test
     public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero() {
-        Pickup one = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
+        Pickup one = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
             .build();
         assertEquals(1, one.getSize().getNuOfDimensions());
         assertEquals(0, one.getSize().get(0));
@@ -50,7 +51,7 @@ public class PickupTest {
 
     @Test
     public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
-        Pickup one = (Pickup) Pickup.Builder.newInstance("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
+        Pickup one = Pickup.Builder.newInstance("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
             .build();
         assertEquals(1, one.getSize().getNuOfDimensions());
         assertEquals(1, one.getSize().get(0));
@@ -58,7 +59,7 @@ public class PickupTest {
 
     @Test
     public void whenAddingSkills_theyShouldBeAddedCorrectly() {
-        Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+        Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
@@ -67,7 +68,7 @@ public class PickupTest {
 
     @Test
     public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
-        Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+        Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("drilL"));
@@ -75,7 +76,7 @@ public class PickupTest {
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
-        Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+        Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
@@ -83,10 +84,24 @@ public class PickupTest {
 
     @Test
     public void nameShouldBeAssigned() {
-        Pickup s = (Pickup) Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+        Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .setName("name").build();
         assertEquals("name", s.getName());
     }
 
+
+    @Test
+    public void whenSettingPriorities_itShouldBeSetCorrectly(){
+        Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .setPriority(3).build();
+        Assert.assertEquals(3, s.getPriority());
+    }
+
+    @Test
+    public void whenNotSettingPriorities_defaultShouldBe(){
+        Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .build();
+        Assert.assertEquals(2, s.getPriority());
+    }
 
 }
