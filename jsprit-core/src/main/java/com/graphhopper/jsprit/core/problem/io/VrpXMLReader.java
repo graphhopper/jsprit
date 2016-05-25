@@ -611,15 +611,14 @@ public class VrpXMLReader {
                 if (waitC != null) typeBuilder.setCostPerWaitingTime(waitC);
             }
 
-            Double setupC = null;
-            boolean SetupCostExists = typeConfig.containsKey("costs.setup");
-            if(SetupCostExists)
-            	setupC = typeConfig.getDouble("costs.setup");
+            if(typeConfig.containsKey("costs.setup")) {
+                Double setupC = typeConfig.getDouble("costs.setup");
+                if (setupC != null) typeBuilder.setCostPerSetupTime(setupC);
+            }
 
             if (fix != null) typeBuilder.setFixedCost(fix);
             if (timeC != null) typeBuilder.setCostPerTransportTime(timeC);
             if (distC != null) typeBuilder.setCostPerDistance(distC);
-            if (setupC != null) typeBuilder.setCostPerSetupTime(setupC);
             VehicleType type = typeBuilder.build();
             String id = type.getTypeId();
             types.put(id, type);
