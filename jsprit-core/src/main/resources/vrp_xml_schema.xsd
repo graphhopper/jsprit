@@ -258,6 +258,7 @@
                                                 <xs:choice>
                                                     <xs:group ref="serviceActGroup"/>
                                                     <xs:group ref="shipmentActGroup"/>
+                                                    <xs:group ref="breakActGroup"/>
                                                 </xs:choice>
                                                 <xs:attribute name="type" type="xs:string" use="required"/>
                                             </xs:complexType>
@@ -297,6 +298,7 @@
                                                                         <xs:choice>
                                                                             <xs:group ref="serviceActGroup"/>
                                                                             <xs:group ref="shipmentActGroup"/>
+                                                                            <xs:group ref="breakActGroup"/>
 
                                                                         </xs:choice>
                                                                         <xs:attribute name="type" type="xs:string"
@@ -349,6 +351,14 @@
     <xs:group name="shipmentActGroup">
         <xs:sequence>
             <xs:element name="shipmentId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:group name="breakActGroup">
+        <xs:sequence>
+            <xs:element name="breakId" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>

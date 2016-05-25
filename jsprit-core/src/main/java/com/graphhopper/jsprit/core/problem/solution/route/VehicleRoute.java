@@ -195,6 +195,16 @@ public class VehicleRoute {
             return this;
         }
 
+        public Builder addBreak(Break currentbreak) {
+            if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
+            return addBreak(currentbreak, currentbreak.getTimeWindow());
+        }
+
+        public Builder addBreak(Break currentbreak, TimeWindow timeWindow) {
+            if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
+            return addService(currentbreak,timeWindow);
+        }
+
         /**
          * Adds a pickup to this route.
          *
