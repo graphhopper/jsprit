@@ -583,9 +583,18 @@ public class VrpXMLReader {
             Double fix = typeConfig.getDouble("costs.fixed");
             Double timeC = typeConfig.getDouble("costs.time");
             Double distC = typeConfig.getDouble("costs.distance");
+            if(typeConfig.containsKey("costs.service")){
+                Double serviceC = typeConfig.getDouble("costs.service");
+                if (serviceC != null) typeBuilder.setCostPerServiceTime(serviceC);
+            }
+
+            if(typeConfig.containsKey("costs.wait")){
+                Double waitC = typeConfig.getDouble("costs.wait");
+                if (waitC != null) typeBuilder.setCostPerWaitingTime(waitC);
+            }
 
             if (fix != null) typeBuilder.setFixedCost(fix);
-            if (timeC != null) typeBuilder.setCostPerTime(timeC);
+            if (timeC != null) typeBuilder.setCostPerTransportTime(timeC);
             if (distC != null) typeBuilder.setCostPerDistance(distC);
             VehicleType type = typeBuilder.build();
             String id = type.getTypeId();
