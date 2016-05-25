@@ -638,15 +638,13 @@ public class Jsprit {
                         if (!hasBreak) {
                             //break defined and required but not assigned penalty
                             if (route.getEnd().getArrTime() > route.getVehicle().getBreak().getTimeWindow().getEnd()) {
-                                costs += maxCosts * 1 + route.getVehicle().getBreak().getServiceDuration() * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit;
-                            } else {
-//                                costs -= maxCosts * 2;
+                                costs += 4 * (maxCosts * 2 + route.getVehicle().getBreak().getServiceDuration() * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit);
                             }
                         }
                     }
                 }
                 for(Job j : solution.getUnassignedJobs()){
-                    costs += maxCosts * (4 - j.getPriority());
+                    costs += maxCosts * 2 * (4 - j.getPriority());
                 }
                 return costs;
             }
