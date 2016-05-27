@@ -154,6 +154,7 @@
                         <endTime>80.0</endTime>
                     </act>
                     <end>100.0</end>
+                    <distance>0.0</distance>
                 </route>
             </routes>
             <unassignedJobs>

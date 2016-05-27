@@ -89,6 +89,11 @@ public class CalcWithTimeSchedulingTest {
             public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
                 return getTransportCost(from, to, departureTime, driver, vehicle);
             }
+
+            @Override
+            public double getDistance(Location from, Location to) {
+                return baseCosts.getDistance(from, to);
+            }
         };
     }
 

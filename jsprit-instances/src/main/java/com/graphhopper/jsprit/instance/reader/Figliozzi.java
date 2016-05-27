@@ -215,6 +215,11 @@ public class Figliozzi {
             return Double.MAX_VALUE;
         }
 
+        @Override
+        public double getDistance(Location from, Location to) {
+            return EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
+        }
+
 
     }
 

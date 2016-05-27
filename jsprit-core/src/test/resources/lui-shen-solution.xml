@@ -1331,6 +1331,7 @@
                         <endTime>1011.3851648071345</endTime>
                     </act>
                     <end>1027.1965531079763</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>360.9658621457393</cost>
@@ -1348,6 +1349,7 @@
                         <endTime>443.0</endTime>
                     </act>
                     <end>462.8494332412792</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>336.11724276862367</cost>
@@ -1375,6 +1377,7 @@
                         <endTime>379.0</endTime>
                     </act>
                     <end>396.11724276862367</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>396.97072464514815</cost>
@@ -1397,6 +1400,7 @@
                         <endTime>376.0</endTime>
                     </act>
                     <end>421.1774279923061</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>420.72702457661836</cost>
@@ -1429,6 +1433,7 @@
                         <endTime>760.4403065089106</endTime>
                     </act>
                     <end>795.4974027948268</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>382.09803902718556</cost>
@@ -1471,6 +1476,7 @@
                         <endTime>1007.0</endTime>
                     </act>
                     <end>1017.1980390271856</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>382.08680693813784</cost>
@@ -1498,6 +1504,7 @@
                         <endTime>404.0079414088183</endTime>
                     </act>
                     <end>442.08680693813784</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>421.4526583493026</cost>
@@ -1530,6 +1537,7 @@
                         <endTime>852.0</endTime>
                     </act>
                     <end>884.3882694814033</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>396.9751783773217</cost>
@@ -1562,6 +1570,7 @@
                         <endTime>565.0</endTime>
                     </act>
                     <end>608.0116263352131</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>442.4061783214535</cost>
@@ -1604,6 +1613,7 @@
                         <endTime>859.0</endTime>
                     </act>
                     <end>910.478150704935</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>348.0936045857849</cost>
@@ -1636,6 +1646,7 @@
                         <endTime>476.5529453572468</endTime>
                     </act>
                     <end>498.0936045857848</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>398.9184017049979</cost>
@@ -1683,6 +1694,7 @@
                         <endTime>1187.0</endTime>
                     </act>
                     <end>1205.02775637732</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>390.48077199598873</cost>
@@ -1710,6 +1722,7 @@
                         <endTime>474.0</endTime>
                     </act>
                     <end>510.0555127546399</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>440.799048628923</cost>
@@ -1742,6 +1755,7 @@
                         <endTime>870.4138126514911</endTime>
                     </act>
                     <end>903.9548323139879</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>417.70181023477153</cost>
@@ -1774,6 +1788,7 @@
                         <endTime>554.8309518948454</endTime>
                     </act>
                     <end>585.8793012873655</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>347.21360705502025</cost>
@@ -1811,6 +1826,7 @@
                         <endTime>567.5667243506318</endTime>
                     </act>
                     <end>587.2136070550204</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>398.51014755711293</cost>
@@ -1848,6 +1864,7 @@
                         <endTime>1100.0</endTime>
                     </act>
                     <end>1115.8113883008418</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>386.9734483703083</cost>
@@ -1880,6 +1897,7 @@
                         <endTime>738.0</endTime>
                     </act>
                     <end>764.9258240356726</end>
+                    <distance>0.0</distance>
                 </route>
                 <route>
                     <cost>443.6982451160345</cost>
@@ -1912,6 +1930,7 @@
                         <endTime>957.7658069561214</endTime>
                     </act>
                     <end>980.1264867311194</end>
+                    <distance>0.0</distance>
                 </route>
             </routes>
         </solution>

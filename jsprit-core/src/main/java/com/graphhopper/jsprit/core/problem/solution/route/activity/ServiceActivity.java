@@ -31,6 +31,8 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     private double theoreticalLatest;
 
+    private double routeDistance;
+
     /**
      * @return the arrTime
      */
@@ -171,6 +173,16 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     @Override
     public Capacity getSize() {
         return service.getSize();
+    }
+
+    @Override
+    public double getRouteDistance() {
+        return routeDistance;
+    }
+
+    @Override
+    public void setRouteDistance(double routeDistance) {
+        this.routeDistance = routeDistance;
     }
 
 

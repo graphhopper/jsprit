@@ -82,6 +82,7 @@
                 <shipmentId>3</shipmentId>
             </act>
             <end/>
+            <distance/>
         </route>
     </initialRoutes>
 </problem>

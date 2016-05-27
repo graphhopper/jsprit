@@ -104,6 +104,11 @@ public class TestCalculatesServiceInsertion {
             public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
                 return vehicle.getType().getVehicleCostParams().perDistanceUnit * ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
             }
+
+            @Override
+            public double getDistance(Location from, Location to) {
+                return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
+            }
         };
 
 
@@ -237,6 +242,11 @@ public class TestCalculatesServiceInsertion {
 
             @Override
             public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+                return EuclideanDistanceCalculator.calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
+            }
+
+            @Override
+            public double getDistance(Location from, Location to) {
                 return EuclideanDistanceCalculator.calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
             }
         };

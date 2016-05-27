@@ -293,6 +293,11 @@ public class VehicleRoutingProblemTest {
                                            double departureTime, Driver driver, Vehicle vehicle) {
                 return 4.0;
             }
+
+            @Override
+            public double getDistance(Location from, Location to) {
+                return 0;
+            }
         });
 
         VehicleRoutingProblem problem = builder.build();

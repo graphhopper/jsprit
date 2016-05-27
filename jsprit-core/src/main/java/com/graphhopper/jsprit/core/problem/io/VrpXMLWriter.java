@@ -176,6 +176,7 @@ public class VrpXMLWriter {
                 actCounter++;
             }
             xmlConfig.setProperty(path + "(" + routeCounter + ").end", route.getEnd().getArrTime());
+            xmlConfig.setProperty(path + "(" + routeCounter + ").distance", route.getEnd().getRouteDistance());
             routeCounter++;
         }
 
@@ -213,6 +214,7 @@ public class VrpXMLWriter {
                     actCounter++;
                 }
                 xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").end", route.getEnd().getArrTime());
+                xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").distance", route.getEnd().getRouteDistance());
                 routeCounter++;
             }
             int unassignedJobCounter = 0;

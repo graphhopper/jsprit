@@ -35,6 +35,8 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private double theoreticalLatest = Double.MAX_VALUE;
 
+    private double routeDistance;
+
     public DeliverService(Delivery delivery) {
         super();
         this.delivery = delivery;
@@ -128,4 +130,16 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     public Capacity getSize() {
         return capacity;
     }
+
+    @Override
+    public double getRouteDistance() {
+        return routeDistance;
+    }
+
+    @Override
+    public void setRouteDistance(double routeDistance) {
+        this.routeDistance = routeDistance;
+    }
+
+
 }

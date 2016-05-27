@@ -34,6 +34,8 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private double theoreticalLatest = Double.MAX_VALUE;
 
+    private double routeDistance;
+
     public PickupService(Pickup pickup) {
         super();
         this.pickup = pickup;
@@ -128,5 +130,16 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     public Capacity getSize() {
         return pickup.getSize();
     }
+
+    @Override
+    public double getRouteDistance() {
+        return routeDistance;
+    }
+
+    @Override
+    public void setRouteDistance(double routeDistance) {
+        this.routeDistance = routeDistance;
+    }
+
 
 }

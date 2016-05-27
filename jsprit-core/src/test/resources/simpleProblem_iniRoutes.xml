@@ -82,6 +82,7 @@
                 <serviceId>1</serviceId>
             </act>
             <end/>
+            <distance/>
         </route>
 
     </initialRoutes>

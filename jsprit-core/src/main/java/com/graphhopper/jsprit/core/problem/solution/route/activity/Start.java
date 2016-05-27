@@ -45,6 +45,8 @@ public final class Start extends AbstractActivity implements TourActivity {
 
     private double arrTime;
 
+    private double routeDistance;
+
     private Location location;
 
     private Start(String locationId, double theoreticalStart, double theoreticalEnd) {
@@ -147,5 +149,16 @@ public final class Start extends AbstractActivity implements TourActivity {
     public Capacity getSize() {
         return capacity;
     }
+
+    @Override
+    public double getRouteDistance() {
+        return routeDistance;
+    }
+
+    @Override
+    public void setRouteDistance(double routeDistance) {
+        this.routeDistance = routeDistance;
+    }
+
 
 }

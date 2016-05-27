@@ -96,6 +96,11 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
                 return 2. * tpCosts;
             }
 
+            @Override
+            public double getDistance(Location from, Location to) {
+                return routingCosts.getDistance(from, to);
+            }
+
         };
 
         first = Service.Builder.newInstance("1").setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();

@@ -260,4 +260,10 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
         return costParams.perDistanceUnit * getDistance(from.getId(), to.getId()) + costParams.perTransportTimeUnit * getTime(from.getId(), to.getId());
     }
 
+    @Override
+    public double getDistance(Location from, Location to) {
+        return getDistance(from.getId(), to.getId());
+    }
+
+
 }

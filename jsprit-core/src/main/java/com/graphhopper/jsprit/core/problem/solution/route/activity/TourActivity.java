@@ -135,4 +135,9 @@ public interface TourActivity extends HasIndex {
      */
     public abstract TourActivity duplicate();
 
+    public abstract double getRouteDistance();
+
+    public abstract void setRouteDistance(double routeDistance);
+
+
 }

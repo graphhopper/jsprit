@@ -54,6 +54,11 @@ public class TestJobDistanceAvgCosts {
                                            double departureTime, Driver driver, Vehicle vehicle) {
                 return 0;
             }
+
+            @Override
+            public double getDistance(Location from, Location to) {
+                return 0;
+            }
         };
         AvgServiceDistance c = new AvgServiceDistance(costs);
         c.getDistance(Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance("foo")).build(), Service.Builder.newInstance("2").addSizeDimension(0, 2).setLocation(Location.newInstance("foo")).build());
@@ -87,6 +92,11 @@ public class TestJobDistanceAvgCosts {
             @Override
             public double getTransportTime(Location from, Location to,
                                            double departureTime, Driver driver, Vehicle vehicle) {
+                return 0;
+            }
+
+            @Override
+            public double getDistance(Location from, Location to) {
                 return 0;
             }
         };
