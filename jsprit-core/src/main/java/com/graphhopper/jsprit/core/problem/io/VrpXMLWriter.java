@@ -188,6 +188,8 @@ public class VrpXMLWriter {
         int counter = 0;
         for (VehicleRoutingProblemSolution solution : solutions) {
             xmlConfig.setProperty(solutionPath + "(" + counter + ").cost", solution.getCost());
+            xmlConfig.setProperty(solutionPath + "(" + counter + ").distance", solution.getDistance());
+            xmlConfig.setProperty(solutionPath + "(" + counter + ").time", solution.getTime());
             int routeCounter = 0;
             for (VehicleRoute route : solution.getRoutes()) {
 //				xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").cost", route.getCost());

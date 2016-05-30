@@ -109,6 +109,22 @@ public class VehicleRoutingProblemSolution {
         this.cost = cost;
     }
 
+    public double getDistance() {
+        double distance = 0;
+        for (VehicleRoute r : routes) {
+            distance += r.getEnd().getRouteDistance();
+        }
+        return distance;
+    }
+
+    public double getTime() {
+        double time = 0;
+        for (VehicleRoute r : routes) {
+            time += r.getEnd().getArrTime() - r.getStart().getEndTime();
+        }
+        return time;
+    }
+
     /**
      * Returns bad jobs, i.e. jobs that are not assigned to any vehicle route.
      *
