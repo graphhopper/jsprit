@@ -29,8 +29,6 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
 
     private Set<VehicleRoute> modifiedRoutes = new HashSet<VehicleRoute>();
 
-    private boolean firstRuin = true;
-
     public BreakScheduling(VehicleRoutingProblem vrp, StateManager stateManager, ConstraintManager constraintManager) {
         this.stateManager = stateManager;
         this.breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(),vrp.getActivityCosts(),new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(),vrp.getActivityCosts(),stateManager),constraintManager);
@@ -68,26 +66,18 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
 
     @Override
     public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-//        if(firstRuin){
-//            firstRuin = false;
-//            modifiedRoutes.clear();
-//            modifiedRoutes.addAll(routes);
-//        }
         for(VehicleRoute route : routes){
             Break aBreak = route.getVehicle().getBreak();
             boolean removed = route.getTourActivities().removeJob(aBreak);
             if(removed) logger.trace("ruin: {}", aBreak.getId());
         }
         List<Break> breaks = new ArrayList<Break>();
-//        if(!modifiedRoutes.isEmpty()) {
-            for (Job j : unassignedJobs) {
-                if (j instanceof Break) {
-                    breaks.add((Break) j);
-                }
+        for (Job j : unassignedJobs) {
+            if (j instanceof Break) {
+                breaks.add((Break) j);
             }
-//        }
+        }
         for(Break b : breaks){ unassignedJobs.remove(b); }
-//        modifiedRoutes.clear();
     }
 
     @Override
@@ -111,24 +101,6 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
                     }
                 }
             }
-//            if(aBreak != null){
-//                boolean removed = route.getTourActivities().removeJob(aBreak);
-//                if(removed){
-//                    logger.trace("ruin: {}", aBreak.getId());
-//                    stateManager.removed(aBreak,route);
-//                    stateManager.reCalculateStates(route);
-//                }
-//                if(route.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
-//                    InsertionData iData = breakInsertionCalculator.getInsertionData(route, aBreak, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
-//                    if(!(iData instanceof InsertionData.NoInsertionFound)){
-//                        logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);
-//                        for(Event e : iData.getEvents()){
-//                            eventListeners.inform(e);
-//                        }
-//                        stateManager.informJobInserted(aBreak,route,0,0);
-//                    }
-//                }
-//            }
         }
 
     }
