@@ -29,6 +29,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
+import com.graphhopper.jsprit.core.util.Solutions;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.logging.log4j.LogManager;
@@ -67,6 +69,14 @@ public class VrpXMLWriter {
 
     private Collection<VehicleRoutingProblemSolution> solutions;
 
+    private boolean onlyBestSolution = false;
+
+    public VrpXMLWriter(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions, boolean onlyBestSolution) {
+        this.vrp = vrp;
+        this.solutions = new ArrayList<VehicleRoutingProblemSolution>(solutions);
+        this.onlyBestSolution = onlyBestSolution;
+    }
+
     public VrpXMLWriter(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions) {
         this.vrp = vrp;
         this.solutions = solutions;
@@ -102,6 +112,12 @@ public class VrpXMLWriter {
         writeShipments(xmlConfig, jobs);
 
         writeInitialRoutes(xmlConfig);
+        if(onlyBestSolution && solutions != null) {
+            VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
+            solutions.clear();
+            solutions.add(solution);
+        }
+
         writeSolutions(xmlConfig);
 
 
