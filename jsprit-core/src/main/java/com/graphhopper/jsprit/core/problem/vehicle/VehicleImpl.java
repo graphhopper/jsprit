@@ -95,6 +95,11 @@ public class VehicleImpl extends AbstractVehicle {
             return null;
         }
 
+        @Override
+        public double getMaximumRouteDuration() {
+            return 0;
+        }
+
     }
 
     /**
@@ -129,6 +134,8 @@ public class VehicleImpl extends AbstractVehicle {
         private Location endLocation;
 
         private Break aBreak;
+
+        private double maximumRouteDuration = Double.MAX_VALUE;
 
         private Builder(String id) {
             super();
@@ -265,6 +272,13 @@ public class VehicleImpl extends AbstractVehicle {
             this.aBreak = aBreak;
             return this;
         }
+
+        public Builder setMaximumRouteDuration(double maximumRouteDuration) {
+            if (maximumRouteDuration < 0)
+                throw new IllegalArgumentException("maximum route duration of vehicle " + id + " must not be negative");
+            this.maximumRouteDuration = maximumRouteDuration;
+            return this;
+        }
     }
 
     /**
@@ -294,6 +308,8 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final Location startLocation;
 
+    private final double maximumRouteDuration;
+
     private final Break aBreak;
 
     private VehicleImpl(Builder builder) {
@@ -306,8 +322,9 @@ public class VehicleImpl extends AbstractVehicle {
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
+        maximumRouteDuration = builder.maximumRouteDuration;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot));
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot, maximumRouteDuration));
     }
 
     /**
@@ -368,6 +385,11 @@ public class VehicleImpl extends AbstractVehicle {
     @Override
     public Break getBreak() {
         return aBreak;
+    }
+
+    @Override
+    public double getMaximumRouteDuration() {
+        return maximumRouteDuration;
     }
 
     /* (non-Javadoc)

@@ -64,6 +64,7 @@
                                         <xs:element name="returnToDepot" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="skills" type="xs:string" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="breaks" type="breaksType" minOccurs="0" maxOccurs="1"/>
+                                        <xs:element name="duration" type="xs:double" minOccurs="0" maxOccurs="1"/>
                                     </xs:all>
                                     <xs:attribute name="type" type="xs:string" use="optional"/>
                                 </xs:complexType>

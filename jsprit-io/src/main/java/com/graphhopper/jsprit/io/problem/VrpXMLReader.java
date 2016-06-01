@@ -709,6 +709,8 @@ public class VrpXMLReader {
                 builder.setBreak(current_break.build());
             }
 
+            String duration = vehicleConfig.getString("duration");
+            if (duration != null) builder.setMaximumRouteDuration(Double.parseDouble(duration));
 
             //build vehicle
             VehicleImpl vehicle = builder.build();
