@@ -815,6 +815,17 @@ public class SolutionAnalyser {
     }
 
     /**
+     * @param activity to get the setup time from
+     * @param route    where activity needs to be part of
+     * @return time to setup the activity
+     */
+    public Double getSetupTimeAtActivity(TourActivity activity, VehicleRoute route) {
+        if (route == null) throw new IllegalArgumentException("route is missing.");
+        if (activity == null) throw new IllegalArgumentException("activity is missing.");
+        return Math.max(0, activity.getReadyTime() - activity.getArrTime()); 
+    }
+
+    /**
      * @param route to check skill constraint
      * @return true if skill constraint is violated, i.e. if vehicle does not have the required skills to conduct all
      * activities on the specified route. Returns null if route is null or skill state cannot be found.
