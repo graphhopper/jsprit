@@ -75,5 +75,5 @@ public interface Vehicle extends HasId, HasIndex {
 
     public abstract Break getBreak();
 
-    public abstract double getMaximumRouteDuration();
+    public abstract Double getMaximumRouteDuration();
 }

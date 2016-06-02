@@ -47,6 +47,9 @@ public class VehicleRouteDurationConstraints implements HardActivityConstraint {
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+        if(iFacts.getNewVehicle().getMaximumRouteDuration() == null)
+            return ConstraintsStatus.FULFILLED;
+
         double maximumVehicleDuration = iFacts.getNewVehicle().getMaximumRouteDuration();
         
         double routeDurationIncrease;

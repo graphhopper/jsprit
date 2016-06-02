@@ -22,6 +22,8 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +134,12 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     public void addRouteDurationConstraint() {
         if (!routeDurationConstraintsSet) {
-            addConstraint(new VehicleRouteDurationConstraints(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()), Priority.HIGH);
+            boolean useConstraint = false;
+            for(Vehicle vehc : vrp.getVehicles())
+                if(vehc.getMaximumRouteDuration() != null)
+                    useConstraint = true;
+            if(useConstraint)
+                addConstraint(new VehicleRouteDurationConstraints(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()), Priority.HIGH);
             routeDurationConstraintsSet = true;
         }
     }

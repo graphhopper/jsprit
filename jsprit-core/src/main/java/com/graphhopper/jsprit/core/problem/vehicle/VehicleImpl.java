@@ -96,8 +96,8 @@ public class VehicleImpl extends AbstractVehicle {
         }
 
         @Override
-        public double getMaximumRouteDuration() {
-            return 0;
+        public Double getMaximumRouteDuration() {
+            return null;
         }
 
     }
@@ -135,7 +135,7 @@ public class VehicleImpl extends AbstractVehicle {
 
         private Break aBreak;
 
-        private double maximumRouteDuration = Double.MAX_VALUE;
+        private Double maximumRouteDuration = null;
 
         private Builder(String id) {
             super();
@@ -308,7 +308,7 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final Location startLocation;
 
-    private final double maximumRouteDuration;
+    private final Double maximumRouteDuration;
 
     private final Break aBreak;
 
@@ -388,7 +388,7 @@ public class VehicleImpl extends AbstractVehicle {
     }
 
     @Override
-    public double getMaximumRouteDuration() {
+    public Double getMaximumRouteDuration() {
         return maximumRouteDuration;
     }
 

@@ -370,7 +370,8 @@ public class VrpXMLWriter {
             }
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").timeSchedule.start", vehicle.getEarliestDeparture());
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").timeSchedule.end", vehicle.getLatestArrival());
-            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").duration", vehicle.getMaximumRouteDuration());
+            if (vehicle.getMaximumRouteDuration() != null)
+                xmlConfig.setProperty(vehiclePathString + "(" + counter + ").duration", vehicle.getMaximumRouteDuration());
 
             if (vehicle.getBreak() != null) {
                 Collection<TimeWindow> tws = vehicle.getBreak().getTimeWindows();
