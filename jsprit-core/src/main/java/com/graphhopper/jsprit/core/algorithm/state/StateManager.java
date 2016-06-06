@@ -136,16 +136,16 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vrp) + 2);
         activityStates = new Object[nuActivities][initialStateArrayLength];
         vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
-        if(vehicleRoutingProblem.getFleetSize().equals(VehicleRoutingProblem.FleetSize.FINITE)){
-            isIndexedBased = true;
-            routeStatesArr = new Object[vrp.getVehicles().size() + 2][initialStateArrayLength];
-            vehicleDependentRouteStatesArr = new Object[vrp.getVehicles().size() + 2][nuVehicleTypeKeys][initialStateArrayLength];
-        }
-        else {
+//        if(vehicleRoutingProblem.getFleetSize().equals(VehicleRoutingProblem.FleetSize.FINITE)){
+//            isIndexedBased = true;
+//            routeStatesArr = new Object[vrp.getVehicles().size() + 2][initialStateArrayLength];
+//            vehicleDependentRouteStatesArr = new Object[vrp.getVehicles().size() + 2][nuVehicleTypeKeys][initialStateArrayLength];
+//        }
+//        else {
             isIndexedBased = false;
             routeStateMap = new HashMap<VehicleRoute, Object[]>();
             vehicleDependentRouteStateMap = new HashMap<VehicleRoute, Object[][]>();
-        }
+//        }
         problemStates = new Object[initialStateArrayLength];
     }
 
