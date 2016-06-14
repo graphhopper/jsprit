@@ -86,7 +86,7 @@ public class CVRPwithMatrix_IT {
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         SolutionAnalyser sa = new SolutionAnalyser(vrp, Solutions.bestOf(solutions), new TransportDistance() {
             @Override
-            public double getDistance(Location from, Location to) {
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
                 return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
             }
         });

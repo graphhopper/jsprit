@@ -340,7 +340,7 @@ public class SolutionAnalyser {
         }
 
         private double distance(TourActivity activity) {
-            return distanceCalculator.getDistance(prevAct.getLocation(), activity.getLocation());
+            return distanceCalculator.getDistance(prevAct.getLocation(), activity.getLocation(),prevActDeparture, route.getVehicle());
         }
 
         @Override
@@ -381,7 +381,7 @@ public class SolutionAnalyser {
 
         @Override
         public void visit(TourActivity activity) {
-            double distance = distanceCalculator.getDistance(prevAct.getLocation(), activity.getLocation());
+            double distance = distanceCalculator.getDistance(prevAct.getLocation(), activity.getLocation(), prevAct.getEndTime(), route.getVehicle());
             sum_distance += distance;
             stateManager.putActivityState(activity, distance_id, sum_distance);
             prevAct = activity;
@@ -389,7 +389,7 @@ public class SolutionAnalyser {
 
         @Override
         public void finish() {
-            double distance = distanceCalculator.getDistance(prevAct.getLocation(), route.getEnd().getLocation());
+            double distance = distanceCalculator.getDistance(prevAct.getLocation(), route.getEnd().getLocation(),prevAct.getEndTime(), route.getVehicle());
             sum_distance += distance;
             stateManager.putRouteState(route, distance_id, sum_distance);
         }

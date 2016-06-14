@@ -33,6 +33,7 @@ import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.util.Examples;
 
@@ -126,7 +127,7 @@ public class VRPWithBackhaulsExample2 {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
 
             @Override
-            public double getDistance(Location from, Location to) {
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
                 return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
             }
 

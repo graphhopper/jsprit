@@ -94,7 +94,7 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts im
     }
 
     @Override
-    public double getDistance(Location from, Location to) {
+    public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
         return calculateDistance(from, to);
     }
 }

@@ -66,7 +66,7 @@ public class VariableDepartureAndWaitingTime_IT {
                         public double getCosts(VehicleRoutingProblemSolution solution) {
                             SolutionAnalyser sa = new SolutionAnalyser(vrp, solution, new TransportDistance() {
                                 @Override
-                                public double getDistance(Location from, Location to) {
+                                public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
                                     return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
                                 }
                             });
