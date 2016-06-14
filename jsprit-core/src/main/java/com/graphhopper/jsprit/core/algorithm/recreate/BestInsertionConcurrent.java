@@ -23,8 +23,8 @@ import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -63,7 +63,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
 
     }
 
-    private static Logger logger = LogManager.getLogger(BestInsertionConcurrent.class);
+    private static Logger logger = LoggerFactory.getLogger(BestInsertionConcurrent.class);
 
     private final static double NO_NEW_DEPARTURE_TIME_YET = -12345.12345;
 

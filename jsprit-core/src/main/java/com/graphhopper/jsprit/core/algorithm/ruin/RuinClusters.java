@@ -24,8 +24,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.RandomUtils;
 import org.apache.commons.math3.ml.clustering.Clusterable;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -63,7 +63,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
         }
     }
 
-    private Logger logger = LogManager.getLogger(RuinClusters.class);
+    private Logger logger = LoggerFactory.getLogger(RuinClusters.class);
 
     private VehicleRoutingProblem vrp;
 

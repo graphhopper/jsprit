@@ -9,8 +9,8 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
  */
 public class BreakScheduling implements InsertionStartsListener,JobInsertedListener, RuinListener {
 
-    private final static Logger logger = LogManager.getLogger();
+    private final static Logger logger = LoggerFactory.getLogger(BreakScheduling.class);
 
     private final StateManager stateManager;
 

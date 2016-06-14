@@ -20,8 +20,8 @@ import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
 class CalculatesServiceInsertionWithTimeSchedulingInSlices implements JobInsertionCostsCalculator {
 
 
-    private static Logger log = LogManager.getLogger(CalculatesServiceInsertionWithTimeSchedulingInSlices.class);
+    private static Logger log = LoggerFactory.getLogger(CalculatesServiceInsertionWithTimeSchedulingInSlices.class);
 
     private JobInsertionCostsCalculator jic;
 

@@ -28,8 +28,8 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +65,7 @@ public class VehicleRoutingAlgorithm {
         private final String name;
         private long counter = 0;
         private long nextCounter = 1;
-        private static final Logger log = LogManager.getLogger(Counter.class);
+        private static final Logger log = LoggerFactory.getLogger(Counter.class);
 
         public Counter(final String name) {
             this.name = name;
@@ -86,7 +86,7 @@ public class VehicleRoutingAlgorithm {
         }
     }
 
-    private final static Logger logger = LogManager.getLogger();
+    private final static Logger logger = LoggerFactory.getLogger(VehicleRoutingAlgorithm.class);
 
     private final Counter counter = new Counter("iterations ");
 

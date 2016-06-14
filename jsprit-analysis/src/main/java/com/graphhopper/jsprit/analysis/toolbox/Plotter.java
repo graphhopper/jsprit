@@ -24,8 +24,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.Coordinate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jfree.chart.*;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.XYItemLabelGenerator;
@@ -40,6 +38,8 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.util.ShapeUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -139,7 +139,7 @@ public class Plotter {
     }
 
 
-    private static Logger log = LogManager.getLogger(Plotter.class);
+    private static Logger log = LoggerFactory.getLogger(Plotter.class);
 
     /**
      * Label to label ID (=jobId), SIZE (=jobSize=jobCapacityDimensions)
@@ -453,8 +453,9 @@ public class Plotter {
             ChartUtilities.saveChartAsPNG(new File(pngFile), chart, 1000, 600);
         } catch (IOException e) {
             log.error("cannot plot");
-            log.error(e);
+            log.error(e.toString());
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

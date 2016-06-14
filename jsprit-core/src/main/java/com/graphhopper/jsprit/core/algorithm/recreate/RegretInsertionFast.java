@@ -22,8 +22,8 @@ import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ import java.util.*;
  */
 public class RegretInsertionFast extends AbstractInsertionStrategy {
 
-    private static Logger logger = LogManager.getLogger(RegretInsertionFast.class);
+    private static Logger logger = LoggerFactory.getLogger(RegretInsertionFast.class);
 
     private ScoringFunction scoringFunction;
 

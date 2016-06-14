@@ -28,8 +28,8 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.util.Resource;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Collection;
@@ -37,7 +37,7 @@ import java.util.Collection;
 
 public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, IterationStartsListener, AlgorithmStartsListener {
 
-    final static Logger logger = LogManager.getLogger(ExperimentalSchrimpfAcceptance.class.getName());
+    final static Logger logger = LoggerFactory.getLogger(ExperimentalSchrimpfAcceptance.class.getName());
 
     private final double alpha;
 

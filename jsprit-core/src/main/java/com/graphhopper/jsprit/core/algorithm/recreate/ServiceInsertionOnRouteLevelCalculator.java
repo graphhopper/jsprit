@@ -36,8 +36,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -47,7 +47,7 @@ import java.util.PriorityQueue;
 
 final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsCalculator {
 
-    private static final Logger logger = LogManager.getLogger(ServiceInsertionOnRouteLevelCalculator.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceInsertionOnRouteLevelCalculator.class);
 
     private final VehicleRoutingTransportCosts transportCosts;
 

@@ -21,8 +21,8 @@ import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTra
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl.VehicleCostParams;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -99,7 +99,7 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
      * @author schroeder
      */
     public static class Builder {
-        private static Logger log = LogManager.getLogger(Builder.class);
+        private static Logger log = LoggerFactory.getLogger(Builder.class);
 
         private boolean isSymmetric;
 

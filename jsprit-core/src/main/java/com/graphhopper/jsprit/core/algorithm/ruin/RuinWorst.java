@@ -23,8 +23,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.NoiseMaker;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ import java.util.*;
 
 public final class RuinWorst extends AbstractRuinStrategy {
 
-    private Logger logger = LogManager.getLogger(RuinWorst.class);
+    private Logger logger = LoggerFactory.getLogger(RuinWorst.class);
 
     private VehicleRoutingProblem vrp;
 

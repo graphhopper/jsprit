@@ -23,8 +23,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +34,7 @@ import java.util.Set;
 
 final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCostsCalculator {
 
-    private Logger logger = LogManager.getLogger(VehicleTypeDependentJobInsertionCalculator.class);
+    private Logger logger = LoggerFactory.getLogger(VehicleTypeDependentJobInsertionCalculator.class);
 
     private final VehicleFleetManager fleetManager;
 

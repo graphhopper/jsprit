@@ -26,8 +26,8 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -57,7 +57,7 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
 
     }
 
-    private final static Logger logger = LogManager.getLogger();
+    private final static Logger logger = LoggerFactory.getLogger(AbstractInsertionStrategy.class);
 
     protected Random random = RandomNumberGeneration.getRandom();
 

@@ -33,10 +33,11 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeKey;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.CrowFlyCosts;
 import com.graphhopper.jsprit.core.util.Locations;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
 
 
 /**
@@ -516,7 +517,7 @@ public class VehicleRoutingProblem {
     /**
      * logger logging for this class
      */
-    private final static Logger logger = LogManager.getLogger(VehicleRoutingProblem.class);
+    private final static Logger logger = LoggerFactory.getLogger(VehicleRoutingProblem.class);
 
     /**
      * contains transportation costs, i.e. the costs traveling from location A to B

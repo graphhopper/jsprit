@@ -21,15 +21,15 @@ import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 
 public class StopWatch implements AlgorithmStartsListener, AlgorithmEndsListener {
 
-    private static Logger log = LogManager.getLogger(StopWatch.class);
+    private static Logger log = LoggerFactory.getLogger(StopWatch.class);
 
     private double ran;
 

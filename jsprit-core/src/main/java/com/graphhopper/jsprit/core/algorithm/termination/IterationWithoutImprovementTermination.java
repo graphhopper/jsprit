@@ -17,8 +17,9 @@
 package com.graphhopper.jsprit.core.algorithm.termination;
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Terminates algorithm prematurely based on iterations without any improvement (i.e. new solution acceptance).
@@ -31,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class IterationWithoutImprovementTermination implements PrematureAlgorithmTermination {
 
-    private static Logger log = LogManager.getLogger(IterationWithoutImprovementTermination.class);
+    private static Logger log = LoggerFactory.getLogger(IterationWithoutImprovementTermination.class);
 
     private int noIterationWithoutImprovement;
 

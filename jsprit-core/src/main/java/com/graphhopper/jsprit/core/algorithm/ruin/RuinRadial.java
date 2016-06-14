@@ -21,8 +21,8 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.util.RandomUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -36,7 +36,7 @@ import java.util.*;
  */
 public final class RuinRadial extends AbstractRuinStrategy {
 
-    private Logger logger = LogManager.getLogger(RuinRadial.class);
+    private Logger logger = LoggerFactory.getLogger(RuinRadial.class);
 
     private VehicleRoutingProblem vrp;
 

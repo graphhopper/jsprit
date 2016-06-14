@@ -85,7 +85,7 @@
         <junit.version>4.10</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
-        <logger.version>2.0</logger.version>
+        <logger.version>1.7.21</logger.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
 
     </properties>
@@ -275,15 +275,11 @@
 
 
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
             <version>${logger.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${logger.version}</version>
-        </dependency>
+
 
 
     </dependencies>

@@ -19,15 +19,15 @@ package com.graphhopper.jsprit.core.algorithm;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyListener;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 
 public class SearchStrategyManager {
 
-    private final static Logger logger = LogManager.getLogger();
+    private final static Logger logger = LoggerFactory.getLogger(SearchStrategyManager.class);
 
     private List<SearchStrategyListener> searchStrategyListeners = new ArrayList<SearchStrategyListener>();
 

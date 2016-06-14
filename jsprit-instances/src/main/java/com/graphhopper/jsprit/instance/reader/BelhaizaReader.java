@@ -24,8 +24,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -53,7 +53,7 @@ public class BelhaizaReader {
 		this.variableCostProjectionFactor = costProjectionFactor;
 	}
 
-	private static Logger logger = LogManager.getLogger(BelhaizaReader.class);
+	private static Logger logger = LoggerFactory.getLogger(BelhaizaReader.class);
 
 	private final VehicleRoutingProblem.Builder vrpBuilder;
 
@@ -135,7 +135,7 @@ public class BelhaizaReader {
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			logger.error(e);
+			logger.error(e.toString());
 			System.exit(1);
 		}
 	}
@@ -145,7 +145,7 @@ public class BelhaizaReader {
 			return reader.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
-			logger.error(e);
+			logger.error(e.toString());
 			System.exit(1);
 			return null;
 		}
@@ -163,7 +163,7 @@ public class BelhaizaReader {
 			reader = new BufferedReader(new FileReader(solomonFile));
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
-			logger.error(e1);
+			logger.error(e1.toString());
 			System.exit(1);
 		}
 		return reader;

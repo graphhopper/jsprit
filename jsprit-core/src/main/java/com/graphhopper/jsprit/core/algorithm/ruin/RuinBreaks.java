@@ -4,8 +4,8 @@ import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 public class RuinBreaks implements RuinListener {
 
-    private final static Logger logger = LogManager.getLogger();
+    private final static Logger logger = LoggerFactory.getLogger(RuinBreaks.class);
 
     @Override
     public void ruinStarts(Collection<VehicleRoute> routes) {

@@ -20,8 +20,8 @@ import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -107,7 +107,7 @@ public class VehicleImpl extends AbstractVehicle {
      */
     public static class Builder {
 
-        static final Logger log = LogManager.getLogger(Builder.class.getName());
+        static final Logger log = LoggerFactory.getLogger(Builder.class.getName());
 
         private String id;
 

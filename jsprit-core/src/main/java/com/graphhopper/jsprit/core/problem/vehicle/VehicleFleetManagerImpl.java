@@ -17,8 +17,8 @@
 package com.graphhopper.jsprit.core.problem.vehicle;
 
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -63,7 +63,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     }
 
-    private static Logger logger = LogManager.getLogger(VehicleFleetManagerImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(VehicleFleetManagerImpl.class);
 
     private Collection<Vehicle> vehicles;
 

@@ -26,8 +26,8 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.apache.commons.math.stat.StatUtils;
 import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -45,7 +45,7 @@ import java.util.Collection;
  */
 public class VariationCoefficientTermination implements PrematureAlgorithmTermination, IterationStartsListener, AlgorithmStartsListener, IterationEndsListener {
 
-    private final static Logger logger = LogManager.getLogger(VariationCoefficientTermination.class);
+    private final static Logger logger = LoggerFactory.getLogger(VariationCoefficientTermination.class);
 
     private final int noIterations;
 

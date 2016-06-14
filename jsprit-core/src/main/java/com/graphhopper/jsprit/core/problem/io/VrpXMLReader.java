@@ -35,8 +35,8 @@ import com.graphhopper.jsprit.core.util.Resource;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -69,7 +69,7 @@ public class VrpXMLReader {
         }
     }
 
-    private static Logger logger = LogManager.getLogger(VrpXMLReader.class);
+    private static Logger logger = LoggerFactory.getLogger(VrpXMLReader.class);
 
     private VehicleRoutingProblem.Builder vrpBuilder;
 

@@ -69,7 +69,7 @@ public class ConcurrentBenchmarker {
     public ConcurrentBenchmarker(String algorithmConfig) {
         super();
         this.algorithmConfig = algorithmConfig;
-//		LogManager.getRootLogger().setLevel(Level.ERROR);
+//		LoggerFactory.getRootLogger().setLevel(Level.ERROR);
     }
 
     public ConcurrentBenchmarker(VehicleRoutingAlgorithmFactory algorithmFactory) {

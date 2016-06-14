@@ -22,8 +22,8 @@ import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationEndsListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -38,7 +38,7 @@ import java.util.Collection;
 
 public class AlgorithmSearchProgressChartListener implements IterationEndsListener, AlgorithmEndsListener, AlgorithmStartsListener {
 
-    private static Logger log = LogManager.getLogger(AlgorithmSearchProgressChartListener.class);
+    private static Logger log = LoggerFactory.getLogger(AlgorithmSearchProgressChartListener.class);
 
     private String filename;
 

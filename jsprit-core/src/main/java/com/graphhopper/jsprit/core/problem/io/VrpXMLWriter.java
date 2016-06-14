@@ -30,13 +30,12 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.util.Solutions;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -63,7 +62,7 @@ public class VrpXMLWriter {
         }
     }
 
-    private Logger log = LogManager.getLogger(VrpXMLWriter.class);
+    private Logger log = LoggerFactory.getLogger(VrpXMLWriter.class);
 
     private VehicleRoutingProblem vrp;
 
@@ -87,7 +86,7 @@ public class VrpXMLWriter {
         this.solutions = null;
     }
 
-    private static Logger logger = LogManager.getLogger(VrpXMLWriter.class);
+    private static Logger logger = LoggerFactory.getLogger(VrpXMLWriter.class);
 
     public void write(String filename) {
         if (!filename.endsWith(".xml")) filename += ".xml";

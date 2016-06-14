@@ -4,8 +4,8 @@ import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.util.StopWatch;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ import java.util.*;
  */
 class JobNeighborhoodsImpl implements JobNeighborhoods {
 
-    private static Logger logger = LogManager.getLogger(JobNeighborhoodsImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(JobNeighborhoodsImpl.class);
 
     private VehicleRoutingProblem vrp;
 

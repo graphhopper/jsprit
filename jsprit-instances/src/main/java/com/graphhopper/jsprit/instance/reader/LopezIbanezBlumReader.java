@@ -6,8 +6,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 public class LopezIbanezBlumReader {
 
-    private static Logger logger = LogManager.getLogger(LopezIbanezBlumReader.class);
+    private static Logger logger = LoggerFactory.getLogger(LopezIbanezBlumReader.class);
 
     private VehicleRoutingProblem.Builder builder;
 

@@ -21,8 +21,8 @@ import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -65,7 +65,7 @@ import java.util.Collection;
  */
 public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsListener, AlgorithmStartsListener {
 
-    private static Logger logger = LogManager.getLogger(SchrimpfAcceptance.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(SchrimpfAcceptance.class.getName());
 
     private final double alpha;
 

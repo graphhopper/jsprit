@@ -25,8 +25,8 @@ import com.graphhopper.jsprit.core.problem.solution.InitialSolutionFactory;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +35,7 @@ import java.util.List;
 
 public final class InsertionInitialSolutionFactory implements InitialSolutionFactory {
 
-    private static final Logger logger = LogManager.getLogger(InsertionInitialSolutionFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(InsertionInitialSolutionFactory.class);
 
     private final InsertionStrategy insertion;
 

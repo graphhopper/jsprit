@@ -18,8 +18,8 @@ package com.graphhopper.jsprit.core.algorithm.io;
 
 import com.graphhopper.jsprit.core.util.Resource;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -31,7 +31,7 @@ import java.net.URL;
 
 public class AlgorithmConfigXmlReader {
 
-    private static Logger log = LogManager.getLogger(AlgorithmConfigXmlReader.class.getName());
+    private static Logger log = LoggerFactory.getLogger(AlgorithmConfigXmlReader.class.getName());
 
     private AlgorithmConfig algorithmConfig;
 

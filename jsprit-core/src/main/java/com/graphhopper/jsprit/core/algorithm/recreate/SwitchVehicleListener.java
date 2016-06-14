@@ -1,15 +1,16 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.job.Break;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Created by schroeder on 19/05/15.
  */
 class SwitchVehicleListener implements EventListener {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LoggerFactory.getLogger(SwitchVehicleListener.class);
 
     @Override
     public void inform(Event event) {

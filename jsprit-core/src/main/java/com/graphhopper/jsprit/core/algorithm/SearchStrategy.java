@@ -22,8 +22,8 @@ import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +65,7 @@ public class SearchStrategy {
         }
     }
 
-    private static Logger logger = LogManager.getLogger(SearchStrategy.class);
+    private static Logger logger = LoggerFactory.getLogger(SearchStrategy.class);
 
     private final Collection<SearchStrategyModule> searchStrategyModules = new ArrayList<SearchStrategyModule>();
 

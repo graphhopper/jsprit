@@ -20,8 +20,8 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +39,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         CRITICAL, HIGH, LOW
     }
 
-    private static Logger log = LogManager.getLogger(ConstraintManager.class);
+    private static Logger log = LoggerFactory.getLogger(ConstraintManager.class);
 
     private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
 
