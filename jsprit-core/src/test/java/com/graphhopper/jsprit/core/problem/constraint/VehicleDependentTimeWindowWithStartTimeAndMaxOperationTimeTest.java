@@ -222,7 +222,6 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     @Test
     public void whenJobIsInsertedAlongWithNewVehicleThatNeedsToBeHomeAt60_itShouldReturnFalse() {
 
-        System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
@@ -241,7 +240,6 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     @Test
     public void whenJobIsInsertedAlongWithNewVehicleThatNeedsToBeHomeAt50_itShouldReturnFalse() {
 
-        System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
@@ -259,7 +257,6 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     @Test
     public void whenJobIsInsertedAlongWithNewVehicleThatNeedsToBeHomeAt10_itShouldReturnFalse() {
 
-        System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
@@ -277,7 +274,6 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     @Test
     public void whenJobIsInsertedAlongWithV6BetweenS2AndS3_itShouldReturnFalse() {
 
-        System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
@@ -295,7 +291,6 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     @Test
     public void whenJobIsInsertedAlongWithV6BetweenS1AndS2_itShouldReturnFalse() {
 
-        System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
@@ -313,7 +308,6 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     @Test
     public void whenJobIsInsertedAlongWithV6AtTheEndOfRoute_itShouldReturnTrue() {
 
-        System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
@@ -329,7 +323,6 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
 
     @Test
     public void whenJobIsInsertedAlongWithNewVehicleThatCanOnlyStartAt60_itShouldReturnFalse() {
-        System.out.println("actualEndTime " + route.getEnd().getArrTime());
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();

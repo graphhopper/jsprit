@@ -37,7 +37,6 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
-import com.graphhopper.jsprit.core.util.Solutions;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,7 +109,6 @@ public class BuildPDVRPAlgoFromScratch_IT {
     public void test() {
         try {
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-            System.out.println(Solutions.bestOf(solutions).getCost());
             Assert.assertTrue(true);
         } catch (Exception e) {
             Assert.assertTrue(false);

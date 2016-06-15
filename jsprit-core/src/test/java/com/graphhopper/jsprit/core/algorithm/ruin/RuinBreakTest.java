@@ -28,7 +28,6 @@ public class RuinBreakTest {
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(v).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(aBreak).build();
         TourActivity tourActivity = route.getActivities().get(0);
-        System.out.println(tourActivity);
         Assert.assertTrue(tourActivity instanceof BreakActivity);
         RuinBreaks ruinBreaks = new RuinBreaks();
         List<Job> unassigned = new ArrayList<Job>();

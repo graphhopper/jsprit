@@ -163,21 +163,18 @@ public class TimeTest {
     @Test
     public void whenSecIs3600_shouldReturnCorrectTimeString() {
         String time = Time.parseSecondsToTime(3600);
-        System.out.println(time);
         assertEquals(3600., Time.parseTimeToSeconds(time), 0.01);
     }
 
     @Test
     public void whenSecIs4000_shouldReturnCorrectTimeString() {
         String time = Time.parseSecondsToTime(4000);
-        System.out.println(time);
         assertEquals(4000., Time.parseTimeToSeconds(time), 0.01);
     }
 
     @Test
     public void whenSecIs86399_shouldReturnCorrectTimeString() {
         String time = Time.parseSecondsToTime(86399);
-        System.out.println(time);
         assertEquals(86399., Time.parseTimeToSeconds(time), 0.01);
     }
 

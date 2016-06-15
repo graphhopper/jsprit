@@ -54,7 +54,6 @@ public class FiniteVehicleFleetManagerIdentifiesDistinctVehicle_IT {
                 testFailed.add(true);
             }
         }
-        System.out.println("failed: " + testFailed.size());
         assertTrue(testFailed.isEmpty());
     }
 
@@ -75,7 +74,6 @@ public class FiniteVehicleFleetManagerIdentifiesDistinctVehicle_IT {
                 testFailed.add(true);
             }
         }
-        System.out.println("failed: " + testFailed.size());
         assertTrue(testFailed.isEmpty());
     }
 

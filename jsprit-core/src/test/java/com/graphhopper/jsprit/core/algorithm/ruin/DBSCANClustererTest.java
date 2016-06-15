@@ -65,10 +65,6 @@ public class DBSCANClustererTest {
         c.setMinPts(1);
         c.setEpsDistance(2);
         List<List<Job>> cluster = c.getClusters(r);
-        for (List<Job> l : cluster) {
-            System.out.println("--");
-            for (Job j : l) System.out.println(j);
-        }
         Assert.assertEquals(3, cluster.size());
 
     }

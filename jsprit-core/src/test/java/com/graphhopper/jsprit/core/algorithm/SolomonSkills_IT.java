@@ -109,7 +109,6 @@ public class SolomonSkills_IT {
             }
             assertTrue(true);
         } catch (NoSolutionFoundException e) {
-            System.out.println(e.toString());
             assertFalse(true);
         }
     }

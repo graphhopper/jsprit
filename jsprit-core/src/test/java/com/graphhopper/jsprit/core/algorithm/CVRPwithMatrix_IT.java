@@ -90,8 +90,6 @@ public class CVRPwithMatrix_IT {
                 return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
             }
         });
-        System.out.println(sa.getDistance());
-        System.out.println(sa.getTransportTime());
     }
 
 

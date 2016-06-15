@@ -37,8 +37,5 @@ public class TestComparator {
             }
         });
 
-        for(Job j : jobs){
-            System.out.println(j.getId());
-        }
     }
 }

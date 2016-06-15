@@ -128,7 +128,6 @@ public class MeetTimeWindowConstraint_IT {
 
         @SuppressWarnings("unused")
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        System.out.println("failed " + testFailed.size());
         assertTrue(testFailed.isEmpty());
     }
 
@@ -254,7 +253,6 @@ public class MeetTimeWindowConstraint_IT {
 
         @SuppressWarnings("unused")
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        System.out.println("failed " + testFailed.size());
         assertTrue(testFailed.isEmpty());
     }
 
@@ -380,7 +378,6 @@ public class MeetTimeWindowConstraint_IT {
 
         @SuppressWarnings("unused")
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        System.out.println("failed " + testFailed.size());
         assertTrue(testFailed.isEmpty());
     }
 
@@ -506,7 +503,6 @@ public class MeetTimeWindowConstraint_IT {
 
         @SuppressWarnings("unused")
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        System.out.println("failed " + testFailed.size());
         assertTrue(testFailed.isEmpty());
     }
 
