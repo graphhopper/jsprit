@@ -242,7 +242,7 @@ public class VehicleRoute {
          *
          * @param shipment to be picked up and added to this route
          * @return the builder
-         * @throws IllegalStateException if method has already been called with the specified shipment.
+         * @throws IllegalArgumentException if method has already been called with the specified shipment.
          */
         public Builder addPickup(Shipment shipment) {
             return addPickup(shipment, shipment.getPickupTimeWindow());
@@ -250,7 +250,7 @@ public class VehicleRoute {
 
         public Builder addPickup(Shipment shipment, TimeWindow pickupTimeWindow) {
             if (openShipments.contains(shipment))
-                throw new IllegalStateException("shipment has already been added. cannot add it twice.");
+                throw new IllegalArgumentException("shipment has already been added. cannot add it twice.");
             List<AbstractActivity> acts = jobActivityFactory.createActivities(shipment);
             TourActivity act = acts.get(0);
             act.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
@@ -266,7 +266,7 @@ public class VehicleRoute {
          *
          * @param shipment to be delivered and add to this vehicleRoute
          * @return builder
-         * @throws IllegalStateException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
+         * @throws IllegalArgumentException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
          */
         public Builder addDelivery(Shipment shipment) {
             return addDelivery(shipment,shipment.getDeliveryTimeWindow());
@@ -280,7 +280,7 @@ public class VehicleRoute {
                 tourActivities.addActivity(act);
                 openShipments.remove(shipment);
             } else {
-                throw new IllegalStateException("cannot deliver shipment. shipment " + shipment + " needs to be picked up first.");
+                throw new IllegalArgumentException("cannot deliver shipment. shipment " + shipment + " needs to be picked up first.");
             }
             return this;
         }
@@ -290,11 +290,11 @@ public class VehicleRoute {
          * Builds the route.
          *
          * @return {@link VehicleRoute}
-         * @throws IllegalStateException if there are still shipments that have been picked up though but not delivery.
+         * @throws IllegalArgumentException if there are still shipments that have been picked up though but not delivery.
          */
         public VehicleRoute build() {
             if (!openShipments.isEmpty()) {
-                throw new IllegalStateException("there are still shipments that have not been delivered yet.");
+                throw new IllegalArgumentException("there are still shipments that have not been delivered yet.");
             }
             if (!vehicle.isReturnToDepot()) {
                 if (!tourActivities.isEmpty()) {
@@ -419,11 +419,11 @@ public class VehicleRoute {
      * Returns the departureTime of this vehicle in this route.
      *
      * @return departureTime
-     * @throws IllegalStateException if start is null
+     * @throws IllegalArgumentException if start is null
      */
     public double getDepartureTime() {
         if (start == null)
-            throw new IllegalStateException("cannot get departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
+            throw new IllegalArgumentException("cannot get departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
         return start.getEndTime();
     }
 

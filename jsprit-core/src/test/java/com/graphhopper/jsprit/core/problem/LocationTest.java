@@ -45,7 +45,7 @@ public class LocationTest {
         Location l = Location.Builder.newInstance().setIndex(-1).build();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenCoordinateAndIdAndIndexNotSet_throwException() {
         Location l = Location.Builder.newInstance().build();
     }

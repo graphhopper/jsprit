@@ -303,7 +303,7 @@ public class VehicleRoutingProblemTest {
         return Location.Builder.newInstance().setId(i).build();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenAddingVehiclesWithSameId_itShouldThrowException(){
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
@@ -453,7 +453,7 @@ public class VehicleRoutingProblemTest {
 
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenAddingTwoServicesWithTheSameId_itShouldThrowException() {
         Service service1 = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
         Service service2 = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
@@ -463,7 +463,7 @@ public class VehicleRoutingProblemTest {
         @SuppressWarnings("UnusedDeclaration") VehicleRoutingProblem vrp = vrpBuilder.build();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenAddingTwoShipmentsWithTheSameId_itShouldThrowException() {
         Shipment shipment1 = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
             .setDeliveryLocation(Location.newInstance("del")).build();

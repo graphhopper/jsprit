@@ -44,10 +44,10 @@ public class Delivery extends Service {
          * Builds Delivery.
          *
          * @return delivery
-         * @throws IllegalStateException if neither locationId nor coord is set
+         * @throws IllegalArgumentException if neither locationId nor coord is set
          */
         public Delivery build() {
-            if (location == null) throw new IllegalStateException("location is missing");
+            if (location == null) throw new IllegalArgumentException("location is missing");
             this.setType("delivery");
             super.capacity = super.capacityBuilder.build();
             super.skills = super.skillBuilder.build();

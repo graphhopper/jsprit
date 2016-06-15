@@ -32,14 +32,14 @@ import static org.mockito.Mockito.when;
 
 public class VehicleRouteBuilderTest {
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenDeliveryIsAddedBeforePickup_throwsException() {
         Shipment s = mock(Shipment.class);
         VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
         builder.addDelivery(s);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenPickupIsAddedTwice_throwsException() {
         Shipment s = mock(Shipment.class);
         when(s.getSize()).thenReturn(Capacity.Builder.newInstance().build());
@@ -49,7 +49,7 @@ public class VehicleRouteBuilderTest {
         builder.addPickup(s);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenShipmentIsPickedDeliveredAndDeliveredAgain_throwsException() {
         Shipment s = mock(Shipment.class);
         Capacity capacity = Capacity.Builder.newInstance().build();
@@ -62,7 +62,7 @@ public class VehicleRouteBuilderTest {
         builder.addDelivery(s);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenShipmentIsPickedUpThoughButHasNotBeenDeliveredAndRouteIsBuilt_throwsException() {
         Shipment s = mock(Shipment.class);
         Capacity capacity = Capacity.Builder.newInstance().build();

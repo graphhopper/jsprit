@@ -97,7 +97,7 @@ public class Capacity {
         double sumQuotients = 0.0;
         for (int index = 0; index < Math.max(numerator.getNuOfDimensions(), denominator.getNuOfDimensions()); index++) {
             if (numerator.get(index) != 0 && denominator.get(index) == 0) {
-                throw new IllegalStateException("numerator > 0 and denominator = 0. cannot divide by 0");
+                throw new IllegalArgumentException("numerator > 0 and denominator = 0. cannot divide by 0");
             } else if (numerator.get(index) == 0 && denominator.get(index) == 0) {
                 continue;
             } else {

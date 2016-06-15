@@ -193,9 +193,9 @@ public class VrpXMLReader {
             Driver driver = DriverImpl.noDriver();
             String vehicleId = routeConfig.getString("vehicleId");
             Vehicle vehicle = getVehicle(vehicleId);
-            if (vehicle == null) throw new IllegalStateException("vehicle is missing.");
+            if (vehicle == null) throw new IllegalArgumentException("vehicle is missing.");
             String start = routeConfig.getString("start");
-            if (start == null) throw new IllegalStateException("route start-time is missing.");
+            if (start == null) throw new IllegalArgumentException("route start-time is missing.");
             double departureTime = Double.parseDouble(start);
 
             VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
@@ -204,7 +204,7 @@ public class VrpXMLReader {
             List<HierarchicalConfiguration> actConfigs = routeConfig.configurationsAt("act");
             for (HierarchicalConfiguration actConfig : actConfigs) {
                 String type = actConfig.getString("[@type]");
-                if (type == null) throw new IllegalStateException("act[@type] is missing.");
+                if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
                 double arrTime = 0.;
                 double endTime = 0.;
                 String arrTimeS = actConfig.getString("arrTime");
@@ -221,24 +221,24 @@ public class VrpXMLReader {
                     if (serviceId != null) {
                         Service service = getService(serviceId);
                         if (service == null)
-                            throw new IllegalStateException("service to serviceId " + serviceId + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
+                            throw new IllegalArgumentException("service to serviceId " + serviceId + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
                         //!!!since job is part of initial route, it does not belong to jobs in problem, i.e. variable jobs that can be assigned/scheduled
                         freezedJobIds.add(serviceId);
                         routeBuilder.addService(service);
                     } else {
                         String shipmentId = actConfig.getString("shipmentId");
                         if (shipmentId == null)
-                            throw new IllegalStateException("either serviceId or shipmentId is missing");
+                            throw new IllegalArgumentException("either serviceId or shipmentId is missing");
                         Shipment shipment = getShipment(shipmentId);
                         if (shipment == null)
-                            throw new IllegalStateException("shipment to shipmentId " + shipmentId + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
+                            throw new IllegalArgumentException("shipment to shipmentId " + shipmentId + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
                         freezedJobIds.add(shipmentId);
                         if (type.equals("pickupShipment")) {
                             routeBuilder.addPickup(shipment);
                         } else if (type.equals("deliverShipment")) {
                             routeBuilder.addDelivery(shipment);
                         } else
-                            throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+                            throw new IllegalArgumentException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
                     }
                 }
             }
@@ -262,20 +262,20 @@ public class VrpXMLReader {
                 Driver driver = DriverImpl.noDriver();
                 String vehicleId = routeConfig.getString("vehicleId");
                 Vehicle vehicle = getVehicle(vehicleId);
-                if (vehicle == null) throw new IllegalStateException("vehicle is missing.");
+                if (vehicle == null) throw new IllegalArgumentException("vehicle is missing.");
                 String start = routeConfig.getString("start");
-                if (start == null) throw new IllegalStateException("route start-time is missing.");
+                if (start == null) throw new IllegalArgumentException("route start-time is missing.");
                 double departureTime = Double.parseDouble(start);
 
                 String end = routeConfig.getString("end");
-                if (end == null) throw new IllegalStateException("route end-time is missing.");
+                if (end == null) throw new IllegalArgumentException("route end-time is missing.");
 
                 VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
                 routeBuilder.setDepartureTime(departureTime);
                 List<HierarchicalConfiguration> actConfigs = routeConfig.configurationsAt("act");
                 for (HierarchicalConfiguration actConfig : actConfigs) {
                     String type = actConfig.getString("[@type]");
-                    if (type == null) throw new IllegalStateException("act[@type] is missing.");
+                    if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
                     double arrTime = 0.;
                     double endTime = 0.;
                     String arrTimeS = actConfig.getString("arrTime");
@@ -294,16 +294,16 @@ public class VrpXMLReader {
                         } else {
                             String shipmentId = actConfig.getString("shipmentId");
                             if (shipmentId == null)
-                                throw new IllegalStateException("either serviceId or shipmentId is missing");
+                                throw new IllegalArgumentException("either serviceId or shipmentId is missing");
                             Shipment shipment = getShipment(shipmentId);
                             if (shipment == null)
-                                throw new IllegalStateException("shipment with id " + shipmentId + " does not exist.");
+                                throw new IllegalArgumentException("shipment with id " + shipmentId + " does not exist.");
                             if (type.equals("pickupShipment")) {
                                 routeBuilder.addPickup(shipment);
                             } else if (type.equals("deliverShipment")) {
                                 routeBuilder.addDelivery(shipment);
                             } else
-                                throw new IllegalStateException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+                                throw new IllegalArgumentException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
                         }
                     }
                 }
@@ -315,7 +315,7 @@ public class VrpXMLReader {
                 String jobId = unassignedJobConfig.getString("[@id]");
                 Job job = getShipment(jobId);
                 if (job == null) job = getService(jobId);
-                if (job == null) throw new IllegalStateException("cannot find unassignedJob with id " + jobId);
+                if (job == null) throw new IllegalArgumentException("cannot find unassignedJob with id " + jobId);
                 solution.getUnassignedJobs().add(job);
             }
 
@@ -351,15 +351,15 @@ public class VrpXMLReader {
         List<HierarchicalConfiguration> shipmentConfigs = config.configurationsAt("shipments.shipment");
         for (HierarchicalConfiguration shipmentConfig : shipmentConfigs) {
             String id = shipmentConfig.getString("[@id]");
-            if (id == null) throw new IllegalStateException("shipment[@id] is missing.");
+            if (id == null) throw new IllegalArgumentException("shipment[@id] is missing.");
 
             String capacityString = shipmentConfig.getString("capacity-demand");
             boolean capacityDimensionsExist = shipmentConfig.containsKey("capacity-dimensions.dimension(0)");
             if (capacityString == null && !capacityDimensionsExist) {
-                throw new IllegalStateException("capacity of shipment is not set. use 'capacity-dimensions'");
+                throw new IllegalArgumentException("capacity of shipment is not set. use 'capacity-dimensions'");
             }
             if (capacityString != null && capacityDimensionsExist) {
-                throw new IllegalStateException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                throw new IllegalArgumentException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
             Shipment.Builder builder;
@@ -475,17 +475,17 @@ public class VrpXMLReader {
         List<HierarchicalConfiguration> serviceConfigs = vrpProblem.configurationsAt("services.service");
         for (HierarchicalConfiguration serviceConfig : serviceConfigs) {
             String id = serviceConfig.getString("[@id]");
-            if (id == null) throw new IllegalStateException("service[@id] is missing.");
+            if (id == null) throw new IllegalArgumentException("service[@id] is missing.");
             String type = serviceConfig.getString("[@type]");
             if (type == null) type = "service";
 
             String capacityString = serviceConfig.getString("capacity-demand");
             boolean capacityDimensionsExist = serviceConfig.containsKey("capacity-dimensions.dimension(0)");
             if (capacityString == null && !capacityDimensionsExist) {
-                throw new IllegalStateException("capacity of service is not set. use 'capacity-dimensions'");
+                throw new IllegalArgumentException("capacity of service is not set. use 'capacity-dimensions'");
             }
             if (capacityString != null && capacityDimensionsExist) {
-                throw new IllegalStateException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                throw new IllegalArgumentException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
             Service.Builder builder;
@@ -556,15 +556,15 @@ public class VrpXMLReader {
         List<HierarchicalConfiguration> typeConfigs = vrpProblem.configurationsAt("vehicleTypes.type");
         for (HierarchicalConfiguration typeConfig : typeConfigs) {
             String typeId = typeConfig.getString("id");
-            if (typeId == null) throw new IllegalStateException("typeId is missing.");
+            if (typeId == null) throw new IllegalArgumentException("typeId is missing.");
 
             String capacityString = typeConfig.getString("capacity");
             boolean capacityDimensionsExist = typeConfig.containsKey("capacity-dimensions.dimension(0)");
             if (capacityString == null && !capacityDimensionsExist) {
-                throw new IllegalStateException("capacity of type is not set. use 'capacity-dimensions'");
+                throw new IllegalArgumentException("capacity of type is not set. use 'capacity-dimensions'");
             }
             if (capacityString != null && capacityDimensionsExist) {
-                throw new IllegalStateException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                throw new IllegalArgumentException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
             VehicleTypeImpl.Builder typeBuilder;
@@ -606,10 +606,10 @@ public class VrpXMLReader {
         boolean doNotWarnAgain = false;
         for (HierarchicalConfiguration vehicleConfig : vehicleConfigs) {
             String vehicleId = vehicleConfig.getString("id");
-            if (vehicleId == null) throw new IllegalStateException("vehicleId is missing.");
+            if (vehicleId == null) throw new IllegalArgumentException("vehicleId is missing.");
             Builder builder = VehicleImpl.Builder.newInstance(vehicleId);
             String typeId = vehicleConfig.getString("typeId");
-            if (typeId == null) throw new IllegalStateException("typeId is missing.");
+            if (typeId == null) throw new IllegalArgumentException("typeId is missing.");
             String vType = vehicleConfig.getString("[@type]");
             if (vType != null) {
                 if (vType.equals("penalty")) {
@@ -617,7 +617,7 @@ public class VrpXMLReader {
                 }
             }
             VehicleType type = types.get(typeId);
-            if (type == null) throw new IllegalStateException("vehicleType with typeId " + typeId + " is missing.");
+            if (type == null) throw new IllegalArgumentException("vehicleType with typeId " + typeId + " is missing.");
             builder.setType(type);
 
             //read startlocation

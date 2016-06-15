@@ -124,7 +124,7 @@ public class ServiceTest {
         assertEquals(2.0,s.getLocation().getCoordinate().getY(),0.01);
 	}
 
-	@Test(expected=IllegalStateException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void whenSettingNeitherLocationIdNorCoord_throwsException(){
 		@SuppressWarnings("unused")
 		Service s = Service.Builder.newInstance("s").build();
@@ -219,7 +219,7 @@ public class ServiceTest {
 		assertEquals(2,s.getTimeWindows().size());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void whenMultipleTWOverlap_throwEx(){
 		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
 				.addTimeWindow(TimeWindow.newInstance(0.,10.))
@@ -227,7 +227,7 @@ public class ServiceTest {
 				.setName("name").build();
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void whenMultipleTWOverlap2_throwEx(){
 		Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
 				.addTimeWindow(TimeWindow.newInstance(20., 30.))
@@ -256,14 +256,14 @@ public class ServiceTest {
         Assert.assertEquals(2, s.getPriority());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenSettingIncorrectPriorities_itShouldThrowException(){
         Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .setPriority(30).build();
 
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenSettingIncorrectPriorities_itShouldThrowException2(){
         Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .setPriority(0).build();

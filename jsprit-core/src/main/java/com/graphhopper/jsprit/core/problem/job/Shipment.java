@@ -216,12 +216,12 @@ public class Shipment extends AbstractJob {
          * Builds the shipment.
          *
          * @return shipment
-         * @throws IllegalStateException if neither pickup-location nor pickup-coord is set or if neither delivery-location nor delivery-coord
+         * @throws IllegalArgumentException if neither pickup-location nor pickup-coord is set or if neither delivery-location nor delivery-coord
          *                               is set
          */
         public Shipment build() {
-            if (pickupLocation_ == null) throw new IllegalStateException("pickup location is missing");
-            if (deliveryLocation_ == null) throw new IllegalStateException("delivery location is missing");
+            if (pickupLocation_ == null) throw new IllegalArgumentException("pickup location is missing");
+            if (deliveryLocation_ == null) throw new IllegalArgumentException("delivery location is missing");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
             return new Shipment(this);
@@ -276,7 +276,7 @@ public class Shipment extends AbstractJob {
          * @return builder
          */
         public Builder setPriority(int priority) {
-            if(priority < 1 || priority > 3) throw new IllegalStateException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            if(priority < 1 || priority > 3) throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
             this.priority = priority;
             return this;
         }

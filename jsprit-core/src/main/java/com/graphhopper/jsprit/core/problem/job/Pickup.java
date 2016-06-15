@@ -46,10 +46,10 @@ public class Pickup extends Service {
          * <p>Pickup type is "pickup"
          *
          * @return pickup
-         * @throws IllegalStateException if neither locationId nor coordinate has been set
+         * @throws IllegalArgumentException if neither locationId nor coordinate has been set
          */
         public Pickup build() {
-            if (location == null) throw new IllegalStateException("location is missing");
+            if (location == null) throw new IllegalArgumentException("location is missing");
             this.setType("pickup");
             super.capacity = super.capacityBuilder.build();
             super.skills = super.skillBuilder.build();

@@ -86,13 +86,13 @@ public class ShipmentTest {
         assertNotNull(builder);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenNeitherPickupLocationIdNorPickupCoord_itThrowsException() {
         @SuppressWarnings("unused")
         Shipment s = Shipment.Builder.newInstance("s").setDeliveryLocation(TestUtils.loc("delLoc")).build();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenNeitherDeliveryLocationIdNorDeliveryCoord_itThrowsException() {
         @SuppressWarnings("unused")
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
@@ -105,7 +105,7 @@ public class ShipmentTest {
         assertEquals("pickLoc", s.getPickupLocation().getId());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenPickupLocationIsNull_itThrowsException() {
         @SuppressWarnings("unused")
         Shipment.Builder builder = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId(null).build());
@@ -253,7 +253,7 @@ public class ShipmentTest {
         assertThat(s.getDeliveryTimeWindows(),hasItem(is(tw2)));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenAddingMultipleOverlappingDeliveryTimeWindows_itShouldThrowException() {
         Shipment s = Shipment.Builder.newInstance("s").addDeliveryTimeWindow(1, 3).addDeliveryTimeWindow(2,5)
             .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
@@ -290,7 +290,7 @@ public class ShipmentTest {
         assertThat(s.getPickupTimeWindows(), hasItem(is(tw2)));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenAddingMultipleOverlappingPickupTimeWindows_itShouldThrowException() {
         Shipment s = Shipment.Builder.newInstance("s").addPickupTimeWindow(1, 3).addPickupTimeWindow(2,5)
             .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
@@ -408,7 +408,7 @@ public class ShipmentTest {
         Assert.assertEquals(2, s.getPriority());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenSettingIncorrectPriorities_itShouldThrowException(){
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
@@ -416,7 +416,7 @@ public class ShipmentTest {
 
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenSettingIncorrectPriorities_itShouldThrowException2(){
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))

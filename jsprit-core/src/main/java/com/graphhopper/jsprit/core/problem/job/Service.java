@@ -176,10 +176,10 @@ public class Service extends AbstractJob {
          * Builds the service.
          *
          * @return {@link Service}
-         * @throws IllegalStateException if neither locationId nor coordinate is set.
+         * @throws IllegalArgumentException if neither locationId nor coordinate is set.
          */
         public T build() {
-            if (location == null) throw new IllegalStateException("location is missing");
+            if (location == null) throw new IllegalArgumentException("location is missing");
             this.setType("service");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
@@ -219,7 +219,7 @@ public class Service extends AbstractJob {
          * @return builder
          */
         public Builder<T> setPriority(int priority) {
-            if(priority < 1 || priority > 3) throw new IllegalStateException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            if(priority < 1 || priority > 3) throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
             this.priority = priority;
             return this;
         }

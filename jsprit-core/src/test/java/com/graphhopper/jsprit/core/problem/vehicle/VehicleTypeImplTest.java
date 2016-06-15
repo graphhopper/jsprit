@@ -85,7 +85,7 @@ public class VehicleTypeImplTest {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo").addCapacityDimension(0, -10).build();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenBuildingTypeWithNullId_throwIllegalStateException() {
         @SuppressWarnings("unused")
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance(null).addCapacityDimension(0, 10).build();
@@ -99,13 +99,13 @@ public class VehicleTypeImplTest {
     }
 
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenMaxVelocitySmallerThanZero_itShouldThrowException() {
         @SuppressWarnings("unused")
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setMaxVelocity(-10).build();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenFixedCostsSmallerThanZero_itShouldThrowException() {
         @SuppressWarnings("unused")
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(-10).build();
@@ -116,7 +116,7 @@ public class VehicleTypeImplTest {
         assertEquals(10.0, type.getVehicleCostParams().fix, 0.0);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenPerDistanceCostsSmallerThanZero_itShouldThrowException() {
         @SuppressWarnings("unused")
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(-10).build();
@@ -127,7 +127,7 @@ public class VehicleTypeImplTest {
         assertEquals(10.0, type.getVehicleCostParams().perDistanceUnit, 0.0);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenPerTimeCostsSmallerThanZero_itShouldThrowException() {
         @SuppressWarnings("unused")
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(-10).build();

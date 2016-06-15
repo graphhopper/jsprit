@@ -14,13 +14,13 @@ public class TimeWindowsImpl implements TimeWindows {
     public void add(TimeWindow timeWindow){
         for(TimeWindow tw : timeWindows){
             if(timeWindow.getStart() > tw.getStart() && timeWindow.getStart() < tw.getEnd()){
-                throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
+                throw new IllegalArgumentException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
             }
             if(timeWindow.getEnd() > tw.getStart() && timeWindow.getEnd() < tw.getEnd()){
-                throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
+                throw new IllegalArgumentException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
             }
             if(timeWindow.getStart() <= tw.getStart() && timeWindow.getEnd() >= tw.getEnd()){
-                throw new IllegalStateException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
+                throw new IllegalArgumentException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
             }
         }
         timeWindows.add(timeWindow);

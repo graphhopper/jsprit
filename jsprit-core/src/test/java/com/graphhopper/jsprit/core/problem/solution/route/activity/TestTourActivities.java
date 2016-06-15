@@ -45,7 +45,7 @@ public class TestTourActivities {
         assertTrue(tour.servesJob(service));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenAddingServiceActTwice_anExceptionIsThrown() {
         assertFalse(tour.servesJob(service));
         tour.addActivity(act);

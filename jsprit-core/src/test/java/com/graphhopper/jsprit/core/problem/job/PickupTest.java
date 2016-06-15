@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 
 public class PickupTest {
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenNeitherLocationIdNorCoordIsSet_itThrowsException() {
         Pickup.Builder.newInstance("p").build();
     }

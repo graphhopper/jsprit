@@ -91,7 +91,7 @@ public class VehicleTypeImpl implements VehicleType {
 
 
         public static VehicleTypeImpl.Builder newInstance(String id) {
-            if (id == null) throw new IllegalStateException();
+            if (id == null) throw new IllegalArgumentException();
             return new Builder(id);
         }
 
@@ -124,10 +124,10 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param inMeterPerSeconds
          * @return this builder
-         * @throws IllegalStateException if velocity is smaller than zero
+         * @throws IllegalArgumentException if velocity is smaller than zero
          */
         public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds) {
-            if (inMeterPerSeconds < 0.0) throw new IllegalStateException("velocity cannot be smaller than zero");
+            if (inMeterPerSeconds < 0.0) throw new IllegalArgumentException("velocity cannot be smaller than zero");
             this.maxVelo = inMeterPerSeconds;
             return this;
         }
@@ -139,10 +139,10 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param fixedCost
          * @return this builder
-         * @throws IllegalStateException if fixedCost is smaller than zero
+         * @throws IllegalArgumentException if fixedCost is smaller than zero
          */
         public VehicleTypeImpl.Builder setFixedCost(double fixedCost) {
-            if (fixedCost < 0.0) throw new IllegalStateException("fixed costs cannot be smaller than zero");
+            if (fixedCost < 0.0) throw new IllegalArgumentException("fixed costs cannot be smaller than zero");
             this.fixedCost = fixedCost;
             return this;
         }
@@ -154,10 +154,10 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param perDistance
          * @return this builder
-         * @throws IllegalStateException if perDistance is smaller than zero
+         * @throws IllegalArgumentException if perDistance is smaller than zero
          */
         public VehicleTypeImpl.Builder setCostPerDistance(double perDistance) {
-            if (perDistance < 0.0) throw new IllegalStateException("cost per distance must not be smaller than zero");
+            if (perDistance < 0.0) throw new IllegalArgumentException("cost per distance must not be smaller than zero");
             this.perDistance = perDistance;
             return this;
         }
@@ -169,12 +169,12 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param perTime
          * @return this builder
-         * @throws IllegalStateException if costPerTime is smaller than zero
+         * @throws IllegalArgumentException if costPerTime is smaller than zero
          * @deprecated use .setCostPerTransportTime(..) instead
          */
         @Deprecated
         public VehicleTypeImpl.Builder setCostPerTime(double perTime) {
-            if (perTime < 0.0) throw new IllegalStateException();
+            if (perTime < 0.0) throw new IllegalArgumentException();
             this.perTime = perTime;
             return this;
         }
@@ -186,10 +186,10 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param perTime
          * @return this builder
-         * @throws IllegalStateException if costPerTime is smaller than zero
+         * @throws IllegalArgumentException if costPerTime is smaller than zero
          */
         public VehicleTypeImpl.Builder setCostPerTransportTime(double perTime) {
-            if (perTime < 0.0) throw new IllegalStateException();
+            if (perTime < 0.0) throw new IllegalArgumentException();
             this.perTime = perTime;
             return this;
         }
@@ -201,10 +201,10 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param perWaitingTime
          * @return this builder
-         * @throws IllegalStateException if costPerTime is smaller than zero
+         * @throws IllegalArgumentException if costPerTime is smaller than zero
          */
         public VehicleTypeImpl.Builder setCostPerWaitingTime(double perWaitingTime) {
-            if (perWaitingTime < 0.0) throw new IllegalStateException();
+            if (perWaitingTime < 0.0) throw new IllegalArgumentException();
             this.perWaitingTime = perWaitingTime;
             return this;
         }
@@ -233,12 +233,12 @@ public class VehicleTypeImpl implements VehicleType {
          * @param dimVal
          * @return the builder
          * @throws IllegalArgumentException if dimVal < 0
-         * @throws IllegalStateException    if capacity dimension is already set
+         * @throws IllegalArgumentException    if capacity dimension is already set
          */
         public Builder addCapacityDimension(int dimIndex, int dimVal) {
             if (dimVal < 0) throw new IllegalArgumentException("capacity value cannot be negative");
             if (capacityDimensions != null)
-                throw new IllegalStateException("either build your dimension with build your dimensions with " +
+                throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
                     "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
                     "You used both methods.");
             dimensionAdded = true;
@@ -255,11 +255,11 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param capacity
          * @return this builder
-         * @throws IllegalStateException if capacityDimension has already been added
+         * @throws IllegalArgumentException if capacityDimension has already been added
          */
         public Builder setCapacityDimensions(Capacity capacity) {
             if (dimensionAdded)
-                throw new IllegalStateException("either build your dimension with build your dimensions with " +
+                throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
                     "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
                     "You used both methods.");
             this.capacityDimensions = capacity;

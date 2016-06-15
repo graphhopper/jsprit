@@ -222,9 +222,9 @@ public class VehicleRoutingProblem {
          */
         public Builder addJob(AbstractJob job) {
             if (tentativeJobs.containsKey(job.getId()))
-                throw new IllegalStateException("vehicle routing problem already contains a service or shipment with id " + job.getId() + ". make sure you use unique ids for all services and shipments");
+                throw new IllegalArgumentException("vehicle routing problem already contains a service or shipment with id " + job.getId() + ". make sure you use unique ids for all services and shipments");
             if (!(job instanceof Service || job instanceof Shipment))
-                throw new IllegalStateException("job must be either a service or a shipment");
+                throw new IllegalArgumentException("job must be either a service or a shipment");
             job.setIndex(jobIndexCounter);
             incJobIndexCounter();
             tentativeJobs.put(job.getId(), job);
@@ -351,7 +351,7 @@ public class VehicleRoutingProblem {
          * */
         public Builder addVehicle(Vehicle vehicle) {
             if (!(vehicle instanceof AbstractVehicle))
-                throw new IllegalStateException("vehicle must be an AbstractVehicle");
+                throw new IllegalArgumentException("vehicle must be an AbstractVehicle");
             return addVehicle((AbstractVehicle) vehicle);
         }
 
@@ -363,7 +363,7 @@ public class VehicleRoutingProblem {
          */
         public Builder addVehicle(AbstractVehicle vehicle) {
             if(addedVehicleIds.contains(vehicle.getId())){
-                throw new IllegalStateException("problem already contains a vehicle with id " + vehicle.getId() + ". choose unique ids for each vehicle.");
+                throw new IllegalArgumentException("problem already contains a vehicle with id " + vehicle.getId() + ". choose unique ids for each vehicle.");
             }
             else addedVehicleIds.add(vehicle.getId());
             if (!uniqueVehicles.contains(vehicle)) {

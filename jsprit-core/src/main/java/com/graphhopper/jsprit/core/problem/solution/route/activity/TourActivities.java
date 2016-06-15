@@ -214,11 +214,11 @@ public class TourActivities {
      * <p>If act instanceof JobActivity, it adds underlying job also.
      *
      * @param act to be added
-     * @throws IllegalStateException if activity-list already contains act.
+     * @throws IllegalArgumentException if activity-list already contains act.
      */
     public void addActivity(TourActivity act) {
         if (tourActivities.contains(act))
-            throw new IllegalStateException("act " + act + " already in tour. cannot add act twice.");
+            throw new IllegalArgumentException("act " + act + " already in tour. cannot add act twice.");
         tourActivities.add(act);
         addJob(act);
     }

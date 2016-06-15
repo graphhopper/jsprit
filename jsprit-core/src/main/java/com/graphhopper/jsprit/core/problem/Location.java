@@ -85,7 +85,7 @@ public final class Location implements HasIndex, HasId {
 
         public Location build() {
             if (id == null && coordinate == null) {
-                if (index == -1) throw new IllegalStateException("either id or coordinate or index must be set");
+                if (index == -1) throw new IllegalArgumentException("either id or coordinate or index must be set");
             }
             if (coordinate != null && id == null) {
                 this.id = coordinate.toString();

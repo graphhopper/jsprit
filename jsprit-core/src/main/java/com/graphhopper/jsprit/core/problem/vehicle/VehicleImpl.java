@@ -139,10 +139,10 @@ public class VehicleImpl extends AbstractVehicle {
          *
          * @param type the type to be set
          * @return this builder
-         * @throws IllegalStateException if type is null
+         * @throws IllegalArgumentException if type is null
          */
         public Builder setType(VehicleType type) {
-            if (type == null) throw new IllegalStateException("type cannot be null.");
+            if (type == null) throw new IllegalArgumentException("type cannot be null.");
             this.type = type;
             return this;
         }
@@ -224,22 +224,22 @@ public class VehicleImpl extends AbstractVehicle {
          * Thus endLocationId can never be null even returnToDepot is false.
          *
          * @return vehicle
-         * @throws IllegalStateException if both locationId and locationCoord is not set or (endLocationCoord!=null AND returnToDepot=false)
+         * @throws IllegalArgumentException if both locationId and locationCoord is not set or (endLocationCoord!=null AND returnToDepot=false)
          *                               or (endLocationId!=null AND returnToDepot=false)
          */
         public VehicleImpl build() {
             if (latestArrival < earliestStart)
-                throw new IllegalStateException("latest arrival of vehicle " + id + " must not be smaller than its start time");
+                throw new IllegalArgumentException("latest arrival of vehicle " + id + " must not be smaller than its start time");
             if (startLocation != null && endLocation != null) {
                 if (!startLocation.getId().equals(endLocation.getId()) && !returnToDepot)
-                    throw new IllegalStateException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
+                    throw new IllegalArgumentException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
                         "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
             }
             if (startLocation != null && endLocation == null) {
                 endLocation = startLocation;
             }
             if (startLocation == null && endLocation == null) {
-                throw new IllegalStateException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
+                throw new IllegalArgumentException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
             }
             skills = skillBuilder.build();
             return new VehicleImpl(this);
