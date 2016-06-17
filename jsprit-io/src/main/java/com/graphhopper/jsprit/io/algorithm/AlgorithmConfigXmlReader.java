@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package com.graphhopper.jsprit.core.algorithm.io;
+package com.graphhopper.jsprit.io.algorithm;
 
 import com.graphhopper.jsprit.core.util.Resource;
 import org.apache.commons.configuration.ConfigurationException;

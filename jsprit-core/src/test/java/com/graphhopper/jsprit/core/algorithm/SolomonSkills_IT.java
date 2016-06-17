@@ -33,6 +33,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.TestUtils;
+import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package com.graphhopper.jsprit.core.algorithm.io;
+package com.graphhopper.jsprit.io.algorithm;
 
 
 import com.graphhopper.jsprit.core.algorithm.*;
 import com.graphhopper.jsprit.core.algorithm.acceptor.*;
-import com.graphhopper.jsprit.core.algorithm.io.VehicleRoutingAlgorithms.TypedMap.*;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.Priority;
@@ -51,6 +50,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivi
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
 import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
+import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithms.TypedMap.*;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.slf4j.Logger;

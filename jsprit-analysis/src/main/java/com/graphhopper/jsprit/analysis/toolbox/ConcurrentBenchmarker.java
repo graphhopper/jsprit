@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.util.BenchmarkInstance;
 import com.graphhopper.jsprit.core.util.BenchmarkResult;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import java.util.ArrayList;
 import java.util.Collection;

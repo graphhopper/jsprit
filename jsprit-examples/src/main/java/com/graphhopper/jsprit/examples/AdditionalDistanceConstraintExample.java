@@ -20,7 +20,6 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
@@ -38,6 +37,7 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
+import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 
 import java.util.Collection;
 

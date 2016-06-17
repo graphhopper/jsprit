@@ -20,7 +20,6 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithmBuilder;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -36,6 +35,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.instance.reader.SolomonReader;
+import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 
 import java.util.Collection;
 

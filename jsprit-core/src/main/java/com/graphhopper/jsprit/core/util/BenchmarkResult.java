@@ -16,7 +16,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.util;
 
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 
 public class BenchmarkResult {

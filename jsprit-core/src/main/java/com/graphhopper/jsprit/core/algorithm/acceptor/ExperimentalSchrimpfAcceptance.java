@@ -17,21 +17,18 @@
 package com.graphhopper.jsprit.core.algorithm.acceptor;
 
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import com.graphhopper.jsprit.core.algorithm.io.AlgorithmConfig;
-import com.graphhopper.jsprit.core.algorithm.io.AlgorithmConfigXmlReader;
-import com.graphhopper.jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.util.Resource;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
 import java.util.Collection;
 
 
@@ -114,10 +111,9 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
 		 */
         final double[] results = new double[nOfRandomWalks];
 
-        URL resource = Resource.getAsURL("randomWalk.xml");
-        AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-        new AlgorithmConfigXmlReader(algorithmConfig).read(resource);
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.createAlgorithm(problem, algorithmConfig);
+        Jsprit.Builder builder = new GreedySchrimpfFactory().createGreedyAlgorithmBuilder(problem);
+        builder.setCustomAcceptor(new AcceptNewRemoveFirst(1));
+        VehicleRoutingAlgorithm vra = builder.buildAlgorithm();
         vra.setMaxIterations(nOfRandomWalks);
         vra.getAlgorithmListeners().addListener(new IterationEndsListener() {
 

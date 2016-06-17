@@ -28,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
+import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 

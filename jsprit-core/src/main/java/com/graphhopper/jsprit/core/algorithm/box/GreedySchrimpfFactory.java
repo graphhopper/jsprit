@@ -17,13 +17,7 @@
 package com.graphhopper.jsprit.core.algorithm.box;
 
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import com.graphhopper.jsprit.core.algorithm.io.AlgorithmConfig;
-import com.graphhopper.jsprit.core.algorithm.io.AlgorithmConfigXmlReader;
-import com.graphhopper.jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.util.Resource;
-
-import java.net.URL;
 
 
 /**
@@ -53,11 +47,25 @@ public class GreedySchrimpfFactory {
      * @return algorithm
      */
     public VehicleRoutingAlgorithm createAlgorithm(VehicleRoutingProblem vrp) {
-        AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-        URL resource = Resource.getAsURL("greedySchrimpf.xml");
-        new AlgorithmConfigXmlReader(algorithmConfig).read(resource);
-        return VehicleRoutingAlgorithms.createAlgorithm(vrp, algorithmConfig);
+        return createGreedyAlgorithmBuilder(vrp).buildAlgorithm();
     }
 
+    public Jsprit.Builder createGreedyAlgorithmBuilder(VehicleRoutingProblem vrp) {
+        Jsprit.Builder builder = Jsprit.Builder.newInstance(vrp);
+        builder.setProperty(Jsprit.Parameter.THRESHOLD_ALPHA,"0.0");
+        builder.setProperty(Jsprit.Strategy.RADIAL_BEST, "0.5");
+        builder.setProperty(Jsprit.Strategy.RADIAL_REGRET, "0.0");
+        builder.setProperty(Jsprit.Strategy.RANDOM_BEST, "0.5");
+        builder.setProperty(Jsprit.Strategy.RANDOM_REGRET, "0.0");
+        builder.setProperty(Jsprit.Strategy.WORST_BEST, "0.0");
+        builder.setProperty(Jsprit.Strategy.WORST_REGRET, "0.0");
+        builder.setProperty(Jsprit.Strategy.CLUSTER_BEST, "0.0");
+        builder.setProperty(Jsprit.Strategy.CLUSTER_REGRET, "0.0");
+        builder.setProperty(Jsprit.Parameter.RADIAL_MIN_SHARE, String.valueOf(0.3));
+        builder.setProperty(Jsprit.Parameter.RADIAL_MAX_SHARE, String.valueOf(0.3));
+        builder.setProperty(Jsprit.Parameter.RANDOM_BEST_MIN_SHARE, String.valueOf(0.5));
+        builder.setProperty(Jsprit.Parameter.RANDOM_BEST_MAX_SHARE, String.valueOf(0.5));
+        return builder;
+    }
 
 }

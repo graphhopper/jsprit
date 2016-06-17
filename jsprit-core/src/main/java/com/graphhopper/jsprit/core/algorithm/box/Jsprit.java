@@ -4,6 +4,7 @@ import com.graphhopper.jsprit.core.algorithm.PrettyAlgorithmBuilder;
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.acceptor.SchrimpfAcceptance;
+import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
@@ -139,6 +140,8 @@ public class Jsprit {
 
         private ActivityInsertionCostsCalculator activityInsertionCalculator;
 
+        private SolutionAcceptor solutionAcceptor;
+
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
         }
@@ -194,6 +197,11 @@ public class Jsprit {
         public Builder setExecutorService(ExecutorService es, int noThreads) {
             this.es = es;
             this.noThreads = noThreads;
+            return this;
+        }
+
+        public Builder setCustomAcceptor(SolutionAcceptor acceptor){
+            this.solutionAcceptor = acceptor;
             return this;
         }
 
@@ -298,6 +306,8 @@ public class Jsprit {
 
     private Random random;
 
+    private SolutionAcceptor acceptor;
+
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
         this.constraintManager = builder.constraintManager;
@@ -308,6 +318,7 @@ public class Jsprit {
         this.objectiveFunction = builder.objectiveFunction;
         this.random = builder.random;
         this.activityInsertion = builder.activityInsertionCalculator;
+        this.acceptor = builder.solutionAcceptor;
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
@@ -496,40 +507,44 @@ public class Jsprit {
         }
         best.setRandom(random);
 
-        final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
-        IterationStartsListener schrimpfThreshold = new IterationStartsListener() {
-            @Override
-            public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-                if (i == 1) {
-                    double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
-                    schrimpfAcceptance.setInitialThreshold(initialThreshold);
+        IterationStartsListener schrimpfThreshold = null;
+        if(acceptor == null) {
+            final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
+            schrimpfThreshold = new IterationStartsListener() {
+                @Override
+                public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+                    if (i == 1) {
+                        double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
+                        schrimpfAcceptance.setInitialThreshold(initialThreshold);
+                    }
                 }
-            }
-        };
+            };
+            acceptor = schrimpfAcceptance;
+        }
 
         SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp, maxCosts);
-        SearchStrategy radial_regret = new SearchStrategy(Strategy.RADIAL_REGRET.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        SearchStrategy radial_regret = new SearchStrategy(Strategy.RADIAL_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         radial_regret.addModule(new RuinAndRecreateModule(Strategy.RADIAL_REGRET.toString(), regret, radial));
 
-        SearchStrategy radial_best = new SearchStrategy(Strategy.RADIAL_BEST.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        SearchStrategy radial_best = new SearchStrategy(Strategy.RADIAL_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         radial_best.addModule(new RuinAndRecreateModule(Strategy.RADIAL_BEST.toString(), best, radial));
 
-        SearchStrategy random_best = new SearchStrategy(Strategy.RANDOM_BEST.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        SearchStrategy random_best = new SearchStrategy(Strategy.RANDOM_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         random_best.addModule(new RuinAndRecreateModule(Strategy.RANDOM_BEST.toString(), best, random_for_best));
 
-        SearchStrategy random_regret = new SearchStrategy(Strategy.RANDOM_REGRET.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        SearchStrategy random_regret = new SearchStrategy(Strategy.RANDOM_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         random_regret.addModule(new RuinAndRecreateModule(Strategy.RANDOM_REGRET.toString(), regret, random_for_regret));
 
-        SearchStrategy worst_regret = new SearchStrategy(Strategy.WORST_REGRET.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        SearchStrategy worst_regret = new SearchStrategy(Strategy.WORST_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         worst_regret.addModule(new RuinAndRecreateModule(Strategy.WORST_REGRET.toString(), regret, worst));
 
-        SearchStrategy worst_best = new SearchStrategy(Strategy.WORST_BEST.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        SearchStrategy worst_best = new SearchStrategy(Strategy.WORST_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         worst_best.addModule(new RuinAndRecreateModule(Strategy.WORST_BEST.toString(), best, worst));
 
-        final SearchStrategy clusters_regret = new SearchStrategy(Strategy.CLUSTER_REGRET.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        final SearchStrategy clusters_regret = new SearchStrategy(Strategy.CLUSTER_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         clusters_regret.addModule(new RuinAndRecreateModule(Strategy.CLUSTER_REGRET.toString(), regret, clusters));
 
-        final SearchStrategy clusters_best = new SearchStrategy(Strategy.CLUSTER_BEST.toString(), new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        final SearchStrategy clusters_best = new SearchStrategy(Strategy.CLUSTER_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         clusters_best.addModule(new RuinAndRecreateModule(Strategy.CLUSTER_BEST.toString(), best, clusters));
 
 
@@ -554,7 +569,9 @@ public class Jsprit {
 
 
         VehicleRoutingAlgorithm vra = prettyBuilder.build();
-        vra.addListener(schrimpfThreshold);
+        if(schrimpfThreshold != null) {
+            vra.addListener(schrimpfThreshold);
+        }
         vra.addListener(noiseConfigurator);
         vra.addListener(noise);
         vra.addListener(clusters);
