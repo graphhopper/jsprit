@@ -57,7 +57,7 @@ For bugs, feature requests or similar use the [issue tracker](https://github.com
 ####Email:
 If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, send an email to:
 
-info@jspr.it
+info@graphhopper.com
 
 
 ##About
