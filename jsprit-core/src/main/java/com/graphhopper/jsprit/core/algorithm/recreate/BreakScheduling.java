@@ -46,7 +46,7 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
                 stateManager.removed(aBreak,inRoute);
                 stateManager.reCalculateStates(inRoute);
             }
-            if(inRoute.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
+//            if(inRoute.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
                 InsertionData iData = breakInsertionCalculator.getInsertionData(inRoute, aBreak, inRoute.getVehicle(), inRoute.getDepartureTime(), inRoute.getDriver(), Double.MAX_VALUE);
                 if(!(iData instanceof InsertionData.NoInsertionFound)){
                     logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);
@@ -55,7 +55,7 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
                     }
                     stateManager.informJobInserted(aBreak,inRoute,0,0);
                 }
-            }
+//            }
         }
     }
 
@@ -90,7 +90,7 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
         for(VehicleRoute route : vehicleRoutes){
             Break aBreak = route.getVehicle().getBreak();
             if(aBreak != null && !route.getTourActivities().servesJob(aBreak)){
-                if(route.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
+//                if(route.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
                     InsertionData iData = breakInsertionCalculator.getInsertionData(route, aBreak, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
                     if(!(iData instanceof InsertionData.NoInsertionFound)){
                         logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);
@@ -99,7 +99,7 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
                         }
                         stateManager.informJobInserted(aBreak,route,0,0);
                     }
-                }
+//                }
             }
         }
 
