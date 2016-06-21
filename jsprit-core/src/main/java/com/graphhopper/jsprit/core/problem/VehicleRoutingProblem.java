@@ -183,6 +183,10 @@ public class VehicleRoutingProblem {
         }
 
 
+        public void setJobActivityFactory(JobActivityFactory jobActivityFactory) {
+            this.jobActivityFactory = jobActivityFactory;
+        }
+
         /**
          * Sets the type of fleetSize.
          * <p>
