@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.problem;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
+import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -100,7 +101,10 @@ public class VehicleRoutingProblem {
             @Override
             public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-                if (job instanceof Service) {
+                if( job instanceof Break){
+                    acts.add(BreakActivity.newInstance((Break) job));
+                }
+                else if (job instanceof Service) {
                     acts.add(serviceActivityFactory.createActivity((Service) job));
                 } else if (job instanceof Shipment) {
                     acts.add(shipmentActivityFactory.createPickup((Shipment) job));
@@ -278,10 +282,13 @@ public class VehicleRoutingProblem {
             for (Vehicle v : uniqueVehicles) {
                 if (v.getBreak() != null) {
                     hasBreaks = true;
-                    AbstractActivity breakActivity = BreakActivity.newInstance(v.getBreak());
-                    breakActivity.setIndex(activityIndexCounter);
-                    incActivityIndexCounter();
-                    activityMap.put(v.getBreak(), Arrays.asList(breakActivity));
+                    List<AbstractActivity> breakActivities = jobActivityFactory.createActivities(v.getBreak());
+                    if(breakActivities.isEmpty()) throw new IllegalArgumentException("at least one activity for break needs to be created by activityFactory");
+                    for(AbstractActivity act : breakActivities){
+                        act.setIndex(activityIndexCounter);
+                        incActivityIndexCounter();
+                    }
+                    activityMap.put(v.getBreak(), breakActivities);
                 }
             }
             return hasBreaks;
