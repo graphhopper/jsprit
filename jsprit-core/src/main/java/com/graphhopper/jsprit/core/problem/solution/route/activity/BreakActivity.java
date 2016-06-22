@@ -32,6 +32,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
     private Location location;
 
+    private double duration;
+
     /**
      * @return the arrTime
      */
@@ -77,6 +79,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     protected BreakActivity(Break aBreak) {
         counter++;
         this.aBreak = aBreak;
+        this.duration = aBreak.getServiceDuration();
     }
 
     protected BreakActivity(BreakActivity breakActivity) {
@@ -88,6 +91,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         setIndex(breakActivity.getIndex());
         this.earliest = breakActivity.getTheoreticalEarliestOperationStartTime();
         this.latest = breakActivity.getTheoreticalLatestOperationStartTime();
+        this.duration = breakActivity.getOperationTime();
     }
 
 
@@ -132,7 +136,11 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
     @Override
     public double getOperationTime() {
-        return aBreak.getServiceDuration();
+        return duration;
+    }
+
+    public void setOperationTime(double duration){
+        this.duration = duration;
     }
 
     @Override
