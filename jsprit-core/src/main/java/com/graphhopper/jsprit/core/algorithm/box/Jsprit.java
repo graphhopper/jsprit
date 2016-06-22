@@ -99,7 +99,8 @@ public class Jsprit {
         RUIN_WORST_NOISE_PROB("worst.noise_prob"),
         FAST_REGRET("regret.fast"),
         MAX_TRANSPORT_COSTS("max_transport_costs"),
-        CONSTRUCTION("construction");
+        CONSTRUCTION("construction"),
+        BREAK_SCHEDULING("break_scheduling");
 
         String paraName;
 
@@ -186,6 +187,7 @@ public class Jsprit {
             defaults.put(Parameter.RUIN_WORST_NOISE_PROB.toString(), String.valueOf(0.2));
             defaults.put(Parameter.VEHICLE_SWITCH.toString(), String.valueOf(true));
             defaults.put(Parameter.FAST_REGRET, String.valueOf(false));
+            defaults.put(Parameter.BREAK_SCHEDULING, String.valueOf(true));
             defaults.put(Parameter.CONSTRUCTION.toString(), Construction.REGRET_INSERTION.toString());
             return defaults;
         }
@@ -559,8 +561,9 @@ public class Jsprit {
         vra.addListener(noise);
         vra.addListener(clusters);
 
-        vra.addListener(new BreakScheduling(vrp,stateManager,constraintManager));
-//        vra.addListener(new RuinBreaks());
+        if(toBoolean(getProperty(Parameter.BREAK_SCHEDULING.toString()))) {
+            vra.addListener(new BreakScheduling(vrp, stateManager, constraintManager));
+        }
         handleExecutorShutdown(vra);
         vra.setMaxIterations(Integer.valueOf(properties.getProperty(Parameter.ITERATIONS.toString())));
 
