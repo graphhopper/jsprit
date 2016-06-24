@@ -115,7 +115,9 @@ public class TourActivities {
     }
 
     /**
-     * Removes job AND belonging activity from tour.
+     * Removes job AND belonging activity from tour. Note that if job is a Service, it is assumed that there is only one belonging activity,
+     * thus, it stops trying to remove activities once the first is found.
+     * If you want to always look for belonging activities to be removed in the entire route, use removeJob(Job job, boolean enforceEntireRoute)
      *
      * @param job to be removed
      * @return true if job has been removed, otherwise false.
@@ -136,15 +138,14 @@ public class TourActivities {
                 if (job.equals(underlyingJob)) {
                     iterator.remove();
                     activityRemoved = true;
-                    if (underlyingJob instanceof Service) {
-                        break;
-                    }
                 }
             }
         }
         assert jobRemoved == activityRemoved : "job removed, but belonging activity not.";
         return activityRemoved;
     }
+
+
 
     /**
      * Removes activity from this activity sequence. Removes its corresponding job as well, if there are no other activities
