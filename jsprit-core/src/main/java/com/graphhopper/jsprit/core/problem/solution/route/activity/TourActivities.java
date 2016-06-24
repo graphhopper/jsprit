@@ -17,7 +17,6 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
 import java.util.*;
@@ -227,7 +226,7 @@ public class TourActivities {
     private void addJob(TourActivity act) {
         if (act instanceof JobActivity) {
             Job job = ((JobActivity) act).getJob();
-            if(job instanceof Service) assert !jobs.contains(job);
+//            if(job instanceof Service) assert !jobs.contains(job);
             jobs.add(job);
         }
     }
