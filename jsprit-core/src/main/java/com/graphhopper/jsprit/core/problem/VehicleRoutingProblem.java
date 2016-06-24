@@ -187,8 +187,9 @@ public class VehicleRoutingProblem {
         }
 
 
-        public void setJobActivityFactory(JobActivityFactory jobActivityFactory) {
+        public Builder setJobActivityFactory(JobActivityFactory jobActivityFactory) {
             this.jobActivityFactory = jobActivityFactory;
+            return this;
         }
 
         /**
