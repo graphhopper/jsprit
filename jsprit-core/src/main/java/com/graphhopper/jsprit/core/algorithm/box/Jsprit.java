@@ -186,8 +186,8 @@ public class Jsprit {
             defaults.put(Parameter.RUIN_WORST_NOISE_LEVEL.toString(), String.valueOf(0.15));
             defaults.put(Parameter.RUIN_WORST_NOISE_PROB.toString(), String.valueOf(0.2));
             defaults.put(Parameter.VEHICLE_SWITCH.toString(), String.valueOf(true));
-            defaults.put(Parameter.FAST_REGRET, String.valueOf(false));
-            defaults.put(Parameter.BREAK_SCHEDULING, String.valueOf(true));
+            defaults.put(Parameter.FAST_REGRET.toString(), String.valueOf(false));
+            defaults.put(Parameter.BREAK_SCHEDULING.toString(), String.valueOf(true));
             defaults.put(Parameter.CONSTRUCTION.toString(), Construction.REGRET_INSERTION.toString());
             return defaults;
         }
