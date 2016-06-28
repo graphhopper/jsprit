@@ -261,7 +261,7 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
     }
 
     @Override
-    public double getDistance(Location from, Location to) {
+    public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
         return getDistance(from.getId(), to.getId());
     }
 

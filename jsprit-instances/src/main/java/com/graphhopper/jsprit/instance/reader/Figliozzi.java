@@ -216,7 +216,7 @@ public class Figliozzi {
         }
 
         @Override
-        public double getDistance(Location from, Location to) {
+        public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
             return EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
         }
 

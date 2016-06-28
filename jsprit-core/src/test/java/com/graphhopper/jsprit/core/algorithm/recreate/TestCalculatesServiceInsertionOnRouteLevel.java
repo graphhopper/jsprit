@@ -97,8 +97,8 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
             }
 
             @Override
-            public double getDistance(Location from, Location to) {
-                return routingCosts.getDistance(from, to);
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return routingCosts.getDistance(from, to, departureTime, vehicle);
             }
 
         };

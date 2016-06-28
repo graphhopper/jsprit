@@ -106,7 +106,7 @@ public class TestCalculatesServiceInsertion {
             }
 
             @Override
-            public double getDistance(Location from, Location to) {
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
                 return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
             }
         };
@@ -246,7 +246,7 @@ public class TestCalculatesServiceInsertion {
             }
 
             @Override
-            public double getDistance(Location from, Location to) {
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
                 return EuclideanDistanceCalculator.calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
             }
         };

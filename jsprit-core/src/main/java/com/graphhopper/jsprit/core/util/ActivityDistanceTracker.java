@@ -33,12 +33,12 @@ public class ActivityDistanceTracker implements ActivityVisitor{
 
     @Override
     public void visit(TourActivity activity) {
-        distanceAtPrevAct += transportDistance.getDistance(prevAct.getLocation(), activity.getLocation());
+        distanceAtPrevAct += transportDistance.getDistance(prevAct.getLocation(), activity.getLocation(), 0.0, route.getVehicle());
     }
 
     @Override
     public void finish() {
-        distanceAtPrevAct += transportDistance.getDistance(prevAct.getLocation(), route.getEnd().getLocation());
+        distanceAtPrevAct += transportDistance.getDistance(prevAct.getLocation(), route.getEnd().getLocation(), 0.0, route.getVehicle());
     }
 
 }

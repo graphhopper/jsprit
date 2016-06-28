@@ -91,8 +91,8 @@ public class CalcWithTimeSchedulingTest {
             }
 
             @Override
-            public double getDistance(Location from, Location to) {
-                return baseCosts.getDistance(from, to);
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return baseCosts.getDistance(from, to, departureTime, vehicle);
             }
         };
     }
