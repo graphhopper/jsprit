@@ -44,6 +44,11 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
             index++;
             return job;
         }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static Logger logger = LoggerFactory.getLogger(JobNeighborhoodsImpl.class);
