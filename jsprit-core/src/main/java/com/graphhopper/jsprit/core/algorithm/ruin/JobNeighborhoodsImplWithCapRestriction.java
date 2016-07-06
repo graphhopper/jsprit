@@ -36,6 +36,7 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
     @Override
     public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo) {
+
         TreeSet<ReferencedJob> tree = distanceNodeTree.get(neighborTo.getId());
         if (tree == null) return new Iterator<Job>() {
 
@@ -73,10 +74,18 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
     private void calculateDistancesFromJob2Job() {
         logger.debug("preprocess distances between locations ...");
+        //ToDo
+        /*
+        1 -> 2,3,4,5,6
+        2 -> 1,3,4,5,6
+        3
+
+         */
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         int nuOfDistancesStored = 0;
         for (Job i : vrp.getJobs().values()) {
+            // Collections.sort(list, );
             TreeSet<ReferencedJob> treeSet = new TreeSet<ReferencedJob>(
                 new Comparator<ReferencedJob>() {
                     @Override
