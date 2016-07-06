@@ -124,7 +124,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         double readyTimeAtNewAct = arrTimeAtNewAct + setup_time_prevAct_newAct;
         double endTimeAtNewAct = Math.max(readyTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,readyTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
         double setup_time_newAct_nextActLocation = 0.0;
-        if(!newAct.getLocation().equals(nextActLocation))
+        if(newAct.getLocation() != null && !newAct.getLocation().equals(nextActLocation))
             setup_time_newAct_nextActLocation = setup_time_nextActLocation;
         double latestReadyTimeAtNewAct =
             Math.min(newAct.getTheoreticalLatestOperationStartTime(),
