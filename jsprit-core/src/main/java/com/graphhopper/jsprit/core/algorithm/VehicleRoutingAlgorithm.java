@@ -72,7 +72,7 @@ public class VehicleRoutingAlgorithm {
         }
 
         public void incCounter() {
-            long i = counter++;
+            long i = ++counter;
             long n = nextCounter;
             if (i >= n) {
                 nextCounter = n * 2;
