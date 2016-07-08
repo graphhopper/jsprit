@@ -30,6 +30,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.util.Solutions;
+import com.graphhopper.jsprit.core.util.VehicleIndexComparator;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.xml.serialize.OutputFormat;
@@ -44,6 +46,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -188,7 +191,9 @@ public class VrpXMLWriter {
         for (VehicleRoutingProblemSolution solution : solutions) {
             xmlConfig.setProperty(solutionPath + "(" + counter + ").cost", solution.getCost());
             int routeCounter = 0;
-            for (VehicleRoute route : solution.getRoutes()) {
+            List<VehicleRoute> list = new ArrayList<VehicleRoute>(solution.getRoutes());
+            Collections.sort(list , new VehicleIndexComparator());
+            for (VehicleRoute route : list) {
 //				xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").cost", route.getCost());
                 xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").driverId", route.getDriver().getId());
                 xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").vehicleId", route.getVehicle().getId());
@@ -427,3 +432,4 @@ public class VrpXMLWriter {
 
 
 }
+
