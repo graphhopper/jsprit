@@ -16,6 +16,8 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.problem;
 
+import java.util.Arrays;
+
 /**
  * Capacity with an arbitrary number of capacity-dimension.
  * <p>
@@ -290,5 +292,20 @@ public class Capacity {
         return toReturnBuilder.build();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Capacity)) return false;
 
+        Capacity capacity = (Capacity) o;
+
+        if (!Arrays.equals(dimensions, capacity.dimensions)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(dimensions);
+    }
 }
