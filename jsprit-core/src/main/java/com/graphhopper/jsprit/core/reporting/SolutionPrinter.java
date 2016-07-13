@@ -26,6 +26,9 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -149,7 +152,10 @@ public class SolutionPrinter {
         out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
         out.printf("| route   | vehicle              | activity              | job             | arrTime         | endTime         | costs           |%n");
         int routeNu = 1;
-        for (VehicleRoute route : solution.getRoutes()) {
+
+        List<VehicleRoute> list = new ArrayList<VehicleRoute>(solution.getRoutes());
+        Collections.sort(list , new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
+        for (VehicleRoute route : list) {
             out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
             double costs = 0;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),
