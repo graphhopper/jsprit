@@ -17,6 +17,7 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -59,15 +60,38 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     private boolean skillconstraintSet = false;
 
+    private final DependencyType[] dependencyTypes;
+
     public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager) {
         this.vrp = vrp;
         this.stateManager = stateManager;
+        dependencyTypes = new DependencyType[vrp.getJobs().size() + 1];
     }
 
     public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager, Collection<Constraint> constraints) {
         this.vrp = vrp;
         this.stateManager = stateManager;
+        dependencyTypes = new DependencyType[vrp.getJobs().size() + 1];
         resolveConstraints(constraints);
+    }
+
+    public DependencyType[] getDependencyTypes() {
+        return dependencyTypes;
+    }
+
+    public void setDependencyType(String jobId, DependencyType dependencyType){
+        Job job = vrp.getJobs().get(jobId);
+        if(job != null) {
+            dependencyTypes[job.getIndex()] = dependencyType;
+        }
+    }
+
+    public DependencyType getDependencyType(String jobId){
+        Job job = vrp.getJobs().get(jobId);
+        if(job != null){
+            return dependencyTypes[job.getIndex()];
+        }
+        return DependencyType.NO_TYPE;
     }
 
     private void resolveConstraints(Collection<Constraint> constraints) {

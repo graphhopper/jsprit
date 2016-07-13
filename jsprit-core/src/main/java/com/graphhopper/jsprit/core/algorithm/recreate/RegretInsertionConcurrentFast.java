@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.constraint.DependencyType;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -57,6 +58,8 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
 
     private boolean switchAllowed = true;
 
+    private DependencyType[] dependencyTypes = null;
+
 
     /**
      * Sets the scoring function.
@@ -95,6 +98,10 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
             ids.add(r.getVehicle().getId());
         }
         return ids;
+    }
+
+    public void setDependencyTypes(DependencyType[] dependencyTypes){
+        this.dependencyTypes = dependencyTypes;
     }
 
 
@@ -139,15 +146,8 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
             List<Job> unassignedJobList = new ArrayList<Job>(jobs);
             List<Job> badJobList = new ArrayList<Job>();
             if(!firstRun && lastModified == null) throw new IllegalStateException("ho. this must not be.");
-            if(firstRun){
-                firstRun = false;
-                updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound);
-                for(VehicleRoute r : routes) updates.put(r,updateRound);
-            }
-            else{
-                updateInsertionData(priorityQueues, Arrays.asList(lastModified), unassignedJobList, updateRound);
-                updates.put(lastModified,updateRound);
-            }
+            updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound,firstRun,lastModified,updates);
+            if(firstRun) firstRun = false;
             updateRound++;
             ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed,initialVehicleIds,fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
@@ -167,19 +167,38 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private void updateInsertionData(final TreeSet<VersionedInsertionData>[] priorityQueues, final Collection<VehicleRoute> routes, List<Job> unassignedJobList, final int updateRound) {
+    private void updateInsertionData(final TreeSet<VersionedInsertionData>[] priorityQueues, final Collection<VehicleRoute> routes, List<Job> unassignedJobList, final int updateRound, final boolean firstRun, final VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
         List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+        boolean updatedAllRoutes = false;
         for (final Job unassignedJob : unassignedJobList) {
             if(priorityQueues[unassignedJob.getIndex()] == null){
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
             }
             final TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[unassignedJob.getIndex()];
-            tasks.add(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    return InsertionDataUpdater.update(switchAllowed,initialVehicleIds,fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, routes);
+            if(firstRun) {
+                makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                updatedAllRoutes = true;
+            }
+            else{
+                if(dependencyTypes == null || dependencyTypes[unassignedJob.getIndex()] == null){
+                    makeCallables(tasks, false, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                 }
-            });
+                else {
+                    DependencyType dependencyType = dependencyTypes[unassignedJob.getIndex()];
+                    if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
+                        makeCallables(tasks, false, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                        updatedAllRoutes = true;
+                    } else {
+                        makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                    }
+                }
+            }
+        }
+        if(updatedAllRoutes){
+            for(VehicleRoute r : routes) updates.put(r,updateRound);
+        }
+        else{
+            updates.put(lastModified,updateRound);
         }
         try {
             List<Future<Boolean>> futures = executor.invokeAll(tasks);
@@ -189,8 +208,24 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
         }
     }
 
-
-
+    private void makeCallables(List<Callable<Boolean>> tasks, boolean updateAll, final TreeSet<VersionedInsertionData> priorityQueue, final int updateRound, final Job unassignedJob, final Collection<VehicleRoute> routes, final VehicleRoute lastModified) {
+        if(updateAll) {
+            tasks.add(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, routes);
+                }
+            });
+        }
+        else {
+            tasks.add(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, Arrays.asList(lastModified));
+                }
+            });
+        }
+    }
 
 
 }

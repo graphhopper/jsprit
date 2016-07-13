@@ -17,20 +17,30 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
+import com.graphhopper.jsprit.core.algorithm.state.StateId;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.constraint.DependencyType;
+import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import com.graphhopper.jsprit.core.problem.vehicle.*;
+import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
+import com.graphhopper.jsprit.core.util.Solutions;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -90,6 +100,197 @@ public class RegretInsertionTest {
         regretInsertion.addListener(position);
         regretInsertion.insertJobs(routes, vrp.getJobs().values());
         Assert.assertTrue(position.isCorrect());
+    }
+
+    @Test
+    public void solutionWithFastRegretMustBeCorrect() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 10)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, -10)).build();
+
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0, 5)).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0, -5)).build();
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2)
+            .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+
+        StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .addCoreStateAndConstraintStuff(true)
+            .setProperty(Jsprit.Parameter.FAST_REGRET,"true")
+            .setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
+
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+
+        Assert.assertEquals(2, solution.getRoutes().size());
+    }
+
+    static class JobInRouteUpdater implements StateUpdater, ActivityVisitor {
+
+        private StateManager stateManager;
+
+        private StateId job1AssignedId;
+
+        private StateId job2AssignedId;
+
+        private VehicleRoute route;
+
+        public JobInRouteUpdater(StateManager stateManager, StateId job1AssignedId, StateId job2AssignedId) {
+            this.stateManager = stateManager;
+            this.job1AssignedId = job1AssignedId;
+            this.job2AssignedId = job2AssignedId;
+        }
+
+        @Override
+        public void begin(VehicleRoute route) {
+            this.route = route;
+        }
+
+        @Override
+        public void visit(TourActivity activity) {
+            if(((TourActivity.JobActivity)activity).getJob().getId().equals("s1")){
+                stateManager.putProblemState(job1AssignedId,Boolean.class,true);
+            }
+            if(((TourActivity.JobActivity)activity).getJob().getId().equals("s2")){
+                stateManager.putProblemState(job2AssignedId,Boolean.class,true);
+            }
+
+        }
+
+        @Override
+        public void finish() {
+
+        }
+    }
+
+    static class RouteConstraint implements HardRouteConstraint{
+
+        private final StateId job1AssignedId;
+
+        private final StateId job2AssignedId;
+
+        private StateManager stateManager;
+
+        public RouteConstraint(StateId job1Assigned, StateId job2Assigned, StateManager stateManager) {
+            this.job1AssignedId = job1Assigned;
+            this.job2AssignedId = job2Assigned;
+            this.stateManager = stateManager;
+        }
+
+        @Override
+        public boolean fulfilled(JobInsertionContext insertionContext) {
+            if(insertionContext.getJob().getId().equals("s1")){
+                Boolean job2Assigned = stateManager.getProblemState(job2AssignedId,Boolean.class);
+                if(job2Assigned == null || job2Assigned == false) return true;
+                else {
+                    for(Job j : insertionContext.getRoute().getTourActivities().getJobs()){
+                        if(j.getId().equals("s2")) return true;
+                    }
+                }
+                return false;
+            }
+            if(insertionContext.getJob().getId().equals("s2")){
+                Boolean job1Assigned = stateManager.getProblemState(job1AssignedId,Boolean.class);
+                if(job1Assigned == null || job1Assigned == false) return true;
+                else {
+                    for(Job j : insertionContext.getRoute().getTourActivities().getJobs()){
+                        if(j.getId().equals("s1")) return true;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+    }
+
+    @Test
+    public void solutionWithConstraintAndWithFastRegretMustBeCorrect() {
+        Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0,1).setLocation(Location.newInstance(0, 10)).build();
+        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0,1).setLocation(Location.newInstance(0, -10)).build();
+        Service s3 = Service.Builder.newInstance("s3").addSizeDimension(0,1).setLocation(Location.newInstance(0, -11)).build();
+        Service s4 = Service.Builder.newInstance("s4").addSizeDimension(0,1).setLocation(Location.newInstance(0, 11)).build();
+
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,2).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance(0, 10)).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance(0, -10)).build();
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addJob(s4)
+            .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+
+        final StateManager stateManager = new StateManager(vrp);
+        StateId job1Assigned = stateManager.createStateId("job1-assigned");
+        StateId job2Assigned = stateManager.createStateId("job2-assigned");
+        stateManager.addStateUpdater(new JobInRouteUpdater(stateManager,job1Assigned,job2Assigned));
+        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        constraintManager.addConstraint(new RouteConstraint(job1Assigned,job2Assigned,stateManager));
+        constraintManager.setDependencyType("s1", DependencyType.INTRA_ROUTE);
+        constraintManager.setDependencyType("s2", DependencyType.INTRA_ROUTE);
+
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .addCoreStateAndConstraintStuff(true)
+            .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+            .setStateAndConstraintManager(stateManager, constraintManager)
+//            .setProperty(Jsprit.Strategy.CLUSTER_REGRET, "0.")
+//            .setProperty(Jsprit.Strategy.CLUSTER_BEST, "0.")
+//            .setProperty(Jsprit.Strategy.RADIAL_REGRET, "0.")
+//            .setProperty(Jsprit.Strategy.RADIAL_BEST, "0.")
+//            .setProperty(Jsprit.Strategy.RANDOM_REGRET, "1.")
+//            .setProperty(Jsprit.Strategy.RANDOM_BEST, "0.")
+//            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
+//            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+            .buildAlgorithm();
+
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+        for(VehicleRoute route : solution.getRoutes()){
+            if(route.getTourActivities().servesJob(s1)){
+                if(!route.getTourActivities().servesJob(s2)){
+                    Assert.assertFalse(true);
+                }
+                else Assert.assertTrue(true);
+            }
+        }
+//        Assert.assertEquals(1, solution.getRoutes().size());
+    }
+
+    @Test
+    public void solutionWithConstraintAndWithFastRegretConcurrentMustBeCorrect() {
+        Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0,1).setLocation(Location.newInstance(0, 10)).build();
+        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0,1).setLocation(Location.newInstance(0, -10)).build();
+        Service s3 = Service.Builder.newInstance("s3").addSizeDimension(0,1).setLocation(Location.newInstance(0, -11)).build();
+        Service s4 = Service.Builder.newInstance("s4").addSizeDimension(0,1).setLocation(Location.newInstance(0, 11)).build();
+
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,2).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance(0, 10)).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance(0, -10)).build();
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addJob(s4)
+            .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+
+        final StateManager stateManager = new StateManager(vrp);
+        StateId job1Assigned = stateManager.createStateId("job1-assigned");
+        StateId job2Assigned = stateManager.createStateId("job2-assigned");
+        stateManager.addStateUpdater(new JobInRouteUpdater(stateManager,job1Assigned,job2Assigned));
+        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        constraintManager.addConstraint(new RouteConstraint(job1Assigned,job2Assigned,stateManager));
+        constraintManager.setDependencyType("s1", DependencyType.INTRA_ROUTE);
+        constraintManager.setDependencyType("s2", DependencyType.INTRA_ROUTE);
+
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .addCoreStateAndConstraintStuff(true)
+            .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+            .setProperty(Jsprit.Parameter.THREADS,"4")
+            .setStateAndConstraintManager(stateManager, constraintManager)
+            .buildAlgorithm();
+
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+        for(VehicleRoute route : solution.getRoutes()){
+            if(route.getTourActivities().servesJob(s1)){
+                if(!route.getTourActivities().servesJob(s2)){
+                    Assert.assertFalse(true);
+                }
+                else Assert.assertTrue(true);
+            }
+        }
     }
 
     @Test

@@ -436,6 +436,7 @@ public class Jsprit {
                     .build();
                 scorer = getRegretScorer(vrp);
                 regretInsertion.setScoringFunction(scorer);
+                regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
             }
             else {
@@ -461,6 +462,7 @@ public class Jsprit {
                     .build();
                 scorer = getRegretScorer(vrp);
                 regretInsertion.setScoringFunction(scorer);
+                regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
             }
             else{
