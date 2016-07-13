@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  * Insertion based on regret approach.
@@ -174,7 +173,6 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
             if(priorityQueues[unassignedJob.getIndex()] == null){
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
             }
-            final TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[unassignedJob.getIndex()];
             if(firstRun) {
                 makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                 updatedAllRoutes = true;
@@ -201,7 +199,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
             updates.put(lastModified,updateRound);
         }
         try {
-            List<Future<Boolean>> futures = executor.invokeAll(tasks);
+            executor.invokeAll(tasks);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);

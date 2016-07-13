@@ -175,7 +175,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
             else{
                 if(dependencyTypes == null || dependencyTypes[unassignedJob.getIndex()] == null){
                     InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, Arrays.asList(lastModified));
-                    for(VehicleRoute r : routes) updates.put(r,updateRound);
+                    updates.put(lastModified,updateRound);
                 }
                 else {
                     DependencyType dependencyType = dependencyTypes[unassignedJob.getIndex()];
