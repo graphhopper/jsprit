@@ -99,6 +99,10 @@ public interface TourActivity extends HasIndex {
      */
     public abstract double getArrTime();
 
+    public abstract double getReadyTime();
+
+    public abstract void setReadyTime(double readyTime);
+
     /**
      * Returns end-time of this activity.
      *
@@ -126,6 +130,11 @@ public interface TourActivity extends HasIndex {
      *
      * @return capacity
      */
+
+    public abstract void setSetupTime(double setupTime);
+
+    public abstract double getSetupTime();
+
     public abstract Capacity getSize();
 
     /**

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -32,6 +33,8 @@ final class AuxilliaryCostCalculator {
     private final VehicleRoutingTransportCosts routingCosts;
 
     private final VehicleRoutingActivityCosts activityCosts;
+
+    private SetupTime setupCosts = new SetupTime();
 
     public AuxilliaryCostCalculator(final VehicleRoutingTransportCosts routingCosts, final VehicleRoutingActivityCosts actCosts) {
         super();
@@ -63,10 +66,13 @@ final class AuxilliaryCostCalculator {
                     return cost;
                 }
             }
+            double setup_time_prevAct_act = setupCosts.getSetupTime(prevAct, act, vehicle);
+            double setupCost = setupCosts.getSetupCost(setup_time_prevAct_act, vehicle);
             double transportCost = routingCosts.getTransportCost(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             double transportTime = routingCosts.getTransportTime(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             cost += transportCost;
-            double actStartTime = departureTimePrevAct + transportTime;
+            cost += setupCost;
+            double actStartTime = departureTimePrevAct + transportTime + setup_time_prevAct_act;
             departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(act,actStartTime,driver,vehicle);
             cost += activityCosts.getActivityCost(act, actStartTime, driver, vehicle);
             prevAct = act;

@@ -94,8 +94,9 @@ public class TestInserter {
         when(service.getTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addService(service).build();
-        Service serviceToInsert = mock(Service.class);
-        when(serviceToInsert.getLocation()).thenReturn(Location.Builder.newInstance().setId("delLoc").build());
+        Service serviceToInsert = Service.Builder.newInstance("ik")
+        		.setLocation(Location.Builder.newInstance().setId("delLoc").build())
+        		.setSetupTime(0.0).build();
 
         InsertionData iData = mock(InsertionData.class);
         when(iData.getDeliveryInsertionIndex()).thenReturn(1);

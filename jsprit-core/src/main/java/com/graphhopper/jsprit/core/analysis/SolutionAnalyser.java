@@ -21,6 +21,7 @@ import com.graphhopper.jsprit.core.algorithm.VariablePlusFixedSolutionCostCalcul
 import com.graphhopper.jsprit.core.algorithm.state.*;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -222,6 +223,8 @@ public class SolutionAnalyser {
 
         private StateId too_late_id;
 
+        private StateId setup_time_id;
+
         private StateManager stateManager;
 
         private final VehicleRoutingActivityCosts activityCosts;
@@ -238,13 +241,20 @@ public class SolutionAnalyser {
 
         double sum_too_late = 0.;
 
+        double sum_setup_time = 0.;
+
+        TourActivity prevAct;
+
         double prevActDeparture;
 
-        private SumUpActivityTimes(StateId waiting_time_id, StateId transport_time_id, StateId service_time_id, StateId too_late_id, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy, VehicleRoutingActivityCosts activityCosts) {
+        private SetupTime setupCosts = new SetupTime();
+
+        private SumUpActivityTimes(StateId waiting_time_id, StateId transport_time_id, StateId service_time_id, StateId too_late_id, StateId setup_time_id, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy, VehicleRoutingActivityCosts activityCosts) {
             this.waiting_time_id = waiting_time_id;
             this.transport_time_id = transport_time_id;
             this.service_time_id = service_time_id;
             this.too_late_id = too_late_id;
+            this.setup_time_id = setup_time_id;
             this.stateManager = stateManager;
             this.activityPolicy = activityPolicy;
             this.activityCosts = activityCosts;
@@ -257,6 +267,8 @@ public class SolutionAnalyser {
             sum_transport_time = 0.;
             sum_service_time = 0.;
             sum_too_late = 0.;
+            sum_setup_time = 0.;
+            prevAct = route.getStart();
             prevActDeparture = route.getDepartureTime();
         }
 
@@ -265,31 +277,35 @@ public class SolutionAnalyser {
             //waiting time & toolate
             double waitAtAct = 0.;
             double tooLate = 0.;
+            double setupTime = setupCosts.getSetupTime(prevAct, activity, route.getVehicle());
             if (activityPolicy.equals(ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
-                waitAtAct = Math.max(0, activity.getTheoreticalEarliestOperationStartTime() - activity.getArrTime());
-                tooLate = Math.max(0, activity.getArrTime() - activity.getTheoreticalLatestOperationStartTime());
+                waitAtAct = Math.max(0, activity.getTheoreticalEarliestOperationStartTime() - activity.getReadyTime());
+                tooLate = Math.max(0, activity.getReadyTime() - activity.getTheoreticalLatestOperationStartTime());
             }
             sum_waiting_time += waitAtAct;
             sum_too_late += tooLate;
             //transport time
             double transportTime = activity.getArrTime() - prevActDeparture;
+
+            sum_setup_time += setupTime;
             sum_transport_time += transportTime;
             prevActDeparture = activity.getEndTime();
             //service time
-            sum_service_time += activityCosts.getActivityDuration(activity, activity.getArrTime(), route.getDriver(), route.getVehicle());
+            sum_service_time += activityCosts.getActivityDuration(activity, activity.getReadyTime(), route.getDriver(), route.getVehicle());
 
             stateManager.putActivityState(activity, transport_time_id, sum_transport_time);
-
+            prevAct = activity;
         }
 
         @Override
         public void finish() {
             sum_transport_time += route.getEnd().getArrTime() - prevActDeparture;
-            sum_too_late += Math.max(0, route.getEnd().getArrTime() - route.getEnd().getTheoreticalLatestOperationStartTime());
+            sum_too_late += Math.max(0, route.getEnd().getReadyTime() - route.getEnd().getTheoreticalLatestOperationStartTime());
             stateManager.putRouteState(route, transport_time_id, sum_transport_time);
             stateManager.putRouteState(route, waiting_time_id, sum_waiting_time);
             stateManager.putRouteState(route, service_time_id, sum_service_time);
             stateManager.putRouteState(route, too_late_id, sum_too_late);
+            stateManager.putRouteState(route, setup_time_id, sum_setup_time);
         }
     }
 
@@ -451,6 +467,8 @@ public class SolutionAnalyser {
 
     private StateId service_time_id;
 
+    private StateId setup_time_id;
+
     private StateId distance_id;
 
     private StateId too_late_id;
@@ -477,6 +495,7 @@ public class SolutionAnalyser {
     private Double waiting_time;
     private Double service_time;
     private Double operation_time;
+    private Double setup_time;
     private Double tw_violation;
     private Capacity cap_violation;
     private Double fixed_costs;
@@ -535,6 +554,7 @@ public class SolutionAnalyser {
         waiting_time_id = stateManager.createStateId("waiting-time");
         transport_time_id = stateManager.createStateId("transport-time");
         service_time_id = stateManager.createStateId("service-time");
+        setup_time_id = stateManager.createStateId("setup_time");
         distance_id = stateManager.createStateId("distance");
         too_late_id = stateManager.createStateId("too-late");
         shipment_id = stateManager.createStateId("shipment");
@@ -544,7 +564,7 @@ public class SolutionAnalyser {
         last_transport_distance_id = stateManager.createStateId("last-transport-distance");
         last_transport_time_id = stateManager.createStateId("last-transport-time");
 
-        stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id, too_late_id, stateManager, activityPolicy, vrp.getActivityCosts()));
+        stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id, too_late_id, setup_time_id, stateManager, activityPolicy, vrp.getActivityCosts()));
         stateManager.addStateUpdater(new DistanceUpdater(distance_id, stateManager, distanceCalculator));
         stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id, shipment_id, stateManager));
         stateManager.addStateUpdater(new SkillUpdater(stateManager, skill_id));
@@ -568,6 +588,7 @@ public class SolutionAnalyser {
             waiting_time += getWaitingTime(route);
             service_time += getServiceTime(route);
             operation_time += getOperationTime(route);
+            setup_time += getSetupTime(route);
             tw_violation += getTimeWindowViolation(route);
             cap_violation = Capacity.addup(cap_violation, getCapacityViolation(route));
             fixed_costs += getFixedCosts(route);
@@ -594,6 +615,7 @@ public class SolutionAnalyser {
         waiting_time = 0.;
         service_time = 0.;
         operation_time = 0.;
+        setup_time = 0.;
         tw_violation = 0.;
         cap_violation = Capacity.Builder.newInstance().build();
         fixed_costs = 0.;
@@ -789,7 +811,18 @@ public class SolutionAnalyser {
     public Double getTimeWindowViolationAtActivity(TourActivity activity, VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
         if (activity == null) throw new IllegalArgumentException("activity is missing.");
-        return Math.max(0, activity.getArrTime() - activity.getTheoreticalLatestOperationStartTime());
+        return Math.max(0, activity.getReadyTime() - activity.getTheoreticalLatestOperationStartTime());
+    }
+
+    /**
+     * @param activity to get the setup time from
+     * @param route    where activity needs to be part of
+     * @return time to setup the activity
+     */
+    public Double getSetupTimeAtActivity(TourActivity activity, VehicleRoute route) {
+        if (route == null) throw new IllegalArgumentException("route is missing.");
+        if (activity == null) throw new IllegalArgumentException("activity is missing.");
+        return Math.max(0, activity.getReadyTime() - activity.getArrTime()); 
     }
 
     /**
@@ -917,6 +950,11 @@ public class SolutionAnalyser {
         return stateManager.getRouteState(route, service_time_id, Double.class);
     }
 
+    public Double getSetupTime(VehicleRoute route) {
+        if (route == null) throw new IllegalArgumentException("route is missing.");
+        return stateManager.getRouteState(route, setup_time_id, Double.class);
+    }
+
     /**
      * @param route to get the transport costs from
      * @return total variable transport costs of route, i.e. sum of transport costs specified by
@@ -1014,7 +1052,7 @@ public class SolutionAnalyser {
         if (activity == null) throw new IllegalArgumentException("activity is missing.");
         double waitingTime = 0.;
         if (activityPolicy.equals(ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
-            waitingTime = Math.max(0, activity.getTheoreticalEarliestOperationStartTime() - activity.getArrTime());
+            waitingTime = Math.max(0, activity.getTheoreticalEarliestOperationStartTime() - activity.getReadyTime());
         }
         return waitingTime;
     }
@@ -1165,6 +1203,10 @@ public class SolutionAnalyser {
      */
     public Double getServiceTime() {
         return service_time;
+    }
+
+    public Double getSetupTime() {
+        return setup_time;
     }
 
     /**

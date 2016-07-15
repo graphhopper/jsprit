@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -55,6 +56,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
     private VehicleRoutingTransportCosts transportCosts;
 
     private VehicleRoutingActivityCosts activityCosts;
+
+    private SetupTime setupCosts = new SetupTime();
 
     private JobActivityFactory activityFactory;
 
@@ -161,10 +164,16 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                 double pickupAIC = calculate(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
 
                 TourActivity prevAct_deliveryLoop = pickupShipment;
-                double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
-                double shipmentPickupEndTime = Math.max(shipmentPickupArrTime, pickupShipment.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(pickupShipment, shipmentPickupArrTime, newDriver, newVehicle);
+
+                double shipmentPickupSetupTime = setupCosts.getSetupTime(prevAct, pickupShipment, newVehicle);
+                double transportTime_prevAct_pickupShipment = transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
+
+                double shipmentPickupArrTime = prevActEndTime + transportTime_prevAct_pickupShipment;
+                double shipmentPickupReadyTime = shipmentPickupArrTime + shipmentPickupSetupTime;
+                double shipmentPickupEndTime = Math.max(shipmentPickupReadyTime, pickupShipment.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(pickupShipment, shipmentPickupReadyTime, newDriver, newVehicle);
 
                 pickupContext.setArrivalTime(shipmentPickupArrTime);
+                pickupContext.setReadyTime(shipmentPickupReadyTime);
                 pickupContext.setEndTime(shipmentPickupEndTime);
                 pickupContext.setInsertionIndex(i);
                 insertionContext.setRelatedActivityContext(pickupContext);
@@ -213,8 +222,11 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                     }
                     if (deliveryInsertionNotFulfilledBreak) break;
                     //update prevAct and endTime
-                    double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
-                    prevActEndTime_deliveryLoop = Math.max(nextActArrTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct_deliveryLoop,nextActArrTime,newDriver,newVehicle);
+                    double setupTime_prevActdLoop_nextAct_dLoop = setupCosts.getSetupTime(prevAct_deliveryLoop, nextAct_deliveryLoop, newVehicle);
+                    double transportTime_prevActdLoop_nextActdLoop = transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
+                    double nextActArrTime = prevActEndTime_deliveryLoop + transportTime_prevActdLoop_nextActdLoop;
+                    double nextActReadyTime = nextActArrTime + setupTime_prevActdLoop_nextAct_dLoop;
+                    prevActEndTime_deliveryLoop = Math.max(nextActReadyTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct_deliveryLoop,nextActReadyTime,newDriver,newVehicle);
                     prevAct_deliveryLoop = nextAct_deliveryLoop;
                     j++;
                 }
@@ -223,8 +235,11 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                 break;
             }
             //update prevAct and endTime
-            double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);
-            prevActEndTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
+            double setupTime_prevAct_nextAct = setupCosts.getSetupTime(prevAct, nextAct, newVehicle);
+            double transportTime_prevAct_nextAct = transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);
+            double nextActArrTime = prevActEndTime + transportTime_prevAct_nextAct;
+            double nextActReadyTime = nextActArrTime + setupTime_prevAct_nextAct;
+            prevActEndTime = Math.max(nextActReadyTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActReadyTime,newDriver,newVehicle);
             prevAct = nextAct;
             i++;
         }

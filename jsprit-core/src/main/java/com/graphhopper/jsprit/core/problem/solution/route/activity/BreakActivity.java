@@ -28,7 +28,11 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
     public double arrTime;
 
+    public double readyTime;
+
     public double endTime;
+
+    public double setup = 0.0;
 
     private Location location;
 
@@ -86,12 +90,14 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         counter++;
         this.aBreak = (Break) breakActivity.getJob();
         this.arrTime = breakActivity.getArrTime();
+        this.readyTime = breakActivity.getReadyTime();
         this.endTime = breakActivity.getEndTime();
         this.location = breakActivity.getLocation();
         setIndex(breakActivity.getIndex());
         this.earliest = breakActivity.getTheoreticalEarliestOperationStartTime();
         this.latest = breakActivity.getTheoreticalLatestOperationStartTime();
         this.duration = breakActivity.getOperationTime();
+        this.setup = breakActivity.getSetupTime();
     }
 
 
@@ -163,7 +169,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         return "[type=" + getName() + "][location=" + getLocation()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override
@@ -189,6 +196,26 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     @Override
     public Capacity getSize() {
         return aBreak.getSize();
+    }
+
+	@Override
+	public void setSetupTime(double setup) {
+		this.setup = setup;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
+	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
     }
 
 

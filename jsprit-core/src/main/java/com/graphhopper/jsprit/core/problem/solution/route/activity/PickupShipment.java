@@ -30,22 +30,29 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
     private double arrTime;
 
+    public double readyTime;
+
     private double earliest = 0;
 
     private double latest = Double.MAX_VALUE;
 
+    private double setup = 0;
+
     public PickupShipment(Shipment shipment) {
         super();
         this.shipment = shipment;
+        this.setup = shipment.getPickupSetupTime();
     }
 
     private PickupShipment(PickupShipment pickupShipmentActivity) {
         this.shipment = (Shipment) pickupShipmentActivity.getJob();
         this.arrTime = pickupShipmentActivity.getArrTime();
+        this.readyTime = pickupShipmentActivity.getReadyTime();
         this.endTime = pickupShipmentActivity.getEndTime();
         setIndex(pickupShipmentActivity.getIndex());
         this.earliest = pickupShipmentActivity.getTheoreticalEarliestOperationStartTime();
         this.latest = pickupShipmentActivity.getTheoreticalLatestOperationStartTime();
+        this.setup = pickupShipmentActivity.getSetupTime();
     }
 
     @Override
@@ -61,6 +68,10 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.latest = latest;
+    }
+
+    public void setSetupTime(double setup) {
+    	this.setup = setup;
     }
 
     @Override
@@ -81,6 +92,10 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     @Override
     public double getTheoreticalLatestOperationStartTime() {
         return latest;
+    }
+
+    public double getSetupTime() {
+    	return setup;
     }
 
     @Override
@@ -117,12 +132,23 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override
     public Capacity getSize() {
         return shipment.getSize();
+    }
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
     }
 
 

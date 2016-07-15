@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -38,6 +39,8 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 
     private VehicleRoutingActivityCosts activityCosts;
 
+    private SetupTime setupCosts = new SetupTime();
+
     public VehicleDependentTimeWindowConstraints(RouteAndActivityStateGetter states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.states = states;
@@ -48,20 +51,23 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         double latestVehicleArrival = iFacts.getNewVehicle().getLatestArrival();
-        Double latestArrTimeAtNextAct;
+        double setup_time_nextActLocation = 0.0;
+        Double latestReadyTimeAtNextAct;
         Location nextActLocation;
         if (nextAct instanceof End) {
-            latestArrTimeAtNextAct = latestVehicleArrival;
+            latestReadyTimeAtNextAct = latestVehicleArrival;
             nextActLocation = iFacts.getNewVehicle().getEndLocation();
             if (!iFacts.getNewVehicle().isReturnToDepot()) {
                 nextActLocation = newAct.getLocation();
             }
         } else {
-            latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getNewVehicle(), InternalStates.LATEST_OPERATION_START_TIME, Double.class);
-            if (latestArrTimeAtNextAct == null) {//otherwise set it to theoretical_latest_operation_startTime
-                latestArrTimeAtNextAct = nextAct.getTheoreticalLatestOperationStartTime();
+            latestReadyTimeAtNextAct = states.getActivityState(nextAct, iFacts.getNewVehicle(), InternalStates.LATEST_OPERATION_START_TIME, Double.class);
+            if (latestReadyTimeAtNextAct == null) {//otherwise set it to theoretical_latest_operation_startTime
+                latestReadyTimeAtNextAct = nextAct.getTheoreticalLatestOperationStartTime();
             }
+            
             nextActLocation = nextAct.getLocation();
+            setup_time_nextActLocation = setupCosts.getSetupTime(nextAct, iFacts.getNewVehicle());
         }
 
 			/*
@@ -94,8 +100,13 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 			 *                                          |- earliest arrival of vehicle
 			 *                       |--- nextAct ---|
 			 */
-        double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), nextActLocation, prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        if (arrTimeAtNextOnDirectRouteWithNewVehicle > latestArrTimeAtNextAct) {
+        double transportTime_prevAct_nextActLocation = routingCosts.getTransportTime(prevAct.getLocation(), nextActLocation, prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double setupTime_prevAct_nextActLocation = 0.;
+        if(!prevAct.getLocation().equals(nextActLocation))
+            setupTime_prevAct_nextActLocation = setup_time_nextActLocation;
+        double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + transportTime_prevAct_nextActLocation;
+        double readyTimeAtNextOnDirectRouteWithVehicle = arrTimeAtNextOnDirectRouteWithNewVehicle + setupTime_prevAct_nextActLocation;
+        if (readyTimeAtNextOnDirectRouteWithVehicle > latestReadyTimeAtNextAct) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
 
@@ -107,13 +118,19 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             return ConstraintsStatus.NOT_FULFILLED;
         }
         //			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
-        double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double endTimeAtNewAct = Math.max(arrTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, arrTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
-        double latestArrTimeAtNewAct =
+        double setup_time_prevAct_newAct = setupCosts.getSetupTime(prevAct, newAct, iFacts.getNewVehicle());
+        double transportTime_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double arrTimeAtNewAct = prevActDepTime + transportTime_prevAct_newAct;
+        double readyTimeAtNewAct = arrTimeAtNewAct + setup_time_prevAct_newAct;
+        double endTimeAtNewAct = Math.max(readyTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,readyTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double setup_time_newAct_nextActLocation = 0.0;
+        if(newAct.getLocation() != null && !newAct.getLocation().equals(nextActLocation))
+            setup_time_newAct_nextActLocation = setup_time_nextActLocation;
+        double latestReadyTimeAtNewAct =
             Math.min(newAct.getTheoreticalLatestOperationStartTime(),
-                latestArrTimeAtNextAct -
-                    routingCosts.getBackwardTransportTime(newAct.getLocation(), nextActLocation, latestArrTimeAtNextAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
-                    - activityCosts.getActivityDuration(newAct, arrTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
+                latestReadyTimeAtNextAct - setup_time_newAct_nextActLocation -
+                    routingCosts.getBackwardTransportTime(newAct.getLocation(), nextActLocation, latestReadyTimeAtNextAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
+                    - activityCosts.getActivityDuration(newAct, readyTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
             );
 
 			/*
@@ -121,7 +138,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 			 *                       		                 |--- vehicle's arrival @newAct
 			 *        latest arrival of vehicle @newAct ---|
 			 */
-        if (arrTimeAtNewAct > latestArrTimeAtNewAct) {
+        if (readyTimeAtNewAct > latestReadyTimeAtNewAct) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
 
@@ -131,15 +148,16 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             }
         }
 //			log.info(newAct + " arrTime=" + arrTimeAtNewAct);
-
-        double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocation(), nextActLocation, endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double transportTime_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocation(), nextActLocation, endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double arrTimeAtNextAct = endTimeAtNewAct + transportTime_newAct_nextAct;
+        double readyTimeAtNextAct = arrTimeAtNextAct + setup_time_newAct_nextActLocation;
 
 			/*
              *  |--- newAct ---|
 			 *                       		                 |--- vehicle's arrival @nextAct
 			 *        latest arrival of vehicle @nextAct ---|
 			 */
-        if (arrTimeAtNextAct > latestArrTimeAtNextAct) {
+        if (readyTimeAtNextAct > latestReadyTimeAtNextAct) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
         return ConstraintsStatus.FULFILLED;

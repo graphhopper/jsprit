@@ -14,6 +14,7 @@ import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -299,6 +300,8 @@ public class Jsprit {
     private Properties properties;
 
     private Random random;
+
+    private SetupTime setupCosts = new SetupTime();
 
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
@@ -634,8 +637,10 @@ public class Jsprit {
                     TourActivity prevAct = route.getStart();
                     for (TourActivity act : route.getActivities()) {
                         if (act instanceof BreakActivity) hasBreak = true;
+                        double actReadyTime = act.getReadyTime();
+                        costs += setupCosts.getSetupCost(prevAct, act, route.getVehicle());
                         costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
-                        costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
+                        costs += vrp.getActivityCosts().getActivityCost(act, actReadyTime, route.getDriver(), route.getVehicle());
                         prevAct = act;
                     }
                     costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());

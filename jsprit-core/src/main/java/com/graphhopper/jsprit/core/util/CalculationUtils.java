@@ -32,7 +32,7 @@ public class CalculationUtils {
      * @return
      */
     @Deprecated
-    public static double getActivityEndTime(double actArrTime, TourActivity act){
-		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
+    public static double getActivityEndTime(double actReadyTime, TourActivity act){
+		return Math.max(actReadyTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
     }
 }

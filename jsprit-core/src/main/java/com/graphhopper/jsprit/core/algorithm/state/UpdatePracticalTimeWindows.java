@@ -16,6 +16,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.algorithm.state;
 
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -37,7 +38,9 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
 
     private VehicleRoutingActivityCosts activityCosts;
 
-    private double latestArrTimeAtPrevAct;
+    private SetupTime setupCosts = new SetupTime();
+
+    private double latestReadyTimeAtPrevAct;
 
     private TourActivity prevAct;
 
@@ -51,18 +54,20 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
     @Override
     public void begin(VehicleRoute route) {
         this.route = route;
-        latestArrTimeAtPrevAct = route.getEnd().getTheoreticalLatestOperationStartTime();
+        latestReadyTimeAtPrevAct = route.getEnd().getTheoreticalLatestOperationStartTime();
         prevAct = route.getEnd();
     }
 
     @Override
     public void visit(TourActivity activity) {
-        double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle()) - activityCosts.getActivityDuration(activity,latestArrTimeAtPrevAct,route.getDriver(),route.getVehicle());
-        double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
+        double setup_time_activity_prevAct = setupCosts.getSetupTime(activity, prevAct, route.getVehicle());
+        double transport_time_activity_prevAct = transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestReadyTimeAtPrevAct, route.getDriver(), route.getVehicle());
+        double potentialLatestReadyTimeAtCurrAct = latestReadyTimeAtPrevAct - setup_time_activity_prevAct - transport_time_activity_prevAct - activityCosts.getActivityDuration(activity,latestReadyTimeAtPrevAct,route.getDriver(),route.getVehicle());
+        double latestReadyTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestReadyTimeAtCurrAct);
 
-        states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
+        states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestReadyTime);
 
-        latestArrTimeAtPrevAct = latestArrivalTime;
+        latestReadyTimeAtPrevAct = latestReadyTime;
         prevAct = activity;
     }
 

@@ -25,11 +25,15 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     public double arrTime;
 
+    public double readyTime;
+
     public double endTime;
 
     private double theoreticalEarliest;
 
     private double theoreticalLatest;
+
+    private double setup;
 
     /**
      * @return the arrTime
@@ -77,10 +81,12 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     protected ServiceActivity(ServiceActivity serviceActivity) {
         this.service = serviceActivity.getJob();
         this.arrTime = serviceActivity.getArrTime();
+        this.readyTime = serviceActivity.getReadyTime();
         this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());
         this.theoreticalEarliest = serviceActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = serviceActivity.getTheoreticalLatestOperationStartTime();
+        this.setup = serviceActivity.getSetupTime();
     }
 
 
@@ -155,7 +161,8 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override
@@ -171,6 +178,26 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     @Override
     public Capacity getSize() {
         return service.getSize();
+    }
+
+	@Override
+	public void setSetupTime(double setup) {
+		this.setup = setup;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
+	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
     }
 
 

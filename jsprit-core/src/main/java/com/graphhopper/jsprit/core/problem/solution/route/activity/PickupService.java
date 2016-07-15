@@ -28,28 +28,36 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private double arrTime;
 
+    public double readyTime;
+
     private double depTime;
 
     private double theoreticalEarliest = 0;
 
     private double theoreticalLatest = Double.MAX_VALUE;
 
+    private double setup;
+
     public PickupService(Pickup pickup) {
         super();
         this.pickup = pickup;
+        this.setup = pickup.getSetupDuration();
     }
 
     public PickupService(Service service) {
         this.pickup = service;
+        this.setup = service.getSetupDuration();
     }
 
     private PickupService(PickupService pickupActivity) {
         this.pickup = pickupActivity.getJob();
         this.arrTime = pickupActivity.getArrTime();
+        this.readyTime = pickupActivity.getReadyTime();
         this.depTime = pickupActivity.getEndTime();
         setIndex(pickupActivity.getIndex());
         this.theoreticalEarliest = pickupActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = pickupActivity.getTheoreticalLatestOperationStartTime();
+        this.setup = pickupActivity.getSetupTime();
     }
 
     @Override
@@ -121,12 +129,33 @@ public final class PickupService extends AbstractActivity implements PickupActiv
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override
     public Capacity getSize() {
         return pickup.getSize();
+    }
+
+	@Override
+	public void setSetupTime(double setup) {
+		this.setup = setup;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
+	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
     }
 
 }

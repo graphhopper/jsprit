@@ -59,6 +59,7 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
     public void begin(VehicleRoute route) {
         timeTracker.begin(route);
         this.route = route;
+        route.getStart().setReadyTime(timeTracker.getActReadyTime());
         route.getStart().setEndTime(timeTracker.getActEndTime());
     }
 
@@ -66,6 +67,7 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
     public void visit(TourActivity activity) {
         timeTracker.visit(activity);
         activity.setArrTime(timeTracker.getActArrTime());
+        activity.setReadyTime(timeTracker.getActReadyTime());
         activity.setEndTime(timeTracker.getActEndTime());
     }
 
@@ -73,6 +75,7 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
     public void finish() {
         timeTracker.finish();
         route.getEnd().setArrTime(timeTracker.getActArrTime());
+        route.getEnd().setReadyTime(timeTracker.getActReadyTime());
     }
 
 }

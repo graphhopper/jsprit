@@ -206,9 +206,12 @@ public class VrpXMLReader {
                 String type = actConfig.getString("[@type]");
                 if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
                 double arrTime = 0.;
+                double readyTime = 0.;
                 double endTime = 0.;
                 String arrTimeS = actConfig.getString("arrTime");
                 if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
+                String readyTimeS = actConfig.getString("readyTime");
+                if (readyTimeS != null) readyTime = Double.parseDouble(readyTimeS);
                 String endTimeS = actConfig.getString("endTime");
                 if (endTimeS != null) endTime = Double.parseDouble(endTimeS);
 
@@ -278,8 +281,11 @@ public class VrpXMLReader {
                     if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
                     double arrTime = 0.;
                     double endTime = 0.;
+                    double readyTime = 0.;
                     String arrTimeS = actConfig.getString("arrTime");
                     if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
+                    String readyTimeS = actConfig.getString("readyTime");
+                    if (readyTimeS != null) readyTime = Double.parseDouble(readyTimeS);
                     String endTimeS = actConfig.getString("endTime");
                     if (endTimeS != null) endTime = Double.parseDouble(endTimeS);
                     if(type.equals("break")) {
@@ -403,6 +409,10 @@ public class VrpXMLReader {
             //pickup-serviceTime
             String pickupServiceTime = shipmentConfig.getString("pickup.duration");
             if (pickupServiceTime != null) builder.setPickupServiceTime(Double.parseDouble(pickupServiceTime));
+            
+            //pickup-setupTime
+            String pickupSetupTime = shipmentConfig.getString("pickup.setupDuration");
+            if (pickupSetupTime != null) builder.setPickupSetupTime(Double.parseDouble(pickupSetupTime));
 
             //pickup-tw
             List<HierarchicalConfiguration> pickupTWConfigs = shipmentConfig.configurationsAt("pickup.timeWindows.timeWindow");
@@ -437,6 +447,10 @@ public class VrpXMLReader {
             //delivery-serviceTime
             String deliveryServiceTime = shipmentConfig.getString("delivery.duration");
             if (deliveryServiceTime != null) builder.setDeliveryServiceTime(Double.parseDouble(deliveryServiceTime));
+            
+            //pickup-setupTime
+            String deliverySetupTime = shipmentConfig.getString("delivery.setupDuration");
+            if (deliverySetupTime != null) builder.setDeliverySetupTime(Double.parseDouble(deliverySetupTime));
 
             //delivery-tw
             List<HierarchicalConfiguration> deliveryTWConfigs = shipmentConfig.configurationsAt("delivery.timeWindows.timeWindow");
@@ -526,6 +540,9 @@ public class VrpXMLReader {
             if (serviceConfig.containsKey("duration")) {
                 builder.setServiceTime(serviceConfig.getDouble("duration"));
             }
+            if (serviceConfig.containsKey("setupDuration")) {
+                builder.setSetupTime(serviceConfig.getDouble("setupDuration"));
+            }
             List<HierarchicalConfiguration> deliveryTWConfigs = serviceConfig.configurationsAt("timeWindows.timeWindow");
             if (!deliveryTWConfigs.isEmpty()) {
                 for (HierarchicalConfiguration twConfig : deliveryTWConfigs) {
@@ -583,6 +600,7 @@ public class VrpXMLReader {
             Double fix = typeConfig.getDouble("costs.fixed");
             Double timeC = typeConfig.getDouble("costs.time");
             Double distC = typeConfig.getDouble("costs.distance");
+            
             if(typeConfig.containsKey("costs.service")){
                 Double serviceC = typeConfig.getDouble("costs.service");
                 if (serviceC != null) typeBuilder.setCostPerServiceTime(serviceC);
@@ -591,6 +609,11 @@ public class VrpXMLReader {
             if(typeConfig.containsKey("costs.wait")){
                 Double waitC = typeConfig.getDouble("costs.wait");
                 if (waitC != null) typeBuilder.setCostPerWaitingTime(waitC);
+            }
+
+            if(typeConfig.containsKey("costs.setup")) {
+                Double setupC = typeConfig.getDouble("costs.setup");
+                if (setupC != null) typeBuilder.setCostPerSetupTime(setupC);
             }
 
             if (fix != null) typeBuilder.setFixedCost(fix);
@@ -681,6 +704,10 @@ public class VrpXMLReader {
             String end = vehicleConfig.getString("timeSchedule.end");
             if (start != null) builder.setEarliestStart(Double.parseDouble(start));
             if (end != null) builder.setLatestArrival(Double.parseDouble(end));
+
+            //read setupCoef
+            String setupCoef = vehicleConfig.getString("setupCoef");
+            if(setupCoef != null) builder.setCoefSetupTime(Double.parseDouble(setupCoef));
 
             //read return2depot
             String returnToDepot = vehicleConfig.getString("returnToDepot");

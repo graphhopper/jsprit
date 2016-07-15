@@ -17,9 +17,11 @@
 package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.problem.cost.ForwardTransportTime;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 public class ActivityTimeTracker implements ActivityVisitor {
@@ -34,6 +36,8 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     private final VehicleRoutingActivityCosts activityCosts;
 
+    private SetupTime setupCosts = new SetupTime();
+
     private TourActivity prevAct = null;
 
     private double startAtPrevAct;
@@ -43,6 +47,8 @@ public class ActivityTimeTracker implements ActivityVisitor {
     private boolean beginFirst = false;
 
     private double actArrTime;
+
+    private double actReadyTime;
 
     private double actEndTime;
 
@@ -65,6 +71,10 @@ public class ActivityTimeTracker implements ActivityVisitor {
         return actArrTime;
     }
 
+    public double getActReadyTime() {
+        return actReadyTime;
+    }
+
     public double getActEndTime() {
         return actEndTime;
     }
@@ -73,6 +83,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
     public void begin(VehicleRoute route) {
         prevAct = route.getStart();
         startAtPrevAct = prevAct.getEndTime();
+        actReadyTime = startAtPrevAct;
         actEndTime = startAtPrevAct;
         this.route = route;
         beginFirst = true;
@@ -81,19 +92,22 @@ public class ActivityTimeTracker implements ActivityVisitor {
     @Override
     public void visit(TourActivity activity) {
         if (!beginFirst) throw new IllegalStateException("never called begin. this however is essential here");
+        double setup_time_prevAct_activity = setupCosts.getSetupTime(prevAct, activity, route.getVehicle());
+        
         double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
+    
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
-
         actArrTime = arrivalTimeAtCurrAct;
+        actReadyTime = arrivalTimeAtCurrAct + setup_time_prevAct_activity;
         double operationStartTime;
 
         if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
-            operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), arrivalTimeAtCurrAct);
+            operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), actReadyTime);
         } else if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_ARRIVED)) {
-            operationStartTime = actArrTime;
-        } else operationStartTime = actArrTime;
+            operationStartTime = actReadyTime;
+        } else operationStartTime = actReadyTime;
 
-        double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,actArrTime,route.getDriver(),route.getVehicle());
+        double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,actReadyTime,route.getDriver(),route.getVehicle());
 
         actEndTime = operationEndTime;
 
@@ -108,6 +122,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
 
         actArrTime = arrivalTimeAtCurrAct;
+        actReadyTime = arrivalTimeAtCurrAct;
         actEndTime = arrivalTimeAtCurrAct;
 
         beginFirst = false;

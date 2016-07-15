@@ -53,7 +53,7 @@ public class UpdateFutureWaitingTimes implements ReverseActivityVisitor, StateUp
     public void visit(TourActivity activity) {
         states.putInternalTypedActivityState(activity, route.getVehicle(), InternalStates.FUTURE_WAITING, futureWaiting);
 		if(!(activity instanceof BreakActivity)) {
-            futureWaiting += Math.max(activity.getTheoreticalEarliestOperationStartTime() - activity.getArrTime(), 0);
+            futureWaiting += Math.max(activity.getTheoreticalEarliestOperationStartTime() - activity.getReadyTime(), 0);
 		}
     }
 
