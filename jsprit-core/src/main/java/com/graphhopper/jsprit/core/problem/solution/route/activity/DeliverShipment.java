@@ -36,6 +36,8 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
     private double latest = Double.MAX_VALUE;
 
+    private double routeDistance;
+
     public DeliverShipment(Shipment shipment) {
         super();
         this.shipment = shipment;
@@ -128,4 +130,16 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     public Capacity getSize() {
         return capacity;
     }
+
+    @Override
+    public double getRouteDistance() {
+        return routeDistance;
+    }
+
+    @Override
+    public void setRouteDistance(double routeDistance) {
+        this.routeDistance = routeDistance;
+    }
+
+
 }

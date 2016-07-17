@@ -42,6 +42,8 @@ public final class End extends AbstractActivity implements TourActivity {
 
     private double arrTime;
 
+    private double routeDistance;
+
     private Location location;
 
     public void setTheoreticalEarliestOperationStartTime(double theoreticalEarliestOperationStartTime) {
@@ -143,5 +145,16 @@ public final class End extends AbstractActivity implements TourActivity {
     public Capacity getSize() {
         return capacity;
     }
+
+    @Override
+    public double getRouteDistance() {
+        return routeDistance;
+    }
+
+    @Override
+    public void setRouteDistance(double routeDistance) {
+        this.routeDistance = routeDistance;
+    }
+
 
 }

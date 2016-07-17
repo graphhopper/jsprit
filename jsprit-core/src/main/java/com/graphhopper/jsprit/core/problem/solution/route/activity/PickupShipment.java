@@ -34,6 +34,8 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
     private double latest = Double.MAX_VALUE;
 
+    private double routeDistance;
+
     public PickupShipment(Shipment shipment) {
         super();
         this.shipment = shipment;
@@ -123,6 +125,16 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     @Override
     public Capacity getSize() {
         return shipment.getSize();
+    }
+
+    @Override
+    public double getRouteDistance() {
+        return routeDistance;
+    }
+
+    @Override
+    public void setRouteDistance(double routeDistance) {
+        this.routeDistance = routeDistance;
     }
 
 

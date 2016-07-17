@@ -114,6 +114,7 @@
                 <serviceId>1</serviceId>
             </act>
             <end/>
+            <distance/>
         </route>
 
         <route>
@@ -127,6 +128,7 @@
                 <shipmentId>3</shipmentId>
             </act>
             <end/>
+            <distance/>
         </route>
     </initialRoutes>
 </problem>

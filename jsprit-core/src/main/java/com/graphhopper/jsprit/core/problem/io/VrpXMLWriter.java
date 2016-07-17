@@ -179,6 +179,7 @@ public class VrpXMLWriter {
                 actCounter++;
             }
             xmlConfig.setProperty(path + "(" + routeCounter + ").end", route.getEnd().getArrTime());
+            xmlConfig.setProperty(path + "(" + routeCounter + ").distance", route.getEnd().getRouteDistance());
             routeCounter++;
         }
 
@@ -190,6 +191,8 @@ public class VrpXMLWriter {
         int counter = 0;
         for (VehicleRoutingProblemSolution solution : solutions) {
             xmlConfig.setProperty(solutionPath + "(" + counter + ").cost", solution.getCost());
+            xmlConfig.setProperty(solutionPath + "(" + counter + ").distance", solution.getDistance());
+            xmlConfig.setProperty(solutionPath + "(" + counter + ").time", solution.getTime());
             int routeCounter = 0;
             List<VehicleRoute> list = new ArrayList<VehicleRoute>(solution.getRoutes());
             Collections.sort(list , new VehicleIndexComparator());
@@ -218,6 +221,7 @@ public class VrpXMLWriter {
                     actCounter++;
                 }
                 xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").end", route.getEnd().getArrTime());
+                xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").distance", route.getEnd().getRouteDistance());
                 routeCounter++;
             }
             int unassignedJobCounter = 0;

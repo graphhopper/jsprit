@@ -256,6 +256,7 @@
                     <endTime>0.0</endTime>
                </act>
                <end>0.0</end>
+               <distance>0.0</distance>
           </route>
      </initialRoutes>
 </problem>

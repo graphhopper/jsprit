@@ -30,6 +30,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
     public double endTime;
 
+    private double routeDistance;
+
     private Location location;
 
     private double duration;
@@ -189,6 +191,16 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     @Override
     public Capacity getSize() {
         return aBreak.getSize();
+    }
+
+    @Override
+    public double getRouteDistance() {
+        return routeDistance;
+    }
+
+    @Override
+    public void setRouteDistance(double routeDistance) {
+        this.routeDistance = routeDistance;
     }
 
 
