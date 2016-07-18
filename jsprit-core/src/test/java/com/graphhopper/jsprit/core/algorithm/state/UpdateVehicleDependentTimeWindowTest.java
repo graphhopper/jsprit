@@ -15,7 +15,9 @@ import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.CostFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -218,6 +220,34 @@ public class UpdateVehicleDependentTimeWindowTest {
 
         assertEquals(80.,stateManager.getActivityState(route.getActivities().get(1),vehicle,
                 InternalStates.LATEST_OPERATION_START_TIME, Double.class),0.01);
+    }
+
+    @Test
+    public void updateOfOpenRoutesShouldBeDoneCorrectly(){
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v")
+            .setReturnToDepot(false)
+            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build())
+            .setLatestArrival(51)
+            .build();
+
+        Service service = Service.Builder.newInstance("s")
+            .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(50, 0)).build()).build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+            .addJob(service).addVehicle(vehicle).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+            .build();
+
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle)
+            .setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).build();
+
+        stateManager = new StateManager(vrp);
+        UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts());
+        stateManager.addStateUpdater(updater);
+        stateManager.reCalculateStates(route);
+
+        Double activityState = stateManager.getActivityState(route.getActivities().get(0),route.getVehicle(), InternalStates.LATEST_OPERATION_START_TIME, Double.class);
+        Assert.assertEquals(51d, activityState, 0.01);
+
     }
 
 
