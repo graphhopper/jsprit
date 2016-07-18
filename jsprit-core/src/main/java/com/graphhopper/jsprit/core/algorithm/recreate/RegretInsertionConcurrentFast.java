@@ -174,20 +174,20 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
             }
             if(firstRun) {
-                makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                 updatedAllRoutes = true;
+                makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
             }
             else{
                 if(dependencyTypes == null || dependencyTypes[unassignedJob.getIndex()] == null){
-                    makeCallables(tasks, false, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                    makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                 }
                 else {
                     DependencyType dependencyType = dependencyTypes[unassignedJob.getIndex()];
                     if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
-                        makeCallables(tasks, false, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                         updatedAllRoutes = true;
+                        makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                     } else {
-                        makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                        makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                     }
                 }
             }
