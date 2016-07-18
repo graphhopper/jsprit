@@ -566,7 +566,7 @@ public class VehicleRoutingAlgorithms {
             activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_ARRIVED;
         }
         stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), activityPolicy, vrp.getActivityCosts()));
-        stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager, activityPolicy));
+        stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), stateManager, activityPolicy));
 
         final SolutionCostCalculator costCalculator;
         if (solutionCostCalculator == null) costCalculator = getDefaultCostCalculator(stateManager);

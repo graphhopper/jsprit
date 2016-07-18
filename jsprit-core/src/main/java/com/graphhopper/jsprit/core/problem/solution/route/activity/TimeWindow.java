@@ -35,9 +35,25 @@ public class TimeWindow {
     public static TimeWindow newInstance(double start, double end) {
         return new TimeWindow(start, end);
     }
+    
+    /**
+     * Returns new instance of TimeWindow with soft bounds.
+     *
+     * @param hardStart
+     * @param softStart
+     * @param softEnd
+     * @param hardEnd
+     * @return TimeWindow
+     * @throw IllegalArgumentException either if start or end < 0.0 or hardEnd < softEnd < softStart < hardStart
+     */
+    public static TimeWindow newInstance(double hardStart, double softStart, double softEnd, double hardEnd) {
+    	return new TimeWindow(hardStart, softStart, softEnd, hardEnd);
+    }
 
-    private final double start;
-    private final double end;
+    private final double hardStart;
+    private final double hardEnd;
+    private final double softStart;
+    private final double softEnd;
 
     /**
      * Constructs the timeWindow
@@ -52,8 +68,22 @@ public class TimeWindow {
             throw new IllegalArgumentException("neither time window start nor end must be < 0.0: " + "[start=" + start + "][end=" + end + "]");
         if (end < start)
             throw new IllegalArgumentException("time window end cannot be smaller than its start: " + "[start=" + start + "][end=" + end + "]");
-        this.start = start;
-        this.end = end;
+        this.hardStart = start;
+        this.hardEnd = end;
+        this.softStart = start;
+        this.softEnd = end;
+    }
+    
+    public TimeWindow(double hardStart, double softStart, double softEnd, double hardEnd) {
+        super();
+        if (hardStart < 0.0 || hardEnd < 0.0 || softStart < 0.0 || softEnd < 0.0)
+            throw new IllegalArgumentException("neither time window start nor end must be < 0.0: " + "[start=" + hardStart + "][softStart=" + softStart + "][softEnd=" + softEnd +"[end=" + hardEnd + "]");
+        if (hardEnd < hardStart || softStart < hardStart || softEnd < softStart || hardEnd < softEnd)
+            throw new IllegalArgumentException("time window end cannot be smaller than its start: " + "[start=" + hardStart + "][softStart=" + softStart + "][softEnd=" + softEnd +"[end=" + hardEnd + "]");
+        this.hardStart = hardStart;
+        this.hardEnd = hardEnd;
+        this.softStart = softStart;
+        this.softEnd = softEnd;
     }
 
     /**
@@ -62,7 +92,7 @@ public class TimeWindow {
      * @return startTime
      */
     public double getStart() {
-        return start;
+        return hardStart;
     }
 
     /**
@@ -71,12 +101,30 @@ public class TimeWindow {
      * @return endTime
      */
     public double getEnd() {
-        return end;
+        return hardEnd;
+    }
+
+    public double getHardStart() {
+        return hardStart;
+    }
+
+    public double getHardEnd() {
+        return hardEnd;
+    }
+
+    public double getSoftStart() {
+        return softStart;
+    }
+
+    public double getSoftEnd() {
+        return softEnd;
     }
 
     @Override
     public String toString() {
-        return "[start=" + start + "][end=" + end + "]";
+        if(hardStart!= softStart || softEnd != hardEnd)
+    	    return "[start=" + hardStart + "][softStart=" + softStart + "][softEnd=" + softEnd +"[end=" + hardEnd + "]";
+        return "[start=" + hardStart + "][end=" + hardEnd + "]";
     }
 
     @Override
@@ -84,13 +132,22 @@ public class TimeWindow {
         final int prime = 31;
         int result = 1;
         long temp;
-        temp = Double.doubleToLongBits(end);
+        temp = Double.doubleToLongBits(hardEnd);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(start);
+        temp = Double.doubleToLongBits(hardStart);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(softStart);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(softEnd);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
+    public boolean hasSoftBound() {
+        if ( hardStart != softStart || softEnd != hardEnd)
+    	    return true;
+        return false;
+    }
     /**
      * Two timeWindows are equal if they have the same start AND endTime.
      */
@@ -103,10 +160,16 @@ public class TimeWindow {
         if (getClass() != obj.getClass())
             return false;
         TimeWindow other = (TimeWindow) obj;
-        if (Double.doubleToLongBits(end) != Double.doubleToLongBits(other.end))
+        if (Double.doubleToLongBits(hardEnd) != Double.doubleToLongBits(other.hardEnd))
             return false;
-        if (Double.doubleToLongBits(start) != Double
-            .doubleToLongBits(other.start))
+        if (Double.doubleToLongBits(hardStart) != Double
+            .doubleToLongBits(other.hardStart))
+            return false;
+        if (Double.doubleToLongBits(softStart) != Double
+            .doubleToLongBits(other.softStart))
+            return false;
+        if (Double.doubleToLongBits(softEnd) != Double
+            .doubleToLongBits(other.softEnd))
             return false;
         return true;
     }

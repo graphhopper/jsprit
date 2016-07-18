@@ -20,6 +20,7 @@ import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -57,6 +58,8 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
     private SoftActivityConstraint softActivityConstraint;
 
     private VehicleRoutingTransportCosts transportCosts;
+    
+    private SoftTimeWindowCost softCosts;
 
     private final VehicleRoutingActivityCosts activityCosts;
 
@@ -66,16 +69,17 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public BreakInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
+    public BreakInsertionCalculator(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.transportCosts = routingCosts;
+        this.softCosts = softCosts;
         this.activityCosts = activityCosts;
         hardRouteLevelConstraint = constraintManager;
         hardActivityLevelConstraint = constraintManager;
         softActivityConstraint = constraintManager;
         softRouteConstraint = constraintManager;
         this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
-        additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
+        additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts, softCosts);
         logger.debug("initialise " + this);
     }
 
@@ -146,8 +150,10 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
             List<Location> locations = Arrays.asList(prevAct.getLocation(), nextAct.getLocation());
             for (Location location : locations) {
                 breakAct2Insert.setLocation(location);
-                breakAct2Insert.setTheoreticalEarliestOperationStartTime(breakToInsert.getTimeWindow().getStart());
-                breakAct2Insert.setTheoreticalLatestOperationStartTime(breakToInsert.getTimeWindow().getEnd());
+                breakAct2Insert.setTheoreticalEarliestOperationStartTime(breakToInsert.getTimeWindow().getHardStart());
+                breakAct2Insert.setSoftEarliestoperationStartTime(breakToInsert.getTimeWindow().getSoftStart());
+                breakAct2Insert.setSoftLatestOperationStartTime(breakToInsert.getTimeWindow().getSoftEnd());
+                breakAct2Insert.setTheoreticalLatestOperationStartTime(breakToInsert.getTimeWindow().getHardEnd());
                 ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
                     //from job2insert induced costs at activity level

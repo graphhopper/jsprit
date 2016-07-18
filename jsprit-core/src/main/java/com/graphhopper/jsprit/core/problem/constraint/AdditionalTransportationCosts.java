@@ -16,6 +16,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.problem.constraint;
 
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -33,6 +34,8 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
 
     private VehicleRoutingActivityCosts activityCosts;
 
+    private SoftTimeWindowCost softCosts;
+
     /**
      * Constructs the calculator that calculates additional transportation costs induced by inserting new activity.
      * <p>
@@ -42,10 +45,11 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
      * @param routingCosts
      * @param activityCosts
      */
-    public AdditionalTransportationCosts(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
+    public AdditionalTransportationCosts(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.routingCosts = routingCosts;
         this.activityCosts = activityCosts;
+        this.softCosts = softCosts;
     }
 
     /**
@@ -70,7 +74,8 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
         }
 
         double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct;
+        double soft_cost_newAct = softCosts.getSoftTimeWindowCost(iFacts.getRoute(), prevAct, newAct, nextAct, depTimeAtPrevAct);
+        double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct + soft_cost_newAct;
 
         double oldCosts;
         if (iFacts.getRoute().isEmpty()) {

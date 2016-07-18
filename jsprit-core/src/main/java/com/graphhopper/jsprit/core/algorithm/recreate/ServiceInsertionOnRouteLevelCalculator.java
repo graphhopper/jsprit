@@ -22,6 +22,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -57,6 +58,8 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
 
     private JobActivityFactory activityFactory;
 
+    private SoftTimeWindowCost softCosts;
+
     private RouteAndActivityStateGetter stateManager;
 
     private HardRouteConstraint hardRouteLevelConstraint;
@@ -82,14 +85,15 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
         logger.debug("set [solutionMemory={}]", memorySize);
     }
 
-    public ServiceInsertionOnRouteLevelCalculator(VehicleRoutingTransportCosts vehicleRoutingCosts, VehicleRoutingActivityCosts costFunc, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteConstraint hardRouteLevelConstraint, HardActivityConstraint hardActivityLevelConstraint) {
+    public ServiceInsertionOnRouteLevelCalculator(VehicleRoutingTransportCosts vehicleRoutingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts costFunc, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, HardRouteConstraint hardRouteLevelConstraint, HardActivityConstraint hardActivityLevelConstraint) {
         super();
         this.transportCosts = vehicleRoutingCosts;
         this.activityCosts = costFunc;
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
         this.hardRouteLevelConstraint = hardRouteLevelConstraint;
         this.hardActivityLevelConstraint = hardActivityLevelConstraint;
-        auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(transportCosts, activityCosts);
+        auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(transportCosts, softCosts, activityCosts);
+        this.softCosts = softCosts;
         logger.debug("initialise {}", this);
     }
 
@@ -192,6 +196,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
             double transportCost_prevAct_nextAct_newVehicle = transportCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
             double transportTime_prevAct_nextAct_newVehicle = transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
             double arrTime_nextAct_newVehicle = prevActDepTime_newVehicle + transportTime_prevAct_nextAct_newVehicle;
+            transportCost_prevAct_nextAct_newVehicle += softCosts.getSoftTimeWindowCost(nextAct, arrTime_nextAct_newVehicle, newVehicle);
             double activityCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct_newVehicle, newDriver, newVehicle);
 
             /**

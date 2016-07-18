@@ -22,6 +22,7 @@ import com.graphhopper.jsprit.core.algorithm.state.UpdateFutureWaitingTimes;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateVehicleDependentPracticalTimeWindows;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
@@ -51,6 +52,8 @@ public class TestLocalActivityInsertionCostsCalculator {
 
     VehicleRoutingTransportCosts tpCosts;
 
+    SoftTimeWindowCost softCosts;
+
     VehicleRoutingActivityCosts actCosts;
 
     LocalActivityInsertionCostsCalculator calc;
@@ -75,6 +78,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         when(vehicle.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type").build());
 
         tpCosts = mock(VehicleRoutingTransportCosts.class);
+        softCosts = new SoftTimeWindowCost(tpCosts, false);
         when(tpCosts.getTransportCost(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(2.0);
         when(tpCosts.getTransportTime(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
         when(tpCosts.getTransportCost(loc("i"), loc("k"), 0.0, null, vehicle)).thenReturn(3.0);
@@ -83,7 +87,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         when(tpCosts.getTransportTime(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
 
         actCosts = new WaitingTimeCosts();
-        calc = new LocalActivityInsertionCostsCalculator(tpCosts, actCosts, mock(StateManager.class));
+        calc = new LocalActivityInsertionCostsCalculator(tpCosts, softCosts, actCosts, mock(StateManager.class));
     }
 
     private Location loc(String i) {
@@ -178,7 +182,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
         VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
         when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.INFINITE);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrpMock));
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), new StateManager(vrpMock));
         calc.setSolutionCompletenessRatio(1.);
 
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
@@ -212,7 +216,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 0);
         assertEquals(-10., c, 0.01);
@@ -239,7 +243,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v2).setJobActivityFactory(vrp.getJobActivityFactory()).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v2, null, 0.);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 0);
         assertEquals(-10., c, 0.01);
@@ -263,7 +267,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 0);
         assertEquals(110., c, 0.01);
@@ -290,7 +294,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
         assertEquals(-10., c, 0.01);
@@ -320,7 +324,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(prevS).addService(nextS).build();
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(0.5);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
         assertEquals(35., c, 0.01);
@@ -356,7 +360,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         StateManager stateManager = getStateManager(vrp, route);
 
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
         assertEquals(-10., c, 0.01);
@@ -405,7 +409,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         StateManager stateManager = getStateManager(vrp, route);
 
         JobInsertionContext context = new JobInsertionContext(route, newS, v, null, 0.);
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
         assertEquals(20., c, 0.01);
@@ -456,7 +460,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         StateManager stateManager = getStateManager(vrp, route);
 
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
         assertEquals(30., c, 0.01);
@@ -512,7 +516,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         StateManager stateManager = getStateManager(vrp, route);
 
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
         assertEquals(30., c, 0.01);
@@ -569,7 +573,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         stateManager.updateTimeWindowStates();
         stateManager.informInsertionStarts(Arrays.asList(route),new ArrayList<Job>());
 
-        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
+        LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), softCosts, new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
         assertEquals(-10., c, 0.01);

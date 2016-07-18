@@ -21,6 +21,7 @@ import com.graphhopper.jsprit.core.algorithm.VariablePlusFixedSolutionCostCalcul
 import com.graphhopper.jsprit.core.algorithm.state.*;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -303,15 +304,17 @@ public class SolutionAnalyser {
         private TourActivity prevAct;
         private double prevActDeparture;
         private VehicleRoute route;
+        private SoftTimeWindowCost softCosts;
 
 
-        private LastTransportUpdater(StateManager stateManager, VehicleRoutingTransportCosts transportCost, TransportDistance distanceCalculator, StateId last_distance_id, StateId last_time_id, StateId last_cost_id) {
+        private LastTransportUpdater(StateManager stateManager, VehicleRoutingTransportCosts transportCost, SoftTimeWindowCost softCosts, TransportDistance distanceCalculator, StateId last_distance_id, StateId last_time_id, StateId last_cost_id) {
             this.stateManager = stateManager;
             this.transportCost = transportCost;
             this.distanceCalculator = distanceCalculator;
             this.last_transport_distance_id = last_distance_id;
             this.last_transport_time_id = last_time_id;
             this.last_transport_cost_id = last_cost_id;
+            this.softCosts = softCosts;
         }
 
         @Override
@@ -332,7 +335,10 @@ public class SolutionAnalyser {
         }
 
         private double transportCost(TourActivity activity) {
-            return transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
+            double activity_transportCost = transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
+            double activity_arrTime = prevActDeparture + transportCost.getTransportTime(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
+            double activity_softCost = softCosts.getSoftTimeWindowCost(activity, activity_arrTime, route.getVehicle());
+            return activity_transportCost + activity_softCost;
         }
 
         private double transportTime(TourActivity activity) {
@@ -531,7 +537,7 @@ public class SolutionAnalyser {
         this.stateManager.updateSkillStates();
         activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
         this.stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), activityPolicy, vrp.getActivityCosts()));
-        this.stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+        this.stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), stateManager));
         waiting_time_id = stateManager.createStateId("waiting-time");
         transport_time_id = stateManager.createStateId("transport-time");
         service_time_id = stateManager.createStateId("service-time");
@@ -549,7 +555,7 @@ public class SolutionAnalyser {
         stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id, shipment_id, stateManager));
         stateManager.addStateUpdater(new SkillUpdater(stateManager, skill_id));
         stateManager.addStateUpdater(new LoadAndActivityCounter(stateManager));
-        stateManager.addStateUpdater(new LastTransportUpdater(stateManager, vrp.getTransportCosts(), distanceCalculator, last_transport_distance_id, last_transport_time_id, last_transport_cost_id));
+        stateManager.addStateUpdater(new LastTransportUpdater(stateManager, vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), distanceCalculator, last_transport_distance_id, last_transport_time_id, last_transport_cost_id));
     }
 
 

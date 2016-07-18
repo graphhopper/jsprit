@@ -421,7 +421,7 @@ public class InitialRoutesTest {
         constraintManager.addConstraint(new ServiceLoadActivityLevelConstraint(stateManager), ConstraintManager.Priority.LOW);
         stateManager.updateLoadStates();
         stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
-        stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
+        stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), stateManager));
 
         algBuilder.setStateAndConstraintManager(stateManager, constraintManager);
         VehicleRoutingAlgorithm vra = algBuilder.buildAlgorithm();

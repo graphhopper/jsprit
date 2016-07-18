@@ -75,6 +75,10 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     private double earliest = 0;
 
     private double latest = Double.MAX_VALUE;
+    
+    private double soft_earliest = 0.;
+    
+    private double soft_latest = Double.MAX_VALUE;
 
     protected BreakActivity(Break aBreak) {
         counter++;
@@ -91,6 +95,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         setIndex(breakActivity.getIndex());
         this.earliest = breakActivity.getTheoreticalEarliestOperationStartTime();
         this.latest = breakActivity.getTheoreticalLatestOperationStartTime();
+        this.soft_earliest = breakActivity.getSoftLowerBoundOperationStartTime();
+        this.soft_latest = breakActivity.getSoftUpperBoundOperationStartTime();
         this.duration = breakActivity.getOperationTime();
     }
 
@@ -169,11 +175,27 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     @Override
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
         this.earliest = earliest;
+        if(this.soft_earliest < earliest)
+            this.soft_earliest = earliest;
     }
 
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.latest = latest;
+        if(this.soft_latest > latest)
+            this.soft_latest = latest;
+    }
+
+    public void setSoftEarliestoperationStartTime(double earliest) {
+        this.soft_earliest = earliest;
+        if(this.earliest > earliest)
+            this.earliest = earliest;
+    }
+
+    public void setSoftLatestOperationStartTime(double latest) {
+        this.soft_latest = latest;
+        if(this.latest < latest)
+            this.latest = latest;
     }
 
     @Override
@@ -190,6 +212,16 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     public Capacity getSize() {
         return aBreak.getSize();
     }
+
+	@Override
+	public double getSoftLowerBoundOperationStartTime() {
+        return this.soft_earliest;
+	}
+
+	@Override
+	public double getSoftUpperBoundOperationStartTime() {
+        return this.soft_latest;
+	}
 
 
 }

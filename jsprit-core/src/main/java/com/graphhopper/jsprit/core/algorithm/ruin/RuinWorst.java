@@ -17,6 +17,7 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -139,6 +140,7 @@ public final class RuinWorst extends AbstractRuinStrategy {
 
     private double savings(VehicleRoute route, TourActivity actBefore, TourActivity actToEval, TourActivity act) {
         double savings = c(actBefore, actToEval, route.getVehicle()) + c(actToEval, act, route.getVehicle()) - c(actBefore, act, route.getVehicle());
+        savings += vrp.getSoftTimeWindowCost().getSoftTimeWindowCost(route, actBefore, actToEval, act, actBefore.getEndTime());
         return Math.max(0, savings + noiseMaker.makeNoise());
     }
 

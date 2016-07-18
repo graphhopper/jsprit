@@ -17,6 +17,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -28,6 +29,8 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
     private final VehicleRoutingTransportCosts routingCosts;
 
     private final VehicleRoutingActivityCosts activityCosts;
+
+    private SoftTimeWindowCost softCosts;
 
     public VariableTransportCostCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
@@ -51,14 +54,15 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
         }
 
         double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct;
+        double soft_costs_newAct = softCosts.getSoftTimeWindowCost(iFacts.getRoute(), prevAct, newAct, nextAct, depTimeAtPrevAct);
+        double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct + soft_costs_newAct;
 
         double oldCosts;
         if (iFacts.getRoute().isEmpty()) {
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         } else {
-            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
+            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         }
         return totalCosts - oldCosts;

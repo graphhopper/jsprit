@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -41,11 +42,11 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
 
     private int nuOfActivities2LookForward = 0;
 
-    public RouteLevelActivityInsertionCostsEstimator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, RouteAndActivityStateGetter stateManager) {
+    public RouteLevelActivityInsertionCostsEstimator(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts actCosts, RouteAndActivityStateGetter stateManager) {
         super();
         this.activityCosts = actCosts;
         this.stateManager = stateManager;
-        auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(routingCosts, activityCosts);
+        auxilliaryPathCostCalculator = new AuxilliaryCostCalculator(routingCosts, softCosts, activityCosts);
     }
 
     @Override

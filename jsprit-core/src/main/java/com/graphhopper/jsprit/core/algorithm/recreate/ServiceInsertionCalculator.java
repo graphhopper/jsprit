@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -55,6 +56,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
     private SoftActivityConstraint softActivityConstraint;
 
     private VehicleRoutingTransportCosts transportCosts;
+    
+    private SoftTimeWindowCost softCosts;
 
     private final VehicleRoutingActivityCosts activityCosts;
 
@@ -64,7 +67,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
+    public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
@@ -73,7 +76,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         softActivityConstraint = constraintManager;
         softRouteConstraint = constraintManager;
         this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
-        additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
+        this.softCosts = softCosts;
+        additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts, softCosts);
         logger.debug("initialise {}", this);
     }
 
@@ -137,6 +141,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
             boolean not_fulfilled_break = true;
 			for(TimeWindow timeWindow : service.getTimeWindows()) {
                 deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+                deliveryAct2Insert.setSoftEarliestoperationStartTime(timeWindow.getSoftStart());
+                deliveryAct2Insert.setSoftLatestOperationStartTime(timeWindow.getSoftEnd());
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                 ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(actIndex);
@@ -166,6 +172,8 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
         deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
+        deliveryAct2Insert.setSoftEarliestoperationStartTime(bestTimeWindow.getSoftStart());
+        deliveryAct2Insert.setSoftLatestOperationStartTime(bestTimeWindow.getSoftEnd());
         deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliveryAct2Insert, insertionIndex));
         insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));

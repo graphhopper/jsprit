@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -53,6 +54,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
     private ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
     private VehicleRoutingTransportCosts transportCosts;
+    
+    private SoftTimeWindowCost softCosts;
 
     private VehicleRoutingActivityCosts activityCosts;
 
@@ -60,7 +63,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
+    public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, SoftTimeWindowCost softCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
         this.hardRouteLevelConstraint = constraintManager;
@@ -69,7 +72,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         this.softRouteConstraint = constraintManager;
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
-        additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
+        this.softCosts = softCosts;
+        additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts, softCosts);
         logger.debug("initialise {}", this);
     }
 
@@ -142,8 +146,10 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
 
             boolean pickupInsertionNotFulfilledBreak = true;
             for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
-                pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
-                pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
+                pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getHardStart());
+                pickupShipment.setSoftEarliestoperationStartTime(pickupTimeWindow.getSoftStart());
+                pickupShipment.setSoftLatestOperationStartTime(pickupTimeWindow.getSoftEnd());
+                pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getHardEnd());
                 ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(i);
                 insertionContext.setActivityContext(activityContext);
@@ -189,6 +195,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                     boolean deliveryInsertionNotFulfilledBreak = true;
                     for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
                         deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
+                        deliverShipment.setSoftEarliestoperationStartTime(deliveryTimeWindow.getSoftStart());
+                        deliverShipment.setSoftLatestOperationStartTime(deliveryTimeWindow.getSoftEnd());
                         deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
                         ActivityContext activityContext_ = new ActivityContext();
                         activityContext_.setInsertionIndex(j);
@@ -233,8 +241,12 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
         pickupShipment.setTheoreticalEarliestOperationStartTime(bestPickupTimeWindow.getStart());
+        pickupShipment.setSoftEarliestoperationStartTime(bestPickupTimeWindow.getSoftStart());
+        pickupShipment.setSoftLatestOperationStartTime(bestPickupTimeWindow.getSoftEnd());
         pickupShipment.setTheoreticalLatestOperationStartTime(bestPickupTimeWindow.getEnd());
         deliverShipment.setTheoreticalEarliestOperationStartTime(bestDeliveryTimeWindow.getStart());
+        deliverShipment.setSoftEarliestoperationStartTime(bestDeliveryTimeWindow.getSoftStart());
+        deliverShipment.setSoftLatestOperationStartTime(bestDeliveryTimeWindow.getSoftEnd());
         deliverShipment.setTheoreticalLatestOperationStartTime(bestDeliveryTimeWindow.getEnd());
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliverShipment, deliveryInsertionIndex));
