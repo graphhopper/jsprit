@@ -89,7 +89,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         vehicles = vehiclesToUpdate.get(route);
         for (Vehicle vehicle : vehicles) {
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
-            location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getEndLocation();
+            location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = route.getEnd().getLocation();
         }
     }
 

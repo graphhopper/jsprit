@@ -113,9 +113,10 @@ public class PrettyAlgorithmBuilder {
                 }
 
             });
+            stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
             stateManager.addStateUpdater(twUpdater);
             stateManager.updateSkillStates();
-            stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
+
             stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS, vrp.getActivityCosts()));
             stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
             stateManager.addStateUpdater(new UpdateFutureWaitingTimes(stateManager, vrp.getTransportCosts()));
