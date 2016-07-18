@@ -16,11 +16,13 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 
 class VehicleFleetManagerImpl implements VehicleFleetManager {
@@ -32,6 +34,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
     static class TypeContainer {
 
         private ArrayList<Vehicle> vehicleList;
+
+        private int index = 0;
 
         TypeContainer() {
             super();
@@ -50,15 +54,17 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         }
 
         Vehicle getVehicle() {
-            return vehicleList.get(0);
+            if(index >= vehicleList.size()) index = 0;
+            Vehicle vehicle = vehicleList.get(index);
+            return vehicle;
+        }
+
+        void incIndex(){
+            index++;
         }
 
         boolean isEmpty() {
             return vehicleList.isEmpty();
-        }
-
-        void shuffle(Random random){
-            Collections.shuffle(vehicleList,random);
         }
 
     }
@@ -73,7 +79,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     private Vehicle[] vehicleArr;
 
-    private Random random = RandomNumberGeneration.getRandom();
+    private Random random;
 
     VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
         super();
@@ -155,11 +161,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         return vehicles;
     }
 
-    void shuffle(){
-        for(int i=0;i< vehicleTypes.length;i++){
-            vehicleTypes[i].shuffle(random);
-        }
-    }
 
     @Override
     public Vehicle getAvailableVehicle(VehicleTypeKey vehicleTypeIdentifier) {
@@ -183,7 +184,6 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         else{
             locked[vehicle.getIndex()] = true;
             removeVehicle(vehicle);
-            if(random.nextDouble() < 0.1) shuffle();
         }
     }
 
@@ -216,6 +216,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
             if(locked[i]){
                 unlock(vehicleArr[i]);
             }
+        }
+        for(int i=0;i<vehicleTypes.length;i++){
+            vehicleTypes[i].incIndex();
         }
     }
 
