@@ -18,11 +18,8 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import com.graphhopper.jsprit.core.algorithm.io.AlgorithmConfig;
-import com.graphhopper.jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLWriter;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -31,6 +28,9 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
+import com.graphhopper.jsprit.io.algorithm.AlgorithmConfig;
+import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithms;
+import com.graphhopper.jsprit.io.problem.VrpXMLWriter;
 import com.graphhopper.jsprit.util.Examples;
 import org.apache.commons.configuration.XMLConfiguration;
 

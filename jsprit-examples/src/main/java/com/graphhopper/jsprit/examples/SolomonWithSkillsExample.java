@@ -25,7 +25,6 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLWriter;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -36,6 +35,7 @@ import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.instance.reader.SolomonReader;
 import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
+import com.graphhopper.jsprit.io.problem.VrpXMLWriter;
 
 import java.util.Collection;
 

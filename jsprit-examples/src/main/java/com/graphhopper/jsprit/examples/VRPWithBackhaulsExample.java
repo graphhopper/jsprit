@@ -24,10 +24,10 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
+import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 import com.graphhopper.jsprit.util.Examples;
 
 import java.util.Collection;

@@ -16,17 +16,14 @@
  * Contributors:
  *     Stefan Schroeder - initial API and implementation
  ******************************************************************************/
-package com.graphhopper.jsprit.core.algorithm;
+package com.graphhopper.jsprit.io.problem;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
+import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.algorithm.box.SchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.recreate.NoSolutionFoundException;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,32 +34,11 @@ import static org.junit.Assert.assertTrue;
 public class FiniteVehicleFleetManagerIdentifiesDistinctVehicle_IT {
 
     @Test
-    @Category(IntegrationTest.class)
-    public void whenEmployingVehicleWhereOnlyOneDistinctVehicleCanServeAParticularJob_algorithmShouldFoundDistinctSolution() {
-        final List<Boolean> testFailed = new ArrayList<Boolean>();
-        for (int i = 0; i < 10; i++) {
-            VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-            new VrpXMLReader(vrpBuilder).read("src/test/resources/biggerProblem.xml");
-            VehicleRoutingProblem vrp = vrpBuilder.build();
-
-            VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-            vra.setMaxIterations(10);
-            try {
-                @SuppressWarnings("unused")
-                Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-            } catch (NoSolutionFoundException e) {
-                testFailed.add(true);
-            }
-        }
-        assertTrue(testFailed.isEmpty());
-    }
-
-    @Test
     public void whenEmployingVehicleWhereOnlyOneDistinctVehicleCanServeAParticularJobWith_jspritAlgorithmShouldFoundDistinctSolution() {
         final List<Boolean> testFailed = new ArrayList<Boolean>();
         for (int i = 0; i < 10; i++) {
             VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-            new VrpXMLReader(vrpBuilder).read("src/test/resources/biggerProblem.xml");
+            new VrpXMLReader(vrpBuilder).read(getClass().getResourceAsStream("biggerProblem.xml"));
             VehicleRoutingProblem vrp = vrpBuilder.build();
 
             VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);

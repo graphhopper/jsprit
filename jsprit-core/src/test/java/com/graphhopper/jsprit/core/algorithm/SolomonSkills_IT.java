@@ -47,7 +47,7 @@ public class SolomonSkills_IT {
     @Category(IntegrationTest.class)
     public void itShouldMakeCorrectAssignmentAccordingToSkills() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new SolomonReader(vrpBuilder).read("src/test/resources/C101.txt");
+        new SolomonReader(vrpBuilder).read(getClass().getResourceAsStream("C101.txt"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         //y >= 50 skill1 otherwise skill2
@@ -78,7 +78,7 @@ public class SolomonSkills_IT {
         skillProblemBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         VehicleRoutingProblem skillProblem = skillProblemBuilder.build();
 
-        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(skillProblem);
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(skillProblem).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);

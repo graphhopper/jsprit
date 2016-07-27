@@ -26,7 +26,6 @@ import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -38,6 +37,7 @@ import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
+import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 
 import java.util.Collection;
 

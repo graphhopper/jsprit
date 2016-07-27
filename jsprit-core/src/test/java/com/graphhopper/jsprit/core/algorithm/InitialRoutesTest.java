@@ -40,7 +40,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Before;
@@ -61,7 +60,7 @@ public class InitialRoutesTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         VehicleImpl v = VehicleImpl.Builder.newInstance("veh1").setStartLocation(Location.newInstance(0,0)).setLatestArrival(48600).build();
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1000,0)).build();
-        Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1000,1000)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1000,1000)).build();
         builder.addVehicle(v).addJob(s1).addJob(s2);
         initialRoute = VehicleRoute.Builder.newInstance(v).addService(s1).build();
         builder.addInitialVehicleRoute(initialRoute);
@@ -78,26 +77,6 @@ public class InitialRoutesTest {
     }
 
     @Test
-    public void whenSolvingProblem2_nuJobsInSolutionShouldBe4() {
-
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
-        VehicleRoutingProblem vrp = vrpBuilder.build();
-
-        VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
-
-        int jobsInSolution = 0;
-        for (VehicleRoute r : solution.getRoutes()) {
-            jobsInSolution += r.getTourActivities().jobSize();
-        }
-        assertEquals(4, jobsInSolution);
-    }
-
-    @Test
     public void whenSolving_nuActsShouldBe2() {
         VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
@@ -106,29 +85,11 @@ public class InitialRoutesTest {
     }
 
     @Test
-    public void whenSolvingProblem2_nuActsShouldBe6() {
-
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
-        VehicleRoutingProblem vrp = vrpBuilder.build();
-
-        VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-
-        int nuActs = 0;
-        for (VehicleRoute r : solution.getRoutes()) {
-            nuActs += r.getActivities().size();
-        }
-        assertEquals(6, nuActs);
-    }
-
-    @Test
     public void whenSolving_deliverService1_shouldBeInRoute() {
         VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        Job job = getInitialJob("1", vrp);
+        Job job = getInitialJob("s1", vrp);
         assertTrue(hasActivityIn(solution, "veh1", job));
     }
 
@@ -139,63 +100,6 @@ public class InitialRoutesTest {
             }
         }
         return null;
-    }
-
-    @Test
-    public void whenSolvingWithJsprit_deliverService1_shouldBeInRoute() {
-
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes_3.xml");
-        VehicleRoutingProblem vrp = vrpBuilder.build();
-
-        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
-
-        Job job = getInitialJob("1", vrp);
-        assertTrue(hasActivityIn(solution, "veh1", job));
-    }
-
-    @Test
-    public void whenSolvingProblem2With_deliverServices_and_allShipmentActs_shouldBeInRoute() {
-
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
-        VehicleRoutingProblem vrp = vrpBuilder.build();
-
-        VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-
-        assertTrue(hasActivityIn(solution.getRoutes(), "1"));
-        assertTrue(hasActivityIn(solution.getRoutes(), "2"));
-        assertTrue(hasActivityIn(solution.getRoutes(), "3"));
-        assertTrue(hasActivityIn(solution.getRoutes(), "4"));
-
-        assertTrue(hasActivityIn(solution, "veh1", getInitialJob("1", vrp)));
-        assertTrue(hasActivityIn(solution, "veh2", getInitialJob("3", vrp)));
-    }
-
-    @Test
-    public void whenSolvingProblem2WithJsprit_deliverServices_and_allShipmentActs_shouldBeInRoute() {
-
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
-        VehicleRoutingProblem vrp = vrpBuilder.build();
-
-        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-
-        assertTrue(hasActivityIn(solution.getRoutes(), "1"));
-        assertTrue(hasActivityIn(solution.getRoutes(), "2"));
-        assertTrue(hasActivityIn(solution.getRoutes(), "3"));
-        assertTrue(hasActivityIn(solution.getRoutes(), "4"));
-
-        assertTrue(hasActivityIn(solution, "veh1", getInitialJob("1", vrp)));
-        assertTrue(hasActivityIn(solution, "veh2", getInitialJob("3", vrp)));
     }
 
     private boolean hasActivityIn(Collection<VehicleRoute> routes, String jobId) {
@@ -239,7 +143,7 @@ public class InitialRoutesTest {
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
 
-        assertTrue(hasActivityIn(solution.getRoutes().iterator().next(), "2"));
+        assertTrue(hasActivityIn(solution.getRoutes().iterator().next(), "s2"));
     }
 
     @Test
@@ -268,19 +172,6 @@ public class InitialRoutesTest {
             .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addInitialVehicleRoute(iniRoute).build();
 
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
-        vra.setMaxIterations(10);
-
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-
-        assertFalse(secondActIsPickup(solutions));
-
-    }
-
-    @Test
-    public void whenReadingProblemFromFile_maxCapacityShouldNotBeExceeded() {
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes_2.xml");
-        VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrpBuilder.build());
         vra.setMaxIterations(10);
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

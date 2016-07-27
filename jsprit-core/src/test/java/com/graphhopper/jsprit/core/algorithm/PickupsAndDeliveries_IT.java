@@ -20,10 +20,9 @@ package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.IntegrationTest;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.util.LiLimReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,22 +37,9 @@ public class PickupsAndDeliveries_IT {
     @Category(IntegrationTest.class)
     public void whenSolvingLR101InstanceOfLiLim_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/lilim_lr101.xml");
+        new LiLimReader(vrpBuilder).read(getClass().getResourceAsStream("lr101.txt"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/lilim_algorithmConfig.xml");
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertEquals(1650.8, Solutions.bestOf(solutions).getCost(), 80.);
-        assertEquals(19, Solutions.bestOf(solutions).getRoutes().size(), 1);
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void whenSolvingLR101InstanceOfLiLim_withJsprit_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution() {
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/lilim_lr101.xml");
-        VehicleRoutingProblem vrp = vrpBuilder.build();
-        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
-        vra.setMaxIterations(1000);
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         assertEquals(1650.8, Solutions.bestOf(solutions).getCost(), 80.);
         assertEquals(19, Solutions.bestOf(solutions).getRoutes().size(), 1);

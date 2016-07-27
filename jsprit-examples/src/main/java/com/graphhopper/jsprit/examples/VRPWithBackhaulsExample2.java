@@ -29,12 +29,12 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
+import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 import com.graphhopper.jsprit.util.Examples;
 
 import java.util.Collection;

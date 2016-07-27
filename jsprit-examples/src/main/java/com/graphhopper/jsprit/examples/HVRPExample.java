@@ -18,7 +18,7 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import com.graphhopper.jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -117,7 +117,7 @@ public class HVRPExample {
         //build problem
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfigWithSchrimpfAcceptance.xml");
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
         VehicleRoutingProblemSolution best = Solutions.bestOf(solutions);

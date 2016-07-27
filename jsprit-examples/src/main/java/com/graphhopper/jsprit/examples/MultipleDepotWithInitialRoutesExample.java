@@ -19,10 +19,9 @@ package com.graphhopper.jsprit.examples;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter.Label;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import com.graphhopper.jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.Builder;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -30,6 +29,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
+import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 import com.graphhopper.jsprit.util.Examples;
 
 import java.util.Collection;
@@ -79,7 +79,7 @@ public class MultipleDepotWithInitialRoutesExample {
 //		VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
 //				.setProperty(Jsprit.Parameter.ITERATIONS,"10000").buildAlgorithm();
 
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_noVehicleSwitch.xml");
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
         SolutionPrinter.print(Solutions.bestOf(solutions));

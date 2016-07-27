@@ -51,6 +51,9 @@ public class GreedySchrimpfFactory {
     }
 
     public Jsprit.Builder createGreedyAlgorithmBuilder(VehicleRoutingProblem vrp) {
+        int radialShare = (int) (vrp.getJobs().size() * 0.3);
+        int randomShare = (int) (vrp.getJobs().size() * 0.5);
+
         Jsprit.Builder builder = Jsprit.Builder.newInstance(vrp);
         builder.setProperty(Jsprit.Parameter.THRESHOLD_ALPHA,"0.0");
         builder.setProperty(Jsprit.Strategy.RADIAL_BEST, "0.5");
@@ -61,10 +64,10 @@ public class GreedySchrimpfFactory {
         builder.setProperty(Jsprit.Strategy.WORST_REGRET, "0.0");
         builder.setProperty(Jsprit.Strategy.CLUSTER_BEST, "0.0");
         builder.setProperty(Jsprit.Strategy.CLUSTER_REGRET, "0.0");
-        builder.setProperty(Jsprit.Parameter.RADIAL_MIN_SHARE, String.valueOf(0.3));
-        builder.setProperty(Jsprit.Parameter.RADIAL_MAX_SHARE, String.valueOf(0.3));
-        builder.setProperty(Jsprit.Parameter.RANDOM_BEST_MIN_SHARE, String.valueOf(0.5));
-        builder.setProperty(Jsprit.Parameter.RANDOM_BEST_MAX_SHARE, String.valueOf(0.5));
+        builder.setProperty(Jsprit.Parameter.RADIAL_MIN_SHARE, String.valueOf(radialShare));
+        builder.setProperty(Jsprit.Parameter.RADIAL_MAX_SHARE, String.valueOf(radialShare));
+        builder.setProperty(Jsprit.Parameter.RANDOM_BEST_MIN_SHARE, String.valueOf(randomShare));
+        builder.setProperty(Jsprit.Parameter.RANDOM_BEST_MAX_SHARE, String.valueOf(randomShare));
         return builder;
     }
 

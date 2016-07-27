@@ -30,12 +30,12 @@ import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
+import com.graphhopper.jsprit.core.util.ChristofidesReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class BuildCVRPAlgoFromScratch_IT {
     @Before
     public void setup() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(builder).read("src/test/resources/vrpnc1-jsprit.xml");
+        new ChristofidesReader(builder).read(getClass().getResourceAsStream("vrpnc1.txt"));
         vrp = builder.build();
 
         final StateManager stateManager = new StateManager(vrp);
