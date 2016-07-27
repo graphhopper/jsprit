@@ -8,7 +8,7 @@
 
     <artifactId>jsprit-examples</artifactId>
 
-   
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
