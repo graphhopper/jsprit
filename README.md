@@ -25,19 +25,13 @@ reading classical VRP instances to benchmark your algorithm. It is fit for chang
 Please visit [jsprit-wiki](https://github.com/jsprit/jsprit/wiki) to learn more.
 
 ##License
-This software is released under [LGPL](http://opensource.org/licenses/LGPL-3.0).
+This software is released under [Apache License v2](https://www.apache.org/licenses/LICENSE-2.0).
 
 ##[Get Started](https://github.com/jsprit/jsprit/wiki/Getting-Started)
 
 ##Contribution
 
-Any contribution is welcome. Feel free to improve jsprit and make pull requests. If you want to contribute, but don't know how?
-Currently, we need help to improve
-
-- IO ([VrpXMLReader](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/problem/io/VrpXMLReader.java) and [-writer](https://github.com/jsprit/jsprit/blob/master/jsprit-core/src/main/java/jsprit/core/problem/io/VrpXMLWriter.java)) - Maintenance and update with new features
-- Visualisation ([Plotter](https://github.com/jsprit/jsprit/blob/master/jsprit-analysis/src/main/java/jsprit/analysis/toolbox/Plotter.java) and [GraphStreamViewer](https://github.com/jsprit/jsprit/blob/master/jsprit-analysis/src/main/java/jsprit/analysis/toolbox/GraphStreamViewer.java)) - Maintenance and new features
-
-So, if you want to help, feel free to contact jsprit.vehicle.routing@gmail.com.
+Any contribution is welcome. Feel free to improve jsprit and make pull requests.
 
 See who has contributed [here](https://github.com/jsprit/jsprit/blob/master/CONTRIBUTORS.md).
 
