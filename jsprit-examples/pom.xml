@@ -14,23 +14,31 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>jsprit-instances</artifactId>
             <version>${project.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jsprit-core</artifactId>
             <version>${project.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jsprit-analysis</artifactId>
             <version>${project.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jsprit-io</artifactId>
             <version>${project.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
