@@ -546,6 +546,7 @@ public class VehicleRoutingProblem {
      */
     private final Map<String, Job> jobs;
 
+    private final Map<String, Job> allJobs;
     /**
      * Collection that contains available vehicles.
      */
@@ -593,6 +594,7 @@ public class VehicleRoutingProblem {
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
         this.allLocations = builder.allLocations;
+        this.allJobs = builder.tentativeJobs;
         logger.info("setup problem: {}", this);
     }
 
@@ -623,6 +625,9 @@ public class VehicleRoutingProblem {
         return Collections.unmodifiableMap(jobs);
     }
 
+    public Map<String, Job> getJobsInclusiveInitialJobsInRoutes(){
+        return Collections.unmodifiableMap(allJobs);
+    }
     /**
      * Returns a copy of initial vehicle routes.
      *
@@ -684,6 +689,8 @@ public class VehicleRoutingProblem {
     public List<AbstractActivity> getActivities(Job job) {
         return Collections.unmodifiableList(activityMap.get(job));
     }
+
+//    public Map<Job,List<AbstractActivity>> getActivityMap() { return Collections.unmodifiableMap(activityMap); }
 
     /**
      * @return total number of activities

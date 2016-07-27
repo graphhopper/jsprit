@@ -70,8 +70,8 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         this.vrp = vrp;
         this.jobDistance = jobDistance;
         this.capacity = capacity;
-        neighbors = new int[vrp.getJobs().size()][capacity];
-        jobs = new Job[vrp.getJobs().size()+1];
+        neighbors = new int[vrp.getJobsInclusiveInitialJobsInRoutes().size()+1][capacity];
+        jobs = new Job[vrp.getJobsInclusiveInitialJobsInRoutes().size()+1];
         logger.debug("initialize {}", this);
     }
 
@@ -97,10 +97,10 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         logger.debug("pre-process distances between locations ...");
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        for (Job job_i : vrp.getJobs().values()) {
+        for (Job job_i : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
             jobs[job_i.getIndex()] = job_i;
-            List<ReferencedJob> jobList = new ArrayList<ReferencedJob>(vrp.getJobs().size());
-            for (Job job_j : vrp.getJobs().values()) {
+            List<ReferencedJob> jobList = new ArrayList<ReferencedJob>(vrp.getJobsInclusiveInitialJobsInRoutes().values().size());
+            for (Job job_j : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
                 if (job_i == job_j) continue;
                 double distance = jobDistance.getDistance(job_i, job_j);
                 if (distance > maxDistance) maxDistance = distance;
