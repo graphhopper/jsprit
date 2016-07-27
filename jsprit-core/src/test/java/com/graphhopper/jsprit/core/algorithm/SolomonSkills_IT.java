@@ -18,12 +18,9 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.IntegrationTest;
-import com.graphhopper.jsprit.core.algorithm.recreate.NoSolutionFoundException;
-import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLReader;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -31,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
+import com.graphhopper.jsprit.core.util.SolomonReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.TestUtils;
 import org.junit.Test;
@@ -49,7 +47,7 @@ public class SolomonSkills_IT {
     @Category(IntegrationTest.class)
     public void itShouldMakeCorrectAssignmentAccordingToSkills() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/solomon_c101.xml");
+        new SolomonReader(vrpBuilder).read(getClass().getResourceAsStream("C101.txt"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         //y >= 50 skill1 otherwise skill2
@@ -80,36 +78,21 @@ public class SolomonSkills_IT {
         skillProblemBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         VehicleRoutingProblem skillProblem = skillProblemBuilder.build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(skillProblem, "src/test/resources/algorithmConfig.xml");
-        vraBuilder.addCoreConstraints();
-        vraBuilder.addDefaultCostCalculators();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(skillProblem).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
 
-        StateManager stateManager = new StateManager(skillProblem);
-        stateManager.updateSkillStates();
-
-        ConstraintManager constraintManager = new ConstraintManager(skillProblem, stateManager);
-        constraintManager.addSkillsConstraint();
-
-        VehicleRoutingAlgorithm vra = vraBuilder.build();
-        vra.setMaxIterations(2000);
-
-        try {
-            Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-            VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-            assertEquals(828.94, solution.getCost(), 0.01);
-            for (VehicleRoute route : solution.getRoutes()) {
-                Skills vehicleSkill = route.getVehicle().getSkills();
-                for (Job job : route.getTourActivities().getJobs()) {
-                    for (String skill : job.getRequiredSkills().values()) {
-                        if (!vehicleSkill.containsSkill(skill)) {
-                            assertFalse(true);
-                        }
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
+        assertEquals(828.94, solution.getCost(), 0.01);
+        for (VehicleRoute route : solution.getRoutes()) {
+            Skills vehicleSkill = route.getVehicle().getSkills();
+            for (Job job : route.getTourActivities().getJobs()) {
+                for (String skill : job.getRequiredSkills().values()) {
+                    if (!vehicleSkill.containsSkill(skill)) {
+                        assertFalse(true);
                     }
                 }
             }
-            assertTrue(true);
-        } catch (NoSolutionFoundException e) {
-            assertFalse(true);
         }
+        assertTrue(true);
     }
 }

@@ -1,6 +1,6 @@
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.algorithm.io.VehicleRoutingAlgorithms;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -27,7 +27,7 @@ public class ExternalInitialSolutionIsInValidTest {
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(vehicle).build();
 
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithm_without_construction.xml");
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
 
         /*
         create ini sol

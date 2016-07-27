@@ -35,7 +35,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Collection;
 
 
@@ -223,8 +226,8 @@ public class RefuseCollection_IT {
     }
 
 
-    private static void readDemandQuantitiesAsServices(VehicleRoutingProblem.Builder vrpBuilder) {
-        BufferedReader reader = getBufferedReader("src/test/resources/refuseCollectionExample_Quantities");
+    private void readDemandQuantitiesAsServices(VehicleRoutingProblem.Builder vrpBuilder) {
+        BufferedReader reader = getBufferedReader("refuseCollectionExample_Quantities");
         String line;
         boolean firstLine = true;
         while ((line = readLine(reader)) != null) {
@@ -246,18 +249,12 @@ public class RefuseCollection_IT {
         close(reader);
     }
 
-    private static BufferedReader getBufferedReader(String s) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(new File(s)));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return reader;
+    private BufferedReader getBufferedReader(String s) {
+        return new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(s)));
     }
 
-    private static void readDemandQuantitiesAsPickups(VehicleRoutingProblem.Builder vrpBuilder) {
-        BufferedReader reader = getBufferedReader("src/test/resources/refuseCollectionExample_Quantities");
+    private void readDemandQuantitiesAsPickups(VehicleRoutingProblem.Builder vrpBuilder) {
+        BufferedReader reader = getBufferedReader("refuseCollectionExample_Quantities");
         String line;
         boolean firstLine = true;
         while ((line = readLine(reader)) != null) {
@@ -279,8 +276,8 @@ public class RefuseCollection_IT {
         close(reader);
     }
 
-    private static void readDemandQuantitiesAsDeliveries(VehicleRoutingProblem.Builder vrpBuilder) {
-        BufferedReader reader = getBufferedReader("src/test/resources/refuseCollectionExample_Quantities");
+    private void readDemandQuantitiesAsDeliveries(VehicleRoutingProblem.Builder vrpBuilder) {
+        BufferedReader reader = getBufferedReader("refuseCollectionExample_Quantities");
         String line;
         boolean firstLine = true;
         while ((line = readLine(reader)) != null) {
@@ -321,8 +318,8 @@ public class RefuseCollection_IT {
     }
 
 
-    private static void readDistances(VehicleRoutingTransportCostsMatrix.Builder matrixBuilder) {
-        BufferedReader reader = getBufferedReader("src/test/resources/refuseCollectionExample_Distances");
+    private void readDistances(VehicleRoutingTransportCostsMatrix.Builder matrixBuilder) {
+        BufferedReader reader = getBufferedReader("refuseCollectionExample_Distances");
         String line;
         boolean firstLine = true;
         while ((line = readLine(reader)) != null) {

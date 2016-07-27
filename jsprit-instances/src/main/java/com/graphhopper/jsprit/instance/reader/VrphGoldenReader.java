@@ -21,7 +21,6 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.Builder;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.io.VrpXMLWriter;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -162,12 +161,6 @@ public class VrphGoldenReader {
         }
     }
 
-    public static void main(String[] args) {
-        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        VrphGoldenReader goldenReader = new VrphGoldenReader(vrpBuilder, VrphType.FSMD);
-        goldenReader.read("instances/vrph/orig/cn_13mix.txt");
-        VehicleRoutingProblem vrp = vrpBuilder.build();
-        new VrpXMLWriter(vrp).write("instances/vrph/cn_13mix_VRPH_INFINITE.xml");
-    }
+
 
 }
