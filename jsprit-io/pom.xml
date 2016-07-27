@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jsprit-io</artifactId>
+    <packaging>jar</packaging>
 
     <build>
         <pluginManagement>
