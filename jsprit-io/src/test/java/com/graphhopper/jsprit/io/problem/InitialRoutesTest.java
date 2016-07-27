@@ -37,7 +37,7 @@ public class InitialRoutesTest {
     public void whenReading_jobMapShouldOnlyContainJob2() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes.xml");
+        new VrpXMLReader(vrpBuilder).read(getClass().getResourceAsStream("simpleProblem_iniRoutes.xml"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         assertEquals(1, getNuServices(vrp));
@@ -48,7 +48,7 @@ public class InitialRoutesTest {
     public void whenReadingProblem2_jobMapShouldContain_service2() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
+        new VrpXMLReader(vrpBuilder).read(getClass().getResourceAsStream("simpleProblem_inclShipments_iniRoutes.xml"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         assertEquals(1, getNuServices(vrp));
@@ -59,7 +59,7 @@ public class InitialRoutesTest {
     public void whenReading_jobMapShouldContain_shipment4() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
+        new VrpXMLReader(vrpBuilder).read(getClass().getResourceAsStream("simpleProblem_inclShipments_iniRoutes.xml"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         assertEquals(1, getNuShipments(vrp));
@@ -86,7 +86,7 @@ public class InitialRoutesTest {
     public void whenReading_thereShouldBeOnlyOneActAssociatedToJob2() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_iniRoutes.xml");
+        new VrpXMLReader(vrpBuilder).read(getClass().getResourceAsStream("simpleProblem_iniRoutes.xml"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         assertEquals(1, vrp.getActivities(vrp.getJobs().get("2")).size());
@@ -96,7 +96,7 @@ public class InitialRoutesTest {
     public void whenReading_thereShouldBeOnlyOneActAssociatedToJob2_v2() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
+        new VrpXMLReader(vrpBuilder).read(getClass().getResourceAsStream("simpleProblem_inclShipments_iniRoutes.xml"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         assertEquals(1, vrp.getActivities(vrp.getJobs().get("2")).size());
@@ -106,7 +106,7 @@ public class InitialRoutesTest {
     public void whenReading_thereShouldBeTwoActsAssociatedToShipment4() {
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpBuilder).read("src/test/resources/simpleProblem_inclShipments_iniRoutes.xml");
+        new VrpXMLReader(vrpBuilder).read(getClass().getResourceAsStream("simpleProblem_inclShipments_iniRoutes.xml"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         Job job = vrp.getJobs().get("4");

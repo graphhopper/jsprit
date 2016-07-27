@@ -60,16 +60,16 @@ public class TestAlgorithmReader {
     @Before
     public void doBefore() throws ConfigurationException {
         config = new AlgorithmConfig();
-        new AlgorithmConfigXmlReader(config).setSchemaValidation(false).read("src/test/resources/testConfig.xml");
+        new AlgorithmConfigXmlReader(config).setSchemaValidation(false).read(getClass().getResource("testConfig.xml"));
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         solutions = new ArrayList<VehicleRoutingProblemSolution>();
-        new VrpXMLReader(vrpBuilder, solutions).read("src/test/resources/finiteVrp.xml");
+        new VrpXMLReader(vrpBuilder, solutions).read(getClass().getResourceAsStream("finiteVrp.xml"));
         vrp = vrpBuilder.build();
     }
 
     @Test
     public void itShouldReadMaxIterations() {
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigForReaderTest.xml");
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, getClass().getResource("algorithmConfigForReaderTest.xml"));
         Assert.assertEquals(2000, vra.getMaxIterations());
     }
 
@@ -86,7 +86,7 @@ public class TestAlgorithmReader {
 
     @Test
     public void whenSettingPrematureBreak_itShouldReadTermination() {
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigForReaderTest2.xml");
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, getClass().getResource("algorithmConfigForReaderTest2.xml"));
         IterationCounter iCounter = new IterationCounter();
         vra.addListener(iCounter);
         vra.searchSolutions();
@@ -95,7 +95,7 @@ public class TestAlgorithmReader {
 
     @Test
     public void itShouldReadTermination() {
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "src/test/resources/algorithmConfigForReaderTest.xml");
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, getClass().getResource("algorithmConfigForReaderTest.xml"));
         IterationCounter iCounter = new IterationCounter();
         vra.addListener(iCounter);
         vra.searchSolutions();
@@ -271,14 +271,14 @@ public class TestAlgorithmReader {
     @Test
     public void readerTest_whenReadingAlgoWithSchemaValidation_itReadsCorrectly() {
         AlgorithmConfig algoConfig = new AlgorithmConfig();
-        new AlgorithmConfigXmlReader(algoConfig).read("src/test/resources/algorithmConfig.xml");
+        new AlgorithmConfigXmlReader(algoConfig).read(getClass().getResource("algorithmConfig.xml"));
 
     }
 
     @Test
     public void readerTest_whenReadingAlgoWithSchemaValidationWithoutIterations_itReadsCorrectly() {
         AlgorithmConfig algoConfig = new AlgorithmConfig();
-        new AlgorithmConfigXmlReader(algoConfig).read("src/test/resources/algorithmConfig_withoutIterations.xml");
+        new AlgorithmConfigXmlReader(algoConfig).read(getClass().getResource("algorithmConfig_withoutIterations.xml"));
 
     }
 
