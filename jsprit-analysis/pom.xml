@@ -13,15 +13,12 @@
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
             <version>1.0.19</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jsprit-core</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

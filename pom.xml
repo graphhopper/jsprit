@@ -109,7 +109,7 @@
             </testResource>
         </testResources>
 
-       <!-- <pluginManagement>
+       <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -136,10 +136,10 @@
                     </configuration>
                 </plugin>
             </plugins>
-        </pluginManagement>-->
+        </pluginManagement>
         <plugins>
 
-            <!--<plugin>
+            <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>1.1.1</version>
                 <executions>
@@ -168,7 +168,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
