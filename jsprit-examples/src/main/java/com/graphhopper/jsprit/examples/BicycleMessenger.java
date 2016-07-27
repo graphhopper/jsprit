@@ -21,6 +21,7 @@ import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
@@ -50,7 +51,6 @@ import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.CrowFlyCosts;
 import com.graphhopper.jsprit.core.util.Solutions;
-import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 import com.graphhopper.jsprit.util.Examples;
 
 import java.io.BufferedReader;
@@ -266,13 +266,9 @@ public class BicycleMessenger {
         constraintManager.addConstraint(new ThreeTimesLessThanBestDirectRouteConstraint(latest_act_arrival_time_stateId, nearestMessengers, routingCosts, stateManager), ConstraintManager.Priority.CRITICAL);
         constraintManager.addConstraint(new IgnoreMessengerThatCanNeverMeetTimeRequirements(nearestMessengers, routingCosts));
 
-        //create your algorithm
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(bicycleMessengerProblem, "input/algorithmConfig.xml");
-//        vraBuilder.setNuOfThreads(2);
-        vraBuilder.addDefaultCostCalculators();
-        vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
-//		vraBuilder.setNuOfThreads(10);
-        VehicleRoutingAlgorithm algorithm = vraBuilder.build();
+        VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(bicycleMessengerProblem)
+            .setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
+
         algorithm.setMaxIterations(2000);
 
 //		VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(bicycleMessengerProblem)

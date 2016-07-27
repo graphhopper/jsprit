@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
@@ -36,7 +37,6 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
-import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 
 import java.util.Collection;
@@ -138,25 +138,17 @@ public class AdditionalDistanceConstraintExample {
         vrpBuilder.setRoutingCost(costMatrix);
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp, "input/algorithmConfig_solomon.xml");
 
-//        StateManager stateManager = new StateManager(vrp.getTransportCosts());  //v1.3.1
         StateManager stateManager = new StateManager(vrp); //head of development - upcoming release (v1.4)
 
-//        StateFactory.StateId distanceStateId = StateFactory.createId("distance"); //v1.3.1
         StateId distanceStateId = stateManager.createStateId("distance"); //head of development - upcoming release (v1.4)
         stateManager.addStateUpdater(new DistanceUpdater(distanceStateId, stateManager, costMatrix));
-//        stateManager.updateLoadStates();
 
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
         constraintManager.addConstraint(new DistanceConstraint(120., distanceStateId, stateManager, costMatrix), ConstraintManager.Priority.CRITICAL);
-//        constraintManager.addLoadConstraint();
 
-//        vraBuilder.addCoreConstraints();
-        vraBuilder.addDefaultCostCalculators();
-        vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
-
-        VehicleRoutingAlgorithm vra = vraBuilder.build();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager)
+            .buildAlgorithm();
 //        vra.setMaxIterations(250); //v1.3.1
         vra.setMaxIterations(250); //head of development - upcoming release (v1.4)
 

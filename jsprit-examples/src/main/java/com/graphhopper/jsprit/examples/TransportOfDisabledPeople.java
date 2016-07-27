@@ -20,6 +20,7 @@ import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -37,7 +38,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
-import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 import com.graphhopper.jsprit.util.Examples;
 
 import java.util.Collection;
@@ -168,21 +168,8 @@ public class TransportOfDisabledPeople {
         ConstraintManager constraintManager = new ConstraintManager(problem, stateManager);
         constraintManager.addConstraint(wheelchair_bus_passenger_pickup_constraint);
 
-		/*
-         * get a sample algorithm.
-		 *
-		 * Note that you need to make sure to prohibit vehicle-switching by adding the insertion-tag <vehicleSwitchAllowed>false</vehicleSwitchAllowed>.
-		 * This way you make sure that no vehicle can take over a route that is employed by another. Allowing this might make sense when dealing with
-		 * a heterogeneous fleet and you want to employ a bigger vehicle on a still existing route. However, allowing it makes constraint-checking
-		 * bit more complicated and you cannot just add the above hard-constraint. Latter will be covered in another example.
-		 *
-		 */
-        VehicleRoutingAlgorithmBuilder algorithmBuilder = new VehicleRoutingAlgorithmBuilder(problem, "input/algorithmConfig_noVehicleSwitch.xml");
-        algorithmBuilder.setStateAndConstraintManager(stateManager, constraintManager);
-        algorithmBuilder.addCoreConstraints();
-        algorithmBuilder.addDefaultCostCalculators();
 
-        VehicleRoutingAlgorithm algorithm = algorithmBuilder.build();
+        VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
         algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 
 		/*

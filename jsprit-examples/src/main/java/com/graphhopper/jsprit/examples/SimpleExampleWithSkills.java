@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.examples;
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -31,7 +32,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
-import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 import com.graphhopper.jsprit.io.problem.VrpXMLWriter;
 
 import java.io.File;
@@ -94,20 +94,8 @@ public class SimpleExampleWithSkills {
 		/*
          * get the algorithm out-of-the-box.
 		 */
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(problem, "input/algorithmConfig.xml");
-        vraBuilder.addCoreConstraints();
-        vraBuilder.addDefaultCostCalculators();
 
-        //activate skill state update and constraints - it is NOT default
-        StateManager stateManager = new StateManager(problem);
-        stateManager.updateSkillStates();
-
-        ConstraintManager constraintManager = new ConstraintManager(problem, stateManager);
-        constraintManager.addSkillsConstraint();
-
-        vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
-
-        VehicleRoutingAlgorithm algorithm = vraBuilder.build();
+        VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
 
 		/*
          * and search a solution

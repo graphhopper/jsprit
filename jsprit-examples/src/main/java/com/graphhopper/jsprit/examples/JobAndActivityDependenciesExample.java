@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
@@ -37,7 +38,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
-import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithmBuilder;
 
 import java.util.Collection;
 
@@ -254,10 +254,6 @@ public class JobAndActivityDependenciesExample {
 
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithmBuilder vraBuilder = new VehicleRoutingAlgorithmBuilder(vrp, "input/algorithmConfig.xml");
-        vraBuilder.addDefaultCostCalculators();
-        vraBuilder.addCoreConstraints();
-
         StateManager stateManager = new StateManager(vrp);
         StateId keyPicked = stateManager.createStateId("key-picked");
         StateId keyUsed = stateManager.createStateId("key-used");
@@ -268,8 +264,7 @@ public class JobAndActivityDependenciesExample {
         constraintManager.addConstraint(new GetUseAndDeliverKeySimpleHardActivityConstraint(stateManager, keyPicked, keyUsed, keyDelivered), ConstraintManager.Priority.CRITICAL);
         constraintManager.addConstraint(new GetUseAndDeliverHardRouteContraint(stateManager, keyPicked, keyUsed, keyDelivered));
 
-        vraBuilder.setStateAndConstraintManager(stateManager, constraintManager);
-        VehicleRoutingAlgorithm vra = vraBuilder.build();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
         vra.setMaxIterations(100);
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
