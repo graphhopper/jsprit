@@ -9,8 +9,8 @@ The jsprit-core module includes the following software:
 
 jsprit-analysis:
 
- * graphstream/gs-core, gs-ui - licensed under LGPL
- * jfree.org - jfreechart licensed under LGPL
+ * graphstream/gs-core, gs-ui - licensed under LGPL 3.0
+ * jfree.org - jfreechart licensed under LGPL 2.1
 
 jsprit-io:
 
