@@ -139,36 +139,36 @@
         <!--</pluginManagement>-->
         <plugins>
 
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.3.1</version>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <fail>true</fail>
-                            <rules>
-                                <requireMavenVersion>
-                                    Some plugin features require a recent Maven runtime to work properly
-                                    <message>Current version of Maven ${maven.version} required to build the project
-                                        should be ${project.prerequisites.maven}, or higher!
-                                    </message>
-                                    <version>[${project.prerequisites.maven},)</version>
-                                </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <message>Current JDK version ${java.version} should be ${jdkVersion}, or higher!
-                                    </message>
-                                    <version>${jdkVersion}</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<artifactId>maven-enforcer-plugin</artifactId>-->
+                <!--<version>1.3.1</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>enforce-versions</id>-->
+                        <!--<phase>initialize</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>enforce</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<fail>true</fail>-->
+                            <!--<rules>-->
+                                <!--<requireMavenVersion>-->
+                                    <!--Some plugin features require a recent Maven runtime to work properly-->
+                                    <!--<message>Current version of Maven ${maven.version} required to build the project-->
+                                        <!--should be ${project.prerequisites.maven}, or higher!-->
+                                    <!--</message>-->
+                                    <!--<version>[${project.prerequisites.maven},)</version>-->
+                                <!--</requireMavenVersion>-->
+                                <!--<requireJavaVersion>-->
+                                    <!--<message>Current JDK version ${java.version} should be ${jdkVersion}, or higher!-->
+                                    <!--</message>-->
+                                    <!--<version>${jdkVersion}</version>-->
+                                <!--</requireJavaVersion>-->
+                            <!--</rules>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
