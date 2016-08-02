@@ -588,6 +588,7 @@ public class Jsprit {
         } else {
             prettyBuilder.constructInitialSolutionWith(regret, objectiveFunction);
         }
+        prettyBuilder.withObjectiveFunction(objectiveFunction);
 
 
         VehicleRoutingAlgorithm vra = prettyBuilder.build();

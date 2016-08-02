@@ -25,6 +25,7 @@ import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmLis
 import com.graphhopper.jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -42,6 +43,8 @@ import java.util.Collection;
  * @author stefan schroeder
  */
 public class VehicleRoutingAlgorithm {
+
+
 
     private static class TerminationManager implements PrematureAlgorithmTermination {
 
@@ -105,11 +108,14 @@ public class VehicleRoutingAlgorithm {
 
     private VehicleRoutingProblemSolution bestEver = null;
 
+    private final SolutionCostCalculator objectiveFunction;
+
     public VehicleRoutingAlgorithm(VehicleRoutingProblem problem, SearchStrategyManager searchStrategyManager) {
         super();
         this.problem = problem;
         this.searchStrategyManager = searchStrategyManager;
         initialSolutions = new ArrayList<VehicleRoutingProblemSolution>();
+        objectiveFunction = null;
     }
 
     public VehicleRoutingAlgorithm(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> initialSolutions, SearchStrategyManager searchStrategyManager) {
@@ -117,6 +123,15 @@ public class VehicleRoutingAlgorithm {
         this.problem = problem;
         this.searchStrategyManager = searchStrategyManager;
         this.initialSolutions = initialSolutions;
+        objectiveFunction = null;
+    }
+
+    public VehicleRoutingAlgorithm(VehicleRoutingProblem problem, SearchStrategyManager searchStrategyManager, SolutionCostCalculator objectiveFunction) {
+        super();
+        this.problem = problem;
+        this.searchStrategyManager = searchStrategyManager;
+        initialSolutions = new ArrayList<VehicleRoutingProblemSolution>();
+        this.objectiveFunction = objectiveFunction;
     }
 
     /**
@@ -319,5 +334,8 @@ public class VehicleRoutingAlgorithm {
         return maxIterations;
     }
 
+    public SolutionCostCalculator getObjectiveFunction(){
+        return objectiveFunction;
+    }
 
 }
