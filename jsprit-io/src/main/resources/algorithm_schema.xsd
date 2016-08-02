@@ -205,6 +205,13 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
+            <xs:element name="initRemoveJobs" minOccurs="0" maxOccurs="1">
+              <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                  <xs:minInclusive value="1"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
             <xs:element name="distance" minOccurs="0" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
@@ -218,6 +225,7 @@
                 <xs:restriction base="xs:string">
                     <xs:enumeration value="randomRuin"/>
                     <xs:enumeration value="radialRuin"/>
+                    <xs:enumeration value="clusterRuin"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
