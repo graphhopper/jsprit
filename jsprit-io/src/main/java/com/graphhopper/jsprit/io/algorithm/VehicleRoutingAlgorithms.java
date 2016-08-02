@@ -482,7 +482,7 @@ public class VehicleRoutingAlgorithms {
         constraintManager.addSkillsConstraint();
         constraintManager.addConstraint(new SwitchNotFeasible(stateManager));
 
-        return readAndCreateAlgorithm(vrp, config, nuOfThreads, null, stateManager, constraintManager, true);
+        return readAndCreateAlgorithm(vrp, config, nuOfThreads, null, stateManager, constraintManager, true, true);
     }
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, AlgorithmConfig config,
@@ -490,8 +490,20 @@ public class VehicleRoutingAlgorithms {
         return readAndCreateAlgorithm(vrp, config.getXMLConfiguration(), nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators);
     }
 
+
+    public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, AlgorithmConfig config,
+                                                                 int nuOfThreads, SolutionCostCalculator solutionCostCalculator, final StateManager stateManager, ConstraintManager constraintManager, boolean addDefaultCostCalculators, boolean addCoreConstraints) {
+        return readAndCreateAlgorithm(vrp, config.getXMLConfiguration(), nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators, addCoreConstraints);
+    }
+
     private static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, XMLConfiguration config,
                                                                   int nuOfThreads, final SolutionCostCalculator solutionCostCalculator, final StateManager stateManager, ConstraintManager constraintManager, boolean addDefaultCostCalculators) {
+
+        return readAndCreateAlgorithm(vrp, config, nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators, true);
+    }
+
+    private static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, XMLConfiguration config,
+                                                                  int nuOfThreads, final SolutionCostCalculator solutionCostCalculator, final StateManager stateManager, ConstraintManager constraintManager, boolean addDefaultCostCalculators, boolean addCoreConstraints) {
         // map to store constructed modules
         TypedMap definedClasses = new TypedMap();
 
@@ -574,6 +586,8 @@ public class VehicleRoutingAlgorithms {
         else costCalculator = solutionCostCalculator;
 
         PrettyAlgorithmBuilder prettyAlgorithmBuilder = PrettyAlgorithmBuilder.newInstance(vrp, vehicleFleetManager, stateManager, constraintManager);
+        if(addCoreConstraints)
+            prettyAlgorithmBuilder.addCoreStateAndConstraintStuff();
         //construct initial solution creator
         final InsertionStrategy initialInsertionStrategy = createInitialSolution(config, vrp, vehicleFleetManager, stateManager, algorithmListeners, definedClasses, executorService, nuOfThreads, costCalculator, constraintManager, addDefaultCostCalculators);
         if (initialInsertionStrategy != null)
