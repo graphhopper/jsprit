@@ -58,6 +58,8 @@ public class PrettyAlgorithmBuilder {
 
     private boolean coreStuff = false;
 
+    private SolutionCostCalculator objectiveFunction = null;
+
     public static PrettyAlgorithmBuilder newInstance(VehicleRoutingProblem vrp, VehicleFleetManager fleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         return new PrettyAlgorithmBuilder(vrp, fleetManager, stateManager, constraintManager);
     }
@@ -88,41 +90,9 @@ public class PrettyAlgorithmBuilder {
 
     public VehicleRoutingAlgorithm build() {
         if (coreStuff) {
-            constraintManager.addTimeWindowConstraint();
-            constraintManager.addLoadConstraint();
-            constraintManager.addSkillsConstraint();
-            constraintManager.addConstraint(new SwitchNotFeasible(stateManager));
-            stateManager.updateLoadStates();
-            stateManager.updateTimeWindowStates();
-            UpdateVehicleDependentPracticalTimeWindows twUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts());
-            twUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
-
-                Map<VehicleTypeKey, Vehicle> uniqueTypes = new HashMap<VehicleTypeKey, Vehicle>();
-
-                @Override
-                public Collection<Vehicle> get(VehicleRoute vehicleRoute) {
-                    if (uniqueTypes.isEmpty()) {
-                        for (Vehicle v : vrp.getVehicles()) {
-                            if (!uniqueTypes.containsKey(v.getVehicleTypeIdentifier())) {
-                                uniqueTypes.put(v.getVehicleTypeIdentifier(), v);
-                            }
-                        }
-                    }
-                    Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-                    vehicles.addAll(uniqueTypes.values());
-                    return vehicles;
-                }
-
-            });
-            stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
-            stateManager.addStateUpdater(twUpdater);
-            stateManager.updateSkillStates();
-
-            stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS, vrp.getActivityCosts()));
-            stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
-            stateManager.addStateUpdater(new UpdateFutureWaitingTimes(stateManager, vrp.getTransportCosts()));
+            AlgorithmUtil.addCoreConstraints(constraintManager,stateManager,vrp);
         }
-        VehicleRoutingAlgorithm vra = new VehicleRoutingAlgorithm(vrp, searchStrategyManager);
+        VehicleRoutingAlgorithm vra = new VehicleRoutingAlgorithm(vrp, searchStrategyManager, objectiveFunction);
         vra.addListener(stateManager);
         RemoveEmptyVehicles removeEmptyVehicles = new RemoveEmptyVehicles(fleetManager);
         ResetAndIniFleetManager resetAndIniFleetManager = new ResetAndIniFleetManager(fleetManager);
@@ -175,4 +145,8 @@ public class PrettyAlgorithmBuilder {
     }
 
 
+    public PrettyAlgorithmBuilder withObjectiveFunction(SolutionCostCalculator objectiveFunction) {
+        this.objectiveFunction = objectiveFunction;
+        return this;
+    }
 }
