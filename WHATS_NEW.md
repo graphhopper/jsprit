@@ -7,8 +7,9 @@ WHATS NEW
 - pushed binaries to maven central, i.e. made it better accessible and we get rid of our own repo
 - outsourced various io operations, e.g. reading writing problem/algorithm to a new module called jsprit-io. this way the core is even more lightweight and less dependent on other libraries
 - switched from log4j to the [logger facade slf4j](http://www.slf4j.org/) to allow developers to plugin the logger of their choice
-- made it much more memory efficient for large problems
-- add priority feature
+- made it [much more memory efficient](https://github.com/graphhopper/jsprit/issues/230) for large problems
+- add [priority feature](https://github.com/graphhopper/jsprit/issues/242)
+- refine Exception to get a clear separation of IllegalArgument and [IllegalState](https://stackoverflow.com/questions/12698275/whats-the-intended-use-of-illegalstateexception)
 
 <b>2016-02-02</b> new release **v1.6.2**
 
