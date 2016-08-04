@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer.Label;
+import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.box.SchrimpfFactory;
@@ -106,8 +107,11 @@ public class SimpleExample {
 		/*
          * plot
 		 */
-//		SolutionPlotter.plotSolutionAsPNG(problem, bestSolution, "output/solution.png", "solution");
+        new Plotter(problem,bestSolution).plot("output/plot.png","simple example");
 
+        /*
+        render problem and solution with GraphStream
+         */
         new GraphStreamViewer(problem, bestSolution).labelWith(Label.ID).setRenderDelay(200).display();
     }
 
