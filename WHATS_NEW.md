@@ -1,6 +1,14 @@
 WHATS NEW
 ==========
 ------------------------------
+<b>??</b> new release **v1.7**
+- move to graphhopper.com 
+- change license from GPLv3 to Apache v2 to make it even more attractive to other developers
+- pushed binaries to maven central, i.e. made it better accessible and we get rid of our own repo
+- outsourced various io operations, e.g. reading writing problem/algorithm to a new module called jsprit-io. this way the core is even more lightweight and less dependent on other libraries
+- made it much more memory efficient for large problems
+- add priority feature
+
 <b>2016-02-02</b> new release **v1.6.2**
 
 <b>Consideration of Waiting Times</b>:
