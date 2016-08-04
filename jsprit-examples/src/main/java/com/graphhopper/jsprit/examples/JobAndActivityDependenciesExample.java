@@ -78,6 +78,9 @@ public class JobAndActivityDependenciesExample {
 
         @Override
         public void visit(TourActivity activity) {
+            String jobId = ((TourActivity.JobActivity) activity).getJob().getId();
+            stateManager.createStateId(jobId);
+            
             if (((TourActivity.JobActivity) activity).getJob().getName().equals("use key")) {
                 stateManager.putProblemState(keyUsedStateId, VehicleRoute.class, route);
             } else if (((TourActivity.JobActivity) activity).getJob().getName().equals("get key")) {
