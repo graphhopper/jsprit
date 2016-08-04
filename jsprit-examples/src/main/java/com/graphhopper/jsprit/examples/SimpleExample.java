@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.examples;
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer.Label;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.box.SchrimpfFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -86,7 +87,7 @@ public class SimpleExample {
 		/*
          * get the algorithm out-of-the-box.
 		 */
-        VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
+        VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
 
 		/*
          * and search a solution
