@@ -50,15 +50,15 @@
     </prerequisites>
 
     <scm>
-        <connection>scm:git:git@github.com:jsprit/jsprit.git</connection>
-        <developerConnection>scm:git:https://github.com/jsprit/jsprit.git</developerConnection>
-        <url>http://github.com/jsprit/jsprit/tree/master</url>
+        <connection>scm:git:git@github.com:graphhopper/jsprit.git</connection>
+        <developerConnection>scm:git:https://github.com/graphhopper/jsprit.git</developerConnection>
+        <url>http://github.com/graphhopper/jsprit/tree/master</url>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/jsprit/jsprit/issues</url>
+        <url>https://github.com/graphhopper/jsprit/issues</url>
     </issueManagement>
 
     <modules>
@@ -183,7 +183,7 @@
         </dependency>
 
     </dependencies>
-    
+
     <!--
     <distributionManagement>
         <snapshotRepository>
@@ -197,14 +197,14 @@
         </repository>
     </distributionManagement>
     -->
-    
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
-    </distributionManagement> 
-    
+    </distributionManagement>
+
     <!-- mvn clean deploy -P release -->
     <profiles>
         <profile>
@@ -239,7 +239,7 @@
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
-            
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
