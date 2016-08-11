@@ -17,7 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -34,7 +33,6 @@ import static org.junit.Assert.assertEquals;
 public class CVRPwithDeliveries_IT {
 
     @Test
-    @Category(IntegrationTest.class)
     public void whenSolvingVRPNC1withDeliveriesWithJsprit_solutionsMustNoBeWorseThan5PercentOfBestKnownSolution() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(vrpBuilder).setJobType(JobType.DELIVERY).read(getClass().getResourceAsStream("vrpnc1.txt"));

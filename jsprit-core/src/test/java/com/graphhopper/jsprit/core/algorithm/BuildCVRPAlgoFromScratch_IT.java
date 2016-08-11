@@ -17,7 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
 import com.graphhopper.jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
 import com.graphhopper.jsprit.core.algorithm.recreate.BestInsertionBuilder;
@@ -98,7 +97,6 @@ public class BuildCVRPAlgoFromScratch_IT {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void testVRA() {
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);

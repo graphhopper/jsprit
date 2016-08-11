@@ -18,7 +18,7 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
@@ -97,7 +97,6 @@ public class VariableDepartureAndWaitingTime_IT {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void plainSetupShouldWork() {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10, 0)).build();
@@ -114,7 +113,6 @@ public class VariableDepartureAndWaitingTime_IT {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void withTimeWindowsShouldWork() {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         Service s1 = Service.Builder.newInstance("s1").setTimeWindow(TimeWindow.newInstance(1010, 1100)).setLocation(Location.newInstance(10, 0)).build();

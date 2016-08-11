@@ -18,7 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -36,7 +35,6 @@ import java.util.Collection;
 public class Solomon_IT {
 
     @Test
-    @Category(IntegrationTest.class)
     public void itShouldFindTheBestKnownSolution() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(vrpBuilder).read(getClass().getResourceAsStream("C101.txt"));

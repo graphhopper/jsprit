@@ -17,7 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -45,7 +44,6 @@ public class CVRPwithMatrix_IT {
 
 
     @Test
-    @Category(IntegrationTest.class)
     public void whenReturnToDepot_itShouldWorkWithMatrix() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(vrpBuilder).setJobType(JobType.DELIVERY).read(getClass().getResourceAsStream("vrpnc1.txt"));
@@ -58,7 +56,6 @@ public class CVRPwithMatrix_IT {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void whenNotReturnToDepot_itShouldWorkWithMatrix() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(vrpBuilder).setJobType(JobType.DELIVERY).read(getClass().getResourceAsStream("vrpnc1.txt"));
@@ -74,7 +71,6 @@ public class CVRPwithMatrix_IT {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void whenCalcTimeWithSolutionAnalyser_itShouldWork() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(vrpBuilder).setJobType(JobType.DELIVERY).read(getClass().getResourceAsStream("vrpnc1.txt"));

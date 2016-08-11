@@ -35,7 +35,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.ManhattanCosts;
 import com.graphhopper.jsprit.core.util.TestUtils;
@@ -1322,7 +1321,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationOnRoute_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1338,7 +1336,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAtEnd_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1402,7 +1399,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterAct1_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1418,7 +1414,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterAct2_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1434,7 +1429,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterAct3_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1450,7 +1444,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterAct4_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1466,7 +1459,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterAct5_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1482,7 +1474,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterAct6_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1498,7 +1489,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterAct7_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1514,7 +1504,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterAct8_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1530,7 +1519,6 @@ public class SolutionAnalyserTest {
     @Test
     public void capacityViolationAfterEnd_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1639,7 +1627,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolation_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1655,7 +1642,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtStart_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1671,7 +1657,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtAct1_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1687,7 +1672,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtAct2_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1703,7 +1687,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtAct3_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1719,7 +1702,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtAct4_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1735,7 +1717,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtAct5_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1751,7 +1732,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtAct6_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1767,7 +1747,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtAct7_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1783,7 +1762,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtAct8_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1799,7 +1777,6 @@ public class SolutionAnalyserTest {
     @Test
     public void timeWindowViolationAtEnd_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1815,8 +1792,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolation_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
-
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
@@ -1831,8 +1806,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtStart_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
-
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
@@ -1848,7 +1821,6 @@ public class SolutionAnalyserTest {
     public void backhaulViolationAtAct1_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
 
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1864,7 +1836,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtAct2_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1880,7 +1851,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtAct3_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1896,7 +1866,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtAct4_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1912,7 +1881,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtAct5_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1928,7 +1896,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtAct6_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1944,7 +1911,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtAct7_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1960,7 +1926,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtAct8_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1976,7 +1941,6 @@ public class SolutionAnalyserTest {
     @Test
     public void backhaulViolationAtEnd_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -1992,7 +1956,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtStart_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2008,7 +1971,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtAct1_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2024,7 +1986,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtAct2_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2040,7 +2001,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtAct3_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2056,7 +2016,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtAct4_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2072,7 +2031,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtAct5_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2088,7 +2046,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtAct6_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2104,7 +2061,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtAct7_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2120,7 +2076,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtAct8_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2136,7 +2091,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolationAtEnd_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2152,7 +2106,6 @@ public class SolutionAnalyserTest {
     @Test
     public void shipmentViolation_shouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2169,10 +2122,8 @@ public class SolutionAnalyserTest {
     public void shipmentViolation_shouldWorkWhenViolated() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         VehicleRoute route = solution.getRoutes().iterator().next();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity deliverShipment = route.getActivities().get(2);
         route.getTourActivities().removeActivity(deliverShipment);
-//        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2189,11 +2140,8 @@ public class SolutionAnalyserTest {
     public void shipmentViolationAtActivity_shouldWorkWhenRemovingDelivery() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         VehicleRoute route = solution.getRoutes().iterator().next();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity deliverShipment = route.getActivities().get(2);
         route.getTourActivities().removeActivity(deliverShipment);
-//        assertFalse(route.getTourActivities().hasActivity(pickupShipment));
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2210,11 +2158,9 @@ public class SolutionAnalyserTest {
     public void shipmentViolation_shouldWorkWhenRemovingDelivery() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         VehicleRoute route = solution.getRoutes().iterator().next();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity deliverShipment = route.getActivities().get(2);
         route.getTourActivities().removeActivity(deliverShipment);
         assertFalse(route.getActivities().contains(deliverShipment));
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2231,11 +2177,9 @@ public class SolutionAnalyserTest {
     public void shipmentViolationAtActivity_shouldWorkWhenRemovingPickup() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         VehicleRoute route = solution.getRoutes().iterator().next();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity pickupShipment = route.getActivities().get(1);
         route.getTourActivities().removeActivity(pickupShipment);
         assertFalse(route.getActivities().contains(pickupShipment));
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2252,11 +2196,9 @@ public class SolutionAnalyserTest {
     public void shipmentViolationOnRoute_shouldWorkWhenRemovingPickup() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         VehicleRoute route = solution.getRoutes().iterator().next();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity pickupShipment = route.getActivities().get(1);
         route.getTourActivities().removeActivity(pickupShipment);
         assertFalse(route.getActivities().contains(pickupShipment));
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
@@ -2273,11 +2215,9 @@ public class SolutionAnalyserTest {
     public void shipmentViolationOnSolution_shouldWorkWhenRemovingPickup() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         VehicleRoute route = solution.getRoutes().iterator().next();
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         TourActivity pickupShipment = route.getActivities().get(1);
         route.getTourActivities().removeActivity(pickupShipment);
         assertFalse(route.getActivities().contains(pickupShipment));
-        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override

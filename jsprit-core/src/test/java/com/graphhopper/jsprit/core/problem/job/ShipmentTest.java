@@ -25,8 +25,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.*;
-import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 
 public class ShipmentTest {
 

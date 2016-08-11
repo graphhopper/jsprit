@@ -84,7 +84,7 @@
     <properties>
         <jdkVersion>1.7</jdkVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>4.10</junit.version>
+        <junit.version>4.12</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <hamcrest.version>1.3</hamcrest.version>
         <logger.version>1.7.21</logger.version>
@@ -110,78 +110,13 @@
             </testResource>
         </testResources>
 
-       <!--<pluginManagement>-->
-            <!--<plugins>-->
-                <!--<plugin>-->
-                    <!--<groupId>org.eclipse.m2e</groupId>-->
-                    <!--<artifactId>lifecycle-mapping</artifactId>-->
-                    <!--<version>1.0.0</version>-->
-                    <!--<configuration>-->
-                        <!--<lifecycleMappingMetadata>-->
-                            <!--<pluginExecutions>-->
-                                <!--<pluginExecution>-->
-                                    <!--<pluginExecutionFilter>-->
-                                        <!--<groupId>org.apache.maven.plugins</groupId>-->
-                                        <!--<artifactId>maven-enforcer-plugin</artifactId>-->
-                                        <!--<versionRange>[1.0.0,)</versionRange>-->
-                                        <!--<goals>-->
-                                            <!--<goal>enforce</goal>-->
-                                        <!--</goals>-->
-                                    <!--</pluginExecutionFilter>-->
-                                    <!--<action>-->
-                                        <!--<ignore />-->
-                                    <!--</action>-->
-                                <!--</pluginExecution>-->
-                            <!--</pluginExecutions>-->
-                        <!--</lifecycleMappingMetadata>-->
-                    <!--</configuration>-->
-                <!--</plugin>-->
-            <!--</plugins>-->
-        <!--</pluginManagement>-->
+
         <plugins>
-
-            <!--<plugin>-->
-                <!--<artifactId>maven-enforcer-plugin</artifactId>-->
-                <!--<version>1.3.1</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>enforce-versions</id>-->
-                        <!--<phase>initialize</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>enforce</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<fail>true</fail>-->
-                            <!--<rules>-->
-                                <!--<requireMavenVersion>-->
-                                    <!--Some plugin features require a recent Maven runtime to work properly-->
-                                    <!--<message>Current version of Maven ${maven.version} required to build the project-->
-                                        <!--should be ${project.prerequisites.maven}, or higher!-->
-                                    <!--</message>-->
-                                    <!--<version>[${project.prerequisites.maven},)</version>-->
-                                <!--</requireMavenVersion>-->
-                                <!--<requireJavaVersion>-->
-                                    <!--<message>Current JDK version ${java.version} should be ${jdkVersion}, or higher!-->
-                                    <!--</message>-->
-                                    <!--<version>${jdkVersion}</version>-->
-                                <!--</requireJavaVersion>-->
-                            <!--</rules>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
-                    <!--
-                    <compilerArgument>-Xlint:unchecked</compilerArgument>
-                    <compilerArgument>-Xlint:deprecation</compilerArgument>
-                    -->
-
-                    <!-- suppress warning about Unsafe functionality -->
                     <compilerArgument>-XDignore.symbol.file</compilerArgument>
                     <fork>true</fork>
                     <source>${jdkVersion}</source>
@@ -201,7 +136,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.19</version>
+                <version>2.19.1</version>
                 <executions>
                     <execution>
                         <goals>

@@ -39,7 +39,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
-import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
 import junit.framework.Assert;
@@ -241,7 +240,6 @@ public class RegretInsertionTest {
             .buildAlgorithm();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
-        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
         for(VehicleRoute route : solution.getRoutes()){
             if(route.getTourActivities().servesJob(s1)){
                 if(!route.getTourActivities().servesJob(s2)){
@@ -283,7 +281,6 @@ public class RegretInsertionTest {
             .buildAlgorithm();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
-        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
         for(VehicleRoute route : solution.getRoutes()){
             if(route.getTourActivities().servesJob(s1)){
                 if(!route.getTourActivities().servesJob(s2)){

@@ -29,7 +29,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.ManhattanCosts;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Assert;
@@ -92,7 +91,6 @@ public class CapacityConstraint_IT {
         vra.setMaxIterations(2000);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
 
-        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
         SolutionAnalyser sa = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {

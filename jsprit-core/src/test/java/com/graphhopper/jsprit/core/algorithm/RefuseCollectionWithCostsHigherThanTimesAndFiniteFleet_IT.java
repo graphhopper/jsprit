@@ -17,7 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
 import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -26,7 +25,6 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import org.junit.Test;
@@ -44,7 +42,6 @@ import static org.junit.Assert.assertEquals;
 public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
 
     @Test
-    @Category(IntegrationTest.class)
     public void testAlgo() {
 
 
@@ -89,8 +86,6 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
 //        vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-
-        SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
 
         assertEquals(2. * 397., Solutions.bestOf(solutions).getCost(), 0.01);
         assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());

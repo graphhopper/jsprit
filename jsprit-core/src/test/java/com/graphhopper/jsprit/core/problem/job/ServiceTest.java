@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.*;
-import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 
 public class ServiceTest {
 

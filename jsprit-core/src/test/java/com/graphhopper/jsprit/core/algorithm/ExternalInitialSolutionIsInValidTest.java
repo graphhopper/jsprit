@@ -25,8 +25,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
+import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -54,10 +54,13 @@ public class ExternalInitialSolutionIsInValidTest {
 
         vra.addInitialSolution(new VehicleRoutingProblemSolution(Arrays.asList(route1), 20.));
 
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-
-        SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
-
+        try {
+            vra.searchSolutions();
+            Assert.assertTrue(true);
+        }
+        catch (Exception e){
+            Assert.assertFalse(true);
+        }
 
     }
 

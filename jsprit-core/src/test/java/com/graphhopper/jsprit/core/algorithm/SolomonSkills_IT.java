@@ -18,7 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -45,7 +44,6 @@ import static org.junit.Assert.*;
 public class SolomonSkills_IT {
 
     @Test
-    @Category(IntegrationTest.class)
     public void itShouldMakeCorrectAssignmentAccordingToSkills() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(vrpBuilder).read(getClass().getResourceAsStream("C101.txt"));

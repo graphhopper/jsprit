@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.IntegrationTest;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.box.SchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
@@ -29,7 +29,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
+
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import org.junit.Assert;
@@ -47,7 +47,6 @@ public class RefuseCollection_IT {
 
 
     @Test
-    @Category(IntegrationTest.class)
     public void whenReadingServices_itShouldCalculateCorrectly() {
 
 		/*
@@ -85,14 +84,11 @@ public class RefuseCollection_IT {
         vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
-
         Assert.assertEquals(397.0, Solutions.bestOf(solutions).getCost(), 40.);
         Assert.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void whenReadingServices_usingJsprit_itShouldCalculateCorrectly() {
 
 		/*
@@ -130,14 +126,11 @@ public class RefuseCollection_IT {
         vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
-
         Assert.assertEquals(397.0, Solutions.bestOf(solutions).getCost(), 40.);
         Assert.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void whenReadingPickups_itShouldCalculateCorrectly() {
 
 		/*
@@ -175,14 +168,11 @@ public class RefuseCollection_IT {
         vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
-
         Assert.assertEquals(397.0, Solutions.bestOf(solutions).getCost(), 40.);
         Assert.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void whenReadingDeliveries_itShouldCalculateCorrectly() {
 
 		/*
@@ -219,8 +209,6 @@ public class RefuseCollection_IT {
         VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         vra.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-
-        SolutionPrinter.print(vrp, Solutions.bestOf(solutions), SolutionPrinter.Print.VERBOSE);
 
         Assert.assertEquals(397.0, Solutions.bestOf(solutions).getCost(), 40.);
         Assert.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
