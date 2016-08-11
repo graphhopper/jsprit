@@ -179,20 +179,6 @@
 
     </dependencies>
 
-    <!--
-    <distributionManagement>
-        <snapshotRepository>
-            <id>jsprit-snapshots</id>
-            <url>https://github.com/jsprit/mvn-rep/raw/master/snapshots</url>
-        </snapshotRepository>
-
-        <repository>
-            <id>jsprit-releases</id>
-            <url>https://github.com/jsprit/mvn-rep/raw/master/releases</url>
-        </repository>
-    </distributionManagement>
-    -->
-
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
