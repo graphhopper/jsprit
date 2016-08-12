@@ -18,11 +18,10 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
@@ -32,17 +31,14 @@ import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivity
  */
 public class VehicleRouteDurationConstraints implements HardActivityConstraint {
 
-    private RouteAndActivityStateGetter states;
+    private RouteAndActivityStateGetter stateManager;
 
     private VehicleRoutingTransportCosts routingCosts;
 
-    private VehicleRoutingActivityCosts activityCosts;
-
-    public VehicleRouteDurationConstraints(RouteAndActivityStateGetter states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
+    public VehicleRouteDurationConstraints(RouteAndActivityStateGetter stateManager, VehicleRoutingTransportCosts routingCosts) {
         super();
-        this.states = states;
+        this.stateManager = stateManager;
         this.routingCosts = routingCosts;
-        this.activityCosts = activityCosts;
     }
 
     @Override
@@ -50,41 +46,61 @@ public class VehicleRouteDurationConstraints implements HardActivityConstraint {
         if(iFacts.getNewVehicle().getMaximumRouteDuration() == null)
             return ConstraintsStatus.FULFILLED;
 
+        Double oldDuration = 0.0;
+        
+        if (!iFacts.getRoute().isEmpty()) {
+            double routeEndTime = iFacts.getRoute().getEnd().getArrTime();
+            double routeRealStartTime = this.stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXIMUM_ROUTE_DURATION, Double.class);
+            oldDuration = routeEndTime - routeRealStartTime;
+        }
+        
         double maximumVehicleDuration = iFacts.getNewVehicle().getMaximumRouteDuration();
-        
-        double routeDurationIncrease;
-        double oldDuration = iFacts.getRoute().getEnd().getArrTime() - iFacts.getRoute().getStart().getEndTime();
-        
-        if (oldDuration > maximumVehicleDuration)
+
+        if (oldDuration > maximumVehicleDuration && !(prevAct instanceof Start))
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
 
         double tp_time_prevAct_newAct = this.routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double newAct_arrTime = prevActDepTime + tp_time_prevAct_newAct;
-        double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,newAct_arrTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double newAct_startTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime());
+
+        double newAct_endTime = newAct_startTime + newAct.getOperationTime();
+        double routeDurationIncrease = 0.0;
         
+        if (prevAct instanceof Start) {
+            double tp_time_start_newAct_backward = this.routingCosts.getBackwardTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double newRouteRealStartTime = newAct_startTime - tp_time_start_newAct_backward;
+            if (iFacts.getRoute().isEmpty())
+                routeDurationIncrease += prevActDepTime - newRouteRealStartTime;
+            else
+                routeDurationIncrease += this.stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXIMUM_ROUTE_DURATION, Double.class) - newRouteRealStartTime;
+        }
         if (nextAct instanceof End && !iFacts.getNewVehicle().isReturnToDepot()) {
-            routeDurationIncrease = newAct_endTime - prevActDepTime;
+            routeDurationIncrease += newAct_endTime - prevActDepTime;
         }
         else {
             double tp_time_newAct_nextAct = this.routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
             double nextAct_arrTime = newAct_endTime + tp_time_newAct_nextAct;
-            double nextAct_endTime = Math.max(nextAct_arrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextAct_arrTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
-            
+            double endTime_nextAct_new = Math.max(nextAct_arrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + nextAct.getOperationTime();
+
             double arrTime_nextAct = prevActDepTime + this.routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
-            double endTime_nextAct_old = Math.max(arrTime_nextAct, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,arrTime_nextAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
-            
-            double endTimeDelay_nextAct = Math.max(0., nextAct_endTime - endTime_nextAct_old);
-            Double futureWaiting = states.getActivityState(nextAct, iFacts.getRoute().getVehicle(), InternalStates.FUTURE_WAITING, Double.class);
+            double endTime_nextAct_old = Math.max(arrTime_nextAct, nextAct.getTheoreticalEarliestOperationStartTime()) + nextAct.getOperationTime();
+
+            double endTimeDelay_nextAct = Math.max(0.0D, endTime_nextAct_new - endTime_nextAct_old);
+            Double futureWaiting = this.stateManager.getActivityState(nextAct, iFacts.getRoute().getVehicle(), InternalStates.FUTURE_WAITING, Double.class);
             if(futureWaiting == null) {
-                futureWaiting = 0.;
+                futureWaiting = Double.valueOf(0.0D);
             }
-            routeDurationIncrease = Math.max(0, endTimeDelay_nextAct - futureWaiting);
+
+            routeDurationIncrease += Math.max(0, endTimeDelay_nextAct - futureWaiting);
         }
 
-        double newDuration = oldDuration + routeDurationIncrease;
-        if (newDuration > iFacts.getNewVehicle().getMaximumRouteDuration())
+        Double newDuration = oldDuration + routeDurationIncrease;
+
+        if (newDuration > maximumVehicleDuration)
             return ConstraintsStatus.NOT_FULFILLED;
-        return ConstraintsStatus.FULFILLED;
+        else
+            return ConstraintsStatus.FULFILLED;
+
     }
 }
 

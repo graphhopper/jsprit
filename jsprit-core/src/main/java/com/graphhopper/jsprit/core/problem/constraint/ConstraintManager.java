@@ -139,7 +139,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
                 if(vehc.getMaximumRouteDuration() != null)
                     useConstraint = true;
             if(useConstraint)
-                addConstraint(new VehicleRouteDurationConstraints(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()), Priority.HIGH);
+                addConstraint(new VehicleRouteDurationConstraints(stateManager, vrp.getTransportCosts()), Priority.HIGH);
             routeDurationConstraintsSet = true;
         }
     }
