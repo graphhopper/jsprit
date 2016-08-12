@@ -164,7 +164,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         return "[type=" + getName() + "][location=" + getLocation()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override
@@ -190,6 +191,11 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     @Override
     public Capacity getSize() {
         return aBreak.getSize();
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return aBreak.getSetupDuration();
     }
 
 

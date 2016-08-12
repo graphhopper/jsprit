@@ -36,7 +36,6 @@ public final class End extends AbstractActivity implements TourActivity {
 
     private double endTime = -1;
 
-
     private double theoretical_earliestOperationStartTime;
 
     private double theoretical_latestOperationStartTime;
@@ -143,6 +142,11 @@ public final class End extends AbstractActivity implements TourActivity {
     @Override
     public Capacity getSize() {
         return capacity;
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return 0.;
     }
 
 }

@@ -149,4 +149,9 @@ public final class Start extends AbstractActivity implements TourActivity {
         return capacity;
     }
 
+    @Override
+    public double getSetupDuration() {
+        return 0.;
+    }
+
 }

@@ -89,6 +89,11 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     }
 
     @Override
+    public double getSetupDuration() {
+        return shipment.getDeliverySetupDuration();
+    }
+
+    @Override
     public double getOperationTime() {
         return shipment.getDeliveryServiceTime();
     }
@@ -122,7 +127,8 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override

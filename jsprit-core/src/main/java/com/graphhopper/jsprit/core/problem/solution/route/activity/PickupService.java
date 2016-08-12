@@ -122,12 +122,18 @@ public final class PickupService extends AbstractActivity implements PickupActiv
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override
     public Capacity getSize() {
         return pickup.getSize();
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return pickup.getSetupDuration();
     }
 
 }

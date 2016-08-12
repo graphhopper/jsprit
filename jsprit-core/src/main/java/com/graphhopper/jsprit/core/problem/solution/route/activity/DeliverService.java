@@ -122,11 +122,17 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override
     public Capacity getSize() {
         return capacity;
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return delivery.getSetupDuration();
     }
 }

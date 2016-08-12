@@ -156,7 +156,8 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override
@@ -172,6 +173,11 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     @Override
     public Capacity getSize() {
         return service.getSize();
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return service.getSetupDuration();
     }
 
 
