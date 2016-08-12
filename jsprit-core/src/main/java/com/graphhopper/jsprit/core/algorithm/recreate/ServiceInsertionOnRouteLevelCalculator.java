@@ -190,8 +190,8 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
             /**
              * calculate transport and activity costs with new vehicle (without inserting k)
              */
-            double transportCost_prevAct_nextAct_newVehicle = transportCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
-            double transportTime_prevAct_nextAct_newVehicle = transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, newDriver, newVehicle);
+            double transportCost_prevAct_nextAct_newVehicle = transportCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, nextAct.getSetupDuration(), newDriver, newVehicle);
+            double transportTime_prevAct_nextAct_newVehicle = transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime_newVehicle, nextAct.getSetupDuration(), newDriver, newVehicle);
             double arrTime_nextAct_newVehicle = prevActDepTime_newVehicle + transportTime_prevAct_nextAct_newVehicle;
             double activityCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct_newVehicle, newDriver, newVehicle);
 

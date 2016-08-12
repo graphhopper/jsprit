@@ -49,7 +49,7 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts im
     }
 
     @Override
-    public double getTransportCost(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
+    public double getTransportCost(Location from, Location to, double time, double setupDuration, Driver driver, Vehicle vehicle) {
         double distance;
         try {
             distance = calculateDistance(from, to);
@@ -60,6 +60,8 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts im
         if (vehicle != null) {
             if (vehicle.getType() != null) {
                 costs = distance * vehicle.getType().getVehicleCostParams().perDistanceUnit;
+                if (!from.equals(to))
+                    costs += setupDuration * vehicle.getCoefSetupTime() * vehicle.getType().getVehicleCostParams().perSetupTimeUnit;
             }
         }
         return costs;
@@ -84,14 +86,17 @@ public class CrowFlyCosts extends AbstractForwardVehicleRoutingTransportCosts im
     }
 
     @Override
-    public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
+    public double getTransportTime(Location from, Location to, double time, double setupDuration, Driver driver, Vehicle vehicle) {
         double distance;
         try {
             distance = calculateDistance(from, to);
         } catch (NullPointerException e) {
             throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
         }
-        return distance / speed;
+        double currentSetupDuration = 0.;
+        if (!from.equals(to))
+            currentSetupDuration = setupDuration * vehicle.getCoefSetupTime();
+        return distance / speed + currentSetupDuration;
     }
 
     @Override

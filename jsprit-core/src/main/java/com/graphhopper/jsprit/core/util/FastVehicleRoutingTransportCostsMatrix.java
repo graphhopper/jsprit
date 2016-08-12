@@ -136,11 +136,14 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
     }
 
     @Override
-    public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+    public double getTransportTime(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
         if (from.getIndex() < 0 || to.getIndex() < 0)
             throw new IllegalArgumentException("index of from " + from + " to " + to + " < 0 ");
         int timeIndex = 1;
-        return get(from.getIndex(), to.getIndex(), timeIndex);
+        double currentSetupDuration = 0.;
+        if (!from.equals(to) && vehicle != null)
+            currentSetupDuration = setupDuration * vehicle.getCoefSetupTime();
+        return get(from.getIndex(), to.getIndex(), timeIndex) + currentSetupDuration;
     }
 
     private double get(int from, int to, int indicatorIndex) {
@@ -172,12 +175,15 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
     }
 
     @Override
-    public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+    public double getTransportCost(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
         if (from.getIndex() < 0 || to.getIndex() < 0)
             throw new IllegalArgumentException("index of from " + from + " to " + to + " < 0 ");
         if (vehicle == null) return getDistance(from.getIndex(), to.getIndex());
         VehicleTypeImpl.VehicleCostParams costParams = vehicle.getType().getVehicleCostParams();
-        return costParams.perDistanceUnit * getDistance(from.getIndex(), to.getIndex()) + costParams.perTransportTimeUnit * getTransportTime(from, to, departureTime, driver, vehicle);
+        double setupCost = 0.;
+        if (!from.equals(to))
+            setupCost += setupDuration * vehicle.getCoefSetupTime() * vehicle.getType().getVehicleCostParams().perSetupTimeUnit;
+        return costParams.perDistanceUnit * getDistance(from.getIndex(), to.getIndex()) + costParams.perTransportTimeUnit * getTransportTime(from, to, departureTime, 0., driver, vehicle) + setupCost;
     }
 
     public int getNoLocations() {

@@ -23,6 +23,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 public interface ForwardTransportCost {
 
-    public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle);
+    public double getTransportCost(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle);
 
 }

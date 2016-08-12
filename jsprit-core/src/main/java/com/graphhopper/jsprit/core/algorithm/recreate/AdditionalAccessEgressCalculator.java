@@ -54,8 +54,8 @@ class AdditionalAccessEgressCalculator {
         Driver newDriver = insertionContext.getNewDriver();
         double newVehicleDepartureTime = insertionContext.getNewDepTime();
         if (!currentRoute.isEmpty()) {
-            double accessTransportCostNew = routingCosts.getTransportCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
-            double accessTransportCostOld = routingCosts.getTransportCost(currentRoute.getStart().getLocation(), currentRoute.getActivities().get(0).getLocation(), currentRoute.getDepartureTime(), currentRoute.getDriver(), currentRoute.getVehicle());
+            double accessTransportCostNew = routingCosts.getTransportCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, currentRoute.getActivities().get(0).getSetupDuration(), newDriver, newVehicle);
+            double accessTransportCostOld = routingCosts.getTransportCost(currentRoute.getStart().getLocation(), currentRoute.getActivities().get(0).getLocation(), currentRoute.getDepartureTime(), currentRoute.getActivities().get(0).getSetupDuration(), currentRoute.getDriver(), currentRoute.getVehicle());
 
             delta_access = accessTransportCostNew - accessTransportCostOld;
 
@@ -63,8 +63,8 @@ class AdditionalAccessEgressCalculator {
                 TourActivity lastActivityBeforeEndOfRoute = currentRoute.getActivities().get(currentRoute.getActivities().size() - 1);
                 double lastActivityEndTimeWithOldVehicleAndDepartureTime = lastActivityBeforeEndOfRoute.getEndTime();
                 double lastActivityEndTimeEstimationWithNewVehicleAndNewDepartureTime = Math.max(0.0, lastActivityEndTimeWithOldVehicleAndDepartureTime + (newVehicleDepartureTime - currentRoute.getDepartureTime()));
-                double egressTransportCostNew = routingCosts.getTransportCost(lastActivityBeforeEndOfRoute.getLocation(), newVehicle.getEndLocation(), lastActivityEndTimeEstimationWithNewVehicleAndNewDepartureTime, newDriver, newVehicle);
-                double egressTransportCostOld = routingCosts.getTransportCost(lastActivityBeforeEndOfRoute.getLocation(), currentRoute.getEnd().getLocation(), lastActivityEndTimeWithOldVehicleAndDepartureTime, currentRoute.getDriver(), currentRoute.getVehicle());
+                double egressTransportCostNew = routingCosts.getTransportCost(lastActivityBeforeEndOfRoute.getLocation(), newVehicle.getEndLocation(), lastActivityEndTimeEstimationWithNewVehicleAndNewDepartureTime, 0., newDriver, newVehicle);
+                double egressTransportCostOld = routingCosts.getTransportCost(lastActivityBeforeEndOfRoute.getLocation(), currentRoute.getEnd().getLocation(), lastActivityEndTimeWithOldVehicleAndDepartureTime, 0., currentRoute.getDriver(), currentRoute.getVehicle());
 
                 delta_egress = egressTransportCostNew - egressTransportCostOld;
             }

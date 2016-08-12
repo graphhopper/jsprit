@@ -769,11 +769,11 @@ public class Jsprit {
                     TourActivity prevAct = route.getStart();
                     for (TourActivity act : route.getActivities()) {
                         if (act instanceof BreakActivity) hasBreak = true;
-                        costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+                        costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), act.getSetupDuration(), route.getDriver(), route.getVehicle());
                         costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                         prevAct = act;
                     }
-                    costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+                    costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), 0., route.getDriver(), route.getVehicle());
                     if (route.getVehicle().getBreak() != null) {
                         if (!hasBreak) {
                             //break defined and required but not assigned penalty
