@@ -282,19 +282,19 @@ public class VehicleRoutingProblemTest {
 
             @Override
             public double getTransportTime(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
+                                           double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return 0;
             }
 
             @Override
             public double getTransportCost(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
+                                           double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return 4.0;
             }
         });
 
         VehicleRoutingProblem problem = builder.build();
-        assertEquals(4.0, problem.getTransportCosts().getTransportCost(loc(""), loc(""), 0.0, null, null), 0.01);
+        assertEquals(4.0, problem.getTransportCosts().getTransportCost(loc(""), loc(""), 0.0, 0., null, null), 0.01);
     }
 
     private Location loc(String i) {

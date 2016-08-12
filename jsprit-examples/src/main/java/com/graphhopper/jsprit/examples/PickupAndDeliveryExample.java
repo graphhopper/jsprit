@@ -104,7 +104,7 @@ public class PickupAndDeliveryExample {
 
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
 
         });

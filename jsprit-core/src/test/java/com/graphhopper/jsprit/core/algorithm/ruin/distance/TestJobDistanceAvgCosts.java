@@ -31,20 +31,20 @@ public class TestJobDistanceAvgCosts {
         VehicleRoutingTransportCosts costs = new VehicleRoutingTransportCosts() {
 
             @Override
-            public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
+            public double getBackwardTransportTime(Location from, Location to, double arrivalTime, double setupDuration, Driver driver, Vehicle vehicle) {
 
                 return 0;
             }
 
             @Override
             public double getBackwardTransportCost(Location from, Location to,
-                                                   double arrivalTime, Driver driver, Vehicle vehicle) {
+                                                   double arrivalTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return 0;
             }
 
             @Override
             public double getTransportCost(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
+                                           double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 @SuppressWarnings("unused")
                 String vehicleId = vehicle.getId();
                 return 0;
@@ -52,7 +52,7 @@ public class TestJobDistanceAvgCosts {
 
             @Override
             public double getTransportTime(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
+                                           double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return 0;
             }
         };
@@ -66,20 +66,20 @@ public class TestJobDistanceAvgCosts {
         VehicleRoutingTransportCosts costs = new VehicleRoutingTransportCosts() {
 
             @Override
-            public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
+            public double getBackwardTransportTime(Location from, Location to, double arrivalTime, double setupDuration, Driver driver, Vehicle vehicle) {
 
                 return 0;
             }
 
             @Override
             public double getBackwardTransportCost(Location from, Location to,
-                                                   double arrivalTime, Driver driver, Vehicle vehicle) {
+                                                   double arrivalTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return 0;
             }
 
             @Override
             public double getTransportCost(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
+                                           double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 @SuppressWarnings("unused")
                 String vehicleId = vehicle.getId();
                 return 0;
@@ -87,7 +87,7 @@ public class TestJobDistanceAvgCosts {
 
             @Override
             public double getTransportTime(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
+                                           double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return 0;
             }
         };

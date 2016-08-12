@@ -77,12 +77,12 @@ public class TestLocalActivityInsertionCostsCalculator {
         when(vehicle.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type").build());
 
         tpCosts = mock(VehicleRoutingTransportCosts.class);
-        when(tpCosts.getTransportCost(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(2.0);
-        when(tpCosts.getTransportTime(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
-        when(tpCosts.getTransportCost(loc("i"), loc("k"), 0.0, null, vehicle)).thenReturn(3.0);
-        when(tpCosts.getTransportTime(loc("i"), loc("k"), 0.0, null, vehicle)).thenReturn(0.0);
-        when(tpCosts.getTransportCost(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(3.0);
-        when(tpCosts.getTransportTime(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
+        when(tpCosts.getTransportCost(loc("i"), loc("j"), 0.0, 0., null, vehicle)).thenReturn(2.0);
+        when(tpCosts.getTransportTime(loc("i"), loc("j"), 0.0, 0., null, vehicle)).thenReturn(0.0);
+        when(tpCosts.getTransportCost(loc("i"), loc("k"), 0.0, 0., null, vehicle)).thenReturn(3.0);
+        when(tpCosts.getTransportTime(loc("i"), loc("k"), 0.0, 0., null, vehicle)).thenReturn(0.0);
+        when(tpCosts.getTransportCost(loc("k"), loc("j"), 0.0, 0., null, vehicle)).thenReturn(3.0);
+        when(tpCosts.getTransportTime(loc("k"), loc("j"), 0.0, 0., null, vehicle)).thenReturn(0.0);
 
         actCosts = new WaitingTimeCosts();
         calc = new LocalActivityInsertionCostsCalculator(tpCosts, actCosts, mock(StateManager.class));

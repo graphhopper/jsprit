@@ -148,20 +148,20 @@ public class Figliozzi {
         }
 
         @Override
-        public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+        public double getTransportCost(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
             return transportDistanceParameter * EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) +
-                transportTimeParameter * getTransportTime(from, to, departureTime, driver, vehicle);
+                transportTimeParameter * getTransportTime(from, to, departureTime, setupDuration, driver, vehicle);
         }
 
         @Override
-        public double getBackwardTransportCost(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
+        public double getBackwardTransportCost(Location from, Location to, double arrivalTime, double setupDuration, Driver driver, Vehicle vehicle) {
             return transportDistanceParameter * EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) +
-                transportTimeParameter * getBackwardTransportTime(from, to, arrivalTime, driver, vehicle);
+                transportTimeParameter * getBackwardTransportTime(from, to, arrivalTime, setupDuration, driver, vehicle);
         }
 
 
         @Override
-        public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+        public double getTransportTime(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
             if (from.equals(to)) {
                 return 0.0;
             }
@@ -187,7 +187,7 @@ public class Figliozzi {
 
 
         @Override
-        public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
+        public double getBackwardTransportTime(Location from, Location to, double arrivalTime, double setupDuration, Driver driver, Vehicle vehicle) {
             if (from.equals(to)) {
                 return 0.0;
             }

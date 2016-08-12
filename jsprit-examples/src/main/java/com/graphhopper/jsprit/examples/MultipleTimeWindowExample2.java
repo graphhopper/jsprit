@@ -139,7 +139,7 @@ public class MultipleTimeWindowExample2 {
         SolutionAnalyser a = new SolutionAnalyser(problem, bestSolution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return problem.getTransportCosts().getTransportTime(from,to,0.,null,null);
+                return problem.getTransportCosts().getTransportTime(from,to,0.,0.,null,null);
             }
         });
 

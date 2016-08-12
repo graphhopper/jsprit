@@ -47,12 +47,12 @@ public class TestAuxilliaryCostCalculator {
         routingCosts = mock(VehicleRoutingTransportCosts.class);
         actCosts = mock(VehicleRoutingActivityCosts.class);
 
-        when(routingCosts.getTransportCost(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(2.0);
-        when(routingCosts.getTransportTime(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
-        when(routingCosts.getTransportCost(loc("i"), loc("k"), 0.0, null, vehicle)).thenReturn(3.0);
-        when(routingCosts.getTransportTime(loc("i"), loc("k"), 0.0, null, vehicle)).thenReturn(0.0);
-        when(routingCosts.getTransportCost(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(3.0);
-        when(routingCosts.getTransportTime(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
+        when(routingCosts.getTransportCost(loc("i"), loc("j"), 0.0, 0., null, vehicle)).thenReturn(2.0);
+        when(routingCosts.getTransportTime(loc("i"), loc("j"), 0.0, 0., null, vehicle)).thenReturn(0.0);
+        when(routingCosts.getTransportCost(loc("i"), loc("k"), 0.0, 0., null, vehicle)).thenReturn(3.0);
+        when(routingCosts.getTransportTime(loc("i"), loc("k"), 0.0, 0., null, vehicle)).thenReturn(0.0);
+        when(routingCosts.getTransportCost(loc("k"), loc("j"), 0.0, 0., null, vehicle)).thenReturn(3.0);
+        when(routingCosts.getTransportTime(loc("k"), loc("j"), 0.0, 0., null, vehicle)).thenReturn(0.0);
     }
 
     private Location loc(String i) {
