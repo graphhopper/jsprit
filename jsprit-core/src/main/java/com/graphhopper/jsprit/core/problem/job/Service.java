@@ -72,6 +72,8 @@ public class Service extends AbstractJob {
 
         protected double serviceTime;
 
+        protected double setupDuration = 0.0;
+
         protected TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 
         protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
@@ -137,6 +139,13 @@ public class Service extends AbstractJob {
             if (serviceTime < 0)
                 throw new IllegalArgumentException("serviceTime must be greater than or equal to zero");
             this.serviceTime = serviceTime;
+            return this;
+        }
+
+        public Builder<T> setSetupDuration(double setupDuration){
+            if (setupDuration < 0)
+                throw new IllegalArgumentException("setupTime must be greater than or equal to zero");
+            this.setupDuration = setupDuration;
             return this;
         }
 
@@ -261,6 +270,8 @@ public class Service extends AbstractJob {
 
     private final double serviceTime;
 
+    private final double setupDuration;
+
     private final TimeWindow timeWindow;
 
     private final Capacity size;
@@ -281,6 +292,7 @@ public class Service extends AbstractJob {
         setUserData(builder.userData);
         id = builder.id;
         serviceTime = builder.serviceTime;
+        setupDuration = builder.setupDuration;
         timeWindow = builder.timeWindow;
         type = builder.type;
         size = builder.capacity;
@@ -317,6 +329,10 @@ public class Service extends AbstractJob {
      */
     public double getServiceDuration() {
         return serviceTime;
+    }
+
+    public double getSetupDuration() {
+        return setupDuration;
     }
 
     /**

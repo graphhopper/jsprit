@@ -61,6 +61,10 @@ public class Shipment extends AbstractJob {
 
         private double deliveryServiceTime = 0.0;
 
+        private double pickupSetupDuration = 0.0;
+
+        private double deliverySetupDuration = 0.0;
+
         private TimeWindow deliveryTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
 
         private TimeWindow pickupTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
@@ -158,6 +162,21 @@ public class Shipment extends AbstractJob {
         }
 
         /**
+         * Sets pickupSetupTime.
+         * <p/>
+         * <p>SetupTime is intended to be the time the implied activity takes to be ready before any activity in sequence starts. Is always 0 for the nexts activities in the same location and in direct sequence.
+         *
+         * @param setupTime the setup time / duration the pickup of the associated shipment takes to be ready
+         * @return builder
+         * @throws IllegalArgumentException if setupTime < 0.0
+         */
+        public Builder setPickupSetupDuration(double pickupSetupDuration) {
+            if (pickupSetupDuration < 0.0) throw new IllegalArgumentException("pickupSetupTime must not be < 0.0");
+            this.pickupSetupDuration = pickupSetupDuration;
+            return this;
+        }
+
+        /**
          * Sets the timeWindow for the pickup, i.e. the time-period in which a pickup operation is
          * allowed to START.
          * <p>
@@ -200,6 +219,21 @@ public class Shipment extends AbstractJob {
         public Builder setDeliveryServiceTime(double deliveryServiceTime) {
             if (deliveryServiceTime < 0.0) throw new IllegalArgumentException("deliveryServiceTime must not be < 0.0");
             this.deliveryServiceTime = deliveryServiceTime;
+            return this;
+        }
+
+        /**
+         * Sets delivery SetupTime.
+         * <p/>
+         * <p>SetupTime is intended to be the time the implied activity takes to be ready before any activity in sequence starts. Is always 0 for the nexts activities in the same location and in direct sequence.
+         *
+         * @param setupTime the setup time / duration the shipment's delivery takes to be ready
+         * @return builder
+         * @throws IllegalArgumentException if setupTime < 0.0
+         */
+        public Builder setDeliverySetupDuration(double deliverySetupDuration) {
+            if (deliverySetupDuration < 0.0) throw new IllegalArgumentException("deliverySetupTime must not be < 0.0");
+            this.deliverySetupDuration = deliverySetupDuration;
             return this;
         }
 
@@ -325,6 +359,10 @@ public class Shipment extends AbstractJob {
 
     private final double deliveryServiceTime;
 
+    private final double pickupSetupDuration;
+
+    private final double deliverySetupDuration;
+
     private final TimeWindow deliveryTimeWindow;
 
     private final TimeWindow pickupTimeWindow;
@@ -351,8 +389,10 @@ public class Shipment extends AbstractJob {
         setUserData(builder.userData);
         this.id = builder.id;
         this.pickupServiceTime = builder.pickupServiceTime;
+        this.pickupSetupDuration = builder.pickupSetupDuration;
         this.pickupTimeWindow = builder.pickupTimeWindow;
         this.deliveryServiceTime = builder.deliveryServiceTime;
+        this.deliverySetupDuration = builder.deliverySetupDuration;
         this.deliveryTimeWindow = builder.deliveryTimeWindow;
         this.capacity = builder.capacity;
         this.skills = builder.skills;
@@ -385,6 +425,10 @@ public class Shipment extends AbstractJob {
         return pickupServiceTime;
     }
 
+    public double getPickupSetupDuration() {
+        return pickupSetupDuration;
+    }
+
     public Location getDeliveryLocation() {
         return deliveryLocation_;
     }
@@ -396,6 +440,10 @@ public class Shipment extends AbstractJob {
      */
     public double getDeliveryServiceTime() {
         return deliveryServiceTime;
+    }
+
+    public double getDeliverySetupDuration() {
+        return deliverySetupDuration;
     }
 
     /**
