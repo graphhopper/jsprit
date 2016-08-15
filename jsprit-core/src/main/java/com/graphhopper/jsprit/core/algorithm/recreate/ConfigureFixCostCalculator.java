@@ -29,9 +29,11 @@ import java.util.Collection;
 
 final class ConfigureFixCostCalculator implements InsertionStartsListener, JobInsertedListener {
 
-    VehicleRoutingProblem vrp;
+    private final VehicleRoutingProblem vrp;
 
-    JobInsertionConsideringFixCostsCalculator calcConsideringFix;
+    private final JobInsertionConsideringFixCostsCalculator calcConsideringFix;
+
+    private final double minRatio = 0.5;
 
     private int nuOfJobsToRecreate;
 
@@ -50,15 +52,13 @@ final class ConfigureFixCostCalculator implements InsertionStartsListener, JobIn
     public void informInsertionStarts(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         this.nuOfJobsToRecreate = unassignedJobs.size();
         double completenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) vrp.getJobs().values().size()));
-        calcConsideringFix.setSolutionCompletenessRatio(completenessRatio);
-//		log.debug("initialise completenessRatio to " + completenessRatio);
+        calcConsideringFix.setSolutionCompletenessRatio(Math.max(minRatio,completenessRatio));
     }
 
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
         nuOfJobsToRecreate--;
         double completenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) vrp.getJobs().values().size()));
-        calcConsideringFix.setSolutionCompletenessRatio(completenessRatio);
-//		log.debug("set completenessRatio to " + completenessRatio);
+        calcConsideringFix.setSolutionCompletenessRatio(Math.max(minRatio,completenessRatio));
     }
 }
