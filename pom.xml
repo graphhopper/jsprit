@@ -28,7 +28,7 @@
 
     <name>jsprit</name>
     <description>A toolkit to solve vehicle routing problems.</description>
-    <url>https://github.com/jsprit/jsprit</url>
+    <url>https://github.com/graphhopper/jsprit</url>
     <inceptionYear>2013</inceptionYear>
 
     <licenses>
