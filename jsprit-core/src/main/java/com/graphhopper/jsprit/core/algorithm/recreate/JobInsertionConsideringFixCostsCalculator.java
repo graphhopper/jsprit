@@ -90,6 +90,8 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
         solution_completeness_ratio = ratio;
     }
 
+    public double getSolutionCompletenessRatio() { return solution_completeness_ratio; }
+
     private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job, Capacity currentMaxLoadInRoute) {
         Capacity load = Capacity.addup(currentMaxLoadInRoute, job.getSize());
         double currentFix = 0.0;
