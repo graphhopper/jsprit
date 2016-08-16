@@ -232,6 +232,7 @@ public class VrpXMLWriter {
                             throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
                         }
                     }
+                    xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").setupTime", act.getSetupTime());
                     xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").arrTime", act.getArrTime());
                     xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").endTime", act.getEndTime());
                     actCounter++;

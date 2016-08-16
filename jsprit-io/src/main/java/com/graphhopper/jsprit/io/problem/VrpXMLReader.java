@@ -594,6 +594,11 @@ public class VrpXMLReader {
                 if (waitC != null) typeBuilder.setCostPerWaitingTime(waitC);
             }
 
+            if(typeConfig.containsKey("costs.setup")){
+                Double setupC = typeConfig.getDouble("costs.setup");
+                if (setupC != null) typeBuilder.setCostPerSetupTime(setupC);
+            }
+
             if (fix != null) typeBuilder.setFixedCost(fix);
             if (timeC != null) typeBuilder.setCostPerTransportTime(timeC);
             if (distC != null) typeBuilder.setCostPerDistance(distC);
