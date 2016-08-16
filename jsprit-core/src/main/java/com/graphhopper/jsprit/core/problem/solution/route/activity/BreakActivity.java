@@ -38,7 +38,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     private double duration;
 
     @Override
-    public double getSetupTime() {
+    public double getSetupArrival() {
         return setupTime;
     }
 
@@ -98,7 +98,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     protected BreakActivity(BreakActivity breakActivity) {
         counter++;
         this.aBreak = (Break) breakActivity.getJob();
-        this.setupTime = breakActivity.getSetupTime();
+        this.setupTime = breakActivity.getSetupArrival();
         this.arrTime = breakActivity.getArrTime();
         this.endTime = breakActivity.getEndTime();
         this.location = breakActivity.getLocation();

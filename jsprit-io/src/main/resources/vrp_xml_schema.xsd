@@ -348,7 +348,7 @@
     <xs:group name="serviceActGroup">
         <xs:sequence>
             <xs:element name="serviceId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="setupTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="setTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
@@ -357,7 +357,7 @@
     <xs:group name="shipmentActGroup">
         <xs:sequence>
             <xs:element name="shipmentId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="setupTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="setTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
@@ -366,7 +366,7 @@
     <xs:group name="breakActGroup">
         <xs:sequence>
             <xs:element name="breakId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="setupTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="setTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>

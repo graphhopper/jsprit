@@ -122,7 +122,7 @@ public final class Start extends AbstractActivity implements TourActivity {
     }
 
     @Override
-    public double getSetupTime() {
+    public double getSetupArrival() {
         return setupTime;
     }
 

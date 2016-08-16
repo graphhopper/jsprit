@@ -46,7 +46,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private DeliverService(DeliverService deliveryActivity) {
         this.delivery = deliveryActivity.getJob();
-        this.setupTime = deliveryActivity.getSetupTime();
+        this.setupTime = deliveryActivity.getSetupArrival();
         this.arrTime = deliveryActivity.getArrTime();
         this.endTime = deliveryActivity.getEndTime();
         capacity = deliveryActivity.getSize();
@@ -92,7 +92,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     @Override
-    public double getSetupTime() {
+    public double getSetupArrival() {
         return setupTime;
     }
 

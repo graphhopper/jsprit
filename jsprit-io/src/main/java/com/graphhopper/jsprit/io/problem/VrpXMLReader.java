@@ -206,8 +206,11 @@ public class VrpXMLReader {
             for (HierarchicalConfiguration actConfig : actConfigs) {
                 String type = actConfig.getString("[@type]");
                 if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
+                double setTime = 0.;
                 double arrTime = 0.;
                 double endTime = 0.;
+                String setTimeS = actConfig.getString("setTime");
+                if (setTimeS != null) setTime = Double.parseDouble(setTimeS);
                 String arrTimeS = actConfig.getString("arrTime");
                 if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
                 String endTimeS = actConfig.getString("endTime");
@@ -277,8 +280,11 @@ public class VrpXMLReader {
                 for (HierarchicalConfiguration actConfig : actConfigs) {
                     String type = actConfig.getString("[@type]");
                     if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
+                    double setTime = 0.;
                     double arrTime = 0.;
                     double endTime = 0.;
+                    String setTimeS = actConfig.getString("setTime");
+                    if (setTimeS != null) setTime = Double.parseDouble(setTimeS);
                     String arrTimeS = actConfig.getString("arrTime");
                     if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
                     String endTimeS = actConfig.getString("endTime");

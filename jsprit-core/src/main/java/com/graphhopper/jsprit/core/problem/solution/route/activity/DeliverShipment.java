@@ -47,7 +47,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
     private DeliverShipment(DeliverShipment deliveryShipmentActivity) {
         this.shipment = (Shipment) deliveryShipmentActivity.getJob();
-        this.setupTime = deliveryShipmentActivity.getSetupTime();
+        this.setupTime = deliveryShipmentActivity.getSetupArrival();
         this.arrTime = deliveryShipmentActivity.getArrTime();
         this.endTime = deliveryShipmentActivity.getEndTime();
         this.capacity = deliveryShipmentActivity.getSize();
@@ -102,7 +102,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     }
 
     @Override
-    public double getSetupTime() {
+    public double getSetupArrival() {
         return setupTime;
     }
 

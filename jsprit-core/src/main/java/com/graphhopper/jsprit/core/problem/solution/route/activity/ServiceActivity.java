@@ -35,7 +35,7 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     private double theoreticalLatest;
 
     @Override
-    public double getSetupTime() {
+    public double getSetupArrival() {
         return setupTime;
     }
 
@@ -89,7 +89,7 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     protected ServiceActivity(ServiceActivity serviceActivity) {
         this.service = serviceActivity.getJob();
-        this.setupTime = serviceActivity.getSetupTime();
+        this.setupTime = serviceActivity.getSetupArrival();
         this.arrTime = serviceActivity.getArrTime();
         this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());

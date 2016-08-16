@@ -93,7 +93,14 @@ public interface TourActivity extends HasIndex {
      */
     public abstract double getOperationTime();
 
-    public abstract double getSetupTime();
+
+
+    /**
+     * Returns the setup arrival time of this activity.
+     *
+     * @return setup arrival time
+     */
+    public abstract double getSetupArrival();
 
     /**
      * Returns the arrival-time of this activity.
