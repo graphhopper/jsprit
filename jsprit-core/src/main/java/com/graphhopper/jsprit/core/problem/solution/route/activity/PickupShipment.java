@@ -27,6 +27,8 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
     private Shipment shipment;
 
+    public double setupTime;
+
     private double endTime;
 
     private double arrTime;
@@ -42,6 +44,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
     private PickupShipment(PickupShipment pickupShipmentActivity) {
         this.shipment = (Shipment) pickupShipmentActivity.getJob();
+        this.setupTime = pickupShipmentActivity.getSetupTime();
         this.arrTime = pickupShipmentActivity.getArrTime();
         this.endTime = pickupShipmentActivity.getEndTime();
         setIndex(pickupShipmentActivity.getIndex());
@@ -95,6 +98,11 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     }
 
     @Override
+    public double getSetupTime() {
+        return setupTime;
+    }
+
+    @Override
     public double getArrTime() {
         return arrTime;
     }
@@ -102,6 +110,11 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     @Override
     public double getEndTime() {
         return endTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
     }
 
     @Override

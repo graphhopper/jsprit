@@ -42,6 +42,8 @@ public final class Start extends AbstractActivity implements TourActivity {
 
     private double theoretical_latestOperationStartTime;
 
+    public double setupTime;
+
     private double endTime;
 
     private double arrTime;
@@ -120,6 +122,11 @@ public final class Start extends AbstractActivity implements TourActivity {
     }
 
     @Override
+    public double getSetupTime() {
+        return setupTime;
+    }
+
+    @Override
     public double getArrTime() {
         return arrTime;
     }
@@ -127,6 +134,11 @@ public final class Start extends AbstractActivity implements TourActivity {
     @Override
     public double getEndTime() {
         return endTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
     }
 
     @Override

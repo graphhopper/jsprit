@@ -43,6 +43,8 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     private boolean beginFirst = false;
 
+    private double actSetupTime;
+
     private double actArrTime;
 
     private double actEndTime;
@@ -60,6 +62,10 @@ public class ActivityTimeTracker implements ActivityVisitor {
         this.transportTime = transportTime;
         this.activityPolicy = activityPolicy;
         this.activityCosts = activityCosts;
+    }
+
+    public double getActSetupTime() {
+        return actSetupTime;
     }
 
     public double getActArrTime() {
@@ -95,6 +101,9 @@ public class ActivityTimeTracker implements ActivityVisitor {
         } else operationStartTime = actArrTime;
 
         double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,actArrTime,route.getDriver(),route.getVehicle());
+        actSetupTime = arrivalTimeAtCurrAct;
+        if (!prevAct.getLocation().equals(activity.getLocation()))
+            actSetupTime -= activity.getSetupDuration() * route.getVehicle().getCoefSetupTime();
 
         actEndTime = operationEndTime;
 

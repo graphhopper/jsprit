@@ -40,6 +40,8 @@ public final class End extends AbstractActivity implements TourActivity {
 
     private double theoretical_latestOperationStartTime;
 
+    public double setupTime;
+
     private double arrTime;
 
     private Location location;
@@ -121,6 +123,16 @@ public final class End extends AbstractActivity implements TourActivity {
     @Override
     public String getName() {
         return "end";
+    }
+
+    @Override
+    public double getSetupTime() {
+        return setupTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
     }
 
     @Override

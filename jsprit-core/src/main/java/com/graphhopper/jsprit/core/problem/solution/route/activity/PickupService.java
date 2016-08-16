@@ -27,6 +27,8 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private Service pickup;
 
+    public double setupTime;
+
     private double arrTime;
 
     private double depTime;
@@ -46,6 +48,7 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private PickupService(PickupService pickupActivity) {
         this.pickup = pickupActivity.getJob();
+        this.setupTime = pickupActivity.getSetupTime();
         this.arrTime = pickupActivity.getArrTime();
         this.depTime = pickupActivity.getEndTime();
         setIndex(pickupActivity.getIndex());
@@ -89,6 +92,11 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     }
 
     @Override
+    public double getSetupTime() {
+        return setupTime;
+    }
+
+    @Override
     public double getArrTime() {
         return arrTime;
     }
@@ -96,6 +104,11 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     @Override
     public double getEndTime() {
         return depTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
     }
 
     @Override
