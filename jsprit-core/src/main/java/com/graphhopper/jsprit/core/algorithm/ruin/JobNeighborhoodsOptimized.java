@@ -69,7 +69,7 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         }
     }
 
-    private static Logger logger = LoggerFactory.getLogger(JobNeighborhoodsImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(JobNeighborhoodsOptimized.class);
 
     private VehicleRoutingProblem vrp;
 
