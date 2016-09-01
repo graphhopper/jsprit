@@ -36,7 +36,8 @@ Any contribution is welcome. Feel free to improve jsprit and make pull requests.
 
 See who has contributed [here](https://github.com/jsprit/jsprit/blob/master/CONTRIBUTORS.md).
 
-##[Acknowledgement](https://github.com/jsprit/jsprit/wiki/Acknowledgement)
+##Acknowledgement
+Developing this would be much more difficult without the help of [these companies](https://github.com/jsprit/jsprit/wiki/Acknowledgement)
 
 ##Contact
 
