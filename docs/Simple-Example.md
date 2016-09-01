@@ -101,7 +101,7 @@ which results in
 +----------------------------------------------------------+
 </samp></pre>
 
-If you want to have more information about individual routes, you use the verbose level such as
+If you want to have more information about individual routes, use the verbose level such as
 
 <code>SolutionPrinter.print(problem, bestSolution, Print.VERBOSE);</code>
 
