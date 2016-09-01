@@ -19,7 +19,7 @@ Setting up the problem, defining additional constraints, modifying the algorithm
 reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](https://github.com/jsprit/jsprit/wiki/features)
 
 ##Getting Started and Documentation
-Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more. For older versions (<v1.7) use [old-docs](https://github.com/graphhopper/jsprit/blob/master/docs/before-1.7/Home.md). The best way to get to know jsprit is by looking at [code examples](https://github.com/graphhopper/jsprit/tree/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples).
+Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more. For older versions (<v1.7) use [old-docs](https://github.com/graphhopper/jsprit/blob/%3C1.7/docs/Home.md). The best way to get to know jsprit is by looking at [code examples](https://github.com/graphhopper/jsprit/tree/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples).
 
 ## Modules and Dependencies
 Please read [Notice.md](https://github.com/graphhopper/jsprit/blob/master/NOTICE.md) to get to know the direct dependencies of each module.
@@ -59,7 +59,7 @@ info@graphhopper.com
 ##About
 The jsprit-project has been created by [Stefan Schröder](https://github.com/oblonski) and is maintained by [GraphHopper](https://graphhopper.com/). It is motivated by two issues.
 
-First, you can find vehicle routing problems **everywhere** in the world of distributing and moving things and people. This probably explains why there is an almost endless list of papers and algorithms to tackle these problems. However there are only [very few open source implementations](https://github.com/jsprit/jsprit/wiki/Other-Projects) and even fewer projects that can deal with real world problems that usually have many side-constraints.
+First, you can find vehicle routing problems **everywhere** in the world of distributing and moving things and people. This probably explains why there is an almost endless list of papers and algorithms to tackle these problems. However, there are only [very few open source implementations](https://github.com/graphhopper/jsprit/blob/master/docs/Other-Projects.md) and even fewer projects that can deal with real world problems that usually have many side-constraints.
 
 Second, it is motivated by my PhD-project at [KIT](http://www.kit.edu/english/index.php) where I apply vehicle routing algorithms to solve behavioural models of freight agents to assess (freight) transport policy measures.
 
