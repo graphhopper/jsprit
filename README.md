@@ -21,8 +21,10 @@ reading classical VRP instances to benchmark your algorithm. It is fit for chang
 ##[Whats New](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
 
 ##Getting Started and Documentation
-
 Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more. For older versions (<v1.7 use [jsprit-wiki](https://github.com/jsprit/jsprit/wiki))
+
+## Modules and Dependencies
+Please read [Notice.md](https://github.com/graphhopper/jsprit/blob/master/NOTICE.md) to get to know the direct dependencies of each module.
 
 ##License
 This software is released under [Apache License v2](https://www.apache.org/licenses/LICENSE-2.0).

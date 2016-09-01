@@ -1,4 +1,4 @@
-## [Get Started](Getting-Started)
+## [Get Started](Getting-Started.md)
 
 Setting up jsprit and the like.
 
