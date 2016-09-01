@@ -6,6 +6,7 @@ Setting up jsprit and the like.
 
 * [Simple Example](Simple-Example.md)
 * [More Examples](More-Examples.md)
+* [A number of various code examples](https://github.com/graphhopper/jsprit/tree/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples)
 
 ## [Meta-Heuristic](Meta-Heuristic.md)
 
