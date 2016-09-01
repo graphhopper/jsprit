@@ -39,7 +39,7 @@ Here you learn to setup the Java environment and an Integrated Development Envir
 #### If you do not want Maven
 to manage your dependencies, go to [maven central](https://search.maven.org/), search for jsprit and download the latest binaries to put them into your classpath.
 
-Go ahead and show me a simple example of how to setup and solve a vehicle routing problem.
+Go ahead and show me a [simple example](Simple-Example.md) of how to setup and solve a vehicle routing problem.
 
 
 
