@@ -23,24 +23,7 @@ cd jsprit
 mvn clean install
 ```
 
-
 ## Contributions
 
 If you want to contribute to jsprit (which would be great), fork the project and build your fork, make changes, run your and jsprit's test cases and make a pull request (see [help.github.contribute](https://help.github.com/articles/fork-a-repo) or [stackoverflow.contribute](http://stackoverflow.com/questions/4384776/how-do-i-contribute-to-others-code-in-github) for details).
 
-## [Acknowledgement](Acknowledgement)
-
-Sponsors/Acknowledgement/Testimonials
-
-##Contact
-
-####Mailing List:
-In the [forum](https://discuss.graphhopper.com/) you can discuss jsprit related issues and you will probably get answers to your questions.
-
-####Issue Tracker:
-For bugs, feature requests or similar use the [issue tracker](https://github.com/jsprit/jsprit/issues).
-
-####Email:
-If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, send an email to:
-
-info@graphhopper.com
