@@ -4,19 +4,19 @@ This example covers:
 - reading and creating an algorithm
 - plotting the solution
 
-It is based on the problem instance P08 defined by 
+It is based on the problem instance P08 defined by
 
-<em>Cordeau, J.-F., Gendreau, M. and Laporte, G. (1997), A tabu search heuristic for periodic and multi-depot vehicle routing problems. Networks, 30: 105–119.</em> 
+<em>Cordeau, J.-F., Gendreau, M. and Laporte, G. (1997), A tabu search heuristic for periodic and multi-depot vehicle routing problems. Networks, 30: 105–119.</em>
 
 Please visit for example <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/" target="_blank">this site</a> to get more information on Multiple Depot VRP.
 
-Before you start, [add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom). Additionally, create an output folder in your project directory. Either do it manually or add the following lines to your code:
+Before you start, [add the latest release to your pom](Add-latest-release-to-your-pom.md). Additionally, create an output folder in your project directory. Either do it manually or add the following lines to your code:
 <pre><code>File dir = new File("output");
 // if the directory does not exist, create it
 if (!dir.exists()){
 	System.out.println("creating directory ./output");
-	boolean result = dir.mkdir();  
-	if(result) System.out.println("./output created");  
+	boolean result = dir.mkdir();
+	if(result) System.out.println("./output created");
 }
 </code></pre>
 
@@ -24,7 +24,7 @@ All services of P08 are stored in an xml-file called vrp_cordeau_08.xml (you can
 
 <pre><code>VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 /*
- * Read cordeau-instance p08, BUT only its services without any vehicles 
+ * Read cordeau-instance p08, BUT only its services without any vehicles
  */
 new VrpXMLReader(vrpBuilder).read("input/vrp_cordeau_08.xml");
 </code></pre>
@@ -35,14 +35,14 @@ Define depots and vehicles:
  * add vehicles with its depots
  * 2 depots with the following coordinates:
  * (-33,33), (33,-33)
- * 
+ *
  * each with 14 vehicles each with a capacity of 500 and a maximum duration of 310
  */
 int nuOfVehicles = 14;
 int capacity = 500;
 double maxDuration = 310;
 Coordinate firstDepotCoord = Coordinate.newInstance(-33, 33);
-Coordinate second = Coordinate.newInstance(33, -33);		
+Coordinate second = Coordinate.newInstance(33, -33);
 int depotCounter = 1;
 
 for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second)){
@@ -67,7 +67,7 @@ Build the problem, and define and run an algorithm like this:
  * define problem with finite fleet
  */
 vrpBuilder.setFleetSize(FleetSize.FINITE);
-		
+
 /*
  * build the problem
  */

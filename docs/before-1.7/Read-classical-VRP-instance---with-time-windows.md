@@ -1,16 +1,16 @@
 This example covers
-- reading a classical VRP instance (here the Solomon instance C101), 
+- reading a classical VRP instance (here the Solomon instance C101),
 - plotting the problem,
 - reading and running a predefined algorithm,
 - plotting the solution.
 
-Make sure, your pom is prepared (see [Add the latest snapshot to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom)). Additionally, create an output folder in your project directory. Either do it manually or add the following lines to your code (even this obfuscates the code-example a bit):
+Make sure, your pom is prepared (see [Add the latest snapshot to your pom](Add-latest-snapshot-to-your-pom.md)). Additionally, create an output folder in your project directory. Either do it manually or add the following lines to your code (even this obfuscates the code-example a bit):
 <pre><code>File dir = new File("output");
 // if the directory does not exist, create it
 if (!dir.exists()){
 	System.out.println("creating directory ./output");
-	boolean result = dir.mkdir();  
-	if(result) System.out.println("./output created");  
+	boolean result = dir.mkdir();
+	if(result) System.out.println("./output created");
 }
 </code></pre>
 
@@ -44,17 +44,17 @@ It looks like [this](https://github.com/jsprit/misc-rep/raw/master/wiki-images/s
 To solve it, define an algorithm. Here, it comes out-of-the-box. The SchrimpfFactory creates an algo which is an implemenation of [Schrimpf et al.](http://www.sciencedirect.com/science/article/pii/S0021999199964136). In this configuration, it is best suited to solve the VRP with time windows.
 
 <pre><code>/*
-* get the algorithm out-of-the-box. 
+* get the algorithm out-of-the-box.
 */
-VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);		
+VehicleRoutingAlgorithm algorithm = new SchrimpfFactory().createAlgorithm(problem);
 
 /*
 * and search a solution which returns a collection of solution (here only one solution is in the collection)
 */
 Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
-	
+
 /*
- * use helper to get the best 
+ * use helper to get the best
  */
 VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 </code></pre>

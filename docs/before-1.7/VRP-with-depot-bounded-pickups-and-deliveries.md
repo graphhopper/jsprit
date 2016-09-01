@@ -1,4 +1,4 @@
-This example assumes that you know [SimpleExample](https://github.com/jsprit/jsprit/wiki/Simple-Example) and covers:
+This example assumes that you know [SimpleExample](Simple-Example.md) and covers:
 - defining pickups and deliveries
 
 <strong>Note</strong> that the VRP with Backhauls with mixed pickups and deliveries described here assumes that all deliveries are loaded in the depot at the beginning of a tour and all pickups are unloaded in the depot as well (at the end of the tour). En route pickup and deliveries such that a shipment is loaded at location A and unloaded again at location B within the same route (where A and B are unequal to the depot location) is covered [here](https://github.com/jsprit/jsprit/wiki/VRP-with-pickups-and-deliveries/).
@@ -9,7 +9,7 @@ The only difference compared to SimpleExample is the creation of pickups and del
  */
 Pickup pickup1 = (Pickup) Pickup.Builder.newInstance("1").addSizeDimension(0,1).setCoord(Coordinate.newInstance(5, 7)).build();
 Delivery delivery1 = (Delivery) Delivery.Builder.newInstance("2").addSizeDimension(0,1).setCoord(Coordinate.newInstance(5, 13)).build();
-		
+
 Pickup pickup2 = (Pickup) Pickup.Builder.newInstance("3").addSizeDimension(0,1).setCoord(Coordinate.newInstance(15, 7)).build();
 Delivery delivery2 = (Delivery) Delivery.Builder.newInstance("4").addSizeDimension(0,1).setCoord(Coordinate.newInstance(15, 13)).build();
 

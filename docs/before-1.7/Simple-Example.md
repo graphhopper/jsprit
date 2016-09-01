@@ -1,16 +1,16 @@
 This example covers
 - building a problem,
 - building vehicleTypes and vehicles with capacity restriction,
-- building services (or customer locations),  
+- building services (or customer locations),
 - plotting the problem,
 - reading and running a predefined algorithm,
 - writing out problem and solution,
 - plotting the solution,
 - printing solution stats.
 
-[Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
+[Add the latest release to your pom](Add-latest-release-to-your-pom.md).
 
-Assume the following problem. We can employ one vehicle(-type) located at (10,10) with one capacity dimension, e.g. weight, and a capacity value of 2 to deliver four customers located at [(5,7),(5,13),(15,7),(15,13)], each with a demand that has a weight of 1. All employed vehicles need to return to their start-locations. Setting up this problem and solving it is as simple as coding the following lines: 
+Assume the following problem. We can employ one vehicle(-type) located at (10,10) with one capacity dimension, e.g. weight, and a capacity value of 2 to deliver four customers located at [(5,7),(5,13),(15,7),(15,13)], each with a demand that has a weight of 1. All employed vehicles need to return to their start-locations. Setting up this problem and solving it is as simple as coding the following lines:
 
 First, build a vehicle with its vehicle-type:
 
@@ -27,7 +27,7 @@ VehicleType vehicleType = vehicleTypeBuilder.build();
  */
 VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
 vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
-vehicleBuilder.setType(vehicleType); 
+vehicleBuilder.setType(vehicleType);
 VehicleImpl vehicle = vehicleBuilder.build();
 </code></pre>
 
@@ -51,7 +51,7 @@ vrpBuilder.addVehicle(vehicle);
 vrpBuilder.addJob(service1).addJob(service2).addJob(service3).addJob(service4);
 /*
  * build the problem
- * by default, the problem is specified such that FleetSize is INFINITE, i.e. an infinite number of 
+ * by default, the problem is specified such that FleetSize is INFINITE, i.e. an infinite number of
  * the defined vehicles can be used to solve the problem
  * by default, transport costs are computed as Euclidean distances
  */
@@ -61,7 +61,7 @@ VehicleRoutingProblem problem = vrpBuilder.build();
 
 Third, solve the problem by defining and running an algorithm. Here it comes out-of-the-box.
 <pre><code>/*
-* get the algorithm out-of-the-box. 
+* get the algorithm out-of-the-box.
 */
 VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
 
@@ -81,8 +81,8 @@ Analysing the solution here, requires an output folder in your project-directory
 // if the directory does not exist, create it
 if (!dir.exists()){
 	System.out.println("creating directory ./output");
-	boolean result = dir.mkdir();  
-	if(result) System.out.println("./output created");  
+	boolean result = dir.mkdir();
+	if(result) System.out.println("./output created");
 }
 </code></pre>
 
@@ -102,22 +102,22 @@ which results in
 +---------------+----------+
 | indicator     | value    |
 +---------------+----------+
-| nJobs         | 4        | 
-| nServices     | 4        | 
-| nShipments    | 0        | 
-| fleetsize     | INFINITE | 
+| nJobs         | 4        |
+| nServices     | 4        |
+| nShipments    | 0        |
+| fleetsize     | INFINITE |
 +--------------------------+
 +----------------------------------------------------------+
 | solution                                                 |
 +---------------+------------------------------------------+
 | indicator     | value                                    |
 +---------------+------------------------------------------+
-| costs         | 35.3238075793812                         | 
-| nVehicles     | 2                                        | 
+| costs         | 35.3238075793812                         |
+| nVehicles     | 2                                        |
 +----------------------------------------------------------+
 </samp></pre>
 
-or you use the Print.VERBOSE level such as 
+or you use the Print.VERBOSE level such as
 
 <code>SolutionPrinter.print(problem, bestSolution, Print.VERBOSE);</code>
 

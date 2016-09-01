@@ -4,19 +4,19 @@ This example covers:
 - reading and creating an algorithm
 - plotting the solution
 
-It is based on the problem instance P01 defined by 
+It is based on the problem instance P01 defined by
 
-<em>Cordeau, J.-F., Gendreau, M. and Laporte, G. (1997), A tabu search heuristic for periodic and multi-depot vehicle routing problems. Networks, 30: 105–119.</em> 
+<em>Cordeau, J.-F., Gendreau, M. and Laporte, G. (1997), A tabu search heuristic for periodic and multi-depot vehicle routing problems. Networks, 30: 105–119.</em>
 
 Please visit for example <a href="http://neo.lcc.uma.es/vrp/vrp-flavors/multiple-depot-vrp/" target="_blank">this site</a> to get more information on Multiple Depot VRP.
 
-Before you start, [add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom). Additionally, create an output folder in your project directory. Either do it manually or add the following lines to your code (even this obfuscates the code-example a bit):
+Before you start, [add the latest release to your pom](Add-latest-release-to-your-pom.md). Additionally, create an output folder in your project directory. Either do it manually or add the following lines to your code (even this obfuscates the code-example a bit):
 <pre><code>File dir = new File("output");
 // if the directory does not exist, create it
 if (!dir.exists()){
 	System.out.println("creating directory ./output");
-	boolean result = dir.mkdir();  
-	if(result) System.out.println("./output created");  
+	boolean result = dir.mkdir();
+	if(result) System.out.println("./output created");
 }
 </code></pre>
 
@@ -24,7 +24,7 @@ All services of P01 are stored in an xml-file called vrp_cordeau_01.xml (you can
 
 <pre><code>VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 /*
- * Read cordeau-instance p01, BUT only its services without any vehicles 
+ * Read cordeau-instance p01, BUT only its services without any vehicles
  */
 new VrpXMLReader(vrpBuilder).read("input/vrp_cordeau_01.xml");
 </code></pre>
@@ -35,7 +35,7 @@ Define and add depots, vehicles and their types as follows:
  * add vehicles with its depots
  * 4 depots with the following coordinates:
  * (20,20), (30,40), (50,30), (60,50)
- * 
+ *
  * each with 4 vehicles each with a capacity of 80
  */
 int nuOfVehicles = 4;
@@ -44,7 +44,7 @@ Coordinate firstDepotCoord = Coordinate.newInstance(20, 20);
 Coordinate second = Coordinate.newInstance(30, 40);
 Coordinate third = Coordinate.newInstance(50, 30);
 Coordinate fourth = Coordinate.newInstance(60, 50);
-		
+
 int depotCounter = 1;
 for(Coordinate depotCoord : Arrays.asList(firstDepotCoord,second,third,fourth)){
 &nbsp;&nbsp;&nbsp;&nbsp;for(int i=0;i&lt;nuOfVehicles;i++){
@@ -68,7 +68,7 @@ Set finite fleet-size and build the problem.
  * define problem with finite fleet
  */
 vrpBuilder.setFleetSize(FleetSize.FINITE);
-		
+
 /*
  * build the problem
  */
@@ -108,18 +108,18 @@ and print the results to your console by:
 +---------------+----------+
 | indicator     | value    |
 +---------------+----------+
-| nJobs         | 50       | 
-| nServices     | 50       | 
-| nShipments    | 0        | 
-| fleetsize     | FINITE   | 
+| nJobs         | 50       |
+| nServices     | 50       |
+| nShipments    | 0        |
+| fleetsize     | FINITE   |
 +--------------------------+
 +----------------------------------------------------------+
 | solution                                                 |
 +---------------+------------------------------------------+
 | indicator     | value                                    |
 +---------------+------------------------------------------+
-| costs         | 582.9805315622696                        | 
-| nVehicles     | 11                                       | 
+| costs         | 582.9805315622696                        |
+| nVehicles     | 11                                       |
 +----------------------------------------------------------+
 +--------------------------------------------------------------------------------------------------------------------------------+
 | detailed solution                                                                                                              |

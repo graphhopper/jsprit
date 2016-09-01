@@ -4,13 +4,13 @@ This example covers:
 - defining a problem with infinite fleet-size
 - reading, creating and running an algorithm
 
-Before you start, [add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom). Additionally, create an output folder in your project directory. Either do it manually or add the following lines to your code (even this obfuscates the code-example a bit):
+Before you start, [add the latest release to your pom](Add-latest-release-to-your-pom.md). Additionally, create an output folder in your project directory. Either do it manually or add the following lines to your code (even this obfuscates the code-example a bit):
 <pre><code>File dir = new File("output");
 // if the directory does not exist, create it
 if (!dir.exists()){
 	System.out.println("creating directory ./output");
-	boolean result = dir.mkdir();  
-	if(result) System.out.println("./output created");  
+	boolean result = dir.mkdir();
+	if(result) System.out.println("./output created");
 }
 </code></pre>
 
@@ -34,7 +34,7 @@ VehicleType vehicleType = vehicleTypeBuilder.build();
 VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
 vehicleBuilder.setStartLocation(Location.newInstance(40, 50));
 vehicleBuilder.setLatestArrival(1236);
-vehicleBuilder.setType(vehicleType); 
+vehicleBuilder.setType(vehicleType);
 Vehicle vehicle = vehicleBuilder.build();
 </code></pre>
 
@@ -80,7 +80,7 @@ vrpBuilder.addJob(service3).addJob(service4).addJob(service5).addJob(service6);
 */
 /*
  * build the problem
- * by default, the problem is specified such that FleetSize is INFINITE, i.e. an infinite number of 
+ * by default, the problem is specified such that FleetSize is INFINITE, i.e. an infinite number of
  * the defined vehicles can be used to solve the problem
  * by default, transport costs are computed as Euclidean distances
  */
@@ -93,7 +93,7 @@ To solve it, define an algorithm. Here, it comes out-of-the-box. The SchrimpfFac
 You might be interested in other algorithm configurations, <a href="https://github.com/jsprit/jsprit/wiki/Benchmark-VRPTW" target="_blank">here</a> you can find a set of ready-to-use and benchmarked algorithms.
 
 <pre><code>/*
-* get the algorithm out-of-the-box. 
+* get the algorithm out-of-the-box.
 */
 VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
 
@@ -101,9 +101,9 @@ VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
 * and search a solution which returns a collection of solution (here only one solution is in the collection)
 */
 Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
-	
+
 /*
- * use helper to get the best 
+ * use helper to get the best
  */
 VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 </code></pre>

@@ -1,4 +1,4 @@
-This example assumes that you know [SimpleExample](https://github.com/jsprit/jsprit/wiki/Simple-Example) and covers:
+This example assumes that you know [SimpleExample](Simple-Example.md) and covers:
 - defining shipments
 
 The only difference compared to SimpleExample is the creation of shipments instead of services. However, you define them much like you define services:
@@ -19,7 +19,7 @@ Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0,1).set
 .setDeliveryLocation(Location.newInstance(14, 9)).build();
 Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0,1).setPickupLocation(Location.newInstance(15,13))
 .setDeliveryLocation(Location.newInstance(14, 11)).build();
-                
+
 VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
 /*
