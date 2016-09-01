@@ -1,5 +1,5 @@
 ####Requirements
-jsprit requires the Java 2 platform (JDK version 1.6.0 or later). 
+jsprit requires the Java 2 platform (JDK version 1.6.0 or later).
 
 ####Modules
 jsprit is a multi-module project and consists of:
@@ -44,9 +44,9 @@ For example, if you want to use the release v1.0.0 of jsprit-core, add:
 &lt;/dependency&gt;
 </code></pre>
 
-[Add the latest snapshot to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-snapshot-to-your-pom).
+[Add the latest snapshot to your pom](Add-latest-snapshot-to-your-pom.md).
 
-[Add the latest release to your pom](https://github.com/jsprit/jsprit/wiki/Add-latest-release-to-your-pom).
+[Add the latest release to your pom](Add-latest-release-to-your-pom.md).
 
 ####If you do not have an IDE and you want to use Maven
 
@@ -59,7 +59,7 @@ Here you learn to setup the Java environment and an Integrated Development Envir
 #### If you do not want Maven
 to manage your dependencies, go to [snapshot-jars](https://github.com/jsprit/mvn-rep/tree/master/snapshots/jsprit) or [release-jars](https://github.com/jsprit/mvn-rep/tree/master/releases/jsprit) to download jsprit-binaries directly. Just click on the jar-file you want to download and use the 'Raw'-button to actually download it. Put the jars into your classpath. Note that you then need to put all [dependencies](https://github.com/jsprit/jsprit/wiki/Modules-and-Dependencies) jsprit relies on manually to your classpath as well.
 
-Go ahead and show me a [simple example](https://github.com/jsprit/jsprit/wiki/Simple-Example) of how to setup and solve a vehicle routing problem.
+Go ahead and show me a [simple example](Simple-Example.md) of how to setup and solve a vehicle routing problem.
 
 
 
