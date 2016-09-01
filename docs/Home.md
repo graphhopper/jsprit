@@ -1,5 +1,3 @@
-##[Whats New](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
-
 ## [Get Started](https://github.com/jsprit/jsprit/wiki/Getting-Started)
 
 Setting up jsprit and the like.
