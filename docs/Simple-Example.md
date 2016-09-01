@@ -76,23 +76,7 @@ Collection&lt;VehicleRoutingProblemSolution&gt; solutions = algorithm.searchSolu
 VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 </code></pre>
 
-Analysing the solution here, requires an output folder in your project-directory. If you do not have one, either create it manually or add the following line to your code:
-<pre><code>File dir = new File("output");
-// if the directory does not exist, create it
-if (!dir.exists()){
-	System.out.println("creating directory ./output");
-	boolean result = dir.mkdir();
-	if(result) System.out.println("./output created");
-}
-</code></pre>
-
-
-Write out problem and solution (for analysis or later use in another algorithm)
-<pre><code>new VrpXMLWriter(problem, solutions).write("output/problem-with-solution.xml");
-</code></pre>
-which looks like this: [problem-with-solution.xml](https://github.com/jsprit/misc-rep/raw/master/wiki-images/problem-with-solution.xml).
-
-Or print the results to the console concisely with
+If you want to print a concise summary of the results to the console, do this:
 
 <code>SolutionPrinter.print(problem, bestSolution, Print.CONCISE);</code>
 
@@ -117,7 +101,7 @@ which results in
 +----------------------------------------------------------+
 </samp></pre>
 
-or you use the Print.VERBOSE level such as
+If you want to have more information about individual routes, you use the verbose level such as
 
 <code>SolutionPrinter.print(problem, bestSolution, Print.VERBOSE);</code>
 
@@ -139,16 +123,21 @@ and you get this addtionally:
 +--------------------------------------------------------------------------------------------------------------------------------+
 </samp></pre>
 
+If you want to write out problem and solution, you require the writer that is located in jsprit-io. Thus, you need to add the
+corresponding module to your pom.xml much like you added jsprit-core. Just use jsprit-io. You can then use this:
 
-or plot the results with
+<pre><code>new VrpXMLWriter(problem, solutions).write("output/problem-with-solution.xml");
+</code></pre>
+which looks like this: [problem-with-solution.xml](https://github.com/jsprit/misc-rep/raw/master/wiki-images/problem-with-solution.xml).
+
+If you want to further analyse your solution, add the module jsprit-analysis to your pom. Then you can plot the routes like this
 
 <code>new Plotter(problem,bestSolution).plot("output/solution.png", "solution");</code>
 
 and you get [solution.png](https://github.com/jsprit/misc-rep/blob/master/wiki-images/solution.png)
 
-or use the <em>very basic version</em> of the GraphStreamViewer which dynamically renders the problem and its according solution by coding
+or use the GraphStreamViewer which dynamically renders the problem and its according solution by coding
 
 <code>new GraphStreamViewer(problem, bestSolution).setRenderDelay(100).display();</code>
-
 
 You can find the entire code [here](https://github.com/graphhopper/jsprit/blob/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples/SimpleExample.java).
