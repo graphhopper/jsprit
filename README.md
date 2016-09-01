@@ -31,7 +31,7 @@ This software is released under [Apache License v2](https://www.apache.org/licen
 
 ##Contribution
 
-Any contribution is welcome. Feel free to improve jsprit and make pull requests.
+Any contribution is welcome. Feel free to improve jsprit and make pull requests. If you want to contribute to jsprit (which would be great), fork the project and build your fork, make changes, run your and jsprit's test cases and make a pull request (see [help.github.contribute](https://help.github.com/articles/fork-a-repo) or [stackoverflow.contribute](http://stackoverflow.com/questions/4384776/how-do-i-contribute-to-others-code-in-github) for details).
 
 See who has contributed [here](https://github.com/jsprit/jsprit/blob/master/CONTRIBUTORS.md).
 
