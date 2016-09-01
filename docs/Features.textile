@@ -1,0 +1,19 @@
+- infinite and finite fleets
+- heterogeneous fleet
+- multiple depots
+- open routes
+- routes with different start and end locations
+- multiple capacity dimensions/compartments
+- en-route pickups and deliveries
+- service times
+- time windows
+- skills
+- priorities
+- possibility to define additional stateless and stateful constraints/conditions to account for the richness of your problem
+
+- benchmarks against classical problem instances
+- visualization tools
+- active development
+- comprehensive unit and integration tests
+- a number of code examples
+- open source (Apache v2)

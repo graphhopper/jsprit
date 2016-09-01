@@ -1,0 +1,3 @@
+* YourKit supports jsprit with its full-featured Java Profiler. YourKit, LLC is the creator of innovative and intelligent tools for profiling Java and .NET applications. Take a look at YourKit's leading software products: <a href="http://www.yourkit.com/java/profiler/index.jsp">YourKit Java Profiler</a> and <a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>. <img src="https://github.com/jsprit/misc-rep/raw/master/wiki-images/yklogo.png" title="YourKit">
+
+* <strong><a href="https://www.jetbrains.com/idea/">JetBrains</a></strong> kindly provides jsprit with a free open-source licence for their IntelliJ IDEA Ultimate edition. <img src="https://github.com/jsprit/misc-rep/raw/master/wiki-images/logo_intellij_idea.png" title="IntelliJ">
