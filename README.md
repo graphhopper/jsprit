@@ -18,13 +18,14 @@ It is lightweight, flexible and easy-to-use, and based on a single all-purpose <
 Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as
 reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](https://github.com/jsprit/jsprit/wiki/features)
 
-##[Whats New](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
-
 ##Getting Started and Documentation
 Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more. For older versions (<v1.7) use [old-docs](https://github.com/graphhopper/jsprit/blob/master/docs/before-1.7/Home.md). The best way to get to know jsprit is by looking at [code examples](https://github.com/graphhopper/jsprit/tree/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples).
 
 ## Modules and Dependencies
 Please read [Notice.md](https://github.com/graphhopper/jsprit/blob/master/NOTICE.md) to get to know the direct dependencies of each module.
+
+##Whats New
+jsprit develops fast. Look [here](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md) to get to know whats new.
 
 ##License
 This software is released under [Apache License v2](https://www.apache.org/licenses/LICENSE-2.0).
