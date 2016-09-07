@@ -203,12 +203,12 @@ public class VrpXMLWriter {
                     xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ")[@type]", act.getName());
                     if (act instanceof TourActivity.JobActivity) {
                         Job job = ((TourActivity.JobActivity) act).getJob();
-                        if (job instanceof Service) {
+                        if (job instanceof Break) {
+                            xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
+                        } else if (job instanceof Service) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").serviceId", job.getId());
                         } else if (job instanceof Shipment) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").shipmentId", job.getId());
-                        } else if (job instanceof Break) {
-                        	xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
                         } else {
                             throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
                         }
