@@ -701,7 +701,8 @@ public class VrpXMLReader {
             List<HierarchicalConfiguration> breakTWConfigs = vehicleConfig.configurationsAt("breaks.timeWindows.timeWindow");
             if (!breakTWConfigs.isEmpty()) {
                 String breakDurationString = vehicleConfig.getString("breaks.duration");
-                Break.Builder current_break = Break.Builder.newInstance(vehicleId);
+                String id = vehicleConfig.getString("breaks.id");
+                Break.Builder current_break = Break.Builder.newInstance(id);
                 current_break.setServiceTime(Double.parseDouble(breakDurationString));
                 for (HierarchicalConfiguration twConfig : breakTWConfigs) {
                 	current_break.addTimeWindow(TimeWindow.newInstance(twConfig.getDouble("start"), twConfig.getDouble("end")));

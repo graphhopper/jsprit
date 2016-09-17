@@ -395,6 +395,7 @@
                 </xs:complexType>
               </xs:element>
             <xs:element name="duration" type="xs:double" minOccurs="1" maxOccurs="1" default="0.0"/>
+            <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
