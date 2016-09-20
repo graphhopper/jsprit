@@ -62,4 +62,6 @@ public interface Job extends HasId, HasIndex {
      */
     public int getPriority();
 
+    public double getMaxTimeInVehicle();
+
 }

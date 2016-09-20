@@ -271,4 +271,18 @@ public class ServiceTest {
 
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void whenAddingMaxTimeInVehicle_itShouldThrowEx(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .setMaxTimeInVehicle(10)
+            .build();
+    }
+
+    @Test
+    public void whenNotAddingMaxTimeInVehicle_itShouldBeDefault(){
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .build();
+        Assert.assertEquals(Double.MAX_VALUE, s.getMaxTimeInVehicle(),0.001);
+    }
+
 }

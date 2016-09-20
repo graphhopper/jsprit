@@ -40,6 +40,8 @@ import java.util.Collection;
  */
 public class Service extends AbstractJob {
 
+
+
     /**
      * Builder that builds a service.
      *
@@ -89,6 +91,8 @@ public class Service extends AbstractJob {
 		private boolean twAdded = false;
 
         private int priority = 2;
+
+        protected double maxTimeInVehicle = Double.MAX_VALUE;
 
 		Builder(String id){
 			this.id = id;
@@ -224,6 +228,13 @@ public class Service extends AbstractJob {
             this.priority = priority;
             return this;
         }
+
+        public Builder<T> setMaxTimeInVehicle(double maxTimeInVehicle){
+            throw new UnsupportedOperationException("maxTimeInVehicle is not yet supported for Pickups and Services (only for Deliveries and Shipments)");
+//            if(maxTimeInVehicle < 0) throw new IllegalArgumentException("maxTimeInVehicle should be positive");
+//            this.maxTimeInVehicle = maxTimeInVehicle;
+//            return this;
+        }
     }
 
     private final String id;
@@ -246,6 +257,8 @@ public class Service extends AbstractJob {
 
     private final int priority;
 
+    private final double maxTimeInVehicle;
+
     Service(Builder builder) {
         id = builder.id;
         serviceTime = builder.serviceTime;
@@ -257,6 +270,7 @@ public class Service extends AbstractJob {
         location = builder.location;
 		timeWindowManager = builder.timeWindows;
         priority = builder.priority;
+        maxTimeInVehicle = builder.maxTimeInVehicle;
 	}
 
 	public Collection<TimeWindow> getTimeWindows(){
@@ -368,6 +382,11 @@ public class Service extends AbstractJob {
      */
     public int getPriority() {
         return priority;
+    }
+
+    @Override
+    public double getMaxTimeInVehicle() {
+        return this.maxTimeInVehicle;
     }
 
 }

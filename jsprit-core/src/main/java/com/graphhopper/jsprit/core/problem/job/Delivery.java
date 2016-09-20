@@ -41,6 +41,13 @@ public class Delivery extends Service {
             super(id);
         }
 
+
+        public Builder setMaxTimeInVehicle(double maxTimeInVehicle){
+            if(maxTimeInVehicle < 0) throw new IllegalArgumentException("maxTimeInVehicle should be positive");
+            this.maxTimeInVehicle = maxTimeInVehicle;
+            return this;
+        }
+
         /**
          * Builds Delivery.
          *

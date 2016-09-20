@@ -425,4 +425,19 @@ public class ShipmentTest {
 
     }
 
+    @Test
+    public void whenAddingMaxTimeInVehicle_itShouldBeSet(){
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc")).setDeliveryLocation(Location.newInstance("loc"))
+            .setMaxTimeInVehicle(10)
+            .build();
+        Assert.assertEquals(10, s.getMaxTimeInVehicle(),0.001);
+    }
+
+    @Test
+    public void whenNotAddingMaxTimeInVehicle_itShouldBeDefault(){
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc")).setDeliveryLocation(Location.newInstance("loc"))
+            .build();
+        Assert.assertEquals(Double.MAX_VALUE, s.getMaxTimeInVehicle(),0.001);
+    }
+
 }

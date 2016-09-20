@@ -105,4 +105,18 @@ public class PickupTest {
         Assert.assertEquals(2, s.getPriority());
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void whenAddingMaxTimeInVehicle_itShouldThrowEx(){
+        Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .setMaxTimeInVehicle(10)
+            .build();
+    }
+
+    @Test
+    public void whenNotAddingMaxTimeInVehicle_itShouldBeDefault(){
+        Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .build();
+        Assert.assertEquals(Double.MAX_VALUE, s.getMaxTimeInVehicle(),0.001);
+    }
+
 }
