@@ -9,7 +9,7 @@
 - defining a problem with infinite fleet-size
 - reading, creating and running an algorithm
 
-#### [VRP with backhauls](VRP-with-backhauls-example)
+#### [VRP with backhauls](VRP-with-backhauls-example.md)
 - defining and creating pickup and deliveries
 - defining backhaul constraint
 
