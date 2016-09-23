@@ -16,7 +16,7 @@
 #### [VRP with backhauls (with mixed pickup and deliveries)](VRP-with-depot-bounded-pickups-and-deliveries.md)
 - defining and creating depot-bounded pickups and deliveries
 
-#### [VRP with pickup and delivieries](VRP-with-pickups-and-deliveries.md)
+#### [VRP with pickup and delivieries](Vrp-with-pickups-and-deliveries.md)
 - defining and creating pickups and deliveries
 
 #### [VRP with heterogeneous fleet](Heterogeneous-Fleet.md)
