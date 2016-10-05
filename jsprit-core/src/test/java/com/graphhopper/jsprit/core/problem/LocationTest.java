@@ -19,7 +19,8 @@
 package com.graphhopper.jsprit.core.problem;
 
 import com.graphhopper.jsprit.core.util.Coordinate;
-import junit.framework.Assert;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -32,6 +33,12 @@ public class LocationTest {
         Location l = Location.Builder.newInstance().setIndex(1).build();
         Assert.assertEquals(1, l.getIndex());
         Assert.assertTrue(true);
+    }
+
+    @Test
+    public void whenNameSet_buildLocation() {
+        Location l = Location.Builder.newInstance().setName("mystreet 6a").setIndex(1).build();
+        Assert.assertEquals("mystreet 6a",l.getName());
     }
 
     @Test
