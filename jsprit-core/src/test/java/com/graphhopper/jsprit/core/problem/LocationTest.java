@@ -75,8 +75,8 @@ public class LocationTest {
     @Test
     public void whenCoordinateSet_build() {
         Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 20)).build();
-        Assert.assertEquals(10., l.getCoordinate().getX());
-        Assert.assertEquals(20., l.getCoordinate().getY());
+        Assert.assertEquals(10., l.getCoordinate().getX(),0.001);
+        Assert.assertEquals(20., l.getCoordinate().getY(),0.001);
         Assert.assertTrue(true);
     }
 
@@ -84,8 +84,8 @@ public class LocationTest {
     public void whenCoordinateSetWithFactory_returnCorrectLocation() {
 //        Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10,20)).build();
         Location l = Location.newInstance(10, 20);
-        Assert.assertEquals(10., l.getCoordinate().getX());
-        Assert.assertEquals(20., l.getCoordinate().getY());
+        Assert.assertEquals(10., l.getCoordinate().getX(),0.001);
+        Assert.assertEquals(20., l.getCoordinate().getY(),0.001);
         Assert.assertTrue(true);
     }
 
