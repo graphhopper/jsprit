@@ -44,7 +44,7 @@ import java.util.Collection;
 
 //import jsprit.core.problem.solution.route.state.StateFactory; //v1.3.1
 
-public class AdditionalDistanceConstraintExample {
+public class MaximumDistanceConstraintExample {
 
     static class DistanceUpdater implements StateUpdater, ActivityVisitor {
 
