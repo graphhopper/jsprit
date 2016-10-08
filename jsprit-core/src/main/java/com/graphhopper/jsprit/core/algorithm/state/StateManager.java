@@ -364,6 +364,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             try {
                 if (vehicleDependentRouteStateMap.containsKey(route)) {
                     state = type.cast(vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+                    if (state == null){
+                        vehicleDependentrouteActivityVisitor.visit(route,vehicle);
+                        state = type.cast(vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+                    }
                 }
             } catch (ClassCastException e) {
                 throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
@@ -498,6 +502,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     public void addStateUpdater(StateUpdater updater) {
         if (updater instanceof ActivityVisitor) addActivityVisitor((ActivityVisitor) updater);
+        if (updater instanceof vehicleDependentActivityVisitor) addvehicleDependentActivityVisitor((vehicleDependentActivityVisitor) updater);
         if (updater instanceof ReverseActivityVisitor) addActivityVisitor((ReverseActivityVisitor) updater);
         if (updater instanceof RouteVisitor) addRouteVisitor((RouteVisitor) updater);
         if (updater instanceof InsertionListener) addListener((InsertionListener) updater);
