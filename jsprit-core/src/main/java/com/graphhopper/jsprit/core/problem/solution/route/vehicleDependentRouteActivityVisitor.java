@@ -17,8 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
-import com.graphhopper.jsprit.core.problem.solution.route.activity.vehicleDependentActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.vehicleDependentActivityVisitor;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.ArrayList;
