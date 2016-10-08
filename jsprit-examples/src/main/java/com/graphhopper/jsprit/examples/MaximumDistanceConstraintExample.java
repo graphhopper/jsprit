@@ -33,6 +33,8 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.vehicleDependentActivityVisitor;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
@@ -46,7 +48,7 @@ import java.util.Collection;
 
 public class MaximumDistanceConstraintExample {
 
-    static class DistanceUpdater implements StateUpdater, ActivityVisitor {
+    static class DistanceUpdater implements StateUpdater, vehicleDependentActivityVisitor {
 
         private final StateManager stateManager;
 
@@ -56,6 +58,8 @@ public class MaximumDistanceConstraintExample {
         private final StateId distanceStateId; //head of development - upcoming release
 
         private VehicleRoute vehicleRoute;
+
+        private Vehicle vehicle;
 
         private double distance = 0.;
 
@@ -69,10 +73,11 @@ public class MaximumDistanceConstraintExample {
         }
 
         @Override
-        public void begin(VehicleRoute vehicleRoute) {
+        public void begin(VehicleRoute vehicleRoute, Vehicle vehicle) {
             distance = 0.;
             prevAct = vehicleRoute.getStart();
             this.vehicleRoute = vehicleRoute;
+            this.vehicle = vehicle;
         }
 
         @Override
@@ -85,7 +90,7 @@ public class MaximumDistanceConstraintExample {
         public void finish() {
             distance += getDistance(prevAct, vehicleRoute.getEnd());
 //            stateManager.putTypedRouteState(vehicleRoute,distanceStateId,Double.class,distance); //v1.3.1
-            stateManager.putRouteState(vehicleRoute, distanceStateId, distance); //head of development - upcoming release (v1.4)
+            stateManager.putRouteState(vehicleRoute,vehicle, distanceStateId, distance); //head of development - upcoming release (v1.4)
         }
 
         double getDistance(TourActivity from, TourActivity to) {

@@ -535,10 +535,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * <p>This visitor visits all activities in a route subsequently in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
      * and, second, if a job has been inserted and thus if a route has changed.
      *
-     * @param vehicleDependentActivityVisitor the activity-visitor to be added
+     * @param vehicleDependentactivityVisitor the activity-visitor to be added
      */
-    void addvehicleDependentActivityVisitor(vehicleDependentActivityVisitor vehicleDependentActivityVisitor){
-        ((vehicleDependentRouteActivityVisitor)vehicleDependentrouteActivityVisitor).addActivityVisitor(vehicleDependentActivityVisitor);
+    void addvehicleDependentActivityVisitor(vehicleDependentActivityVisitor vehicleDependentactivityVisitor){
+        ((vehicleDependentRouteActivityVisitor)vehicleDependentrouteActivityVisitor).addActivityVisitor(vehicleDependentactivityVisitor);
     }
 
     /**
