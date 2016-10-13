@@ -160,10 +160,10 @@ public class VehicleRoutingAlgorithm {
                 }
             }
         }
-        if (nuJobs != problem.getJobs().values().size()) {
-            logger.warn("number of jobs in initial solution ({}) is not equal nuJobs in vehicle routing problem ({})" +
-                "\n this might yield unintended effects, e.g. initial solution cannot be improved anymore.", nuJobs, problem.getJobs().values().size());
-        }
+//        if (nuJobs != problem.getJobs().values().size()) {
+//            logger.warn("number of jobs in initial solution ({}) is not equal nuJobs in vehicle routing problem ({})" +
+//                "\n this might yield unintended effects, e.g. initial solution cannot be improved anymore.", nuJobs, problem.getJobs().values().size());
+//        }
     }
 
     /**

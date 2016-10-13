@@ -64,6 +64,8 @@ public final class Location implements HasIndex, HasId {
 
         private Coordinate coordinate;
 
+        private String name = "";
+
         public static Builder newInstance() {
             return new Builder();
         }
@@ -81,6 +83,11 @@ public final class Location implements HasIndex, HasId {
 
         public Builder setId(String id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder setName(String name){
+            this.name = name;
             return this;
         }
 
@@ -107,10 +114,13 @@ public final class Location implements HasIndex, HasId {
 
     private final String id;
 
+    private final String name;
+
     private Location(Builder builder) {
         this.index = builder.index;
         this.coordinate = builder.coordinate;
         this.id = builder.id;
+        this.name = builder.name;
     }
 
     @Override
@@ -126,6 +136,8 @@ public final class Location implements HasIndex, HasId {
     public Coordinate getCoordinate() {
         return coordinate;
     }
+
+    public String getName() { return name; }
 
     @Override
     public boolean equals(Object o) {

@@ -619,25 +619,36 @@ public class Jsprit {
 
     private void handleExecutorShutdown(VehicleRoutingAlgorithm vra) {
         if (setupExecutorInternally) {
+            final Thread hook = new Thread() {
+                public void run() {
+                    if (!es.isShutdown()) {
+                        System.err.println("shutdownHook shuts down executorService");
+                        es.shutdown();
+                    }
+                }
+            };
+            Runtime.getRuntime().addShutdownHook(hook);
             vra.addListener(new AlgorithmEndsListener() {
 
                 @Override
                 public void informAlgorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
                     es.shutdown();
+                    Runtime.getRuntime().removeShutdownHook(hook);
                 }
 
             });
         }
-        if (es != null) {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                public void run() {
-                    if (!es.isShutdown()) {
-                        System.err.println("shutdowHook shuts down executorService");
-                        es.shutdown();
-                    }
-                }
-            });
-        }
+//        if (es != null) {
+//
+//            Runtime.getRuntime().addShutdownHook(hook);
+//            vra.addListener(new AlgorithmEndsListener() {
+//                @Override
+//                public void informAlgorithmEnds(VehicleRoutingProblem aProblem,
+//                                                Collection<VehicleRoutingProblemSolution> aSolutions) {
+//                    Runtime.getRuntime().removeShutdownHook(hook);
+//                }
+//            });
+//        }
     }
 
     String getProperty(String key) {
