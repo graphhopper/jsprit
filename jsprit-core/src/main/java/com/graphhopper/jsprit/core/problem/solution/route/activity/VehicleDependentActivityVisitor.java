@@ -21,7 +21,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 
-public interface vehicleDependentActivityVisitor {
+public interface VehicleDependentActivityVisitor {
 
     public void begin(VehicleRoute route, Vehicle vehicle);
 
@@ -30,3 +30,4 @@ public interface vehicleDependentActivityVisitor {
     public void finish();
 
 }
+

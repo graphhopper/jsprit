@@ -20,7 +20,7 @@ package com.graphhopper.jsprit.core.problem.solution.route;
 
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
-public interface vehicleDependentRouteVisitor {
+public interface VehicleDependentRouteVisitor {
 
     public void visit(VehicleRoute route, Vehicle vehicle);
 

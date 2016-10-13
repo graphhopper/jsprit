@@ -18,16 +18,16 @@
 package com.graphhopper.jsprit.core.problem.solution.route;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.vehicleDependentActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.VehicleDependentActivityVisitor;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class vehicleDependentRouteActivityVisitor implements vehicleDependentRouteVisitor {
+public class VehicleDependentRouteActivityVisitor implements VehicleDependentRouteVisitor {
 
-    private Collection<vehicleDependentActivityVisitor> visitors = new ArrayList<vehicleDependentActivityVisitor>();
+    private Collection<VehicleDependentActivityVisitor> visitors = new ArrayList<VehicleDependentActivityVisitor>();
 
     @Override
     public void visit(VehicleRoute route, Vehicle vehicle) {
@@ -40,26 +40,26 @@ public class vehicleDependentRouteActivityVisitor implements vehicleDependentRou
     }
 
     private void end(VehicleRoute route) {
-        for (vehicleDependentActivityVisitor visitor : visitors) {
+        for (VehicleDependentActivityVisitor visitor : visitors) {
             visitor.finish();
         }
 
     }
 
     private void visit(TourActivity act) {
-        for (vehicleDependentActivityVisitor visitor : visitors) {
+        for (VehicleDependentActivityVisitor visitor : visitors) {
             visitor.visit(act);
         }
     }
 
     private void begin(VehicleRoute route, Vehicle vehicle) {
-        for (vehicleDependentActivityVisitor visitor : visitors) {
+        for (VehicleDependentActivityVisitor visitor : visitors) {
             visitor.begin(route, vehicle);
         }
 
     }
 
-    public vehicleDependentRouteActivityVisitor addActivityVisitor(vehicleDependentActivityVisitor activityVisitor) {
+    public VehicleDependentRouteActivityVisitor addActivityVisitor(VehicleDependentActivityVisitor activityVisitor) {
         if (!visitors.contains(activityVisitor)) {
             visitors.add(activityVisitor);
         }
