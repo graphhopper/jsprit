@@ -70,22 +70,46 @@ public final class Location implements HasIndex, HasId {
             return new Builder();
         }
 
+        /**
+         * Sets location index
+         *
+         * @param index
+         * @return the builder
+         */
         public Builder setIndex(int index) {
             if (index < 0) throw new IllegalArgumentException("index must be >= 0");
             this.index = index;
             return this;
         }
 
+        /**
+         * Sets coordinate of location
+         *
+         * @param coordinate
+         * @return
+         */
         public Builder setCoordinate(Coordinate coordinate) {
             this.coordinate = coordinate;
             return this;
         }
 
+        /**
+         * Sets location id
+         *
+         * @param id
+         * @return
+         */
         public Builder setId(String id) {
             this.id = id;
             return this;
         }
 
+        /**
+         * Adds name, e.g. street name, to location
+         *
+         * @param name
+         * @return
+         */
         public Builder setName(String name){
             this.name = name;
             return this;
