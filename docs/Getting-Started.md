@@ -1,5 +1,5 @@
 ####Requirements
-jsprit requires JDK version 1.7.0 or later.
+jsprit requires Java 1.7.0 or later.
 
 ####Modules
 jsprit is a multi-module project and consists of:
