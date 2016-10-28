@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -24,22 +26,29 @@ import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
-import java.util.Collection;
-
 
 /**
- * Shipment is an implementation of Job and consists of a pickup and a delivery of something.
+ * Shipment is an implementation of Job and consists of a pickup and a delivery
+ * of something.
  * <p>
- * <p>It distinguishes itself from {@link Service} as two locations are involved a pickup where usually
- * something is loaded to the transport unit and a delivery where something is unloaded.
  * <p>
- * <p>By default serviceTimes of both pickup and delivery is 0.0 and timeWindows of both is [0.0, Double.MAX_VALUE],
+ * It distinguishes itself from {@link Service} as two locations are involved a
+ * pickup where usually something is loaded to the transport unit and a delivery
+ * where something is unloaded.
  * <p>
- * <p>A shipment can be built with a builder. You can get an instance of the builder by coding <code>Shipment.Builder.newInstance(...)</code>.
- * This way you can specify the shipment. Once you build the shipment, it is immutable, i.e. fields/attributes cannot be changed anymore and
- * you can only 'get' the specified values.
  * <p>
- * <p>Note that two shipments are equal if they have the same id.
+ * By default serviceTimes of both pickup and delivery is 0.0 and timeWindows of
+ * both is [0.0, Double.MAX_VALUE],
+ * <p>
+ * <p>
+ * A shipment can be built with a builder. You can get an instance of the
+ * builder by coding <code>Shipment.Builder.newInstance(...)</code>. This way
+ * you can specify the shipment. Once you build the shipment, it is immutable,
+ * i.e. fields/attributes cannot be changed anymore and you can only 'get' the
+ * specified values.
+ * <p>
+ * <p>
+ * Note that two shipments are equal if they have the same id.
  *
  * @author schroeder
  */
@@ -92,7 +101,9 @@ public class Shipment extends AbstractJob {
         /**
          * Returns new instance of this builder.
          *
-         * @param id the id of the shipment which must be a unique identifier among all jobs
+         * @param id
+         *            the id of the shipment which must be a unique identifier
+         *            among all jobs
          * @return the builder
          */
         public static Builder newInstance(String id) {
@@ -100,7 +111,9 @@ public class Shipment extends AbstractJob {
         }
 
         Builder(String id) {
-            if (id == null) throw new IllegalArgumentException("id must not be null");
+            if (id == null) {
+                throw new IllegalArgumentException("id must not be null");
+            }
             this.id = id;
             pickupTimeWindows = new TimeWindowsImpl();
             pickupTimeWindows.add(pickupTimeWindow);
@@ -111,44 +124,58 @@ public class Shipment extends AbstractJob {
         /**
          * Sets pickup location.
          *
-         * @param pickupLocation pickup location
+         * @param pickupLocation
+         *            pickup location
          * @return builder
          */
         public Builder setPickupLocation(Location pickupLocation) {
-            this.pickupLocation_ = pickupLocation;
+            pickupLocation_ = pickupLocation;
             return this;
         }
 
         /**
          * Sets pickupServiceTime.
          * <p>
-         * <p>ServiceTime is intended to be the time the implied activity takes at the pickup-location.
+         * <p>
+         * ServiceTime is intended to be the time the implied activity takes at
+         * the pickup-location.
          *
-         * @param serviceTime the service time / duration the pickup of the associated shipment takes
+         * @param serviceTime
+         *            the service time / duration the pickup of the associated
+         *            shipment takes
          * @return builder
-         * @throws IllegalArgumentException if servicTime < 0.0
+         * @throws IllegalArgumentException
+         *             if servicTime < 0.0
          */
         public Builder setPickupServiceTime(double serviceTime) {
-            if (serviceTime < 0.0) throw new IllegalArgumentException("serviceTime must not be < 0.0");
-            this.pickupServiceTime = serviceTime;
+            if (serviceTime < 0.0) {
+                throw new IllegalArgumentException("serviceTime must not be < 0.0");
+            }
+            pickupServiceTime = serviceTime;
             return this;
         }
 
         /**
-         * Sets the timeWindow for the pickup, i.e. the time-period in which a pickup operation is
-         * allowed to START.
+         * Sets the timeWindow for the pickup, i.e. the time-period in which a
+         * pickup operation is allowed to START.
          * <p>
-         * <p>By default timeWindow is [0.0, Double.MAX_VALUE}
+         * <p>
+         * By default timeWindow is [0.0, Double.MAX_VALUE}
          *
-         * @param timeWindow the time window within the pickup operation/activity can START
+         * @param timeWindow
+         *            the time window within the pickup operation/activity can
+         *            START
          * @return builder
-         * @throws IllegalArgumentException if timeWindow is null
+         * @throws IllegalArgumentException
+         *             if timeWindow is null
          */
         public Builder setPickupTimeWindow(TimeWindow timeWindow) {
-            if (timeWindow == null) throw new IllegalArgumentException("delivery time-window must not be null");
-            this.pickupTimeWindow = timeWindow;
-            this.pickupTimeWindows = new TimeWindowsImpl();
-            this.pickupTimeWindows.add(timeWindow);
+            if (timeWindow == null) {
+                throw new IllegalArgumentException("delivery time-window must not be null");
+            }
+            pickupTimeWindow = timeWindow;
+            pickupTimeWindows = new TimeWindowsImpl();
+            pickupTimeWindows.add(timeWindow);
             return this;
         }
 
@@ -157,57 +184,75 @@ public class Shipment extends AbstractJob {
         /**
          * Sets delivery location.
          *
-         * @param deliveryLocation delivery location
+         * @param deliveryLocation
+         *            delivery location
          * @return builder
          */
         public Builder setDeliveryLocation(Location deliveryLocation) {
-            this.deliveryLocation_ = deliveryLocation;
+            deliveryLocation_ = deliveryLocation;
             return this;
         }
 
         /**
          * Sets the delivery service-time.
          * <p>
-         * <p>ServiceTime is intended to be the time the implied activity takes at the delivery-location.
+         * <p>
+         * ServiceTime is intended to be the time the implied activity takes at
+         * the delivery-location.
          *
-         * @param deliveryServiceTime the service time / duration of shipment's delivery
+         * @param deliveryServiceTime
+         *            the service time / duration of shipment's delivery
          * @return builder
-         * @throws IllegalArgumentException if serviceTime < 0.0
+         * @throws IllegalArgumentException
+         *             if serviceTime < 0.0
          */
         public Builder setDeliveryServiceTime(double deliveryServiceTime) {
-            if (deliveryServiceTime < 0.0) throw new IllegalArgumentException("deliveryServiceTime must not be < 0.0");
+            if (deliveryServiceTime < 0.0) {
+                throw new IllegalArgumentException("deliveryServiceTime must not be < 0.0");
+            }
             this.deliveryServiceTime = deliveryServiceTime;
             return this;
         }
 
         /**
-         * Sets the timeWindow for the delivery, i.e. the time-period in which a delivery operation is
-         * allowed to start.
+         * Sets the timeWindow for the delivery, i.e. the time-period in which a
+         * delivery operation is allowed to start.
          * <p>
-         * <p>By default timeWindow is [0.0, Double.MAX_VALUE}
+         * <p>
+         * By default timeWindow is [0.0, Double.MAX_VALUE}
          *
-         * @param timeWindow the time window within the associated delivery is allowed to START
+         * @param timeWindow
+         *            the time window within the associated delivery is allowed
+         *            to START
          * @return builder
-         * @throws IllegalArgumentException if timeWindow is null
+         * @throws IllegalArgumentException
+         *             if timeWindow is null
          */
         public Builder setDeliveryTimeWindow(TimeWindow timeWindow) {
-            if (timeWindow == null) throw new IllegalArgumentException("delivery time-window must not be null");
-            this.deliveryTimeWindow = timeWindow;
-            this.deliveryTimeWindows = new TimeWindowsImpl();
-            this.deliveryTimeWindows.add(timeWindow);
+            if (timeWindow == null) {
+                throw new IllegalArgumentException("delivery time-window must not be null");
+            }
+            deliveryTimeWindow = timeWindow;
+            deliveryTimeWindows = new TimeWindowsImpl();
+            deliveryTimeWindows.add(timeWindow);
             return this;
         }
 
         /**
          * Adds capacity dimension.
          *
-         * @param dimensionIndex the dimension index of the corresponding capacity value
-         * @param dimensionValue the capacity value
+         * @param dimensionIndex
+         *            the dimension index of the corresponding capacity value
+         * @param dimensionValue
+         *            the capacity value
          * @return builder
-         * @throws IllegalArgumentException if dimVal < 0
+         * @throws IllegalArgumentException
+         *             if dimVal < 0
          */
         public Builder addSizeDimension(int dimensionIndex, int dimensionValue) {
-            if (dimensionValue < 0) throw new IllegalArgumentException("capacity value cannot be negative");
+            if (dimensionValue < 0) {
+                throw new IllegalArgumentException("capacity value cannot be negative");
+            }
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
             return this;
         }
@@ -217,12 +262,17 @@ public class Shipment extends AbstractJob {
          * Builds the shipment.
          *
          * @return shipment
-         * @throws IllegalArgumentException if neither pickup-location nor pickup-coord is set or if neither delivery-location nor delivery-coord
-         *                               is set
+         * @throws IllegalArgumentException
+         *             if neither pickup-location nor pickup-coord is set or if
+         *             neither delivery-location nor delivery-coord is set
          */
         public Shipment build() {
-            if (pickupLocation_ == null) throw new IllegalArgumentException("pickup location is missing");
-            if (deliveryLocation_ == null) throw new IllegalArgumentException("delivery location is missing");
+            if (pickupLocation_ == null) {
+                throw new IllegalArgumentException("pickup location is missing");
+            }
+            if (deliveryLocation_ == null) {
+                throw new IllegalArgumentException("delivery location is missing");
+            }
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
             return new Shipment(this);
@@ -240,8 +290,10 @@ public class Shipment extends AbstractJob {
         }
 
         public Builder addDeliveryTimeWindow(TimeWindow timeWindow) {
-            if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
-            if(!deliveryTimeWindowAdded){
+            if (timeWindow == null) {
+                throw new IllegalArgumentException("time-window arg must not be null");
+            }
+            if (!deliveryTimeWindowAdded) {
                 deliveryTimeWindows = new TimeWindowsImpl();
                 deliveryTimeWindowAdded = true;
             }
@@ -255,8 +307,10 @@ public class Shipment extends AbstractJob {
         }
 
         public Builder addPickupTimeWindow(TimeWindow timeWindow) {
-            if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
-            if(!pickupTimeWindowAdded){
+            if (timeWindow == null) {
+                throw new IllegalArgumentException("time-window arg must not be null");
+            }
+            if (!pickupTimeWindowAdded) {
                 pickupTimeWindows = new TimeWindowsImpl();
                 pickupTimeWindowAdded = true;
             }
@@ -269,7 +323,8 @@ public class Shipment extends AbstractJob {
         }
 
         /**
-         * Set priority to shipment. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+         * Set priority to shipment. Only 1 = high priority, 2 = medium and 3 =
+         * low are allowed.
          * <p>
          * Default is 2 = medium.
          *
@@ -277,7 +332,9 @@ public class Shipment extends AbstractJob {
          * @return builder
          */
         public Builder setPriority(int priority) {
-            if(priority < 1 || priority > 3) throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            if (priority < 1 || priority > 3) {
+                throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            }
             this.priority = priority;
             return this;
         }
@@ -310,19 +367,22 @@ public class Shipment extends AbstractJob {
     private final int priority;
 
     Shipment(Builder builder) {
-        this.id = builder.id;
-        this.pickupServiceTime = builder.pickupServiceTime;
-        this.pickupTimeWindow = builder.pickupTimeWindow;
-        this.deliveryServiceTime = builder.deliveryServiceTime;
-        this.deliveryTimeWindow = builder.deliveryTimeWindow;
-        this.capacity = builder.capacity;
-        this.skills = builder.skills;
-        this.name = builder.name;
-        this.pickupLocation_ = builder.pickupLocation_;
-        this.deliveryLocation_ = builder.deliveryLocation_;
-        this.deliveryTimeWindows = builder.deliveryTimeWindows;
-        this.pickupTimeWindows = builder.pickupTimeWindows;
-        this.priority = builder.priority;
+        id = builder.id;
+        pickupServiceTime = builder.pickupServiceTime;
+        pickupTimeWindow = builder.pickupTimeWindow;
+        deliveryServiceTime = builder.deliveryServiceTime;
+        deliveryTimeWindow = builder.deliveryTimeWindow;
+        capacity = builder.capacity;
+        skills = builder.skills;
+        name = builder.name;
+        pickupLocation_ = builder.pickupLocation_;
+        deliveryLocation_ = builder.deliveryLocation_;
+        deliveryTimeWindows = builder.deliveryTimeWindows;
+        pickupTimeWindows = builder.pickupTimeWindows;
+        priority = builder.priority;
+
+        addLocation(pickupLocation_);
+        addLocation(deliveryLocation_);
     }
 
     @Override
@@ -337,7 +397,8 @@ public class Shipment extends AbstractJob {
     /**
      * Returns the pickup service-time.
      * <p>
-     * <p>By default service-time is 0.0.
+     * <p>
+     * By default service-time is 0.0.
      *
      * @return service-time
      */
@@ -400,18 +461,23 @@ public class Shipment extends AbstractJob {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Shipment other = (Shipment) obj;
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         return true;
     }
 
@@ -431,12 +497,14 @@ public class Shipment extends AbstractJob {
     }
 
     /**
-     * Get priority of shipment. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of shipment. Only 1 = high priority, 2 = medium and 3 = low
+     * are allowed.
      * <p>
      * Default is 2 = medium.
      *
      * @return priority
      */
+    @Override
     public int getPriority() {
         return priority;
     }

@@ -18,9 +18,12 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 
+import java.util.List;
+
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.HasId;
 import com.graphhopper.jsprit.core.problem.HasIndex;
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 
 /**
@@ -35,10 +38,12 @@ public interface Job extends HasId, HasIndex {
      *
      * @return id
      */
+    @Override
     public String getId();
 
     /**
-     * Returns size, i.e. capacity-demand, of this job which can consist of an arbitrary number of capacity dimensions.
+     * Returns size, i.e. capacity-demand, of this job which can consist of an
+     * arbitrary number of capacity dimensions.
      *
      * @return Capacity
      */
@@ -54,7 +59,8 @@ public interface Job extends HasId, HasIndex {
     public String getName();
 
     /**
-     * Get priority of job. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of job. Only 1 = high priority, 2 = medium and 3 = low are
+     * allowed.
      * <p>
      * Default is 2 = medium.
      *
@@ -62,4 +68,9 @@ public interface Job extends HasId, HasIndex {
      */
     public int getPriority();
 
+
+    /**
+     * @return All involved locations
+     */
+    public List<Location> getAllLocations();
 }

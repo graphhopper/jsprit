@@ -18,6 +18,9 @@
 
 package com.graphhopper.jsprit.core.problem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.graphhopper.jsprit.core.problem.job.Job;
 
 /**
@@ -27,6 +30,9 @@ public abstract class AbstractJob implements Job {
 
     private int index;
 
+    protected List<Location> allLocations = new ArrayList<>();
+
+    @Override
     public int getIndex() {
         return index;
     }
@@ -34,5 +40,17 @@ public abstract class AbstractJob implements Job {
     protected void setIndex(int index) {
         this.index = index;
     }
+
+    protected void addLocation(Location location) {
+        if (location != null) {
+            allLocations.add(location);
+        }
+    }
+
+    @Override
+    public List<Location> getAllLocations() {
+        return allLocations;
+    }
+
 
 }

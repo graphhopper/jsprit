@@ -17,6 +17,9 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -26,13 +29,9 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 
-import java.util.Collection;
-
 /**
  * Service implementation of a job.
  * <p>
- * <p>A service distinguishes itself from a shipment such that it has only one location. Thus a service
- * is a single point in space (where a service-activity occurs).
  * <p>
  * <p>Note that two services are equal if they have the same id.
  *
@@ -53,7 +52,8 @@ public class Service extends AbstractJob {
         /**
          * Returns a new instance of builder that builds a service.
          *
-         * @param id the id of the service
+         * @param id
+         *            the id of the service
          * @return the builder
          */
         public static Builder newInstance(String id) {
@@ -257,6 +257,8 @@ public class Service extends AbstractJob {
         location = builder.location;
 		timeWindowManager = builder.timeWindows;
         priority = builder.priority;
+
+        addLocation(location);
 	}
 
 	public Collection<TimeWindow> getTimeWindows(){
