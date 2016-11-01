@@ -568,8 +568,6 @@ public class VehicleRoutingProblem {
      */
     private final FleetSize fleetSize;
 
-    private final Locations locations;
-
     private Map<Job, List<AbstractActivity>> activityMap;
 
     private int nuActivities;
@@ -591,7 +589,6 @@ public class VehicleRoutingProblem {
         this.initialVehicleRoutes = builder.initialRoutes;
         this.transportCosts = builder.transportCosts;
         this.activityCosts = builder.activityCosts;
-        this.locations = builder.getLocations();
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
         this.allLocations = builder.allLocations;
