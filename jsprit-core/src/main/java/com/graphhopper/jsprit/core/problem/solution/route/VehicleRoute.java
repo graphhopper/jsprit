@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
@@ -125,8 +125,8 @@ public class VehicleRoute {
         private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+            public List<IndexedActivity> createActivities(Job job) {
+                List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
                 if (job instanceof Break) {
                     acts.add(BreakActivity.newInstance((Break) job));
                 } else if (job instanceof Service) {
@@ -188,7 +188,7 @@ public class VehicleRoute {
 
         public Builder addService(Service service, TimeWindow timeWindow) {
             if (service == null) throw new IllegalArgumentException("service must not be null");
-            List<AbstractActivity> acts = jobActivityFactory.createActivities(service);
+            List<IndexedActivity> acts = jobActivityFactory.createActivities(service);
             TourActivity act = acts.get(0);
             act.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
             act.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
@@ -252,7 +252,7 @@ public class VehicleRoute {
         public Builder addPickup(Shipment shipment, TimeWindow pickupTimeWindow) {
             if (openShipments.contains(shipment))
                 throw new IllegalArgumentException("shipment has already been added. cannot add it twice.");
-            List<AbstractActivity> acts = jobActivityFactory.createActivities(shipment);
+            List<IndexedActivity> acts = jobActivityFactory.createActivities(shipment);
             TourActivity act = acts.get(0);
             act.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
             act.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());

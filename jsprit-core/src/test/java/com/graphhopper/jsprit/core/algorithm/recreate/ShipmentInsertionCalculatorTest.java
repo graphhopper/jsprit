@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -115,7 +115,7 @@ public class ShipmentInsertionCalculatorTest {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         VehicleRoute route = VehicleRoute.emptyRoute();
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        List<IndexedActivity> activities = new ArrayList<IndexedActivity>();
         activities.add(new PickupShipment(shipment));
         activities.add(new DeliverShipment(shipment));
         when(activityFactory.createActivities(shipment)).thenReturn(activities);
@@ -133,7 +133,7 @@ public class ShipmentInsertionCalculatorTest {
         new Inserter(new InsertionListeners(), vehicleRoutingProblem).insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        List<IndexedActivity> activities = new ArrayList<IndexedActivity>();
         activities.add(new PickupShipment(shipment2));
         activities.add(new DeliverShipment(shipment2));
         when(activityFactory.createActivities(shipment2)).thenReturn(activities);
@@ -145,8 +145,8 @@ public class ShipmentInsertionCalculatorTest {
         assertEquals(2, iData.getDeliveryInsertionIndex());
     }
 
-    private List<AbstractActivity> getTourActivities(Shipment shipment) {
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+    private List<IndexedActivity> getTourActivities(Shipment shipment) {
+        List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
         PickupShipment pick = new PickupShipment(shipment);
         DeliverShipment del = new DeliverShipment(shipment);
         acts.add(pick);
@@ -171,7 +171,7 @@ public class ShipmentInsertionCalculatorTest {
         });
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        List<IndexedActivity> activities = new ArrayList<IndexedActivity>();
         activities.add(new PickupShipment(shipment2));
         activities.add(new DeliverShipment(shipment2));
         when(activityFactory.createActivities(shipment2)).thenReturn(activities);
@@ -197,7 +197,7 @@ public class ShipmentInsertionCalculatorTest {
         inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        List<IndexedActivity> activities = new ArrayList<IndexedActivity>();
         activities.add(new PickupShipment(shipment3));
         activities.add(new DeliverShipment(shipment3));
         when(activityFactory.createActivities(shipment3)).thenReturn(activities);
@@ -222,7 +222,7 @@ public class ShipmentInsertionCalculatorTest {
         inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        List<IndexedActivity> activities = new ArrayList<IndexedActivity>();
         activities.add(new PickupShipment(shipment3));
         activities.add(new DeliverShipment(shipment3));
         when(activityFactory.createActivities(shipment3)).thenReturn(activities);
@@ -304,7 +304,7 @@ public class ShipmentInsertionCalculatorTest {
         Pickup service = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 1).setLocation(Location.newInstance("5,5")).build();
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
+        List<IndexedActivity> activities = new ArrayList<IndexedActivity>();
         activities.add(new PickupService(service));
         when(activityFactory.createActivities(service)).thenReturn(activities);
         insertionCalculator.setJobActivityFactory(activityFactory);

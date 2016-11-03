@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -25,8 +25,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 public class DefaultTourActivityFactory implements TourActivityFactory {
 
     @Override
-    public AbstractActivity createActivity(Service service) {
-        AbstractActivity act;
+    public IndexedActivity createActivity(Service service) {
+        IndexedActivity act;
         if (service instanceof Pickup) {
             act = new PickupService((Pickup) service);
         } else if (service instanceof Delivery) {

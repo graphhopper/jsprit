@@ -22,6 +22,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import com.graphhopper.jsprit.core.util.RandomUtils;
@@ -151,8 +152,8 @@ public class DBSCANClusterer {
         List<LocationWrapper> locations = new ArrayList<LocationWrapper>(route.getTourActivities().getJobs().size());
         Map<Job, List<Location>> jobs2locations = new HashMap<Job, List<Location>>();
         for (TourActivity act : route.getActivities()) {
-            if (act instanceof TourActivity.JobActivity) {
-                Job job = ((TourActivity.JobActivity) act).getJob();
+            if (act instanceof JobActivity) {
+                Job job = ((JobActivity) act).getJob();
                 if (!jobs2locations.containsKey(job)) {
                     jobs2locations.put(job, new ArrayList<Location>());
                 }

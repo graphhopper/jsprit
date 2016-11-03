@@ -19,7 +19,7 @@
 package com.graphhopper.jsprit.io.problem;
 
 
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -111,7 +111,7 @@ public class InitialRoutesTest {
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         Job job = vrp.getJobs().get("4");
-        List<AbstractActivity> activities = vrp.getActivities(job);
+        List<IndexedActivity> activities = vrp.getActivities(job);
 
         assertEquals(2, activities.size());
     }

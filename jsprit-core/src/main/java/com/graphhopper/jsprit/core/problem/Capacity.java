@@ -39,7 +39,9 @@ public class Capacity {
      * @throws NullPointerException if one of the args is null
      */
     public static Capacity addup(Capacity cap1, Capacity cap2) {
-        if (cap1 == null || cap2 == null) throw new NullPointerException("arguments must not be null");
+        if (cap1 == null || cap2 == null) {
+            throw new NullPointerException("arguments must not be null");
+        }
         Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
         for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
             capacityBuilder.addDimension(i, cap1.get(i) + cap2.get(i));
@@ -57,7 +59,9 @@ public class Capacity {
      * @throws IllegalStateException if number of capacityDimensions of cap1 and cap2 are different (i.e. <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>).
      */
     public static Capacity subtract(Capacity cap, Capacity cap2subtract) {
-        if (cap == null || cap2subtract == null) throw new NullPointerException("arguments must not be null");
+        if (cap == null || cap2subtract == null) {
+            throw new NullPointerException("arguments must not be null");
+        }
         Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
         for (int i = 0; i < Math.max(cap.getNuOfDimensions(), cap2subtract.getNuOfDimensions()); i++) {
             int dimValue = cap.get(i) - cap2subtract.get(i);
@@ -74,7 +78,9 @@ public class Capacity {
      * @throws NullPointerException if one of the args is null
      */
     public static Capacity invert(Capacity cap2invert) {
-        if (cap2invert == null) throw new NullPointerException("arguments must not be null");
+        if (cap2invert == null) {
+            throw new NullPointerException("arguments must not be null");
+        }
         Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
         for (int i = 0; i < cap2invert.getNuOfDimensions(); i++) {
             int dimValue = cap2invert.get(i) * -1;
@@ -108,7 +114,9 @@ public class Capacity {
                 sumQuotients += (double) numerator.get(index) / (double) denominator.get(index);
             }
         }
-        if (nuOfDimensions > 0) return sumQuotients / (double) nuOfDimensions;
+        if (nuOfDimensions > 0) {
+            return sumQuotients / nuOfDimensions;
+        }
         return 0.0;
     }
 
@@ -119,7 +127,9 @@ public class Capacity {
      * @return copy
      */
     public static Capacity copyOf(Capacity capacity) {
-        if (capacity == null) return null;
+        if (capacity == null) {
+            return null;
+        }
         return new Capacity(capacity);
     }
 
@@ -165,7 +175,7 @@ public class Capacity {
                 int[] newDimensions = new int[requiredSize];
                 copy(dimensions, newDimensions);
                 newDimensions[index] = dimValue;
-                this.dimensions = newDimensions;
+                dimensions = newDimensions;
             }
             return this;
         }
@@ -196,14 +206,19 @@ public class Capacity {
      * @param capacity capacity to be copied
      */
     Capacity(Capacity capacity) {
-        this.dimensions = new int[capacity.getNuOfDimensions()];
+        dimensions = new int[capacity.getNuOfDimensions()];
         for (int i = 0; i < capacity.getNuOfDimensions(); i++) {
-            this.dimensions[i] = capacity.get(i);
+            dimensions[i] = capacity.get(i);
         }
     }
 
     Capacity(Builder builder) {
         dimensions = builder.dimensions;
+    }
+
+    private Capacity(int numberOfDimensions) {
+        dimensions = new int[numberOfDimensions];
+        Arrays.fill(dimensions, 0); // Just to be safe, not needed
     }
 
     /**
@@ -225,7 +240,9 @@ public class Capacity {
      * @return the according dimension value
      */
     public int get(int index) {
-        if (index < dimensions.length) return dimensions[index];
+        if (index < dimensions.length) {
+            return dimensions[index];
+        }
         return 0;
     }
 
@@ -237,9 +254,13 @@ public class Capacity {
      * @throws NullPointerException if one of the args is null
      */
     public boolean isLessOrEqual(Capacity toCompare) {
-        if (toCompare == null) throw new NullPointerException();
-        for (int i = 0; i < this.getNuOfDimensions(); i++) {
-            if (this.get(i) > toCompare.get(i)) return false;
+        if (toCompare == null) {
+            throw new NullPointerException();
+        }
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            if (get(i) > toCompare.get(i)) {
+                return false;
+            }
         }
         return true;
     }
@@ -252,9 +273,13 @@ public class Capacity {
      * @throws NullPointerException if one of the args is null
      */
     public boolean isGreaterOrEqual(Capacity toCompare) {
-        if (toCompare == null) throw new NullPointerException();
-        for (int i = 0; i < Math.max(this.getNuOfDimensions(), toCompare.getNuOfDimensions()); i++) {
-            if (this.get(i) < toCompare.get(i)) return false;
+        if (toCompare == null) {
+            throw new NullPointerException();
+        }
+        for (int i = 0; i < Math.max(getNuOfDimensions(), toCompare.getNuOfDimensions()); i++) {
+            if (get(i) < toCompare.get(i)) {
+                return false;
+            }
         }
         return true;
     }
@@ -276,7 +301,9 @@ public class Capacity {
      * @return capacity maximum of each capacity dimension
      */
     public static Capacity max(Capacity cap1, Capacity cap2) {
-        if (cap1 == null || cap2 == null) throw new IllegalArgumentException("arg must not be null");
+        if (cap1 == null || cap2 == null) {
+            throw new IllegalArgumentException("arg must not be null");
+        }
         Capacity.Builder toReturnBuilder = Capacity.Builder.newInstance();
         for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
             toReturnBuilder.addDimension(i, Math.max(cap1.get(i), cap2.get(i)));
@@ -285,7 +312,9 @@ public class Capacity {
     }
 
     public static Capacity min(Capacity cap1, Capacity cap2) {
-        if (cap1 == null || cap2 == null) throw new IllegalArgumentException("arg must not be null");
+        if (cap1 == null || cap2 == null) {
+            throw new IllegalArgumentException("arg must not be null");
+        }
         Capacity.Builder toReturnBuilder = Capacity.Builder.newInstance();
         for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
             toReturnBuilder.addDimension(i, Math.min(cap1.get(i), cap2.get(i)));
@@ -295,12 +324,18 @@ public class Capacity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Capacity)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Capacity)) {
+            return false;
+        }
 
         Capacity capacity = (Capacity) o;
 
-        if (!Arrays.equals(dimensions, capacity.dimensions)) return false;
+        if (!Arrays.equals(dimensions, capacity.dimensions)) {
+            return false;
+        }
 
         return true;
     }
@@ -309,4 +344,14 @@ public class Capacity {
     public int hashCode() {
         return Arrays.hashCode(dimensions);
     }
+
+
+    public static Capacity createNullCapacity(Capacity capacity) {
+        return capacity == null ? null : new Capacity(capacity.getNuOfDimensions());
+    }
+
+    public static Capacity createNullCapacity(int numberOfDimensions) {
+        return new Capacity(numberOfDimensions);
+    }
+
 }

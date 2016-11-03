@@ -20,7 +20,6 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.HasIndex;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Job;
 
 /**
  * Basic interface for tour-activities.
@@ -34,24 +33,6 @@ public interface TourActivity extends HasIndex {
 	public void setTheoreticalEarliestOperationStartTime(double earliest);
 
 	public void setTheoreticalLatestOperationStartTime(double latest);
-
-    /**
-     * Basic interface of job-activies.
-     * <p>
-     * <p>A job activity is related to a {@link Job}.
-     *
-     * @author schroeder
-     */
-    public interface JobActivity extends TourActivity {
-
-        /**
-         * Returns the job that is involved with this activity.
-         *
-         * @return job
-         */
-        public Job getJob();
-
-    }
 
     /**
      * Returns the name of this activity.

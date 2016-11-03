@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverService;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -306,7 +307,7 @@ public class TestVehicleRoute {
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("pickup"));
         assertTrue(act instanceof PickupService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Pickup);
+        assertTrue(((JobActivity) act).getJob() instanceof Pickup);
 
     }
 
@@ -320,7 +321,7 @@ public class TestVehicleRoute {
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("pickup"));
         assertTrue(act instanceof PickupService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Pickup);
+        assertTrue(((JobActivity) act).getJob() instanceof Pickup);
 
     }
 
@@ -334,7 +335,7 @@ public class TestVehicleRoute {
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("delivery"));
         assertTrue(act instanceof DeliverService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Delivery);
+        assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
     }
 
@@ -348,7 +349,7 @@ public class TestVehicleRoute {
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("delivery"));
         assertTrue(act instanceof DeliverService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Delivery);
+        assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
     }
 }

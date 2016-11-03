@@ -18,7 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -134,7 +134,7 @@ public class TestCalculatesServiceInsertion {
         serviceInsertion = new ServiceInsertionCalculator(costs, vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, actCosts, states), cManager);
         serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return vrp.copyAndGetActivities(job);
             }
         });

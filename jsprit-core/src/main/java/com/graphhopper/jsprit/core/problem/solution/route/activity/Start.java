@@ -17,11 +17,11 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 
-public final class Start extends AbstractActivity implements TourActivity {
+public final class Start extends IndexedActivity implements TourActivity {
 
     @Deprecated
     public final static String ACTIVITY_NAME = "start";

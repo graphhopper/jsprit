@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateVariableCosts;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -111,7 +111,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
         activityFactory = new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return vrp.copyAndGetActivities(job);
             }
         };
@@ -135,8 +135,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                List<AbstractActivity> acts = activityFactory.createActivities(job);
+            public List<IndexedActivity> createActivities(Job job) {
+                List<IndexedActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
                     acts.add(new PickupService(s4));
                 }
@@ -157,8 +157,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                List<AbstractActivity> acts = activityFactory.createActivities(job);
+            public List<IndexedActivity> createActivities(Job job) {
+                List<IndexedActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
                     acts.add(new PickupService(s4));
                 }
@@ -179,8 +179,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                List<AbstractActivity> acts = activityFactory.createActivities(job);
+            public List<IndexedActivity> createActivities(Job job) {
+                List<IndexedActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
                     PickupService pickupService = new PickupService(s4);
                     pickupService.setTheoreticalEarliestOperationStartTime(5);
@@ -208,8 +208,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                List<AbstractActivity> acts = activityFactory.createActivities(job);
+            public List<IndexedActivity> createActivities(Job job) {
+                List<IndexedActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
                     PickupService pickupService = new PickupService(s4);
                     pickupService.setTheoreticalEarliestOperationStartTime(5);
@@ -236,8 +236,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                List<AbstractActivity> acts = activityFactory.createActivities(job);
+            public List<IndexedActivity> createActivities(Job job) {
+                List<IndexedActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
                     PickupService pickupService = new PickupService(s4);
                     pickupService.setTheoreticalEarliestOperationStartTime(3);

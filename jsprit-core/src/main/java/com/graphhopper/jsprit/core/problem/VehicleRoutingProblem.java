@@ -28,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -100,8 +101,8 @@ public class VehicleRoutingProblem {
         private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+            public List<IndexedActivity> createActivities(Job job) {
+                List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
                 if( job instanceof Break){
                     acts.add(BreakActivity.newInstance((Break) job));
                 }
@@ -126,7 +127,7 @@ public class VehicleRoutingProblem {
 
         private Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<VehicleTypeKey, Integer>();
 
-        private Map<Job, List<AbstractActivity>> activityMap = new HashMap<Job, List<AbstractActivity>>();
+        private Map<Job, List<IndexedActivity>> activityMap = new HashMap<Job, List<IndexedActivity>>();
 
         private final DefaultShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
 
@@ -271,8 +272,8 @@ public class VehicleRoutingProblem {
                 Shipment shipment = (Shipment) job;
                 addShipment(shipment);
             }
-            List<AbstractActivity> jobActs = jobActivityFactory.createActivities(job);
-            for (AbstractActivity act : jobActs) {
+            List<IndexedActivity> jobActs = jobActivityFactory.createActivities(job);
+            for (IndexedActivity act : jobActs) {
                 act.setIndex(activityIndexCounter);
                 incActivityIndexCounter();
             }
@@ -284,9 +285,9 @@ public class VehicleRoutingProblem {
             for (Vehicle v : uniqueVehicles) {
                 if (v.getBreak() != null) {
                     hasBreaks = true;
-                    List<AbstractActivity> breakActivities = jobActivityFactory.createActivities(v.getBreak());
+                    List<IndexedActivity> breakActivities = jobActivityFactory.createActivities(v.getBreak());
                     if(breakActivities.isEmpty()) throw new IllegalArgumentException("at least one activity for break needs to be created by activityFactory");
-                    for(AbstractActivity act : breakActivities){
+                    for(IndexedActivity act : breakActivities){
                         act.setIndex(activityIndexCounter);
                         incActivityIndexCounter();
                     }
@@ -308,11 +309,11 @@ public class VehicleRoutingProblem {
                 addedVehicleIds.add(route.getVehicle().getId());
             }
             for (TourActivity act : route.getActivities()) {
-                AbstractActivity abstractAct = (AbstractActivity) act;
+                IndexedActivity abstractAct = (IndexedActivity) act;
                 abstractAct.setIndex(activityIndexCounter);
                 incActivityIndexCounter();
-                if (act instanceof TourActivity.JobActivity) {
-                    Job job = ((TourActivity.JobActivity) act).getJob();
+                if (act instanceof JobActivity) {
+                    Job job = ((JobActivity) act).getJob();
                     jobsInInitialRoutes.add(job.getId());
                     addLocationToTentativeLocations(job);
                     registerJobAndActivity(abstractAct, job);
@@ -324,10 +325,10 @@ public class VehicleRoutingProblem {
 
 
 
-        private void registerJobAndActivity(AbstractActivity abstractAct, Job job) {
+        private void registerJobAndActivity(IndexedActivity abstractAct, Job job) {
             if (activityMap.containsKey(job)) activityMap.get(job).add(abstractAct);
             else {
-                List<AbstractActivity> actList = new ArrayList<AbstractActivity>();
+                List<IndexedActivity> actList = new ArrayList<IndexedActivity>();
                 actList.add(abstractAct);
                 activityMap.put(job, actList);
             }
@@ -570,14 +571,14 @@ public class VehicleRoutingProblem {
 
     private final Locations locations;
 
-    private Map<Job, List<AbstractActivity>> activityMap;
+    private Map<Job, List<IndexedActivity>> activityMap;
 
     private int nuActivities;
 
     private final JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
         @Override
-        public List<AbstractActivity> createActivities(Job job) {
+        public List<IndexedActivity> createActivities(Job job) {
             return copyAndGetActivities(job);
         }
 
@@ -687,7 +688,7 @@ public class VehicleRoutingProblem {
      * @param job for which the corresponding activities needs to be returned
      * @return associated activities
      */
-    public List<AbstractActivity> getActivities(Job job) {
+    public List<IndexedActivity> getActivities(Job job) {
         return Collections.unmodifiableList(activityMap.get(job));
     }
 
@@ -711,10 +712,10 @@ public class VehicleRoutingProblem {
      * @param job for which the corresponding activities needs to be returned
      * @return a copy of the activities that are associated to the specified job
      */
-    public List<AbstractActivity> copyAndGetActivities(Job job) {
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+    public List<IndexedActivity> copyAndGetActivities(Job job) {
+        List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
         if (activityMap.containsKey(job)) {
-            for (AbstractActivity act : activityMap.get(job)) acts.add((AbstractActivity) act.duplicate());
+            for (IndexedActivity act : activityMap.get(job)) acts.add((IndexedActivity) act.duplicate());
         }
         return acts;
     }

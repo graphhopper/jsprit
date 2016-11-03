@@ -17,11 +17,11 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.Location;
 
-public final class End extends AbstractActivity implements TourActivity {
+public final class End extends IndexedActivity {
 
     public static End newInstance(String locationId, double earliestArrival, double latestArrival) {
         return new End(locationId, earliestArrival, latestArrival);
@@ -45,10 +45,12 @@ public final class End extends AbstractActivity implements TourActivity {
 
     private Location location;
 
+    @Override
     public void setTheoreticalEarliestOperationStartTime(double theoreticalEarliestOperationStartTime) {
         theoretical_earliestOperationStartTime = theoreticalEarliestOperationStartTime;
     }
 
+    @Override
     public void setTheoreticalLatestOperationStartTime(double theoreticalLatestOperationStartTime) {
         theoretical_latestOperationStartTime = theoreticalLatestOperationStartTime;
     }
@@ -64,7 +66,9 @@ public final class End extends AbstractActivity implements TourActivity {
 
     public End(String locationId, double theoreticalStart, double theoreticalEnd) {
         super();
-        if (locationId != null) this.location = Location.Builder.newInstance().setId(locationId).build();
+        if (locationId != null) {
+            location = Location.Builder.newInstance().setId(locationId).build();
+        }
         theoretical_earliestOperationStartTime = theoreticalStart;
         theoretical_latestOperationStartTime = theoreticalEnd;
         endTime = theoreticalEnd;
@@ -72,7 +76,7 @@ public final class End extends AbstractActivity implements TourActivity {
     }
 
     public End(End end) {
-        this.location = end.getLocation();
+        location = end.getLocation();
 //		this.locationId = end.getLocation().getId();
         theoretical_earliestOperationStartTime = end.getTheoreticalEarliestOperationStartTime();
         theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime();
@@ -81,18 +85,22 @@ public final class End extends AbstractActivity implements TourActivity {
         setIndex(-2);
     }
 
+    @Override
     public double getTheoreticalEarliestOperationStartTime() {
         return theoretical_earliestOperationStartTime;
     }
 
+    @Override
     public double getTheoreticalLatestOperationStartTime() {
         return theoretical_latestOperationStartTime;
     }
 
+    @Override
     public double getEndTime() {
         return endTime;
     }
 
+    @Override
     public void setEndTime(double endTime) {
         this.endTime = endTime;
     }
@@ -115,8 +123,8 @@ public final class End extends AbstractActivity implements TourActivity {
     @Override
     public String toString() {
         return "[type=" + getName() + "][location=" + location
-            + "][twStart=" + Activities.round(theoretical_earliestOperationStartTime)
-            + "][twEnd=" + Activities.round(theoretical_latestOperationStartTime) + "]";
+                + "][twStart=" + Activities.round(theoretical_earliestOperationStartTime)
+                + "][twEnd=" + Activities.round(theoretical_latestOperationStartTime) + "]";
     }
 
     @Override
@@ -126,7 +134,7 @@ public final class End extends AbstractActivity implements TourActivity {
 
     @Override
     public double getArrTime() {
-        return this.arrTime;
+        return arrTime;
     }
 
     @Override

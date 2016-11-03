@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-public interface DeliveryActivity extends TourActivity.JobActivity {
+public interface DeliveryActivity extends JobActivity {
 
 
 }

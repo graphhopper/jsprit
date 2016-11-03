@@ -100,7 +100,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new JobActivityFactory() {
 
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return vrp.copyAndGetActivities(job);
             }
 

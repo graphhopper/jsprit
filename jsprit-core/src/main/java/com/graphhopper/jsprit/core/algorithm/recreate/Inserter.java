@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData.NoInsertionFound;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -104,7 +104,7 @@ class Inserter {
         @Override
         public void handleJobInsertion(Job job, InsertionData iData, VehicleRoute route) {
             if (job instanceof Shipment) {
-                List<AbstractActivity> acts = vehicleRoutingProblem.copyAndGetActivities(job);
+                List<IndexedActivity> acts = vehicleRoutingProblem.copyAndGetActivities(job);
                 TourActivity pickupShipment = acts.get(0);
                 TourActivity deliverShipment = acts.get(1);
                 route.setVehicleAndDepartureTime(iData.getSelectedVehicle(), iData.getVehicleDepartureTime());

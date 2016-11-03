@@ -420,8 +420,8 @@ public class SolutionAnalyser {
         @Override
         public void visit(TourActivity activity) {
             boolean violatedAtActivity = false;
-            if (activity instanceof TourActivity.JobActivity) {
-                Set<String> requiredForActivity = ((TourActivity.JobActivity) activity).getJob().getRequiredSkills().values();
+            if (activity instanceof JobActivity) {
+                Set<String> requiredForActivity = ((JobActivity) activity).getJob().getRequiredSkills().values();
                 for (String skill : requiredForActivity) {
                     if (!route.getVehicle().getSkills().containsSkill(skill)) {
                         violatedAtActivity = true;

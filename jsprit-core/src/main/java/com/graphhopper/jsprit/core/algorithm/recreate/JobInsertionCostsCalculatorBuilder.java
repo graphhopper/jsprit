@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -282,7 +282,7 @@ public class JobInsertionCostsCalculatorBuilder {
         JobActivityFactory activityFactory = new JobActivityFactory() {
 
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return vrp.copyAndGetActivities(job);
             }
 
@@ -344,7 +344,7 @@ public class JobInsertionCostsCalculatorBuilder {
         jobInsertionCalculator.setStates(activityStates2);
         jobInsertionCalculator.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return vrp.copyAndGetActivities(job);
             }
         });

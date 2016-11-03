@@ -76,7 +76,7 @@ public class LoadStateTest {
         serviceRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
 
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return serviceProblem.copyAndGetActivities(job);
             }
 
@@ -86,7 +86,7 @@ public class LoadStateTest {
         VehicleRoute.Builder pdRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);
         pdRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return pdProblem.copyAndGetActivities(job);
             }
         });
@@ -95,7 +95,7 @@ public class LoadStateTest {
         VehicleRoute.Builder shipmentRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);
         shipmentRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return shipmentProblem.copyAndGetActivities(job);
             }
         });

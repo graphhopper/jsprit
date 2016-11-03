@@ -43,10 +43,10 @@ public class StateManagerTest {
     static class ActFac implements JobActivityFactory {
 
         @Override
-        public List<AbstractActivity> createActivities(Job job) {
+        public List<IndexedActivity> createActivities(Job job) {
             ServiceActivity act = mock(ServiceActivity.class);
             when(act.getIndex()).thenReturn(1);
-            List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+            List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
             acts.add(act);
             return acts;
         }

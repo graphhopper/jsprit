@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -67,7 +67,7 @@ public class TestInserter {
         when(iData.getSelectedVehicle()).thenReturn(vehicle);
 
         VehicleRoutingProblem vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+        List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
         PickupService act = new PickupService(serviceToInsert);
         acts.add(act);
         when(vehicleRoutingProblem.copyAndGetActivities(serviceToInsert)).thenReturn(acts);
@@ -113,8 +113,8 @@ public class TestInserter {
         assertEquals(route.getEnd().getLocation().getId(), serviceToInsert.getLocation().getId());
     }
 
-    private List<AbstractActivity> getTourActivities(Service serviceToInsert) {
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+    private List<IndexedActivity> getTourActivities(Service serviceToInsert) {
+        List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
         acts.add(new PickupService(serviceToInsert));
         return acts;
     }
@@ -154,8 +154,8 @@ public class TestInserter {
         assertEquals(route.getEnd().getLocation().getId(), vehicle.getEndLocation().getId());
     }
 
-    private List<AbstractActivity> getTourActivities(Shipment shipmentToInsert) {
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
+    private List<IndexedActivity> getTourActivities(Shipment shipmentToInsert) {
+        List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
         acts.add(new PickupShipment(shipmentToInsert));
         acts.add(new DeliverShipment(shipmentToInsert));
         return acts;

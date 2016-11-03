@@ -37,6 +37,7 @@ import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
 import com.graphhopper.jsprit.core.util.Coordinate;
@@ -148,10 +149,10 @@ public class RegretInsertionTest {
 
         @Override
         public void visit(TourActivity activity) {
-            if(((TourActivity.JobActivity)activity).getJob().getId().equals("s1")){
+            if(((JobActivity)activity).getJob().getId().equals("s1")){
                 stateManager.putProblemState(job1AssignedId,Boolean.class,true);
             }
-            if(((TourActivity.JobActivity)activity).getJob().getId().equals("s2")){
+            if(((JobActivity)activity).getJob().getId().equals("s2")){
                 stateManager.putProblemState(job2AssignedId,Boolean.class,true);
             }
 

@@ -18,7 +18,6 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 
 import java.util.*;
 

@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 import java.io.PrintWriter;
@@ -164,8 +165,8 @@ public class SolutionPrinter {
             TourActivity prevAct = route.getStart();
             for (TourActivity act : route.getActivities()) {
                 String jobId;
-                if (act instanceof TourActivity.JobActivity) {
-                    jobId = ((TourActivity.JobActivity) act).getJob().getId();
+                if (act instanceof JobActivity) {
+                    jobId = ((JobActivity) act).getJob().getId();
                 } else {
                     jobId = "-";
                 }

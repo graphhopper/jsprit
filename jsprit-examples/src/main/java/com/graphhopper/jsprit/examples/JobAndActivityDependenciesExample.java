@@ -35,6 +35,7 @@ import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
@@ -78,11 +79,11 @@ public class JobAndActivityDependenciesExample {
 
         @Override
         public void visit(TourActivity activity) {
-            if (((TourActivity.JobActivity) activity).getJob().getName().equals("use key")) {
+            if (((JobActivity) activity).getJob().getName().equals("use key")) {
                 stateManager.putProblemState(keyUsedStateId, VehicleRoute.class, route);
-            } else if (((TourActivity.JobActivity) activity).getJob().getName().equals("get key")) {
+            } else if (((JobActivity) activity).getJob().getName().equals("get key")) {
                 stateManager.putProblemState(keyPickedStateId, VehicleRoute.class, route);
-            } else if (((TourActivity.JobActivity) activity).getJob().getName().equals("deliver key")) {
+            } else if (((JobActivity) activity).getJob().getName().equals("deliver key")) {
                 stateManager.putProblemState(keyDeliveredStateId, VehicleRoute.class, route);
             }
         }
@@ -188,18 +189,18 @@ public class JobAndActivityDependenciesExample {
         }
 
         private boolean isPickupKey(TourActivity act) {
-            if (!(act instanceof TourActivity.JobActivity)) return false;
-            return ((TourActivity.JobActivity) act).getJob().getName().equals("get key");
+            if (!(act instanceof JobActivity)) return false;
+            return ((JobActivity) act).getJob().getName().equals("get key");
         }
 
         private boolean isUseKey(TourActivity act) {
-            if (!(act instanceof TourActivity.JobActivity)) return false;
-            return ((TourActivity.JobActivity) act).getJob().getName().equals("use key");
+            if (!(act instanceof JobActivity)) return false;
+            return ((JobActivity) act).getJob().getName().equals("use key");
         }
 
         private boolean isDeliverKey(TourActivity act) {
-            if (!(act instanceof TourActivity.JobActivity)) return false;
-            return ((TourActivity.JobActivity) act).getJob().getName().equals("deliver key");
+            if (!(act instanceof JobActivity)) return false;
+            return ((JobActivity) act).getJob().getName().equals("deliver key");
         }
 
 

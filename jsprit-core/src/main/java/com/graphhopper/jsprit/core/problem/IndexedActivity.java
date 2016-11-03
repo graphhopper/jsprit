@@ -23,7 +23,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 /**
  * Created by schroeder on 14.07.14.
  */
-public abstract class AbstractActivity implements TourActivity {
+public abstract class IndexedActivity implements TourActivity {
 
     private int index;
 

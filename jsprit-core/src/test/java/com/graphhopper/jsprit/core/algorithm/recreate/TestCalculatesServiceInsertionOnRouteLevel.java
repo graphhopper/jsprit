@@ -126,7 +126,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
         serviceInsertion.setStates(states);
         serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<AbstractActivity> createActivities(Job job) {
+            public List<IndexedActivity> createActivities(Job job) {
                 return vrp.copyAndGetActivities(job);
             }
         });

@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.BeforeJobInsertio
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -33,6 +33,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -141,8 +142,8 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     private String getNodeId(TourActivity act) {
         String nodeId = null;
-        if (act instanceof TourActivity.JobActivity) {
-            Job job = ((TourActivity.JobActivity) act).getJob();
+        if (act instanceof JobActivity) {
+            Job job = ((JobActivity) act).getJob();
             if (job instanceof Service) {
                 nodeId = job.getId();
             } else if (job instanceof Shipment) {
@@ -415,7 +416,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         String toNodeId = getToNodeId((Shipment) job);
         insertNode(toNodeId, data.getDeliveryInsertionIndex(), data, route);
 
-        List<AbstractActivity> del = vrp.getActivities(job);
+        List<IndexedActivity> del = vrp.getActivities(job);
         VehicleRoute copied = VehicleRoute.copyOf(route);
         copied.getTourActivities().addActivity(data.getDeliveryInsertionIndex(), del.get(1));
 
@@ -434,7 +435,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         if (isFirst(insertionIndex)) {
             node_i = makeStartId(data.getSelectedVehicle());
         } else {
-            TourActivity.JobActivity jobActivity = (TourActivity.JobActivity) route.getActivities().get(insertionIndex - 1);
+            JobActivity jobActivity = (JobActivity) route.getActivities().get(insertionIndex - 1);
             node_i = getNodeId(jobActivity);
         }
         String edgeId_1 = node_i + "_" + nodeId;
@@ -442,7 +443,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         if (isLast(insertionIndex, route)) {
             node_j = makeEndId(data.getSelectedVehicle());
         } else {
-            TourActivity.JobActivity jobActivity = (TourActivity.JobActivity) route.getActivities().get(insertionIndex);
+            JobActivity jobActivity = (JobActivity) route.getActivities().get(insertionIndex);
             node_j = getNodeId(jobActivity);
         }
         String edgeId_2 = nodeId + "_" + node_j;
@@ -466,9 +467,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         }
         if (vehicleSwitch && !route.getActivities().isEmpty()) {
             String oldStart = makeStartId(route.getVehicle());
-            String firstAct = ((TourActivity.JobActivity) route.getActivities().get(0)).getJob().getId();
+            String firstAct = ((JobActivity) route.getActivities().get(0)).getJob().getId();
             String oldEnd = makeEndId(route.getVehicle());
-            String lastAct = ((TourActivity.JobActivity) route.getActivities().get(route.getActivities().size() - 1)).getJob().getId();
+            String lastAct = ((JobActivity) route.getActivities().get(route.getActivities().size() - 1)).getJob().getId();
             removeEdge(oldStart + "_" + firstAct);
 
             if (route.getVehicle().isReturnToDepot()) {

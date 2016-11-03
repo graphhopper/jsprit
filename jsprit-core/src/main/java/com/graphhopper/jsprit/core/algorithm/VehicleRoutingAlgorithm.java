@@ -28,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.slf4j.Logger;
@@ -253,8 +254,8 @@ public class VehicleRoutingAlgorithm {
             StringBuilder b = new StringBuilder();
             b.append(r.getVehicle().getId()).append(" : ").append("[ ");
             for (TourActivity act : r.getActivities()) {
-                if (act instanceof TourActivity.JobActivity) {
-                    b.append(((TourActivity.JobActivity) act).getJob().getId()).append(" ");
+                if (act instanceof JobActivity) {
+                    b.append(((JobActivity) act).getJob().getId()).append(" ");
                 }
             }
             b.append("]");

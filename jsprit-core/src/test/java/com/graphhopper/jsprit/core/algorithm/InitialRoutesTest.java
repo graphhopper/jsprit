@@ -36,6 +36,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -107,8 +108,8 @@ public class InitialRoutesTest {
         boolean isInRoute = false;
         for (VehicleRoute route : routes) {
             for (TourActivity act : route.getActivities()) {
-                if (act instanceof TourActivity.JobActivity) {
-                    if (((TourActivity.JobActivity) act).getJob().getId().equals(jobId)) isInRoute = true;
+                if (act instanceof JobActivity) {
+                    if (((JobActivity) act).getJob().getId().equals(jobId)) isInRoute = true;
                 }
             }
         }
@@ -131,8 +132,8 @@ public class InitialRoutesTest {
     private boolean hasActivityIn(VehicleRoute route, String jobId) {
         boolean isInRoute = false;
         for (TourActivity act : route.getActivities()) {
-            if (act instanceof TourActivity.JobActivity) {
-                if (((TourActivity.JobActivity) act).getJob().getId().equals(jobId)) isInRoute = true;
+            if (act instanceof JobActivity) {
+                if (((JobActivity) act).getJob().getId().equals(jobId)) isInRoute = true;
             }
         }
         return isInRoute;

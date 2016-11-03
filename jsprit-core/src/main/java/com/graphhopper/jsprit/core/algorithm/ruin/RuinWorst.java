@@ -21,6 +21,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.NoiseMaker;
@@ -109,7 +110,7 @@ public final class RuinWorst extends AbstractRuinStrategy {
                     continue;
                 }
                 double savings = savings(route, actBefore, actToEval, act);
-                Job job = ((TourActivity.JobActivity) actToEval).getJob();
+                Job job = ((JobActivity) actToEval).getJob();
                 if (!savingsMap.containsKey(job)) {
                     savingsMap.put(job, savings);
                 } else {
@@ -120,7 +121,7 @@ public final class RuinWorst extends AbstractRuinStrategy {
                 actToEval = act;
             }
             double savings = savings(route, actBefore, actToEval, route.getEnd());
-            Job job = ((TourActivity.JobActivity) actToEval).getJob();
+            Job job = ((JobActivity) actToEval).getJob();
             if (!savingsMap.containsKey(job)) {
                 savingsMap.put(job, savings);
             } else {
