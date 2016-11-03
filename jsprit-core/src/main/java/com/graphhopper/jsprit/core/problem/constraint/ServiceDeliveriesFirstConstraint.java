@@ -27,13 +27,13 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
         if (newAct instanceof PickupService && nextAct instanceof DeliverService) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
-        if (newAct instanceof ServiceActivity && nextAct instanceof DeliverService) {
+        if (newAct instanceof ServiceActivityNEW && nextAct instanceof DeliverService) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
         if (newAct instanceof DeliverService && prevAct instanceof PickupService) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
-        if (newAct instanceof DeliverService && prevAct instanceof ServiceActivity) {
+        if (newAct instanceof DeliverService && prevAct instanceof ServiceActivityNEW) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
 

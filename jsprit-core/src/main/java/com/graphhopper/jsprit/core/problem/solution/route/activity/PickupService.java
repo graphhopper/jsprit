@@ -23,7 +23,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
-public final class PickupService extends IndexedActivity implements PickupActivity {
+public final class PickupService extends IndexedActivity implements PickupActivityNEW {
 
     private Service pickup;
 

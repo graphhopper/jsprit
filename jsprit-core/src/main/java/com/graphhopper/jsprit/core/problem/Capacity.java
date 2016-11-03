@@ -28,6 +28,8 @@ import java.util.Arrays;
  */
 public class Capacity {
 
+    public static final Capacity EMPTY = Capacity.Builder.newInstance().build();
+
     /**
      * Adds up two capacities, i.e. sums up each and every capacity dimension, and returns the resulting Capacity.
      * <p>

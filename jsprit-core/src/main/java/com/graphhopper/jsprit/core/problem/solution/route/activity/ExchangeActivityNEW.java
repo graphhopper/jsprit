@@ -17,7 +17,19 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-public interface DeliveryActivity extends JobActivity {
+import com.graphhopper.jsprit.core.problem.AbstractJob;
+import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.Location;
+
+public class ExchangeActivityNEW extends JobActivity {
+
+    public ExchangeActivityNEW(AbstractJob job, String name, Location location, double operationTime, Capacity capacity) {
+        super(job, name, location, operationTime, capacity);
+    }
+
+    public ExchangeActivityNEW(JobActivity sourceActivity) {
+        super(sourceActivity);
+    }
 
 
 }

@@ -22,7 +22,7 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 
-public final class DeliverService extends IndexedActivity implements DeliveryActivity {
+public final class DeliverService extends IndexedActivity implements DeliveryActivityNEW {
 
     private Delivery delivery;
 

@@ -29,13 +29,13 @@ import static org.junit.Assert.*;
 public class TestTourActivities {
 
     private Service service;
-    private ServiceActivity act;
+    private ServiceActivityNEW act;
     private TourActivities tour;
 
     @Before
     public void doBefore() {
         service = Service.Builder.newInstance("yo").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
-        act = ServiceActivity.newInstance(service);
+        act = ServiceActivityNEW.newInstance(service);
         tour = new TourActivities();
     }
 

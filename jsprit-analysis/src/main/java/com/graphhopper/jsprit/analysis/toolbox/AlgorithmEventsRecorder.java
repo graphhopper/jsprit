@@ -33,6 +33,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -435,7 +436,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         if (isFirst(insertionIndex)) {
             node_i = makeStartId(data.getSelectedVehicle());
         } else {
-            JobActivity jobActivity = (JobActivity) route.getActivities().get(insertionIndex - 1);
+            AbstractActivityNEW jobActivity = (AbstractActivityNEW) route.getActivities().get(insertionIndex - 1);
             node_i = getNodeId(jobActivity);
         }
         String edgeId_1 = node_i + "_" + nodeId;
@@ -443,7 +444,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         if (isLast(insertionIndex, route)) {
             node_j = makeEndId(data.getSelectedVehicle());
         } else {
-            JobActivity jobActivity = (JobActivity) route.getActivities().get(insertionIndex);
+            AbstractActivityNEW jobActivity = (AbstractActivityNEW) route.getActivities().get(insertionIndex);
             node_j = getNodeId(jobActivity);
         }
         String edgeId_2 = nodeId + "_" + node_j;

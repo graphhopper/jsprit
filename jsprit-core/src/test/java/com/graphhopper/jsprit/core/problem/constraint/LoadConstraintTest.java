@@ -134,7 +134,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
@@ -151,7 +151,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
@@ -168,7 +168,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
@@ -188,7 +188,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
@@ -205,7 +205,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
@@ -222,7 +222,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
@@ -502,7 +502,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
@@ -519,7 +519,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
@@ -539,7 +539,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
@@ -556,7 +556,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
@@ -573,7 +573,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        ServiceActivity newAct = mock(ServiceActivity.class);
+        ServiceActivityNEW newAct = mock(ServiceActivityNEW.class);
         when(newAct.getSize()).thenReturn(newSize);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);

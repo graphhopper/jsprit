@@ -30,7 +30,7 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -113,7 +113,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     @Test
     public void whenNewActInBetweenFirstAndSecond_and_forwardLookingIs0_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).build();
-        PickupActivity pickupService = new PickupService(s4);
+        PickupActivityNEW pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
@@ -124,7 +124,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     @Test
     public void whenNewActWithTWInBetweenFirstAndSecond_and_forwardLookingIs0_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
-        PickupActivity pickupService = new PickupService(s4);
+        PickupActivityNEW pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
@@ -135,7 +135,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     @Test
     public void whenNewActWithTWAndServiceTimeInBetweenFirstAndSecond_and_forwardLookingIs0_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setServiceTime(10.).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
-        PickupActivity pickupService = new PickupService(s4);
+        PickupActivityNEW pickupService = new PickupService(s4);
         pickupService.setTheoreticalEarliestOperationStartTime(5);
         pickupService.setTheoreticalLatestOperationStartTime(5);
 
@@ -151,7 +151,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     @Test
     public void whenNewActWithTWAndServiceTimeInBetweenFirstAndSecond_and_forwardLookingIs3_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setServiceTime(10.).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
-        PickupActivity pickupService = new PickupService(s4);
+        PickupActivityNEW pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(3);
@@ -164,7 +164,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     @Test
     public void whenNewActInBetweenSecondAndThird_and_forwardLookingIs0_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).build();
-        PickupActivity pickupService = new PickupService(s4);
+        PickupActivityNEW pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
@@ -178,7 +178,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     @Test
     public void whenNewActInBetweenSecondAndThird_and_forwardLookingIs3_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).build();
-        PickupActivity pickupService = new PickupService(s4);
+        PickupActivityNEW pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(3);
@@ -192,7 +192,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     @Test
     public void whenNewActWithTWInBetweenSecondAndThird_and_forwardLookingIs3_itShouldReturnCorrectCosts() {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
-        PickupActivity pickupService = new PickupService(s4);
+        PickupActivityNEW pickupService = new PickupService(s4);
         pickupService.setTheoreticalEarliestOperationStartTime(5);
         pickupService.setTheoreticalLatestOperationStartTime(5);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);

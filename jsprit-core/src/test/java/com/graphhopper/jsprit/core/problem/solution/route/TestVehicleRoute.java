@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverService;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -98,7 +98,7 @@ public class TestVehicleRoute {
             assertEquals(1, count);
         }
         {
-            route.getTourActivities().addActivity(ServiceActivity.newInstance(Service.Builder.newInstance("3").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build()));
+            route.getTourActivities().addActivity(ServiceActivityNEW.newInstance(Service.Builder.newInstance("3").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build()));
             Iterator<TourActivity> iter = route.getTourActivities().iterator();
             int count = 0;
             while (iter.hasNext()) {

@@ -110,15 +110,15 @@ public class SolutionAnalyser {
 
         @Override
         public void visit(TourActivity activity) {
-            if (activity instanceof PickupActivity) {
+            if (activity instanceof PickupActivityNEW) {
                 pickupCounter++;
-                pickedUp = Capacity.addup(pickedUp, ((PickupActivity) activity).getJob().getSize());
+                pickedUp = Capacity.addup(pickedUp, ((PickupActivityNEW) activity).getJob().getSize());
                 if (activity instanceof PickupService) {
                     deliverAtEndCounter++;
                 }
-            } else if (activity instanceof DeliveryActivity) {
+            } else if (activity instanceof DeliveryActivityNEW) {
                 deliveryCounter++;
-                delivered = Capacity.addup(delivered, ((DeliveryActivity) activity).getJob().getSize());
+                delivered = Capacity.addup(delivered, ((DeliveryActivityNEW) activity).getJob().getSize());
                 if (activity instanceof DeliverService) {
                     pickupAtBeginningCounter++;
                 }
@@ -192,7 +192,7 @@ public class SolutionAnalyser {
                 stateManager.putActivityState(activity, backhaul_id, true);
                 backhaulConstraintOnRouteViolated = true;
             } else {
-                if (activity instanceof PickupService || activity instanceof ServiceActivity || activity instanceof PickupShipment) {
+                if (activity instanceof PickupService || activity instanceof ServiceActivityNEW || activity instanceof PickupShipment) {
                     pickupOccured = true;
                     stateManager.putActivityState(activity, backhaul_id, false);
                 } else stateManager.putActivityState(activity, backhaul_id, false);

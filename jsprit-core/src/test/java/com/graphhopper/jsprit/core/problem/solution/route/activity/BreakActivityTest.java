@@ -90,8 +90,8 @@ public class BreakActivityTest {
         Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
         Service s2 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
 
-        ServiceActivity d1 = ServiceActivity.newInstance(s1);
-        ServiceActivity d2 = ServiceActivity.newInstance(s2);
+        ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
+        ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);
 
         assertTrue(d1.equals(d2));
     }
@@ -101,8 +101,8 @@ public class BreakActivityTest {
         Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
         Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
 
-        ServiceActivity d1 = ServiceActivity.newInstance(s1);
-        ServiceActivity d2 = ServiceActivity.newInstance(s2);
+        ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
+        ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);
 
         assertFalse(d1.equals(d2));
     }
