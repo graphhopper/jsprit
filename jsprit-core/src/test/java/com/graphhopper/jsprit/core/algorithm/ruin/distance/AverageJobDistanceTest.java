@@ -72,8 +72,8 @@ public class AverageJobDistanceTest {
 
     @Test
     public void whenServicesHaveSameLocation_distanceShouldBeZero() {
-        Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
-        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
+        Service s1 = new Service.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
+        Service s2 = new Service.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
 
         double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
         assertEquals(0.0, dist, 0.01);

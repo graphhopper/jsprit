@@ -108,9 +108,9 @@ public class TestCalculatesServiceInsertion {
         };
 
 
-        first = Service.Builder.newInstance("1").addSizeDimension(0, 0).setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-        second = Service.Builder.newInstance("2").addSizeDimension(0, 0).setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-        third = Service.Builder.newInstance("3").addSizeDimension(0, 0).setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        first = new Service.Builder("1").addSizeDimension(0, 0).setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        second = new Service.Builder("2").addSizeDimension(0, 0).setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        third = new Service.Builder("3").addSizeDimension(0, 0).setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
 
         Collection<Job> jobs = new ArrayList<Job>();
         jobs.add(first);
@@ -206,7 +206,7 @@ public class TestCalculatesServiceInsertion {
     public void whenInsertingJobAndCurrRouteIsEmpty_accessEggressCalcShouldReturnZero() {
         VehicleRoute route = VehicleRoute.Builder.newInstance(VehicleImpl.createNoVehicle(), DriverImpl.noDriver()).build();
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
-        Job job = Service.Builder.newInstance("1").addSizeDimension(0, 0).setLocation(Location.newInstance("1")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        Job job = new Service.Builder("1").addSizeDimension(0, 0).setLocation(Location.newInstance("1")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
         JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
         assertEquals(0.0, accessEgressCalc.getCosts(iContex), 0.01);
     }
@@ -244,13 +244,13 @@ public class TestCalculatesServiceInsertion {
         Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setStartLocation(Location.newInstance("oldV")).build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(oldVehicle, DriverImpl.noDriver())
-            .addService(Service.Builder.newInstance("service").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build())
+            .addService(new Service.Builder("service").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build())
             .build();
 
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setStartLocation(Location.newInstance("newV")).build();
 
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(routingCosts);
-        Job job = Service.Builder.newInstance("service2").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build();
+        Job job = new Service.Builder("service2").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build();
         JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
         assertEquals(8.0, accessEgressCalc.getCosts(iContex), 0.01);
     }

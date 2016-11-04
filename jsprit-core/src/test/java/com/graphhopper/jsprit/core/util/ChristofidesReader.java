@@ -96,15 +96,15 @@ public class ChristofidesReader {
                 int demand = Integer.parseInt(tokens[2].trim());
                 String customer = Integer.valueOf(counter - 1).toString();
                 if(jobType.equals(JobType.SERVICE)) {
-                    Service service = Service.Builder.newInstance(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
+                    Service service = new Service.Builder(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
                     vrpBuilder.addJob(service);
                 }
                 else if(jobType.equals(JobType.DELIVERY)){
-                    Delivery service = Delivery.Builder.newInstance(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
+                    Delivery service = new Delivery.Builder(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
                     vrpBuilder.addJob(service);
                 }
                 else if(jobType.equals(JobType.PICKUP)){
-                    Pickup service = Pickup.Builder.newInstance(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
+                    Pickup service = new Pickup.Builder(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
                     vrpBuilder.addJob(service);
                 }
             }

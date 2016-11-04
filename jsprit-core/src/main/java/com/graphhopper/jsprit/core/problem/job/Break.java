@@ -18,31 +18,21 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 
-import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
  *
  * @author schroeder
  */
-public class Break extends Service {
+public class Break extends Service implements InternalJobMarker {
 
-    public static class Builder extends Service.Builder<Break> {
+    public static class Builder extends Service.ServiceBuilderBase<Builder> {
 
-        /**
-         * Returns a new instance of builder that builds a pickup.
-         *
-         * @param id the id of the pickup
-         * @return the builder
-         */
-        public static Builder newInstance(String id) {
-            return new Builder(id);
-        }
 
         private boolean variableLocation = true;
 
-        Builder(String id) {
+        public Builder(String id) {
             super(id);
         }
 
@@ -54,13 +44,14 @@ public class Break extends Service {
          * @return pickup
          * @throws IllegalStateException if neither locationId nor coordinate has been set
          */
+        @SuppressWarnings("unchecked")
+        @Override
         public Break build() {
             if (location != null) {
                 variableLocation = false;
             }
-            this.setType("break");
-            super.capacity = Capacity.Builder.newInstance().build();
-            super.skills = Skills.Builder.newInstance().build();
+            setType("break");
+            postProcess();
             return new Break(this);
         }
 
@@ -70,7 +61,12 @@ public class Break extends Service {
 
     Break(Builder builder) {
         super(builder);
-        this.variableLocation = builder.variableLocation;
+        variableLocation = builder.variableLocation;
+    }
+
+    @Override
+    protected void createActivities() {
+        addActivity(BreakActivity.newInstance(this));
     }
 
     public boolean hasVariableLocation() {

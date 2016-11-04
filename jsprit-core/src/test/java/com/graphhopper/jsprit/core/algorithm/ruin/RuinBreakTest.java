@@ -40,7 +40,7 @@ public class RuinBreakTest {
 
     @Test
     public void itShouldRuinBreaks() {
-        Break aBreak = Break.Builder.newInstance("break").build();
+        Break aBreak = new Break.Builder("break").build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc"))
             .setBreak(aBreak).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(v).build();

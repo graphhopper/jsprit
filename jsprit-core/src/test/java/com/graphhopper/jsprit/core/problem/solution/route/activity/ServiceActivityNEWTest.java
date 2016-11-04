@@ -17,13 +17,16 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Service;
 
 
 public class ServiceActivityNEWTest {
@@ -34,9 +37,9 @@ public class ServiceActivityNEWTest {
 
     @Before
     public void doBefore() {
-        service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
-            setTimeWindow(TimeWindow.newInstance(1., 2.)).
-            addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+        service = new Service.Builder("service").setLocation(Location.newInstance("loc")).
+                setTimeWindow(TimeWindow.newInstance(1., 2.)).
+                addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         serviceActivity = ServiceActivityNEW.newInstance(service);
         serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         serviceActivity.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
@@ -89,8 +92,8 @@ public class ServiceActivityNEWTest {
 
     @Test
     public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual() {
-        Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
 
         ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
         ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);
@@ -100,8 +103,8 @@ public class ServiceActivityNEWTest {
 
     @Test
     public void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual() {
-        Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s1").setLocation(Location.newInstance("loc")).build();
 
         ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
         ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);

@@ -19,10 +19,11 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.Collection;
 
-import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
@@ -346,10 +347,6 @@ public class Shipment extends AbstractJob {
 
     private final double deliveryServiceTime;
 
-    private final TimeWindow deliveryTimeWindow;
-
-    private final TimeWindow pickupTimeWindow;
-
     private final Capacity capacity;
 
     private final Skills skills;
@@ -369,9 +366,7 @@ public class Shipment extends AbstractJob {
     Shipment(Builder builder) {
         id = builder.id;
         pickupServiceTime = builder.pickupServiceTime;
-        pickupTimeWindow = builder.pickupTimeWindow;
         deliveryServiceTime = builder.deliveryServiceTime;
-        deliveryTimeWindow = builder.deliveryTimeWindow;
         capacity = builder.capacity;
         skills = builder.skills;
         name = builder.name;
@@ -383,6 +378,17 @@ public class Shipment extends AbstractJob {
 
         addLocation(pickupLocation_);
         addLocation(deliveryLocation_);
+        createActivities();
+    }
+
+    @Override
+    protected void createActivities() {
+        // TODO - Balage1551
+        addActivity(new PickupShipmentDEPRECATED(this));
+        addActivity(new DeliverShipmentDEPRECATED(this));
+
+//        addActivity(new PickupActivityNEW(this, "pickup", getPickupLocation(), getPickupServiceTime(), getSize()));
+//        addActivity(new PickupActivityNEW(this, "delivery", getDeliveryLocation(), getDeliveryServiceTime(), getSize()));
     }
 
     @Override

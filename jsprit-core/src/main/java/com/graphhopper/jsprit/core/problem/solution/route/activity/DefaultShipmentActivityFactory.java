@@ -24,12 +24,12 @@ public class DefaultShipmentActivityFactory implements TourShipmentActivityFacto
 
     @Override
     public IndexedActivity createPickup(Shipment shipment) {
-        return new PickupShipment(shipment);
+        return new PickupShipmentDEPRECATED(shipment);
     }
 
     @Override
     public IndexedActivity createDelivery(Shipment shipment) {
-        return new DeliverShipment(shipment);
+        return new DeliverShipmentDEPRECATED(shipment);
     }
 
 }

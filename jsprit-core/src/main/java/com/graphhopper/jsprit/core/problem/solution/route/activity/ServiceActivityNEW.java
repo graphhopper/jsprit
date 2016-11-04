@@ -17,9 +17,10 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
+import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class ServiceActivityNEW extends JobActivity {
 
@@ -29,6 +30,11 @@ public class ServiceActivityNEW extends JobActivity {
 
     public ServiceActivityNEW(JobActivity sourceActivity) {
         super(sourceActivity);
+    }
+
+    // NOTE: Only for testing purposes
+    public static ServiceActivityNEW newInstance(Service service) {
+        return new ServiceActivityNEW(service, service.getName(), service.getLocation(), service.getServiceDuration(), service.getSize());
     }
 
 

@@ -34,7 +34,7 @@ public class TestTourActivities {
 
     @Before
     public void doBefore() {
-        service = Service.Builder.newInstance("yo").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        service = new Service.Builder("yo").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
         act = ServiceActivityNEW.newInstance(service);
         tour = new TourActivities();
     }
@@ -67,7 +67,7 @@ public class TestTourActivities {
         assertEquals(0, tour.getActivities().size());
         tour.addActivity(act);
         assertEquals(1, tour.getActivities().size());
-        Service anotherServiceInstance = Service.Builder.newInstance("yo").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        Service anotherServiceInstance = new Service.Builder("yo").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
         assertTrue(service.equals(anotherServiceInstance));
         boolean removed = tour.removeJob(anotherServiceInstance);
         assertTrue(removed);

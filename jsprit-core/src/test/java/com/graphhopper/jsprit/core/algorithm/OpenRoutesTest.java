@@ -74,7 +74,7 @@ public class OpenRoutesTest {
             .setStartLocation(TestUtils.loc(Coordinate.newInstance(0, 0)))
             .build();
 
-        Service service = Service.Builder.newInstance("s")
+        Service service = new Service.Builder("s")
             .setLocation(TestUtils.loc(Coordinate.newInstance(5, 0)))
             .build();
 
@@ -124,7 +124,7 @@ public class OpenRoutesTest {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(10.)
             .setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 
-        Service service = Service.Builder.newInstance("s")
+        Service service = new Service.Builder("s")
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build()).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
@@ -146,7 +146,7 @@ public class OpenRoutesTest {
             .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build())
             .build();
 
-        Service service = Service.Builder.newInstance("s")
+        Service service = new Service.Builder("s")
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(50, 0)).build()).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()

@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
@@ -25,19 +26,9 @@ package com.graphhopper.jsprit.core.problem.job;
  */
 public class Pickup extends Service {
 
-    public static class Builder extends Service.Builder<Pickup> {
+    public static class Builder extends Service.ServiceBuilderBase<Builder> {
 
-        /**
-         * Returns a new instance of builder that builds a pickup.
-         *
-         * @param id the id of the pickup
-         * @return the builder
-         */
-        public static Builder newInstance(String id) {
-            return new Builder(id);
-        }
-
-        Builder(String id) {
+        public Builder(String id) {
             super(id);
         }
 
@@ -49,11 +40,14 @@ public class Pickup extends Service {
          * @return pickup
          * @throws IllegalArgumentException if neither locationId nor coordinate has been set
          */
+        @SuppressWarnings("unchecked")
+        @Override
         public Pickup build() {
-            if (location == null) throw new IllegalArgumentException("location is missing");
-            this.setType("pickup");
-            super.capacity = super.capacityBuilder.build();
-            super.skills = super.skillBuilder.build();
+            if (location == null) {
+                throw new IllegalArgumentException("location is missing");
+            }
+            setType("pickup");
+            postProcess();
             return new Pickup(this);
         }
 
@@ -61,6 +55,14 @@ public class Pickup extends Service {
 
     Pickup(Builder builder) {
         super(builder);
+    }
+
+    @Override
+    protected void createActivities() {
+        // TODO - Balage1551
+        addActivity(new PickupServiceDEPRECATED(this));
+
+//        addActivity(new PickupActivityNEW(this, "pickup", getLocation(), getServiceDuration(), getSize()));
     }
 
 }

@@ -45,6 +45,13 @@ public class BreakActivity extends InternalJobActivity {
     }
 
 
+
+
+    @Override
+    public Break getJob() {
+        return (Break) super.getJob();
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */

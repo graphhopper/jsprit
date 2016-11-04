@@ -16,12 +16,15 @@
  * limitations under the License.
  */
 
-package com.graphhopper.jsprit.core.problem;
+package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.InternalActivityMarker;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 
 /**
  * Created by schroeder on 14.07.14.
@@ -32,12 +35,15 @@ public abstract class AbstractJob implements Job {
 
     protected List<Location> allLocations = new ArrayList<>();
 
+    private List<JobActivity> _activities = new ArrayList<>();
+    private List<JobActivity> unmodifiableActivities = Collections.unmodifiableList(_activities);
+
     @Override
     public int getIndex() {
         return index;
     }
 
-    protected void setIndex(int index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 
@@ -51,6 +57,24 @@ public abstract class AbstractJob implements Job {
     public List<Location> getAllLocations() {
         return allLocations;
     }
+
+    protected abstract void createActivities();
+
+
+    protected void addActivity(JobActivity activity) {
+        if (activity instanceof InternalActivityMarker && !(this instanceof InternalJobMarker)) {
+            throw new IllegalArgumentException("Can't add an internal activity to a non-internal job: " + activity.getClass().getCanonicalName());
+        }
+        if (!activity.getJob().equals(this)) {
+            throw new IllegalArgumentException("The activity " + activity.getName() + " is not associated with this job.");
+        }
+        _activities.add(activity);
+    }
+
+    public List<JobActivity> getActivities() {
+        return unmodifiableActivities;
+    }
+
 
 
 }

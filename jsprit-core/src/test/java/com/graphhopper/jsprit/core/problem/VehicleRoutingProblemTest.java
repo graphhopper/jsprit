@@ -425,7 +425,7 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenAddingJobAndInitialRouteWithThatJobAfterwards_thisJobShouldNotBeInFinalJobMap() {
-        Service service = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
+        Service service = new Service.Builder("myService").setLocation(Location.newInstance("loc")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service);
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v")
@@ -440,7 +440,7 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenAddingTwoJobs_theyShouldHaveProperIndeces() {
-        Service service = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
+        Service service = new Service.Builder("myService").setLocation(Location.newInstance("loc")).build();
         Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
             .setDeliveryLocation(Location.newInstance("del")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -456,8 +456,8 @@ public class VehicleRoutingProblemTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenAddingTwoServicesWithTheSameId_itShouldThrowException() {
-        Service service1 = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
-        Service service2 = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
+        Service service1 = new Service.Builder("myService").setLocation(Location.newInstance("loc")).build();
+        Service service2 = new Service.Builder("myService").setLocation(Location.newInstance("loc")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service1);
         vrpBuilder.addJob(service2);

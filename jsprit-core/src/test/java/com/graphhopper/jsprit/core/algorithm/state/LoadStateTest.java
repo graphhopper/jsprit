@@ -55,14 +55,14 @@ public class LoadStateTest {
         when(vehicle.getType()).thenReturn(type);
 
         VehicleRoutingProblem.Builder serviceProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Service s1 = Service.Builder.newInstance("s").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s2").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
         serviceProblemBuilder.addJob(s1).addJob(s2);
         final VehicleRoutingProblem serviceProblem = serviceProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder pdProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
-        Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
+        Pickup pickup = (Pickup) new Pickup.Builder("pick").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        Delivery delivery = (Delivery) new Delivery.Builder("del").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
         pdProblemBuilder.addJob(pickup).addJob(delivery);
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
 

@@ -114,8 +114,8 @@ public class ServiceInsertionAndLoadConstraintsTest {
 
     @Test
     public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnTheCorrectInsertionIndex() {
-        Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0, 41).setLocation(Location.newInstance("10,10")).build();
-        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 15).setLocation(Location.newInstance("0,10")).build();
+        Delivery delivery = (Delivery) new Delivery.Builder("del").addSizeDimension(0, 41).setLocation(Location.newInstance("10,10")).build();
+        Pickup pickup = (Pickup) new Pickup.Builder("pick").addSizeDimension(0, 15).setLocation(Location.newInstance("0,10")).build();
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 50).setCostPerDistance(1).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();

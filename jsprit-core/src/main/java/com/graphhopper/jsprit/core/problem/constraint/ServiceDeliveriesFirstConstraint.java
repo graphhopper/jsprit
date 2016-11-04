@@ -18,35 +18,40 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint {
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (newAct instanceof PickupService && nextAct instanceof DeliverService) {
+        if (newAct instanceof PickupServiceDEPRECATED && nextAct instanceof DeliverServiceDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
-        if (newAct instanceof ServiceActivityNEW && nextAct instanceof DeliverService) {
+        if (newAct instanceof ServiceActivityNEW && nextAct instanceof DeliverServiceDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
-        if (newAct instanceof DeliverService && prevAct instanceof PickupService) {
+        if (newAct instanceof DeliverServiceDEPRECATED && prevAct instanceof PickupServiceDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
-        if (newAct instanceof DeliverService && prevAct instanceof ServiceActivityNEW) {
+        if (newAct instanceof DeliverServiceDEPRECATED && prevAct instanceof ServiceActivityNEW) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
 
-        if (newAct instanceof DeliverService && prevAct instanceof PickupShipment) {
+        if (newAct instanceof DeliverServiceDEPRECATED && prevAct instanceof PickupShipmentDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
-        if (newAct instanceof DeliverService && prevAct instanceof DeliverShipment) {
+        if (newAct instanceof DeliverServiceDEPRECATED && prevAct instanceof DeliverShipmentDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
-        if (newAct instanceof PickupShipment && nextAct instanceof DeliverService) {
+        if (newAct instanceof PickupShipmentDEPRECATED && nextAct instanceof DeliverServiceDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
-        if (newAct instanceof DeliverShipment && nextAct instanceof DeliverService) {
+        if (newAct instanceof DeliverShipmentDEPRECATED && nextAct instanceof DeliverServiceDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
 

@@ -53,7 +53,7 @@ public class StateManagerTest {
     }
 
     private VehicleRoute getRoute(Vehicle vehicle) {
-        return VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new ActFac()).addService(Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build()).build();
+        return VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new ActFac()).addService(new Service.Builder("s").setLocation(Location.newInstance("loc")).build()).build();
     }
 
     private VehicleRoutingProblem vrpMock;

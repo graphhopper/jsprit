@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
 
 /**
  * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
@@ -25,19 +26,10 @@ package com.graphhopper.jsprit.core.problem.job;
  */
 public class Delivery extends Service {
 
-    public static class Builder extends Service.Builder<Delivery> {
+    public static class Builder extends Service.ServiceBuilderBase<Builder> {
 
-        /**
-         * Returns a new instance of builder that builds a delivery.
-         *
-         * @param id the id of the delivery
-         * @return the builder
-         */
-        public static Builder newInstance(String id) {
-            return new Builder(id);
-        }
 
-        Builder(String id) {
+        public Builder(String id) {
             super(id);
         }
 
@@ -47,19 +39,27 @@ public class Delivery extends Service {
          * @return delivery
          * @throws IllegalArgumentException if neither locationId nor coord is set
          */
+        @SuppressWarnings("unchecked")
+        @Override
         public Delivery build() {
-            if (location == null) throw new IllegalArgumentException("location is missing");
-            this.setType("delivery");
-            super.capacity = super.capacityBuilder.build();
-            super.skills = super.skillBuilder.build();
+            if (location == null) {
+                throw new IllegalArgumentException("location is missing");
+            }
+            setType("delivery");
+            postProcess();
             return new Delivery(this);
         }
-
     }
 
     Delivery(Builder builder) {
         super(builder);
+    }
 
+    @Override
+    protected void createActivities() {
+        // TODO - Balage1551
+        addActivity(new DeliverServiceDEPRECATED(this));
+//        addActivity(new DeliveryActivityNEW(this, "delivery", getLocation(), getServiceDuration(), getSize()));
     }
 
 }

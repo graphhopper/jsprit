@@ -38,8 +38,8 @@ public class ExternalInitialSolutionIsInValidTest {
     @Test
     public void itShouldSolveProblemWithIniSolutionExternallyCreated() {
 
-        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10, 0)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 10)).build();
+        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
+        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(0, 10)).build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0, 0)).build();
 

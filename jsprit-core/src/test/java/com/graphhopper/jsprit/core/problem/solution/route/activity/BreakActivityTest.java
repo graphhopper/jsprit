@@ -34,7 +34,7 @@ public class BreakActivityTest {
 
     @Before
     public void doBefore() {
-        service = Break.Builder.newInstance("service")
+        service = new Break.Builder("service")
             .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3).build();
         serviceActivity = BreakActivity.newInstance(service);
         serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
@@ -87,8 +87,8 @@ public class BreakActivityTest {
 
     @Test
     public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual() {
-        Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
 
         ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
         ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);
@@ -98,8 +98,8 @@ public class BreakActivityTest {
 
     @Test
     public void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual() {
-        Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s1").setLocation(Location.newInstance("loc")).build();
 
         ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
         ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);

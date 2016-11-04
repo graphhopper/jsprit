@@ -85,10 +85,10 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
 		 * 3: (16,8)
 		 * 4: (16,12)
 		 */
-        Delivery delivery1 = Delivery.Builder.newInstance("5").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(4, 8))).build();
-        Delivery delivery2 = Delivery.Builder.newInstance("6").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(4, 12))).build();
-        Delivery delivery3 = Delivery.Builder.newInstance("7").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(16, 8))).build();
-        Delivery delivery4 = Delivery.Builder.newInstance("8").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(16, 12))).build();
+        Delivery delivery1 = new Delivery.Builder("5").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(4, 8))).build();
+        Delivery delivery2 = new Delivery.Builder("6").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(4, 12))).build();
+        Delivery delivery3 = new Delivery.Builder("7").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(16, 8))).build();
+        Delivery delivery4 = new Delivery.Builder("8").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(16, 12))).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(vehicle);

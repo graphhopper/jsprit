@@ -35,9 +35,9 @@ public class MultipleTimeWindowsTest {
 
     @Test
     public void service2ShouldNotBeInserted(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10, 0)).build();
+        Service s = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
 
-        Service s2 = Service.Builder.newInstance("s2")
+        Service s2 = new Service.Builder("s2")
                 .addTimeWindow(50.,60.)
                 .setLocation(Location.newInstance(20, 0)).build();
 
@@ -54,10 +54,10 @@ public class MultipleTimeWindowsTest {
 
     @Test
     public void service2ShouldBeInsertedIntoNewVehicle(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10,0))
+        Service s = new Service.Builder("s1").setLocation(Location.newInstance(10,0))
                 .addTimeWindow(5.,15.).build();
 
-        Service s2 = Service.Builder.newInstance("s2")
+        Service s2 = new Service.Builder("s2")
                 .addTimeWindow(50.,60.)
                 .setLocation(Location.newInstance(20, 0)).build();
 
@@ -78,9 +78,9 @@ public class MultipleTimeWindowsTest {
 
     @Test
     public void service2ShouldBeInserted(){
-        Service s = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10,0)).build();
+        Service s = new Service.Builder("s1").setLocation(Location.newInstance(10,0)).build();
 
-        Service s2 = Service.Builder.newInstance("s2")
+        Service s2 = new Service.Builder("s2")
                 .addTimeWindow(50., 60.).addTimeWindow(15., 25)
                 .setLocation(Location.newInstance(20, 0)).build();
 

@@ -67,7 +67,7 @@ public class SolomonSkills_IT {
         }
         for (Job job : vrp.getJobs().values()) {
             Service service = (Service) job;
-            Service.Builder skillServiceBuilder = Service.Builder.newInstance(service.getId()).setServiceTime(service.getServiceDuration())
+            Service.Builder skillServiceBuilder = new Service.Builder(service.getId()).setServiceTime(service.getServiceDuration())
                 .setLocation(TestUtils.loc(service.getLocation().getId(), service.getLocation().getCoordinate())).setTimeWindow(service.getTimeWindow())
                 .addSizeDimension(0, service.getSize().get(0));
             if (service.getLocation().getCoordinate().getY() < 50) skillServiceBuilder.addRequiredSkill("skill2");

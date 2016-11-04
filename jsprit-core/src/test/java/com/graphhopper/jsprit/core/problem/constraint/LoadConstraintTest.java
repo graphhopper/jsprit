@@ -18,24 +18,39 @@
 
 package com.graphhopper.jsprit.core.problem.constraint;
 
-import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.*;
-import com.graphhopper.jsprit.core.problem.job.*;
-import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
+import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 
 /**
  * unit tests to test load constraints
@@ -58,14 +73,14 @@ public class LoadConstraintTest {
         when(vehicle.getType()).thenReturn(type);
 
         VehicleRoutingProblem.Builder serviceProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Service s1 = Service.Builder.newInstance("s").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s2").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
         serviceProblemBuilder.addJob(s1).addJob(s2);
         final VehicleRoutingProblem serviceProblem = serviceProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder pdProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
-        Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
+        Pickup pickup = new Pickup.Builder("pick").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        Delivery delivery = new Delivery.Builder("del").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
         pdProblemBuilder.addJob(pickup).addJob(delivery);
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
 
@@ -303,7 +318,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        PickupService newAct = new PickupService(s);
+        PickupServiceDEPRECATED newAct = new PickupServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getStart(), newAct, pickup_delivery_route.getActivities().get(0), 0.);
 
@@ -319,7 +334,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        PickupService newAct = new PickupService(s);
+        PickupServiceDEPRECATED newAct = new PickupServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(0), newAct, pickup_delivery_route.getActivities().get(1), 0.);
 
@@ -335,7 +350,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        PickupService newAct = new PickupService(s);
+        PickupServiceDEPRECATED newAct = new PickupServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(1), newAct, pickup_delivery_route.getEnd(), 0.);
 
@@ -354,7 +369,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        PickupService newAct = new PickupService(s);
+        PickupServiceDEPRECATED newAct = new PickupServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getStart(), newAct, pickup_delivery_route.getActivities().get(0), 0.);
 
@@ -370,7 +385,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        PickupService newAct = new PickupService(s);
+        PickupServiceDEPRECATED newAct = new PickupServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(0), newAct, pickup_delivery_route.getActivities().get(1), 0.);
 
@@ -386,7 +401,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        PickupService newAct = new PickupService(s);
+        PickupServiceDEPRECATED newAct = new PickupServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(1), newAct, pickup_delivery_route.getEnd(), 0.);
 
@@ -406,7 +421,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        DeliverService newAct = new DeliverService(s);
+        DeliverServiceDEPRECATED newAct = new DeliverServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getStart(), newAct, pickup_delivery_route.getActivities().get(0), 0.);
 
@@ -422,7 +437,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        DeliverService newAct = new DeliverService(s);
+        DeliverServiceDEPRECATED newAct = new DeliverServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getStart(), newAct, pickup_delivery_route.getActivities().get(0), 0.);
 
@@ -438,7 +453,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        DeliverService newAct = new DeliverService(s);
+        DeliverServiceDEPRECATED newAct = new DeliverServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(0), newAct, pickup_delivery_route.getActivities().get(1), 0.);
 
@@ -454,7 +469,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        DeliverService newAct = new DeliverService(s);
+        DeliverServiceDEPRECATED newAct = new DeliverServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(0), newAct, pickup_delivery_route.getActivities().get(1), 0.);
 
@@ -470,7 +485,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        DeliverService newAct = new DeliverService(s);
+        DeliverServiceDEPRECATED newAct = new DeliverServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(1), newAct, pickup_delivery_route.getEnd(), 0.);
 
@@ -486,7 +501,7 @@ public class LoadConstraintTest {
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
-        DeliverService newAct = new DeliverService(s);
+        DeliverServiceDEPRECATED newAct = new DeliverServiceDEPRECATED(s);
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(1), newAct, pickup_delivery_route.getEnd(), 0.);
 
@@ -610,7 +625,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
 
@@ -627,7 +642,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
 
@@ -644,7 +659,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
 
@@ -661,7 +676,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
 
@@ -678,7 +693,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
 
@@ -695,7 +710,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
 
@@ -712,7 +727,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
 
@@ -729,7 +744,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
 
@@ -746,7 +761,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
 
@@ -763,7 +778,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        PickupShipment newAct = new PickupShipment(s);
+        PickupShipmentDEPRECATED newAct = new PickupShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
 
@@ -784,7 +799,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
 
@@ -801,7 +816,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
 
@@ -818,7 +833,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
 
@@ -835,7 +850,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
 
@@ -852,7 +867,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
 
@@ -869,7 +884,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
 
@@ -886,7 +901,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
 
@@ -903,7 +918,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
 
@@ -920,7 +935,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
 
@@ -937,7 +952,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
 
-        DeliverShipment newAct = new DeliverShipment(s);
+        DeliverShipmentDEPRECATED newAct = new DeliverShipmentDEPRECATED(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
 

@@ -39,7 +39,7 @@ public class VehicleImplTest {
     @Test
     public void whenAddingDriverBreak_itShouldBeAddedCorrectly() {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
-        Break aBreak = (Break) Break.Builder.newInstance("break").setTimeWindow(TimeWindow.newInstance(100, 200)).setServiceTime(30).build();
+        Break aBreak = (Break) new Break.Builder("break").setTimeWindow(TimeWindow.newInstance(100, 200)).setServiceTime(30).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start"))
             .setType(type1).setEndLocation(Location.newInstance("start"))
             .setBreak(aBreak).build();

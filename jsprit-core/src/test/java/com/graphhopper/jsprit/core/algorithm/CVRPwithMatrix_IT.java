@@ -104,7 +104,7 @@ public class CVRPwithMatrix_IT {
             Service s = (Service) j;
             Location l = Location.Builder.newInstance().setIndex(getIndex())
                 .setId(s.getLocation().getId()).setCoordinate(s.getLocation().getCoordinate()).build();
-            Service newService = Service.Builder.newInstance(s.getId()).setServiceTime(s.getServiceDuration())
+            Service newService = new Service.Builder(s.getId()).setServiceTime(s.getServiceDuration())
                 .addSizeDimension(0, s.getSize().get(0))
                 .setLocation(l).build();
             vrpBuilder.addJob(newService);

@@ -17,26 +17,27 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DeliverServiceTest {
+import org.junit.Before;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
+
+public class DeliverServiceDEPRECATEDTest {
 
     private Delivery service;
 
-    private DeliverService deliver;
+    private DeliverServiceDEPRECATED deliver;
 
     @Before
     public void doBefore() {
-        service = Delivery.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
-            setTimeWindow(TimeWindow.newInstance(1., 2.)).
-            addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
-        deliver = new DeliverService(service);
+        service = new Delivery.Builder("service").setLocation(Location.newInstance("loc")).
+                setTimeWindow(TimeWindow.newInstance(1., 2.)).
+                addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+        deliver = new DeliverServiceDEPRECATED(service);
         deliver.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         deliver.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
@@ -77,7 +78,7 @@ public class DeliverServiceTest {
 
     @Test
     public void whenCopyingStart_itShouldBeDoneCorrectly() {
-        DeliverService copy = (DeliverService) deliver.duplicate();
+        DeliverServiceDEPRECATED copy = (DeliverServiceDEPRECATED) deliver.duplicate();
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
         assertEquals("loc", copy.getLocation().getId());

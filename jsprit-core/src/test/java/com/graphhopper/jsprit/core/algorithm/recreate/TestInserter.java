@@ -17,31 +17,32 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TestInserter {
 
@@ -68,7 +69,7 @@ public class TestInserter {
 
         VehicleRoutingProblem vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
         List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
-        PickupService act = new PickupService(serviceToInsert);
+        PickupServiceDEPRECATED act = new PickupServiceDEPRECATED(serviceToInsert);
         acts.add(act);
         when(vehicleRoutingProblem.copyAndGetActivities(serviceToInsert)).thenReturn(acts);
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
@@ -115,7 +116,7 @@ public class TestInserter {
 
     private List<IndexedActivity> getTourActivities(Service serviceToInsert) {
         List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
-        acts.add(new PickupService(serviceToInsert));
+        acts.add(new PickupServiceDEPRECATED(serviceToInsert));
         return acts;
     }
 
@@ -156,8 +157,8 @@ public class TestInserter {
 
     private List<IndexedActivity> getTourActivities(Shipment shipmentToInsert) {
         List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
-        acts.add(new PickupShipment(shipmentToInsert));
-        acts.add(new DeliverShipment(shipmentToInsert));
+        acts.add(new PickupShipmentDEPRECATED(shipmentToInsert));
+        acts.add(new DeliverShipmentDEPRECATED(shipmentToInsert));
         return acts;
     }
 

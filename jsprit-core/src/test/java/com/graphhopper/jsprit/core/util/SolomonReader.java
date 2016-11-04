@@ -109,7 +109,7 @@ public class SolomonReader {
                     vrpBuilder.addVehicle(vehicle);
 
                 } else {
-                    Service service = Service.Builder.newInstance(customerId).addSizeDimension(0, demand)
+                    Service service = new Service.Builder(customerId).addSizeDimension(0, demand)
                         .setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime)
                         .setTimeWindow(TimeWindow.newInstance(start, end)).build();
                     vrpBuilder.addJob(service);

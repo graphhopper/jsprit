@@ -17,19 +17,18 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.AbstractJob;
+import com.graphhopper.jsprit.core.problem.job.Service;
 
-public class DeliveryActivityNEW extends JobActivity {
+public final class PickupServiceDEPRECATED extends PickupActivityNEW {
 
 
-    public DeliveryActivityNEW(AbstractJob job, String name, Location location, double operationTime, Capacity capacity) {
-        super(job, name, location, operationTime, capacity);
+    public PickupServiceDEPRECATED(Service service) {
+        super(service, service.getName(), service.getLocation(), service.getServiceDuration(), service.getSize());
     }
 
-    public DeliveryActivityNEW(JobActivity sourceActivity) {
-        super(sourceActivity);
+    @Override
+    public Service getJob() {
+        return (Service) super.getJob();
     }
 
 }

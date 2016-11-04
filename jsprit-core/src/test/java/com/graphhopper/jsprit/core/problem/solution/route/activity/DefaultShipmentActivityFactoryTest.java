@@ -17,12 +17,13 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
-import org.junit.Test;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 
 public class DefaultShipmentActivityFactoryTest {
 
@@ -30,19 +31,19 @@ public class DefaultShipmentActivityFactoryTest {
     public void whenCreatingPickupActivityWithShipment_itShouldReturnPickupShipment() {
         DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
         Shipment shipment = Shipment.Builder.newInstance("s")
-            .setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
+                .setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
         TourActivity act = factory.createPickup(shipment);
         assertNotNull(act);
-        assertTrue(act instanceof PickupShipment);
+        assertTrue(act instanceof PickupShipmentDEPRECATED);
     }
 
     @Test
     public void whenCreatingDeliverActivityWithShipment_itShouldReturnDeliverShipment() {
         DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
         Shipment shipment = Shipment.Builder.newInstance("s")
-            .setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
+                .setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
         TourActivity act = factory.createDelivery(shipment);
         assertNotNull(act);
-        assertTrue(act instanceof DeliverShipment);
+        assertTrue(act instanceof DeliverShipmentDEPRECATED);
     }
 }

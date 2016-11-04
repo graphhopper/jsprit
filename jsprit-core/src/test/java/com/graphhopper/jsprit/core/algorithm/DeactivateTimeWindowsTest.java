@@ -42,7 +42,7 @@ public class DeactivateTimeWindowsTest {
 
     @Before
     public void doBefore(){
-        Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0))
+        Service service = new Service.Builder("s").setLocation(Location.newInstance(20, 0))
             .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();

@@ -216,36 +216,36 @@ public class JobAndActivityDependenciesExample {
             .addSkill("driver3")
             .setStartLocation(Location.newInstance(-3, 5)).setReturnToDepot(true).build();
 
-        Service s1 = Service.Builder.newInstance("s1")
+        Service s1 = new Service.Builder("s1")
             .addRequiredSkill("driver1")
             .setName("install new device")
             .setLocation(Location.newInstance(2, 2)).build();
-        Service s2 = Service.Builder.newInstance("s2")
+        Service s2 = new Service.Builder("s2")
             .addRequiredSkill("driver3")
             .setName("deliver key")
             .setLocation(Location.newInstance(2, 4)).build();
 
-        Service s3 = Service.Builder.newInstance("s3")
+        Service s3 = new Service.Builder("s3")
             .addRequiredSkill("driver1")
             .setName("repair heater")
             .setLocation(Location.newInstance(-2, 2)).build();
 
-        Service s4 = Service.Builder.newInstance("s4")
+        Service s4 = new Service.Builder("s4")
             .addRequiredSkill("driver3")
             .setName("get key")
             .setLocation(Location.newInstance(-2.3, 4)).build();
 
-        Service s5 = Service.Builder.newInstance("s5")
+        Service s5 = new Service.Builder("s5")
             .addRequiredSkill("driver1")
             .setName("cleaning")
             .setLocation(Location.newInstance(1, 5)).build();
 
-        Service s6 = Service.Builder.newInstance("s6")
+        Service s6 = new Service.Builder("s6")
             .addRequiredSkill("driver3")
             .setName("use key")
             .setLocation(Location.newInstance(-2, 3)).build();
 
-        Service s7 = Service.Builder.newInstance("s7")
+        Service s7 = new Service.Builder("s7")
             .addRequiredSkill("driver3")
             .setName("maintenance")
             .setLocation(Location.newInstance(-1.7, 3.5)).build();

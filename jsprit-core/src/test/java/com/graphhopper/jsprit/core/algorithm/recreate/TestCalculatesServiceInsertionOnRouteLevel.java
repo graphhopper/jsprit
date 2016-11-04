@@ -99,9 +99,9 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 
         };
 
-        first = Service.Builder.newInstance("1").setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-        second = Service.Builder.newInstance("3").setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-        third = Service.Builder.newInstance("2").setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        first = new Service.Builder("1").setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        second = new Service.Builder("3").setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        third = new Service.Builder("2").setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
         Collection<Job> jobs = new ArrayList<Job>();
         jobs.add(first);
         jobs.add(second);

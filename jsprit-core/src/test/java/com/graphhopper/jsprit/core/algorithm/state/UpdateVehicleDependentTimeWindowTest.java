@@ -94,9 +94,9 @@ public class UpdateVehicleDependentTimeWindowTest {
 
         fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
 
-        Service service = Service.Builder.newInstance("s1").setLocation(Location.newInstance("10,0")).build();
-        Service service2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("20,0")).build();
-        Service service3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance("30,0")).build();
+        Service service = new Service.Builder("s1").setLocation(Location.newInstance("10,0")).build();
+        Service service2 = new Service.Builder("s2").setLocation(Location.newInstance("20,0")).build();
+        Service service3 = new Service.Builder("s3").setLocation(Location.newInstance("30,0")).build();
 
         vrpBuilder.addJob(service).addJob(service2).addJob(service3);
         vrp = vrpBuilder.build();
@@ -209,9 +209,9 @@ public class UpdateVehicleDependentTimeWindowTest {
     public void twUpdateShouldWorkWithMultipleTWs(){
         //
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
-        Service service = Service.Builder.newInstance("s1").setLocation(Location.newInstance("10,0"))
+        Service service = new Service.Builder("s1").setLocation(Location.newInstance("10,0"))
                 .addTimeWindow(10,20).addTimeWindow(30,40).build();
-        Service service2 = Service.Builder.newInstance("s2")
+        Service service2 = new Service.Builder("s2")
                 .addTimeWindow(20,30).addTimeWindow(40,60).addTimeWindow(70,80).setLocation(Location.newInstance("20,0")).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2).addVehicle(vehicle)
@@ -248,7 +248,7 @@ public class UpdateVehicleDependentTimeWindowTest {
             .setLatestArrival(51)
             .build();
 
-        Service service = Service.Builder.newInstance("s")
+        Service service = new Service.Builder("s")
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(50, 0)).build()).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()

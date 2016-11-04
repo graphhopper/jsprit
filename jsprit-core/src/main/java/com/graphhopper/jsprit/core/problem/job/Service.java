@@ -18,12 +18,11 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.Collection;
-import java.util.List;
 
-import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
@@ -44,27 +43,13 @@ public class Service extends AbstractJob {
      *
      * @author schroeder
      */
-    public static class Builder<T extends Service> {
+    public abstract static class ServiceBuilderBase<B extends ServiceBuilderBase<B>> {
 
-
-
-
-        /**
-         * Returns a new instance of builder that builds a service.
-         *
-         * @param id
-         *            the id of the service
-         * @return the builder
-         */
-        public static Builder newInstance(String id) {
-            return new Builder(id);
-        }
-
-        private String id;
+        protected String id;
 
         protected String locationId;
 
-        private String type = "service";
+        protected String type = "service";
 
         protected Coordinate coord;
 
@@ -80,21 +65,21 @@ public class Service extends AbstractJob {
 
         protected Skills skills;
 
-        private String name = "no-name";
+        protected String name = "no-name";
 
         protected Location location;
 
         protected TimeWindowsImpl timeWindows;
 
-		private boolean twAdded = false;
+        protected boolean twAdded = false;
 
-        private int priority = 2;
+        protected int priority = 2;
 
-		Builder(String id){
-			this.id = id;
-			timeWindows = new TimeWindowsImpl();
-			timeWindows.add(timeWindow);
-		}
+        public ServiceBuilderBase(String id) {
+            this.id = id;
+            timeWindows = new TimeWindowsImpl();
+            timeWindows.add(timeWindow);
+        }
 
         /**
          * Protected method to set the type-name of the service.
@@ -104,9 +89,10 @@ public class Service extends AbstractJob {
          * @param name the name of service
          * @return the builder
          */
-        protected Builder<T> setType(String name) {
-            this.type = name;
-            return this;
+        @SuppressWarnings("unchecked")
+        protected B setType(String name) {
+            type = name;
+            return (B) this;
         }
 
         /**
@@ -115,9 +101,10 @@ public class Service extends AbstractJob {
          * @param location location
          * @return builder
          */
-        public Builder<T> setLocation(Location location) {
+        @SuppressWarnings("unchecked")
+        public B setLocation(Location location) {
             this.location = location;
-            return this;
+            return (B) this;
         }
 
         /**
@@ -130,11 +117,13 @@ public class Service extends AbstractJob {
          * @return builder
          * @throws IllegalArgumentException if serviceTime < 0
          */
-        public Builder<T> setServiceTime(double serviceTime) {
-            if (serviceTime < 0)
+        @SuppressWarnings("unchecked")
+        public B setServiceTime(double serviceTime) {
+            if (serviceTime < 0) {
                 throw new IllegalArgumentException("serviceTime must be greater than or equal to zero");
+            }
             this.serviceTime = serviceTime;
-            return this;
+            return (B) this;
         }
 
         /**
@@ -145,70 +134,75 @@ public class Service extends AbstractJob {
          * @return the builder
          * @throws IllegalArgumentException if dimensionValue < 0
          */
-        public Builder<T> addSizeDimension(int dimensionIndex, int dimensionValue) {
-            if (dimensionValue < 0) throw new IllegalArgumentException("capacity value cannot be negative");
+        @SuppressWarnings("unchecked")
+        public B addSizeDimension(int dimensionIndex, int dimensionValue) {
+            if (dimensionValue < 0) {
+                throw new IllegalArgumentException("capacity value cannot be negative");
+            }
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
-            return this;
+            return (B) this;
         }
 
-        public Builder<T> setTimeWindow(TimeWindow tw){
-            if(tw == null) throw new IllegalArgumentException("time-window arg must not be null");
-            this.timeWindow = tw;
-            this.timeWindows = new TimeWindowsImpl();
+        @SuppressWarnings("unchecked")
+        public B setTimeWindow(TimeWindow tw) {
+            if(tw == null) {
+                throw new IllegalArgumentException("time-window arg must not be null");
+            }
+            timeWindow = tw;
+            timeWindows = new TimeWindowsImpl();
             timeWindows.add(tw);
-            return this;
+            return (B) this;
         }
 
-        public Builder<T> addTimeWindow(TimeWindow timeWindow) {
-            if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
+        @SuppressWarnings("unchecked")
+        public B addTimeWindow(TimeWindow timeWindow) {
+            if(timeWindow == null) {
+                throw new IllegalArgumentException("time-window arg must not be null");
+            }
             if(!twAdded){
                 timeWindows = new TimeWindowsImpl();
                 twAdded = true;
             }
             timeWindows.add(timeWindow);
-            return this;
+            return (B) this;
         }
 
-        public Builder<T> addTimeWindow(double earliest, double latest) {
+        public B addTimeWindow(double earliest, double latest) {
             return addTimeWindow(TimeWindow.newInstance(earliest, latest));
         }
 
-        /**
-         * Builds the service.
-         *
-         * @return {@link Service}
-         * @throws IllegalArgumentException if neither locationId nor coordinate is set.
-         */
-        public T build() {
-            if (location == null) throw new IllegalArgumentException("location is missing");
-            this.setType("service");
+
+        protected void postProcess() {
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
-            return (T) new Service(this);
         }
 
-        public Builder<T> addRequiredSkill(String skill) {
+        @SuppressWarnings("unchecked")
+        public B addRequiredSkill(String skill) {
             skillBuilder.addSkill(skill);
-            return this;
+            return (B) this;
         }
 
-        public Builder<T> setName(String name) {
+        @SuppressWarnings("unchecked")
+        public B setName(String name) {
             this.name = name;
-            return this;
+            return (B) this;
         }
 
-        public Builder<T> addAllRequiredSkills(Skills skills){
+        @SuppressWarnings("unchecked")
+        public B addAllRequiredSkills(Skills skills) {
             for(String s : skills.values()){
                 skillBuilder.addSkill(s);
             }
-            return this;
+            return (B) this;
         }
 
-        public Builder<T> addAllSizeDimensions(Capacity size){
+        @SuppressWarnings("unchecked")
+        public B addAllSizeDimensions(Capacity size) {
             for(int i=0;i<size.getNuOfDimensions();i++){
                 capacityBuilder.addDimension(i,size.get(i));
             }
-            return this;
+            return (B) this;
         }
 
         /**
@@ -219,12 +213,52 @@ public class Service extends AbstractJob {
          * @param priority
          * @return builder
          */
-        public Builder<T> setPriority(int priority) {
-            if(priority < 1 || priority > 3) throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+        @SuppressWarnings("unchecked")
+        public B setPriority(int priority) {
+            if(priority < 1 || priority > 3) {
+                throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            }
             this.priority = priority;
-            return this;
+            return (B) this;
         }
+
+        /**
+         * Builds the service.
+         *
+         * @return {@link Service}
+         * @throws IllegalArgumentException
+         *             if neither locationId nor coordinate is set.
+         */
+        public abstract <T extends Service> T build();
     }
+
+
+    public static class Builder extends ServiceBuilderBase<Builder> {
+
+        public Builder(String id) {
+            super(id);
+        }
+
+        /**
+         * Builds the service.
+         *
+         * @return {@link Service}
+         * @throws IllegalArgumentException
+         *             if neither locationId nor coordinate is set.
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        public Service build() {
+            if (location == null) {
+                throw new IllegalArgumentException("location is missing");
+            }
+            setType("service");
+            postProcess();
+            return new Service(this);
+        }
+
+    }
+
 
     private final String id;
 
@@ -246,7 +280,7 @@ public class Service extends AbstractJob {
 
     private final int priority;
 
-    Service(Builder builder) {
+    Service(ServiceBuilderBase<?> builder) {
         id = builder.id;
         serviceTime = builder.serviceTime;
         timeWindow = builder.timeWindow;
@@ -255,15 +289,21 @@ public class Service extends AbstractJob {
         skills = builder.skills;
         name = builder.name;
         location = builder.location;
-		timeWindowManager = builder.timeWindows;
+        timeWindowManager = builder.timeWindows;
         priority = builder.priority;
 
         addLocation(location);
-	}
+        createActivities();
+    }
 
-	public Collection<TimeWindow> getTimeWindows(){
-		return timeWindowManager.getTimeWindows();
-	}
+    @Override
+    protected void createActivities() {
+        addActivity(new ServiceActivityNEW(this, "service", getLocation(), getServiceDuration(), getSize()));
+    }
+
+    public Collection<TimeWindow> getTimeWindows(){
+        return timeWindowManager.getTimeWindows();
+    }
 
     @Override
     public String getId() {
@@ -331,18 +371,23 @@ public class Service extends AbstractJob {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Service other = (Service) obj;
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         return true;
     }
 
@@ -368,6 +413,7 @@ public class Service extends AbstractJob {
      *
      * @return priority
      */
+    @Override
     public int getPriority() {
         return priority;
     }

@@ -17,12 +17,37 @@
  */
 package com.graphhopper.jsprit.io.problem;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.*;
+import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -33,38 +58,35 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Resource;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 public class VrpXMLReader {
 
     public interface ServiceBuilderFactory {
-        Service.Builder createBuilder(String serviceType, String id, Integer size);
+        Service.ServiceBuilderBase<?> createBuilder(String serviceType, String id, Integer size);
     }
 
     static class DefaultServiceBuilderFactory implements ServiceBuilderFactory {
 
         @Override
-        public Service.Builder createBuilder(String serviceType, String id, Integer size) {
+        public Service.ServiceBuilderBase<?> createBuilder(String serviceType, String id, Integer size) {
             if (serviceType.equals("pickup")) {
-                if (size != null) return Pickup.Builder.newInstance(id).addSizeDimension(0, size);
-                else return Pickup.Builder.newInstance(id);
+                if (size != null) {
+                    return new Pickup.Builder(id).addSizeDimension(0, size);
+                } else {
+                    return new Pickup.Builder(id);
+                }
             } else if (serviceType.equals("delivery")) {
-                if (size != null) return Delivery.Builder.newInstance(id).addSizeDimension(0, size);
-                else return Delivery.Builder.newInstance(id);
+                if (size != null) {
+                    return new Delivery.Builder(id).addSizeDimension(0, size);
+                } else {
+                    return new Delivery.Builder(id);
+                }
             } else {
-                if (size != null) return Service.Builder.newInstance(id).addSizeDimension(0, size);
-                else return Service.Builder.newInstance(id);
+                if (size != null) {
+                    return new Service.Builder(id).addSizeDimension(0, size);
+                } else {
+                    return new Service.Builder(id);
+                }
 
             }
         }
@@ -91,7 +113,8 @@ public class VrpXMLReader {
 
 
     /**
-     * @param schemaValidation the schemaValidation to set
+     * @param schemaValidation
+     *            the schemaValidation to set
      */
     @SuppressWarnings("UnusedDeclaration")
     public void setSchemaValidation(boolean schemaValidation) {
@@ -100,18 +123,18 @@ public class VrpXMLReader {
 
     public VrpXMLReader(VehicleRoutingProblem.Builder vrpBuilder, Collection<VehicleRoutingProblemSolution> solutions) {
         this.vrpBuilder = vrpBuilder;
-        this.vehicleMap = new LinkedHashMap<String, Vehicle>();
-        this.serviceMap = new LinkedHashMap<String, Service>();
-        this.shipmentMap = new LinkedHashMap<String, Shipment>();
+        vehicleMap = new LinkedHashMap<String, Vehicle>();
+        serviceMap = new LinkedHashMap<String, Service>();
+        shipmentMap = new LinkedHashMap<String, Shipment>();
         this.solutions = solutions;
     }
 
     public VrpXMLReader(VehicleRoutingProblem.Builder vrpBuilder) {
         this.vrpBuilder = vrpBuilder;
-        this.vehicleMap = new LinkedHashMap<String, Vehicle>();
-        this.serviceMap = new LinkedHashMap<String, Service>();
-        this.shipmentMap = new LinkedHashMap<String, Shipment>();
-        this.solutions = null;
+        vehicleMap = new LinkedHashMap<String, Vehicle>();
+        serviceMap = new LinkedHashMap<String, Service>();
+        shipmentMap = new LinkedHashMap<String, Shipment>();
+        solutions = null;
     }
 
     public void read(String filename) {
@@ -194,9 +217,13 @@ public class VrpXMLReader {
             Driver driver = DriverImpl.noDriver();
             String vehicleId = routeConfig.getString("vehicleId");
             Vehicle vehicle = getVehicle(vehicleId);
-            if (vehicle == null) throw new IllegalArgumentException("vehicle is missing.");
+            if (vehicle == null) {
+                throw new IllegalArgumentException("vehicle is missing.");
+            }
             String start = routeConfig.getString("start");
-            if (start == null) throw new IllegalArgumentException("route start-time is missing.");
+            if (start == null) {
+                throw new IllegalArgumentException("route start-time is missing.");
+            }
             double departureTime = Double.parseDouble(start);
 
             VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
@@ -205,41 +232,52 @@ public class VrpXMLReader {
             List<HierarchicalConfiguration> actConfigs = routeConfig.configurationsAt("act");
             for (HierarchicalConfiguration actConfig : actConfigs) {
                 String type = actConfig.getString("[@type]");
-                if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
+                if (type == null) {
+                    throw new IllegalArgumentException("act[@type] is missing.");
+                }
                 double arrTime = 0.;
                 double endTime = 0.;
                 String arrTimeS = actConfig.getString("arrTime");
-                if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
+                if (arrTimeS != null) {
+                    arrTime = Double.parseDouble(arrTimeS);
+                }
                 String endTimeS = actConfig.getString("endTime");
-                if (endTimeS != null) endTime = Double.parseDouble(endTimeS);
+                if (endTimeS != null) {
+                    endTime = Double.parseDouble(endTimeS);
+                }
 
                 String serviceId = actConfig.getString("serviceId");
-                if(type.equals("break")) {
+                if (type.equals("break")) {
                     Break currentbreak = getBreak(vehicleId);
                     routeBuilder.addBreak(currentbreak);
-                }
-                else {
+                } else {
                     if (serviceId != null) {
                         Service service = getService(serviceId);
-                        if (service == null)
-                            throw new IllegalArgumentException("service to serviceId " + serviceId + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
+                        if (service == null) {
+                            throw new IllegalArgumentException("service to serviceId " + serviceId
+                                    + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
+                        }
                         //!!!since job is part of initial route, it does not belong to jobs in problem, i.e. variable jobs that can be assigned/scheduled
                         freezedJobIds.add(serviceId);
                         routeBuilder.addService(service);
                     } else {
                         String shipmentId = actConfig.getString("shipmentId");
-                        if (shipmentId == null)
+                        if (shipmentId == null) {
                             throw new IllegalArgumentException("either serviceId or shipmentId is missing");
+                        }
                         Shipment shipment = getShipment(shipmentId);
-                        if (shipment == null)
-                            throw new IllegalArgumentException("shipment to shipmentId " + shipmentId + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
+                        if (shipment == null) {
+                            throw new IllegalArgumentException("shipment to shipmentId " + shipmentId
+                                    + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
+                        }
                         freezedJobIds.add(shipmentId);
                         if (type.equals("pickupShipment")) {
                             routeBuilder.addPickup(shipment);
                         } else if (type.equals("deliverShipment")) {
                             routeBuilder.addDelivery(shipment);
-                        } else
+                        } else {
                             throw new IllegalArgumentException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+                        }
                     }
                 }
             }
@@ -250,12 +288,16 @@ public class VrpXMLReader {
     }
 
     private void readSolutions(XMLConfiguration vrpProblem) {
-        if (solutions == null) return;
+        if (solutions == null) {
+            return;
+        }
         List<HierarchicalConfiguration> solutionConfigs = vrpProblem.configurationsAt("solutions.solution");
         for (HierarchicalConfiguration solutionConfig : solutionConfigs) {
             String totalCost = solutionConfig.getString("cost");
             double cost = -1;
-            if (totalCost != null) cost = Double.parseDouble(totalCost);
+            if (totalCost != null) {
+                cost = Double.parseDouble(totalCost);
+            }
             List<HierarchicalConfiguration> routeConfigs = solutionConfig.configurationsAt("routes.route");
             List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
             for (HierarchicalConfiguration routeConfig : routeConfigs) {
@@ -263,48 +305,62 @@ public class VrpXMLReader {
                 Driver driver = DriverImpl.noDriver();
                 String vehicleId = routeConfig.getString("vehicleId");
                 Vehicle vehicle = getVehicle(vehicleId);
-                if (vehicle == null) throw new IllegalArgumentException("vehicle is missing.");
+                if (vehicle == null) {
+                    throw new IllegalArgumentException("vehicle is missing.");
+                }
                 String start = routeConfig.getString("start");
-                if (start == null) throw new IllegalArgumentException("route start-time is missing.");
+                if (start == null) {
+                    throw new IllegalArgumentException("route start-time is missing.");
+                }
                 double departureTime = Double.parseDouble(start);
 
                 String end = routeConfig.getString("end");
-                if (end == null) throw new IllegalArgumentException("route end-time is missing.");
+                if (end == null) {
+                    throw new IllegalArgumentException("route end-time is missing.");
+                }
 
                 VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
                 routeBuilder.setDepartureTime(departureTime);
                 List<HierarchicalConfiguration> actConfigs = routeConfig.configurationsAt("act");
                 for (HierarchicalConfiguration actConfig : actConfigs) {
                     String type = actConfig.getString("[@type]");
-                    if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
+                    if (type == null) {
+                        throw new IllegalArgumentException("act[@type] is missing.");
+                    }
                     double arrTime = 0.;
                     double endTime = 0.;
                     String arrTimeS = actConfig.getString("arrTime");
-                    if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
+                    if (arrTimeS != null) {
+                        arrTime = Double.parseDouble(arrTimeS);
+                    }
                     String endTimeS = actConfig.getString("endTime");
-                    if (endTimeS != null) endTime = Double.parseDouble(endTimeS);
-                    if(type.equals("break")) {
+                    if (endTimeS != null) {
+                        endTime = Double.parseDouble(endTimeS);
+                    }
+                    if (type.equals("break")) {
                         Break currentbreak = getBreak(vehicleId);
                         routeBuilder.addBreak(currentbreak);
-                    }
-                    else {
+                    } else {
                         String serviceId = actConfig.getString("serviceId");
                         if (serviceId != null) {
                             Service service = getService(serviceId);
                             routeBuilder.addService(service);
                         } else {
                             String shipmentId = actConfig.getString("shipmentId");
-                            if (shipmentId == null)
+                            if (shipmentId == null) {
                                 throw new IllegalArgumentException("either serviceId or shipmentId is missing");
+                            }
                             Shipment shipment = getShipment(shipmentId);
-                            if (shipment == null)
+                            if (shipment == null) {
                                 throw new IllegalArgumentException("shipment with id " + shipmentId + " does not exist.");
+                            }
                             if (type.equals("pickupShipment")) {
                                 routeBuilder.addPickup(shipment);
                             } else if (type.equals("deliverShipment")) {
                                 routeBuilder.addDelivery(shipment);
-                            } else
+                            } else {
                                 throw new IllegalArgumentException("type " + type + " is not supported. Use 'pickupShipment' or 'deliverShipment' here");
+                            }
                         }
                     }
                 }
@@ -315,8 +371,12 @@ public class VrpXMLReader {
             for (HierarchicalConfiguration unassignedJobConfig : unassignedJobConfigs) {
                 String jobId = unassignedJobConfig.getString("[@id]");
                 Job job = getShipment(jobId);
-                if (job == null) job = getService(jobId);
-                if (job == null) throw new IllegalArgumentException("cannot find unassignedJob with id " + jobId);
+                if (job == null) {
+                    job = getService(jobId);
+                }
+                if (job == null) {
+                    throw new IllegalArgumentException("cannot find unassignedJob with id " + jobId);
+                }
                 solution.getUnassignedJobs().add(job);
             }
 
@@ -342,17 +402,22 @@ public class VrpXMLReader {
 
     private void readProblemType(XMLConfiguration vrpProblem) {
         String fleetSize = vrpProblem.getString("problemType.fleetSize");
-        if (fleetSize == null) vrpBuilder.setFleetSize(FleetSize.INFINITE);
-        else if (fleetSize.toUpperCase().equals(FleetSize.INFINITE.toString()))
+        if (fleetSize == null) {
             vrpBuilder.setFleetSize(FleetSize.INFINITE);
-        else vrpBuilder.setFleetSize(FleetSize.FINITE);
+        } else if (fleetSize.toUpperCase().equals(FleetSize.INFINITE.toString())) {
+            vrpBuilder.setFleetSize(FleetSize.INFINITE);
+        } else {
+            vrpBuilder.setFleetSize(FleetSize.FINITE);
+        }
     }
 
     private void readShipments(XMLConfiguration config) {
         List<HierarchicalConfiguration> shipmentConfigs = config.configurationsAt("shipments.shipment");
         for (HierarchicalConfiguration shipmentConfig : shipmentConfigs) {
             String id = shipmentConfig.getString("[@id]");
-            if (id == null) throw new IllegalArgumentException("shipment[@id] is missing.");
+            if (id == null) {
+                throw new IllegalArgumentException("shipment[@id] is missing.");
+            }
 
             String capacityString = shipmentConfig.getString("capacity-demand");
             boolean capacityDimensionsExist = shipmentConfig.containsKey("capacity-dimensions.dimension(0)");
@@ -360,7 +425,8 @@ public class VrpXMLReader {
                 throw new IllegalArgumentException("capacity of shipment is not set. use 'capacity-dimensions'");
             }
             if (capacityString != null && capacityDimensionsExist) {
-                throw new IllegalArgumentException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                throw new IllegalArgumentException(
+                        "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
             Shipment.Builder builder;
@@ -378,32 +444,42 @@ public class VrpXMLReader {
 
             //name
             String name = shipmentConfig.getString("name");
-            if (name != null) builder.setName(name);
+            if (name != null) {
+                builder.setName(name);
+            }
 
             //pickup location
             //pickup-locationId
             Location.Builder pickupLocationBuilder = Location.Builder.newInstance();
             String pickupLocationId = shipmentConfig.getString("pickup.locationId");
-            if (pickupLocationId == null) pickupLocationId = shipmentConfig.getString("pickup.location.id");
+            if (pickupLocationId == null) {
+                pickupLocationId = shipmentConfig.getString("pickup.location.id");
+            }
             if (pickupLocationId != null) {
                 pickupLocationBuilder.setId(pickupLocationId);
             }
 
             //pickup-coord
             Coordinate pickupCoord = getCoord(shipmentConfig, "pickup.");
-            if (pickupCoord == null) pickupCoord = getCoord(shipmentConfig, "pickup.location.");
+            if (pickupCoord == null) {
+                pickupCoord = getCoord(shipmentConfig, "pickup.location.");
+            }
             if (pickupCoord != null) {
                 pickupLocationBuilder.setCoordinate(pickupCoord);
             }
 
             //pickup.location.index
             String pickupLocationIndex = shipmentConfig.getString("pickup.location.index");
-            if (pickupLocationIndex != null) pickupLocationBuilder.setIndex(Integer.parseInt(pickupLocationIndex));
+            if (pickupLocationIndex != null) {
+                pickupLocationBuilder.setIndex(Integer.parseInt(pickupLocationIndex));
+            }
             builder.setPickupLocation(pickupLocationBuilder.build());
 
             //pickup-serviceTime
             String pickupServiceTime = shipmentConfig.getString("pickup.duration");
-            if (pickupServiceTime != null) builder.setPickupServiceTime(Double.parseDouble(pickupServiceTime));
+            if (pickupServiceTime != null) {
+                builder.setPickupServiceTime(Double.parseDouble(pickupServiceTime));
+            }
 
             //pickup-tw
             List<HierarchicalConfiguration> pickupTWConfigs = shipmentConfig.configurationsAt("pickup.timeWindows.timeWindow");
@@ -417,7 +493,9 @@ public class VrpXMLReader {
             //delivery-locationId
             Location.Builder deliveryLocationBuilder = Location.Builder.newInstance();
             String deliveryLocationId = shipmentConfig.getString("delivery.locationId");
-            if (deliveryLocationId == null) deliveryLocationId = shipmentConfig.getString("delivery.location.id");
+            if (deliveryLocationId == null) {
+                deliveryLocationId = shipmentConfig.getString("delivery.location.id");
+            }
             if (deliveryLocationId != null) {
                 deliveryLocationBuilder.setId(deliveryLocationId);
 //				builder.setDeliveryLocationId(deliveryLocationId);
@@ -425,19 +503,24 @@ public class VrpXMLReader {
 
             //delivery-coord
             Coordinate deliveryCoord = getCoord(shipmentConfig, "delivery.");
-            if (deliveryCoord == null) deliveryCoord = getCoord(shipmentConfig, "delivery.location.");
+            if (deliveryCoord == null) {
+                deliveryCoord = getCoord(shipmentConfig, "delivery.location.");
+            }
             if (deliveryCoord != null) {
                 deliveryLocationBuilder.setCoordinate(deliveryCoord);
             }
 
             String deliveryLocationIndex = shipmentConfig.getString("delivery.location.index");
-            if (deliveryLocationIndex != null)
+            if (deliveryLocationIndex != null) {
                 deliveryLocationBuilder.setIndex(Integer.parseInt(deliveryLocationIndex));
+            }
             builder.setDeliveryLocation(deliveryLocationBuilder.build());
 
             //delivery-serviceTime
             String deliveryServiceTime = shipmentConfig.getString("delivery.duration");
-            if (deliveryServiceTime != null) builder.setDeliveryServiceTime(Double.parseDouble(deliveryServiceTime));
+            if (deliveryServiceTime != null) {
+                builder.setDeliveryServiceTime(Double.parseDouble(deliveryServiceTime));
+            }
 
             //delivery-tw
             List<HierarchicalConfiguration> deliveryTWConfigs = shipmentConfig.configurationsAt("delivery.timeWindows.timeWindow");
@@ -452,7 +535,9 @@ public class VrpXMLReader {
             if (skillString != null) {
                 String cleaned = skillString.replaceAll("\\s", "");
                 String[] skillTokens = cleaned.split("[,;]");
-                for (String skill : skillTokens) builder.addRequiredSkill(skill.toLowerCase());
+                for (String skill : skillTokens) {
+                    builder.addRequiredSkill(skill.toLowerCase());
+                }
             }
 
             //build shipment
@@ -476,9 +561,13 @@ public class VrpXMLReader {
         List<HierarchicalConfiguration> serviceConfigs = vrpProblem.configurationsAt("services.service");
         for (HierarchicalConfiguration serviceConfig : serviceConfigs) {
             String id = serviceConfig.getString("[@id]");
-            if (id == null) throw new IllegalArgumentException("service[@id] is missing.");
+            if (id == null) {
+                throw new IllegalArgumentException("service[@id] is missing.");
+            }
             String type = serviceConfig.getString("[@type]");
-            if (type == null) type = "service";
+            if (type == null) {
+                type = "service";
+            }
 
             String capacityString = serviceConfig.getString("capacity-demand");
             boolean capacityDimensionsExist = serviceConfig.containsKey("capacity-dimensions.dimension(0)");
@@ -486,10 +575,11 @@ public class VrpXMLReader {
                 throw new IllegalArgumentException("capacity of service is not set. use 'capacity-dimensions'");
             }
             if (capacityString != null && capacityDimensionsExist) {
-                throw new IllegalArgumentException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                throw new IllegalArgumentException(
+                        "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
-            Service.Builder builder;
+            Service.ServiceBuilderBase<?> builder;
             if (capacityString != null) {
                 builder = serviceBuilderFactory.createBuilder(type, id, Integer.parseInt(capacityString));
             } else {
@@ -504,7 +594,9 @@ public class VrpXMLReader {
 
             //name
             String name = serviceConfig.getString("name");
-            if (name != null) builder.setName(name);
+            if (name != null) {
+                builder.setName(name);
+            }
 
             //location
             Location.Builder locationBuilder = Location.Builder.newInstance();
@@ -512,16 +604,22 @@ public class VrpXMLReader {
             if (serviceLocationId == null) {
                 serviceLocationId = serviceConfig.getString("location.id");
             }
-            if (serviceLocationId != null) locationBuilder.setId(serviceLocationId);
+            if (serviceLocationId != null) {
+                locationBuilder.setId(serviceLocationId);
+            }
 
             Coordinate serviceCoord = getCoord(serviceConfig, "");
-            if (serviceCoord == null) serviceCoord = getCoord(serviceConfig, "location.");
+            if (serviceCoord == null) {
+                serviceCoord = getCoord(serviceConfig, "location.");
+            }
             if (serviceCoord != null) {
                 locationBuilder.setCoordinate(serviceCoord);
             }
 
             String locationIndex = serviceConfig.getString("location.index");
-            if (locationIndex != null) locationBuilder.setIndex(Integer.parseInt(locationIndex));
+            if (locationIndex != null) {
+                locationBuilder.setIndex(Integer.parseInt(locationIndex));
+            }
             builder.setLocation(locationBuilder.build());
 
             if (serviceConfig.containsKey("duration")) {
@@ -539,7 +637,9 @@ public class VrpXMLReader {
             if (skillString != null) {
                 String cleaned = skillString.replaceAll("\\s", "");
                 String[] skillTokens = cleaned.split("[,;]");
-                for (String skill : skillTokens) builder.addRequiredSkill(skill.toLowerCase());
+                for (String skill : skillTokens) {
+                    builder.addRequiredSkill(skill.toLowerCase());
+                }
             }
 
             //build service
@@ -557,7 +657,9 @@ public class VrpXMLReader {
         List<HierarchicalConfiguration> typeConfigs = vrpProblem.configurationsAt("vehicleTypes.type");
         for (HierarchicalConfiguration typeConfig : typeConfigs) {
             String typeId = typeConfig.getString("id");
-            if (typeId == null) throw new IllegalArgumentException("typeId is missing.");
+            if (typeId == null) {
+                throw new IllegalArgumentException("typeId is missing.");
+            }
 
             String capacityString = typeConfig.getString("capacity");
             boolean capacityDimensionsExist = typeConfig.containsKey("capacity-dimensions.dimension(0)");
@@ -565,7 +667,8 @@ public class VrpXMLReader {
                 throw new IllegalArgumentException("capacity of type is not set. use 'capacity-dimensions'");
             }
             if (capacityString != null && capacityDimensionsExist) {
-                throw new IllegalArgumentException("either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                throw new IllegalArgumentException(
+                        "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
             VehicleTypeImpl.Builder typeBuilder;
@@ -584,19 +687,29 @@ public class VrpXMLReader {
             Double fix = typeConfig.getDouble("costs.fixed");
             Double timeC = typeConfig.getDouble("costs.time");
             Double distC = typeConfig.getDouble("costs.distance");
-            if(typeConfig.containsKey("costs.service")){
+            if (typeConfig.containsKey("costs.service")) {
                 Double serviceC = typeConfig.getDouble("costs.service");
-                if (serviceC != null) typeBuilder.setCostPerServiceTime(serviceC);
+                if (serviceC != null) {
+                    typeBuilder.setCostPerServiceTime(serviceC);
+                }
             }
 
-            if(typeConfig.containsKey("costs.wait")){
+            if (typeConfig.containsKey("costs.wait")) {
                 Double waitC = typeConfig.getDouble("costs.wait");
-                if (waitC != null) typeBuilder.setCostPerWaitingTime(waitC);
+                if (waitC != null) {
+                    typeBuilder.setCostPerWaitingTime(waitC);
+                }
             }
 
-            if (fix != null) typeBuilder.setFixedCost(fix);
-            if (timeC != null) typeBuilder.setCostPerTransportTime(timeC);
-            if (distC != null) typeBuilder.setCostPerDistance(distC);
+            if (fix != null) {
+                typeBuilder.setFixedCost(fix);
+            }
+            if (timeC != null) {
+                typeBuilder.setCostPerTransportTime(timeC);
+            }
+            if (distC != null) {
+                typeBuilder.setCostPerDistance(distC);
+            }
             VehicleType type = typeBuilder.build();
             String id = type.getTypeId();
             types.put(id, type);
@@ -607,10 +720,14 @@ public class VrpXMLReader {
         boolean doNotWarnAgain = false;
         for (HierarchicalConfiguration vehicleConfig : vehicleConfigs) {
             String vehicleId = vehicleConfig.getString("id");
-            if (vehicleId == null) throw new IllegalArgumentException("vehicleId is missing.");
+            if (vehicleId == null) {
+                throw new IllegalArgumentException("vehicleId is missing.");
+            }
             Builder builder = VehicleImpl.Builder.newInstance(vehicleId);
             String typeId = vehicleConfig.getString("typeId");
-            if (typeId == null) throw new IllegalArgumentException("typeId is missing.");
+            if (typeId == null) {
+                throw new IllegalArgumentException("typeId is missing.");
+            }
             String vType = vehicleConfig.getString("[@type]");
             if (vType != null) {
                 if (vType.equals("penalty")) {
@@ -618,7 +735,9 @@ public class VrpXMLReader {
                 }
             }
             VehicleType type = types.get(typeId);
-            if (type == null) throw new IllegalArgumentException("vehicleType with typeId " + typeId + " is missing.");
+            if (type == null) {
+                throw new IllegalArgumentException("vehicleType with typeId " + typeId + " is missing.");
+            }
             builder.setType(type);
 
             //read startlocation
@@ -644,7 +763,9 @@ public class VrpXMLReader {
                 startLocationBuilder.setCoordinate(coordinate);
             }
             String index = vehicleConfig.getString("startLocation.index");
-            if (index == null) index = vehicleConfig.getString("location.index");
+            if (index == null) {
+                index = vehicleConfig.getString("location.index");
+            }
             if (index != null) {
                 startLocationBuilder.setIndex(Integer.parseInt(index));
             }
@@ -675,13 +796,19 @@ public class VrpXMLReader {
                 hasEndLocation = true;
                 endLocationBuilder.setIndex(Integer.parseInt(endLocationIndex));
             }
-            if (hasEndLocation) builder.setEndLocation(endLocationBuilder.build());
+            if (hasEndLocation) {
+                builder.setEndLocation(endLocationBuilder.build());
+            }
 
             //read timeSchedule
             String start = vehicleConfig.getString("timeSchedule.start");
             String end = vehicleConfig.getString("timeSchedule.end");
-            if (start != null) builder.setEarliestStart(Double.parseDouble(start));
-            if (end != null) builder.setLatestArrival(Double.parseDouble(end));
+            if (start != null) {
+                builder.setEarliestStart(Double.parseDouble(start));
+            }
+            if (end != null) {
+                builder.setLatestArrival(Double.parseDouble(end));
+            }
 
             //read return2depot
             String returnToDepot = vehicleConfig.getString("returnToDepot");
@@ -694,7 +821,9 @@ public class VrpXMLReader {
             if (skillString != null) {
                 String cleaned = skillString.replaceAll("\\s", "");
                 String[] skillTokens = cleaned.split("[,;]");
-                for (String skill : skillTokens) builder.addSkill(skill.toLowerCase());
+                for (String skill : skillTokens) {
+                    builder.addSkill(skill.toLowerCase());
+                }
             }
 
             // read break
@@ -702,10 +831,10 @@ public class VrpXMLReader {
             if (!breakTWConfigs.isEmpty()) {
                 String breakDurationString = vehicleConfig.getString("breaks.duration");
                 String id = vehicleConfig.getString("breaks.id");
-                Break.Builder current_break = Break.Builder.newInstance(id);
+                Break.Builder current_break = new Break.Builder(id);
                 current_break.setServiceTime(Double.parseDouble(breakDurationString));
                 for (HierarchicalConfiguration twConfig : breakTWConfigs) {
-                	current_break.addTimeWindow(TimeWindow.newInstance(twConfig.getDouble("start"), twConfig.getDouble("end")));
+                    current_break.addTimeWindow(TimeWindow.newInstance(twConfig.getDouble("start"), twConfig.getDouble("end")));
                 }
                 builder.setBreak(current_break.build());
             }

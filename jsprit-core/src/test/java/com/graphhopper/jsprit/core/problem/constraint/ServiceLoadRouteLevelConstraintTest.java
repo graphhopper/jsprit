@@ -350,7 +350,7 @@ public class ServiceLoadRouteLevelConstraintTest {
 
 
     private Service createPickup(String string, int i) {
-        return Pickup.Builder.newInstance(string).addSizeDimension(0, i).setLocation(Location.newInstance("loc")).build();
+        return new Pickup.Builder(string).addSizeDimension(0, i).setLocation(Location.newInstance("loc")).build();
     }
 
 
