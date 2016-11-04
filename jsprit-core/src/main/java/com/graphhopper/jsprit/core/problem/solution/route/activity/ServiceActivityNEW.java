@@ -28,7 +28,7 @@ public class ServiceActivityNEW extends JobActivity {
         super(job, name, location, operationTime, capacity);
     }
 
-    public ServiceActivityNEW(JobActivity sourceActivity) {
+    public ServiceActivityNEW(ServiceActivityNEW sourceActivity) {
         super(sourceActivity);
     }
 

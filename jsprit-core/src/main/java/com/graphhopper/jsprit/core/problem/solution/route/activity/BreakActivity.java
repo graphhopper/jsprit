@@ -40,7 +40,7 @@ public class BreakActivity extends InternalJobActivity {
 //        counter++;
     }
 
-    protected BreakActivity(BreakActivity breakActivity) {
+    public BreakActivity(BreakActivity breakActivity) {
         super(breakActivity);
     }
 

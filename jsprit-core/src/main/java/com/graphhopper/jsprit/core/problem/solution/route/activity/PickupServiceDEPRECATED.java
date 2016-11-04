@@ -23,8 +23,16 @@ public final class PickupServiceDEPRECATED extends PickupActivityNEW {
 
 
     public PickupServiceDEPRECATED(Service service) {
-        super(service, service.getName(), service.getLocation(), service.getServiceDuration(), service.getSize());
+        super(service, service.getType(), service.getLocation(), service.getServiceDuration(), service.getSize());
     }
+
+
+
+    public PickupServiceDEPRECATED(PickupServiceDEPRECATED sourceActivity) {
+        super(sourceActivity);
+    }
+
+
 
     @Override
     public Service getJob() {

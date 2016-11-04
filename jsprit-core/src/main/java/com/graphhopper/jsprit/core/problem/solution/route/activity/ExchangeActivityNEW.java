@@ -27,7 +27,7 @@ public class ExchangeActivityNEW extends JobActivity {
         super(job, name, location, operationTime, capacity);
     }
 
-    public ExchangeActivityNEW(JobActivity sourceActivity) {
+    public ExchangeActivityNEW(ExchangeActivityNEW sourceActivity) {
         super(sourceActivity);
     }
 

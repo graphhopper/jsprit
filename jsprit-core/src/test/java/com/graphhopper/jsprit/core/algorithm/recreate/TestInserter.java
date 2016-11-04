@@ -104,6 +104,7 @@ public class TestInserter {
         when(iData.getSelectedVehicle()).thenReturn(vehicle);
 
         VehicleRoutingProblem vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
+// REMARK - Balage1551 - This one is throwing a mockito exception, I don't understand why.
         when(vehicleRoutingProblem.copyAndGetActivities(serviceToInsert)).thenReturn(getTourActivities(serviceToInsert));
 
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);

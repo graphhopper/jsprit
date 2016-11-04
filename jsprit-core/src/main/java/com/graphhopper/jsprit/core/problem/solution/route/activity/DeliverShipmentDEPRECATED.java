@@ -26,4 +26,9 @@ public final class DeliverShipmentDEPRECATED extends DeliveryActivityNEW {
         super(shipment, "deliverShipment", shipment.getDeliveryLocation(), shipment.getDeliveryServiceTime(), Capacity.invert(shipment.getSize()));
     }
 
+    public DeliverShipmentDEPRECATED(DeliverShipmentDEPRECATED sourceActivity) {
+        super(sourceActivity);
+    }
+
+
 }

@@ -27,7 +27,7 @@ public class PickupActivityNEW extends JobActivity {
         super(job, name, location, operationTime, capacity);
     }
 
-    public PickupActivityNEW(JobActivity sourceActivity) {
+    public PickupActivityNEW(PickupActivityNEW sourceActivity) {
         super(sourceActivity);
     }
 

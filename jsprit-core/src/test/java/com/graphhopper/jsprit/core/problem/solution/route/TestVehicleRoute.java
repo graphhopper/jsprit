@@ -348,7 +348,7 @@ public class TestVehicleRoute {
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addDelivery(delivery).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertTrue(act.getName().equals("delivery"));
+        assertEquals("delivery", act.getName());
         assertTrue(act instanceof DeliverServiceDEPRECATED);
         assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
