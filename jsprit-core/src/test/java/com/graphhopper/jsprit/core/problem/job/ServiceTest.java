@@ -17,17 +17,22 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.*;
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 public class ServiceTest {
 

@@ -18,6 +18,12 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -26,12 +32,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-import junit.framework.Assert;
-import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
+import junit.framework.Assert;
 
 /**
  * Created by schroeder on 06/03/15.

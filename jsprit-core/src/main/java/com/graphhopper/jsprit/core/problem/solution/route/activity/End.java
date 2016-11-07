@@ -86,10 +86,10 @@ public final class End extends InternalActivity {
 /*
  * package com.graphhopper.jsprit.core.problem.solution.route.activity;
  * 
- * import com.graphhopper.jsprit.core.problem.Capacity; import com.graphhopper.jsprit.core.problem.IndexedActivity;
+ * import com.graphhopper.jsprit.core.problem.Capacity; import com.graphhopper.jsprit.core.problem.AbstractActivityNEW;
  * import com.graphhopper.jsprit.core.problem.Location;
  * 
- * public final class End extends IndexedActivity {
+ * public final class End extends AbstractActivityNEW {
  * 
  * public static End newInstance(String locationId, double earliestArrival, double latestArrival) { return new
  * End(locationId, earliestArrival, latestArrival); }

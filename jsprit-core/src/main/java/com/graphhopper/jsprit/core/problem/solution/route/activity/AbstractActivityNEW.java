@@ -6,11 +6,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.Location;
 
-public abstract class AbstractActivityNEW extends IndexedActivity {
+public abstract class AbstractActivityNEW implements TourActivity {
 
+    private int index;
     protected Capacity capacity;
     protected double arrTime;
     protected double endTime;
@@ -27,6 +27,7 @@ public abstract class AbstractActivityNEW extends IndexedActivity {
         this.location = location;
     }
 
+
     public AbstractActivityNEW(AbstractActivityNEW sourceActivity) {
         arrTime = sourceActivity.getArrTime();
         endTime = sourceActivity.getEndTime();
@@ -41,6 +42,15 @@ public abstract class AbstractActivityNEW extends IndexedActivity {
     @Override
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
         theoreticalEarliest = earliest;
+    }
+
+    @Override
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override

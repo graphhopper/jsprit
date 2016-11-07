@@ -17,17 +17,17 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collection;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.util.LiLimReader;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
 
 public class PickupsAndDeliveries_IT {
 

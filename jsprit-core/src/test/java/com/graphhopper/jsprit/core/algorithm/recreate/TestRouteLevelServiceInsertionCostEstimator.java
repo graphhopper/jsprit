@@ -30,9 +30,10 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateVariableCosts;
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
+import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SimpleJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -41,6 +42,7 @@ import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -110,12 +112,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         vrp.getActivities(s3).get(0).setTheoreticalEarliestOperationStartTime(30);
         vrp.getActivities(s3).get(0).setTheoreticalLatestOperationStartTime(30);
 
-        activityFactory = new JobActivityFactory() {
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                return vrp.copyAndGetActivities(job);
-            }
-        };
+        activityFactory = new CopyJobActivityFactory();
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(activityFactory).addService(s1).addService(s2).addService(s3).build();
 
         VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);
@@ -134,16 +131,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
                 activityCosts, estimator, constraintManager, constraintManager);
         routeInserter.setStates(stateManager);
-        routeInserter.setJobActivityFactory(new JobActivityFactory() {
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                List<IndexedActivity> acts = activityFactory.createActivities(job);
-                if (acts.isEmpty()) {
-                    acts.add(new PickupServiceDEPRECATED(s4));
-                }
-                return acts;
-            }
-        });
+        routeInserter.setJobActivityFactory(new SimpleJobActivityFactory());
         InsertionData iData = routeInserter.getInsertionData(route, s4, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
         assertEquals(0., iData.getInsertionCost(), 0.01);
     }
@@ -156,16 +144,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         final ServiceInsertionOnRouteLevelCalculator routeInserter = new ServiceInsertionOnRouteLevelCalculator(routingCosts,
                 activityCosts, estimator, constraintManager, constraintManager);
         routeInserter.setStates(stateManager);
-        routeInserter.setJobActivityFactory(new JobActivityFactory() {
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                List<IndexedActivity> acts = activityFactory.createActivities(job);
-                if (acts.isEmpty()) {
-                    acts.add(new PickupServiceDEPRECATED(s4));
-                }
-                return acts;
-            }
-        });
+        routeInserter.setJobActivityFactory(new SimpleJobActivityFactory());
         InsertionData iData = routeInserter.getInsertionData(route, s4, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
         assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
     }
@@ -180,9 +159,10 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                List<IndexedActivity> acts = activityFactory.createActivities(job);
+            public List<JobActivity> createActivities(Job job) {
+                List<JobActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
+                    // TODO - Balage1551
                     PickupServiceDEPRECATED pickupService = new PickupServiceDEPRECATED(s4);
                     pickupService.setTheoreticalEarliestOperationStartTime(5);
                     pickupService.setTheoreticalLatestOperationStartTime(5);
@@ -209,8 +189,9 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                List<IndexedActivity> acts = activityFactory.createActivities(job);
+            public List<JobActivity> createActivities(Job job) {
+                // TODO - Balage1551
+                List<JobActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
                     PickupServiceDEPRECATED pickupService = new PickupServiceDEPRECATED(s4);
                     pickupService.setTheoreticalEarliestOperationStartTime(5);
@@ -237,8 +218,9 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         routeInserter.setStates(stateManager);
         routeInserter.setJobActivityFactory(new JobActivityFactory() {
             @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                List<IndexedActivity> acts = activityFactory.createActivities(job);
+            public List<JobActivity> createActivities(Job job) {
+                // TODO - Balage1551
+                List<JobActivity> acts = activityFactory.createActivities(job);
                 if (acts.isEmpty()) {
                     PickupServiceDEPRECATED pickupService = new PickupServiceDEPRECATED(s4);
                     pickupService.setTheoreticalEarliestOperationStartTime(3);

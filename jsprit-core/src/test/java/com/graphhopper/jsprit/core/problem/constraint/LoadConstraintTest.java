@@ -26,15 +26,13 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
-import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
@@ -91,32 +89,15 @@ public class LoadConstraintTest {
         final VehicleRoutingProblem shipmentProblem = shipmentProblemBuilder.build();
 
         VehicleRoute.Builder serviceRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);
-        serviceRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
-
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                return serviceProblem.copyAndGetActivities(job);
-            }
-
-        });
+        serviceRouteBuilder.setJobActivityFactory(new CopyJobActivityFactory());
         serviceRoute = serviceRouteBuilder.addService(s1).addService(s2).build();
 
         VehicleRoute.Builder pdRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);
-        pdRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                return pdProblem.copyAndGetActivities(job);
-            }
-        });
+        pdRouteBuilder.setJobActivityFactory(new CopyJobActivityFactory());
         pickup_delivery_route = pdRouteBuilder.addService(pickup).addService(delivery).build();
 
         VehicleRoute.Builder shipmentRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);
-        shipmentRouteBuilder.setJobActivityFactory(new JobActivityFactory() {
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                return shipmentProblem.copyAndGetActivities(job);
-            }
-        });
+        shipmentRouteBuilder.setJobActivityFactory(new CopyJobActivityFactory());
         shipment_route = shipmentRouteBuilder.addPickup(shipment1).addPickup(shipment2).addDelivery(shipment2).addDelivery(shipment1).build();
 
         VehicleRoutingProblem vrpMock = mock(VehicleRoutingProblem.class);

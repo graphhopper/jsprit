@@ -19,6 +19,17 @@
 package com.graphhopper.jsprit.core.analysis;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -38,15 +49,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.ManhattanCosts;
 import com.graphhopper.jsprit.core.util.TestUtils;
+
 import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class SolutionAnalyserTest {
 

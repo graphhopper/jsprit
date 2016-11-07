@@ -18,6 +18,11 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
@@ -39,14 +44,16 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.vehicle.*;
+import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
-import junit.framework.Assert;
-import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import junit.framework.Assert;
 
 public class RegretInsertionTest {
 

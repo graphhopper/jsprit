@@ -58,7 +58,7 @@ public class Delivery extends Service {
     @Override
     protected void createActivities() {
         // TODO - Balage1551
-        addActivity(new DeliverServiceDEPRECATED(this));
+        getActivityList().addActivity(new DeliverServiceDEPRECATED(this));
 //        addActivity(new DeliveryActivityNEW(this, "delivery", getLocation(), getServiceDuration(), getSize()));
     }
 

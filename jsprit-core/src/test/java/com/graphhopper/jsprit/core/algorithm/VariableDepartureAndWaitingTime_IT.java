@@ -19,6 +19,9 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
@@ -37,10 +40,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
 import com.graphhopper.jsprit.core.util.Solutions;
+
 import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
  * Created by schroeder on 22/07/15.

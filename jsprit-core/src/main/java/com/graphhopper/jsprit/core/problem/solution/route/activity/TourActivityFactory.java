@@ -17,11 +17,10 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
 public interface TourActivityFactory {
 
-    public IndexedActivity createActivity(Service service);
+    public AbstractActivityNEW createActivity(Service service);
 
 }

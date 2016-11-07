@@ -17,6 +17,14 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.SchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.recreate.NoSolutionFoundException;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -31,13 +39,6 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.GreatCircleCosts;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.TestUtils;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.Collection;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class OpenRoutesTest {
 

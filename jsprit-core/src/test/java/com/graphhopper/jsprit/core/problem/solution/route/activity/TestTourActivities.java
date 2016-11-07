@@ -17,13 +17,16 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 
 
 public class TestTourActivities {

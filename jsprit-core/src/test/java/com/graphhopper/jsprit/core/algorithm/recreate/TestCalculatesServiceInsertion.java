@@ -17,9 +17,20 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
-import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -41,13 +52,6 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.util.Locations;
 import com.graphhopper.jsprit.core.util.ManhattanDistanceCalculator;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 
 public class TestCalculatesServiceInsertion {
@@ -90,7 +94,7 @@ public class TestCalculatesServiceInsertion {
                 //assume: locationId="x,y"
                 String[] splitted = id.split(",");
                 return Coordinate.newInstance(Double.parseDouble(splitted[0]),
-                    Double.parseDouble(splitted[1]));
+                        Double.parseDouble(splitted[1]));
             }
 
         };
@@ -118,7 +122,7 @@ public class TestCalculatesServiceInsertion {
         jobs.add(second);
 
         vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs)
-            .addVehicle(vehicle).setRoutingCost(costs).build();
+                .addVehicle(vehicle).setRoutingCost(costs).build();
 
         states = new StateManager(vrp);
         states.updateLoadStates();
@@ -132,12 +136,7 @@ public class TestCalculatesServiceInsertion {
         VehicleRoutingActivityCosts actCosts = mock(VehicleRoutingActivityCosts.class);
 
         serviceInsertion = new ServiceInsertionCalculator(costs, vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, actCosts, states), cManager);
-        serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                return vrp.copyAndGetActivities(job);
-            }
-        });
+        serviceInsertion.setJobActivityFactory(new CopyJobActivityFactory());
     }
 
     @Test
@@ -214,8 +213,8 @@ public class TestCalculatesServiceInsertion {
     @Test
     public void whenInsertingJobAndCurrRouteAndVehicleHaveTheSameLocation_accessEggressCalcShouldReturnZero() {
         VehicleRoute route = VehicleRoute.Builder.newInstance(newVehicle, DriverImpl.noDriver())
-            .addService(first)
-            .build();
+                .addService(first)
+                .build();
 
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
         JobInsertionContext iContex = new JobInsertionContext(route, first, newVehicle, mock(Driver.class), 0.0);
@@ -244,8 +243,8 @@ public class TestCalculatesServiceInsertion {
         Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setStartLocation(Location.newInstance("oldV")).build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(oldVehicle, DriverImpl.noDriver())
-            .addService(new Service.Builder("service").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build())
-            .build();
+                .addService(new Service.Builder("service").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build())
+                .build();
 
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setStartLocation(Location.newInstance("newV")).build();
 

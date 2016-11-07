@@ -66,7 +66,7 @@ public class Break extends Service implements InternalJobMarker {
 
     @Override
     protected void createActivities() {
-        addActivity(BreakActivity.newInstance(this));
+        getActivityList().addActivity(BreakActivity.newInstance(this));
     }
 
     public boolean hasVariableLocation() {

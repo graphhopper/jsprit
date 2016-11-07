@@ -17,18 +17,19 @@
  */
 package com.graphhopper.jsprit.core.problem.solution;
 
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 public class VehicleRoutingProblemSolutionTest {
 

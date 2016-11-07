@@ -19,17 +19,18 @@
 package com.graphhopper.jsprit.io.problem;
 
 
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
-import org.junit.Test;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 
 public class InitialRoutesTest {
 
@@ -70,7 +71,9 @@ public class InitialRoutesTest {
     private int getNuShipments(VehicleRoutingProblem vrp) {
         int nuShipments = 0;
         for (Job job : vrp.getJobs().values()) {
-            if (job instanceof Shipment) nuShipments++;
+            if (job instanceof Shipment) {
+                nuShipments++;
+            }
         }
         return nuShipments;
     }
@@ -78,7 +81,9 @@ public class InitialRoutesTest {
     private int getNuServices(VehicleRoutingProblem vrp) {
         int nuServices = 0;
         for (Job job : vrp.getJobs().values()) {
-            if (job instanceof Service) nuServices++;
+            if (job instanceof Service) {
+                nuServices++;
+            }
         }
         return nuServices;
     }
@@ -111,7 +116,7 @@ public class InitialRoutesTest {
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         Job job = vrp.getJobs().get("4");
-        List<IndexedActivity> activities = vrp.getActivities(job);
+        List<JobActivity> activities = vrp.getActivities(job);
 
         assertEquals(2, activities.size());
     }

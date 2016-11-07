@@ -21,15 +21,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateVariableCosts;
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
-import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -98,13 +96,9 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         vrp.getActivities(s3).get(0).setTheoreticalEarliestOperationStartTime(30);
         vrp.getActivities(s3).get(0).setTheoreticalLatestOperationStartTime(30);
 
-        route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new JobActivityFactory() {
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                return vrp.copyAndGetActivities(job);
-            }
-
-        }).addService(s1).addService(s2).addService(s3).build();
+        route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new CopyJobActivityFactory())
+                .addService(s1).addService(s2).addService(s3)
+                .build();
 
         stateManager = new StateManager(vrp);
         stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts, routingCosts, stateManager));

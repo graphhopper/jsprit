@@ -19,6 +19,12 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 
+import java.util.Collection;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -30,11 +36,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Collection;
 
 public class DeactivateTimeWindowsTest {
 

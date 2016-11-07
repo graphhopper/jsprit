@@ -17,14 +17,14 @@
  */
 package com.graphhopper.jsprit.core.problem.misc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Provides context information about a particular job insertion.

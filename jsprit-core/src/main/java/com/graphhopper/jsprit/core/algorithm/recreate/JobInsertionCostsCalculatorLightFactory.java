@@ -18,6 +18,9 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
@@ -26,9 +29,6 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by schroeder on 11.12.14.

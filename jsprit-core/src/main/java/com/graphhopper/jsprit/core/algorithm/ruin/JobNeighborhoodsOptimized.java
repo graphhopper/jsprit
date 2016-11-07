@@ -18,14 +18,19 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.util.StopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * Created by schroeder on 07/01/15.

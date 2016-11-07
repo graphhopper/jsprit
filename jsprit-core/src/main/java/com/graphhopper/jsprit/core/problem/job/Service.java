@@ -22,7 +22,7 @@ import java.util.Collection;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
@@ -298,7 +298,9 @@ public class Service extends AbstractJob {
 
     @Override
     protected void createActivities() {
-        addActivity(new ServiceActivityNEW(this, "service", getLocation(), getServiceDuration(), getSize()));
+        // TODO - Balage1551
+        getActivityList().addActivity(new PickupServiceDEPRECATED(this));
+//        getActivityList().addActivity(new ServiceActivityNEW(this, "service", getLocation(), getServiceDuration(), getSize()));
     }
 
     public Collection<TimeWindow> getTimeWindows(){

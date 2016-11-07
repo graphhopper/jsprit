@@ -17,6 +17,9 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
@@ -27,8 +30,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCostsCalculator, SoftRouteConstraint {

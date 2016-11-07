@@ -17,36 +17,43 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
-import com.graphhopper.jsprit.core.problem.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StateManagerTest {
 
     static class ActFac implements JobActivityFactory {
 
         @Override
-        public List<IndexedActivity> createActivities(Job job) {
+        public List<JobActivity> createActivities(Job job) {
             ServiceActivityNEW act = mock(ServiceActivityNEW.class);
             when(act.getIndex()).thenReturn(1);
-            List<IndexedActivity> acts = new ArrayList<IndexedActivity>();
+            List<JobActivity> acts = new ArrayList<>();
             acts.add(act);
             return acts;
         }

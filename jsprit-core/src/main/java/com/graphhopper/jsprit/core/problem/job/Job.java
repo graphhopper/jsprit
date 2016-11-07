@@ -73,4 +73,10 @@ public interface Job extends HasId, HasIndex {
      * @return All involved locations
      */
     public List<Location> getAllLocations();
+
+    /**
+     * @return All activities
+     */
+    public JobActivityList getActivityList();
+
 }

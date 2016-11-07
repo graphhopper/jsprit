@@ -18,6 +18,14 @@
 
 package com.graphhopper.jsprit.core.algorithm.state;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -26,14 +34,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+
 import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Arrays;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests skill updater

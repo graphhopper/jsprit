@@ -60,7 +60,7 @@ public class Pickup extends Service {
     @Override
     protected void createActivities() {
         // TODO - Balage1551
-        addActivity(new PickupServiceDEPRECATED(this));
+        getActivityList().addActivity(new PickupServiceDEPRECATED(this));
 
 //        addActivity(new PickupActivityNEW(this, "pickup", getLocation(), getServiceDuration(), getSize()));
     }

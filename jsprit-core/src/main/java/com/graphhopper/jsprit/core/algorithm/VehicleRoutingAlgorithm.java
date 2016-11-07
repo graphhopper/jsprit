@@ -17,6 +17,12 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyListener;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
@@ -31,11 +37,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 
 /**

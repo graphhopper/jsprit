@@ -18,22 +18,21 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.AbstractJob;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 /**
  * Created by schroeder on 15/08/16.

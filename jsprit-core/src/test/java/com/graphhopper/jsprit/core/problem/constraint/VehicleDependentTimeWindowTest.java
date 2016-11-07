@@ -36,8 +36,7 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateActivityTimes;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateVehicleDependentPracticalTimeWindows;
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
-import com.graphhopper.jsprit.core.problem.IndexedActivity;
-import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -115,14 +114,8 @@ public class VehicleDependentTimeWindowTest {
         vrpBuilder.addJob(service).addJob(service2).addJob(service3);
         final VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new JobActivityFactory() {
-
-            @Override
-            public List<IndexedActivity> createActivities(Job job) {
-                return vrp.copyAndGetActivities(job);
-            }
-
-        }).addService(service).addService(service2).addService(service3).build();
+        route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new CopyJobActivityFactory())
+                .addService(service).addService(service2).addService(service3).build();
 
         stateManager = new StateManager(vrp);
 

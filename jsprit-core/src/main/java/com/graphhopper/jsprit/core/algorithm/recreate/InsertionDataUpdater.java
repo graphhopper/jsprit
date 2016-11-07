@@ -18,13 +18,20 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-
-import java.util.*;
 
 /**
  * Created by schroeder on 15/10/15.

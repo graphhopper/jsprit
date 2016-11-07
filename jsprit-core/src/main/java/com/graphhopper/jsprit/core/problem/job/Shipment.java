@@ -384,8 +384,8 @@ public class Shipment extends AbstractJob {
     @Override
     protected void createActivities() {
         // TODO - Balage1551
-        addActivity(new PickupShipmentDEPRECATED(this));
-        addActivity(new DeliverShipmentDEPRECATED(this));
+        getActivityList().addActivity(new PickupShipmentDEPRECATED(this));
+        getActivityList().addActivity(new DeliverShipmentDEPRECATED(this));
 
 //        addActivity(new PickupActivityNEW(this, "pickup", getPickupLocation(), getPickupServiceTime(), getSize()));
 //        addActivity(new PickupActivityNEW(this, "delivery", getDeliveryLocation(), getDeliveryServiceTime(), getSize()));

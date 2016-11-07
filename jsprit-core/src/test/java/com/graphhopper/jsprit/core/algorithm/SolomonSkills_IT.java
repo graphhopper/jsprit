@@ -18,6 +18,14 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -31,12 +39,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.util.SolomonReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.TestUtils;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import java.util.Collection;
-
-import static org.junit.Assert.*;
 
 /**
  * to test skills with penalty vehicles

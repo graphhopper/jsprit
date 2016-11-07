@@ -20,15 +20,15 @@ package com.graphhopper.jsprit.core.util;
 
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**

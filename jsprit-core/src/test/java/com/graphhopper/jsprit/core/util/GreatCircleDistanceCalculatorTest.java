@@ -18,8 +18,9 @@
 
 package com.graphhopper.jsprit.core.util;
 
-import junit.framework.Assert;
 import org.junit.Test;
+
+import junit.framework.Assert;
 
 /**
  * Created by schroeder on 28.11.14.
