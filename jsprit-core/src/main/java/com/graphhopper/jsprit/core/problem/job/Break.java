@@ -51,8 +51,10 @@ public class Break extends Service implements InternalJobMarker {
                 variableLocation = false;
             }
             setType("break");
-            postProcess();
-            return new Break(this);
+            preProcess();
+            Break instance = new Break(this);
+            postProcess(instance);
+            return instance;
         }
 
     }
@@ -66,7 +68,9 @@ public class Break extends Service implements InternalJobMarker {
 
     @Override
     protected void createActivities() {
-        getActivityList().addActivity(BreakActivity.newInstance(this));
+        JobActivityList list = new SequentialJobActivityList(this);
+        list.addActivity(BreakActivity.newInstance(this));
+        setActivities(list);
     }
 
     public boolean hasVariableLocation() {

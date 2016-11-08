@@ -258,28 +258,6 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
-
-        /**
-         * Builds the shipment.
-         *
-         * @return shipment
-         * @throws IllegalArgumentException
-         *             if neither pickup-location nor pickup-coord is set or if
-         *             neither delivery-location nor delivery-coord is set
-         */
-        public Shipment build() {
-            if (pickupLocation_ == null) {
-                throw new IllegalArgumentException("pickup location is missing");
-            }
-            if (deliveryLocation_ == null) {
-                throw new IllegalArgumentException("delivery location is missing");
-            }
-            capacity = capacityBuilder.build();
-            skills = skillBuilder.build();
-            return new Shipment(this);
-        }
-
-
         public Builder addRequiredSkill(String skill) {
             skillBuilder.addSkill(skill);
             return this;
@@ -339,6 +317,57 @@ public class Shipment extends AbstractJob {
             this.priority = priority;
             return this;
         }
+
+
+        /**
+         * Builds a shipment.
+         *
+         * <p>
+         * The implementation of the builder <b>may</b> call the function {@linkplain #preProcess()} prior creating the
+         * instant and <b>MUST</b> call the {@linkplain #postProcess(Service)} method after the instance is constructed:
+         *
+         * <pre>
+         *    &#64;Override
+         *    public {@link Shipment} build() {
+         *        [...]
+         *        preProcess();
+         *        Shipment shipment= new Service(this);
+         *        postProcess(shipment);
+         *        return shipment;
+         *    }
+         * </pre>
+         *
+         * </p>
+         *
+         * @return shipment
+         * @throws IllegalArgumentException
+         *             if neither pickup-location nor pickup-coord is set or if neither delivery-location nor
+         *             delivery-coord is set
+         */
+        public Shipment build() {
+            if (pickupLocation_ == null) {
+                throw new IllegalArgumentException("pickup location is missing");
+            }
+            if (deliveryLocation_ == null) {
+                throw new IllegalArgumentException("delivery location is missing");
+            }
+            preProcess();
+            Shipment shipment = new Shipment(this);
+            postProcess(shipment);
+            return shipment;
+        }
+
+        protected void preProcess() {
+            capacity = capacityBuilder.build();
+            skills = skillBuilder.build();
+        }
+
+        protected <T extends Shipment> void postProcess(T shipment) {
+            // initiate caches
+            shipment.addLocations();
+            shipment.createActivities();
+        }
+
     }
 
     private final String id;
@@ -375,20 +404,24 @@ public class Shipment extends AbstractJob {
         deliveryTimeWindows = builder.deliveryTimeWindows;
         pickupTimeWindows = builder.pickupTimeWindows;
         priority = builder.priority;
-
-        addLocation(pickupLocation_);
-        addLocation(deliveryLocation_);
-        createActivities();
     }
 
     @Override
     protected void createActivities() {
+        JobActivityList list = new SequentialJobActivityList(this);
         // TODO - Balage1551
-        getActivityList().addActivity(new PickupShipmentDEPRECATED(this));
-        getActivityList().addActivity(new DeliverShipmentDEPRECATED(this));
+//      list.addActivity(new PickupActivityNEW(this, "pickup", getPickupLocation(), getPickupServiceTime(), getSize()));
+//      list.addActivity(new PickupActivityNEW(this, "delivery", getDeliveryLocation(), getDeliveryServiceTime(), getSize()));
+        list.addActivity(new PickupShipmentDEPRECATED(this));
+        list.addActivity(new DeliverShipmentDEPRECATED(this));
+        setActivities(list);
+    }
 
-//        addActivity(new PickupActivityNEW(this, "pickup", getPickupLocation(), getPickupServiceTime(), getSize()));
-//        addActivity(new PickupActivityNEW(this, "delivery", getDeliveryLocation(), getDeliveryServiceTime(), getSize()));
+
+    @Override
+    protected void addLocations() {
+        addLocation(pickupLocation_);
+        addLocation(deliveryLocation_);
     }
 
     @Override

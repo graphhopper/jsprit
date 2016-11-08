@@ -172,11 +172,6 @@ public class Service extends AbstractJob {
         }
 
 
-        protected void postProcess() {
-            capacity = capacityBuilder.build();
-            skills = skillBuilder.build();
-        }
-
         @SuppressWarnings("unchecked")
         public B addRequiredSkill(String skill) {
             skillBuilder.addSkill(skill);
@@ -225,11 +220,39 @@ public class Service extends AbstractJob {
         /**
          * Builds the service.
          *
+         * <p>
+         * The implementation of the builder <b>may</b> call the function {@linkplain #preProcess()} prior creating the
+         * instant and <b>MUST</b> call the {@linkplain #postProcess(Service)} method after the instance is constructed:
+         *
+         * <pre>
+         *    &#64;Override
+         *    public Service build() {
+         *        [...]
+         *        preProcess();
+         *        Service service = new Service(this);
+         *        postProcess(service);
+         *        return service;
+         *    }
+         * </pre>
+         *
+         * </p>
+         *
          * @return {@link Service}
          * @throws IllegalArgumentException
          *             if neither locationId nor coordinate is set.
          */
         public abstract <T extends Service> T build();
+
+        protected <T extends Service> void preProcess() {
+            capacity = capacityBuilder.build();
+            skills = skillBuilder.build();
+        }
+
+        protected <T extends Service> void postProcess(T service) {
+            // initiate caches
+            service.addLocations();
+            service.createActivities();
+        }
     }
 
 
@@ -253,32 +276,34 @@ public class Service extends AbstractJob {
                 throw new IllegalArgumentException("location is missing");
             }
             setType("service");
-            postProcess();
-            return new Service(this);
+            preProcess();
+            Service service = new Service(this);
+            postProcess(service);
+            return service;
         }
 
     }
 
 
-    private final String id;
+    private String id;
 
-    private final String type;
+    private String type;
 
-    private final double serviceTime;
+    private double serviceTime;
 
-    private final TimeWindow timeWindow;
+    private TimeWindow timeWindow;
 
-    private final Capacity size;
+    private Capacity size;
 
-    private final Skills skills;
+    private Skills skills;
 
-    private final String name;
+    private String name;
 
-    private final Location location;
+    private Location location;
 
-    private final TimeWindows timeWindowManager;
+    private TimeWindows timeWindowManager;
 
-    private final int priority;
+    private int priority;
 
     Service(ServiceBuilderBase<?> builder) {
         id = builder.id;
@@ -291,16 +316,21 @@ public class Service extends AbstractJob {
         location = builder.location;
         timeWindowManager = builder.timeWindows;
         priority = builder.priority;
-
-        addLocation(location);
-        createActivities();
     }
+
 
     @Override
     protected void createActivities() {
+        JobActivityList list = new SequentialJobActivityList(this);
         // TODO - Balage1551
-        getActivityList().addActivity(new PickupServiceDEPRECATED(this));
-//        getActivityList().addActivity(new ServiceActivityNEW(this, "service", getLocation(), getServiceDuration(), getSize()));
+//        list.addActivity(new ServiceActivityNEW(this, "service", getLocation(), getServiceDuration(), getSize()));
+        list.addActivity(new PickupServiceDEPRECATED(this));
+        setActivities(list);
+    }
+
+
+    protected void addLocations() {
+        addLocation(location);
     }
 
     public Collection<TimeWindow> getTimeWindows(){

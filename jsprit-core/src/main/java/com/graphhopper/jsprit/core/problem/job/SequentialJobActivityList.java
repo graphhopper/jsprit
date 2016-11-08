@@ -2,7 +2,9 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 
@@ -20,11 +22,11 @@ public class SequentialJobActivityList extends JobActivityList {
     /**
      * The primary container.
      */
-    private List<JobActivity> _activities = new ArrayList<>();
+    protected List<JobActivity> _activities = new ArrayList<>();
     /**
      * A read only container backed by the primary one. This will be returned.
      */
-    private List<JobActivity> unmodifiableActivities = Collections.unmodifiableList(_activities);
+    protected List<JobActivity> unmodifiableActivities = Collections.unmodifiableList(_activities);
 
     public SequentialJobActivityList(AbstractJob job) {
         super(job);
@@ -62,16 +64,13 @@ public class SequentialJobActivityList extends JobActivityList {
     }
 
     @Override
-    public List<JobActivity> getPreceding(JobActivity activity) {
-        return unmodifiableActivities.subList(0, indexOf(activity));
+    public Set<JobActivity> getPreceding(JobActivity activity) {
+        return new HashSet<>(unmodifiableActivities.subList(0, indexOf(activity)));
     }
 
     @Override
-    public List<JobActivity> getSubsequent(JobActivity activity) {
-        return unmodifiableActivities.subList(indexOf(activity), unmodifiableActivities.size());
+    public Set<JobActivity> getSubsequent(JobActivity activity) {
+        return new HashSet<>(unmodifiableActivities.subList(indexOf(activity), unmodifiableActivities.size()));
     }
-
-
-
 
 }

@@ -46,8 +46,10 @@ public class Delivery extends Service {
                 throw new IllegalArgumentException("location is missing");
             }
             setType("delivery");
-            postProcess();
-            return new Delivery(this);
+            preProcess();
+            Delivery delivery = new Delivery(this);
+            postProcess(delivery);
+            return delivery;
         }
     }
 
@@ -57,9 +59,11 @@ public class Delivery extends Service {
 
     @Override
     protected void createActivities() {
+        JobActivityList list = new SequentialJobActivityList(this);
         // TODO - Balage1551
-        getActivityList().addActivity(new DeliverServiceDEPRECATED(this));
-//        addActivity(new DeliveryActivityNEW(this, "delivery", getLocation(), getServiceDuration(), getSize()));
+//      list.addActivity(new DeliveryActivityNEW(this, "delivery", getLocation(), getServiceDuration(), getSize()));
+        list.addActivity(new DeliverServiceDEPRECATED(this));
+        setActivities(list);
     }
 
 }

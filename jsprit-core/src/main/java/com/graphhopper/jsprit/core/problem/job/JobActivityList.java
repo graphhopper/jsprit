@@ -2,6 +2,7 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.InternalActivityMarker;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
@@ -17,6 +18,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
  *
  */
 public abstract class JobActivityList {
+
+//    TODO getRElation of two activities: PRIOR, SUBSEQUENT or UNRELATED
 
     private AbstractJob job;
 
@@ -75,7 +78,7 @@ public abstract class JobActivityList {
      *            The activity to compare to.
      * @return The list of the preceding activities.
      */
-    public abstract List<JobActivity> getPreceding(JobActivity activity);
+    public abstract Set<JobActivity> getPreceding(JobActivity activity);
 
     /**
      * Returns all the activities to be done after the <code>activity</code>.
@@ -84,7 +87,7 @@ public abstract class JobActivityList {
      *            The activity to compare to.
      * @return The list of the subsequent activities.
      */
-    public abstract List<JobActivity> getSubsequent(JobActivity activity);
+    public abstract Set<JobActivity> getSubsequent(JobActivity activity);
 
     /**
      * @return Returns the duplicated copy of the activities.

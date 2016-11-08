@@ -59,13 +59,17 @@ public abstract class AbstractJob implements Job {
         return allLocations;
     }
 
+    protected abstract void addLocations();
+
     protected abstract void createActivities();
 
+    protected void setActivities(JobActivityList list) {
+        activityList = list;
+    }
+
+    @Override
     public JobActivityList getActivityList() {
         return activityList;
     }
-
-
-
 
 }
