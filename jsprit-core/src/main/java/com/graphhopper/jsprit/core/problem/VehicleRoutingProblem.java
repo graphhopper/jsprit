@@ -616,7 +616,7 @@ public class VehicleRoutingProblem {
     @Override
     public String toString() {
         return "[fleetSize=" + fleetSize + "][#jobs=" + jobs.size() + "][#vehicles=" + vehicles.size() + "][#vehicleTypes=" + vehicleTypes.size() + "][" +
-                "transportCost=" + transportCosts + "][activityCosts=" + activityCosts + "]";
+            "transportCost=" + transportCosts + "][activityCosts=" + activityCosts + "]";
     }
 
     /**
