@@ -36,9 +36,11 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
 
     private JobInsertionConsideringFixCostsCalculator calc;
 
-    private Vehicle oVehicle;
+    private Vehicle small;
 
-    private Vehicle nVehicle;
+    private Vehicle medium;
+
+    private Vehicle large;
 
     private Job job;
 
@@ -52,18 +54,23 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         job = mock(Job.class);
         when(job.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 50).build());
 
-        oVehicle = mock(Vehicle.class);
-        VehicleType oType = VehicleTypeImpl.Builder.newInstance("otype").addCapacityDimension(0, 50).setFixedCost(50.0).build();
-        when(oVehicle.getType()).thenReturn(oType);
+        small = mock(Vehicle.class);
+        VehicleType smallType = VehicleTypeImpl.Builder.newInstance("smallType").addCapacityDimension(0, 50).setFixedCost(50.0).build();
+        when(small.getType()).thenReturn(smallType);
 
-        nVehicle = mock(Vehicle.class);
-        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).setFixedCost(100.0).build();
-        when(nVehicle.getType()).thenReturn(type);
+        medium = mock(Vehicle.class);
+        VehicleType mediumType = VehicleTypeImpl.Builder.newInstance("mediumType").addCapacityDimension(0, 100).setFixedCost(100.0).build();
+        when(medium.getType()).thenReturn(mediumType);
 
-        InsertionData iData = new InsertionData(0.0, 1, 1, nVehicle, null);
+        large = mock(Vehicle.class);
+        VehicleType largeType = VehicleTypeImpl.Builder.newInstance("largeType").addCapacityDimension(0, 400).setFixedCost(200.0).build();
+        when(large.getType()).thenReturn(largeType);
+
+        InsertionData iData = new InsertionData(0.0, 1, 1, medium, null);
         route = mock(VehicleRoute.class);
 
-        when(jobInsertionCosts.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE)).thenReturn(iData);
+        when(jobInsertionCosts.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE)).thenReturn(iData);
+        when(jobInsertionCosts.getInsertionData(route, job, large, 0.0, null, Double.MAX_VALUE)).thenReturn(new InsertionData(0.0, 1, 1, large, null));
 
         stateGetter = mock(RouteAndActivityStateGetter.class);
         when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().build());
@@ -76,7 +83,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         calc.setSolutionCompletenessRatio(1.0);
         calc.setWeightOfFixCost(1.0);
         //(1.*absFix + 0.*relFix) * completeness * weight  = (1.*100. + 0.*50.) * 1. * 1. = 100.
-        assertEquals(100., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(100., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
@@ -84,7 +91,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         calc.setSolutionCompletenessRatio(0.0);
         calc.setWeightOfFixCost(1.0);
         //(0.*absFix + 1.*relFix) * completeness * weight = 0.
-        assertEquals(0., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(0., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
@@ -92,7 +99,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         calc.setSolutionCompletenessRatio(0.5);
         calc.setWeightOfFixCost(1.0);
         //(0.5*absFix + 0.5*relFix) * 0.5 * 1. = (0.5*100+0.5*50)*0.5*1. = 37.5
-        assertEquals(37.5, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(37.5, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
@@ -100,7 +107,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         calc.setSolutionCompletenessRatio(0.75);
         calc.setWeightOfFixCost(1.0);
         //(0.75*absFix + 0.25*relFix) * 0.75 * 1.= (0.75*100.+0.25*50.)*0.75*1. = 65.625
-        assertEquals(65.625, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(65.625, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
@@ -108,7 +115,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         calc.setSolutionCompletenessRatio(1.0);
         calc.setWeightOfFixCost(.5);
         //(1.*absFix + 0.*relFix) * 1. * 0.5 = (1.*100. + 0.*50.) * 1. * 0.5 = 5.
-        assertEquals(50., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(50., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
@@ -116,7 +123,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         calc.setSolutionCompletenessRatio(0.0);
         calc.setWeightOfFixCost(.5);
         //(0.*absFix + 1.*relFix) * 0. * .5 = 0.
-        assertEquals(0., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(0., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
@@ -124,7 +131,7 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         calc.setSolutionCompletenessRatio(0.5);
         calc.setWeightOfFixCost(.5);
         //(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*100+0.5*50)*0.5*0.5 = 18.75
-        assertEquals(18.75, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(18.75, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
@@ -132,98 +139,98 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         calc.setSolutionCompletenessRatio(0.75);
         calc.setWeightOfFixCost(0.5);
         //(0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*100.+0.25*50.)*0.75*0.5 = 32.8125
-        assertEquals(32.8125, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(32.8125, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndSolutionComplete_itShouldReturnHalfOfFixedCostsOfNewVehicle() {
         calc.setSolutionCompletenessRatio(1.0);
         calc.setWeightOfFixCost(1.0);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(1.*absFix + 0.*relFix) * completeness * weight  = (1.*(100.-50.) + 0.*(50.-0.)) * 1. * 1. = 50.
-        assertEquals(50., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(50., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndSolutionIs0PercentComplete_itShouldReturnNoFixedCosts() {
         calc.setSolutionCompletenessRatio(0.0);
         calc.setWeightOfFixCost(1.0);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(0.*absFix + 1.*relFix) * completeness * weight = 0.
-        assertEquals(0., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(0., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndSolutionIs50PercentComplete_itShouldCorrectVal() {
         calc.setSolutionCompletenessRatio(0.5);
         calc.setWeightOfFixCost(1.0);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(0.5*absFix + 0.5*relFix) * 0.5 * 1. = (0.5*(100-50)+0.5*(50-0))*0.5*1. = 25.
-        assertEquals(25., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(25., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndSolutionIs75PercentComplete_itShouldReturnCorrectVal() {
         calc.setSolutionCompletenessRatio(0.75);
         calc.setWeightOfFixCost(1.0);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(0.75*absFix + 0.25*relFix) * 0.75 * 1.= (0.75*(100.-50.)+0.25*(50.-0.))*0.75*1. = 37.5
-        assertEquals(37.5, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(37.5, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndSolutionCompleteAndWeightIs05_itShouldReturnCorrectVal() {
         calc.setSolutionCompletenessRatio(1.0);
         calc.setWeightOfFixCost(.5);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(1.*absFix + 0.*relFix) * 1. * 0.5 = (1.*(100.-50.) + 0.*(50.-0.)) * 1. * 0.5 = 25.
-        assertEquals(25., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(25., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndSolutionIs0PercentCompleteAndWeightIs05_itShouldReturnCorrectVal() {
         calc.setSolutionCompletenessRatio(0.0);
         calc.setWeightOfFixCost(.5);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(0.*absFix + 1.*relFix) * 0. * .5 = 0.
-        assertEquals(0., calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(0., calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndSolutionIs50PercentCompleteAndWeightIs05_itShouldReturnCorrectVal() {
         calc.setSolutionCompletenessRatio(0.5);
         calc.setWeightOfFixCost(.5);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(50-0))*0.5*0.5 = 12.5
-        assertEquals(12.5, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(12.5, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndSolutionIs75PercentCompleteAndWeightIs05_itShouldReturnCorrectVal() {
         calc.setSolutionCompletenessRatio(0.75);
         calc.setWeightOfFixCost(0.5);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*(100.-50.)+0.25*(50.-0.))*0.75*0.5 = 18.75
-        assertEquals(18.75, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(18.75, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndCurrentLoadIs25AndSolutionIs50PercentCompleteAndWeightIs05_itShouldReturnCorrectVal() {
         calc.setSolutionCompletenessRatio(0.5);
         calc.setWeightOfFixCost(.5);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).build());
         //(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
-        assertEquals(12.5, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(12.5, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
     public void whenOldVehicleIsNotNullAndCurrentLoadIs25AndSolutionIs75PercentCompleteAndWeightIs05_itShouldReturnCorrectVal() {
         calc.setSolutionCompletenessRatio(0.75);
         calc.setWeightOfFixCost(0.5);
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         //(0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*(100.-50.)+0.25*(75.-25.))*0.75*0.5 = 18.75
-        assertEquals(18.75, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(18.75, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
     @Test
@@ -234,12 +241,12 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         when(job.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 50).addDimension(1, 0).build());
 
         VehicleType oType = VehicleTypeImpl.Builder.newInstance("otype").addCapacityDimension(0, 50).addCapacityDimension(1, 100).setFixedCost(50.0).build();
-        when(oVehicle.getType()).thenReturn(oType);
+        when(small.getType()).thenReturn(oType);
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).addCapacityDimension(1, 400).setFixedCost(100.0).build();
-        when(nVehicle.getType()).thenReturn(type);
+        when(medium.getType()).thenReturn(type);
 
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
         //(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
         /*
@@ -249,7 +256,99 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
 		 * = (0.5*(100-50)+0.5*((75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.)))*0.5*0.5
 		 * = (0.5*(100-50)+0.5*12.5)*0.5*0.5 = 7.8125
 		 */
-        assertEquals(7.8125, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(7.8125, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+    }
+
+    @Test
+    public void whenOldVehicleIsMoreExpensive() {
+        calc.setSolutionCompletenessRatio(1);
+        calc.setWeightOfFixCost(1);
+
+        when(job.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 50).addDimension(1, 0).build());
+
+        VehicleType oType = VehicleTypeImpl.Builder.newInstance("otype").addCapacityDimension(0, 50).addCapacityDimension(1, 100).setFixedCost(50.0).build();
+        when(medium.getType()).thenReturn(oType);
+
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).addCapacityDimension(1, 400).setFixedCost(100.0).build();
+        when(small.getType()).thenReturn(type);
+
+
+        when(route.getVehicle()).thenReturn(small);
+        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
+        //(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
+        /*
+         * (0.5*(100-50)+0.5*(
+		 * relFixNew - relFixOld = (75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.) =
+		 * )*0.5*0.5
+		 * = (0.5*(100-50)+0.5*((75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.)))*0.5*0.5
+		 * = (0.5*(100-50)+0.5*12.5)*0.5*0.5 = 7.8125
+		 */
+        double insertionCost = calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost();
+        assertEquals(-50d, insertionCost, 0.01);
+    }
+
+    @Test
+    public void smallVSMediumAbsCosts() {
+        calc.setSolutionCompletenessRatio(1);
+        calc.setWeightOfFixCost(1);
+        when(route.getVehicle()).thenReturn(small);
+        double insertionCost = calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost();
+        assertEquals(50d, insertionCost, 0.01);
+    }
+
+    @Test
+    public void smallVSLargeAbsCosts() {
+        calc.setSolutionCompletenessRatio(1);
+        calc.setWeightOfFixCost(1);
+        when(route.getVehicle()).thenReturn(small);
+        double insertionCost = calc.getInsertionData(route, job, large, 0.0, null, Double.MAX_VALUE).getInsertionCost();
+        assertEquals(150d, insertionCost, 0.01);
+    }
+
+    @Test
+    public void largeVSMediumAbsCosts() {
+        calc.setSolutionCompletenessRatio(1);
+        calc.setWeightOfFixCost(1);
+        when(route.getVehicle()).thenReturn(large);
+        double insertionCost = calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost();
+        assertEquals(-100d, insertionCost, 0.01);
+    }
+
+    @Test
+    public void mediumVSLargeAbsCosts() {
+        calc.setSolutionCompletenessRatio(1);
+        calc.setWeightOfFixCost(1);
+        when(route.getVehicle()).thenReturn(medium);
+        double insertionCost = calc.getInsertionData(route, job, large, 0.0, null, Double.MAX_VALUE).getInsertionCost();
+        assertEquals(100d, insertionCost, 0.01);
+    }
+
+    @Test
+    public void whenOldVehicleIsMoreExpensive2() {
+        calc.setSolutionCompletenessRatio(0.1);
+        calc.setWeightOfFixCost(1);
+
+        when(job.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 50).addDimension(1, 0).build());
+
+        VehicleType oType = VehicleTypeImpl.Builder.newInstance("otype").addCapacityDimension(0, 50).addCapacityDimension(1, 100).setFixedCost(50.0).build();
+        when(medium.getType()).thenReturn(oType);
+
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).addCapacityDimension(1, 400).setFixedCost(100.0).build();
+        when(small.getType()).thenReturn(type);
+
+
+        when(route.getVehicle()).thenReturn(small);
+        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
+        //(0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
+        /*
+         * (0.5*(100-50)+0.5*(
+		 * relFixNew - relFixOld = (75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.) =
+		 * )*0.5*0.5
+		 * = (0.5*(100-50)+0.5*((75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.)))*0.5*0.5
+		 * = (0.5*(100-50)+0.5*12.5)*0.5*0.5 = 7.8125
+		 */
+        double insertionCost = calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost();
+        assertEquals(-50d, insertionCost, 0.01);
     }
 
     @Test
@@ -259,16 +358,16 @@ public class JobInsertionConsideringFixCostsCalculatorTest {
         when(job.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 50).addDimension(1, 0).build());
 
         VehicleType oType = VehicleTypeImpl.Builder.newInstance("otype").addCapacityDimension(0, 50).addCapacityDimension(1, 100).setFixedCost(50.0).build();
-        when(oVehicle.getType()).thenReturn(oType);
+        when(small.getType()).thenReturn(oType);
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).addCapacityDimension(1, 400).setFixedCost(100.0).build();
-        when(nVehicle.getType()).thenReturn(type);
+        when(medium.getType()).thenReturn(type);
 
-        when(route.getVehicle()).thenReturn(oVehicle);
+        when(route.getVehicle()).thenReturn(small);
         when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
         //(0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*(100.-50.)+0.25*12.5)*0.75*0.5 = 15.234375
 
-        assertEquals(15.234375, calc.getInsertionData(route, job, nVehicle, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
+        assertEquals(15.234375, calc.getInsertionData(route, job, medium, 0.0, null, Double.MAX_VALUE).getInsertionCost(), 0.01);
     }
 
 
