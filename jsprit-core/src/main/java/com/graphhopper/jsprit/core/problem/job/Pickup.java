@@ -53,6 +53,10 @@ public class Pickup extends Service {
             return pickup;
         }
 
+        public static Builder newInstance(String id) {
+            return new Builder(id);
+        }
+
     }
 
     Pickup(Builder builder) {

@@ -51,6 +51,10 @@ public class Delivery extends Service {
             postProcess(delivery);
             return delivery;
         }
+
+        public static Builder newInstance(String id) {
+            return new Builder(id);
+        }
     }
 
     Delivery(Builder builder) {
