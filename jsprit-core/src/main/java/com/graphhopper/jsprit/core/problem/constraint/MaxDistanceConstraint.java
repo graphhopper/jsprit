@@ -52,7 +52,7 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
 
     private void makeArray(Map<Vehicle, Double> maxDistances) {
         int maxIndex = getMaxIndex(maxDistances.keySet());
-        this.maxDistances = new Double[maxIndex];
+        this.maxDistances = new Double[maxIndex+1];
         for(Vehicle v : maxDistances.keySet()){
             this.maxDistances[v.getIndex()]=maxDistances.get(v);
         }
