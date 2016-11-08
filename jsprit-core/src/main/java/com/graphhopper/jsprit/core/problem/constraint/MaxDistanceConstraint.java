@@ -73,33 +73,49 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
         if(!iFacts.getRoute().isEmpty()){
             currentDistance = stateManager.getRouteState(iFacts.getRoute(),iFacts.getNewVehicle(), distanceId,Double.class);
         }
+        double maxDistance = getMaxDistance(iFacts.getNewVehicle());
 
+        double distancePrevAct2NewAct = distanceCalculator.getDistance(prevAct.getLocation(), newAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
         double distanceNewAct2nextAct = distanceCalculator.getDistance(newAct.getLocation(), nextAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
-        double distancePrevAct2NextAct = distanceCalculator.getDistance(prevAct.getLocation(), nextAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
+        double distancePrevAct2NextAct = distanceCalculator.getDistance(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getRoute().getVehicle());
         if(nextAct instanceof End && !iFacts.getNewVehicle().isReturnToDepot()){
             distanceNewAct2nextAct = 0;
             distancePrevAct2NextAct = 0;
         }
-        double distancePrevAct2NewAct = distanceCalculator.getDistance(prevAct.getLocation(), newAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
-        double additionalDistance = distancePrevAct2NewAct + distanceNewAct2nextAct - distancePrevAct2NextAct;
 
-        double maxDistance = getMaxDistance(iFacts.getNewVehicle());
-        if(currentDistance + additionalDistance > maxDistance) return ConstraintsStatus.NOT_FULFILLED;
-
+        double additionalDistanceOfPickup = 0;
         if(newAct instanceof DeliverShipment){
             int iIndexOfPickup = iFacts.getRelatedActivityContext().getInsertionIndex();
             TourActivity pickup = iFacts.getAssociatedActivities().get(0);
             TourActivity actBeforePickup;
-            TourActivity actAfterPickup = iFacts.getRoute().getActivities().get(iIndexOfPickup);
             if(iIndexOfPickup > 0) actBeforePickup = iFacts.getRoute().getActivities().get(iIndexOfPickup-1);
             else actBeforePickup = iFacts.getRoute().getStart();
-            double additionalDistanceOfPickup = distanceCalculator.getDistance(actBeforePickup.getLocation(),pickup.getLocation(),0,iFacts.getNewVehicle())
-                + distanceCalculator.getDistance(pickup.getLocation(),actAfterPickup.getLocation(),0,iFacts.getNewVehicle())
-                - distanceCalculator.getDistance(actBeforePickup.getLocation(), actAfterPickup.getLocation(),0,iFacts.getNewVehicle());
 
-            if(currentDistance + additionalDistance + additionalDistanceOfPickup > maxDistance){
-                return ConstraintsStatus.NOT_FULFILLED;
+            TourActivity actAfterPickup;
+            boolean associatedPickAndDeliveryAreDirectNeighbors = prevAct.getIndex() == pickup.getIndex();
+            if(associatedPickAndDeliveryAreDirectNeighbors){
+                actAfterPickup = newAct;
+                distancePrevAct2NextAct = distanceCalculator.getDistance(prevAct.getLocation(), nextAct.getLocation(), iFacts.getRelatedActivityContext().getEndTime(), iFacts.getNewVehicle());
             }
+            else actAfterPickup = iFacts.getRoute().getActivities().get(iIndexOfPickup);
+            double distanceActBeforePickup2Pickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), pickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getNewVehicle());
+            double distancePickup2ActAfterPickup = distanceCalculator.getDistance(pickup.getLocation(), actAfterPickup.getLocation(), iFacts.getRelatedActivityContext().getEndTime(), iFacts.getNewVehicle());
+
+            double distanceBeforePickup2AfterPickup;
+            if(associatedPickAndDeliveryAreDirectNeighbors){
+                distanceBeforePickup2AfterPickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), actAfterPickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getNewVehicle());
+            }
+            else{
+                distanceBeforePickup2AfterPickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), actAfterPickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getRoute().getVehicle());
+            }
+            additionalDistanceOfPickup = distanceActBeforePickup2Pickup  + distancePickup2ActAfterPickup - distanceBeforePickup2AfterPickup;
+        }
+
+        double additionalDistance = distancePrevAct2NewAct + distanceNewAct2nextAct - distancePrevAct2NextAct;
+        if(currentDistance + additionalDistance > maxDistance) return ConstraintsStatus.NOT_FULFILLED;
+
+        if(currentDistance + additionalDistance + additionalDistanceOfPickup > maxDistance){
+            return ConstraintsStatus.NOT_FULFILLED;
         }
 
         return ConstraintsStatus.FULFILLED;
