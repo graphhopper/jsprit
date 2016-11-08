@@ -100,4 +100,9 @@ public abstract class JobActivityList {
         return acts;
     }
 
+    /**
+     * @return Returns all possible orderings.
+     */
+    public abstract Set<List<JobActivity>> getPossibleOrderings();
+
 }

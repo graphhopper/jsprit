@@ -154,7 +154,7 @@ public class GraphJobActivityListTest {
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actC));
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actD));
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actE));
-
+        list.printDetailed();
 
         list.addDependency(actB, actE);
         assertEquals(setOf(), list.transitivePrecedingDependencyCache.get(actA));
@@ -167,6 +167,7 @@ public class GraphJobActivityListTest {
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actC));
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actD));
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actE));
+        list.printDetailed();
 
         list.addDependency(actC, actD);
         assertEquals(setOf(), list.transitivePrecedingDependencyCache.get(actA));
@@ -179,6 +180,7 @@ public class GraphJobActivityListTest {
         assertEquals(setOf(actD), list.transitiveSubsequentDependencyCache.get(actC));
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actD));
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actE));
+        list.printDetailed();
 
         list.addDependency(actD, actE);
         assertEquals(setOf(), list.transitivePrecedingDependencyCache.get(actA));
@@ -192,8 +194,7 @@ public class GraphJobActivityListTest {
         assertEquals(setOf(actE), list.transitiveSubsequentDependencyCache.get(actD));
         assertEquals(setOf(), list.transitiveSubsequentDependencyCache.get(actE));
 
+        list.printDetailed();
     }
-
-
 
 }

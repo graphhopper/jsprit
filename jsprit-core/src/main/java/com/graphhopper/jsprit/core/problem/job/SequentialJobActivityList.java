@@ -1,7 +1,5 @@
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,50 +15,10 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
  * @author balage
  *
  */
-public class SequentialJobActivityList extends JobActivityList {
-
-    /**
-     * The primary container.
-     */
-    protected List<JobActivity> _activities = new ArrayList<>();
-    /**
-     * A read only container backed by the primary one. This will be returned.
-     */
-    protected List<JobActivity> unmodifiableActivities = Collections.unmodifiableList(_activities);
+public class SequentialJobActivityList extends AbstractListBackedJobActivityList {
 
     public SequentialJobActivityList(AbstractJob job) {
         super(job);
-    }
-
-    @Override
-    public void addActivity(JobActivity activity) {
-        validateActivity(activity);
-        _activities.add(activity);
-    }
-
-    @Override
-    public int size() {
-        return _activities.size();
-    }
-
-    @Override
-    public List<JobActivity> getAll() {
-        return unmodifiableActivities;
-    }
-
-    /**
-     * @param activity
-     *            The activity to be found.
-     * @return The index of the activity in the sequential row.
-     * @throws IllegalArgumentException
-     *             When the activity is not in the queue.
-     */
-    private int indexOf(JobActivity activity) {
-        int idx = _activities.indexOf(activity);
-        if (idx == -1) {
-            throw new IllegalArgumentException("Activity " + activity.getName() + " is not in the list.");
-        }
-        return idx;
     }
 
     @Override
@@ -72,5 +30,13 @@ public class SequentialJobActivityList extends JobActivityList {
     public Set<JobActivity> getSubsequent(JobActivity activity) {
         return new HashSet<>(unmodifiableActivities.subList(indexOf(activity), unmodifiableActivities.size()));
     }
+
+    @Override
+    public Set<List<JobActivity>> getPossibleOrderings() {
+        Set<List<JobActivity>> res = new HashSet<List<JobActivity>>();
+        res.add(unmodifiableActivities);
+        return res;
+    }
+
 
 }
