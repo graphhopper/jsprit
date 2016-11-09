@@ -61,10 +61,10 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
         }
 
         // TODO: Do we really need these checks after the refactor?
-//      if (!(i instanceof Service || i instanceof Shipment || i instanceof ShipmentWithBackhaul)) {
+//      if (!(i instanceof Service || i instanceofx Shipment || i instanceofx ShipmentWithBackhaul)) {
 //          throw new IllegalStateException("this supports only shipments or services");
 //      }
-//      if (!(j instanceof Service || j instanceof Shipment || j instanceof ShipmentWithBackhaul)) {
+//      if (!(j instanceof Service || j instanceofx Shipment || j instanceofx ShipmentWithBackhaul)) {
 //          throw new IllegalStateException("this supports only shipments or services");
 //      }
 

@@ -252,6 +252,7 @@ public class Service extends AbstractJob {
             // initiate caches
             service.addLocations();
             service.createActivities();
+            service.addOperationTimeWindows();
         }
     }
 
@@ -328,7 +329,13 @@ public class Service extends AbstractJob {
         setActivities(list);
     }
 
+    @Override
+    protected void addOperationTimeWindows() {
+        operationTimeWindows.add(getTimeWindow());
+    }
 
+
+    @Override
     protected void addLocations() {
         addLocation(location);
     }
@@ -449,5 +456,8 @@ public class Service extends AbstractJob {
     public int getPriority() {
         return priority;
     }
+
+
+
 
 }

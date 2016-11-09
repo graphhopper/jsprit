@@ -19,9 +19,12 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
  * Created by schroeder on 14.07.14.
@@ -33,6 +36,8 @@ public abstract class AbstractJob implements Job {
     protected List<Location> allLocations = new ArrayList<>();
 
     private JobActivityList activityList;
+
+    protected Set<TimeWindow> operationTimeWindows = new HashSet<>();
 
     public AbstractJob() {
         super();
@@ -63,6 +68,8 @@ public abstract class AbstractJob implements Job {
 
     protected abstract void createActivities();
 
+    protected abstract void addOperationTimeWindows();
+
     protected void setActivities(JobActivityList list) {
         activityList = list;
     }
@@ -70,6 +77,11 @@ public abstract class AbstractJob implements Job {
     @Override
     public JobActivityList getActivityList() {
         return activityList;
+    }
+
+
+    public Set<TimeWindow> getOperationTimeWindows() {
+        return operationTimeWindows;
     }
 
 }

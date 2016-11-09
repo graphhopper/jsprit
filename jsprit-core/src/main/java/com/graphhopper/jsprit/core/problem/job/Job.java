@@ -19,12 +19,14 @@ package com.graphhopper.jsprit.core.problem.job;
 
 
 import java.util.List;
+import java.util.Set;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.HasId;
 import com.graphhopper.jsprit.core.problem.HasIndex;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
  * Basic interface for all jobs.
@@ -78,5 +80,10 @@ public interface Job extends HasId, HasIndex {
      * @return All activities
      */
     public JobActivityList getActivityList();
+
+    /**
+     * @return All operation time windows
+     */
+    public Set<TimeWindow> getOperationTimeWindows();
 
 }

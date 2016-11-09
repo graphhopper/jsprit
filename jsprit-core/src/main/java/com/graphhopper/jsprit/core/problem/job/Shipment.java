@@ -366,6 +366,7 @@ public class Shipment extends AbstractJob {
             // initiate caches
             shipment.addLocations();
             shipment.createActivities();
+            shipment.addOperationTimeWindows();
         }
 
     }
@@ -417,6 +418,11 @@ public class Shipment extends AbstractJob {
         setActivities(list);
     }
 
+    @Override
+    protected void addOperationTimeWindows() {
+        operationTimeWindows.add(getPickupTimeWindow());
+        operationTimeWindows.add(getDeliveryTimeWindow());
+    }
 
     @Override
     protected void addLocations() {
