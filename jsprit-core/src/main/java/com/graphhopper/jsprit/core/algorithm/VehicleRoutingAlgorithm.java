@@ -82,7 +82,7 @@ public class VehicleRoutingAlgorithm {
             long n = nextCounter;
             if (i >= n) {
                 nextCounter = n * 2;
-                log.info(this.name + n);
+                log.info(name + n);
             }
         }
 
@@ -150,15 +150,16 @@ public class VehicleRoutingAlgorithm {
         int nuJobs = 0;
         for (VehicleRoute route : solution.getRoutes()) {
             nuJobs += route.getTourActivities().getJobs().size();
-            if (route.getVehicle().getIndex() == 0)
+            if (route.getVehicle().getIndex() == 0) {
                 throw new IllegalStateException("vehicle used in initial solution has no index. probably a vehicle is used that has not been added to the " +
-                    " the VehicleRoutingProblem. only use vehicles that have already been added to the problem.");
+                        " the VehicleRoutingProblem. only use vehicles that have already been added to the problem.");
+            }
             for (TourActivity act : route.getActivities()) {
                 if (act.getIndex() == 0) {
                     throw new IllegalStateException("act in initial solution has no index. activities are created and associated to their job in VehicleRoutingProblem\n." +
-                        " thus if you build vehicle-routes use the jobActivityFactory from vehicle routing problem like that \n" +
-                        " VehicleRoute.Builder.newInstance(knownVehicle).setJobActivityFactory(vrp.getJobActivityFactory).addService(..)....build() \n" +
-                        " then the activities that are created to build the route are identical to the ones used in VehicleRoutingProblem");
+                            " thus if you build vehicle-routes use the jobActivityFactory from vehicle routing problem like that \n" +
+                            " VehicleRoute.Builder.newInstance(knownVehicle).setJobActivityFactory(vrp.getJobActivityFactory).addService(..)....build() \n" +
+                            " then the activities that are created to build the route are identical to the ones used in VehicleRoutingProblem");
                 }
             }
         }
@@ -216,7 +217,9 @@ public class VehicleRoutingAlgorithm {
         Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
-        if (logger.isTraceEnabled()) log(solutions);
+        if (logger.isTraceEnabled()) {
+            log(solutions);
+        }
         logger.info("iterations start");
         for (int i = 0; i < maxIterations; i++) {
             iterationStarts(i + 1, problem, solutions);
@@ -224,7 +227,9 @@ public class VehicleRoutingAlgorithm {
             counter.incCounter();
             SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
-            if (logger.isTraceEnabled()) log(discoveredSolution);
+            if (logger.isTraceEnabled()) {
+                log(discoveredSolution);
+            }
             memorizeIfBestEver(discoveredSolution);
             selectedStrategy(discoveredSolution, problem, solutions);
             if (terminationManager.isPrematureBreak(discoveredSolution)) {
@@ -242,11 +247,15 @@ public class VehicleRoutingAlgorithm {
     }
 
     private void addBestEver(Collection<VehicleRoutingProblemSolution> solutions) {
-        if (bestEver != null) solutions.add(bestEver);
+        if (bestEver != null) {
+            solutions.add(bestEver);
+        }
     }
 
     private void log(Collection<VehicleRoutingProblemSolution> solutions) {
-        for (VehicleRoutingProblemSolution sol : solutions) log(sol);
+        for (VehicleRoutingProblemSolution sol : solutions) {
+            log(sol);
+        }
     }
 
     private void log(VehicleRoutingProblemSolution solution) {
@@ -278,10 +287,14 @@ public class VehicleRoutingAlgorithm {
 
 
     private void memorizeIfBestEver(DiscoveredSolution discoveredSolution) {
-        if (discoveredSolution == null) return;
-        if (bestEver == null) bestEver = discoveredSolution.getSolution();
-        else if (discoveredSolution.getSolution().getCost() < bestEver.getCost())
+        if (discoveredSolution == null) {
+            return;
+        }
+        if (bestEver == null) {
             bestEver = discoveredSolution.getSolution();
+        } else if (discoveredSolution.getSolution().getCost() < bestEver.getCost()) {
+            bestEver = discoveredSolution.getSolution();
+        }
     }
 
 
@@ -299,10 +312,12 @@ public class VehicleRoutingAlgorithm {
 
     public void addListener(VehicleRoutingAlgorithmListener l) {
         algoListeners.addListener(l);
-        if (l instanceof SearchStrategyListener)
+        if (l instanceof SearchStrategyListener) {
             searchStrategyManager.addSearchStrategyListener((SearchStrategyListener) l);
-        if (l instanceof SearchStrategyModuleListener)
+        }
+        if (l instanceof SearchStrategyModuleListener) {
             searchStrategyManager.addSearchStrategyModuleListener((SearchStrategyModuleListener) l);
+        }
     }
 
     private void iterationEnds(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {

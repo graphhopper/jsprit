@@ -36,8 +36,6 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
@@ -239,9 +237,6 @@ public class VehicleRoutingProblem {
             if (tentativeJobs.containsKey(job.getId())) {
                 throw new IllegalArgumentException("vehicle routing problem already contains a service or shipment with id " + job.getId() + ". make sure you use unique ids for all services and shipments");
             }
-            if (!(job instanceof Service || job instanceof Shipment)) {
-                throw new IllegalArgumentException("job must be either a service or a shipment");
-            }
             job.setIndex(jobIndexCounter);
             incJobIndexCounter();
             tentativeJobs.put(job.getId(), job);
@@ -250,19 +245,7 @@ public class VehicleRoutingProblem {
         }
 
         private void addLocationToTentativeLocations(Job job) {
-            if (job instanceof Service) {
-                Location location = ((Service) job).getLocation();
-//                tentative_coordinates.put(location.getId(), location.getCoordinate());
-                addLocationToTentativeLocations(location);
-            } else if (job instanceof Shipment) {
-                Shipment shipment = (Shipment) job;
-                Location pickupLocation = shipment.getPickupLocation();
-                addLocationToTentativeLocations(pickupLocation);
-//                tentative_coordinates.put(pickupLocation.getId(), pickupLocation.getCoordinate());
-                Location deliveryLocation = shipment.getDeliveryLocation();
-                addLocationToTentativeLocations(deliveryLocation);
-//                tentative_coordinates.put(deliveryLocation.getId(), deliveryLocation.getCoordinate());
-            }
+            job.getAllLocations().forEach(l -> addLocationToTentativeLocations(l));
         }
 
         private void addLocationToTentativeLocations(Location location) {
@@ -271,18 +254,16 @@ public class VehicleRoutingProblem {
         }
 
         private void addJobToFinalJobMapAndCreateActivities(Job job) {
-            if (job instanceof Service) {
-                Service service = (Service) job;
-                addService(service);
-            } else if (job instanceof Shipment) {
-                Shipment shipment = (Shipment) job;
-                addShipment(shipment);
+            addLocationToTentativeLocations(job);
+            if (jobs.containsKey(job.getId())) {
+                logger.warn("job " + job + " is already in job list. overrides existing job.");
             }
-            List<JobActivity> jobActs = job.getActivityList().getAll();
-            for (AbstractActivityNEW act : jobActs) {
+            jobs.put(job.getId(), job);
+
+            job.getActivityList().getAll().forEach(act -> {
                 act.setIndex(activityIndexCounter);
                 incActivityIndexCounter();
-            }
+            });
         }
 
         private boolean addBreaksToActivityMap() {
@@ -354,17 +335,6 @@ public class VehicleRoutingProblem {
             }
             return this;
         }
-
-        private void addShipment(Shipment job) {
-            if (jobs.containsKey(job.getId())) {
-                logger.warn("job " + job + " already in job list. overrides existing job.");
-            }
-            addLocationToTentativeLocations(job);
-//            tentative_coordinates.put(job.getPickupLocation().getId(), job.getPickupLocation().getCoordinate());
-//            tentative_coordinates.put(job.getDeliveryLocation().getId(), job.getDeliveryLocation().getCoordinate());
-            jobs.put(job.getId(), job);
-        }
-
         /**
          * Adds a vehicle.
          *
@@ -517,17 +487,6 @@ public class VehicleRoutingProblem {
             return Collections.unmodifiableCollection(tentativeJobs.values());
         }
 
-        private Builder addService(Service service) {
-//            tentative_coordinates.put(service.getLocation().getId(), service.getLocation().getCoordinate());
-            addLocationToTentativeLocations(service);
-            if (jobs.containsKey(service.getId())) {
-                logger.warn("service " + service + " already in job list. overrides existing job.");
-            }
-            jobs.put(service.getId(), service);
-            return this;
-        }
-
-
     }
 
     /**
@@ -616,7 +575,7 @@ public class VehicleRoutingProblem {
     @Override
     public String toString() {
         return "[fleetSize=" + fleetSize + "][#jobs=" + jobs.size() + "][#vehicles=" + vehicles.size() + "][#vehicleTypes=" + vehicleTypes.size() + "][" +
-            "transportCost=" + transportCosts + "][activityCosts=" + activityCosts + "]";
+                "transportCost=" + transportCosts + "][activityCosts=" + activityCosts + "]";
     }
 
     /**

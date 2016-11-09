@@ -18,15 +18,18 @@
 package com.graphhopper.jsprit.core.reporting;
 
 import java.io.PrintWriter;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
@@ -54,19 +57,6 @@ public class SolutionPrinter {
     public enum Print {
 
         CONCISE, VERBOSE
-    }
-
-    private static class Jobs {
-        int nServices;
-        int nShipments;
-        int nBreaks;
-
-        public Jobs(int nServices, int nShipments, int nBreaks) {
-            super();
-            this.nServices = nServices;
-            this.nShipments = nShipments;
-            this.nBreaks = nBreaks;
-        }
     }
 
 
@@ -102,6 +92,29 @@ public class SolutionPrinter {
         SYSTEM_OUT_AS_PRINT_WRITER.flush();
     }
 
+    protected static String drawLineBase(String pattern, int count) {
+        Object[] par = new Object[count];
+        Arrays.fill(par, "");
+        String text = String.format(pattern, par);
+        return text;
+    }
+
+    protected static String drawLine(String pattern, int count) {
+        String text = drawLineBase(pattern, count);
+        return text.replaceAll(" ", "-").replaceAll(Pattern.quote("|"), "+");
+    }
+
+
+    protected static String drawHeading(String pattern, int count, String text) {
+        String base = drawLineBase(pattern, count).trim();
+        int internalWidth = base.lastIndexOf('|') - base.indexOf('|') - 1;
+        if (text == null) {
+            return "+" + CharBuffer.allocate(internalWidth).toString().replace('\0', '-') + "+\n";
+        } else {
+            return "| " + String.format("%-" + (internalWidth - 2) + "s", text) + " |\n";
+        }
+    }
+
     /**
      * Prints costs and #vehicles to the given writer
      *
@@ -109,38 +122,36 @@ public class SolutionPrinter {
      * @param solution the solution to be printed
      */
     public static void print(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution, Print print) {
-        String leftAlign = "| %-13s | %-8s | %n";
+        String leftAlign = "| %-30s | %-8s |%n";
 
-        out.format("+--------------------------+%n");
-        out.printf("| problem                  |%n");
-        out.format("+---------------+----------+%n");
-        out.printf("| indicator     | value    |%n");
-        out.format("+---------------+----------+%n");
+        out.printf(drawHeading(leftAlign, 2, null));
+        out.printf(drawHeading(leftAlign, 2, "problem"));
+        out.printf(drawLine(leftAlign, 2));
+        out.format(leftAlign, "indicator", "value");
+        out.printf(drawLine(leftAlign, 2));
 
         out.format(leftAlign, "noJobs", problem.getJobs().values().size());
-        Jobs jobs = getNuOfJobs(problem);
-        out.format(leftAlign, "noServices", jobs.nServices);
-        out.format(leftAlign, "noShipments", jobs.nShipments);
-        out.format(leftAlign, "noBreaks", jobs.nBreaks);
+        getNuOfJobs(problem).entrySet().forEach(en -> out.format(leftAlign, "   " + en.getKey().getSimpleName(), en.getValue()));
         out.format(leftAlign, "fleetsize", problem.getFleetSize().toString());
-        out.format("+--------------------------+%n");
+        out.printf(drawLine(leftAlign, 2));
 
 
-        String leftAlignSolution = "| %-13s | %-40s | %n";
-        out.format("+----------------------------------------------------------+%n");
-        out.printf("| solution                                                 |%n");
-        out.format("+---------------+------------------------------------------+%n");
-        out.printf("| indicator     | value                                    |%n");
-        out.format("+---------------+------------------------------------------+%n");
+        String leftAlignSolution = "| %-13s | %-40s |%n";
+        out.printf(drawHeading(leftAlignSolution, 2, null));
+        out.printf(drawHeading(leftAlignSolution, 2, "solution"));
+        out.printf(drawLine(leftAlignSolution, 2));
+        out.format(leftAlignSolution, "indicator", "value");
+        out.printf(drawLine(leftAlignSolution, 2));
         out.format(leftAlignSolution, "costs", solution.getCost());
         out.format(leftAlignSolution, "noVehicles", solution.getRoutes().size());
         out.format(leftAlignSolution, "unassgndJobs", solution.getUnassignedJobs().size());
-        out.format("+----------------------------------------------------------+%n");
+        out.printf(drawLine(leftAlignSolution, 2));
 
         if (print.equals(Print.VERBOSE)) {
             printVerbose(out, problem, solution);
         }
     }
+
 
     private static void printVerbose(VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
         printVerbose(SYSTEM_OUT_AS_PRINT_WRITER, problem, solution);
@@ -161,7 +172,7 @@ public class SolutionPrinter {
             out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
             double costs = 0;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),
-                Math.round(costs));
+                    Math.round(costs));
             TourActivity prevAct = route.getStart();
             for (TourActivity act : route.getActivities()) {
                 String jobId;
@@ -171,19 +182,19 @@ public class SolutionPrinter {
                     jobId = "-";
                 }
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
-                    route.getVehicle());
+                        route.getVehicle());
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 costs += c;
                 out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()),
-                    Math.round(act.getEndTime()), Math.round(costs));
+                        Math.round(act.getEndTime()), Math.round(costs));
                 prevAct = act;
             }
             double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(),
-                route.getDriver(), route.getVehicle());
+                    route.getDriver(), route.getVehicle());
             c += problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
             costs += c;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef",
-                Math.round(costs));
+                    Math.round(costs));
             routeNu++;
         }
         out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
@@ -203,22 +214,10 @@ public class SolutionPrinter {
         return route.getVehicle().getId();
     }
 
-    private static Jobs getNuOfJobs(VehicleRoutingProblem problem) {
-        int nShipments = 0;
-        int nServices = 0;
-        int nBreaks = 0;
-        for (Job j : problem.getJobs().values()) {
-            if (j instanceof Shipment) {
-                nShipments++;
-            }
-            if (j instanceof Service) {
-                nServices++;
-            }
-            if (j instanceof Break) {
-                nBreaks++;
-            }
-        }
-        return new Jobs(nServices, nShipments, nBreaks);
+    private static Map<Class<? extends Job>, Long> getNuOfJobs(VehicleRoutingProblem problem) {
+        return problem.getJobs().values().stream()
+                .map(j -> (Class<? extends Job>) j.getClass())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 
 }
