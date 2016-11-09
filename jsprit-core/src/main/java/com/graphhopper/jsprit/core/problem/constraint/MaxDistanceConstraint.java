@@ -96,6 +96,7 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
             if(iIndexOfPickup > 0) actBeforePickup = iFacts.getRoute().getActivities().get(iIndexOfPickup-1);
             else actBeforePickup = new Start(iFacts.getNewVehicle().getStartLocation(),0,Double.MAX_VALUE);
             TourActivity actAfterPickup = iFacts.getRoute().getActivities().get(iIndexOfPickup);
+            //ToDo account here fore End and returnToDepot
             double distanceActBeforePickup2Pickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), pickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getNewVehicle());
             double distancePickup2ActAfterPickup = distanceCalculator.getDistance(pickup.getLocation(), actAfterPickup.getLocation(), iFacts.getRelatedActivityContext().getEndTime(), iFacts.getNewVehicle());
             double distanceBeforePickup2AfterPickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), actAfterPickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getNewVehicle());
