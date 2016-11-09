@@ -458,6 +458,16 @@ public class Service extends AbstractJob {
     }
 
 
+    @Override
+    public Location getStartLocation() {
+        return location;
+    }
+
+
+    @Override
+    public Location getEndLocation() {
+        return location;
+    }
 
 
 }

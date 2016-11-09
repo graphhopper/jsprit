@@ -553,4 +553,17 @@ public class Shipment extends AbstractJob {
     public int getPriority() {
         return priority;
     }
+
+    @Override
+    public Location getStartLocation() {
+        return pickupLocation_;
+    }
+
+
+    @Override
+    public Location getEndLocation() {
+        return deliveryLocation_;
+    }
+
+
 }
