@@ -363,7 +363,7 @@ public class Shipment extends AbstractJob {
         }
 
         protected <T extends Shipment> void postProcess(T shipment) {
-            // shipment.createActivities(this);
+            shipment.createActivities(this);
         }
 
 
@@ -454,7 +454,6 @@ public class Shipment extends AbstractJob {
         skills = builder.skills;
         name = builder.name;
         priority = builder.priority;
-        createActivities(builder);
     }
 
 
