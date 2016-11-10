@@ -60,7 +60,7 @@ public class DefaultScorer implements ScoringFunction  {
                 .max()
                 .orElse(0d);
         double maxDepotDistance = Math.max(maxFromStart, maxToEnd);
-        double minTimeToOperate = job.getOperationTimeWindows().stream()
+        double minTimeToOperate = job.getTimeWindows().stream()
                 .mapToDouble(tw -> tw.getEnd() - tw.getStart())
                 .min()
                 .orElse(0d);

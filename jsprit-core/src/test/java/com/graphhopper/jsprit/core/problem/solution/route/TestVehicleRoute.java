@@ -306,7 +306,7 @@ public class TestVehicleRoute {
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addService(pickup).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertTrue(act.getName().equals("pickup"));
+        assertEquals("pick.pickup", act.getName());
         assertTrue(act instanceof PickupServiceDEPRECATED);
         assertTrue(((JobActivity) act).getJob() instanceof Pickup);
 
@@ -320,7 +320,7 @@ public class TestVehicleRoute {
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addPickup(pickup).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertTrue(act.getName().equals("pickup"));
+        assertEquals("pick.pickup", act.getName());
         assertTrue(act instanceof PickupServiceDEPRECATED);
         assertTrue(((JobActivity) act).getJob() instanceof Pickup);
 
@@ -334,7 +334,7 @@ public class TestVehicleRoute {
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addService(delivery).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertTrue(act.getName().equals("delivery"));
+        assertEquals("delivery.delivery", act.getName());
         assertTrue(act instanceof DeliverServiceDEPRECATED);
         assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
@@ -348,7 +348,7 @@ public class TestVehicleRoute {
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addDelivery(delivery).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertEquals("delivery", act.getName());
+        assertEquals("delivery.delivery", act.getName());
         assertTrue(act instanceof DeliverServiceDEPRECATED);
         assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 

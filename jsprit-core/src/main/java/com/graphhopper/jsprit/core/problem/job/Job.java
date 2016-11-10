@@ -94,6 +94,6 @@ public interface Job extends HasId, HasIndex {
     /**
      * @return All operation time windows
      */
-    public Set<TimeWindow> getOperationTimeWindows();
+    public Set<TimeWindow> getTimeWindows();
 
 }

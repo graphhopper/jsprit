@@ -363,10 +363,7 @@ public class Shipment extends AbstractJob {
         }
 
         protected <T extends Shipment> void postProcess(T shipment) {
-            // initiate caches
-            shipment.addLocations();
             shipment.createActivities();
-            shipment.addOperationTimeWindows();
         }
 
     }
@@ -416,18 +413,6 @@ public class Shipment extends AbstractJob {
         list.addActivity(new PickupShipmentDEPRECATED(this));
         list.addActivity(new DeliverShipmentDEPRECATED(this));
         setActivities(list);
-    }
-
-    @Override
-    protected void addOperationTimeWindows() {
-        operationTimeWindows.add(getPickupTimeWindow());
-        operationTimeWindows.add(getDeliveryTimeWindow());
-    }
-
-    @Override
-    protected void addLocations() {
-        addLocation(pickupLocation_);
-        addLocation(deliveryLocation_);
     }
 
     @Override

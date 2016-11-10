@@ -55,6 +55,29 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
         defaultValue = Capacity.Builder.newInstance().build();
     }
 
+    // private String visualize(JobInsertionContext iFacts, TourActivity
+    // prevAct, TourActivity newAct,
+    // TourActivity nextAct) {
+    // System.out.println(prevAct);
+    // System.out.println(newAct);
+    // System.out.println(nextAct);
+    // StringBuilder sb = new StringBuilder();
+    // for (TourActivity a : iFacts.getRoute().getActivities()) {
+    // if (a.equals(nextAct)) {
+    // if (sb.length() != 0) {
+    // sb.append(" -> ");
+    // }
+    // sb.append("[").append(newAct.getName()).append("]");
+    // }
+    // if (sb.length() != 0) {
+    // sb.append(" -> ");
+    // }
+    // sb.append(a.getName());
+    // }
+    //
+    // return sb.toString();
+    // }
+
     /**
      * Checks whether there is enough capacity to insert newAct between prevAct and nextAct.
      */
@@ -63,6 +86,7 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
         if (!(newAct instanceof PickupShipmentDEPRECATED) && !(newAct instanceof DeliverShipmentDEPRECATED)) {
             return ConstraintsStatus.FULFILLED;
         }
+        // System.out.println(visualize(iFacts, prevAct, newAct, nextAct));
         Capacity loadAtPrevAct;
         if (prevAct instanceof Start) {
             loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
@@ -76,12 +100,14 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
             }
         }
         if (newAct instanceof PickupShipmentDEPRECATED) {
-            if (!Capacity.addup(loadAtPrevAct, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+            Capacity newCapacity = Capacity.addup(loadAtPrevAct, newAct.getSize());
+            if (!newCapacity.isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
         if (newAct instanceof DeliverShipmentDEPRECATED) {
-            if (!Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize())).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+            Capacity newCapacity = Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize()));
+            if (!newCapacity.isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
             }
         }

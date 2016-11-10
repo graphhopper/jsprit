@@ -155,7 +155,6 @@ public class VehicleRoutingProblemTest {
         assertEquals(2, vrp.getJobs().size());
         assertEquals(s1, vrp.getJobs().get("s1"));
         assertEquals(s2, vrp.getJobs().get("s2"));
-        assertEquals(1,vrp.getAllLocations().size());
     }
 
 

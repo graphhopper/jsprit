@@ -261,7 +261,7 @@ public class ShipmentInsertionCalculatorTest {
         constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(), ConstraintManager.Priority.CRITICAL);
 
         ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts,
-                activityInsertionCostsCalculator, constraintManager);
+                        activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
@@ -301,7 +301,7 @@ public class ShipmentInsertionCalculatorTest {
         switcher.put(Service.class, serviceInsertionCalc);
         switcher.put(Shipment.class, insertionCalculator);
 
-//		Service service = new Service.Builder("pick", 1).setLocationId("5,5").build();
+        //		Service service = new Service.Builder("pick", 1).setLocationId("5,5").build();
         Pickup service = new Pickup.Builder("pick").addSizeDimension(0, 1).setLocation(Location.newInstance("5,5")).build();
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
@@ -312,7 +312,7 @@ public class ShipmentInsertionCalculatorTest {
         serviceInsertionCalc.setJobActivityFactory(activityFactory);
 
         InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
-//		routeActVisitor.visit(route);
+        //		routeActVisitor.visit(route);
 
         assertEquals(3, iData.getDeliveryInsertionIndex());
     }

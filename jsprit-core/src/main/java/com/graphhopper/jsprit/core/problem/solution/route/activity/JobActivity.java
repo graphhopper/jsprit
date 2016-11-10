@@ -1,5 +1,8 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
@@ -18,19 +21,26 @@ public abstract class JobActivity extends AbstractActivityNEW {
     private AbstractJob job;
 
     private double operationTime;
-    public JobActivity(AbstractJob job, String name, Location location, double operationTime, Capacity capacity) {
-        super(name, location, capacity);
+
+    private Collection<TimeWindow> timeWindows;
+
+    public JobActivity(AbstractJob job, String type, Location location, double operationTime,
+                    Capacity capacity, Collection<TimeWindow> timeWindows) {
+        super(type, location, capacity);
         this.job = job;
-        this.name = name;
-        this.location = location;
         this.operationTime = operationTime;
-        this.capacity = capacity;
+        this.timeWindows = timeWindows;
     }
 
     protected JobActivity(JobActivity sourceActivity) {
         super(sourceActivity);
         job = sourceActivity.getJob();
         operationTime = sourceActivity.getOperationTime();
+        // REMARK - Balage1551 - Do we need to deep copy time window set? I
+        // guess we don't.
+        if (sourceActivity.timeWindows != null) {
+            timeWindows = new HashSet<>(sourceActivity.timeWindows);
+        }
     }
 
     public AbstractJob getJob() {
@@ -40,6 +50,15 @@ public abstract class JobActivity extends AbstractActivityNEW {
     @Override
     public double getOperationTime() {
         return operationTime;
+    }
+
+    @Override
+    public String getName() {
+        return job.getId() + "." + getType();
+    }
+
+    public Collection<TimeWindow> getTimeWindows() {
+        return timeWindows;
     }
 
     /*

@@ -16,14 +16,14 @@ public abstract class AbstractActivityNEW implements TourActivity {
     protected double endTime;
     protected double theoreticalEarliest = 0;
     protected double theoreticalLatest = Double.MAX_VALUE;
-    protected String name;
+    protected String type;
     protected Location location;
 
 
-    public AbstractActivityNEW(String name, Location location, Capacity capacity) {
+    public AbstractActivityNEW(String type, Location location, Capacity capacity) {
         super();
         this.capacity = capacity;
-        this.name = name;
+        this.type = type;
         this.location = location;
     }
 
@@ -35,7 +35,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
         setIndex(sourceActivity.getIndex());
         theoreticalEarliest = sourceActivity.getTheoreticalEarliestOperationStartTime();
         theoreticalLatest = sourceActivity.getTheoreticalLatestOperationStartTime();
-        name = sourceActivity.name;
+        type = sourceActivity.type;
         location = sourceActivity.location;
     }
 
@@ -95,8 +95,13 @@ public abstract class AbstractActivityNEW implements TourActivity {
 
     @Override
     public String getName() {
-        return name;
+        return getType();
     }
+
+    public String getType() {
+        return type;
+    }
+
 
     @Override
     public Location getLocation() {
@@ -105,22 +110,23 @@ public abstract class AbstractActivityNEW implements TourActivity {
 
     @Override
     public String toString() {
-        return "[type=" + getName() + "][locationId=" + getLocation().getId()
-                + "][size=" + getSize().toString()
-                + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-                + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+        return "[name=" + getName() + "][locationId=" + getLocation().getId()
+                        + "][size=" + getSize().toString()
+                        + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+                        + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
     }
 
 
     @Override
     public TourActivity duplicate() {
         // TODO - Balage1551 - It uses safe reflection. But this is reflection which is expensive, so
-        // in case it is a bottlenect, this should be refactored
+        // in case it is a bottleneck, this should be refactored
         try {
             Constructor<? extends AbstractActivityNEW> constructor = getClass().getConstructor(getClass());
             return constructor.newInstance(this);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+                        | InvocationTargetException e) {
+            System.out.println(this.getClass().getCanonicalName() + " : " + this);
             throw new IllegalStateException(e);
         }
     }

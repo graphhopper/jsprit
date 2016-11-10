@@ -24,7 +24,6 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 
@@ -249,10 +248,7 @@ public class Service extends AbstractJob {
         }
 
         protected <T extends Service> void postProcess(T service) {
-            // initiate caches
-            service.addLocations();
             service.createActivities();
-            service.addOperationTimeWindows();
         }
     }
 
@@ -302,7 +298,7 @@ public class Service extends AbstractJob {
 
     private Location location;
 
-    private TimeWindows timeWindowManager;
+    private TimeWindowsImpl timeWindowManager;
 
     private int priority;
 
@@ -319,29 +315,13 @@ public class Service extends AbstractJob {
         priority = builder.priority;
     }
 
-
     @Override
     protected void createActivities() {
         JobActivityList list = new SequentialJobActivityList(this);
         // TODO - Balage1551
-//        list.addActivity(new ServiceActivityNEW(this, "service", getLocation(), getServiceDuration(), getSize()));
+        //        list.addActivity(new ServiceActivityNEW(this, "service", getLocation(), getServiceDuration(), getSize()));
         list.addActivity(new PickupServiceDEPRECATED(this));
         setActivities(list);
-    }
-
-    @Override
-    protected void addOperationTimeWindows() {
-        operationTimeWindows.add(getTimeWindow());
-    }
-
-
-    @Override
-    protected void addLocations() {
-        addLocation(location);
-    }
-
-    public Collection<TimeWindow> getTimeWindows(){
-        return timeWindowManager.getTimeWindows();
     }
 
     @Override
@@ -377,6 +357,10 @@ public class Service extends AbstractJob {
      */
     public TimeWindow getTimeWindow() {
         return timeWindowManager.getTimeWindows().iterator().next();
+    }
+
+    public Collection<TimeWindow> getServiceTimeWindows() {
+        return timeWindowManager.getTimeWindows();
     }
 
     /**

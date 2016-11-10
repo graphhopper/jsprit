@@ -73,6 +73,7 @@ public class Break extends Service implements InternalJobMarker {
         setActivities(list);
     }
 
+
     public boolean hasVariableLocation() {
         return variableLocation;
     }

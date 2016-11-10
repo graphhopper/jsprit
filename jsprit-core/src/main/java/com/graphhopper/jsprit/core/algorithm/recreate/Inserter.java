@@ -23,15 +23,18 @@ import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData.NoInsertionF
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 class Inserter {
 
     private abstract class JobInsertionHandler {
 
-        private JobInsertionHandler delegator = new JobExceptionHandler();
+        private JobInsertionHandler delegator = null;
 
         public abstract void handleJobInsertion(Job job, InsertionData iData, VehicleRoute route);
 
@@ -41,7 +44,9 @@ class Inserter {
         }
 
         protected void delegate(Job job, InsertionData iData, VehicleRoute route) {
-            delegator.handleJobInsertion(job, iData, route);
+            if (delegator != null) {
+                delegator.handleJobInsertion(job, iData, route);
+            }
         }
     }
 
@@ -76,57 +81,60 @@ class Inserter {
         }
     }
 
-//
-//    private class ServiceInsertionHandler extends JobInsertionHandler {
-//
-//        @Override
-//        public void handleJobInsertion(Job job, InsertionData iData, VehicleRoute route) {
-//            if (job instanceof Service) {
-//                route.setVehicleAndDepartureTime(iData.getSelectedVehicle(), iData.getVehicleDepartureTime());
-//                if (!iData.getSelectedVehicle().isReturnToDepot()) {
-//                    if (iData.getDeliveryInsertionIndex() >= route.getTourActivities().getActivities().size()) {
-//                        setEndLocation(route, (Service) job);
-//                    }
-//                }
-//                TourActivity activity = vehicleRoutingProblem.copyAndGetActivities(job).get(0);
-//                route.getTourActivities().addActivity(iData.getDeliveryInsertionIndex(), activity);
-//            } else {
-//                delegate(job, iData, route);
-//            }
-//        }
-//
-//
-//        private void setEndLocation(VehicleRoute route, Service service) {
-//            route.getEnd().setLocation(service.getLocation());
-//        }
-//    }
-//
-//    private class ShipmentInsertionHandler extends JobInsertionHandler {
-//
-//        @Override
-//        public void handleJobInsertion(Job job, InsertionData iData, VehicleRoute route) {
-//            if (job instanceof Shipment) {
-//                List<JobActivity> acts = job.getActivityList().getAllDuplicated(); // vehicleRoutingProblem.copyAndGetActivities(job);
-//                TourActivity pickupShipment = acts.get(0);
-//                TourActivity deliverShipment = acts.get(1);
-//                route.setVehicleAndDepartureTime(iData.getSelectedVehicle(), iData.getVehicleDepartureTime());
-//                if (!iData.getSelectedVehicle().isReturnToDepot()) {
-//                    if (iData.getDeliveryInsertionIndex() >= route.getActivities().size()) {
-//                        setEndLocation(route, (Shipment) job);
-//                    }
-//                }
-//                route.getTourActivities().addActivity(iData.getDeliveryInsertionIndex(), deliverShipment);
-//                route.getTourActivities().addActivity(iData.getPickupInsertionIndex(), pickupShipment);
-//            } else {
-//                delegate(job, iData, route);
-//            }
-//        }
-//
-//        private void setEndLocation(VehicleRoute route, Shipment shipment) {
-//            route.getEnd().setLocation(shipment.getDeliveryLocation());
-//        }
-//    }
-//
+    private class ServiceInsertionHandler extends JobInsertionHandler {
+
+        @Override
+        public void handleJobInsertion(Job job, InsertionData iData, VehicleRoute route) {
+            if (job instanceof Service) {
+                route.setVehicleAndDepartureTime(iData.getSelectedVehicle(),
+                                iData.getVehicleDepartureTime());
+                if (!iData.getSelectedVehicle().isReturnToDepot()) {
+                    if (iData.getDeliveryInsertionIndex() >= route.getTourActivities()
+                                    .getActivities().size()) {
+                        setEndLocation(route, (Service) job);
+                    }
+                }
+                TourActivity activity = job.getActivityList().getAllDuplicated().get(0);
+                route.getTourActivities().addActivity(iData.getDeliveryInsertionIndex(), activity);
+            } else {
+                delegate(job, iData, route);
+            }
+        }
+
+        private void setEndLocation(VehicleRoute route, Service service) {
+            route.getEnd().setLocation(service.getLocation());
+        }
+    }
+
+    private class ShipmentInsertionHandler extends JobInsertionHandler {
+
+        @Override
+        public void handleJobInsertion(Job job, InsertionData iData, VehicleRoute route) {
+            if (job instanceof Shipment) {
+                List<JobActivity> acts = job.getActivityList().getAllDuplicated(); // vehicleRoutingProblem.copyAndGetActivities(job);
+                TourActivity pickupShipment = acts.get(0);
+                TourActivity deliverShipment = acts.get(1);
+                route.setVehicleAndDepartureTime(iData.getSelectedVehicle(),
+                                iData.getVehicleDepartureTime());
+                if (!iData.getSelectedVehicle().isReturnToDepot()) {
+                    if (iData.getDeliveryInsertionIndex() >= route.getActivities().size()) {
+                        setEndLocation(route, (Shipment) job);
+                    }
+                }
+                route.getTourActivities().addActivity(iData.getDeliveryInsertionIndex(),
+                                deliverShipment);
+                route.getTourActivities().addActivity(iData.getPickupInsertionIndex(),
+                                pickupShipment);
+            } else {
+                delegate(job, iData, route);
+            }
+        }
+
+        private void setEndLocation(VehicleRoute route, Shipment shipment) {
+            route.getEnd().setLocation(shipment.getDeliveryLocation());
+        }
+    }
+
     private InsertionListeners insertionListeners;
 
     private JobInsertionHandler jobInsertionHandler;
@@ -138,12 +146,13 @@ class Inserter {
         new DefaultTourActivityFactory();
 
         // Balage1551 - The new, unified handler
-        jobInsertionHandler = new UnifiedInsertionHandler();
+        // There is a problem: how to handle uniformly insertation indexes for
+        // multiple activities
+        // jobInsertionHandler = new UnifiedInsertionHandler();
 
         //The old ones:
-//        jobInsertionHandler = new ServiceInsertionHandler()
-//                .withNextHandler(new ShipmentInsertionHandler()
-//                        .withNextHandler(new JobExceptionHandler()));
+        jobInsertionHandler = new ServiceInsertionHandler().withNextHandler(
+                        new ShipmentInsertionHandler().withNextHandler(new JobExceptionHandler()));
     }
 
     public void insertJob(Job job, InsertionData insertionData, VehicleRoute vehicleRoute) {

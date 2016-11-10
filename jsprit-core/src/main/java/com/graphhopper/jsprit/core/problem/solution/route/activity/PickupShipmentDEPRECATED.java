@@ -22,7 +22,9 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 public final class PickupShipmentDEPRECATED extends PickupActivityNEW{
 
     public PickupShipmentDEPRECATED(Shipment shipment) {
-        super(shipment, "pickupShipment", shipment.getPickupLocation(), shipment.getPickupServiceTime(), shipment.getSize());
+        super(shipment, "pickupShipment", shipment.getPickupLocation(),
+                        shipment.getPickupServiceTime(), shipment.getSize(),
+                        shipment.getPickupTimeWindows());
     }
 
     public PickupShipmentDEPRECATED(PickupShipmentDEPRECATED sourceActivity) {

@@ -19,6 +19,7 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,11 +34,11 @@ public abstract class AbstractJob implements Job {
 
     private int index;
 
-    protected List<Location> allLocations = new ArrayList<>();
+    protected List<Location> allLocations;
 
     private JobActivityList activityList;
 
-    protected Set<TimeWindow> operationTimeWindows = new HashSet<>();
+    protected Set<TimeWindow> allTimeWindows;
 
     public AbstractJob() {
         super();
@@ -53,7 +54,7 @@ public abstract class AbstractJob implements Job {
         this.index = index;
     }
 
-    protected void addLocation(Location location) {
+    private void addLocation(Location location) {
         if (location != null) {
             allLocations.add(location);
         }
@@ -64,14 +65,35 @@ public abstract class AbstractJob implements Job {
         return allLocations;
     }
 
-    protected abstract void addLocations();
+    protected void prepareCaches() {
+        allLocations = new ArrayList<>();
+        allTimeWindows = new HashSet<>();
+        activityList.getAll().stream().forEach(ja -> {
+            addLocation(ja.getLocation());
+            addTimeWindows(ja.getTimeWindows());
+        });
+    }
 
+    private void addTimeWindows(Collection<TimeWindow> timeWindows) {
+        if (timeWindows != null && !timeWindows.isEmpty()) {
+            allTimeWindows.addAll(timeWindows);
+        }
+    }
+
+    /**
+     * Creates the activities.
+     *
+     * <p>
+     * This functions contract specifies that the implementation has to call
+     * {@linkplain #prepareCaches()} function at the end, after all activities
+     * are added.
+     * </p>
+     */
     protected abstract void createActivities();
-
-    protected abstract void addOperationTimeWindows();
 
     protected void setActivities(JobActivityList list) {
         activityList = list;
+        prepareCaches();
     }
 
     @Override
@@ -80,8 +102,10 @@ public abstract class AbstractJob implements Job {
     }
 
 
-    public Set<TimeWindow> getOperationTimeWindows() {
-        return operationTimeWindows;
+    @Override
+    public Set<TimeWindow> getTimeWindows() {
+        return allTimeWindows;
     }
 
 }
+

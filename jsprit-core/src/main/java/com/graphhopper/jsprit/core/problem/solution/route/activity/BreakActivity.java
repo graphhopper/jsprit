@@ -23,21 +23,13 @@ import com.graphhopper.jsprit.core.problem.job.Break;
 
 public class BreakActivity extends InternalJobActivity {
 
-// REMARK - Balage1551 - What is it is used for?
-//    public static int counter = 0;
-
-// REMARK - Balage1551 - Never used and there is a duplicate implemented in JobActivity, so that could be used.
-//    public static BreakActivity copyOf(BreakActivity breakActivity) {
-//        return new BreakActivity(breakActivity);
-//    }
-
     public static BreakActivity newInstance(Break aBreak) {
         return new BreakActivity(aBreak);
     }
 
     protected BreakActivity(Break aBreak) {
-        super(aBreak, "Break", aBreak.getLocation(), aBreak.getServiceDuration(), Capacity.createNullCapacity(aBreak.getSize()));
-//        counter++;
+        super(aBreak, "Break", aBreak.getLocation(), aBreak.getServiceDuration(),
+                        Capacity.createNullCapacity(aBreak.getSize()), aBreak.getTimeWindows());
     }
 
     public BreakActivity(BreakActivity breakActivity) {

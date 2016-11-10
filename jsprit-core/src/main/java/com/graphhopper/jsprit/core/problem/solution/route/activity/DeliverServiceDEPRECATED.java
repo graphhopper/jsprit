@@ -23,7 +23,8 @@ import com.graphhopper.jsprit.core.problem.job.Delivery;
 public final class DeliverServiceDEPRECATED extends DeliveryActivityNEW {
 
     public DeliverServiceDEPRECATED(Delivery delivery) {
-        super(delivery, delivery.getType(), delivery.getLocation(), delivery.getServiceDuration(), Capacity.invert(delivery.getSize()));
+        super(delivery, delivery.getType(), delivery.getLocation(), delivery.getServiceDuration(),
+                        Capacity.invert(delivery.getSize()), delivery.getServiceTimeWindows());
     }
 
     public DeliverServiceDEPRECATED(DeliverServiceDEPRECATED sourceActivity) {
