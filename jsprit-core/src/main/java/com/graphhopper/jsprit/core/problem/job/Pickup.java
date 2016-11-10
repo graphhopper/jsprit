@@ -26,37 +26,21 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService
  */
 public class Pickup extends Service {
 
-    public static class Builder extends Service.ServiceBuilderBase<Builder> {
+    public static final class Builder extends Service.BuilderBase<Pickup, Builder> {
 
         public Builder(String id) {
             super(id);
-        }
-
-        /**
-         * Builds Pickup.
-         * <p>
-         * <p>Pickup type is "pickup"
-         *
-         * @return pickup
-         * @throws IllegalArgumentException if neither locationId nor coordinate has been set
-         */
-        @SuppressWarnings("unchecked")
-        @Override
-        public Pickup build() {
-            if (location == null) {
-                throw new IllegalArgumentException("location is missing");
-            }
             setType("pickup");
-            preProcess();
-            Pickup pickup = new Pickup(this);
-            postProcess(pickup);
-            return pickup;
         }
 
         public static Builder newInstance(String id) {
             return new Builder(id);
         }
 
+        @Override
+        protected Pickup createInstance() {
+            return new Pickup(this);
+        }
     }
 
     Pickup(Builder builder) {
@@ -64,11 +48,11 @@ public class Pickup extends Service {
     }
 
     @Override
-    protected void createActivities() {
+    protected void createActivities(JobBuilder<?, ?> builder) {
         JobActivityList list = new SequentialJobActivityList(this);
         // TODO - Balage1551
-//      addActivity(new PickupActivityNEW(this, "pickup", getLocation(), getServiceDuration(), getSize()));
-        list.addActivity(new PickupServiceDEPRECATED(this));
+        //      addActivity(new PickupActivityNEW(this, "pickup", getLocation(), getServiceDuration(), getSize()));
+        list.addActivity(new PickupServiceDEPRECATED(this, (Builder) builder));
         setActivities(list);
     }
 

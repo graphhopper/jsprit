@@ -62,13 +62,13 @@ import com.graphhopper.jsprit.core.util.Resource;
 public class VrpXMLReader {
 
     public interface ServiceBuilderFactory {
-        Service.ServiceBuilderBase<?> createBuilder(String serviceType, String id, Integer size);
+        Service.BuilderBase<?, ?> createBuilder(String serviceType, String id, Integer size);
     }
 
     static class DefaultServiceBuilderFactory implements ServiceBuilderFactory {
 
         @Override
-        public Service.ServiceBuilderBase<?> createBuilder(String serviceType, String id, Integer size) {
+        public Service.BuilderBase<?, ?> createBuilder(String serviceType, String id, Integer size) {
             if (serviceType.equals("pickup")) {
                 if (size != null) {
                     return new Pickup.Builder(id).addSizeDimension(0, size);
@@ -579,7 +579,7 @@ public class VrpXMLReader {
                         "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
-            Service.ServiceBuilderBase<?> builder;
+            Service.BuilderBase<?, ?> builder;
             if (capacityString != null) {
                 builder = serviceBuilderFactory.createBuilder(type, id, Integer.parseInt(capacityString));
             } else {

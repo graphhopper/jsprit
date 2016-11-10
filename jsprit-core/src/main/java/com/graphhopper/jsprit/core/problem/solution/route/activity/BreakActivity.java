@@ -17,27 +17,34 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.job.Break.Builder;
 
 public class BreakActivity extends InternalJobActivity {
 
-    public static BreakActivity newInstance(Break aBreak) {
-        return new BreakActivity(aBreak);
+    public static BreakActivity newInstance(Break aBreak, Builder builder) {
+        return new BreakActivity(aBreak, "break", builder.getLocation(), builder.getServiceTime(),
+                        builder.getCapacity(), builder.getTimeWindows().getTimeWindows());
     }
 
-    protected BreakActivity(Break aBreak) {
-        super(aBreak, "Break", aBreak.getLocation(), aBreak.getServiceDuration(),
-                        Capacity.createNullCapacity(aBreak.getSize()), aBreak.getTimeWindows());
-    }
+    // protected BreakActivity(Break aBreak) {
+    // super(aBreak, "Break", aBreak.getLocation(), aBreak.getServiceDuration(),
+    // Capacity.createNullCapacity(aBreak.getSize()), aBreak.getTimeWindows());
+    // }
 
     public BreakActivity(BreakActivity breakActivity) {
         super(breakActivity);
     }
 
-
-
+    private BreakActivity(AbstractJob job, String name, Location location, double operationTime,
+                    Capacity capacity, Collection<TimeWindow> timeWindows) {
+        super(job, name, location, operationTime, capacity, timeWindows);
+    }
 
     @Override
     public Break getJob() {

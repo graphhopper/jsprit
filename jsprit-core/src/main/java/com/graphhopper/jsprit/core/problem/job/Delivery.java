@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
 
 /**
@@ -26,48 +27,41 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServic
  */
 public class Delivery extends Service {
 
-    public static class Builder extends Service.ServiceBuilderBase<Builder> {
-
+    public static final class Builder extends Service.BuilderBase<Delivery, Builder> {
 
         public Builder(String id) {
             super(id);
-        }
-
-        /**
-         * Builds Delivery.
-         *
-         * @return delivery
-         * @throws IllegalArgumentException if neither locationId nor coord is set
-         */
-        @SuppressWarnings("unchecked")
-        @Override
-        public Delivery build() {
-            if (location == null) {
-                throw new IllegalArgumentException("location is missing");
-            }
             setType("delivery");
-            preProcess();
-            Delivery delivery = new Delivery(this);
-            postProcess(delivery);
-            return delivery;
         }
 
         public static Builder newInstance(String id) {
             return new Builder(id);
         }
+
+        @Override
+        protected Delivery createInstance() {
+            return new Delivery(this);
+        }
     }
 
-    Delivery(Builder builder) {
+    Delivery(BuilderBase<? extends Delivery, ?> builder) {
         super(builder);
     }
 
     @Override
-    protected void createActivities() {
+    protected void createActivities(JobBuilder<?, ?> builder) {
         JobActivityList list = new SequentialJobActivityList(this);
         // TODO - Balage1551
-//      list.addActivity(new DeliveryActivityNEW(this, "delivery", getLocation(), getServiceDuration(), getSize()));
-        list.addActivity(new DeliverServiceDEPRECATED(this));
+        // addActivity(new DeliveryActivityNEW(this, "pickup", getLocation(),
+        // getServiceDuration(), getSize()));
+        list.addActivity(new DeliverServiceDEPRECATED(this, (Builder) builder));
         setActivities(list);
+    }
+
+    @Override
+    @Deprecated
+    public Capacity getSize() {
+        return Capacity.invert(super.getSize());
     }
 
 }

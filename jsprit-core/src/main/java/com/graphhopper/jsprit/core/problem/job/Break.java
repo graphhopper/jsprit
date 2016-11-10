@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 
 /**
@@ -27,49 +28,50 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity
  */
 public class Break extends Service implements InternalJobMarker {
 
-    public static class Builder extends Service.ServiceBuilderBase<Builder> {
+    public static final class Builder extends Service.BuilderBase<Break, Builder> {
 
-
-        private boolean variableLocation = true;
+        private static final Location VARIABLE_LOCATION = Location
+                        .newInstance("@@@VARIABLE_LOCATION");
 
         public Builder(String id) {
             super(id);
+            setType("break");
+            setLocation(VARIABLE_LOCATION);
         }
 
-        /**
-         * Builds Pickup.
-         * <p>
-         * <p>Pickup type is "pickup"
-         *
-         * @return pickup
-         * @throws IllegalStateException if neither locationId nor coordinate has been set
-         */
-        @SuppressWarnings("unchecked")
+        public static Builder newInstance(String id) {
+            return new Builder(id);
+        }
+
         @Override
-        public Break build() {
-            if (location != null) {
-                variableLocation = false;
+        protected void validate() {
+            super.validate();
+            // This is a trick: Service requires a location, but after
+            // validation we could remove it.
+            if (location.equals(VARIABLE_LOCATION)) {
+                location = null;
             }
-            setType("break");
-            preProcess();
-            Break instance = new Break(this);
-            postProcess(instance);
-            return instance;
+        }
+
+        @Override
+        protected Break createInstance() {
+            return new Break(this);
         }
 
     }
+
 
     private boolean variableLocation = true;
 
     Break(Builder builder) {
         super(builder);
-        variableLocation = builder.variableLocation;
+        variableLocation = (builder.getLocation() == null);
     }
 
     @Override
-    protected void createActivities() {
+    protected void createActivities(JobBuilder<?, ?> builder) {
         JobActivityList list = new SequentialJobActivityList(this);
-        list.addActivity(BreakActivity.newInstance(this));
+        list.addActivity(BreakActivity.newInstance(this, (Builder) builder));
         setActivities(list);
     }
 

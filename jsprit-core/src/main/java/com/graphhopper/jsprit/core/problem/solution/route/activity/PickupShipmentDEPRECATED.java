@@ -18,13 +18,13 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.job.Shipment.Builder;
+import com.graphhopper.jsprit.core.problem.job.Shipment.BuilderBase;
 
 public final class PickupShipmentDEPRECATED extends PickupActivityNEW{
 
     public static final String NAME = "pickupShipment";
 
-    public PickupShipmentDEPRECATED(Shipment shipment, Builder builder) {
+    public PickupShipmentDEPRECATED(Shipment shipment, BuilderBase<? extends Shipment, ?> builder) {
         super(shipment, NAME, builder.getPickupLocation(),
                         builder.getPickupServiceTime(), builder.getCapacity(),
                         builder.getPickupTimeWindows().getTimeWindows());

@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.job.Break.Builder;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
 
@@ -37,9 +38,10 @@ public class BreakActivityTest {
 
     @Before
     public void doBefore() {
-        service = new Break.Builder("service")
-            .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3).build();
-        serviceActivity = BreakActivity.newInstance(service);
+        Builder breakBuilder = new Break.Builder("service")
+                        .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3);
+        service = breakBuilder.build();
+        serviceActivity = BreakActivity.newInstance(service, breakBuilder);
         serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         serviceActivity.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
@@ -51,7 +53,7 @@ public class BreakActivityTest {
 
     @Test
     public void hasVariableLocationShouldBeTrue() {
-        Break aBreak = (Break) serviceActivity.getJob();
+        Break aBreak = serviceActivity.getJob();
         assertTrue(aBreak.hasVariableLocation());
     }
 

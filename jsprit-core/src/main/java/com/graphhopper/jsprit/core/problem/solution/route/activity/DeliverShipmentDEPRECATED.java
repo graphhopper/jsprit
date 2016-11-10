@@ -19,13 +19,14 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.job.Shipment.Builder;
+import com.graphhopper.jsprit.core.problem.job.Shipment.BuilderBase;
 
 public final class DeliverShipmentDEPRECATED extends DeliveryActivityNEW {
 
     public static final String NAME = "deliverShipment";
 
-    public DeliverShipmentDEPRECATED(Shipment shipment, Builder builder) {
+    public DeliverShipmentDEPRECATED(Shipment shipment,
+                    BuilderBase<? extends Shipment, ?> builder) {
         super(shipment, NAME, builder.getDeliveryLocation(), builder.getDeliveryServiceTime(),
                         Capacity.invert(builder.getCapacity()),
                         builder.getDeliveryTimeWindows().getTimeWindows());
