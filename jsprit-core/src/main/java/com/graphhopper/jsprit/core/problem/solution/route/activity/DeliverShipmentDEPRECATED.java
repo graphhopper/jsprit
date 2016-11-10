@@ -19,18 +19,28 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.Shipment.Builder;
 
 public final class DeliverShipmentDEPRECATED extends DeliveryActivityNEW {
 
-    public DeliverShipmentDEPRECATED(Shipment shipment) {
-        super(shipment, "deliverShipment", shipment.getDeliveryLocation(),
-                        shipment.getDeliveryServiceTime(), Capacity.invert(shipment.getSize()),
-                        shipment.getDeliveryTimeWindows());
+    public static final String NAME = "deliverShipment";
+
+    public DeliverShipmentDEPRECATED(Shipment shipment, Builder builder) {
+        super(shipment, NAME, builder.getDeliveryLocation(), builder.getDeliveryServiceTime(),
+                        Capacity.invert(builder.getCapacity()),
+                        builder.getDeliveryTimeWindows().getTimeWindows());
     }
 
     public DeliverShipmentDEPRECATED(DeliverShipmentDEPRECATED sourceActivity) {
         super(sourceActivity);
     }
 
+    // Only for testing
+    @Deprecated
+    public DeliverShipmentDEPRECATED(Shipment s) {
+        super(s, NAME, s.getDeliveryLocation(), s.getDeliveryServiceTime(),
+                        Capacity.invert(s.getSize()),
+                        s.getDeliveryTimeWindows());
+    }
 
 }

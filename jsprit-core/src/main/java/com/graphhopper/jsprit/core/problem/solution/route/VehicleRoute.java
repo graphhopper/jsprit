@@ -33,8 +33,6 @@ import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
@@ -42,7 +40,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivities;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivityFactory;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourShipmentActivityFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 
@@ -138,9 +135,11 @@ public class VehicleRoute {
 
         private TourActivities tourActivities = new TourActivities();
 
-        private TourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
-
-        private TourShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
+        // private TourActivityFactory serviceActivityFactory = new
+        // DefaultTourActivityFactory();
+        //
+        // private TourShipmentActivityFactory shipmentActivityFactory = new
+        // DefaultShipmentActivityFactory();
 
         private Set<Shipment> openShipments = new HashSet<Shipment>();
 

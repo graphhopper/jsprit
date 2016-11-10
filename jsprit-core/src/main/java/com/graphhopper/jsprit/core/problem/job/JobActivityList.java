@@ -2,6 +2,7 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.InternalActivityMarker;
@@ -19,7 +20,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
  */
 public abstract class JobActivityList {
 
-//    TODO getRElation of two activities: PRIOR, SUBSEQUENT or UNRELATED
+    //    TODO getRElation of two activities: PRIOR, SUBSEQUENT or UNRELATED
 
     private AbstractJob job;
 
@@ -104,5 +105,13 @@ public abstract class JobActivityList {
      * @return Returns all possible orderings.
      */
     public abstract Set<List<JobActivity>> getPossibleOrderings();
+
+    public Optional<JobActivity> findByType(String type) {
+        return getAll().stream().filter(a -> a.getType().equals(type)).findFirst();
+    }
+
+    public Optional<JobActivity> findByName(String name) {
+        return getAll().stream().filter(a -> a.getName().equals(name)).findFirst();
+    }
 
 }

@@ -38,8 +38,6 @@ import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -126,12 +124,14 @@ public class VehicleRoutingProblem {
 
         private Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<VehicleTypeKey, Integer>();
 
-// Deprecated ?
-//        private Map<Job, List<JobActivity>> activityMap = new HashMap<>();
+        // Deprecated ?
+        //        private Map<Job, List<JobActivity>> activityMap = new HashMap<>();
 
-        private final DefaultShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
-
-        private final DefaultTourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
+        // private final DefaultShipmentActivityFactory shipmentActivityFactory
+        // = new DefaultShipmentActivityFactory();
+        //
+        // private final DefaultTourActivityFactory serviceActivityFactory = new
+        // DefaultTourActivityFactory();
 
         private void incJobIndexCounter() {
             jobIndexCounter++;
@@ -304,7 +304,7 @@ public class VehicleRoutingProblem {
                     Job job = jobActivity.getJob();
                     jobsInInitialRoutes.add(job.getId());
                     addLocationToTentativeLocations(job);
-//                    registerJobAndActivity((JobActivity) abstractAct, job);
+                    //                    registerJobAndActivity((JobActivity) abstractAct, job);
                 }
             }
             initialRoutes.add(route);
@@ -313,15 +313,15 @@ public class VehicleRoutingProblem {
 
 
 
-//        private void registerJobAndActivity(JobActivity abstractAct, Job job) {
-//            if (activityMap.containsKey(job)) {
-//                activityMap.get(job).add(abstractAct);
-//            } else {
-//                List<JobActivity> actList = new ArrayList<>();
-//                actList.add(abstractAct);
-//                activityMap.put(job, actList);
-//            }
-//        }
+        //        private void registerJobAndActivity(JobActivity abstractAct, Job job) {
+        //            if (activityMap.containsKey(job)) {
+        //                activityMap.get(job).add(abstractAct);
+        //            } else {
+        //                List<JobActivity> actList = new ArrayList<>();
+        //                actList.add(abstractAct);
+        //                activityMap.put(job, actList);
+        //            }
+        //        }
 
         /**
          * Adds a collection of initial vehicle routes.
@@ -377,10 +377,10 @@ public class VehicleRoutingProblem {
             }
             String startLocationId = vehicle.getStartLocation().getId();
             addLocationToTentativeLocations(vehicle.getStartLocation());
-//            tentative_coordinates.put(startLocationId, vehicle.getStartLocation().getCoordinate());
+            //            tentative_coordinates.put(startLocationId, vehicle.getStartLocation().getCoordinate());
             if (!vehicle.getEndLocation().getId().equals(startLocationId)) {
                 addLocationToTentativeLocations(vehicle.getEndLocation());
-//                tentative_coordinates.put(vehicle.getEndLocation().getId(), vehicle.getEndLocation().getCoordinate());
+                //                tentative_coordinates.put(vehicle.getEndLocation().getId(), vehicle.getEndLocation().getCoordinate());
             }
             return this;
         }
@@ -575,7 +575,7 @@ public class VehicleRoutingProblem {
     @Override
     public String toString() {
         return "[fleetSize=" + fleetSize + "][#jobs=" + jobs.size() + "][#vehicles=" + vehicles.size() + "][#vehicleTypes=" + vehicleTypes.size() + "][" +
-                "transportCost=" + transportCosts + "][activityCosts=" + activityCosts + "]";
+                        "transportCost=" + transportCosts + "][activityCosts=" + activityCosts + "]";
     }
 
     /**
@@ -663,7 +663,7 @@ public class VehicleRoutingProblem {
         return job.getActivityList().getAll();
     }
 
-//    public Map<Job,List<AbstractActivity>> getActivityMap() { return Collections.unmodifiableMap(activityMap); }
+    //    public Map<Job,List<AbstractActivity>> getActivityMap() { return Collections.unmodifiableMap(activityMap); }
 
     /**
      * @return total number of activities

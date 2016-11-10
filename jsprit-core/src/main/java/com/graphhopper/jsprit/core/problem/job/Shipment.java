@@ -363,55 +363,112 @@ public class Shipment extends AbstractJob {
         }
 
         protected <T extends Shipment> void postProcess(T shipment) {
-            shipment.createActivities();
+            // shipment.createActivities(this);
         }
+
+
+        // ---- Refactor test
+
+        public String getId() {
+            return id;
+        }
+
+        public double getPickupServiceTime() {
+            return pickupServiceTime;
+        }
+
+        public double getDeliveryServiceTime() {
+            return deliveryServiceTime;
+        }
+
+        public TimeWindow getDeliveryTimeWindow() {
+            return deliveryTimeWindow;
+        }
+
+        public TimeWindow getPickupTimeWindow() {
+            return pickupTimeWindow;
+        }
+
+        public Capacity.Builder getCapacityBuilder() {
+            return capacityBuilder;
+        }
+
+        public Capacity getCapacity() {
+            return capacity;
+        }
+
+        public Skills.Builder getSkillBuilder() {
+            return skillBuilder;
+        }
+
+        public Skills getSkills() {
+            return skills;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Location getPickupLocation() {
+            return pickupLocation_;
+        }
+
+        public Location getDeliveryLocation() {
+            return deliveryLocation_;
+        }
+
+        public TimeWindowsImpl getDeliveryTimeWindows() {
+            return deliveryTimeWindows;
+        }
+
+        public boolean isDeliveryTimeWindowAdded() {
+            return deliveryTimeWindowAdded;
+        }
+
+        public boolean isPickupTimeWindowAdded() {
+            return pickupTimeWindowAdded;
+        }
+
+        public TimeWindowsImpl getPickupTimeWindows() {
+            return pickupTimeWindows;
+        }
+
+        public int getPriority() {
+            return priority;
+        }
+
+
 
     }
 
     private final String id;
 
-    private final double pickupServiceTime;
-
-    private final double deliveryServiceTime;
-
-    private final Capacity capacity;
-
     private final Skills skills;
 
     private final String name;
-
-    private final Location pickupLocation_;
-
-    private final Location deliveryLocation_;
-
-    private final TimeWindowsImpl deliveryTimeWindows;
-
-    private final TimeWindowsImpl pickupTimeWindows;
 
     private final int priority;
 
     Shipment(Builder builder) {
         id = builder.id;
-        pickupServiceTime = builder.pickupServiceTime;
-        deliveryServiceTime = builder.deliveryServiceTime;
-        capacity = builder.capacity;
         skills = builder.skills;
         name = builder.name;
-        pickupLocation_ = builder.pickupLocation_;
-        deliveryLocation_ = builder.deliveryLocation_;
-        deliveryTimeWindows = builder.deliveryTimeWindows;
-        pickupTimeWindows = builder.pickupTimeWindows;
         priority = builder.priority;
+        createActivities(builder);
     }
+
 
     @Override
     protected void createActivities() {
+    }
+
+    protected void createActivities(Builder builder) {
         JobActivityList list = new SequentialJobActivityList(this);
         // TODO - Balage1551
-//      list.addActivity(new PickupActivityNEW(this, "pickup", getPickupLocation(), getPickupServiceTime(), getSize()));
-//      list.addActivity(new PickupActivityNEW(this, "delivery", getDeliveryLocation(), getDeliveryServiceTime(), getSize()));
-        list.addActivity(new PickupShipmentDEPRECATED(this));
-        list.addActivity(new DeliverShipmentDEPRECATED(this));
+        //      list.addActivity(new PickupActivityNEW(this, "pickup", getPickupLocation(), getPickupServiceTime(), getSize()));
+        //      list.addActivity(new PickupActivityNEW(this, "delivery", getDeliveryLocation(), getDeliveryServiceTime(), getSize()));
+        list.addActivity(new PickupShipmentDEPRECATED(this, builder));
+        list.addActivity(new DeliverShipmentDEPRECATED(this, builder));
         setActivities(list);
     }
 
@@ -419,63 +476,6 @@ public class Shipment extends AbstractJob {
     public String getId() {
         return id;
     }
-
-    public Location getPickupLocation() {
-        return pickupLocation_;
-    }
-
-    /**
-     * Returns the pickup service-time.
-     * <p>
-     * <p>
-     * By default service-time is 0.0.
-     *
-     * @return service-time
-     */
-    public double getPickupServiceTime() {
-        return pickupServiceTime;
-    }
-
-    public Location getDeliveryLocation() {
-        return deliveryLocation_;
-    }
-
-    /**
-     * Returns service-time of delivery.
-     *
-     * @return service-time of delivery
-     */
-    public double getDeliveryServiceTime() {
-        return deliveryServiceTime;
-    }
-
-    /**
-     * Returns the time-window of delivery.
-     *
-     * @return time-window of delivery
-     */
-    public TimeWindow getDeliveryTimeWindow() {
-        return deliveryTimeWindows.getTimeWindows().iterator().next();
-    }
-
-    public Collection<TimeWindow> getDeliveryTimeWindows() {
-        return deliveryTimeWindows.getTimeWindows();
-    }
-
-    /**
-     * Returns the time-window of pickup.
-     *
-     * @return time-window of pickup
-     */
-    public TimeWindow getPickupTimeWindow() {
-        return pickupTimeWindows.getTimeWindows().iterator().next();
-    }
-
-    public Collection<TimeWindow> getPickupTimeWindows() {
-        return pickupTimeWindows.getTimeWindows();
-    }
-
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -511,10 +511,6 @@ public class Shipment extends AbstractJob {
         return true;
     }
 
-    @Override
-    public Capacity getSize() {
-        return capacity;
-    }
 
     @Override
     public Skills getRequiredSkills() {
@@ -541,14 +537,94 @@ public class Shipment extends AbstractJob {
 
     @Override
     public Location getStartLocation() {
-        return pickupLocation_;
+        return getPickupActivity().getLocation();
     }
 
 
     @Override
     public Location getEndLocation() {
-        return deliveryLocation_;
+        return getDeliveryActivity().getLocation();
     }
 
+    public PickupShipmentDEPRECATED getPickupActivity() {
+        return (PickupShipmentDEPRECATED) getActivityList().findByType(PickupShipmentDEPRECATED.NAME)
+                        .get();
+    }
+
+    public DeliverShipmentDEPRECATED getDeliveryActivity() {
+        return (DeliverShipmentDEPRECATED) getActivityList().findByType(DeliverShipmentDEPRECATED.NAME)
+                        .get();
+    }
+
+    // =================== DEPRECATED GETTERS
+
+    @Deprecated
+    public Location getPickupLocation() {
+        return getPickupActivity().getLocation();
+    }
+
+    /**
+     * Returns the pickup service-time.
+     * <p>
+     * <p>
+     * By default service-time is 0.0.
+     *
+     * @return service-time
+     */
+    @Deprecated
+    public double getPickupServiceTime() {
+        return getPickupActivity().getOperationTime();
+    }
+
+    @Deprecated
+    public Location getDeliveryLocation() {
+        return getDeliveryActivity().getLocation();
+    }
+
+    /**
+     * Returns service-time of delivery.
+     *
+     * @return service-time of delivery
+     */
+    @Deprecated
+    public double getDeliveryServiceTime() {
+        return getDeliveryActivity().getOperationTime();
+    }
+
+    /**
+     * Returns the time-window of delivery.
+     *
+     * @return time-window of delivery
+     */
+    @Deprecated
+    public TimeWindow getDeliveryTimeWindow() {
+        return getDeliveryTimeWindows().iterator().next();
+    }
+
+    @Deprecated
+    public Collection<TimeWindow> getDeliveryTimeWindows() {
+        return getDeliveryActivity().getTimeWindows();
+    }
+
+    /**
+     * Returns the time-window of pickup.
+     *
+     * @return time-window of pickup
+     */
+    @Deprecated
+    public TimeWindow getPickupTimeWindow() {
+        return getPickupTimeWindows().iterator().next();
+    }
+
+    @Deprecated
+    public Collection<TimeWindow> getPickupTimeWindows() {
+        return getPickupActivity().getTimeWindows();
+    }
+
+    @Override
+    @Deprecated
+    public Capacity getSize() {
+        return getPickupActivity().getSize();
+    }
 
 }

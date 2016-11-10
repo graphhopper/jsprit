@@ -589,13 +589,13 @@ public class LoadConstraintTest {
         assertFalse(loadconstraint.fulfilled(context));
     }
 
-/*
+    /*
 shipment route
 shipment1 10
 shipment2 5
 
 pickup(s1) pickup(s2) delivery(s2) deliver(s1)
- */
+     */
 
     @Test
     public void whenShipmentRouteAndPickupOfNewShipmentShouldFitInBetweenStartAndAct1() {
