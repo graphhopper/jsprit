@@ -44,8 +44,17 @@ public class TimeWindowsImpl implements TimeWindows {
         timeWindows.add(timeWindow);
     }
 
+    @Override
     public Collection<TimeWindow> getTimeWindows() {
         return Collections.unmodifiableCollection(timeWindows);
+    }
+
+    public void clear() {
+        timeWindows.clear();
+    }
+
+    public boolean isEmpty() {
+        return timeWindows.isEmpty();
     }
 
 }

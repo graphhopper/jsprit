@@ -17,8 +17,19 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
-import com.graphhopper.jsprit.core.algorithm.recreate.listener.*;
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListeners;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -33,8 +44,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivi
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-
-import java.util.*;
 
 /**
  * Manages states.

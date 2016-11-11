@@ -17,9 +17,22 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
-import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
+import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
+import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -38,16 +51,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
-import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.util.Locations;
-import com.graphhopper.jsprit.core.util.ManhattanDistanceCalculator;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 
 public class TestCalculatesServiceInsertion {
@@ -90,7 +94,7 @@ public class TestCalculatesServiceInsertion {
                 //assume: locationId="x,y"
                 String[] splitted = id.split(",");
                 return Coordinate.newInstance(Double.parseDouble(splitted[0]),
-                    Double.parseDouble(splitted[1]));
+                                Double.parseDouble(splitted[1]));
             }
 
         };
@@ -98,19 +102,23 @@ public class TestCalculatesServiceInsertion {
 
             @Override
             public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-                return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
+                return ManhattanDistanceCalculator.getInstance().calculateDistance(
+                                locations.getCoord(from.getId()), locations.getCoord(to.getId()));
             }
 
             @Override
             public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-                return vehicle.getType().getVehicleCostParams().perDistanceUnit * ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
+                return vehicle.getType().getVehicleCostParams().perDistanceUnit
+                                * ManhattanDistanceCalculator.getInstance().calculateDistance(
+                                                locations.getCoord(from.getId()),
+                                                locations.getCoord(to.getId()));
             }
         };
 
 
-        first = Service.Builder.newInstance("1").addSizeDimension(0, 0).setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-        second = Service.Builder.newInstance("2").addSizeDimension(0, 0).setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-        third = Service.Builder.newInstance("3").addSizeDimension(0, 0).setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        first = new Service.Builder("1").addSizeDimension(0, 0).setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        second = new Service.Builder("2").addSizeDimension(0, 0).setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        third = new Service.Builder("3").addSizeDimension(0, 0).setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
 
         Collection<Job> jobs = new ArrayList<Job>();
         jobs.add(first);
@@ -118,7 +126,7 @@ public class TestCalculatesServiceInsertion {
         jobs.add(second);
 
         vrp = VehicleRoutingProblem.Builder.newInstance().addAllJobs(jobs)
-            .addVehicle(vehicle).setRoutingCost(costs).build();
+                        .addVehicle(vehicle).setRoutingCost(costs).build();
 
         states = new StateManager(vrp);
         states.updateLoadStates();
@@ -132,12 +140,7 @@ public class TestCalculatesServiceInsertion {
         VehicleRoutingActivityCosts actCosts = mock(VehicleRoutingActivityCosts.class);
 
         serviceInsertion = new ServiceInsertionCalculator(costs, vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, actCosts, states), cManager);
-        serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
-            @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                return vrp.copyAndGetActivities(job);
-            }
-        });
+        serviceInsertion.setJobActivityFactory(new CopyJobActivityFactory());
     }
 
     @Test
@@ -206,7 +209,7 @@ public class TestCalculatesServiceInsertion {
     public void whenInsertingJobAndCurrRouteIsEmpty_accessEggressCalcShouldReturnZero() {
         VehicleRoute route = VehicleRoute.Builder.newInstance(VehicleImpl.createNoVehicle(), DriverImpl.noDriver()).build();
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
-        Job job = Service.Builder.newInstance("1").addSizeDimension(0, 0).setLocation(Location.newInstance("1")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        Job job = new Service.Builder("1").addSizeDimension(0, 0).setLocation(Location.newInstance("1")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
         JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
         assertEquals(0.0, accessEgressCalc.getCosts(iContex), 0.01);
     }
@@ -214,8 +217,8 @@ public class TestCalculatesServiceInsertion {
     @Test
     public void whenInsertingJobAndCurrRouteAndVehicleHaveTheSameLocation_accessEggressCalcShouldReturnZero() {
         VehicleRoute route = VehicleRoute.Builder.newInstance(newVehicle, DriverImpl.noDriver())
-            .addService(first)
-            .build();
+                        .addService(first)
+                        .build();
 
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
         JobInsertionContext iContex = new JobInsertionContext(route, first, newVehicle, mock(Driver.class), 0.0);
@@ -238,19 +241,19 @@ public class TestCalculatesServiceInsertion {
 
             @Override
             public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-                return EuclideanDistanceCalculator.calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
+                return EuclideanDistanceCalculator.getInstance().calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
             }
         };
         Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setStartLocation(Location.newInstance("oldV")).build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(oldVehicle, DriverImpl.noDriver())
-            .addService(Service.Builder.newInstance("service").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build())
-            .build();
+                        .addService(new Service.Builder("service").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build())
+                        .build();
 
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setStartLocation(Location.newInstance("newV")).build();
 
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(routingCosts);
-        Job job = Service.Builder.newInstance("service2").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build();
+        Job job = new Service.Builder("service2").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build();
         JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
         assertEquals(8.0, accessEgressCalc.getCosts(iContex), 0.01);
     }

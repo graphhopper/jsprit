@@ -19,12 +19,15 @@
 package com.graphhopper.jsprit.examples;
 
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
+import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
@@ -35,12 +38,9 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisit
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
-import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
-
-import java.util.Collection;
 
 //import jsprit.core.problem.solution.route.state.StateFactory; //v1.3.1
 
@@ -63,7 +63,7 @@ public class AdditionalDistanceConstraintExample {
 
         //        public DistanceUpdater(StateFactory.StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix costMatrix) { //v1.3.1
         public DistanceUpdater(StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix transportCosts) { //head of development - upcoming release (v1.4)
-            this.costMatrix = transportCosts;
+            costMatrix = transportCosts;
             this.stateManager = stateManager;
             this.distanceStateId = distanceStateId;
         }
@@ -106,7 +106,7 @@ public class AdditionalDistanceConstraintExample {
 
         //        DistanceConstraint(double maxDistance, StateFactory.StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix costsMatrix) { //v1.3.1
         DistanceConstraint(double maxDistance, StateId distanceStateId, StateManager stateManager, VehicleRoutingTransportCostsMatrix transportCosts) { //head of development - upcoming release (v1.4)
-            this.costsMatrix = transportCosts;
+            costsMatrix = transportCosts;
             this.maxDistance = maxDistance;
             this.stateManager = stateManager;
             this.distanceStateId = distanceStateId;
@@ -116,11 +116,15 @@ public class AdditionalDistanceConstraintExample {
         public ConstraintsStatus fulfilled(JobInsertionContext context, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double v) {
             double additionalDistance = getDistance(prevAct, newAct) + getDistance(newAct, nextAct) - getDistance(prevAct, nextAct);
             Double routeDistance = stateManager.getRouteState(context.getRoute(), distanceStateId, Double.class);
-            if (routeDistance == null) routeDistance = 0.;
+            if (routeDistance == null) {
+                routeDistance = 0.;
+            }
             double newRouteDistance = routeDistance + additionalDistance;
             if (newRouteDistance > maxDistance) {
                 return ConstraintsStatus.NOT_FULFILLED;
-            } else return ConstraintsStatus.FULFILLED;
+            } else {
+                return ConstraintsStatus.FULFILLED;
+            }
         }
 
         double getDistance(TourActivity from, TourActivity to) {
@@ -148,8 +152,8 @@ public class AdditionalDistanceConstraintExample {
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
         constraintManager.addConstraint(new DistanceConstraint(120., distanceStateId, stateManager, costMatrix), ConstraintManager.Priority.CRITICAL);
 
-        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager)
-            .buildAlgorithm();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager, constraintManager)
+                .buildAlgorithm();
 //        vra.setMaxIterations(250); //v1.3.1
         vra.setMaxIterations(250); //head of development - upcoming release (v1.4)
 
@@ -166,7 +170,7 @@ public class AdditionalDistanceConstraintExample {
             for (String to : vrpBuilder.getLocationMap().keySet()) {
                 Coordinate fromCoord = vrpBuilder.getLocationMap().get(from);
                 Coordinate toCoord = vrpBuilder.getLocationMap().get(to);
-                double distance = EuclideanDistanceCalculator.calculateDistance(fromCoord, toCoord);
+                double distance = EuclideanDistanceCalculator.getInstance().calculateDistance(fromCoord, toCoord);
                 matrixBuilder.addTransportDistance(from, to, distance);
                 matrixBuilder.addTransportTime(from, to, (distance / 2.));
             }

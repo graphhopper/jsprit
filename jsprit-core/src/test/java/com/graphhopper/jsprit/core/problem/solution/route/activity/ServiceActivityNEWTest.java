@@ -17,27 +17,30 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Service;
 
 
-public class ServiceActivityTest {
+public class ServiceActivityNEWTest {
 
     private Service service;
 
-    private ServiceActivity serviceActivity;
+    private ServiceActivityNEW serviceActivity;
 
     @Before
     public void doBefore() {
-        service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
-            setTimeWindow(TimeWindow.newInstance(1., 2.)).
-            addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
-        serviceActivity = ServiceActivity.newInstance(service);
+        service = new Service.Builder("service").setLocation(Location.newInstance("loc")).
+                setTimeWindow(TimeWindow.newInstance(1., 2.)).
+                addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+        serviceActivity = ServiceActivityNEW.newInstance(service);
         serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         serviceActivity.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
@@ -79,7 +82,7 @@ public class ServiceActivityTest {
 
     @Test
     public void whenCopyingStart_itShouldBeDoneCorrectly() {
-        ServiceActivity copy = (ServiceActivity) serviceActivity.duplicate();
+        ServiceActivityNEW copy = (ServiceActivityNEW) serviceActivity.duplicate();
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
         assertEquals("loc", copy.getLocation().getId());
@@ -89,22 +92,22 @@ public class ServiceActivityTest {
 
     @Test
     public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual() {
-        Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
 
-        ServiceActivity d1 = ServiceActivity.newInstance(s1);
-        ServiceActivity d2 = ServiceActivity.newInstance(s2);
+        ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
+        ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);
 
         assertTrue(d1.equals(d2));
     }
 
     @Test
     public void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual() {
-        Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s1").setLocation(Location.newInstance("loc")).build();
 
-        ServiceActivity d1 = ServiceActivity.newInstance(s1);
-        ServiceActivity d2 = ServiceActivity.newInstance(s2);
+        ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
+        ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);
 
         assertFalse(d1.equals(d2));
     }

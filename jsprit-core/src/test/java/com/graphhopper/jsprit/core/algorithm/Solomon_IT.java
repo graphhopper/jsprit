@@ -18,16 +18,16 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
+import java.util.Collection;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.util.SolomonReader;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import java.util.Collection;
 
 /**
  * Created by schroeder on 23.07.14.

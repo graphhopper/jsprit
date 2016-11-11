@@ -17,9 +17,18 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
-import com.graphhopper.jsprit.core.problem.constraint.*;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -33,10 +42,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 
 final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
@@ -64,11 +69,11 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
     public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
-        this.hardRouteLevelConstraint = constraintManager;
-        this.hardActivityLevelConstraint = constraintManager;
-        this.softActivityConstraint = constraintManager;
-        this.softRouteConstraint = constraintManager;
-        this.transportCosts = routingCosts;
+        hardRouteLevelConstraint = constraintManager;
+        hardActivityLevelConstraint = constraintManager;
+        softActivityConstraint = constraintManager;
+        softRouteConstraint = constraintManager;
+        transportCosts = routingCosts;
         this.activityCosts = activityCosts;
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
         logger.debug("initialise {}", this);
@@ -91,8 +96,12 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
     public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
         JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
         Shipment shipment = (Shipment) jobToInsert;
-        TourActivity pickupShipment = activityFactory.createActivities(shipment).get(0);
-        TourActivity deliverShipment = activityFactory.createActivities(shipment).get(1);
+        // TourActivity pickupShipment =
+        // activityFactory.createActivities(shipment).get(0);
+        // TourActivity deliverShipment =
+        // activityFactory.createActivities(shipment).get(1);
+        TourActivity pickupShipment = shipment.getActivityList().getAll().get(0);
+        TourActivity deliverShipment = shipment.getActivityList().getAll().get(1);
         insertionContext.getAssociatedActivities().add(pickupShipment);
         insertionContext.getAssociatedActivities().add(deliverShipment);
 
@@ -172,9 +181,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
 
                 double prevActEndTime_deliveryLoop = shipmentPickupEndTime;
 
-			/*
+                /*
             --------------------------------
-			 */
+                 */
                 //deliverShipmentLoop
                 int j = i;
                 boolean tourEnd_deliveryLoop = false;
@@ -199,7 +208,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                             double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                             double deliveryAIC = calculate(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                             double totalActivityInsertionCosts = pickupAIC + deliveryAIC
-                                + additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
+                                            + additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
                             if (totalActivityInsertionCosts < bestCost) {
                                 bestCost = totalActivityInsertionCosts;
                                 pickupInsertionIndex = i;
@@ -212,7 +221,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                             deliveryInsertionNotFulfilledBreak = false;
                         }
                     }
-                    if (deliveryInsertionNotFulfilledBreak) break;
+                    if (deliveryInsertionNotFulfilledBreak) {
+                        break;
+                    }
                     //update prevAct and endTime
                     double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
                     prevActEndTime_deliveryLoop = Math.max(nextActArrTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct_deliveryLoop,nextActArrTime,newDriver,newVehicle);

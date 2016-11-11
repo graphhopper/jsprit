@@ -17,6 +17,16 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateActivityTimes;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateFutureWaitingTimes;
@@ -38,15 +48,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TestLocalActivityInsertionCostsCalculator {
 
@@ -163,9 +164,9 @@ public class TestLocalActivityInsertionCostsCalculator {
     public void test() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
-        Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setLocation(Location.newInstance(60, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 80)).build();
+        Service prevS = new Service.Builder("prev").setLocation(Location.newInstance(10, 0)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setLocation(Location.newInstance(60, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 80)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(prevS).addJob(newS).addJob(nextS).addVehicle(v).build();
 
@@ -198,8 +199,8 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setLocation(Location.newInstance(10, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0))
+        Service newS = new Service.Builder("new").setServiceTime(10).setLocation(Location.newInstance(10, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0))
             .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(newS).addJob(nextS).addVehicle(v).build();
@@ -225,8 +226,8 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setLocation(Location.newInstance(10, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0))
+        Service newS = new Service.Builder("new").setServiceTime(10).setLocation(Location.newInstance(10, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0))
             .setTimeWindow(TimeWindow.newInstance(140, 150)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(newS).addJob(nextS).addVehicle(v2).build();
@@ -251,7 +252,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setLocation(Location.newInstance(10, 0)).setTimeWindow(TimeWindow.newInstance(100, 150)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setLocation(Location.newInstance(10, 0)).setTimeWindow(TimeWindow.newInstance(100, 150)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(newS).addVehicle(v).build();
 
@@ -276,9 +277,9 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 
-        Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setLocation(Location.newInstance(20, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+        Service prevS = new Service.Builder("prev").setLocation(Location.newInstance(10, 0)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setLocation(Location.newInstance(20, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 50)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(prevS).addJob(newS).addJob(nextS).addVehicle(v).build();
 
@@ -303,9 +304,9 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 
-        Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
+        Service prevS = new Service.Builder("prev").setLocation(Location.newInstance(10, 0)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(prevS).addJob(newS).addJob(nextS).addVehicle(v).build();
 
@@ -334,11 +335,11 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 //		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
-        Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
+        Service prevS = new Service.Builder("prev").setLocation(Location.newInstance(10, 0)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
 
-        Service afterNextS = Service.Builder.newInstance("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(400, 500)).build();
+        Service afterNextS = new Service.Builder("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(400, 500)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(afterNextS).addJob(prevS).addJob(newS).addJob(nextS).addVehicle(v).build();
 
@@ -373,12 +374,12 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 //		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
-        Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
+        Service prevS = new Service.Builder("prev").setLocation(Location.newInstance(10, 0)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
 
-        Service afterNextS = Service.Builder.newInstance("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(80, 500)).build();
-        Service afterAfterNextS = Service.Builder.newInstance("afterAfterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(100, 500)).build();
+        Service afterNextS = new Service.Builder("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(80, 500)).build();
+        Service afterAfterNextS = new Service.Builder("afterAfterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(100, 500)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(prevS).addJob(newS).addJob(nextS)
             .addJob(afterNextS).addJob(afterAfterNextS).build();
@@ -425,12 +426,12 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 //		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
-        Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
+        Service prevS = new Service.Builder("prev").setLocation(Location.newInstance(10, 0)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
 
-        Service afterNextS = Service.Builder.newInstance("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(80, 500)).build();
-        Service afterAfterNextS = Service.Builder.newInstance("afterAfterNext").setLocation(Location.newInstance(50, 0)).setTimeWindow(TimeWindow.newInstance(100, 500)).build();
+        Service afterNextS = new Service.Builder("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(80, 500)).build();
+        Service afterAfterNextS = new Service.Builder("afterAfterNext").setLocation(Location.newInstance(50, 0)).setTimeWindow(TimeWindow.newInstance(100, 500)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(prevS).addJob(newS).addJob(nextS)
             .addJob(afterNextS).addJob(afterAfterNextS).build();
@@ -480,12 +481,12 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 //		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
-        Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
+        Service prevS = new Service.Builder("prev").setLocation(Location.newInstance(10, 0)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 500)).build();
 
-        Service afterNextS = Service.Builder.newInstance("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(80, 500)).build();
-        Service afterAfterNextS = Service.Builder.newInstance("afterAfterNext").setLocation(Location.newInstance(50, 0)).setTimeWindow(TimeWindow.newInstance(100, 500)).build();
+        Service afterNextS = new Service.Builder("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(80, 500)).build();
+        Service afterAfterNextS = new Service.Builder("afterAfterNext").setLocation(Location.newInstance(50, 0)).setTimeWindow(TimeWindow.newInstance(100, 500)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(prevS).addJob(newS).addJob(nextS)
             .addJob(afterNextS).addJob(afterAfterNextS).build();
@@ -535,12 +536,12 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
 //		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
-        Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
-        Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(50, 70)).setLocation(Location.newInstance(20, 0)).build();
-        Service nextS = Service.Builder.newInstance("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 70)).build();
+        Service prevS = new Service.Builder("prev").setLocation(Location.newInstance(10, 0)).build();
+        Service newS = new Service.Builder("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(50, 70)).setLocation(Location.newInstance(20, 0)).build();
+        Service nextS = new Service.Builder("next").setLocation(Location.newInstance(30, 0)).setTimeWindow(TimeWindow.newInstance(40, 70)).build();
 
-        Service afterNextS = Service.Builder.newInstance("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(50, 100)).build();
-        Service afterAfterNextS = Service.Builder.newInstance("afterAfterNext").setLocation(Location.newInstance(50, 0)).setTimeWindow(TimeWindow.newInstance(100, 500)).build();
+        Service afterNextS = new Service.Builder("afterNext").setLocation(Location.newInstance(40, 0)).setTimeWindow(TimeWindow.newInstance(50, 100)).build();
+        Service afterAfterNextS = new Service.Builder("afterAfterNext").setLocation(Location.newInstance(50, 0)).setTimeWindow(TimeWindow.newInstance(100, 500)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(prevS).addJob(newS).addJob(nextS)
             .addJob(afterNextS).addJob(afterAfterNextS).build();

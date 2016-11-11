@@ -18,6 +18,12 @@
 
 package com.graphhopper.jsprit.core.algorithm.box;
 
+import java.util.Collection;
+import java.util.Properties;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import com.graphhopper.jsprit.core.algorithm.PrettyAlgorithmBuilder;
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -26,9 +32,25 @@ import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
-import com.graphhopper.jsprit.core.algorithm.recreate.*;
-import com.graphhopper.jsprit.core.algorithm.ruin.*;
-import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
+import com.graphhopper.jsprit.core.algorithm.recreate.AbstractInsertionStrategy;
+import com.graphhopper.jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator;
+import com.graphhopper.jsprit.core.algorithm.recreate.BestInsertion;
+import com.graphhopper.jsprit.core.algorithm.recreate.BestInsertionConcurrent;
+import com.graphhopper.jsprit.core.algorithm.recreate.BreakScheduling;
+import com.graphhopper.jsprit.core.algorithm.recreate.DefaultScorer;
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertionBuilder;
+import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertion;
+import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionConcurrent;
+import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionConcurrentFast;
+import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionFast;
+import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoods;
+import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoodsFactory;
+import com.graphhopper.jsprit.core.algorithm.ruin.RuinClusters;
+import com.graphhopper.jsprit.core.algorithm.ruin.RuinRadial;
+import com.graphhopper.jsprit.core.algorithm.ruin.RuinRandom;
+import com.graphhopper.jsprit.core.algorithm.ruin.RuinShareFactory;
+import com.graphhopper.jsprit.core.algorithm.ruin.RuinWorst;
+import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -45,12 +67,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.util.NoiseMaker;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import com.graphhopper.jsprit.core.util.Solutions;
-
-import java.util.Collection;
-import java.util.Properties;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class Jsprit {
@@ -371,7 +387,7 @@ public class Jsprit {
         double noiseLevel = toDouble(getProperty(Parameter.INSERTION_NOISE_LEVEL.toString()));
         double noiseProbability = toDouble(getProperty(Parameter.INSERTION_NOISE_PROB.toString()));
 
-        JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
+        JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new DefaultJobDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
         jobNeighborhoods.initialise();
 
         final double maxCosts;

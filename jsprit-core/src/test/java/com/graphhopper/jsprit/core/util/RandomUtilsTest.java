@@ -18,17 +18,19 @@
 
 package com.graphhopper.jsprit.core.util;
 
-import com.graphhopper.jsprit.core.problem.job.Job;
-import junit.framework.Assert;
-import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.job.Job;
+
+import junit.framework.Assert;
 
 /**
  * Created by schroeder on 14/01/15.

@@ -19,8 +19,18 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
@@ -33,15 +43,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import com.graphhopper.jsprit.core.util.ManhattanCosts;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.*;
-
-import static org.mockito.Mockito.mock;
+import com.graphhopper.jsprit.core.util.DefaultCosts;
 
 /**
  * Created by schroeder on 18/05/16.
@@ -82,28 +84,32 @@ public class VehicleDependentTraveledDistanceTest {
         d2 = Delivery.Builder.newInstance("d2").setLocation(Location.newInstance(20,15)).build();
         pickup = Pickup.Builder.newInstance("pickup").setLocation(Location.newInstance(50,50)).build();
         s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(35,30))
-            .setDeliveryLocation(Location.newInstance(20,25)).build();
+                        .setDeliveryLocation(Location.newInstance(20,25)).build();
 
         newDelivery = Delivery.Builder.newInstance("new").setLocation(Location.newInstance(-10,10)).build();
 
         vrp = VehicleRoutingProblem.Builder.newInstance()
-            .setRoutingCost(new ManhattanCosts()).addVehicle(vehicle).addVehicle(vehicle2)
-            .addJob(d1).addJob(d2).addJob(s1).addJob(pickup).addJob(newDelivery).build();
+                        .setRoutingCost(new DefaultCosts(ManhattanDistanceCalculator.getInstance()))
+                        .addVehicle(vehicle).addVehicle(vehicle2)
+                        .addJob(d1).addJob(d2).addJob(s1).addJob(pickup).addJob(newDelivery).build();
 
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
-            .addDelivery(d1).addDelivery(d2).addPickup(s1).addPickup(pickup).addDelivery(s1).build();
+                        .addDelivery(d1).addDelivery(d2).addPickup(s1).addPickup(pickup).addDelivery(s1).build();
 
         stateManager = new StateManager(vrp);
 
         traveledDistanceId = stateManager.createStateId("traveledDistance");
 
         com.graphhopper.jsprit.core.algorithm.state.VehicleDependentTraveledDistance traveledDistance =
-            new com.graphhopper.jsprit.core.algorithm.state.VehicleDependentTraveledDistance(new TransportDistance() {
-                @Override
-                public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return new ManhattanCosts().getDistance(from,to,departureTime,vehicle);
-                }
-        },stateManager,traveledDistanceId,Arrays.asList(vehicle,vehicle2));
+                        new com.graphhopper.jsprit.core.algorithm.state.VehicleDependentTraveledDistance(new TransportDistance() {
+                            @Override
+                            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                                                return new DefaultCosts(ManhattanDistanceCalculator
+                                                                .getInstance()).getDistance(from,
+                                                                                to, departureTime,
+                                                                                vehicle);
+                            }
+                        },stateManager,traveledDistanceId,Arrays.asList(vehicle,vehicle2));
 
         stateManager.addStateUpdater(traveledDistance);
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
@@ -118,12 +124,12 @@ vehicle2 (max distance): 180.0
     @Test
     public void insertNewInVehicleShouldFail(){
         MaxDistanceConstraint maxDistanceConstraint =
-            new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
-                @Override
-                public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from,to,departureTime, null, vehicle);
-                }
-            },maxDistanceMap);
+                        new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
+                            @Override
+                            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                                return vrp.getTransportCosts().getTransportTime(from,to,departureTime, null, vehicle);
+                            }
+                        },maxDistanceMap);
         JobInsertionContext context = new JobInsertionContext(route,newDelivery,vehicle,null,0);
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,route.getStart(),newAct(),act(0),0).equals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED));
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,act(0),newAct(),act(1),0).equals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED));
@@ -138,12 +144,12 @@ vehicle2 (max distance): 180.0
     public void insertNewInVehicle2ShouldBeCorrect(){
         //current distance vehicle2: 160 allowed: 200
         MaxDistanceConstraint maxDistanceConstraint =
-            new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
-                @Override
-                public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from,to,departureTime, null, vehicle);
-                }
-            },maxDistanceMap);
+                        new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
+                            @Override
+                            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                                return vrp.getTransportCosts().getTransportTime(from,to,departureTime, null, vehicle);
+                            }
+                        },maxDistanceMap);
         JobInsertionContext context = new JobInsertionContext(route,newDelivery,vehicle2,null,0);
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,route.getStart(),newAct(),act(0),0).equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
         //additional distance: 20+35-15=40

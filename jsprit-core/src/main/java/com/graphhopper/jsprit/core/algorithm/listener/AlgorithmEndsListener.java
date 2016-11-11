@@ -17,10 +17,10 @@
  */
 package com.graphhopper.jsprit.core.algorithm.listener;
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-
-import java.util.Collection;
 
 
 public interface AlgorithmEndsListener extends VehicleRoutingAlgorithmListener {

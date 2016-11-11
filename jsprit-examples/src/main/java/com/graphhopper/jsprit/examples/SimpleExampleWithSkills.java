@@ -78,12 +78,12 @@ public class SimpleExampleWithSkills {
 		/*
          * build services at the required locations, each with a capacity-demand of 1.
 		 */
-        Service service1 = Service.Builder.newInstance("1").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 7)).build();
-        Service service2 = Service.Builder.newInstance("2").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 13)).build();
+        Service service1 = new Service.Builder("1").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 7)).build();
+        Service service2 = new Service.Builder("2").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 13)).build();
 
-        Service service3 = Service.Builder.newInstance("3").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 7)).build();
+        Service service3 = new Service.Builder("3").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 7)).build();
 
-        Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX, 1).addRequiredSkill("drill").setLocation(Location.newInstance(15, 13)).build();
+        Service service4 = new Service.Builder("4").addSizeDimension(WEIGHT_INDEX, 1).addRequiredSkill("drill").setLocation(Location.newInstance(15, 13)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

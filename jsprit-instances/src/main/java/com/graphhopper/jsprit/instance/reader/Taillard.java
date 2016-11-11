@@ -219,7 +219,7 @@ package com.graphhopper.jsprit.instance.reader;
 //				else{
 //					variableCost = vehicle.getType().vehicleCostParams.perDistanceUnit;
 //				}
-//				return variableCost*EuclideanDistanceCalculator.calculateDistance(myLocations.getCoord(fromId), myLocations.getCoord(toId));
+//				return variableCost*EuclideanDistanceCalculator.getInstance().calculateDistance(myLocations.getCoord(fromId), myLocations.getCoord(toId));
 //			}
 //
 //			@Override

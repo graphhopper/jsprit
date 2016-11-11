@@ -15,14 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.graphhopper.jsprit.core.util;
+package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
+import java.util.Collection;
 
-public class ManhattanDistanceCalculator {
+import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 
-    public static double calculateDistance(Coordinate coord1, Coordinate coord2) {
-        return Math.abs(coord1.getX() - coord2.getX())
-            + Math.abs(coord1.getY() - coord2.getY());
+public class PickupActivityNEW extends JobActivity {
+
+    public PickupActivityNEW(AbstractJob job, String name, Location location, double operationTime,
+                    Capacity capacity, Collection<TimeWindow> timeWindows) {
+        super(job, name, location, operationTime, capacity, timeWindows);
     }
+
+    public PickupActivityNEW(PickupActivityNEW sourceActivity) {
+        super(sourceActivity);
+    }
+
 
 }

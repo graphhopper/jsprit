@@ -17,58 +17,80 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
-import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TestInserter {
 
+    private Service.Builder createService(String name, Location loc) {
+        TimeWindow tw = TimeWindow.newInstance(0, 10);
+
+        return new Service.Builder(name)
+                .setTimeWindow(tw)
+                .setLocation(loc);
+    }
+
+
+    protected Shipment.Builder createStandardShipment(String name) {
+        Location loc = Location.Builder.newInstance().setId("delLoc").build();
+        TimeWindow tw = TimeWindow.newInstance(0, 10);
+        return Shipment.Builder.newInstance(name)
+                .addSizeDimension(0, 10)
+                .setPickupTimeWindow(tw)
+                .setDeliveryTimeWindow(tw)
+                .setPickupLocation(loc)
+                .setDeliveryLocation(loc);
+    }
 
     @Test
     public void whenInsertingServiceAndRouteIsClosed_itInsertsCorrectly() {
-        Service service = mock(Service.class);
+//        Service service = mock(Service.class);
+//        when(service.getActivityList()).thenReturn(new SequentialJobActivityList(service));
+//        when(service.getTimeWindow()).thenReturn(mock(TimeWindow.class));
+
+        Location loc = Location.Builder.newInstance().setId("loc").build();
+        Service service = createService("s1", loc).build();
+
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.getStartLocation()).thenReturn(loc("vehLoc"));
         when(vehicle.getEndLocation()).thenReturn(loc("vehLoc"));
         when(vehicle.isReturnToDepot()).thenReturn(true);
         when(vehicle.getId()).thenReturn("vehId");
 
-        when(service.getTimeWindow()).thenReturn(mock(TimeWindow.class));
-
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addService(service).build();
         //start - pick(shipment) - del(shipment) - end
-        Service serviceToInsert = mock(Service.class);
-        when(serviceToInsert.getLocation()).thenReturn(loc("delLoc"));
+        Service serviceToInsert = createService("toInsert", loc).build();
 
         InsertionData iData = mock(InsertionData.class);
         when(iData.getDeliveryInsertionIndex()).thenReturn(1);
         when(iData.getSelectedVehicle()).thenReturn(vehicle);
 
         VehicleRoutingProblem vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-        PickupService act = new PickupService(serviceToInsert);
+        List<JobActivity> acts = new ArrayList<>();
+        PickupServiceDEPRECATED act = new PickupServiceDEPRECATED(serviceToInsert);
         acts.add(act);
         when(vehicleRoutingProblem.copyAndGetActivities(serviceToInsert)).thenReturn(acts);
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
@@ -85,24 +107,22 @@ public class TestInserter {
 
     @Test
     public void whenInsertingServiceAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation() {
-        Service service = mock(Service.class);
+        Service service = createService("alma", Location.newInstance("loc")).build();
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.getStartLocation()).thenReturn(Location.newInstance("vehLoc"));
         when(vehicle.getEndLocation()).thenReturn(Location.newInstance("vehLoc"));
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getId()).thenReturn("vehId");
 
-        when(service.getTimeWindow()).thenReturn(mock(TimeWindow.class));
-
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addService(service).build();
-        Service serviceToInsert = mock(Service.class);
-        when(serviceToInsert.getLocation()).thenReturn(Location.Builder.newInstance().setId("delLoc").build());
+        Service serviceToInsert = createService("alma", Location.newInstance("delLoc")).build();
 
         InsertionData iData = mock(InsertionData.class);
         when(iData.getDeliveryInsertionIndex()).thenReturn(1);
         when(iData.getSelectedVehicle()).thenReturn(vehicle);
 
         VehicleRoutingProblem vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
+// REMARK - Balage1551 - This one is throwing a mockito exception, I don't understand why.
         when(vehicleRoutingProblem.copyAndGetActivities(serviceToInsert)).thenReturn(getTourActivities(serviceToInsert));
 
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
@@ -113,26 +133,22 @@ public class TestInserter {
         assertEquals(route.getEnd().getLocation().getId(), serviceToInsert.getLocation().getId());
     }
 
-    private List<AbstractActivity> getTourActivities(Service serviceToInsert) {
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-        acts.add(new PickupService(serviceToInsert));
+    private List<JobActivity> getTourActivities(Service serviceToInsert) {
+        List<JobActivity> acts = new ArrayList<>();
+        acts.add(new PickupServiceDEPRECATED(serviceToInsert));
         return acts;
     }
 
 
     @Test
     public void whenInsertingShipmentAndRouteIsClosed_itInsertsCorrectly() {
-        Shipment shipment = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(shipment.getSize()).thenReturn(capacity);
+        Shipment shipment = createStandardShipment("s1").build();
+
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.getStartLocation()).thenReturn(loc("vehLoc"));
         when(vehicle.getEndLocation()).thenReturn(loc("vehLoc"));
         when(vehicle.isReturnToDepot()).thenReturn(true);
         when(vehicle.getId()).thenReturn("vehId");
-
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
-        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
@@ -154,24 +170,20 @@ public class TestInserter {
         assertEquals(route.getEnd().getLocation().getId(), vehicle.getEndLocation().getId());
     }
 
-    private List<AbstractActivity> getTourActivities(Shipment shipmentToInsert) {
-        List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-        acts.add(new PickupShipment(shipmentToInsert));
-        acts.add(new DeliverShipment(shipmentToInsert));
+    private List<JobActivity> getTourActivities(Shipment shipmentToInsert) {
+        List<JobActivity> acts = new ArrayList<>();
+        acts.add(new PickupShipmentDEPRECATED(shipmentToInsert));
+        acts.add(new DeliverShipmentDEPRECATED(shipmentToInsert));
         return acts;
     }
 
     @Test
     public void whenInsertingShipmentAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation() {
-        Shipment shipment = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(shipment.getSize()).thenReturn(capacity);
+        Shipment shipment = createStandardShipment("s1").build();
+
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getId()).thenReturn("vehId");
-
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
-        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
@@ -194,14 +206,9 @@ public class TestInserter {
 
     @Test
     public void whenSwitchingVehicleAndRouteIsClosed_newStartAndEndShouldBeTheLocationOfNewVehicle() {
-        Shipment shipment = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(shipment.getSize()).thenReturn(capacity);
+        Shipment shipment = createStandardShipment("s1").build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
-
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
-        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
@@ -222,14 +229,9 @@ public class TestInserter {
 
     @Test
     public void whenSwitchingVehicleAndRouteIsOpen_endLocationShouldBeTheLocationOfTheLastActivity() {
-        Shipment shipment = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(shipment.getSize()).thenReturn(capacity);
+        Shipment shipment = createStandardShipment("s1").build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
-
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
-        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
@@ -250,15 +252,11 @@ public class TestInserter {
 
     @Test
     public void whenInsertingShipmentAtBeginningAndSwitchingVehicleAndRouteIsOpen_endLocationShouldBeTheLocationOfTheLastActivity() {
-        Shipment shipment = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(shipment.getSize()).thenReturn(capacity);
-        when(shipment.getDeliveryLocation()).thenReturn(Location.Builder.newInstance().setId("oldShipmentDelLoc").build());
+        Shipment shipment = createStandardShipment("s1")
+                .setDeliveryLocation(Location.newInstance("oldShipmentDelLoc"))
+                .build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setId("vehLoc").build()).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setId("newVehLoc").build()).setType(mock(VehicleType.class)).build();
-
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
-        when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end

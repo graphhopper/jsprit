@@ -17,6 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collection;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.acceptor.GreedyAcceptance;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
 import com.graphhopper.jsprit.core.algorithm.recreate.BestInsertionBuilder;
@@ -24,7 +31,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
 import com.graphhopper.jsprit.core.algorithm.ruin.RadialRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RandomRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
-import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceDistance;
+import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
@@ -37,13 +44,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.util.ChristofidesReader;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
 
 
 public class BuildCVRPAlgoFromScratch_IT {
@@ -65,7 +65,7 @@ public class BuildCVRPAlgoFromScratch_IT {
 
         InsertionStrategy bestInsertion = new BestInsertionBuilder(vrp, fleetManager, stateManager, cManager).build();
 
-        RuinStrategy radial = new RadialRuinStrategyFactory(0.15, new AvgServiceDistance(vrp.getTransportCosts())).createStrategy(vrp);
+        RuinStrategy radial = new RadialRuinStrategyFactory(0.15, new DefaultJobDistance(vrp.getTransportCosts())).createStrategy(vrp);
         RuinStrategy random = new RandomRuinStrategyFactory(0.25).createStrategy(vrp);
 
         SolutionCostCalculator solutionCostCalculator = new SolutionCostCalculator() {
@@ -89,9 +89,9 @@ public class BuildCVRPAlgoFromScratch_IT {
         radialStrategy.addModule(radialModule);
 
         vra = new PrettyAlgorithmBuilder(vrp, fleetManager, stateManager, cManager)
-            .withStrategy(randomStrategy, 0.5).withStrategy(radialStrategy, 0.5)
-            .addCoreStateAndConstraintStuff()
-            .constructInitialSolutionWith(bestInsertion, solutionCostCalculator).build();
+                .withStrategy(randomStrategy, 0.5).withStrategy(radialStrategy, 0.5)
+                .addCoreStateAndConstraintStuff()
+                .constructInitialSolutionWith(bestInsertion, solutionCostCalculator).build();
         vra.setMaxIterations(2000);
 
     }

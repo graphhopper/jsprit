@@ -18,18 +18,18 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 public class ShipmentPickupsFirstConstraint implements HardActivityConstraint {
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (newAct instanceof DeliverShipment && nextAct instanceof PickupShipment) {
+        if (newAct instanceof DeliverShipmentDEPRECATED && nextAct instanceof PickupShipmentDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
-        if (newAct instanceof PickupShipment && prevAct instanceof DeliverShipment) {
+        if (newAct instanceof PickupShipmentDEPRECATED && prevAct instanceof DeliverShipmentDEPRECATED) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
         return ConstraintsStatus.FULFILLED;

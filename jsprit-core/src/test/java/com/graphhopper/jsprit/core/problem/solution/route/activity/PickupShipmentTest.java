@@ -17,26 +17,27 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
+
 public class PickupShipmentTest {
 
-    private PickupShipment pickup;
+    private PickupShipmentDEPRECATED pickup;
 
     @Before
     public void doBefore() {
         Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickupLoc").build())
-            .setDeliveryLocation(Location.newInstance("deliveryLoc"))
-            .setPickupTimeWindow(TimeWindow.newInstance(1., 2.))
-            .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
-            .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
-        pickup = new PickupShipment(shipment);
+                .setDeliveryLocation(Location.newInstance("deliveryLoc"))
+                .setPickupTimeWindow(TimeWindow.newInstance(1., 2.))
+                .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
+                .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+        pickup = new PickupShipmentDEPRECATED(shipment);
         pickup.setTheoreticalEarliestOperationStartTime(shipment.getPickupTimeWindow().getStart());
         pickup.setTheoreticalLatestOperationStartTime(shipment.getPickupTimeWindow().getEnd());
     }
@@ -77,7 +78,7 @@ public class PickupShipmentTest {
 
     @Test
     public void whenCopyingStart_itShouldBeDoneCorrectly() {
-        PickupShipment copy = (PickupShipment) pickup.duplicate();
+        PickupShipmentDEPRECATED copy = (PickupShipmentDEPRECATED) pickup.duplicate();
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
         assertEquals("pickupLoc", copy.getLocation().getId());
@@ -91,8 +92,8 @@ public class PickupShipmentTest {
     @Test
     public void whenGettingCapacity_itShouldReturnItCorrectly() {
         Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc"))
-            .addSizeDimension(0, 10).addSizeDimension(1, 100).build();
-        PickupShipment pick = new PickupShipment(shipment);
+                .addSizeDimension(0, 10).addSizeDimension(1, 100).build();
+        PickupShipmentDEPRECATED pick = new PickupShipmentDEPRECATED(shipment);
         assertEquals(10, pick.getSize().get(0));
         assertEquals(100, pick.getSize().get(1));
     }

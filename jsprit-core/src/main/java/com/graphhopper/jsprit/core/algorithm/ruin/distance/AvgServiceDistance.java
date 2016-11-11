@@ -25,10 +25,14 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 /**
  * Calculator that calculates average distance between two jobs based on the input-transport costs.
  * <p>
- * <p>If the distance between two jobs cannot be calculated with input-transport costs, it tries the euclidean distance between these jobs.
+ * <p>
+ * If the distance between two jobs cannot be calculated with input-transport costs, it tries the euclidean distance
+ * between these jobs.
  *
  * @author stefan schroeder
+ * @deprecated Being a subset of the {@linkplain DefaultJobDistance} class. Use that instead.
  */
+@Deprecated
 public class AvgServiceDistance implements JobDistance {
 
     private VehicleRoutingTransportCosts costs;
@@ -46,6 +50,8 @@ public class AvgServiceDistance implements JobDistance {
      */
     @Override
     public double getDistance(Job i, Job j) {
+        System.out.println("Serv: ");
+
         double avgCost = 0.0;
         if (i instanceof Service && j instanceof Service) {
             if (i.equals(j)) {
@@ -57,7 +63,7 @@ public class AvgServiceDistance implements JobDistance {
             }
         } else {
             throw new UnsupportedOperationException(
-                "currently, this class just works services.");
+                    "currently, this class just works services.");
         }
         return avgCost;
     }

@@ -77,17 +77,17 @@ public class ServicePickupsWithMultipleDepotsExample {
 		 * 4: (15,13)->(14,11)
 		 */
 
-        Service shipment1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
-        Service shipment2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
+        Service shipment1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
+        Service shipment2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
 
-        Service shipment3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
-        Service shipment4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
+        Service shipment3 = new Service.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
+        Service shipment4 = new Service.Builder("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
 
-        Service shipment5 = Service.Builder.newInstance("5").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 57)).build();
-        Service shipment6 = Service.Builder.newInstance("6").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 63)).build();
+        Service shipment5 = new Service.Builder("5").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 57)).build();
+        Service shipment6 = new Service.Builder("6").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 63)).build();
 
-        Service shipment7 = Service.Builder.newInstance("7").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 57)).build();
-        Service shipment8 = Service.Builder.newInstance("8").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 63)).build();
+        Service shipment7 = new Service.Builder("7").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 57)).build();
+        Service shipment8 = new Service.Builder("8").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 63)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

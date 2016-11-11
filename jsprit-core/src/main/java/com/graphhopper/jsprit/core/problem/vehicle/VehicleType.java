@@ -48,6 +48,13 @@ public interface VehicleType {
     public double getMaxVelocity();
 
     /**
+     * Returns the average speed of this vehicle-type.
+     *
+     * @return max velocity
+     */
+    public double getAvgVelocity();
+
+    /**
      * Return the cost-parameter of this vehicle-type.
      *
      * @return parameter

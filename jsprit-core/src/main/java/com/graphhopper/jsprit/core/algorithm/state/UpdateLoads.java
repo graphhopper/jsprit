@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.problem.Capacity;
@@ -27,8 +29,6 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-
-import java.util.Collection;
 
 
 /**

@@ -17,13 +17,17 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Break;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.job.Break.Builder;
+import com.graphhopper.jsprit.core.problem.job.Service;
 
 
 public class BreakActivityTest {
@@ -34,9 +38,10 @@ public class BreakActivityTest {
 
     @Before
     public void doBefore() {
-        service = Break.Builder.newInstance("service")
-            .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3).build();
-        serviceActivity = BreakActivity.newInstance(service);
+        Builder breakBuilder = new Break.Builder("service")
+                        .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3);
+        service = breakBuilder.build();
+        serviceActivity = BreakActivity.newInstance(service, breakBuilder);
         serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         serviceActivity.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
@@ -48,7 +53,7 @@ public class BreakActivityTest {
 
     @Test
     public void hasVariableLocationShouldBeTrue() {
-        Break aBreak = (Break) serviceActivity.getJob();
+        Break aBreak = serviceActivity.getJob();
         assertTrue(aBreak.hasVariableLocation());
     }
 
@@ -87,22 +92,22 @@ public class BreakActivityTest {
 
     @Test
     public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual() {
-        Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
 
-        ServiceActivity d1 = ServiceActivity.newInstance(s1);
-        ServiceActivity d2 = ServiceActivity.newInstance(s2);
+        ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
+        ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);
 
         assertTrue(d1.equals(d2));
     }
 
     @Test
     public void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual() {
-        Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-        Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
+        Service s1 = new Service.Builder("s").setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("s1").setLocation(Location.newInstance("loc")).build();
 
-        ServiceActivity d1 = ServiceActivity.newInstance(s1);
-        ServiceActivity d2 = ServiceActivity.newInstance(s2);
+        ServiceActivityNEW d1 = ServiceActivityNEW.newInstance(s1);
+        ServiceActivityNEW d2 = ServiceActivityNEW.newInstance(s2);
 
         assertFalse(d1.equals(d2));
     }

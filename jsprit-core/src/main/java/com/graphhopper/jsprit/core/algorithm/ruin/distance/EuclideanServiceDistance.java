@@ -17,10 +17,11 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 
+import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 
+@Deprecated
 public class EuclideanServiceDistance implements JobDistance {
 
     public EuclideanServiceDistance() {
@@ -36,13 +37,14 @@ public class EuclideanServiceDistance implements JobDistance {
             } else {
                 Service s_i = (Service) i;
                 Service s_j = (Service) j;
-                if (s_i.getLocation().getCoordinate() == null || s_j.getLocation().getCoordinate() == null)
+                if (s_i.getLocation().getCoordinate() == null || s_j.getLocation().getCoordinate() == null) {
                     throw new IllegalStateException("cannot calculate euclidean distance. since service coords are missing");
-                avgCost = EuclideanDistanceCalculator.calculateDistance(s_i.getLocation().getCoordinate(), s_j.getLocation().getCoordinate());
+                }
+                avgCost = EuclideanDistanceCalculator.getInstance().calculateDistance(s_i.getLocation().getCoordinate(), s_j.getLocation().getCoordinate());
             }
         } else {
             throw new UnsupportedOperationException(
-                "currently, this class just works with shipments and services.");
+                            "currently, this class just works with shipments and services.");
         }
         return avgCost;
     }

@@ -18,22 +18,21 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.AbstractJob;
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 /**
  * Created by schroeder on 15/08/16.
@@ -46,7 +45,7 @@ public class ConfigureFixCostCalculatorTest {
     public void before(){
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         for(int i=0;i<100;i++){
-            Service service = Service.Builder.newInstance("" + i).setLocation(Location.newInstance(0)).build();
+            Service service = new Service.Builder("" + i).setLocation(Location.newInstance(0)).build();
             vrpBuilder.addJob(service);
         }
         vrp = vrpBuilder.build();

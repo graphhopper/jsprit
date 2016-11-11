@@ -17,10 +17,23 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.ExampleActivityCostFunction;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateVariableCosts;
-import com.graphhopper.jsprit.core.problem.*;
+import com.graphhopper.jsprit.core.problem.AbstractVehicle;
+import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -36,16 +49,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 
 public class TestCalculatesServiceInsertionOnRouteLevel {
@@ -93,15 +96,17 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
             @Override
             public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
                 double tpCosts = routingCosts.getTransportCost(from, to, departureTime, driver, vehicle);
-                if (vehicle.getId().equals("v1")) return tpCosts;
+                if (vehicle.getId().equals("v1")) {
+                    return tpCosts;
+                }
                 return 2. * tpCosts;
             }
 
         };
 
-        first = Service.Builder.newInstance("1").setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-        second = Service.Builder.newInstance("3").setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
-        third = Service.Builder.newInstance("2").setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        first = new Service.Builder("1").setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        second = new Service.Builder("3").setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
+        third = new Service.Builder("2").setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
         Collection<Job> jobs = new ArrayList<Job>();
         jobs.add(first);
         jobs.add(second);
@@ -124,12 +129,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
         serviceInsertion = new ServiceInsertionOnRouteLevelCalculator(costs, activityCosts, actInsertionCostCalculator, cManager, cManager);
         serviceInsertion.setNuOfActsForwardLooking(4);
         serviceInsertion.setStates(states);
-        serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
-            @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                return vrp.copyAndGetActivities(job);
-            }
-        });
+        serviceInsertion.setJobActivityFactory(new CopyJobActivityFactory());
 
     }
 

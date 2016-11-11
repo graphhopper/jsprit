@@ -17,12 +17,13 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**

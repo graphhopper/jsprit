@@ -17,20 +17,10 @@
  */
 package com.graphhopper.jsprit.io.problem;
 
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,7 +28,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.Solutions;
 
 
 public class VrpXMLReaderTest {
@@ -139,14 +143,20 @@ public class VrpXMLReaderTest {
     }
 
     private Vehicle getVehicle(String string, Collection<Vehicle> vehicles) {
-        for (Vehicle v : vehicles) if (string.equals(v.getId())) return v;
+        for (Vehicle v : vehicles) {
+            if (string.equals(v.getId())) {
+                return v;
+            }
+        }
         return null;
     }
 
     private boolean idsInCollection(List<String> asList, Collection<Vehicle> vehicles) {
         List<String> ids = new ArrayList<String>(asList);
         for (Vehicle v : vehicles) {
-            if (ids.contains(v.getId())) ids.remove(v.getId());
+            if (ids.contains(v.getId())) {
+                ids.remove(v.getId());
+            }
         }
         return ids.isEmpty();
     }
@@ -182,7 +192,9 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem vrp = builder.build();
         int servCounter = 0;
         for (Job j : vrp.getJobs().values()) {
-            if (j instanceof Service) servCounter++;
+            if (j instanceof Service) {
+                servCounter++;
+            }
         }
         assertEquals(2, servCounter);
     }
@@ -230,7 +242,9 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem vrp = builder.build();
         int shipCounter = 0;
         for (Job j : vrp.getJobs().values()) {
-            if (j instanceof Shipment) shipCounter++;
+            if (j instanceof Shipment) {
+                shipCounter++;
+            }
         }
         assertEquals(2, shipCounter);
     }
@@ -612,15 +626,16 @@ public class VrpXMLReaderTest {
         assertEquals(1, solutions.get(0).getRoutes().size());
         List<TourActivity> activities = solutions.get(0).getRoutes().iterator().next().getTourActivities().getActivities();
         assertEquals(4, activities.size());
-        assertTrue(activities.get(0) instanceof PickupService);
-        assertTrue(activities.get(1) instanceof PickupService);
-        assertTrue(activities.get(2) instanceof PickupShipment);
-        assertTrue(activities.get(3) instanceof DeliverShipment);
+        assertTrue(activities.get(0) instanceof PickupServiceDEPRECATED);
+        assertTrue(activities.get(1) instanceof PickupServiceDEPRECATED);
+        assertTrue(activities.get(2) instanceof PickupShipmentDEPRECATED);
+        assertTrue(activities.get(3) instanceof DeliverShipmentDEPRECATED);
     }
 
     @Test
     public void testRead_ifReaderIsCalled_itReadsSuccessfully() {
-        new VrpXMLReader(VehicleRoutingProblem.Builder.newInstance(), new ArrayList<VehicleRoutingProblemSolution>()).read(getClass().getResourceAsStream("lui-shen-solution.xml"));
+        new VrpXMLReader(VehicleRoutingProblem.Builder.newInstance(), new ArrayList<VehicleRoutingProblemSolution>())
+                .read(getClass().getResourceAsStream("lui-shen-solution.xml"));
         assertTrue(true);
     }
 

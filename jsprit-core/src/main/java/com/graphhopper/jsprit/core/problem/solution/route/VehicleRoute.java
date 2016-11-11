@@ -17,16 +17,31 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.SimpleJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.*;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivities;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivityFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-
-import java.util.*;
 
 /**
  * Contains the tour, i.e. a number of activities, a vehicle servicing the tour and a driver.
@@ -43,7 +58,9 @@ public class VehicleRoute {
      * @throws IllegalArgumentException if route is null
      */
     public static VehicleRoute copyOf(VehicleRoute route) {
-        if (route == null) throw new IllegalArgumentException("route must not be null");
+        if (route == null) {
+            throw new IllegalArgumentException("route must not be null");
+        }
         return new VehicleRoute(route);
     }
 
@@ -82,8 +99,9 @@ public class VehicleRoute {
          * @return this builder
          */
         public static Builder newInstance(Vehicle vehicle, Driver driver) {
-            if (vehicle == null || driver == null)
+            if (vehicle == null || driver == null) {
                 throw new IllegalArgumentException("null arguments not accepted. ini emptyRoute with VehicleImpl.createNoVehicle() and DriverImpl.noDriver()");
+            }
             return new Builder(vehicle, driver);
         }
 
@@ -101,8 +119,9 @@ public class VehicleRoute {
          * @return this builder
          */
         public static Builder newInstance(Vehicle vehicle) {
-            if (vehicle == null)
+            if (vehicle == null) {
                 throw new IllegalArgumentException("null arguments not accepted. ini emptyRoute with VehicleImpl.createNoVehicle() and DriverImpl.noDriver()");
+            }
             return new Builder(vehicle, DriverImpl.noDriver());
         }
 
@@ -116,29 +135,15 @@ public class VehicleRoute {
 
         private TourActivities tourActivities = new TourActivities();
 
-        private TourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
-
-        private TourShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
+        // private TourActivityFactory serviceActivityFactory = new
+        // DefaultTourActivityFactory();
+        //
+        // private TourShipmentActivityFactory shipmentActivityFactory = new
+        // DefaultShipmentActivityFactory();
 
         private Set<Shipment> openShipments = new HashSet<Shipment>();
 
-        private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
-
-            @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-                if (job instanceof Break) {
-                    acts.add(BreakActivity.newInstance((Break) job));
-                } else if (job instanceof Service) {
-                    acts.add(serviceActivityFactory.createActivity((Service) job));
-                } else if (job instanceof Shipment) {
-                    acts.add(shipmentActivityFactory.createPickup((Shipment) job));
-                    acts.add(shipmentActivityFactory.createDelivery((Shipment) job));
-                }
-                return acts;
-            }
-
-        };
+        private JobActivityFactory jobActivityFactory = new SimpleJobActivityFactory();
 
         public Builder setJobActivityFactory(JobActivityFactory jobActivityFactory) {
             this.jobActivityFactory = jobActivityFactory;
@@ -164,8 +169,9 @@ public class VehicleRoute {
          * @throws IllegalArgumentException if departureTime < vehicle.getEarliestDeparture()
          */
         public Builder setDepartureTime(double departureTime) {
-            if (departureTime < start.getEndTime())
+            if (departureTime < start.getEndTime()) {
                 throw new IllegalArgumentException("departureTime < vehicle.getEarliestDepartureTime(). this must not be.");
+            }
             start.setEndTime(departureTime);
             return this;
         }
@@ -187,8 +193,10 @@ public class VehicleRoute {
         }
 
         public Builder addService(Service service, TimeWindow timeWindow) {
-            if (service == null) throw new IllegalArgumentException("service must not be null");
-            List<AbstractActivity> acts = jobActivityFactory.createActivities(service);
+            if (service == null) {
+                throw new IllegalArgumentException("service must not be null");
+            }
+            List<JobActivity> acts = jobActivityFactory.createActivities(service);
             TourActivity act = acts.get(0);
             act.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
             act.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
@@ -197,12 +205,16 @@ public class VehicleRoute {
         }
 
         public Builder addBreak(Break currentbreak) {
-            if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
+            if (currentbreak == null) {
+                throw new IllegalArgumentException("break must not be null");
+            }
             return addBreak(currentbreak, currentbreak.getTimeWindow());
         }
 
         public Builder addBreak(Break currentbreak, TimeWindow timeWindow) {
-            if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
+            if (currentbreak == null) {
+                throw new IllegalArgumentException("break must not be null");
+            }
             return addService(currentbreak,timeWindow);
         }
 
@@ -213,12 +225,16 @@ public class VehicleRoute {
          * @return the builder
          */
         public Builder addPickup(Pickup pickup) {
-            if (pickup == null) throw new IllegalArgumentException("pickup must not be null");
+            if (pickup == null) {
+                throw new IllegalArgumentException("pickup must not be null");
+            }
             return addService(pickup);
         }
 
         public Builder addPickup(Pickup pickup, TimeWindow timeWindow) {
-            if (pickup == null) throw new IllegalArgumentException("pickup must not be null");
+            if (pickup == null) {
+                throw new IllegalArgumentException("pickup must not be null");
+            }
             return addService(pickup,timeWindow);
         }
 
@@ -229,12 +245,16 @@ public class VehicleRoute {
          * @return the builder
          */
         public Builder addDelivery(Delivery delivery) {
-            if (delivery == null) throw new IllegalArgumentException("delivery must not be null");
+            if (delivery == null) {
+                throw new IllegalArgumentException("delivery must not be null");
+            }
             return addService(delivery);
         }
 
         public Builder addDelivery(Delivery delivery, TimeWindow timeWindow) {
-            if (delivery == null) throw new IllegalArgumentException("delivery must not be null");
+            if (delivery == null) {
+                throw new IllegalArgumentException("delivery must not be null");
+            }
             return addService(delivery,timeWindow);
         }
 
@@ -250,9 +270,10 @@ public class VehicleRoute {
         }
 
         public Builder addPickup(Shipment shipment, TimeWindow pickupTimeWindow) {
-            if (openShipments.contains(shipment))
+            if (openShipments.contains(shipment)) {
                 throw new IllegalArgumentException("shipment has already been added. cannot add it twice.");
-            List<AbstractActivity> acts = jobActivityFactory.createActivities(shipment);
+            }
+            List<JobActivity> acts = jobActivityFactory.createActivities(shipment);
             TourActivity act = acts.get(0);
             act.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
             act.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
@@ -323,11 +344,11 @@ public class VehicleRoute {
      * @param route to copy
      */
     private VehicleRoute(VehicleRoute route) {
-        this.start = Start.copyOf(route.getStart());
-        this.end = End.copyOf(route.getEnd());
-        this.tourActivities = TourActivities.copyOf(route.getTourActivities());
-        this.vehicle = route.getVehicle();
-        this.driver = route.getDriver();
+        start = Start.copyOf(route.getStart());
+        end = End.copyOf(route.getEnd());
+        tourActivities = TourActivities.copyOf(route.getTourActivities());
+        vehicle = route.getVehicle();
+        driver = route.getDriver();
     }
 
     /**
@@ -336,11 +357,11 @@ public class VehicleRoute {
      * @param builder used to build route
      */
     private VehicleRoute(Builder builder) {
-        this.tourActivities = builder.tourActivities;
-        this.vehicle = builder.vehicle;
-        this.driver = builder.driver;
-        this.start = builder.start;
-        this.end = builder.end;
+        tourActivities = builder.tourActivities;
+        vehicle = builder.vehicle;
+        driver = builder.driver;
+        start = builder.start;
+        end = builder.end;
     }
 
     /**
@@ -423,8 +444,9 @@ public class VehicleRoute {
      * @throws IllegalArgumentException if start is null
      */
     public double getDepartureTime() {
-        if (start == null)
+        if (start == null) {
             throw new IllegalArgumentException("cannot get departureTime without having a vehicle on this route. use setVehicle(vehicle,departureTime) instead.");
+        }
         return start.getEndTime();
     }
 

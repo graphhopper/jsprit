@@ -17,6 +17,10 @@
  */
 package com.graphhopper.jsprit.core.algorithm.module;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.graphhopper.jsprit.core.algorithm.SearchStrategyModule;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
@@ -25,10 +29,6 @@ import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class RuinAndRecreateModule implements SearchStrategyModule {

@@ -15,15 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.graphhopper.jsprit.core.util;
+package com.graphhopper.jsprit.core.problem.solution.route.activity;
+
+import java.util.Collection;
+
+import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
+
+public class DeliveryActivityNEW extends JobActivity {
 
 
-public class EuclideanDistanceCalculator {
+    public DeliveryActivityNEW(AbstractJob job, String name, Location location,
+                    double operationTime, Capacity capacity, Collection<TimeWindow> timeWindows) {
+        super(job, name, location, operationTime, capacity, timeWindows);
+    }
 
-    public static double calculateDistance(Coordinate coord1, Coordinate coord2) {
-        double xDiff = coord1.getX() - coord2.getX();
-        double yDiff = coord1.getY() - coord2.getY();
-        return Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
+    public DeliveryActivityNEW(DeliveryActivityNEW sourceActivity) {
+        super(sourceActivity);
     }
 
 }

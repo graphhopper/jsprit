@@ -187,7 +187,7 @@ public class TSPLIB95Reader {
                     continue;
                 }
             }
-            Service service = Service.Builder.newInstance(id)
+            Service service = new Service.Builder(id)
                 .setLocation(Location.Builder.newInstance().setId(id)
                     .setCoordinate(coords[index]).setIndex(index).build())
                 .addSizeDimension(0, demands[index]).build();

@@ -17,12 +17,13 @@
  */
 package com.graphhopper.jsprit.core.problem.constraint;
 
-import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 
 public class SoftRouteConstraintManagerTest {
 

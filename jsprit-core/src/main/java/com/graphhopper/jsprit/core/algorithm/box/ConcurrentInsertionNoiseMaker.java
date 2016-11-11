@@ -18,6 +18,9 @@
 
 package com.graphhopper.jsprit.core.algorithm.box;
 
+import java.util.Collection;
+import java.util.Random;
+
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
@@ -25,9 +28,6 @@ import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-
-import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by schroeder on 16/01/15.
