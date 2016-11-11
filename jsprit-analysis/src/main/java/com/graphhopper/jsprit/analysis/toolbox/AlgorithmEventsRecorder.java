@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertActivity;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -442,17 +443,19 @@ public class AlgorithmEventsRecorder
     private void insertShipment(Job job, InsertionData data, VehicleRoute route) {
         String fromNodeId = getFromNodeId((Shipment) job);
         String toNodeId = getToNodeId((Shipment) job);
-        insertNode(toNodeId, data.getDeliveryInsertionIndex(), data, route);
+        int deliveryIndex = data.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex();
+        insertNode(toNodeId, deliveryIndex, data, route);
 
         List<JobActivity> del = vrp.getActivities(job);
         VehicleRoute copied = VehicleRoute.copyOf(route);
-        copied.getTourActivities().addActivity(data.getDeliveryInsertionIndex(), del.get(1));
+        copied.getTourActivities().addActivity(deliveryIndex, del.get(1));
 
-        insertNode(fromNodeId, data.getPickupInsertionIndex(), data, copied);
+        int pickupIndex = data.getUnmodifiableEventsByType(InsertActivity.class).get(1).getIndex();
+        insertNode(fromNodeId, pickupIndex, data, copied);
     }
 
     private void insertService(Job job, InsertionData data, VehicleRoute route) {
-        insertNode(job.getId(), data.getDeliveryInsertionIndex(), data, route);
+        insertNode(job.getId(), data.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex(), data, route);
     }
 
     private void insertNode(String nodeId, int insertionIndex, InsertionData data, VehicleRoute route) {

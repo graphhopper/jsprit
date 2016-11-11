@@ -69,12 +69,9 @@ class InsertionDataUpdater {
     }
 
     static Comparator<VersionedInsertionData> getComparator(){
-        return new Comparator<VersionedInsertionData>() {
-            @Override
-            public int compare(VersionedInsertionData o1, VersionedInsertionData o2) {
-                if(o1.getiData().getInsertionCost() < o2.getiData().getInsertionCost()) return -1;
-                return 1;
-            }
+        return (o1, o2) -> {
+            if(o1.getiData().getInsertionCost() < o2.getiData().getInsertionCost()) return -1;
+            return 1;
         };
     }
 
@@ -105,9 +102,7 @@ class InsertionDataUpdater {
                         Vehicle available = fleetManager.getAvailableVehicle(versionedIData.getiData().getSelectedVehicle().getVehicleTypeIdentifier());
                         if (available != null) {
                             InsertionData oldData = versionedIData.getiData();
-                            InsertionData newData = new InsertionData(oldData.getInsertionCost(), oldData.getPickupInsertionIndex(),
-                                oldData.getDeliveryInsertionIndex(), available, oldData.getSelectedDriver());
-                            newData.setVehicleDepartureTime(oldData.getVehicleDepartureTime());
+                            InsertionData newData = new InsertionData(oldData.getInsertionCost(),oldData.getVehicleDepartureTime(),available, oldData.getSelectedDriver());
                             for(Event e : oldData.getEvents()){
                                 if(e instanceof SwitchVehicle){
                                     newData.getEvents().add(new SwitchVehicle(versionedIData.getRoute(),available,oldData.getVehicleDepartureTime()));
