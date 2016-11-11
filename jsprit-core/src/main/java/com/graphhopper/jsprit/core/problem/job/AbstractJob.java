@@ -30,14 +30,92 @@ import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
+ * Abstract base class for all Job implementations.
+ * <p>
+ * See {@linkplain JobBuilder} for detailed instruction how to implement your
+ * Job.
+ * </p>
+ * <p>
  * Created by schroeder on 14.07.14.
+ * </p>
+ *
+ * @author schroeder
+ * @author balage
+ * @see JobBuilder
  */
 public abstract class AbstractJob implements Job {
 
     /**
-     * Builder that builds a service.
+     * Base builder for all direct descendants.
+     * <p>
+     * The is an abstract implementation of the builder pattern providing the
+     * base functionality for inheritence. When you create a new AbstractJob
+     * implementation and would like to provide builder for it follow the
+     * guidlines below:
+     * </p>
+     * <p>
+     * First of all, you have to decide whether you would like to create a final
+     * class (no further inheritence from it) or not. If you decide to make your
+     * implementation <code>final</code> you can make your concrete builder in
+     * one step, but make the Job class final to emphasize this fact.
+     * </p>
+     * <p>
+     * If you wish to allow your Job implementation to be extended, first create
+     * your own abstract Builder class. The signature of your abstract builder
+     * should be something like this (<i>self referencing generics</i>):
      *
-     * @author schroeder
+     * <pre>
+     * public static abstract class BuilderBase&lt;T extends MyJob, B extends BuilderBase&lt;T, B>>
+     *                 extends JobBuilder&lt;T, B> {
+     * }
+     * </pre>
+     *
+     * This implenetation should contain all new fields, the new setters
+     * following the pattern:
+     *
+     * <pre>
+     * &#64;SuppressWarnings("unchecked")
+     * public B setField(FieldType field) {
+     *     this.field = field;
+     *     return (B) this;
+     * }
+     * </pre>
+     *
+     * Usually, the {@linkplain #validate()} method is implemented in this class
+     * (and it should call <code>super.validate()</code>) as well, but the
+     * abstract {@linkplain #createInstance()} is never. It is recommended that
+     * getters are provided for the fields as well.
+     * </p>
+     * <p>
+     * This BuilderBase class is for the new descendents to base their Builder
+     * on. If you don't need to refere to this class outside the descedents,
+     * make it protected.
+     * </p>
+     * <p>
+     * Now you can create the "real" builder class, which is simple, hides the
+     * complex generic pattern and makes it safe (see <a href=
+     * "http://stackoverflow.com/questions/7354740/is-there-a-way-to-refer-to-the-current-type-with-a-type-variable">
+     * the answer of this topic</a> for more information about the pitfalls of
+     * the self-refering generics pattern):
+     *
+     * <pre>
+     * public static class Builder extends BuilderBase&lt;MyJob, Builder> {
+     *     public Builder(String id) {
+     *         super(id);
+     *     }
+     *
+     *     &#64;Override
+     *     protected MyJob createInstance() {
+     *         return new MyJob(this);
+     *     }
+     * }
+     * </pre>
+     *
+     * The sole method to be implemented is {@linkplain #createInstance()}. This
+     * is now type-safe and generic-less.
+     * </p>
+     *
+     * @author balage
      */
     public abstract static class JobBuilder<T extends AbstractJob, B extends JobBuilder<T, B>> {
 
@@ -126,30 +204,22 @@ public abstract class AbstractJob implements Job {
         }
 
         /**
-         * Builds the service.
+         * Builds the job.
          *
          * <p>
-         * The implementation of the builder <b>MUST</b> call the
-         * {@linkplain #postProcess(Service)} method after the instance is
-         * constructed:
-         *
-         * <pre>
-         *    &#64;Override
-         *    public Service build() {
-         *        [...]
-         *        Service service = new Service(this);
-         *        postProcess(service);
-         *        return service;
-         *    }
-         * </pre>
-         *
+         * You never has to override this method. Override the
+         * {@linkplain #validate()} and {@linkplain #createInstance()} methods
+         * instead. (See for detailed implementation guidlines at
+         * {@linkplain JobBuilder}!)
          * </p>
          *
-         * @return {@link Service}
-         * @throws IllegalArgumentException
-         *             if neither locationId nor coordinate is set.
+         * @return {@link T} The new implementation of the corresponding Job.
+         *
+         * @see JobBuilder
+         *
+         * @author balage
          */
-        public T build() {
+        public final T build() {
             validate();
             T job = createInstance();
             job.createActivities(this);
@@ -198,7 +268,15 @@ public abstract class AbstractJob implements Job {
 
     protected Set<TimeWindow> allTimeWindows;
 
-    public AbstractJob(JobBuilder<?, ?> builder) {
+    /**
+     * Builder based constructor.
+     *
+     * @param builder
+     *            The builder instance.
+     *
+     * @see JobBuilder
+     */
+    protected AbstractJob(JobBuilder<?, ?> builder) {
         super();
         activityList = new SequentialJobActivityList(this);
         id = builder.getId();
