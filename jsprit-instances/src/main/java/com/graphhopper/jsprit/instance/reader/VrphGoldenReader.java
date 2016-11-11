@@ -86,7 +86,7 @@ public class VrphGoldenReader {
                 if (customerCount == 0) {
                     depotCoord = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
                 } else {
-                    Service.Builder serviceBuilder = Service.Builder.newInstance(tokens[0]).addSizeDimension(0, Integer.parseInt(tokens[3]));
+                    Service.Builder serviceBuilder = new Service.Builder(tokens[0]).addSizeDimension(0, Integer.parseInt(tokens[3]));
                     serviceBuilder.setLocation(Location.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])));
                     vrpBuilder.addJob(serviceBuilder.build());
                 }

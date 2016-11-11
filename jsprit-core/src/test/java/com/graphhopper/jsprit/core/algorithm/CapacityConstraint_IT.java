@@ -17,6 +17,9 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Capacity;
@@ -31,8 +34,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.ManhattanCosts;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Assert;
-import org.junit.Test;
 
 
 public class CapacityConstraint_IT {
@@ -41,25 +42,25 @@ public class CapacityConstraint_IT {
     public void capacityShouldNotBeExceeded() {
 
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type1")
-            .addCapacityDimension(0,1)
-            .addCapacityDimension(1,0).addCapacityDimension(2,17).addCapacityDimension(3,18)
-            .addCapacityDimension(4,14).addCapacityDimension(5,18).addCapacityDimension(6,20).build();
+                .addCapacityDimension(0,1)
+                .addCapacityDimension(1,0).addCapacityDimension(2,17).addCapacityDimension(3,18)
+                .addCapacityDimension(4,14).addCapacityDimension(5,18).addCapacityDimension(6,20).build();
         VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type2")
-            .addCapacityDimension(0,0)
-            .addCapacityDimension(1,0).addCapacityDimension(2,17).addCapacityDimension(3,18)
-            .addCapacityDimension(4,13).addCapacityDimension(5,18).addCapacityDimension(6,20).build();
+                .addCapacityDimension(0,0)
+                .addCapacityDimension(1,0).addCapacityDimension(2,17).addCapacityDimension(3,18)
+                .addCapacityDimension(4,13).addCapacityDimension(5,18).addCapacityDimension(6,20).build();
         VehicleTypeImpl type3 = VehicleTypeImpl.Builder.newInstance("type3")
-            .addCapacityDimension(0,1)
-            .addCapacityDimension(1,0).addCapacityDimension(2,17).addCapacityDimension(3,18)
-            .addCapacityDimension(4,14).addCapacityDimension(5,18).addCapacityDimension(6,20).build();
+                .addCapacityDimension(0,1)
+                .addCapacityDimension(1,0).addCapacityDimension(2,17).addCapacityDimension(3,18)
+                .addCapacityDimension(4,14).addCapacityDimension(5,18).addCapacityDimension(6,20).build();
         VehicleTypeImpl type4 = VehicleTypeImpl.Builder.newInstance("type4")
-            .addCapacityDimension(0,0)
-            .addCapacityDimension(1,0).addCapacityDimension(2,17).addCapacityDimension(3,18)
-            .addCapacityDimension(4,14).addCapacityDimension(5,17).addCapacityDimension(6,20).build();
+                .addCapacityDimension(0,0)
+                .addCapacityDimension(1,0).addCapacityDimension(2,17).addCapacityDimension(3,18)
+                .addCapacityDimension(4,14).addCapacityDimension(5,17).addCapacityDimension(6,20).build();
         VehicleTypeImpl type5 = VehicleTypeImpl.Builder.newInstance("type5")
-            .addCapacityDimension(0,1)
-            .addCapacityDimension(1,0).addCapacityDimension(2,16).addCapacityDimension(3,17)
-            .addCapacityDimension(4,14).addCapacityDimension(5,18).addCapacityDimension(6,20).build();
+                .addCapacityDimension(0,1)
+                .addCapacityDimension(1,0).addCapacityDimension(2,16).addCapacityDimension(3,17)
+                .addCapacityDimension(4,14).addCapacityDimension(5,18).addCapacityDimension(6,20).build();
 
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0,0)).setType(type1).setReturnToDepot(true).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0, 0)).setType(type2).setReturnToDepot(true).build();
@@ -67,27 +68,27 @@ public class CapacityConstraint_IT {
         VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance(0, 0)).setType(type4).setReturnToDepot(true).build();
         VehicleImpl v5 = VehicleImpl.Builder.newInstance("v5").setStartLocation(Location.newInstance(0, 0)).setType(type5).setReturnToDepot(true).build();
 
-        Delivery d1 = Delivery.Builder.newInstance("d1").setLocation(Location.newInstance(0,10))
-            .addSizeDimension(2,1).build();
-        Delivery d2 = Delivery.Builder.newInstance("d2").setLocation(Location.newInstance(0,12))
-            .addSizeDimension(2,1).addSizeDimension(3,1).build();
-        Delivery d3 = Delivery.Builder.newInstance("d3").setLocation(Location.newInstance(0,15))
-            .addSizeDimension(0,1).addSizeDimension(4,1).build();
-        Delivery d4 = Delivery.Builder.newInstance("d4").setLocation(Location.newInstance(0,20))
-            .addSizeDimension(0,1).addSizeDimension(5,1).build();
+        Delivery d1 = new Delivery.Builder("d1").setLocation(Location.newInstance(0, 10))
+                .addSizeDimension(2,1).build();
+        Delivery d2 = new Delivery.Builder("d2").setLocation(Location.newInstance(0,12))
+                .addSizeDimension(2,1).addSizeDimension(3,1).build();
+        Delivery d3 = new Delivery.Builder("d3").setLocation(Location.newInstance(0,15))
+                .addSizeDimension(0,1).addSizeDimension(4,1).build();
+        Delivery d4 = new Delivery.Builder("d4").setLocation(Location.newInstance(0,20))
+                .addSizeDimension(0,1).addSizeDimension(5,1).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-            .addJob(d1).addJob(d2).addJob(d3).addJob(d4)
-            .addVehicle(v1).addVehicle(v2)
-            .addVehicle(v3)
-            .addVehicle(v4).addVehicle(v5);
+        .addJob(d1).addJob(d2).addJob(d3).addJob(d4)
+        .addVehicle(v1).addVehicle(v2)
+        .addVehicle(v3)
+        .addVehicle(v4).addVehicle(v5);
         vrpBuilder.setRoutingCost(new ManhattanCosts());
 
         VehicleRoutingProblem vrp = vrpBuilder.build();
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-            .setProperty(Jsprit.Parameter.VEHICLE_SWITCH, "true").buildAlgorithm();
+                .setProperty(Jsprit.Parameter.VEHICLE_SWITCH, "true").buildAlgorithm();
         vra.setMaxIterations(2000);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
 
@@ -104,7 +105,7 @@ public class CapacityConstraint_IT {
 //            System.out.println(r.getVehicle().getId() + " load@beginning: "  + loadAtBeginning);
 //            System.out.println("cap: " + capacityDimensions);
             Assert.assertTrue("capacity has been exceeded",
-            loadAtBeginning.isLessOrEqual(capacityDimensions));
+                    loadAtBeginning.isLessOrEqual(capacityDimensions));
         }
 //
         Assert.assertTrue(solution.getRoutes().size() != 1);

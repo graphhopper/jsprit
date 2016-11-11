@@ -18,6 +18,12 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
@@ -26,12 +32,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import junit.framework.Assert;
-import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import junit.framework.Assert;
 
 /**
  * Created by schroeder on 04/08/15.
@@ -40,7 +42,7 @@ public class RuinBreakTest {
 
     @Test
     public void itShouldRuinBreaks() {
-        Break aBreak = Break.Builder.newInstance("break").build();
+        Break aBreak = new Break.Builder("break").build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc"))
             .setBreak(aBreak).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(v).build();

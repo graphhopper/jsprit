@@ -21,6 +21,7 @@ package com.graphhopper.jsprit.core.algorithm.state;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 /**
@@ -46,8 +47,8 @@ public class UpdateSkills implements StateUpdater, ActivityVisitor {
 
     @Override
     public void visit(TourActivity activity) {
-        if (activity instanceof TourActivity.JobActivity) {
-            Skills skills = ((TourActivity.JobActivity) activity).getJob().getRequiredSkills();
+        if (activity instanceof JobActivity) {
+            Skills skills = ((JobActivity) activity).getJob().getRequiredSkills();
             skillBuilder.addAllSkills(skills.values());
         }
     }

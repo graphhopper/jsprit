@@ -18,6 +18,10 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
+import java.util.Arrays;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -25,12 +29,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import com.graphhopper.jsprit.core.util.Solutions;
-import junit.framework.Assert;
-import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collection;
+import junit.framework.Assert;
 
 
 public class ExternalInitialSolutionIsInValidTest {
@@ -38,8 +38,8 @@ public class ExternalInitialSolutionIsInValidTest {
     @Test
     public void itShouldSolveProblemWithIniSolutionExternallyCreated() {
 
-        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10, 0)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 10)).build();
+        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
+        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(0, 10)).build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0, 0)).build();
 

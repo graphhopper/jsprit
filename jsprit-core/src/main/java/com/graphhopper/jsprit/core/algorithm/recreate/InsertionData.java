@@ -17,11 +17,11 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import com.graphhopper.jsprit.core.problem.driver.Driver;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 /**
  * Data object that collects insertion information. It collects insertionCosts, insertionIndeces, vehicle and driver to be employed

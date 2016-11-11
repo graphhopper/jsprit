@@ -17,9 +17,10 @@
  */
 package com.graphhopper.jsprit.core.algorithm.termination;
 
-import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 
 
 /**

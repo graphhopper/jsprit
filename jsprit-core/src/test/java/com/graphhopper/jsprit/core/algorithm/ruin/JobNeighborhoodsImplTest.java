@@ -17,21 +17,22 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.EuclideanServiceDistance;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 public class JobNeighborhoodsImplTest {
@@ -51,14 +52,14 @@ public class JobNeighborhoodsImplTest {
     @Before
     public void doBefore() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        target = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 5)).build();
-        s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 4)).build();
-        s3 = Service.Builder.newInstance("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 3)).build();
-        s4 = Service.Builder.newInstance("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 2)).build();
+        target = new Service.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 5)).build();
+        s2 = new Service.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 4)).build();
+        s3 = new Service.Builder("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 3)).build();
+        s4 = new Service.Builder("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 2)).build();
 
-        s5 = Service.Builder.newInstance("s5").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 6)).build();
-        s6 = Service.Builder.newInstance("s6").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 7)).build();
-        s7 = Service.Builder.newInstance("s7").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 8)).build();
+        s5 = new Service.Builder("s5").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 6)).build();
+        s6 = new Service.Builder("s6").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 7)).build();
+        s7 = new Service.Builder("s7").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 8)).build();
 
         vrp = builder.addJob(target).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6).addJob(s7).build();
 

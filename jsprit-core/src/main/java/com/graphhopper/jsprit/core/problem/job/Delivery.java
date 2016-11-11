@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
 
 /**
  * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
@@ -25,41 +27,41 @@ package com.graphhopper.jsprit.core.problem.job;
  */
 public class Delivery extends Service {
 
-    public static class Builder extends Service.Builder<Delivery> {
+    public static final class Builder extends Service.BuilderBase<Delivery, Builder> {
 
-        /**
-         * Returns a new instance of builder that builds a delivery.
-         *
-         * @param id the id of the delivery
-         * @return the builder
-         */
+        public Builder(String id) {
+            super(id);
+            setType("delivery");
+        }
+
         public static Builder newInstance(String id) {
             return new Builder(id);
         }
 
-        Builder(String id) {
-            super(id);
-        }
-
-        /**
-         * Builds Delivery.
-         *
-         * @return delivery
-         * @throws IllegalArgumentException if neither locationId nor coord is set
-         */
-        public Delivery build() {
-            if (location == null) throw new IllegalArgumentException("location is missing");
-            this.setType("delivery");
-            super.capacity = super.capacityBuilder.build();
-            super.skills = super.skillBuilder.build();
+        @Override
+        protected Delivery createInstance() {
             return new Delivery(this);
         }
-
     }
 
-    Delivery(Builder builder) {
+    Delivery(BuilderBase<? extends Delivery, ?> builder) {
         super(builder);
+    }
 
+    @Override
+    protected void createActivities(JobBuilder<?, ?> builder) {
+        JobActivityList list = new SequentialJobActivityList(this);
+        // TODO - Balage1551
+        // addActivity(new DeliveryActivityNEW(this, "pickup", getLocation(),
+        // getServiceDuration(), getSize()));
+        list.addActivity(new DeliverServiceDEPRECATED(this, (Builder) builder));
+        setActivities(list);
+    }
+
+    @Override
+    @Deprecated
+    public Capacity getSize() {
+        return Capacity.invert(super.getSize());
     }
 
 }

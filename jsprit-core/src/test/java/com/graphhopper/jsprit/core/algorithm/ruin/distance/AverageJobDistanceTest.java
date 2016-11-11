@@ -17,17 +17,18 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.CrowFlyCosts;
 import com.graphhopper.jsprit.core.util.Locations;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 public class AverageJobDistanceTest {
@@ -72,8 +73,8 @@ public class AverageJobDistanceTest {
 
     @Test
     public void whenServicesHaveSameLocation_distanceShouldBeZero() {
-        Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
-        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
+        Service s1 = new Service.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
+        Service s2 = new Service.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
 
         double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
         assertEquals(0.0, dist, 0.01);

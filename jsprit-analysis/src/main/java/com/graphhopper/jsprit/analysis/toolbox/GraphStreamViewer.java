@@ -24,10 +24,10 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity.JobActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.Time;
 import org.graphstream.graph.Edge;
@@ -588,8 +588,8 @@ public class GraphStreamViewer {
                 actNode.addAttribute("ui.label", Time.parseSecondsToTime(act.getEndTime()));
             }
             g.addEdge(makeEdgeId(routeId, vehicle_edgeId), prevIdentifier, currIdentifier, true);
-            if (act instanceof PickupActivity) g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
-            else if (act instanceof DeliveryActivity)
+            if (act instanceof PickupActivityNEW) g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
+            else if (act instanceof DeliveryActivityNEW)
                 g.getNode(currIdentifier).addAttribute("ui.class", "deliveryInRoute");
             prevIdentifier = currIdentifier;
             vehicle_edgeId++;

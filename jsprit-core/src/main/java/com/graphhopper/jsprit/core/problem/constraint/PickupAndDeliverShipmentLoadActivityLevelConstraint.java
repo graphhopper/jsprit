@@ -20,8 +20,8 @@ package com.graphhopper.jsprit.core.problem.constraint;
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -55,30 +55,61 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
         defaultValue = Capacity.Builder.newInstance().build();
     }
 
+    // private String visualize(JobInsertionContext iFacts, TourActivity
+    // prevAct, TourActivity newAct,
+    // TourActivity nextAct) {
+    // System.out.println(prevAct);
+    // System.out.println(newAct);
+    // System.out.println(nextAct);
+    // StringBuilder sb = new StringBuilder();
+    // for (TourActivity a : iFacts.getRoute().getActivities()) {
+    // if (a.equals(nextAct)) {
+    // if (sb.length() != 0) {
+    // sb.append(" -> ");
+    // }
+    // sb.append("[").append(newAct.getName()).append("]");
+    // }
+    // if (sb.length() != 0) {
+    // sb.append(" -> ");
+    // }
+    // sb.append(a.getName());
+    // }
+    //
+    // return sb.toString();
+    // }
+
     /**
      * Checks whether there is enough capacity to insert newAct between prevAct and nextAct.
      */
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (!(newAct instanceof PickupShipment) && !(newAct instanceof DeliverShipment)) {
+        if (!(newAct instanceof PickupShipmentDEPRECATED) && !(newAct instanceof DeliverShipmentDEPRECATED)) {
             return ConstraintsStatus.FULFILLED;
         }
+        // System.out.println(visualize(iFacts, prevAct, newAct, nextAct));
         Capacity loadAtPrevAct;
         if (prevAct instanceof Start) {
             loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-            if (loadAtPrevAct == null) loadAtPrevAct = defaultValue;
+            if (loadAtPrevAct == null) {
+                loadAtPrevAct = defaultValue;
+            }
         } else {
             loadAtPrevAct = stateManager.getActivityState(prevAct, InternalStates.LOAD, Capacity.class);
-            if (loadAtPrevAct == null) loadAtPrevAct = defaultValue;
+            if (loadAtPrevAct == null) {
+                loadAtPrevAct = defaultValue;
+            }
         }
-        if (newAct instanceof PickupShipment) {
-            if (!Capacity.addup(loadAtPrevAct, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+        if (newAct instanceof PickupShipmentDEPRECATED) {
+            Capacity newCapacity = Capacity.addup(loadAtPrevAct, newAct.getSize());
+            if (!newCapacity.isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
-        if (newAct instanceof DeliverShipment) {
-            if (!Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize())).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions()))
+        if (newAct instanceof DeliverShipmentDEPRECATED) {
+            Capacity newCapacity = Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize()));
+            if (!newCapacity.isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
+            }
         }
         return ConstraintsStatus.FULFILLED;
     }

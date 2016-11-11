@@ -17,26 +17,27 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class PickupServiceTest {
 
     private Service service;
 
-    private PickupService pickup;
+    private PickupServiceDEPRECATED pickup;
 
     @Before
     public void doBefore() {
-        service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
-            setTimeWindow(TimeWindow.newInstance(1., 2.)).
-            addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
-        pickup = new PickupService(service);
+        service = new Service.Builder("service").setLocation(Location.newInstance("loc")).
+                setTimeWindow(TimeWindow.newInstance(1., 2.)).
+                addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+        pickup = new PickupServiceDEPRECATED(service);
         pickup.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         pickup.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
@@ -78,7 +79,7 @@ public class PickupServiceTest {
 
     @Test
     public void whenCopyingStart_itShouldBeDoneCorrectly() {
-        PickupService copy = (PickupService) pickup.duplicate();
+        PickupServiceDEPRECATED copy = (PickupServiceDEPRECATED) pickup.duplicate();
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
         assertEquals("loc", copy.getLocation().getId());

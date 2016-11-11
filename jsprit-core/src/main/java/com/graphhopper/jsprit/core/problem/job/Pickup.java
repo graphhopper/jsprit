@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
@@ -25,42 +26,34 @@ package com.graphhopper.jsprit.core.problem.job;
  */
 public class Pickup extends Service {
 
-    public static class Builder extends Service.Builder<Pickup> {
+    public static final class Builder extends Service.BuilderBase<Pickup, Builder> {
 
-        /**
-         * Returns a new instance of builder that builds a pickup.
-         *
-         * @param id the id of the pickup
-         * @return the builder
-         */
+        public Builder(String id) {
+            super(id);
+            setType("pickup");
+        }
+
         public static Builder newInstance(String id) {
             return new Builder(id);
         }
 
-        Builder(String id) {
-            super(id);
-        }
-
-        /**
-         * Builds Pickup.
-         * <p>
-         * <p>Pickup type is "pickup"
-         *
-         * @return pickup
-         * @throws IllegalArgumentException if neither locationId nor coordinate has been set
-         */
-        public Pickup build() {
-            if (location == null) throw new IllegalArgumentException("location is missing");
-            this.setType("pickup");
-            super.capacity = super.capacityBuilder.build();
-            super.skills = super.skillBuilder.build();
+        @Override
+        protected Pickup createInstance() {
             return new Pickup(this);
         }
-
     }
 
     Pickup(Builder builder) {
         super(builder);
+    }
+
+    @Override
+    protected void createActivities(JobBuilder<?, ?> builder) {
+        JobActivityList list = new SequentialJobActivityList(this);
+        // TODO - Balage1551
+        //      addActivity(new PickupActivityNEW(this, "pickup", getLocation(), getServiceDuration(), getSize()));
+        list.addActivity(new PickupServiceDEPRECATED(this, (Builder) builder));
+        setActivities(list);
     }
 
 }

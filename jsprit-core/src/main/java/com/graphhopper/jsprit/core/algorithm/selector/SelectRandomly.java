@@ -17,13 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm.selector;
 
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 
 
 public class SelectRandomly implements SolutionSelector {

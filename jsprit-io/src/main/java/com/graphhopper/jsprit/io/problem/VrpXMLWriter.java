@@ -26,6 +26,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -162,8 +163,8 @@ public class VrpXMLWriter {
             int actCounter = 0;
             for (TourActivity act : route.getTourActivities().getActivities()) {
                 xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ")[@type]", act.getName());
-                if (act instanceof TourActivity.JobActivity) {
-                    Job job = ((TourActivity.JobActivity) act).getJob();
+                if (act instanceof JobActivity) {
+                    Job job = ((JobActivity) act).getJob();
                     if (job instanceof Service) {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").serviceId", job.getId());
                     } else if (job instanceof Shipment) {
@@ -201,8 +202,8 @@ public class VrpXMLWriter {
                 int actCounter = 0;
                 for (TourActivity act : route.getTourActivities().getActivities()) {
                     xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ")[@type]", act.getName());
-                    if (act instanceof TourActivity.JobActivity) {
-                        Job job = ((TourActivity.JobActivity) act).getJob();
+                    if (act instanceof JobActivity) {
+                        Job job = ((JobActivity) act).getJob();
                         if (job instanceof Break) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
                         } else if (job instanceof Service) {

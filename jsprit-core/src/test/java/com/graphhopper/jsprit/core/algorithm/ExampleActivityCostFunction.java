@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
@@ -46,7 +47,7 @@ public class ExampleActivityCostFunction implements VehicleRoutingActivityCosts 
             double totalCost = timeAtAct * parameter_timeAtAct;
 
             //penalty tooLate
-            if (tourAct instanceof TourActivity.JobActivity) {
+            if (tourAct instanceof JobActivity) {
                 if (arrivalTime > tourAct.getTheoreticalLatestOperationStartTime()) {
                     double penTime = arrivalTime - tourAct.getTheoreticalLatestOperationStartTime();
                     totalCost += penTime * parameter_penaltyTooLate;

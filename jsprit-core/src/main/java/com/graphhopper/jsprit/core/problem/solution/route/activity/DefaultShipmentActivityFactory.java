@@ -17,19 +17,18 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 
 public class DefaultShipmentActivityFactory implements TourShipmentActivityFactory {
 
     @Override
-    public AbstractActivity createPickup(Shipment shipment) {
-        return new PickupShipment(shipment);
+    public AbstractActivityNEW createPickup(Shipment shipment) {
+        return shipment.getPickupActivity();
     }
 
     @Override
-    public AbstractActivity createDelivery(Shipment shipment) {
-        return new DeliverShipment(shipment);
+    public AbstractActivityNEW createDelivery(Shipment shipment) {
+        return shipment.getDeliveryActivity();
     }
 
 }

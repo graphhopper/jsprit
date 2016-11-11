@@ -18,32 +18,6 @@
 
 package com.graphhopper.jsprit.analysis.toolbox;
 
-import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
-import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
-import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
-import com.graphhopper.jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
-import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
-import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
-import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import com.graphhopper.jsprit.core.util.Coordinate;
-import com.graphhopper.jsprit.core.util.Solutions;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.stream.file.FileSinkDGS;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,10 +25,39 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.stream.file.FileSinkDGS;
+
+import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
+import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
+import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
+import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import com.graphhopper.jsprit.core.util.Coordinate;
+import com.graphhopper.jsprit.core.util.Solutions;
+
 /**
  * Writes out what happens when algorithm searches (in graphstream dgs-file).
  */
-public class AlgorithmEventsRecorder implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
+public class AlgorithmEventsRecorder
+        implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
 
     private boolean renderShipments = false;
 
@@ -104,13 +107,15 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
     }
 
     public void setRecordingRange(int startIteration, int endIteration) {
-        this.start_recording_at = startIteration;
-        this.end_recording_at = endIteration;
+        start_recording_at = startIteration;
+        end_recording_at = endIteration;
     }
 
     @Override
     public void ruinStarts(Collection<VehicleRoute> routes) {
-        if (!record()) return;
+        if (!record()) {
+            return;
+        }
         fileSink.stepBegins(graph.getId(), 0, BEFORE_RUIN_RENDER_SOLUTION);
         markAllNodesAsInserted();
         addRoutes(routes);
@@ -141,13 +146,16 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     private String getNodeId(TourActivity act) {
         String nodeId = null;
-        if (act instanceof TourActivity.JobActivity) {
-            Job job = ((TourActivity.JobActivity) act).getJob();
+        if (act instanceof JobActivity) {
+            Job job = ((JobActivity) act).getJob();
             if (job instanceof Service) {
                 nodeId = job.getId();
             } else if (job instanceof Shipment) {
-                if (act.getName().equals("pickupShipment")) nodeId = getFromNodeId((Shipment) job);
-                else nodeId = getToNodeId((Shipment) job);
+                if (act.getName().equals("pickupShipment")) {
+                    nodeId = getFromNodeId((Shipment) job);
+                } else {
+                    nodeId = getToNodeId((Shipment) job);
+                }
             }
         }
         return nodeId;
@@ -164,9 +172,14 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     @Override
     public void removed(Job job, VehicleRoute fromRoute) {
-        if (!record()) return;
-        if (job instanceof Service) removeService(job, fromRoute);
-        else if (job instanceof Shipment) removeShipment(job, fromRoute);
+        if (!record()) {
+            return;
+        }
+        if (job instanceof Service) {
+            removeService(job, fromRoute);
+        } else if (job instanceof Shipment) {
+            removeShipment(job, fromRoute);
+        }
     }
 
     private void removeShipment(Job job, VehicleRoute fromRoute) {
@@ -185,8 +198,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
             removeEdge(enteringFromNode.getId());
             removeEdge(enteringToNode.getId());
             if (graph.getNode(toNodeId).getLeavingEdgeSet().isEmpty()) {
-                if (fromRoute.getVehicle().isReturnToDepot())
+                if (fromRoute.getVehicle().isReturnToDepot()) {
                     throw new IllegalStateException("leaving edge is missing");
+                }
                 return;
             }
 
@@ -205,8 +219,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     private Edge getLeavingEdge(String toNodeId) {
         Collection<Edge> edges = graph.getNode(toNodeId).getLeavingEdgeSet();
-        if (edges.size() == 1) return edges.iterator().next();
-        else {
+        if (edges.size() == 1) {
+            return edges.iterator().next();
+        } else {
             for (Edge e : edges) {
                 if (e.getId().startsWith("shipment")) {
                     continue;
@@ -219,8 +234,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     private Edge getEnteringEdge(String toNodeId) {
         Collection<Edge> enteringEdges = graph.getNode(toNodeId).getEnteringEdgeSet();
-        if (enteringEdges.size() == 1) return enteringEdges.iterator().next();
-        else {
+        if (enteringEdges.size() == 1) {
+            return enteringEdges.iterator().next();
+        } else {
             for (Edge e : enteringEdges) {
                 if (e.getId().startsWith("shipment")) {
                     continue;
@@ -251,7 +267,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         removeEdge(entering.getId());
 
         if (node.getLeavingEdgeSet().isEmpty()) {
-            if (fromRoute.getVehicle().isReturnToDepot()) throw new IllegalStateException("leaving edge is missing");
+            if (fromRoute.getVehicle().isReturnToDepot()) {
+                throw new IllegalStateException("leaving edge is missing");
+            }
             return;
         }
 
@@ -284,7 +302,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         try {
             fileSink.end();
             fos.close();
-            if (gzipOs != null) gzipOs.close();
+            if (gzipOs != null) {
+                gzipOs.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -365,7 +385,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
     }
 
     private String makeEndId(Vehicle vehicle) {
-        if (vehicle.getStartLocation().getId().equals(vehicle.getEndLocation().getId())) return makeStartId(vehicle);
+        if (vehicle.getStartLocation().getId().equals(vehicle.getEndLocation().getId())) {
+            return makeStartId(vehicle);
+        }
         return vehicle.getId() + "_end";
     }
 
@@ -377,7 +399,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     @Override
     public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
-        if (!record()) return;
+        if (!record()) {
+            return;
+        }
         fileSink.stepBegins(graph.getId(), 0, CLEAR_SOLUTION);
         removeRoutes(vehicleRoutes);
     }
@@ -399,15 +423,20 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     @Override
     public void informBeforeJobInsertion(Job job, InsertionData data, VehicleRoute route) {
-        if (!record()) return;
+        if (!record()) {
+            return;
+        }
         markInserted(job);
         handleVehicleSwitch(data, route);
         insertJob(job, data, route);
     }
 
     private void insertJob(Job job, InsertionData data, VehicleRoute route) {
-        if (job instanceof Service) insertService(job, data, route);
-        else if (job instanceof Shipment) insertShipment(job, data, route);
+        if (job instanceof Service) {
+            insertService(job, data, route);
+        } else if (job instanceof Shipment) {
+            insertShipment(job, data, route);
+        }
     }
 
     private void insertShipment(Job job, InsertionData data, VehicleRoute route) {
@@ -415,7 +444,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         String toNodeId = getToNodeId((Shipment) job);
         insertNode(toNodeId, data.getDeliveryInsertionIndex(), data, route);
 
-        List<AbstractActivity> del = vrp.getActivities(job);
+        List<JobActivity> del = vrp.getActivities(job);
         VehicleRoute copied = VehicleRoute.copyOf(route);
         copied.getTourActivities().addActivity(data.getDeliveryInsertionIndex(), del.get(1));
 
@@ -434,7 +463,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         if (isFirst(insertionIndex)) {
             node_i = makeStartId(data.getSelectedVehicle());
         } else {
-            TourActivity.JobActivity jobActivity = (TourActivity.JobActivity) route.getActivities().get(insertionIndex - 1);
+            AbstractActivityNEW jobActivity = (AbstractActivityNEW) route.getActivities().get(insertionIndex - 1);
             node_i = getNodeId(jobActivity);
         }
         String edgeId_1 = node_i + "_" + nodeId;
@@ -442,7 +471,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         if (isLast(insertionIndex, route)) {
             node_j = makeEndId(data.getSelectedVehicle());
         } else {
-            TourActivity.JobActivity jobActivity = (TourActivity.JobActivity) route.getActivities().get(insertionIndex);
+            AbstractActivityNEW jobActivity = (AbstractActivityNEW) route.getActivities().get(insertionIndex);
             node_j = getNodeId(jobActivity);
         }
         String edgeId_2 = nodeId + "_" + node_j;
@@ -466,9 +495,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         }
         if (vehicleSwitch && !route.getActivities().isEmpty()) {
             String oldStart = makeStartId(route.getVehicle());
-            String firstAct = ((TourActivity.JobActivity) route.getActivities().get(0)).getJob().getId();
+            String firstAct = ((JobActivity) route.getActivities().get(0)).getJob().getId();
             String oldEnd = makeEndId(route.getVehicle());
-            String lastAct = ((TourActivity.JobActivity) route.getActivities().get(route.getActivities().size() - 1)).getJob().getId();
+            String lastAct = ((JobActivity) route.getActivities().get(route.getActivities().size() - 1)).getJob().getId();
             removeEdge(oldStart + "_" + firstAct);
 
             if (route.getVehicle().isReturnToDepot()) {
@@ -522,7 +551,9 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     @Override
     public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
-        if (!record()) return;
+        if (!record()) {
+            return;
+        }
         fileSink.stepBegins(graph.getId(), 0, RECREATE);
     }
 }

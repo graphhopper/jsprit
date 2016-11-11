@@ -21,8 +21,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 /**
  * Created by schroeder on 15/10/15.
@@ -42,53 +41,75 @@ public class DefaultScorer implements ScoringFunction  {
     }
 
     public void setTimeWindowParam(double tw_param) {
-        this.timeWindowParam = tw_param;
+        timeWindowParam = tw_param;
     }
 
     public void setDepotDistanceParam(double depotDistance_param) {
-        this.depotDistanceParam = depotDistance_param;
+        depotDistanceParam = depotDistance_param;
     }
 
     @Override
     public double score(InsertionData best, Job job) {
-        double score;
-        if (job instanceof Service) {
-            score = scoreService(best, job);
-        } else if (job instanceof Shipment) {
-            score = scoreShipment(best, job);
-        } else throw new IllegalStateException("not supported");
-        return score;
-    }
-
-    private double scoreShipment(InsertionData best, Job job) {
-        Shipment shipment = (Shipment) job;
-        double maxDepotDistance_1 = Math.max(
-            getDistance(best.getSelectedVehicle().getStartLocation(), shipment.getPickupLocation()),
-            getDistance(best.getSelectedVehicle().getStartLocation(), shipment.getDeliveryLocation())
-        );
-        double maxDepotDistance_2 = Math.max(
-            getDistance(best.getSelectedVehicle().getEndLocation(), shipment.getPickupLocation()),
-            getDistance(best.getSelectedVehicle().getEndLocation(), shipment.getDeliveryLocation())
-        );
-        double maxDepotDistance = Math.max(maxDepotDistance_1, maxDepotDistance_2);
-        double minTimeToOperate = Math.min(shipment.getPickupTimeWindow().getEnd() - shipment.getPickupTimeWindow().getStart(),
-            shipment.getDeliveryTimeWindow().getEnd() - shipment.getDeliveryTimeWindow().getStart());
+        Vehicle selectedVehicle = best.getSelectedVehicle();
+        double maxFromStart = job.getAllLocations().stream()
+                .mapToDouble(l -> getDistance(selectedVehicle.getStartLocation(), l))
+                .max()
+                .orElse(0d);
+        double maxToEnd = job.getAllLocations().stream()
+                .mapToDouble(l -> getDistance(selectedVehicle.getEndLocation(), l))
+                .max()
+                .orElse(0d);
+        double maxDepotDistance = Math.max(maxFromStart, maxToEnd);
+        double minTimeToOperate = job.getTimeWindows().stream()
+                .mapToDouble(tw -> tw.getEnd() - tw.getStart())
+                .min()
+                .orElse(0d);
         return Math.max(timeWindowParam * minTimeToOperate, minTimeWindowScore) + depotDistanceParam * maxDepotDistance;
     }
-
-    private double scoreService(InsertionData best, Job job) {
-        Location location = ((Service) job).getLocation();
-        double maxDepotDistance = 0;
-        if (location != null) {
-            maxDepotDistance = Math.max(
-                getDistance(best.getSelectedVehicle().getStartLocation(), location),
-                getDistance(best.getSelectedVehicle().getEndLocation(), location)
-            );
-        }
-        return Math.max(timeWindowParam * (((Service) job).getTimeWindow().getEnd() - ((Service) job).getTimeWindow().getStart()), minTimeWindowScore) +
-            depotDistanceParam * maxDepotDistance;
-    }
-
+//
+//        double score;
+//        if (job instanceofx Service) {
+//            score = scoreService(best, job);
+//        } else if (job instanceofx Shipment) {
+//            score = scoreShipment(best, job);
+//        } else {
+//            throw new IllegalStateException("not supported");
+//        }
+//        System.out.format("OLD SCORE: %6.2f   NEW SCORE: %6.2f    PASS: %s\n", score, calculateScore(best, job),
+//                (score == calculateScore(best, job) ? "true" : "false"));
+//        return score;
+//    }
+//
+//
+//    private double scoreShipment(InsertionData best, Job job) {
+//        Shipment shipment = (Shipment) job;
+//        double maxDepotDistance_1 = Math.max(
+//                getDistance(best.getSelectedVehicle().getStartLocation(), shipment.getPickupLocation()),
+//                getDistance(best.getSelectedVehicle().getStartLocation(), shipment.getDeliveryLocation())
+//                );
+//        double maxDepotDistance_2 = Math.max(
+//                getDistance(best.getSelectedVehicle().getEndLocation(), shipment.getPickupLocation()),
+//                getDistance(best.getSelectedVehicle().getEndLocation(), shipment.getDeliveryLocation())
+//                );
+//        double maxDepotDistance = Math.max(maxDepotDistance_1, maxDepotDistance_2);
+//        double minTimeToOperate = Math.min(shipment.getPickupTimeWindow().getEnd() - shipment.getPickupTimeWindow().getStart(),
+//                shipment.getDeliveryTimeWindow().getEnd() - shipment.getDeliveryTimeWindow().getStart());
+//        return Math.max(timeWindowParam * minTimeToOperate, minTimeWindowScore) + depotDistanceParam * maxDepotDistance;
+//    }
+//
+//    private double scoreService(InsertionData best, Job job) {
+//        Location location = ((Service) job).getLocation();
+//        double maxDepotDistance = 0;
+//        if (location != null) {
+//            maxDepotDistance = Math.max(
+//                    getDistance(best.getSelectedVehicle().getStartLocation(), location),
+//                    getDistance(best.getSelectedVehicle().getEndLocation(), location)
+//                    );
+//        }
+//        return Math.max(timeWindowParam * (((Service) job).getTimeWindow().getEnd() - ((Service) job).getTimeWindow().getStart()), minTimeWindowScore) +
+//                depotDistanceParam * maxDepotDistance;
+//    }
+//
 
     private double getDistance(Location loc1, Location loc2) {
         return vrp.getTransportCosts().getTransportCost(loc1, loc2, 0., null, null);

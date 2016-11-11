@@ -17,13 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 class JobCalculatorSwitcher implements JobInsertionCostsCalculator {
