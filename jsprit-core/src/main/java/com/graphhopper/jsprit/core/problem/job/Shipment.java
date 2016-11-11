@@ -319,17 +319,6 @@ public class Shipment extends AbstractJob {
         setActivities(list);
     }
 
-
-    @Override
-    public Location getStartLocation() {
-        return getPickupActivity().getLocation();
-    }
-
-    @Override
-    public Location getEndLocation() {
-        return getDeliveryActivity().getLocation();
-    }
-
     public PickupShipmentDEPRECATED getPickupActivity() {
         return (PickupShipmentDEPRECATED) getActivityList().findByType(PickupShipmentDEPRECATED.NAME)
                         .get();
