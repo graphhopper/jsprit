@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
-
+@Deprecated
 class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCostsCalculator {
 
     private VehicleRoutingActivityCosts activityCosts;

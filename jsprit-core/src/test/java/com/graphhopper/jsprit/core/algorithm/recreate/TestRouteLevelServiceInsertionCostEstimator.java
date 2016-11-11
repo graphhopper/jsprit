@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
@@ -56,7 +55,6 @@ import com.graphhopper.jsprit.core.util.CostFactory;
 /**
  * Created by schroeder on 02.07.14.
  */
-@Ignore
 public class TestRouteLevelServiceInsertionCostEstimator {
 
     private VehicleRoute route;

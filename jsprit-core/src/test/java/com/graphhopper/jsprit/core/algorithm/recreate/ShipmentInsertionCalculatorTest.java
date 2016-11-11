@@ -143,8 +143,8 @@ public class ShipmentInsertionCalculatorTest {
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(0.0, iData.getInsertionCost(), 0.05);
-        assertEquals(1, iData.getPickupInsertionIndex());
-        assertEquals(2, iData.getDeliveryInsertionIndex());
+        assertEquals(1, iData.getUnmodifiableEventsByType(InsertActivity.class).get(1).getIndex());
+        assertEquals(2, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     private List<JobActivity> getTourActivities(Shipment shipment) {
@@ -203,8 +203,9 @@ public class ShipmentInsertionCalculatorTest {
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(0.0, iData.getInsertionCost(), 0.05);
-        assertEquals(0, iData.getPickupInsertionIndex());
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        List<InsertActivity> unmodifiableEventsByType = iData.getUnmodifiableEventsByType(InsertActivity.class);
+        assertEquals(1, unmodifiableEventsByType.get(0).getIndex());
+        assertEquals(0, unmodifiableEventsByType.get(1).getIndex());
     }
 
     @Test
@@ -230,8 +231,8 @@ public class ShipmentInsertionCalculatorTest {
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(2.0, iData.getInsertionCost(), 0.05);
-        assertEquals(0, iData.getPickupInsertionIndex());
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        assertEquals(0, iData.getUnmodifiableEventsByType(InsertActivity.class).get(1).getIndex());
+        assertEquals(1, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     @Test
@@ -309,7 +310,7 @@ public class ShipmentInsertionCalculatorTest {
         InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
         //		routeActVisitor.visit(route);
 
-        assertEquals(3, iData.getDeliveryInsertionIndex());
+        assertEquals(3, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     private void add(VehicleRoutingProblem vrp, VehicleRoute route, Shipment shipment, int pickI, int delI) {

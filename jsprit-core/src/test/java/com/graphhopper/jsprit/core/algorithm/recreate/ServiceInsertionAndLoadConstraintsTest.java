@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -146,8 +147,8 @@ public class ServiceInsertionAndLoadConstraintsTest {
         switcher.put(Shipment.class, insertionCalculator);
 
         InsertionData iData = switcher.getInsertionData(route, pickup, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
-
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        List<InsertActivity> insertActivities = iData.getUnmodifiableEventsByType(InsertActivity.class);
+        assertEquals(1, insertActivities.get(0).getIndex());
     }
 
 }

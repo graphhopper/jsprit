@@ -46,7 +46,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivity
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 
-
+@Deprecated
 final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsCalculator {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceInsertionOnRouteLevelCalculator.class);
