@@ -124,8 +124,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
         VehicleRoute route = VehicleRoute.emptyRoute();
         route.setVehicleAndDepartureTime(vehicle, 0.0);
 
-        Inserter inserter = new Inserter(new InsertionListeners(), vrp);
-        inserter.insertJob(delivery, new InsertionData(0, 0, 0, vehicle, null), route);
+        route.getTourActivities().addActivity(0,vrp.copyAndGetActivities(delivery).get(0));
 
         JobActivityFactory activityFactory = new CopyJobActivityFactory();
 

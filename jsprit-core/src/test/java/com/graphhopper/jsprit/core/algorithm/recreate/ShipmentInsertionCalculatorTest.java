@@ -130,11 +130,12 @@ public class ShipmentInsertionCalculatorTest {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         VehicleRoute route = VehicleRoute.emptyRoute();
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
-        new Inserter(new InsertionListeners(), vehicleRoutingProblem).insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
+        List<JobActivity> tourActivities = getTourActivities(shipment);
+        route.setVehicleAndDepartureTime(vehicle,0);
+        add(tourActivities,route,0,0);
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<JobActivity> activities = new ArrayList<JobActivity>();
+        List<JobActivity> activities = new ArrayList<>();
         activities.add(new PickupShipmentDEPRECATED(shipment2));
         activities.add(new DeliverShipmentDEPRECATED(shipment2));
         when(activityFactory.createActivities(shipment2)).thenReturn(activities);
@@ -147,7 +148,7 @@ public class ShipmentInsertionCalculatorTest {
     }
 
     private List<JobActivity> getTourActivities(Shipment shipment) {
-        List<JobActivity> acts = new ArrayList<JobActivity>();
+        List<JobActivity> acts = new ArrayList<>();
         PickupShipmentDEPRECATED pick = new PickupShipmentDEPRECATED(shipment);
         DeliverShipmentDEPRECATED del = new DeliverShipmentDEPRECATED(shipment);
         acts.add(pick);
@@ -160,16 +161,11 @@ public class ShipmentInsertionCalculatorTest {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         VehicleRoute route = VehicleRoute.emptyRoute();
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
-        new Inserter(new InsertionListeners(), vehicleRoutingProblem).insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
-        createInsertionCalculator(new HardRouteConstraint() {
+        List<JobActivity> tourActivities = getTourActivities(shipment);
+        route.setVehicleAndDepartureTime(vehicle,0);
+        add(tourActivities,route,0,0);
 
-            @Override
-            public boolean fulfilled(JobInsertionContext insertionContext) {
-                return false;
-            }
-
-        });
+        createInsertionCalculator(insertionContext -> false);
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
         List<JobActivity> activities = new ArrayList<JobActivity>();
@@ -191,14 +187,15 @@ public class ShipmentInsertionCalculatorTest {
         Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,10")).build();
 
         VehicleRoute route = VehicleRoute.emptyRoute();
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment2)).thenReturn(getTourActivities(shipment2));
-        Inserter inserter = new Inserter(new InsertionListeners(), vehicleRoutingProblem);
-        inserter.insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
-        inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
+        List<JobActivity> shipmentActivities = getTourActivities(shipment);
+        List<JobActivity> shipment2Activities = getTourActivities(shipment2);
+
+        route.setVehicleAndDepartureTime(vehicle,0d);
+        add(shipmentActivities,route,0,0);
+        add(shipment2Activities,route,1,2);
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<JobActivity> activities = new ArrayList<JobActivity>();
+        List<JobActivity> activities = new ArrayList<>();
         activities.add(new PickupShipmentDEPRECATED(shipment3));
         activities.add(new DeliverShipmentDEPRECATED(shipment3));
         when(activityFactory.createActivities(shipment3)).thenReturn(activities);
@@ -215,15 +212,16 @@ public class ShipmentInsertionCalculatorTest {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,9")).build();
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
-        when(vehicleRoutingProblem.copyAndGetActivities(shipment2)).thenReturn(getTourActivities(shipment2));
+        List<JobActivity> shipmentActivities = getTourActivities(shipment);
+        List<JobActivity> shipment2Activities = getTourActivities(shipment2);
         VehicleRoute route = VehicleRoute.emptyRoute();
-        Inserter inserter = new Inserter(new InsertionListeners(), vehicleRoutingProblem);
-        inserter.insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
-        inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
+
+        route.setVehicleAndDepartureTime(vehicle,0d);
+        add(shipmentActivities,route,0,0);
+        add(shipment2Activities,route,1,2);
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
-        List<JobActivity> activities = new ArrayList<JobActivity>();
+        List<JobActivity> activities = new ArrayList<>();
         activities.add(new PickupShipmentDEPRECATED(shipment3));
         activities.add(new DeliverShipmentDEPRECATED(shipment3));
         when(activityFactory.createActivities(shipment3)).thenReturn(activities);
@@ -248,9 +246,8 @@ public class ShipmentInsertionCalculatorTest {
         VehicleRoute route = VehicleRoute.emptyRoute();
         route.setVehicleAndDepartureTime(vehicle, 0.0);
 
-        Inserter inserter = new Inserter(new InsertionListeners(), vrp);
-        inserter.insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
-        inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
+        add(vrp,route,shipment,0,0);
+        add(vrp,route,shipment2,1,2);
 
         StateManager stateManager = new StateManager(vrp);
         stateManager.updateLoadStates();
@@ -280,10 +277,8 @@ public class ShipmentInsertionCalculatorTest {
         VehicleRoute route = VehicleRoute.emptyRoute();
         route.setVehicleAndDepartureTime(vehicle, 0.0);
 
-        Inserter inserter = new Inserter(new InsertionListeners(), vrp);
-
-        inserter.insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
-        inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
+        add(vrp,route,shipment,0,0);
+        add(vrp,route,shipment2,1,2);
 
         StateManager stateManager = new StateManager(vrp);
         stateManager.updateLoadStates();
@@ -315,6 +310,17 @@ public class ShipmentInsertionCalculatorTest {
         //		routeActVisitor.visit(route);
 
         assertEquals(3, iData.getDeliveryInsertionIndex());
+    }
+
+    private void add(VehicleRoutingProblem vrp, VehicleRoute route, Shipment shipment, int pickI, int delI) {
+        List<JobActivity> shipmentActivities = vrp.copyAndGetActivities(shipment);
+        route.getTourActivities().addActivity(delI, shipmentActivities.get(1));
+        route.getTourActivities().addActivity(pickI, shipmentActivities.get(0));
+    }
+
+    private void add(List<JobActivity> shipmentActivities, VehicleRoute route, int pickI, int delI) {
+        route.getTourActivities().addActivity(delI, shipmentActivities.get(1));
+        route.getTourActivities().addActivity(pickI, shipmentActivities.get(0));
     }
 
 
