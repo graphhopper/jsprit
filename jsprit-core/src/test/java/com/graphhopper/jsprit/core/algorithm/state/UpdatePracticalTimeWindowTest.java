@@ -70,13 +70,15 @@ public class UpdatePracticalTimeWindowTest {
         Delivery delivery = new Delivery.Builder("del").setLocation(Location.newInstance("20,20")).setTimeWindow(TimeWindow.newInstance(10, 40)).build();
         Pickup pickup2 = new Pickup.Builder("pick2").setLocation(Location.newInstance("20,0")).setTimeWindow(TimeWindow.newInstance(20, 50)).build();
 
-        Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(mock(VehicleType.class)).build();
+        VehicleType vt = mock(VehicleType.class);
+        when(vt.getAvgVelocity()).thenReturn(1d);
+        Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(vt).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         final VehicleRoutingProblem vrp = vrpBuilder.addJob(pickup).addJob(pickup2).addJob(delivery).build();
 
         route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).setJobActivityFactory(new CopyJobActivityFactory())
-                .addService(pickup).addService(delivery).addService(pickup2).build();
+                        .addService(pickup).addService(delivery).addService(pickup2).build();
 
         reverseActivityVisitor.visit(route);
 

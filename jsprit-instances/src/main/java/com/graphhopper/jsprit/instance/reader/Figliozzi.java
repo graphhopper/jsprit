@@ -17,17 +17,17 @@
  */
 package com.graphhopper.jsprit.instance.reader;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
-import com.graphhopper.jsprit.core.problem.driver.Driver;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
-import com.graphhopper.jsprit.core.util.Locations;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.Locations;
 
 
 public class Figliozzi {
@@ -50,59 +50,59 @@ public class Figliozzi {
         static List<Double> createSpeedValues(SpeedDistribution speedDistribution) {
             List<Double> speedValues = Collections.emptyList();
             switch (speedDistribution) {
-                case TD1a:
-                    speedValues = Arrays.asList(1., 1.6, 1.05, 1.6, 1.);
-                    break;
-                case TD2a:
-                    speedValues = Arrays.asList(1., 2., 1.5, 2., 1.);
-                    break;
-                case TD3a:
-                    speedValues = Arrays.asList(1., 2.5, 1.75, 2.5, 1.);
-                    break;
+            case TD1a:
+                speedValues = Arrays.asList(1., 1.6, 1.05, 1.6, 1.);
+                break;
+            case TD2a:
+                speedValues = Arrays.asList(1., 2., 1.5, 2., 1.);
+                break;
+            case TD3a:
+                speedValues = Arrays.asList(1., 2.5, 1.75, 2.5, 1.);
+                break;
 
-                case TD1b:
-                    speedValues = Arrays.asList(1.6, 1., 1.05, 1., 1.6);
-                    break;
-                case TD2b:
-                    speedValues = Arrays.asList(2., 1., 1.5, 1., 2.);
-                    break;
-                case TD3b:
-                    speedValues = Arrays.asList(2.5, 1., 1.75, 1., 2.5);
-                    break;
+            case TD1b:
+                speedValues = Arrays.asList(1.6, 1., 1.05, 1., 1.6);
+                break;
+            case TD2b:
+                speedValues = Arrays.asList(2., 1., 1.5, 1., 2.);
+                break;
+            case TD3b:
+                speedValues = Arrays.asList(2.5, 1., 1.75, 1., 2.5);
+                break;
 
-                case TD1c:
-                    speedValues = Arrays.asList(1.6, 1.6, 1.05, 1., 1.);
-                    break;
-                case TD2c:
-                    speedValues = Arrays.asList(2., 2., 1.5, 1., 1.);
-                    break;
-                case TD3c:
-                    speedValues = Arrays.asList(2.5, 2.5, 1.75, 1., 1.);
-                    break;
+            case TD1c:
+                speedValues = Arrays.asList(1.6, 1.6, 1.05, 1., 1.);
+                break;
+            case TD2c:
+                speedValues = Arrays.asList(2., 2., 1.5, 1., 1.);
+                break;
+            case TD3c:
+                speedValues = Arrays.asList(2.5, 2.5, 1.75, 1., 1.);
+                break;
 
-                case TD1d:
-                    speedValues = Arrays.asList(1., 1., 1.05, 1.6, 1.6);
-                    break;
-                case TD2d:
-                    speedValues = Arrays.asList(1., 1., 1.5, 2., 2.);
-                    break;
-                case TD3d:
-                    speedValues = Arrays.asList(1., 1., 1.75, 2.5, 2.5);
-                    break;
+            case TD1d:
+                speedValues = Arrays.asList(1., 1., 1.05, 1.6, 1.6);
+                break;
+            case TD2d:
+                speedValues = Arrays.asList(1., 1., 1.5, 2., 2.);
+                break;
+            case TD3d:
+                speedValues = Arrays.asList(1., 1., 1.75, 2.5, 2.5);
+                break;
 
-                case TD4:
-                    speedValues = Arrays.asList(1.1, 0.85, 1.1, 0.85, 1.1);
-                    break;
-                case TD5:
-                    speedValues = Arrays.asList(1.2, 0.8, 1., 0.8, 1.2);
-                    break;
-                case TD6:
-                    speedValues = Arrays.asList(1.2, 0.7, 1.2, 0.7, 1.2);
-                    break;
+            case TD4:
+                speedValues = Arrays.asList(1.1, 0.85, 1.1, 0.85, 1.1);
+                break;
+            case TD5:
+                speedValues = Arrays.asList(1.2, 0.8, 1., 0.8, 1.2);
+                break;
+            case TD6:
+                speedValues = Arrays.asList(1.2, 0.7, 1.2, 0.7, 1.2);
+                break;
 
-                case CLASSIC:
-                    speedValues = Arrays.asList(1., 1., 1., 1., 1.);
-                    break;
+            case CLASSIC:
+                speedValues = Arrays.asList(1., 1., 1., 1., 1.);
+                break;
             }
             return speedValues;
         }
@@ -149,14 +149,16 @@ public class Figliozzi {
 
         @Override
         public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-            return transportDistanceParameter * EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) +
-                transportTimeParameter * getTransportTime(from, to, departureTime, driver, vehicle);
+            return transportDistanceParameter
+                    * EuclideanDistanceCalculator.getInstance().calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) +
+                    transportTimeParameter * getTransportTime(from, to, departureTime, driver, vehicle);
         }
 
         @Override
         public double getBackwardTransportCost(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
-            return transportDistanceParameter * EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) +
-                transportTimeParameter * getBackwardTransportTime(from, to, arrivalTime, driver, vehicle);
+            return transportDistanceParameter
+                    * EuclideanDistanceCalculator.getInstance().calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId())) +
+                    transportTimeParameter * getBackwardTransportTime(from, to, arrivalTime, driver, vehicle);
         }
 
 
@@ -166,7 +168,8 @@ public class Figliozzi {
                 return 0.0;
             }
             double totalTravelTime = 0.0;
-            double distanceToTravel = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
+            double distanceToTravel = EuclideanDistanceCalculator.getInstance().calculateDistance(locations.getCoord(from.getId()),
+                    locations.getCoord(to.getId()));
             double currentTime = departureTime;
             for (int i = 0; i < timeBins.size(); i++) {
                 double timeThreshold = timeBins.get(i);
@@ -192,7 +195,8 @@ public class Figliozzi {
                 return 0.0;
             }
             double totalTravelTime = 0.0;
-            double distanceToTravel = EuclideanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
+            double distanceToTravel = EuclideanDistanceCalculator.getInstance().calculateDistance(locations.getCoord(from.getId()),
+                    locations.getCoord(to.getId()));
             double currentTime = arrivalTime;
             for (int i = timeBins.size() - 1; i >= 0; i--) {
                 double nextLowerTimeThreshold;

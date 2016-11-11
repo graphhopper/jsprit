@@ -50,7 +50,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.RuinRadial;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinRandom;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinShareFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinWorst;
-import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
+import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -387,7 +387,7 @@ public class Jsprit {
         double noiseLevel = toDouble(getProperty(Parameter.INSERTION_NOISE_LEVEL.toString()));
         double noiseProbability = toDouble(getProperty(Parameter.INSERTION_NOISE_PROB.toString()));
 
-        JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
+        JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new DefaultJobDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
         jobNeighborhoods.initialise();
 
         final double maxCosts;

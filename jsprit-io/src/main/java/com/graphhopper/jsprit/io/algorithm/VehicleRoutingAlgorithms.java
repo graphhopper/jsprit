@@ -32,7 +32,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoodsFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RadialRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RandomRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
-import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
+import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectRandomly;
@@ -867,7 +867,7 @@ public class VehicleRoutingAlgorithms {
                 String shareToRuinString = moduleConfig.getString("ruin.share");
                 if (shareToRuinString == null) throw new IllegalStateException("module.ruin.share is missing.");
                 double shareToRuin = Double.valueOf(shareToRuinString);
-                JobDistance jobDistance = new AvgServiceAndShipmentDistance(vrp.getTransportCosts());
+                JobDistance jobDistance = new DefaultJobDistance(vrp.getTransportCosts());
                 ruin = getRadialRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin, jobDistance);
             } else if (ruin_name.equals("clusterRuin")) {
                 String initialNumberJobsToRemoveString = moduleConfig.getString("ruin.initRemoveJobs");
@@ -916,7 +916,7 @@ public class VehicleRoutingAlgorithms {
     }
 
     private static RuinStrategy getClusterRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, int initialNumberJobsToRemove) {
-    	JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()));
+    	JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new DefaultJobDistance(vrp.getTransportCosts()));
     	RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
         RuinStrategy ruin = definedClasses.get(stratKey);
         if (ruin == null) {

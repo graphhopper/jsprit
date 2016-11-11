@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.util;
 
+import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
+import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 
 public class CostFactory {
@@ -37,11 +39,12 @@ public class CostFactory {
                 //assume: locationId="x,y"
                 String[] splitted = id.split(",");
                 return Coordinate.newInstance(Double.parseDouble(splitted[0]),
-                    Double.parseDouble(splitted[1]));
+                                Double.parseDouble(splitted[1]));
             }
 
         };
-        return new ManhattanCosts(locations);
+        return new DefaultCosts(ManhattanDistanceCalculator.getInstance())
+                        .withCoordinateConverter(locations);
     }
 
     /**
@@ -60,10 +63,11 @@ public class CostFactory {
                 //assume: locationId="x,y"
                 String[] splitted = id.split(",");
                 return Coordinate.newInstance(Double.parseDouble(splitted[0]),
-                    Double.parseDouble(splitted[1]));
+                                Double.parseDouble(splitted[1]));
             }
 
         };
-        return new CrowFlyCosts(locations);
+        return new DefaultCosts(EuclideanDistanceCalculator.getInstance())
+                        .withCoordinateConverter(locations);
     }
 }

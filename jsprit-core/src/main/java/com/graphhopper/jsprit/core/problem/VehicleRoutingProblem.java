@@ -31,6 +31,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
@@ -44,7 +45,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeKey;
 import com.graphhopper.jsprit.core.util.Coordinate;
-import com.graphhopper.jsprit.core.util.CrowFlyCosts;
+import com.graphhopper.jsprit.core.util.DefaultCosts;
 import com.graphhopper.jsprit.core.util.Locations;
 
 
@@ -406,13 +407,17 @@ public class VehicleRoutingProblem {
         /**
          * Builds the {@link VehicleRoutingProblem}.
          * <p>
-         * <p>If {@link VehicleRoutingTransportCosts} are not set, {@link CrowFlyCosts} is used.
+         * <p>
+         * If {@link VehicleRoutingTransportCosts} are not set,
+         * {@link DefaultCosts} is used with
+         * {@linkplain EuclideanDistanceCalculator}.
          *
          * @return {@link VehicleRoutingProblem}
          */
         public VehicleRoutingProblem build() {
             if (transportCosts == null) {
-                transportCosts = new CrowFlyCosts(getLocations());
+                transportCosts = new DefaultCosts(EuclideanDistanceCalculator.getInstance())
+                                .withCoordinateConverter(getLocations());
             }
             for (Job job : tentativeJobs.values()) {
                 if (!jobsInInitialRoutes.contains(job.getId())) {

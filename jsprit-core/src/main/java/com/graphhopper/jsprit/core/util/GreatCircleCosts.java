@@ -18,85 +18,100 @@
 package com.graphhopper.jsprit.core.util;
 
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.driver.Driver;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
+import com.graphhopper.jsprit.core.distance.SphericalDistanceCalculator;
 
 /**
  * @author stefan schroeder
+ *
+ * @deprecated Use instead new {@linkplain DefaultCosts} with
+ *             {@link ManhattanDistanceCalculator#getInstance()}
  */
+@Deprecated
+public class GreatCircleCosts extends DefaultCosts {
 
-public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCosts implements TransportDistance {
-
-    private double speed = 1.;
-
-    private double detour = 1.;
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
+    public GreatCircleCosts() {
+        super(SphericalDistanceCalculator.getInstance());
     }
 
-    /**
-     * Sets the detour factor.
-     * <p>
-     * The distance is calculated by the great circle distance * detour factor.
-     * </p>
-     *
-     * @param detour
-     */
-    public void setDetour(double detour) {
-        this.detour = detour;
-    }
-
-    private DistanceUnit distanceUnit = DistanceUnit.Kilometer;
-
-   public GreatCircleCosts() {
-        super();
-    }
-
-    public GreatCircleCosts(DistanceUnit distanceUnit) {
-        super();
-        this.distanceUnit = distanceUnit;
-    }
-
-
-    @Override
-    public double getTransportCost(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
-        double distance;
-        try {
-            distance = calculateDistance(from, to);
-        } catch (NullPointerException e) {
-            throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
-        }
-        double costs = distance;
-        if (vehicle != null) {
-            if (vehicle.getType() != null) {
-                costs = distance * vehicle.getType().getVehicleCostParams().perDistanceUnit;
-            }
-        }
-        return costs;
-    }
-
-    private double calculateDistance(Location fromLocation, Location toLocation) {
-        Coordinate from = null;
-        Coordinate to = null;
-        if (fromLocation.getCoordinate() != null && toLocation.getCoordinate() != null) {
-            from = fromLocation.getCoordinate();
-            to = toLocation.getCoordinate();
-        }
-        if (from == null || to == null) throw new NullPointerException("either from or to location is null");
-        return GreatCircleDistanceCalculator.calculateDistance(from, to, distanceUnit) * detour;
-    }
-
-    @Override
-    public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
-        return calculateDistance(from, to) / speed;
-    }
-
-    @Override
-    public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-        return calculateDistance(from, to);
-    }
+    // private double speed = 1.;
+    //
+    // private double detour = 1.;
+    //
+    // public void setSpeed(double speed) {
+    // this.speed = speed;
+    // }
+    //
+    // /**
+    // * Sets the detour factor.
+    // * <p>
+    // * The distance is calculated by the great circle distance * detour
+    // factor.
+    // * </p>
+    // *
+    // * @param detour
+    // */
+    // public void setDetour(double detour) {
+    // this.detour = detour;
+    // }
+    //
+    // private DistanceUnit distanceUnit = DistanceUnit.Kilometer;
+    //
+    // public GreatCircleCosts() {
+    // super();
+    // }
+    //
+    // public GreatCircleCosts(DistanceUnit distanceUnit) {
+    // super();
+    // this.distanceUnit = distanceUnit;
+    // }
+    //
+    //
+    // @Override
+    // public double getTransportCost(Location from, Location to, double time,
+    // Driver driver, Vehicle vehicle) {
+    // double distance;
+    // try {
+    // distance = calculateDistance(from, to);
+    // } catch (NullPointerException e) {
+    // throw new NullPointerException("cannot calculate euclidean distance.
+    // coordinates are missing. either add coordinates or use another
+    // transport-cost-calculator.");
+    // }
+    // double costs = distance;
+    // if (vehicle != null) {
+    // if (vehicle.getType() != null) {
+    // costs = distance *
+    // vehicle.getType().getVehicleCostParams().perDistanceUnit;
+    // }
+    // }
+    // return costs;
+    // }
+    //
+    // private double calculateDistance(Location fromLocation, Location
+    // toLocation) {
+    // Coordinate from = null;
+    // Coordinate to = null;
+    // if (fromLocation.getCoordinate() != null && toLocation.getCoordinate() !=
+    // null) {
+    // from = fromLocation.getCoordinate();
+    // to = toLocation.getCoordinate();
+    // }
+    // if (from == null || to == null) throw new NullPointerException("either
+    // from or to location is null");
+    // return GreatCircleDistanceCalculator.calculateDistance(from, to,
+    // distanceUnit) * detour;
+    // }
+    //
+    // @Override
+    // public double getTransportTime(Location from, Location to, double time,
+    // Driver driver, Vehicle vehicle) {
+    // return calculateDistance(from, to) / speed;
+    // }
+    //
+    // @Override
+    // public double getDistance(Location from, Location to, double
+    // departureTime, Vehicle vehicle) {
+    // return calculateDistance(from, to);
+    // }
 }

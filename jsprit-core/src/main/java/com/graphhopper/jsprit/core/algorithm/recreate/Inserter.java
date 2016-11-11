@@ -45,9 +45,9 @@ class Inserter {
 
         protected void delegate(Job job, InsertionData iData, VehicleRoute route) {
             if (delegator != null) {
-                delegator.handleJobInsertion(job, iData, route);
-            }
+            delegator.handleJobInsertion(job, iData, route);
         }
+    }
     }
 
     class JobExceptionHandler extends JobInsertionHandler {

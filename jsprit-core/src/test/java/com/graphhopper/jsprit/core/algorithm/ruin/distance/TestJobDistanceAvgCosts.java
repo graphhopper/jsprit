@@ -28,39 +28,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 public class TestJobDistanceAvgCosts {
 
-    public static void main(String[] args) {
-        VehicleRoutingTransportCosts costs = new VehicleRoutingTransportCosts() {
-
-            @Override
-            public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
-
-                return 0;
-            }
-
-            @Override
-            public double getBackwardTransportCost(Location from, Location to,
-                                                   double arrivalTime, Driver driver, Vehicle vehicle) {
-                return 0;
-            }
-
-            @Override
-            public double getTransportCost(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
-                @SuppressWarnings("unused")
-                String vehicleId = vehicle.getId();
-                return 0;
-            }
-
-            @Override
-            public double getTransportTime(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
-                return 0;
-            }
-        };
-        AvgServiceDistance c = new AvgServiceDistance(costs);
-        c.getDistance(new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance("foo")).build(), new Service.Builder("2").addSizeDimension(0, 2).setLocation(Location.newInstance("foo")).build());
-    }
-
     @Test(expected = NullPointerException.class)
     public void whenVehicleAndDriverIsNull_And_CostsDoesNotProvideAMethodForThis_throwException() {
 //		(expected=NullPointerException.class)
@@ -74,13 +41,13 @@ public class TestJobDistanceAvgCosts {
 
             @Override
             public double getBackwardTransportCost(Location from, Location to,
-                                                   double arrivalTime, Driver driver, Vehicle vehicle) {
+                    double arrivalTime, Driver driver, Vehicle vehicle) {
                 return 0;
             }
 
             @Override
             public double getTransportCost(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
+                    double departureTime, Driver driver, Vehicle vehicle) {
                 @SuppressWarnings("unused")
                 String vehicleId = vehicle.getId();
                 return 0;
@@ -88,12 +55,14 @@ public class TestJobDistanceAvgCosts {
 
             @Override
             public double getTransportTime(Location from, Location to,
-                                           double departureTime, Driver driver, Vehicle vehicle) {
+                    double departureTime, Driver driver, Vehicle vehicle) {
                 return 0;
             }
         };
-        AvgServiceDistance c = new AvgServiceDistance(costs);
-        c.getDistance(new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance("loc")).build(), new Service.Builder("2").addSizeDimension(0, 2).setLocation(Location.newInstance("loc")).build());
+        DefaultJobDistance c = new DefaultJobDistance(costs);
+        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance("loc")).build();
+        Service s2 = new Service.Builder("2").addSizeDimension(0, 2).setLocation(Location.newInstance("loc")).build();
+        c.getDistance(s1, s2);
     }
 
 }
