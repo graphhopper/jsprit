@@ -17,12 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.junit.Test;
 
 
 public class TestJobDistanceAvgCosts {
@@ -57,7 +58,7 @@ public class TestJobDistanceAvgCosts {
             }
         };
         AvgServiceDistance c = new AvgServiceDistance(costs);
-        c.getDistance(Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance("foo")).build(), Service.Builder.newInstance("2").addSizeDimension(0, 2).setLocation(Location.newInstance("foo")).build());
+        c.getDistance(new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance("foo")).build(), new Service.Builder("2").addSizeDimension(0, 2).setLocation(Location.newInstance("foo")).build());
     }
 
     @Test(expected = NullPointerException.class)
@@ -92,7 +93,7 @@ public class TestJobDistanceAvgCosts {
             }
         };
         AvgServiceDistance c = new AvgServiceDistance(costs);
-        c.getDistance(Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance("loc")).build(), Service.Builder.newInstance("2").addSizeDimension(0, 2).setLocation(Location.newInstance("loc")).build());
+        c.getDistance(new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance("loc")).build(), new Service.Builder("2").addSizeDimension(0, 2).setLocation(Location.newInstance("loc")).build());
     }
 
 }

@@ -15,24 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-package com.graphhopper.jsprit.core.problem;
+import java.util.Collection;
 
-import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 
-/**
- * Created by schroeder on 14.07.14.
- */
-public abstract class AbstractJob implements Job {
+public class DeliveryActivityNEW extends JobActivity {
 
-    private int index;
 
-    public int getIndex() {
-        return index;
+    public DeliveryActivityNEW(AbstractJob job, String name, Location location,
+                    double operationTime, Capacity capacity, Collection<TimeWindow> timeWindows) {
+        super(job, name, location, operationTime, capacity, timeWindows);
     }
 
-    protected void setIndex(int index) {
-        this.index = index;
+    public DeliveryActivityNEW(DeliveryActivityNEW sourceActivity) {
+        super(sourceActivity);
     }
 
 }

@@ -18,10 +18,15 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 
+import java.util.List;
+import java.util.Set;
+
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.HasId;
 import com.graphhopper.jsprit.core.problem.HasIndex;
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
  * Basic interface for all jobs.
@@ -35,10 +40,12 @@ public interface Job extends HasId, HasIndex {
      *
      * @return id
      */
+    @Override
     public String getId();
 
     /**
-     * Returns size, i.e. capacity-demand, of this job which can consist of an arbitrary number of capacity dimensions.
+     * Returns size, i.e. capacity-demand, of this job which can consist of an
+     * arbitrary number of capacity dimensions.
      *
      * @return Capacity
      */
@@ -54,12 +61,39 @@ public interface Job extends HasId, HasIndex {
     public String getName();
 
     /**
-     * Get priority of job. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of job. Only 1 = high priority, 2 = medium and 3 = low are
+     * allowed.
      * <p>
      * Default is 2 = medium.
      *
      * @return priority
      */
     public int getPriority();
+
+
+    /**
+     * @return All involved locations
+     */
+    public List<Location> getAllLocations();
+
+    /**
+     * @return Start location
+     */
+    public Location getStartLocation();
+
+    /**
+     * @return End location
+     */
+    public Location getEndLocation();
+
+    /**
+     * @return All activities
+     */
+    public JobActivityList getActivityList();
+
+    /**
+     * @return All operation time windows
+     */
+    public Set<TimeWindow> getTimeWindows();
 
 }

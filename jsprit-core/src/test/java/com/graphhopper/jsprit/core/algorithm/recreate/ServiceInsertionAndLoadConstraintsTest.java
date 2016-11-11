@@ -17,9 +17,17 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -31,7 +39,6 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -43,14 +50,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 
 public class ServiceInsertionAndLoadConstraintsTest {
@@ -114,8 +113,8 @@ public class ServiceInsertionAndLoadConstraintsTest {
 
     @Test
     public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnTheCorrectInsertionIndex() {
-        Delivery delivery = (Delivery) Delivery.Builder.newInstance("del").addSizeDimension(0, 41).setLocation(Location.newInstance("10,10")).build();
-        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 15).setLocation(Location.newInstance("0,10")).build();
+        Delivery delivery = new Delivery.Builder("del").addSizeDimension(0, 41).setLocation(Location.newInstance("10,10")).build();
+        Pickup pickup = new Pickup.Builder("pick").addSizeDimension(0, 15).setLocation(Location.newInstance("0,10")).build();
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 50).setCostPerDistance(1).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();
@@ -128,12 +127,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
         Inserter inserter = new Inserter(new InsertionListeners(), vrp);
         inserter.insertJob(delivery, new InsertionData(0, 0, 0, vehicle, null), route);
 
-        JobActivityFactory activityFactory = new JobActivityFactory() {
-            @Override
-            public List<AbstractActivity> createActivities(Job job) {
-                return vrp.copyAndGetActivities(job);
-            }
-        };
+        JobActivityFactory activityFactory = new CopyJobActivityFactory();
 
         StateManager stateManager = new StateManager(vrp);
         stateManager.updateLoadStates();

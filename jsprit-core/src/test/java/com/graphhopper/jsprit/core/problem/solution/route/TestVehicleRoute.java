@@ -17,26 +17,28 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl.NoDriver;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverService;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Iterator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 public class TestVehicleRoute {
@@ -83,7 +85,7 @@ public class TestVehicleRoute {
     @Test
     public void whenBuildingANonEmptyTour2Times_tourIterIteratesOverActivitiesCorrectly() {
         VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
-        routeBuilder.addService(Service.Builder.newInstance("2").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build());
+        routeBuilder.addService(new Service.Builder("2").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build());
         VehicleRoute route = routeBuilder.build();
 
         {
@@ -97,7 +99,7 @@ public class TestVehicleRoute {
             assertEquals(1, count);
         }
         {
-            route.getTourActivities().addActivity(ServiceActivity.newInstance(Service.Builder.newInstance("3").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build()));
+            route.getTourActivities().addActivity(ServiceActivityNEW.newInstance(new Service.Builder("3").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build()));
             Iterator<TourActivity> iter = route.getTourActivities().iterator();
             int count = 0;
             while (iter.hasNext()) {
@@ -125,7 +127,7 @@ public class TestVehicleRoute {
     @Test
     public void whenBuildingANonEmptyTourV2_tourReverseIterIteratesOverActivitiesCorrectly() {
         VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
-        routeBuilder.addService(Service.Builder.newInstance("2").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build());
+        routeBuilder.addService(new Service.Builder("2").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build());
         VehicleRoute route = routeBuilder.build();
         Iterator<TourActivity> iter = route.getTourActivities().reverseActivityIterator();
         int count = 0;
@@ -140,8 +142,8 @@ public class TestVehicleRoute {
     @Test
     public void whenBuildingANonEmptyTour2Times_tourReverseIterIteratesOverActivitiesCorrectly() {
         VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
-        routeBuilder.addService(Service.Builder.newInstance("2").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build());
-        routeBuilder.addService(Service.Builder.newInstance("3").addSizeDimension(0, 30).setLocation(Location.newInstance("2")).build());
+        routeBuilder.addService(new Service.Builder("2").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build());
+        routeBuilder.addService(new Service.Builder("3").addSizeDimension(0, 30).setLocation(Location.newInstance("2")).build());
         VehicleRoute route = routeBuilder.build();
         {
             Iterator<TourActivity> iter = route.getTourActivities().reverseActivityIterator();
@@ -299,56 +301,56 @@ public class TestVehicleRoute {
     @Test
     public void whenAddingPickup_itShouldBeTreatedAsPickup() {
 
-        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").setLocation(Location.newInstance("pickLoc")).build();
+        Pickup pickup = new Pickup.Builder("pick").setLocation(Location.newInstance("pickLoc")).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("startLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addService(pickup).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertTrue(act.getName().equals("pickup"));
-        assertTrue(act instanceof PickupService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Pickup);
+        assertEquals("pick.pickup", act.getName());
+        assertTrue(act instanceof PickupServiceDEPRECATED);
+        assertTrue(((JobActivity) act).getJob() instanceof Pickup);
 
     }
 
     @Test
     public void whenAddingPickup_itShouldBeAdded() {
 
-        Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").setLocation(Location.newInstance("pickLoc")).build();
+        Pickup pickup = new Pickup.Builder("pick").setLocation(Location.newInstance("pickLoc")).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("startLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addPickup(pickup).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertTrue(act.getName().equals("pickup"));
-        assertTrue(act instanceof PickupService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Pickup);
+        assertEquals("pick.pickup", act.getName());
+        assertTrue(act instanceof PickupServiceDEPRECATED);
+        assertTrue(((JobActivity) act).getJob() instanceof Pickup);
 
     }
 
     @Test
     public void whenAddingDelivery_itShouldBeTreatedAsDelivery() {
 
-        Delivery delivery = (Delivery) Delivery.Builder.newInstance("delivery").setLocation(Location.newInstance("deliveryLoc")).build();
+        Delivery delivery = new Delivery.Builder("delivery").setLocation(Location.newInstance("deliveryLoc")).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("startLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addService(delivery).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertTrue(act.getName().equals("delivery"));
-        assertTrue(act instanceof DeliverService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Delivery);
+        assertEquals("delivery.delivery", act.getName());
+        assertTrue(act instanceof DeliverServiceDEPRECATED);
+        assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
     }
 
     @Test
     public void whenAddingDelivery_itShouldBeAdded() {
 
-        Delivery delivery = (Delivery) Delivery.Builder.newInstance("delivery").setLocation(Location.newInstance("deliveryLoc")).build();
+        Delivery delivery = new Delivery.Builder("delivery").setLocation(Location.newInstance("deliveryLoc")).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("startLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addDelivery(delivery).build();
 
         TourActivity act = route.getActivities().get(0);
-        assertTrue(act.getName().equals("delivery"));
-        assertTrue(act instanceof DeliverService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Delivery);
+        assertEquals("delivery.delivery", act.getName());
+        assertTrue(act instanceof DeliverServiceDEPRECATED);
+        assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
     }
 }

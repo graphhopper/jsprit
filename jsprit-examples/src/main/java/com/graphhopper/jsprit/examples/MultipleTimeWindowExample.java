@@ -58,28 +58,28 @@ public class MultipleTimeWindowExample {
 		/*
          * build services at the required locations, each with a capacity-demand of 1.
 		 */
-        Service service1 = Service.Builder.newInstance("1")
+        Service service1 = new Service.Builder("1")
             .addTimeWindow(50,100)
             .addTimeWindow(20,35)
             .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(10, 0)).build();
 
-        Service service2 = Service.Builder.newInstance("2")
+        Service service2 = new Service.Builder("2")
             .addSizeDimension(WEIGHT_INDEX, 1)
 //            .setServiceTime(10)
             .setLocation(Location.newInstance(20, 0)).setServiceTime(10).build();
 
-        Service service3 = Service.Builder.newInstance("3")
+        Service service3 = new Service.Builder("3")
             .addTimeWindow(5, 10)
             .addTimeWindow(35, 50)
             .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(30, 0)).build();
 
-        Service service4 = Service.Builder.newInstance("4")
+        Service service4 = new Service.Builder("4")
 //            .addTimeWindow(5,10)
             .addTimeWindow(20, 40)
             .addTimeWindow(45, 80)
             .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(40, 0)).build();
 
-        Service service5 = Service.Builder.newInstance("5")
+        Service service5 = new Service.Builder("5")
             .addTimeWindow(5,10)
             .addTimeWindow(20, 40)
             .addTimeWindow(60,100)

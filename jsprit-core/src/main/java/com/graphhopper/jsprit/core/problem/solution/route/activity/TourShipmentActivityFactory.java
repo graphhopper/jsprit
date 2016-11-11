@@ -17,13 +17,12 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 
 public interface TourShipmentActivityFactory {
 
-    public AbstractActivity createPickup(Shipment shipment);
+    public AbstractActivityNEW createPickup(Shipment shipment);
 
-    public AbstractActivity createDelivery(Shipment shipment);
+    public AbstractActivityNEW createDelivery(Shipment shipment);
 
 }

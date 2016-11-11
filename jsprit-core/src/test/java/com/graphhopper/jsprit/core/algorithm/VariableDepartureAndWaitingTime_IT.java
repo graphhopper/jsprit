@@ -19,6 +19,11 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
@@ -37,10 +42,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
 import com.graphhopper.jsprit.core.util.Solutions;
+
 import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
  * Created by schroeder on 22/07/15.
@@ -77,21 +80,21 @@ public class VariableDepartureAndWaitingTime_IT {
                 ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
 
                 return Jsprit.Builder.newInstance(vrp)
-                    .addCoreStateAndConstraintStuff(true)
-                    .setStateAndConstraintManager(stateManager, constraintManager)
-                    .setObjectiveFunction(new SolutionCostCalculator() {
-                        @Override
-                        public double getCosts(VehicleRoutingProblemSolution solution) {
-                            SolutionAnalyser sa = new SolutionAnalyser(vrp, solution, new TransportDistance() {
-                                @Override
-                                public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                                    return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
-                                }
-                            });
-                            return sa.getWaitingTime() + sa.getDistance();
-                        }
-                    })
-                    .buildAlgorithm();
+                                .addCoreStateAndConstraintStuff(true)
+                                .setStateAndConstraintManager(stateManager, constraintManager)
+                                .setObjectiveFunction(new SolutionCostCalculator() {
+                                    @Override
+                                    public double getCosts(VehicleRoutingProblemSolution solution) {
+                                        SolutionAnalyser sa = new SolutionAnalyser(vrp, solution, new TransportDistance() {
+                                            @Override
+                                            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                                                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                                            }
+                                        });
+                                        return sa.getWaitingTime() + sa.getDistance();
+                                    }
+                                })
+                                .buildAlgorithm();
             }
         };
     }
@@ -99,30 +102,30 @@ public class VariableDepartureAndWaitingTime_IT {
     @Test
     public void plainSetupShouldWork() {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
-        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10, 0)).build();
-        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(20, 0)).build();
+        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
+        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(20, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-            .addJob(s1).addJob(s2).addVehicle(v)
-            .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-            .setRoutingCost(CostFactory.createManhattanCosts())
-            .setActivityCosts(activityCosts)
-            .build();
+                        .addJob(s1).addJob(s2).addVehicle(v)
+                        .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+                        .setRoutingCost(CostFactory.createManhattanCosts())
+                        .setActivityCosts(activityCosts)
+                        .build();
         VehicleRoutingAlgorithm vra = algorithmFactory.createAlgorithm(vrp);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
-        Assert.assertEquals(40., solution.getCost());
+        assertEquals(40., solution.getCost(), 0.01d);
     }
 
     @Test
     public void withTimeWindowsShouldWork() {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
-        Service s1 = Service.Builder.newInstance("s1").setTimeWindow(TimeWindow.newInstance(1010, 1100)).setLocation(Location.newInstance(10, 0)).build();
-        Service s2 = Service.Builder.newInstance("s2").setTimeWindow(TimeWindow.newInstance(1020, 1100)).setLocation(Location.newInstance(20, 0)).build();
+        Service s1 = new Service.Builder("s1").setTimeWindow(TimeWindow.newInstance(1010, 1100)).setLocation(Location.newInstance(10, 0)).build();
+        Service s2 = new Service.Builder("s2").setTimeWindow(TimeWindow.newInstance(1020, 1100)).setLocation(Location.newInstance(20, 0)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-            .addJob(s1).addJob(s2).addVehicle(v)
-            .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-            .setRoutingCost(CostFactory.createManhattanCosts())
-            .setActivityCosts(activityCosts)
-            .build();
+                        .addJob(s1).addJob(s2).addVehicle(v)
+                        .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+                        .setRoutingCost(CostFactory.createManhattanCosts())
+                        .setActivityCosts(activityCosts)
+                        .build();
         VehicleRoutingAlgorithm vra = algorithmFactory.createAlgorithm(vrp);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         Assert.assertEquals(40. + 1000., solution.getCost());

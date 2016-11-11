@@ -17,6 +17,17 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -27,16 +38,11 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import com.graphhopper.jsprit.core.util.*;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import com.graphhopper.jsprit.core.util.ChristofidesReader;
+import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
+import com.graphhopper.jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
+import com.graphhopper.jsprit.core.util.JobType;
+import com.graphhopper.jsprit.core.util.Solutions;
 
 public class CVRPwithMatrix_IT {
 
@@ -104,7 +110,7 @@ public class CVRPwithMatrix_IT {
             Service s = (Service) j;
             Location l = Location.Builder.newInstance().setIndex(getIndex())
                 .setId(s.getLocation().getId()).setCoordinate(s.getLocation().getCoordinate()).build();
-            Service newService = Service.Builder.newInstance(s.getId()).setServiceTime(s.getServiceDuration())
+            Service newService = new Service.Builder(s.getId()).setServiceTime(s.getServiceDuration())
                 .addSizeDimension(0, s.getSize().get(0))
                 .setLocation(l).build();
             vrpBuilder.addJob(newService);

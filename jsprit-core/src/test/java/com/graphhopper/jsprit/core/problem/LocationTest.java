@@ -18,10 +18,10 @@
 
 package com.graphhopper.jsprit.core.problem;
 
-import com.graphhopper.jsprit.core.util.Coordinate;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.graphhopper.jsprit.core.util.Coordinate;
 
 /**
  * Created by schroeder on 16.12.14.

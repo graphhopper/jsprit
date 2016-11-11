@@ -65,13 +65,13 @@ public class SolomonWithSkillsExample {
             Service service = (Service) job;
             Service.Builder skillServiceBuilder;
             if (service.getLocation().getCoordinate().getY() < 50.) {
-                skillServiceBuilder = Service.Builder.newInstance(service.getId() + "_skill2").setServiceTime(service.getServiceDuration())
+                skillServiceBuilder = new Service.Builder(service.getId() + "_skill2").setServiceTime(service.getServiceDuration())
                     .setLocation(Location.Builder.newInstance().setId(service.getLocation().getId())
                         .setCoordinate(service.getLocation().getCoordinate()).build()).setTimeWindow(service.getTimeWindow())
                     .addSizeDimension(0, service.getSize().get(0));
                 skillServiceBuilder.addRequiredSkill("skill2");
             } else {
-                skillServiceBuilder = Service.Builder.newInstance(service.getId() + "_skill1").setServiceTime(service.getServiceDuration())
+                skillServiceBuilder = new Service.Builder(service.getId() + "_skill1").setServiceTime(service.getServiceDuration())
                     .setLocation(
                         Location.Builder.newInstance().setId(service.getLocation().getId())
                             .setCoordinate(service.getLocation().getCoordinate()).build()

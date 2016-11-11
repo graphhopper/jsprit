@@ -67,11 +67,11 @@ public class SimpleVRPWithBackhaulsExample {
 		/*
          * build pickups and deliveries at the required locations, each with a capacity-demand of 1.
 		 */
-        Pickup pickup1 = Pickup.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
-        Delivery delivery1 = Delivery.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
+        Pickup pickup1 = new Pickup.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
+        Delivery delivery1 = new Delivery.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
 
-        Pickup pickup2 = Pickup.Builder.newInstance("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
-        Delivery delivery2 = Delivery.Builder.newInstance("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
+        Pickup pickup2 = new Pickup.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
+        Delivery delivery2 = new Delivery.Builder("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

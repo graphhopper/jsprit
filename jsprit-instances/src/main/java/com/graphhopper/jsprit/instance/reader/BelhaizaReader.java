@@ -112,7 +112,7 @@ public class BelhaizaReader {
 
 				}
 				else{
-					Service.Builder serviceBuilder = Service.Builder.newInstance(customerId);
+					Service.Builder serviceBuilder = new Service.Builder(customerId);
 					serviceBuilder.addSizeDimension(0, demand).setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime);
 					int noTimeWindows = Integer.parseInt(tokens[7]);
 					for(int i=0;i<noTimeWindows*2;i=i+2){

@@ -18,9 +18,10 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 
 /**

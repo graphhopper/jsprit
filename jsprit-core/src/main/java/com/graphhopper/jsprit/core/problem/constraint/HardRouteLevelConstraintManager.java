@@ -17,11 +17,11 @@
  */
 package com.graphhopper.jsprit.core.problem.constraint;
 
-import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
+import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 
 
 class HardRouteLevelConstraintManager implements HardRouteConstraint {

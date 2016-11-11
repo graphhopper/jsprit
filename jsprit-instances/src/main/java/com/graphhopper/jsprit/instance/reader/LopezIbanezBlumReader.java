@@ -76,7 +76,7 @@ public class LopezIbanezBlumReader {
                         .setEarliestStart(Double.parseDouble(twTokens[0])).setLatestArrival(Double.parseDouble(twTokens[1])).build();
                     builder.addVehicle(travelingSalesman);
                 } else {
-                    Service s = Service.Builder.newInstance("" + nodeIndex).setLocation(Location.newInstance(nodeIndex))
+                    Service s = new Service.Builder("" + nodeIndex).setLocation(Location.newInstance(nodeIndex))
                         .setTimeWindow(TimeWindow.newInstance(Double.parseDouble(twTokens[0]), Double.parseDouble(twTokens[1]))).build();
                     builder.addJob(s);
                 }

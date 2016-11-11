@@ -69,7 +69,7 @@ public class CircleExample {
         Collection<Coordinate> circle = createCoordinates(0, 0, 20, step);
         int id = 1;
         for (Coordinate c : circle) {
-            Service s = Service.Builder.newInstance(Integer.toString(id)).setLocation(Location.Builder.newInstance().setCoordinate(c).build()).build();
+            Service s = new Service.Builder(Integer.toString(id)).setLocation(Location.Builder.newInstance().setCoordinate(c).build()).build();
             vrpBuilder.addJob(s);
             id++;
         }

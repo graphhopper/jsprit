@@ -18,60 +18,63 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 
-import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
  *
  * @author schroeder
  */
-public class Break extends Service {
+public class Break extends Service implements InternalJobMarker {
 
-    public static class Builder extends Service.Builder<Break> {
+    public static final class Builder extends Service.BuilderBase<Break, Builder> {
 
-        /**
-         * Returns a new instance of builder that builds a pickup.
-         *
-         * @param id the id of the pickup
-         * @return the builder
-         */
+        private static final Location VARIABLE_LOCATION = Location
+                        .newInstance("@@@VARIABLE_LOCATION");
+
+        public Builder(String id) {
+            super(id);
+            setType("break");
+            setLocation(VARIABLE_LOCATION);
+        }
+
         public static Builder newInstance(String id) {
             return new Builder(id);
         }
 
-        private boolean variableLocation = true;
-
-        Builder(String id) {
-            super(id);
+        @Override
+        protected void validate() {
+            super.validate();
+            // This is a trick: Service requires a location, but after
+            // validation we could remove it.
+            if (location.equals(VARIABLE_LOCATION)) {
+                location = null;
+            }
         }
 
-        /**
-         * Builds Pickup.
-         * <p>
-         * <p>Pickup type is "pickup"
-         *
-         * @return pickup
-         * @throws IllegalStateException if neither locationId nor coordinate has been set
-         */
-        public Break build() {
-            if (location != null) {
-                variableLocation = false;
-            }
-            this.setType("break");
-            super.capacity = Capacity.Builder.newInstance().build();
-            super.skills = Skills.Builder.newInstance().build();
+        @Override
+        protected Break createInstance() {
             return new Break(this);
         }
 
     }
 
+
     private boolean variableLocation = true;
 
     Break(Builder builder) {
         super(builder);
-        this.variableLocation = builder.variableLocation;
+        variableLocation = (builder.getLocation() == null);
     }
+
+    @Override
+    protected void createActivities(JobBuilder<?, ?> builder) {
+        JobActivityList list = new SequentialJobActivityList(this);
+        list.addActivity(BreakActivity.newInstance(this, (Builder) builder));
+        setActivities(list);
+    }
+
 
     public boolean hasVariableLocation() {
         return variableLocation;

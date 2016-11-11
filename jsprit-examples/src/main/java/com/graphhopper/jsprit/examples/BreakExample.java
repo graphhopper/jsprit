@@ -55,7 +55,7 @@ public class BreakExample {
 		 */
         Builder vehicleBuilder = Builder.newInstance("v1");
         vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
-        Break myFirstBreak = Break.Builder.newInstance("myFirstBreak")
+        Break myFirstBreak = new Break.Builder("myFirstBreak")
             .setTimeWindow(TimeWindow.newInstance(10, 15)).setServiceTime(100).build();
         vehicleBuilder.setBreak(myFirstBreak);
         vehicleBuilder.setType(vehicleType);
@@ -63,15 +63,15 @@ public class BreakExample {
 
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0, 10)).setType(vehicleType)
-            .setBreak((Break) Break.Builder.newInstance("mySecondBreak").setTimeWindow(TimeWindow.newInstance(5, 10)).setServiceTime(10).build()).build();
+            .setBreak((Break) new Break.Builder("mySecondBreak").setTimeWindow(TimeWindow.newInstance(5, 10)).setServiceTime(10).build()).build();
 		/*
 		 * build services at the required locations, each with a capacity-demand of 1.
 		 */
-        Service service1 = Service.Builder.newInstance("1").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 7)).build();
-        Service service2 = Service.Builder.newInstance("2").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 13)).build();
+        Service service1 = new Service.Builder("1").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 7)).build();
+        Service service2 = new Service.Builder("2").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 13)).build();
 
-        Service service3 = Service.Builder.newInstance("3").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 7)).build();
-        Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 13)).build();
+        Service service3 = new Service.Builder("3").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 7)).build();
+        Service service4 = new Service.Builder("4").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(15, 13)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

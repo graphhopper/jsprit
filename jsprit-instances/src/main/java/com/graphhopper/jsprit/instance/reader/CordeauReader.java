@@ -103,7 +103,7 @@ public class CordeauReader {
                 Coordinate customerCoord = makeCoord(tokens[1].trim(), tokens[2].trim());
                 double serviceTime = Double.parseDouble(tokens[3].trim());
                 int demand = Integer.parseInt(tokens[4].trim());
-                Service service = Service.Builder.newInstance(id).addSizeDimension(0, demand).setServiceTime(serviceTime)
+                Service service = new Service.Builder(id).addSizeDimension(0, demand).setServiceTime(serviceTime)
                     .setLocation(Location.Builder.newInstance().setId(id).setCoordinate(customerCoord).build()).build();
                 vrpBuilder.addJob(service);
             } else if (counter <= (nOfCustomers + nOfDepots + nOfDepots)) {

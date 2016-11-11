@@ -17,42 +17,43 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class DefaultTourActivityFactoryTest {
 
     @Test
     public void whenCreatingActivityWithService_itShouldReturnPickupService() {
         DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
-        Service service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
+        Service service = new Service.Builder("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
         assertNotNull(act);
-        assertTrue(act instanceof PickupService);
+        assertTrue(act instanceof PickupServiceDEPRECATED);
     }
 
     @Test
     public void whenCreatingActivityWithPickup_itShouldReturnPickupService() {
         DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
-        Pickup service = (Pickup) Pickup.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
+        Pickup service = new Pickup.Builder("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
         assertNotNull(act);
-        assertTrue(act instanceof PickupService);
+        assertTrue(act instanceof PickupServiceDEPRECATED);
     }
 
     @Test
     public void whenCreatingActivityWithDelivery_itShouldReturnDeliverService() {
         DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
-        Delivery service = (Delivery) Delivery.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
+        Delivery service = new Delivery.Builder("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
         assertNotNull(act);
-        assertTrue(act instanceof DeliverService);
+        assertTrue(act instanceof DeliverServiceDEPRECATED);
     }
 
 }

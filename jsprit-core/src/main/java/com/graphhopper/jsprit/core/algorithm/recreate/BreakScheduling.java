@@ -18,6 +18,15 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
@@ -27,10 +36,6 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * Created by schroeder on 07/04/16.

@@ -86,7 +86,7 @@ public class MultipleTimeWindowExample2 {
 
         Random random = RandomNumberGeneration.newInstance();
         for(int i=0;i<40;i++){
-            Service service = Service.Builder.newInstance("" + (i + 1))
+            Service service = new Service.Builder("" + (i + 1))
                 .addTimeWindow(random.nextInt(50), 200)
                 .addTimeWindow(220 + random.nextInt(50), 350)
                 .addTimeWindow(400 + random.nextInt(50), 550)
@@ -97,7 +97,7 @@ public class MultipleTimeWindowExample2 {
         }
 
         for(int i=0;i<12;i++){
-            Service service = Service.Builder.newInstance(""+(i+51))
+            Service service = new Service.Builder(""+(i+51))
 //                .addTimeWindow(0, 80)
 ////                .addTimeWindow(120, 200)
 //                .addTimeWindow(250,500)
@@ -107,7 +107,7 @@ public class MultipleTimeWindowExample2 {
             vrpBuilder.addJob(service);
         }
 
-        Service service = Service.Builder.newInstance("100")
+        Service service = new Service.Builder("100")
             .addTimeWindow(50, 80)
             .setServiceTime(10)
             .setLocation(Location.newInstance(40, 1)).build();
