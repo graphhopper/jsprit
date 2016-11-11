@@ -18,11 +18,7 @@
 
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -308,7 +304,7 @@ public abstract class AbstractJob implements Job {
 
     protected void prepareCaches() {
         allLocations = new ArrayList<>();
-        allTimeWindows = new HashSet<>();
+        allTimeWindows = new LinkedHashSet<>();
         activityList.getAll().stream().forEach(ja -> {
             addLocation(ja.getLocation());
             addTimeWindows(ja.getTimeWindows());
