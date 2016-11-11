@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Deprecated
 class CalculatesServiceInsertionWithTimeSchedulingInSlices implements JobInsertionCostsCalculator {
 
 
