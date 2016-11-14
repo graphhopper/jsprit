@@ -30,6 +30,8 @@ import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -107,6 +109,29 @@ public class VehicleDependentTraveledDistanceTest {
 
         stateManager.addStateUpdater(traveledDistance);
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
+    }
+
+    @Test
+    public void whenEndLocationIsSet_constraintShouldWork(){
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0))
+            .setEndLocation(Location.newInstance(10,0)).build();
+        Pickup pickup = Pickup.Builder.newInstance("pickup").setLocation(Location.newInstance(10,0)).build();
+        vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(pickup).build();
+        route = VehicleRoute.emptyRoute();
+        maxDistanceMap = new HashMap<>();
+        maxDistanceMap.put(vehicle,5d);
+
+        MaxDistanceConstraint maxDistanceConstraint =
+            new MaxDistanceConstraint(new StateManager(vrp), traveledDistanceId, new TransportDistance() {
+                @Override
+                public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                    return vrp.getTransportCosts().getTransportTime(from,to,departureTime, null, vehicle);
+                }
+            },maxDistanceMap);
+        JobInsertionContext context = new JobInsertionContext(route,pickup,vehicle,null,0);
+        Assert.assertTrue(maxDistanceConstraint.fulfilled(context,
+            new Start(vehicle.getStartLocation(),0,Double.MAX_VALUE),vrp.getActivities(pickup).get(0),
+            new End(vehicle.getEndLocation(),0,Double.MAX_VALUE),0).equals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED));
     }
 
     /*
