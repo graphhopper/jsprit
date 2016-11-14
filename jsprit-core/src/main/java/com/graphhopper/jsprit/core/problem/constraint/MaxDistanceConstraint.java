@@ -71,7 +71,8 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         if(!hasMaxDistance(iFacts.getNewVehicle())) return ConstraintsStatus.FULFILLED;
         Double currentDistance = 0d;
-        if(!iFacts.getRoute().isEmpty()){
+        boolean routeIsEmpty = iFacts.getRoute().isEmpty();
+        if(!routeIsEmpty){
             currentDistance = stateManager.getRouteState(iFacts.getRoute(),iFacts.getNewVehicle(), distanceId,Double.class);
         }
         double maxDistance = getMaxDistance(iFacts.getNewVehicle());
@@ -80,6 +81,7 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
         double distancePrevAct2NewAct = distanceCalculator.getDistance(prevAct.getLocation(), newAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
         double distanceNewAct2nextAct = distanceCalculator.getDistance(newAct.getLocation(), nextAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
         double distancePrevAct2NextAct = distanceCalculator.getDistance(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewVehicle());
+        if(routeIsEmpty) distancePrevAct2NextAct = 0;
         if(nextAct instanceof End && !iFacts.getNewVehicle().isReturnToDepot()){
             distanceNewAct2nextAct = 0;
             distancePrevAct2NextAct = 0;
