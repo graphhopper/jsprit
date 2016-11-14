@@ -33,7 +33,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 
-
+@Deprecated
 class CalculatesServiceInsertionWithTimeScheduling implements JobInsertionCostsCalculator {
 
 
