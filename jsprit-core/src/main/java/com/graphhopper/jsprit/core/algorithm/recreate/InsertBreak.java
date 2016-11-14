@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 /**
  * Created by schroeder on 19/05/15.
  */
-class InsertBreak implements Event {
+public class InsertBreak implements Event {
 
     private VehicleRoute vehicleRoute;
 

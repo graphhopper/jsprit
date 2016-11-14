@@ -298,16 +298,6 @@ public class Service extends AbstractJob {
         return getServiceActivity().getSize();
     }
 
-    @Override
-    public Location getStartLocation() {
-        return getServiceActivity().getLocation();
-    }
-
-
-    @Override
-    public Location getEndLocation() {
-        return getServiceActivity().getLocation();
-    }
 
 
 }

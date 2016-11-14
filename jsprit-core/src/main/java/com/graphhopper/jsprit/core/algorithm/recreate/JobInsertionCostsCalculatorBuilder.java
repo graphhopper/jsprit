@@ -330,32 +330,7 @@ public class JobInsertionCostsCalculatorBuilder {
     }
 
     private CalculatorPlusListeners createStandardRoute(final VehicleRoutingProblem vrp, RouteAndActivityStateGetter activityStates2, int forwardLooking, int solutionMemory) {
-        ActivityInsertionCostsCalculator routeLevelCostEstimator;
-        if (activityInsertionCostCalculator == null && addDefaultCostCalc) {
-            RouteLevelActivityInsertionCostsEstimator routeLevelActivityInsertionCostsEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityStates2);
-            routeLevelActivityInsertionCostsEstimator.setForwardLooking(forwardLooking);
-            routeLevelCostEstimator = routeLevelActivityInsertionCostsEstimator;
-        } else if (activityInsertionCostCalculator == null && !addDefaultCostCalc) {
-            routeLevelCostEstimator = new ActivityInsertionCostsCalculator() {
-
-                final ActivityInsertionCosts noInsertionCosts = new ActivityInsertionCosts(0., 0.);
-
-                @Override
-                public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct,
-                        double depTimeAtPrevAct) {
-                    return 0.;
-                }
-
-            };
-        } else {
-            routeLevelCostEstimator = activityInsertionCostCalculator;
-        }
-        ServiceInsertionOnRouteLevelCalculator jobInsertionCalculator = new ServiceInsertionOnRouteLevelCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), routeLevelCostEstimator, constraintManager, constraintManager);
-        jobInsertionCalculator.setNuOfActsForwardLooking(forwardLooking);
-        jobInsertionCalculator.setMemorySize(solutionMemory);
-        jobInsertionCalculator.setStates(activityStates2);
-        jobInsertionCalculator.setJobActivityFactory(new CopyJobActivityFactory());
-        return new CalculatorPlusListeners(jobInsertionCalculator);
+        throw new UnsupportedOperationException("route level insertion calculation is not supported anymore");
     }
 
     private JobInsertionCostsCalculator createFinalInsertion(VehicleFleetManager fleetManager, JobInsertionCostsCalculator baseCalc, RouteAndActivityStateGetter activityStates2) {

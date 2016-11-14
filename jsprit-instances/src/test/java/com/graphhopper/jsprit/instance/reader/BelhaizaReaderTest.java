@@ -118,8 +118,8 @@ public class BelhaizaReaderTest {
 		VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 		new BelhaizaReader(builder).read(getPath());
 		VehicleRoutingProblem vrp = builder.build();
-		assertEquals(20.,((Service)vrp.getJobs().get("1")).getTimeWindows().iterator().next().getStart(),0.1);
-		assertEquals(31.,((Service)vrp.getJobs().get("1")).getTimeWindows().iterator().next().getEnd(),0.1);
+		assertEquals(20.,vrp.getJobs().get("1").getTimeWindows().iterator().next().getStart(),0.1);
+		assertEquals(31.,vrp.getJobs().get("1").getTimeWindows().iterator().next().getEnd(),0.1);
 	}
 
 	@Test

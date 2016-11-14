@@ -104,7 +104,7 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void whenHavingOnlyServicesInOneProblem_andInsertionShouldBeMadeOnRouteLevel_itShouldAssertTrue() {
         /* get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
          */

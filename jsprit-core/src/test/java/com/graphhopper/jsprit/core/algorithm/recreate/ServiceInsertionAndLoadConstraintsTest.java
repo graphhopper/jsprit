@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -124,8 +125,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
         VehicleRoute route = VehicleRoute.emptyRoute();
         route.setVehicleAndDepartureTime(vehicle, 0.0);
 
-        Inserter inserter = new Inserter(new InsertionListeners(), vrp);
-        inserter.insertJob(delivery, new InsertionData(0, 0, 0, vehicle, null), route);
+        route.getTourActivities().addActivity(0,vrp.copyAndGetActivities(delivery).get(0));
 
         JobActivityFactory activityFactory = new CopyJobActivityFactory();
 
@@ -147,8 +147,8 @@ public class ServiceInsertionAndLoadConstraintsTest {
         switcher.put(Shipment.class, insertionCalculator);
 
         InsertionData iData = switcher.getInsertionData(route, pickup, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
-
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        List<InsertActivity> insertActivities = iData.getUnmodifiableEventsByType(InsertActivity.class);
+        assertEquals(1, insertActivities.get(0).getIndex());
     }
 
 }

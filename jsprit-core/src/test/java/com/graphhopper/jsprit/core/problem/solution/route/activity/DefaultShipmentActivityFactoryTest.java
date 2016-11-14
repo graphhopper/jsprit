@@ -29,7 +29,6 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 public class DefaultShipmentActivityFactoryTest {
 
     @Test
-    @Ignore
     public void whenCreatingPickupActivityWithShipment_itShouldReturnPickupShipment() {
         DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
         Shipment shipment = Shipment.Builder.newInstance("s")
@@ -40,7 +39,6 @@ public class DefaultShipmentActivityFactoryTest {
     }
 
     @Test
-    @Ignore
     public void whenCreatingDeliverActivityWithShipment_itShouldReturnDeliverShipment() {
         DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
         Shipment shipment = Shipment.Builder.newInstance("s")

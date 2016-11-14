@@ -24,7 +24,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 /**
  * Created by schroeder on 19/05/15.
  */
-class SwitchVehicle implements Event {
+public class SwitchVehicle implements Event {
 
     private VehicleRoute route;
 

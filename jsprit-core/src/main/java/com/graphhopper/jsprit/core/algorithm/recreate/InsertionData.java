@@ -18,7 +18,9 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -57,9 +59,9 @@ public class InsertionData {
 
     private final double insertionCost;
 
-    private final int pickupInsertionIndex;
+    private int pickupInsertionIndex;
 
-    private final int deliveryInsertionIndex;
+    private int deliveryInsertionIndex;
 
     private final Vehicle selectedVehicle;
 
@@ -69,12 +71,23 @@ public class InsertionData {
 
     private double additionalTime;
 
-    private List<Event> events = new ArrayList<Event>();
+    private List<Event> events = new ArrayList<>();
 
     List<Event> getEvents() {
         return events;
     }
 
+    public List<Event> getUnmodifiableEvents() { return Collections.unmodifiableList(events); }
+
+    public <T extends Event> List<T> getUnmodifiableEventsByType(Class<T> eventType){
+        List<T> events = new ArrayList<>();
+        for(Event e : this.events){
+            if(e.getClass().equals(eventType)){
+                events.add(eventType.cast(e));
+            }
+        }
+        return events;
+    }
     /**
      * @return the additionalTime
      */
@@ -85,16 +98,25 @@ public class InsertionData {
     /**
      * @param additionalTime the additionalTime to set
      */
+    @Deprecated
     public void setAdditionalTime(double additionalTime) {
         this.additionalTime = additionalTime;
     }
 
+    @Deprecated
     public InsertionData(double insertionCost, int pickupInsertionIndex, int deliveryInsertionIndex, Vehicle vehicle, Driver driver) {
         this.insertionCost = insertionCost;
         this.pickupInsertionIndex = pickupInsertionIndex;
         this.deliveryInsertionIndex = deliveryInsertionIndex;
         this.selectedVehicle = vehicle;
         this.selectedDriver = driver;
+    }
+
+    public InsertionData(double insertionCost, double vehicleDepartureTime, Vehicle selectedVehicle, Driver selectedDriver){
+        this.insertionCost = insertionCost;
+        this.selectedVehicle = selectedVehicle;
+        this.selectedDriver = selectedDriver;
+        this.departureTime = vehicleDepartureTime;
     }
 
     @Override
@@ -107,6 +129,7 @@ public class InsertionData {
      *
      * @return
      */
+    @Deprecated
     public int getDeliveryInsertionIndex() {
         return deliveryInsertionIndex;
     }
@@ -116,6 +139,7 @@ public class InsertionData {
      *
      * @return
      */
+    @Deprecated
     public int getPickupInsertionIndex() {
         return pickupInsertionIndex;
     }
@@ -157,6 +181,7 @@ public class InsertionData {
     /**
      * @param departureTime the departureTime to set
      */
+    @Deprecated
     public void setVehicleDepartureTime(double departureTime) {
         this.departureTime = departureTime;
     }

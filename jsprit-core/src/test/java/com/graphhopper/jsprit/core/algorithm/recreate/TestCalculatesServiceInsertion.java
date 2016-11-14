@@ -150,7 +150,7 @@ public class TestCalculatesServiceInsertion {
 
         InsertionData iData = serviceInsertion.getInsertionData(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
         assertEquals(20.0, iData.getInsertionCost(), 0.2);
-        assertEquals(0, iData.getDeliveryInsertionIndex());
+        assertEquals(0, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class TestCalculatesServiceInsertion {
 
         InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
         assertEquals(20.0, iData.getInsertionCost(), 0.2);
-        assertEquals(0, iData.getDeliveryInsertionIndex());
+        assertEquals(0, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class TestCalculatesServiceInsertion {
 
         InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
         assertEquals(0.0, iData.getInsertionCost(), 0.2);
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        assertEquals(1, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     @Test
@@ -180,7 +180,7 @@ public class TestCalculatesServiceInsertion {
 
         InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
         assertEquals(40.0, iData.getInsertionCost(), 0.2);
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        assertEquals(1, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     @Test
@@ -190,7 +190,7 @@ public class TestCalculatesServiceInsertion {
 
         InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
         assertEquals(0.0, iData.getInsertionCost(), 0.2);
-        assertEquals(2, iData.getDeliveryInsertionIndex());
+        assertEquals(2, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     @Test
@@ -202,7 +202,7 @@ public class TestCalculatesServiceInsertion {
 
         InsertionData iData = serviceInsertion.getInsertionData(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
         assertEquals(50.0, iData.getInsertionCost(), 0.2);
-        assertEquals(2, iData.getDeliveryInsertionIndex());
+        assertEquals(2, iData.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex());
     }
 
     @Test
