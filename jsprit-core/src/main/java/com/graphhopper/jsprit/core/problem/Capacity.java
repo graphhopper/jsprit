@@ -356,4 +356,13 @@ public class Capacity {
         return new Capacity(numberOfDimensions);
     }
 
+    public boolean isPositive() {
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            if (get(i) < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

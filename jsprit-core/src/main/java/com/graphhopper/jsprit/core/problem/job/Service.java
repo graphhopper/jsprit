@@ -174,7 +174,7 @@ public class Service extends AbstractJob {
                 throw new IllegalArgumentException("location is missing");
             }
             if (timeWindows.isEmpty()) {
-                timeWindows.add(new TimeWindow(0, Double.MAX_VALUE));
+                timeWindows.add(TimeWindow.ETERNITY);
             }
         }
 

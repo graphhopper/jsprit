@@ -249,10 +249,10 @@ public class Shipment extends AbstractJob {
                 throw new IllegalArgumentException("delivery location is missing");
             }
             if (pickupTimeWindows.isEmpty()) {
-                pickupTimeWindows.add(new TimeWindow(0, Double.MAX_VALUE));
+                pickupTimeWindows.add(TimeWindow.ETERNITY);
             }
             if (deliveryTimeWindows.isEmpty()) {
-                deliveryTimeWindows.add(new TimeWindow(0, Double.MAX_VALUE));
+                deliveryTimeWindows.add(TimeWindow.ETERNITY);
             }
         }
 

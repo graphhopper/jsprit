@@ -167,7 +167,7 @@ public final class ReturnedShipment extends Shipment {
                 backhaulLocation = getPickupLocation();
             }
             if (backhaulTimeWindows.isEmpty()) {
-                backhaulTimeWindows.add(new TimeWindow(0, Double.MAX_VALUE));
+                backhaulTimeWindows.add(TimeWindow.ETERNITY);
             }
         }
 

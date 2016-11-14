@@ -27,6 +27,27 @@ import java.util.Collections;
  */
 public class TimeWindowsImpl implements TimeWindows {
 
+    static {
+        INTERNAL_ANY_TIME = anyTime();
+    }
+
+    /**
+     * This is an unmodifiable constant containing an instant of
+     * {@linkplain #anyTime()}.
+     */
+    public static final TimeWindows INTERNAL_ANY_TIME;
+
+    /**
+     * Creates a new instance containing only an eternal time window.
+     *
+     * @return The time window implementation.
+     */
+    public static TimeWindowsImpl anyTime() {
+        TimeWindowsImpl impl = new TimeWindowsImpl();
+        impl.add(TimeWindow.ETERNITY);
+        return impl;
+    }
+
     private Collection<TimeWindow> timeWindows = new ArrayList<TimeWindow>();
 
     public void add(TimeWindow timeWindow){
