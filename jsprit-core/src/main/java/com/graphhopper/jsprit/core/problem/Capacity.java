@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 /**
@@ -40,6 +41,10 @@ public class Capacity {
      * @return new capacity
      * @throws NullPointerException if one of the args is null
      */
+
+    public static long MATH_COUNT = 0;
+    public static Duration dur = Duration.ZERO;
+
     public static Capacity addup(Capacity cap1, Capacity cap2) {
         if (cap1 == null || cap2 == null) {
             throw new NullPointerException("arguments must not be null");
@@ -49,6 +54,7 @@ public class Capacity {
             capacityBuilder.addDimension(i, cap1.get(i) + cap2.get(i));
         }
         return capacityBuilder.build();
+        // return cap1.add(cap2);
     }
 
     /**
@@ -65,11 +71,13 @@ public class Capacity {
             throw new NullPointerException("arguments must not be null");
         }
         Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < Math.max(cap.getNuOfDimensions(), cap2subtract.getNuOfDimensions()); i++) {
+        for (int i = 0; i < Math.max(cap.getNuOfDimensions(),
+                        cap2subtract.getNuOfDimensions()); i++) {
             int dimValue = cap.get(i) - cap2subtract.get(i);
             capacityBuilder.addDimension(i, dimValue);
         }
         return capacityBuilder.build();
+        // return cap.subtract(cap2subtract);
     }
 
     /**
@@ -89,6 +97,8 @@ public class Capacity {
             capacityBuilder.addDimension(i, dimValue);
         }
         return capacityBuilder.build();
+
+        // return cap2invert.invert();
     }
 
     /**
@@ -104,22 +114,7 @@ public class Capacity {
      * @throws IllegalStateException if numerator.get(i) != 0 and denominator.get(i) == 0
      */
     public static double divide(Capacity numerator, Capacity denominator) {
-        int nuOfDimensions = 0;
-        double sumQuotients = 0.0;
-        for (int index = 0; index < Math.max(numerator.getNuOfDimensions(), denominator.getNuOfDimensions()); index++) {
-            if (numerator.get(index) != 0 && denominator.get(index) == 0) {
-                throw new IllegalArgumentException("numerator > 0 and denominator = 0. cannot divide by 0");
-            } else if (numerator.get(index) == 0 && denominator.get(index) == 0) {
-                continue;
-            } else {
-                nuOfDimensions++;
-                sumQuotients += (double) numerator.get(index) / (double) denominator.get(index);
-            }
-        }
-        if (nuOfDimensions > 0) {
-            return sumQuotients / nuOfDimensions;
-        }
-        return 0.0;
+        return numerator.divide(denominator);
     }
 
     /**
@@ -220,7 +215,7 @@ public class Capacity {
 
     private Capacity(int numberOfDimensions) {
         dimensions = new int[numberOfDimensions];
-        Arrays.fill(dimensions, 0); // Just to be safe, not needed
+        // Arrays.fill(dimensions, 0); // Just to be safe, not needed
     }
 
     /**
@@ -363,6 +358,71 @@ public class Capacity {
             }
         }
         return true;
+    }
+
+    public Capacity add(Capacity capToAdd) {
+        if (capToAdd == null) {
+            throw new NullPointerException("capacity must not be null");
+        }
+        Capacity res = new Capacity(
+                        Math.max(getNuOfDimensions(), capToAdd.getNuOfDimensions()));
+        for (int i = 0; i < Math.max(getNuOfDimensions(),
+                        capToAdd.getNuOfDimensions()); i++) {
+            res.dimensions[i] = get(i) + capToAdd.get(i);
+        }
+
+        return res;
+    }
+
+    public Capacity subtract(Capacity capToSubstract) {
+        if (capToSubstract == null) {
+            throw new NullPointerException("capacity must not be null");
+        }
+        Capacity res = new Capacity(
+                        Math.max(getNuOfDimensions(), capToSubstract.getNuOfDimensions()));
+        for (int i = 0; i < Math.max(getNuOfDimensions(),
+                        capToSubstract.getNuOfDimensions()); i++) {
+            res.dimensions[i] = get(i) - capToSubstract.get(i);
+        }
+        return res;
+    }
+
+    public Capacity invert() {
+        Capacity res = new Capacity(getNuOfDimensions());
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            res.dimensions[i] = -get(i);
+        }
+        return res;
+    }
+
+    public Capacity abs() {
+        Capacity res = new Capacity(getNuOfDimensions());
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            res.dimensions[i] = Math.abs(get(i));
+        }
+        return res;
+    }
+
+    public double divide(Capacity denominator) {
+        int nuOfDimensions = 0;
+        double sumQuotients = 0.0;
+        for (int index = 0; index < Math.max(getNuOfDimensions(),
+                        denominator.getNuOfDimensions()); index++) {
+            if (get(index) != 0 && denominator.get(index) == 0) {
+                throw new IllegalArgumentException(
+                                "numerator > 0 and denominator = 0. cannot divide by 0");
+            } else if (get(index) == 0 && denominator.get(index) == 0) {
+                continue;
+            } else {
+                nuOfDimensions++;
+                sumQuotients += (double) get(index) / (double) denominator.get(index);
+            }
+        }
+        if (nuOfDimensions > 0) {
+            return sumQuotients / nuOfDimensions;
+        }
+        return 0.0;
+
     }
 
 }
