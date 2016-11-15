@@ -61,7 +61,7 @@ public class Delivery extends Service {
     @Override
     @Deprecated
     public Capacity getSize() {
-        return Capacity.invert(super.getSize());
+        return super.getSize().abs();
     }
 
 }

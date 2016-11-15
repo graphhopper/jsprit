@@ -27,13 +27,13 @@ public final class DeliverServiceDEPRECATED extends DeliveryActivityNEW {
     public DeliverServiceDEPRECATED(Service service, BuilderBase<? extends Service, ?> builder) {
         super(service, builder.getType(), builder.getLocation(),
                         builder.getServiceTime(),
-                        Capacity.invert(builder.getCapacity()),
+                        builder.getCapacity().invert(),
                         builder.getTimeWindows().getTimeWindows());
     }
 
     public DeliverServiceDEPRECATED(Delivery delivery) {
         super(delivery, delivery.getType(), delivery.getLocation(), delivery.getServiceDuration(),
-                        Capacity.invert(delivery.getSize()), delivery.getServiceTimeWindows());
+                        delivery.getSize().invert(), delivery.getServiceTimeWindows());
     }
 
     public DeliverServiceDEPRECATED(DeliverServiceDEPRECATED sourceActivity) {

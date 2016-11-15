@@ -17,7 +17,6 @@
  */
 package com.graphhopper.jsprit.core.problem;
 
-import java.time.Duration;
 import java.util.Arrays;
 
 /**
@@ -32,73 +31,63 @@ public class Capacity {
     public static final Capacity EMPTY = Capacity.Builder.newInstance().build();
 
     /**
-     * Adds up two capacities, i.e. sums up each and every capacity dimension, and returns the resulting Capacity.
+     * Adds up two capacities, i.e. sums up each and every capacity dimension,
+     * and returns the resulting Capacity.
      * <p>
-     * <p>Note that this assumes that capacity dimension can be added up.
+     * <p>
+     * Note that this assumes that capacity dimension can be added up.
      *
-     * @param cap1 capacity to be added up
-     * @param cap2 capacity to be added up
+     * @param cap1
+     *            capacity to be added up
+     * @param cap2
+     *            capacity to be added up
      * @return new capacity
-     * @throws NullPointerException if one of the args is null
+     * @throws NullPointerException
+     *             if one of the args is null
+     * @deprecated Use <code>cap1.add(cap2)</code> instead.
      */
 
-    public static long MATH_COUNT = 0;
-    public static Duration dur = Duration.ZERO;
-
+    @Deprecated
     public static Capacity addup(Capacity cap1, Capacity cap2) {
-        if (cap1 == null || cap2 == null) {
-            throw new NullPointerException("arguments must not be null");
-        }
-        Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
-            capacityBuilder.addDimension(i, cap1.get(i) + cap2.get(i));
-        }
-        return capacityBuilder.build();
-        // return cap1.add(cap2);
+        return cap1.add(cap2);
     }
 
     /**
      * Subtracts cap2subtract from cap and returns the resulting Capacity.
      *
-     * @param cap          capacity to be subtracted from
-     * @param cap2subtract capacity to subtract
+     * @param cap
+     *            capacity to be subtracted from
+     * @param cap2subtract
+     *            capacity to subtract
      * @return new capacity
-     * @throws NullPointerException  if one of the args is null
-     * @throws IllegalStateException if number of capacityDimensions of cap1 and cap2 are different (i.e. <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>).
+     * @throws NullPointerException
+     *             if one of the args is null
+     * @throws IllegalStateException
+     *             if number of capacityDimensions of cap1 and cap2 are
+     *             different (i.e.
+     *             <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>
+     *             ).
+     * @deprecated Use <code>cap1.subtract(cap2)</code> instead.
      */
+    @Deprecated
     public static Capacity subtract(Capacity cap, Capacity cap2subtract) {
-        if (cap == null || cap2subtract == null) {
-            throw new NullPointerException("arguments must not be null");
-        }
-        Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < Math.max(cap.getNuOfDimensions(),
-                        cap2subtract.getNuOfDimensions()); i++) {
-            int dimValue = cap.get(i) - cap2subtract.get(i);
-            capacityBuilder.addDimension(i, dimValue);
-        }
-        return capacityBuilder.build();
-        // return cap.subtract(cap2subtract);
+        return cap.subtract(cap2subtract);
     }
 
     /**
-     * Returns the inverted capacity, i.e. it multiplies all capacity dimensions with -1.
+     * Returns the inverted capacity, i.e. it multiplies all capacity dimensions
+     * with -1.
      *
-     * @param cap2invert capacity to be inverted
+     * @param cap2invert
+     *            capacity to be inverted
      * @return inverted capacity
-     * @throws NullPointerException if one of the args is null
+     * @throws NullPointerException
+     *             if one of the args is null
+     * @deprecated Use <code>cap2invert.invert()</code> instead.
      */
+    @Deprecated
     public static Capacity invert(Capacity cap2invert) {
-        if (cap2invert == null) {
-            throw new NullPointerException("arguments must not be null");
-        }
-        Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < cap2invert.getNuOfDimensions(); i++) {
-            int dimValue = cap2invert.get(i) * -1;
-            capacityBuilder.addDimension(i, dimValue);
-        }
-        return capacityBuilder.build();
-
-        // return cap2invert.invert();
+        return cap2invert.invert();
     }
 
     /**
