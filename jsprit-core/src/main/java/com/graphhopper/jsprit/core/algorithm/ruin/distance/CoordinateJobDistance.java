@@ -19,30 +19,28 @@ package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 
 import java.util.List;
 
+import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 
 
 /**
- * Calculator that calculates average distance between two jobs based on the
- * input-transport costs.
+ * Calculator that calculates average distance between two jobs based on the input-transport costs.
  * <p>
  * <p>
- * If the distance between two jobs cannot be calculated with input-transport
- * costs, it tries the euclidean distance between these jobs.
+ * If the distance between two jobs cannot be calculated with input-transport costs, it tries the euclidean distance
+ * between these jobs.
  *
  * @author stefan schroeder
+ * @author balage
  */
-public class AvgServiceAndShipmentDistance implements JobDistance {
+public class CoordinateJobDistance implements JobDistance {
 
     private VehicleRoutingTransportCosts costs;
 
-    public AvgServiceAndShipmentDistance(VehicleRoutingTransportCosts costs) {
+    public CoordinateJobDistance() {
         super();
-        this.costs = costs;
-
     }
 
     /**
@@ -60,14 +58,6 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
             return 0.0;
         }
 
-        // TODO: Do we really need these checks after the refactor?
-//      if (!(i instanceof Service || i instanceofx Shipment || i instanceofx ShipmentWithBackhaul)) {
-//          throw new IllegalStateException("this supports only shipments or services");
-//      }
-//      if (!(j instanceof Service || j instanceofx Shipment || j instanceofx ShipmentWithBackhaul)) {
-//          throw new IllegalStateException("this supports only shipments or services");
-//      }
-
         return calcDist(i.getAllLocations(), j.getAllLocations());
     }
 
@@ -81,7 +71,7 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
      * @return The Average distance. (Returns 0 when any of the sides contains
      *         no distances.)
      */
-    private double calcDist(List<Location> leftLocations, List<Location> rightLocations) {
+    protected double calcDist(List<Location> leftLocations, List<Location> rightLocations) {
         if (leftLocations.isEmpty() || rightLocations.isEmpty()) {
             return 0d;
         }
@@ -94,12 +84,7 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
         return totalDistance / (leftLocations.size() * rightLocations.size());
     }
 
-    private double calcDist(Location location_i, Location location_j) {
-        try {
-            return costs.getTransportCost(location_i, location_j, 0.0, null, null);
-        } catch (IllegalStateException e) {
-            // now try the euclidean distance between these two services
-        }
-        return EuclideanDistanceCalculator.calculateDistance(location_i.getCoordinate(), location_j.getCoordinate());
+    protected double calcDist(Location location_i, Location location_j) {
+        return EuclideanDistanceCalculator.getInstance().calculateDistance(location_i.getCoordinate(), location_j.getCoordinate());
     }
 }

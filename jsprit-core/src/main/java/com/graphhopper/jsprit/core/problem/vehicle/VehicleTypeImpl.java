@@ -53,25 +53,25 @@ public class VehicleTypeImpl implements VehicleType {
             super();
             this.fix = fix;
             this.perTimeUnit = perTimeUnit;
-            this.perTransportTimeUnit = perTimeUnit;
+            perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
-            this.perWaitingTimeUnit = 0.;
-            this.perServiceTimeUnit = 0.;
+            perWaitingTimeUnit = 0.;
+            perServiceTimeUnit = 0.;
         }
 
         public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit) {
             this.fix = fix;
             this.perTimeUnit = perTimeUnit;
-            this.perTransportTimeUnit = perTimeUnit;
+            perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = perWaitingTimeUnit;
-            this.perServiceTimeUnit = 0.;
+            perServiceTimeUnit = 0.;
         }
 
         public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit, double perServiceTimeUnit) {
             this.fix = fix;
             this.perTimeUnit = perTimeUnit;
-            this.perTransportTimeUnit = perTimeUnit;
+            perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = perWaitingTimeUnit;
             this.perServiceTimeUnit = perServiceTimeUnit;
@@ -92,13 +92,16 @@ public class VehicleTypeImpl implements VehicleType {
 
 
         public static VehicleTypeImpl.Builder newInstance(String id) {
-            if (id == null) throw new IllegalArgumentException();
+            if (id == null) {
+                throw new IllegalArgumentException();
+            }
             return new Builder(id);
         }
 
         private String id;
         private int capacity = 0;
         private double maxVelo = Double.MAX_VALUE;
+        private double avgVelocity = 1d;
         /**
          * default cost values for default vehicle type
          */
@@ -128,22 +131,45 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException if velocity is smaller than zero
          */
         public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds) {
-            if (inMeterPerSeconds < 0.0) throw new IllegalArgumentException("velocity cannot be smaller than zero");
-            this.maxVelo = inMeterPerSeconds;
+            if (inMeterPerSeconds < 0.0) {
+                throw new IllegalArgumentException("velocity cannot be smaller than zero");
+            }
+            maxVelo = inMeterPerSeconds;
+            return this;
+        }
+
+        /**
+         * Sets the average velocity this vehicle-type can go [in meter per
+         * seconds]. Used for travel time calculation.
+         *
+         * @param inMeterPerSeconds
+         * @return this builder
+         * @throws IllegalArgumentException
+         *             if velocity is smaller than zero
+         */
+        public VehicleTypeImpl.Builder setAverageVelocity(double inMeterPerSeconds) {
+            if (inMeterPerSeconds < 0.0) {
+                throw new IllegalArgumentException("average speed cannot be smaller than zero");
+            }
+            avgVelocity = inMeterPerSeconds;
             return this;
         }
 
         /**
          * Sets the fixed costs of the vehicle-type.
          * <p>
-         * <p>by default it is 0.
+         * <p>
+         * by default it is 0.
          *
          * @param fixedCost
          * @return this builder
-         * @throws IllegalArgumentException if fixedCost is smaller than zero
+         * @throws IllegalArgumentException
+         *             if fixedCost is smaller than zero
          */
         public VehicleTypeImpl.Builder setFixedCost(double fixedCost) {
-            if (fixedCost < 0.0) throw new IllegalArgumentException("fixed costs cannot be smaller than zero");
+            if (fixedCost < 0.0) {
+                throw new IllegalArgumentException("fixed costs cannot be smaller than zero");
+            }
             this.fixedCost = fixedCost;
             return this;
         }
@@ -158,7 +184,9 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException if perDistance is smaller than zero
          */
         public VehicleTypeImpl.Builder setCostPerDistance(double perDistance) {
-            if (perDistance < 0.0) throw new IllegalArgumentException("cost per distance must not be smaller than zero");
+            if (perDistance < 0.0) {
+                throw new IllegalArgumentException("cost per distance must not be smaller than zero");
+            }
             this.perDistance = perDistance;
             return this;
         }
@@ -175,7 +203,9 @@ public class VehicleTypeImpl implements VehicleType {
          */
         @Deprecated
         public VehicleTypeImpl.Builder setCostPerTime(double perTime) {
-            if (perTime < 0.0) throw new IllegalArgumentException();
+            if (perTime < 0.0) {
+                throw new IllegalArgumentException();
+            }
             this.perTime = perTime;
             return this;
         }
@@ -190,7 +220,9 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException if costPerTime is smaller than zero
          */
         public VehicleTypeImpl.Builder setCostPerTransportTime(double perTime) {
-            if (perTime < 0.0) throw new IllegalArgumentException();
+            if (perTime < 0.0) {
+                throw new IllegalArgumentException();
+            }
             this.perTime = perTime;
             return this;
         }
@@ -205,7 +237,9 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException if costPerTime is smaller than zero
          */
         public VehicleTypeImpl.Builder setCostPerWaitingTime(double perWaitingTime) {
-            if (perWaitingTime < 0.0) throw new IllegalArgumentException();
+            if (perWaitingTime < 0.0) {
+                throw new IllegalArgumentException();
+            }
             this.perWaitingTime = perWaitingTime;
             return this;
         }
@@ -237,11 +271,14 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException    if capacity dimension is already set
          */
         public Builder addCapacityDimension(int dimIndex, int dimVal) {
-            if (dimVal < 0) throw new IllegalArgumentException("capacity value cannot be negative");
-            if (capacityDimensions != null)
+            if (dimVal < 0) {
+                throw new IllegalArgumentException("capacity value cannot be negative");
+            }
+            if (capacityDimensions != null) {
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                    "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
-                    "You used both methods.");
+                                "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+                                "You used both methods.");
+            }
             dimensionAdded = true;
             capacityBuilder.addDimension(dimIndex, dimVal);
             return this;
@@ -259,11 +296,12 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException if capacityDimension has already been added
          */
         public Builder setCapacityDimensions(Capacity capacity) {
-            if (dimensionAdded)
+            if (dimensionAdded) {
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                    "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
-                    "You used both methods.");
-            this.capacityDimensions = capacity;
+                                "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+                                "You used both methods.");
+            }
+            capacityDimensions = capacity;
             return this;
         }
 
@@ -278,7 +316,7 @@ public class VehicleTypeImpl implements VehicleType {
         final int prime = 31;
         int result = 1;
         result = prime * result
-            + ((typeId == null) ? 0 : typeId.hashCode());
+                        + ((typeId == null) ? 0 : typeId.hashCode());
         return result;
     }
 
@@ -287,18 +325,23 @@ public class VehicleTypeImpl implements VehicleType {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         VehicleTypeImpl other = (VehicleTypeImpl) obj;
         if (typeId == null) {
-            if (other.typeId != null)
+            if (other.typeId != null) {
                 return false;
-        } else if (!typeId.equals(other.typeId))
+            }
+        } else if (!typeId.equals(other.typeId)) {
             return false;
+        }
         return true;
     }
 
@@ -314,6 +357,8 @@ public class VehicleTypeImpl implements VehicleType {
 
     private final double maxVelocity;
 
+    private final double avgVelocity;
+
     /**
      * priv constructor constructing vehicle-type
      *
@@ -323,6 +368,7 @@ public class VehicleTypeImpl implements VehicleType {
         typeId = builder.id;
         capacity = builder.capacity;
         maxVelocity = builder.maxVelo;
+        avgVelocity = builder.avgVelocity;
         vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance, builder.perWaitingTime, builder.perServiceTime);
         capacityDimensions = builder.capacityDimensions;
         profile = builder.profile;
@@ -347,13 +393,18 @@ public class VehicleTypeImpl implements VehicleType {
     @Override
     public String toString() {
         return "[typeId=" + typeId + "]" +
-            "[capacity=" + capacityDimensions + "]" +
-            "[costs=" + vehicleCostParams + "]";
+                        "[capacity=" + capacityDimensions + "]" +
+                        "[costs=" + vehicleCostParams + "]";
     }
 
     @Override
     public double getMaxVelocity() {
         return maxVelocity;
+    }
+
+    @Override
+    public double getAvgVelocity() {
+        return avgVelocity;
     }
 
     @Override

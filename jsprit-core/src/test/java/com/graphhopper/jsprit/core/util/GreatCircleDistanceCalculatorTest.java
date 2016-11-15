@@ -18,9 +18,11 @@
 
 package com.graphhopper.jsprit.core.util;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import junit.framework.Assert;
+import com.graphhopper.jsprit.core.distance.SphericalDistanceCalculator;
 
 /**
  * Created by schroeder on 28.11.14.
@@ -35,28 +37,12 @@ public class GreatCircleDistanceCalculatorTest {
         double lon2 = 12.1333333;
         double lat2 = 54.0833333;
 
-        double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
-            Coordinate.newInstance(lon1, lat1),
-            Coordinate.newInstance(lon2, lat2),
-            DistanceUnit.Kilometer
-        );
-        Assert.assertEquals(600, greatCircle, 30.);
+        double greatCircle = SphericalDistanceCalculator.getInstance().calculateDistance(
+                        Coordinate.newInstance(lon1, lat1),
+                        Coordinate.newInstance(lon2, lat2)
+                        );
+        assertEquals(600, greatCircle, 30.);
     }
 
-    @Test
-    public void testMeter() {
-        double lon1 = 8.3858333;
-        double lat1 = 49.0047222;
-
-        double lon2 = 12.1333333;
-        double lat2 = 54.0833333;
-
-        double greatCircle = GreatCircleDistanceCalculator.calculateDistance(
-            Coordinate.newInstance(lon1, lat1),
-            Coordinate.newInstance(lon2, lat2),
-            DistanceUnit.Meter
-        );
-        Assert.assertEquals(600000, greatCircle, 30000.);
-    }
 
 }

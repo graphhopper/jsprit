@@ -32,6 +32,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
@@ -172,7 +173,7 @@ public class SolutionPrinter {
             out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
             double costs = 0;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),
-                    Math.round(costs));
+                            Math.round(costs));
             TourActivity prevAct = route.getStart();
             for (TourActivity act : route.getActivities()) {
                 String jobId;
@@ -181,20 +182,23 @@ public class SolutionPrinter {
                 } else {
                     jobId = "-";
                 }
+                String type = (act instanceof AbstractActivityNEW)
+                                ? ((AbstractActivityNEW) act).getType() : act.getName();
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
-                        route.getVehicle());
+                                route.getVehicle());
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 costs += c;
-                out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()),
-                        Math.round(act.getEndTime()), Math.round(costs));
+                out.format(leftAlgin, routeNu, getVehicleString(route), type, jobId,
+                                Math.round(act.getArrTime()),
+                                Math.round(act.getEndTime()), Math.round(costs));
                 prevAct = act;
             }
             double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(),
-                    route.getDriver(), route.getVehicle());
+                            route.getDriver(), route.getVehicle());
             c += problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
             costs += c;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef",
-                    Math.round(costs));
+                            Math.round(costs));
             routeNu++;
         }
         out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
@@ -216,8 +220,8 @@ public class SolutionPrinter {
 
     private static Map<Class<? extends Job>, Long> getNuOfJobs(VehicleRoutingProblem problem) {
         return problem.getJobs().values().stream()
-                .map(j -> (Class<? extends Job>) j.getClass())
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+                        .map(j -> (Class<? extends Job>) j.getClass())
+                        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 
 }

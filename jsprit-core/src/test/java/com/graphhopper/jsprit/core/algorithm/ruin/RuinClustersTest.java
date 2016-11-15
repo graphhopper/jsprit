@@ -24,7 +24,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
+import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -60,7 +60,7 @@ public class RuinClustersTest {
         VehicleRoute vr2 = VehicleRoute.Builder.newInstance(v)
             .addService(s6).addService(s7).addService(s4).addService(s5).setJobActivityFactory(vrp.getJobActivityFactory()).build();
 
-        JobNeighborhoods n = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()));
+        JobNeighborhoods n = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new DefaultJobDistance(vrp.getTransportCosts()));
         n.initialise();
         RuinClusters rc = new RuinClusters(vrp, 5, n);
         Random r = RandomNumberGeneration.newInstance();

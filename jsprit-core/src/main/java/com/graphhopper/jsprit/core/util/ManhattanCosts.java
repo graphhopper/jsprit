@@ -18,73 +18,87 @@
 package com.graphhopper.jsprit.core.util;
 
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.driver.Driver;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
 
 /**
  * @author stefan schroeder
+ *
+ * @deprecated Use instead new {@linkplain DefaultCosts} with
+ *             {@link ManhattanDistanceCalculator#getInstance()}
  */
-
-public class ManhattanCosts extends AbstractForwardVehicleRoutingTransportCosts implements TransportDistance {
-
-    public double speed = 1;
-
-    private Locations locations;
-
-    public ManhattanCosts(Locations locations) {
-        super();
-        this.locations = locations;
-    }
+@Deprecated
+public class ManhattanCosts extends DefaultCosts {
 
     public ManhattanCosts() {
-
+        super(ManhattanDistanceCalculator.getInstance());
     }
 
-    @Override
-    public double getTransportCost(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
-        double distance;
-        try {
-            distance = calculateDistance(from, to);
-        } catch (NullPointerException e) {
-            throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
-        }
-        double costs = distance;
-        if (vehicle != null) {
-            if (vehicle.getType() != null) {
-                costs = distance * vehicle.getType().getVehicleCostParams().perDistanceUnit;
-            }
-        }
-        return costs;
-    }
-
-    @Override
-    public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
-        return calculateDistance(from, to) / speed;
-    }
-
-    private double calculateDistance(Location fromLocation, Location toLocation) {
-        Coordinate from = null;
-        Coordinate to = null;
-        if (fromLocation.getCoordinate() != null & toLocation.getCoordinate() != null) {
-            from = fromLocation.getCoordinate();
-            to = toLocation.getCoordinate();
-        } else if (locations != null) {
-            from = locations.getCoord(fromLocation.getId());
-            to = locations.getCoord(toLocation.getId());
-        }
-        if (from == null || to == null) throw new NullPointerException();
-        return calculateDistance(from, to);
-    }
-
-    private double calculateDistance(Coordinate from, Coordinate to) {
-        return Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY());
-    }
-
-    @Override
-    public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-        return calculateDistance(from, to);
-    }
+    // public double speed = 1;
+    //
+    // private Locations locations;
+    //
+    // public ManhattanCosts(Locations locations) {
+    // super();
+    // this.locations = locations;
+    // }
+    //
+    // public ManhattanCosts() {
+    //
+    // }
+    //
+    // @Override
+    // public double getTransportCost(Location from, Location to, double time,
+    // Driver driver, Vehicle vehicle) {
+    // double distance;
+    // try {
+    // distance = calculateDistance(from, to);
+    // } catch (NullPointerException e) {
+    // throw new NullPointerException("cannot calculate euclidean distance.
+    // coordinates are missing. either add coordinates or use another
+    // transport-cost-calculator.");
+    // }
+    // double costs = distance;
+    // if (vehicle != null) {
+    // if (vehicle.getType() != null) {
+    // costs = distance *
+    // vehicle.getType().getVehicleCostParams().perDistanceUnit;
+    // }
+    // }
+    // return costs;
+    // }
+    //
+    // @Override
+    // public double getTransportTime(Location from, Location to, double time,
+    // Driver driver, Vehicle vehicle) {
+    // return calculateDistance(from, to) / speed;
+    // }
+    //
+    // private double calculateDistance(Location fromLocation, Location
+    // toLocation) {
+    // Coordinate from = null;
+    // Coordinate to = null;
+    // if (fromLocation.getCoordinate() != null & toLocation.getCoordinate() !=
+    // null) {
+    // from = fromLocation.getCoordinate();
+    // to = toLocation.getCoordinate();
+    // } else if (locations != null) {
+    // from = locations.getCoord(fromLocation.getId());
+    // to = locations.getCoord(toLocation.getId());
+    // }
+    // if (from == null || to == null) {
+    // throw new NullPointerException();
+    // }
+    // return calculateDistance(from, to);
+    // }
+    //
+    // private double calculateDistance(Coordinate from, Coordinate to) {
+    // return Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() -
+    // to.getY());
+    // }
+    //
+    // @Override
+    // public double getDistance(Location from, Location to, double
+    // departureTime, Vehicle vehicle) {
+    // return calculateDistance(from, to);
+    // }
 }

@@ -25,6 +25,11 @@ import java.util.Collection;
  */
 public interface TimeWindows {
 
-    public Collection<TimeWindow> getTimeWindows();
+    /**
+     * A TimeWindows implementation which contains a single time window of
+     * eternity.
+     */
+    public final TimeWindows ANY_TIME = TimeWindowsImpl.INTERNAL_ANY_TIME;
 
+    public Collection<TimeWindow> getTimeWindows();
 }

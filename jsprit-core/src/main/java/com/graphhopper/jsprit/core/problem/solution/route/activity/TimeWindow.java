@@ -26,6 +26,11 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 public class TimeWindow {
 
     /**
+     * A time window of eternity.
+     */
+    public static final TimeWindow ETERNITY = new TimeWindow(0, Double.MAX_VALUE);
+
+    /**
      * Returns new instance of TimeWindow.
      *
      * @param start
@@ -49,10 +54,12 @@ public class TimeWindow {
      */
     public TimeWindow(double start, double end) {
         super();
-        if (start < 0.0 || end < 0.0)
+        if (start < 0.0 || end < 0.0) {
             throw new IllegalArgumentException("neither time window start nor end must be < 0.0: " + "[start=" + start + "][end=" + end + "]");
-        if (end < start)
+        }
+        if (end < start) {
             throw new IllegalArgumentException("time window end cannot be smaller than its start: " + "[start=" + start + "][end=" + end + "]");
+        }
         this.start = start;
         this.end = end;
     }
@@ -97,18 +104,23 @@ public class TimeWindow {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         TimeWindow other = (TimeWindow) obj;
-        if (Double.doubleToLongBits(end) != Double.doubleToLongBits(other.end))
+        if (Double.doubleToLongBits(end) != Double.doubleToLongBits(other.end)) {
             return false;
+        }
         if (Double.doubleToLongBits(start) != Double
-            .doubleToLongBits(other.start))
+                        .doubleToLongBits(other.start)) {
             return false;
+        }
         return true;
     }
 

@@ -30,6 +30,7 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
+import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
@@ -39,7 +40,6 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.ChristofidesReader;
-import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
 import com.graphhopper.jsprit.core.util.JobType;
 import com.graphhopper.jsprit.core.util.Solutions;
@@ -119,7 +119,7 @@ public class CVRPwithMatrix_IT {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(locations.size(), true);
         for (Location from : locations) {
             for (Location to : locations) {
-                double distance = EuclideanDistanceCalculator.calculateDistance(from.getCoordinate(), to.getCoordinate());
+                double distance = EuclideanDistanceCalculator.getInstance().calculateDistance(from.getCoordinate(), to.getCoordinate());
                 matrixBuilder.addTransportDistance(from.getIndex(), to.getIndex(), distance);
                 matrixBuilder.addTransportTime(from.getIndex(), to.getIndex(), distance);
             }

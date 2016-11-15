@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.RadialRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RandomRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
-import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
+import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
@@ -156,7 +156,7 @@ public class BuildAlgorithmFromScratch {
          * ruin strategies
 		 */
         RuinStrategy randomRuin = new RandomRuinStrategyFactory(0.5).createStrategy(vrp);
-        RuinStrategy radialRuin = new RadialRuinStrategyFactory(0.3, new AvgServiceAndShipmentDistance(vrp.getTransportCosts())).createStrategy(vrp);
+        RuinStrategy radialRuin = new RadialRuinStrategyFactory(0.3, new DefaultJobDistance(vrp.getTransportCosts())).createStrategy(vrp);
 
 		/*
          * objective function

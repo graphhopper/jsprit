@@ -27,7 +27,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.algorithm.ruin.distance.EuclideanServiceDistance;
+import com.graphhopper.jsprit.core.algorithm.ruin.distance.CoordinateJobDistance;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -65,7 +65,7 @@ public class JobNeighborhoodsOptimizedTest {
 
         vrp = builder.addJob(target).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6).addJob(s7).build();
 
-        jobDistance = new EuclideanServiceDistance();
+        jobDistance = new CoordinateJobDistance();
     }
 
     @Test

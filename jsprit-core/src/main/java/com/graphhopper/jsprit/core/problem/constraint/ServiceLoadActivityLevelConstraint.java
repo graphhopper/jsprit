@@ -20,9 +20,6 @@ package com.graphhopper.jsprit.core.problem.constraint;
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -71,12 +68,22 @@ public class ServiceLoadActivityLevelConstraint implements HardActivityConstrain
             }
 
         }
-        if (newAct instanceof PickupServiceDEPRECATED || newAct instanceof ServiceActivityNEW) {
+
+        if (newAct.getSize().isPositive()) {
             if (!Capacity.addup(newAct.getSize(), futureMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
-        if (newAct instanceof DeliverServiceDEPRECATED) {
+
+        /*
+         * REMARK - Balage - This negating could be a bottleneck if called too
+         * many times. Has to be mesured. If rational, the activities could
+         * store their size as absolute value as well. (We could rename
+         * getSize() as getCargoChange(), and the absolute value as
+         * getCargoSize(). For positive or zero activities as Service and Pickup
+         * they could refer to the same object.)
+         */
+        if (!newAct.getSize().isPositive()) {
             if (!Capacity.addup(Capacity.invert(newAct.getSize()), prevMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
             }

@@ -19,9 +19,11 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -83,9 +85,21 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
      */
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (!(newAct instanceof PickupShipmentDEPRECATED) && !(newAct instanceof DeliverShipmentDEPRECATED)) {
+        // ----> REMARK - Balage - This replaces the following check? Do we
+        // still need it? It's fragile and uses an instantof so it probably
+        // wrong!
+        // if (!(newAct instanceof PickupShipmentDEPRECATED) && !(newAct
+        // instanceof DeliverShipmentDEPRECATED))
+        // return ConstraintsStatus.FULFILLED;
+        if (!(newAct instanceof JobActivity)) {
             return ConstraintsStatus.FULFILLED;
         }
+        JobActivity newJobAct = (JobActivity)newAct;
+        if (!(newJobAct.getJob() instanceof Shipment)) {
+            return ConstraintsStatus.FULFILLED;
+        }
+        // <--- Check ends here
+
         // System.out.println(visualize(iFacts, prevAct, newAct, nextAct));
         Capacity loadAtPrevAct;
         if (prevAct instanceof Start) {
@@ -99,20 +113,59 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
                 loadAtPrevAct = defaultValue;
             }
         }
-        if (newAct instanceof PickupShipmentDEPRECATED) {
+        Capacity vehicleCapacityDimensions = iFacts.getNewVehicle().getType().getCapacityDimensions();
+
+        if (newAct instanceof PickupActivityNEW) {
             Capacity newCapacity = Capacity.addup(loadAtPrevAct, newAct.getSize());
-            if (!newCapacity.isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+            if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
-        if (newAct instanceof DeliverShipmentDEPRECATED) {
+        if (newAct instanceof DeliveryActivityNEW) {
             Capacity newCapacity = Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize()));
-            if (!newCapacity.isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+            if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
             }
         }
         return ConstraintsStatus.FULFILLED;
     }
 
+    // OLD BODY
+    // if (!(newAct instanceof PickupShipmentDEPRECATED) && !(newAct instanceof
+    // DeliverShipmentDEPRECATED)) {
+    // return ConstraintsStatus.FULFILLED;
+    // }
+    // // System.out.println(visualize(iFacts, prevAct, newAct, nextAct));
+    // Capacity loadAtPrevAct;
+    // if (prevAct instanceof Start) {
+    // loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(),
+    // InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+    // if (loadAtPrevAct == null) {
+    // loadAtPrevAct = defaultValue;
+    // }
+    // } else {
+    // loadAtPrevAct = stateManager.getActivityState(prevAct,
+    // InternalStates.LOAD, Capacity.class);
+    // if (loadAtPrevAct == null) {
+    // loadAtPrevAct = defaultValue;
+    // }
+    // }
+    // Capacity vehicleCapacityDimensions =
+    // iFacts.getNewVehicle().getType().getCapacityDimensions();
+    //
+    // if (newAct instanceof PickupShipmentDEPRECATED) {
+    // Capacity newCapacity = Capacity.addup(loadAtPrevAct, newAct.getSize());
+    // if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
+    // return ConstraintsStatus.NOT_FULFILLED;
+    // }
+    // }
+    // if (newAct instanceof DeliverShipmentDEPRECATED) {
+    // Capacity newCapacity = Capacity.addup(loadAtPrevAct,
+    // Capacity.invert(newAct.getSize()));
+    // if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
+    // return ConstraintsStatus.NOT_FULFILLED_BREAK;
+    // }
+    // }
+    // return ConstraintsStatus.FULFILLED;
 
 }
