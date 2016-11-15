@@ -17,7 +17,6 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.job.Shipment.BuilderBase;
 
@@ -28,7 +27,7 @@ public final class DeliverShipmentDEPRECATED extends DeliveryActivityNEW {
     public DeliverShipmentDEPRECATED(Shipment shipment,
                     BuilderBase<? extends Shipment, ?> builder) {
         super(shipment, NAME, builder.getDeliveryLocation(), builder.getDeliveryServiceTime(),
-                        Capacity.invert(builder.getCapacity()),
+                        builder.getCapacity().invert(),
                         builder.getDeliveryTimeWindows().getTimeWindows());
     }
 
@@ -40,7 +39,7 @@ public final class DeliverShipmentDEPRECATED extends DeliveryActivityNEW {
     @Deprecated
     public DeliverShipmentDEPRECATED(Shipment s) {
         super(s, NAME, s.getDeliveryLocation(), s.getDeliveryServiceTime(),
-                        Capacity.invert(s.getSize()),
+                        s.getSize().invert(),
                         s.getDeliveryTimeWindows());
     }
 

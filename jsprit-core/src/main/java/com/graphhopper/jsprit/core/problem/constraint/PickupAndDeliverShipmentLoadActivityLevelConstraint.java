@@ -116,13 +116,13 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
         Capacity vehicleCapacityDimensions = iFacts.getNewVehicle().getType().getCapacityDimensions();
 
         if (newAct instanceof PickupActivityNEW) {
-            Capacity newCapacity = Capacity.addup(loadAtPrevAct, newAct.getSize());
+            Capacity newCapacity = loadAtPrevAct.add(newAct.getSize());
             if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
         if (newAct instanceof DeliveryActivityNEW) {
-            Capacity newCapacity = Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize()));
+            Capacity newCapacity = loadAtPrevAct.add(newAct.getSize().abs());
             if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
             }

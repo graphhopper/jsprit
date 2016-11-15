@@ -46,7 +46,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 
     public JobInsertionConsideringFixCostsCalculator(final JobInsertionCostsCalculator standardInsertionCalculator, RouteAndActivityStateGetter stateGetter) {
         super();
-        this.standardServiceInsertion = standardInsertionCalculator;
+        standardServiceInsertion = standardInsertionCalculator;
         this.stateGetter = stateGetter;
         logger.debug("inialise {}", this);
     }
@@ -93,7 +93,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
     public double getSolutionCompletenessRatio() { return solution_completeness_ratio; }
 
     private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job, Capacity currentMaxLoadInRoute) {
-        Capacity load = Capacity.addup(currentMaxLoadInRoute, job.getSize());
+        Capacity load = currentMaxLoadInRoute.add(job.getSize());
         double currentFix = 0.0;
         if (route.getVehicle() != null) {
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
@@ -107,7 +107,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
     }
 
     private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job, Capacity currentLoad) {
-        Capacity load = Capacity.addup(currentLoad, job.getSize());
+        Capacity load = currentLoad.add(job.getSize());
         double currentRelFix = 0.0;
         if (route.getVehicle() != null) {
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
@@ -123,7 +123,9 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 
     private Capacity getCurrentMaxLoadInRoute(VehicleRoute route) {
         Capacity maxLoad = stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class);
-        if (maxLoad == null) maxLoad = Capacity.Builder.newInstance().build();
+        if (maxLoad == null) {
+            maxLoad = Capacity.Builder.newInstance().build();
+        }
         return maxLoad;
     }
 

@@ -53,14 +53,16 @@ class UpdateMaxCapacityUtilisationAtRoute implements ActivityVisitor, StateUpdat
     @Override
     public void begin(VehicleRoute route) {
         currentLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-        if (currentLoad == null) currentLoad = defaultValue;
+        if (currentLoad == null) {
+            currentLoad = defaultValue;
+        }
         maxLoad = currentLoad;
         this.route = route;
     }
 
     @Override
     public void visit(TourActivity act) {
-        currentLoad = Capacity.addup(currentLoad, act.getSize());
+        currentLoad = currentLoad.add(act.getSize());
         maxLoad = Capacity.max(maxLoad, currentLoad);
     }
 

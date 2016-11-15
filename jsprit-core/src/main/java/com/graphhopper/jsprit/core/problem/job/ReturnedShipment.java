@@ -221,8 +221,8 @@ public final class ReturnedShipment extends Shipment {
         list.addActivity(new ExchangeActivityNEW(this, ACTIVITY_NAME_DELIVERY,
                         shipmentBuilder.getDeliveryLocation(),
                         shipmentBuilder.getDeliveryServiceTime(),
-                        Capacity.subtract(shipmentBuilder.getBackhaulCapacity(),
-                                        shipmentBuilder.getCapacity()),
+                        shipmentBuilder.getBackhaulCapacity()
+                                        .subtract(shipmentBuilder.getCapacity()),
                         shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
         list.addActivity(new DeliveryActivityNEW(this, ACTIVITY_NAME_BACKHAUL,
                         shipmentBuilder.getBackhaulLocation(),
