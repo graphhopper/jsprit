@@ -20,16 +20,17 @@ package com.graphhopper.jsprit.core.problem.constraint;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
+/**
+ * @author stefan schroeder
+ * @author balage (generic job refactor)
+ *
+ */
 public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint {
 
     @Override
@@ -88,42 +89,45 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
         return newAct instanceof JobActivity && ((JobActivity) newAct).getJob() instanceof Service;
     }
 
-    protected ConstraintsStatus old(TourActivity prevAct, TourActivity newAct,
-                    TourActivity nextAct) {
-        if (newAct instanceof PickupServiceDEPRECATED
-                        && nextAct instanceof DeliverServiceDEPRECATED) {
-            return ConstraintsStatus.NOT_FULFILLED;
-        }
-        if (newAct instanceof ServiceActivityNEW && nextAct instanceof DeliverServiceDEPRECATED) {
-            return ConstraintsStatus.NOT_FULFILLED;
-        }
-        if (newAct instanceof DeliverServiceDEPRECATED
-                        && prevAct instanceof PickupServiceDEPRECATED) {
-            return ConstraintsStatus.NOT_FULFILLED_BREAK;
-        }
-        if (newAct instanceof DeliverServiceDEPRECATED && prevAct instanceof ServiceActivityNEW) {
-            return ConstraintsStatus.NOT_FULFILLED_BREAK;
-        }
-
-        if (newAct instanceof DeliverServiceDEPRECATED
-                        && prevAct instanceof PickupShipmentDEPRECATED) {
-            return ConstraintsStatus.NOT_FULFILLED_BREAK;
-        }
-        if (newAct instanceof DeliverServiceDEPRECATED
-                        && prevAct instanceof DeliverShipmentDEPRECATED) {
-            return ConstraintsStatus.NOT_FULFILLED_BREAK;
-        }
-        if (newAct instanceof PickupShipmentDEPRECATED
-                        && nextAct instanceof DeliverServiceDEPRECATED) {
-            return ConstraintsStatus.NOT_FULFILLED;
-        }
-        if (newAct instanceof DeliverShipmentDEPRECATED
-                        && nextAct instanceof DeliverServiceDEPRECATED) {
-            return ConstraintsStatus.NOT_FULFILLED;
-        }
-
-        return ConstraintsStatus.FULFILLED;
-    }
+    // protected ConstraintsStatus old(TourActivity prevAct, TourActivity
+    // newAct,
+    // TourActivity nextAct) {
+    // if (newAct instanceof PickupServiceDEPRECATED
+    // && nextAct instanceof DeliverServiceDEPRECATED) {
+    // return ConstraintsStatus.NOT_FULFILLED;
+    // }
+    // if (newAct instanceof ServiceActivityNEW && nextAct instanceof
+    // DeliverServiceDEPRECATED) {
+    // return ConstraintsStatus.NOT_FULFILLED;
+    // }
+    // if (newAct instanceof DeliverServiceDEPRECATED
+    // && prevAct instanceof PickupServiceDEPRECATED) {
+    // return ConstraintsStatus.NOT_FULFILLED_BREAK;
+    // }
+    // if (newAct instanceof DeliverServiceDEPRECATED && prevAct instanceof
+    // ServiceActivityNEW) {
+    // return ConstraintsStatus.NOT_FULFILLED_BREAK;
+    // }
+    //
+    // if (newAct instanceof DeliverServiceDEPRECATED
+    // && prevAct instanceof PickupShipmentDEPRECATED) {
+    // return ConstraintsStatus.NOT_FULFILLED_BREAK;
+    // }
+    // if (newAct instanceof DeliverServiceDEPRECATED
+    // && prevAct instanceof DeliverShipmentDEPRECATED) {
+    // return ConstraintsStatus.NOT_FULFILLED_BREAK;
+    // }
+    // if (newAct instanceof PickupShipmentDEPRECATED
+    // && nextAct instanceof DeliverServiceDEPRECATED) {
+    // return ConstraintsStatus.NOT_FULFILLED;
+    // }
+    // if (newAct instanceof DeliverShipmentDEPRECATED
+    // && nextAct instanceof DeliverServiceDEPRECATED) {
+    // return ConstraintsStatus.NOT_FULFILLED;
+    // }
+    //
+    // return ConstraintsStatus.FULFILLED;
+    // }
 
 
 }
