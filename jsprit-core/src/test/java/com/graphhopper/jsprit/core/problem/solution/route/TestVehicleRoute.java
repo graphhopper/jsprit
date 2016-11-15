@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.problem.driver.DriverImpl.NoDriver;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
@@ -335,7 +335,7 @@ public class TestVehicleRoute {
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("delivery.delivery", act.getName());
-        assertTrue(act instanceof DeliverServiceDEPRECATED);
+        assertTrue(act instanceof DeliveryActivityNEW);
         assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
     }
@@ -349,7 +349,7 @@ public class TestVehicleRoute {
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("delivery.delivery", act.getName());
-        assertTrue(act instanceof DeliverServiceDEPRECATED);
+        assertTrue(act instanceof DeliveryActivityNEW);
         assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
     }
