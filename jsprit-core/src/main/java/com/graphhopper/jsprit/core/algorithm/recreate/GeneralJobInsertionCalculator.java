@@ -17,8 +17,18 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import com.graphhopper.jsprit.core.problem.JobActivityFactory;
-import com.graphhopper.jsprit.core.problem.constraint.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -26,15 +36,12 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 
 final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator {
@@ -55,8 +62,6 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
 
     private VehicleRoutingActivityCosts activityCosts;
 
-    private JobActivityFactory activityFactory;
-
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
     public GeneralJobInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
@@ -70,10 +75,6 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         this.activityCosts = activityCosts;
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
         logger.debug("initialise {}", this);
-    }
-
-    public void setJobActivityFactory(JobActivityFactory activityFactory) {
-        this.activityFactory = activityFactory;
     }
 
     @Override
@@ -112,11 +113,14 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         newRoute.add(end);
 
         List<InsertionData> bestData = calculateInsertionCosts(insertionContext,1,actList,newRoute,additionalICostsAtRouteLevel, newVehicleDepartureTime);
-        if(bestData.isEmpty()) return InsertionData.createEmptyInsertionData();
-        else{
+        if(bestData.isEmpty()) {
+            return InsertionData.createEmptyInsertionData();
+        } else{
             InsertionData best = InsertionData.createEmptyInsertionData();
             for(InsertionData iD : bestData){
-                if(iD.getInsertionCost() < best.getInsertionCost()) best = iD;
+                if(iD.getInsertionCost() < best.getInsertionCost()) {
+                    best = iD;
+                }
             }
             return best;
         }
@@ -128,7 +132,9 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         TourActivity prevAct = newRoute.get(index-1);
         for(int i=index;i<newRoute.size();i++) {
             JobActivity jobActivity = actList.get(0);
-            if(jobActivity.getTimeWindows().isEmpty()) throw new IllegalStateException("at least a single time window must be set");
+            if(jobActivity.getTimeWindows().isEmpty()) {
+                throw new IllegalStateException("at least a single time window must be set");
+            }
             for(TimeWindow timeWindow : jobActivity.getTimeWindows()) {
                 JobActivity copiedJobActivity = (JobActivity) jobActivity.duplicate();
                 copiedJobActivity.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
