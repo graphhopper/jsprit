@@ -35,6 +35,7 @@ public abstract class AbstractListBackedJobActivityList extends JobActivityList 
         validateActivity(activity);
         if (!_activities.contains(activity)) {
             _activities.add(activity);
+            activity.setOrderNumber(_activities.size());
         }
     }
 

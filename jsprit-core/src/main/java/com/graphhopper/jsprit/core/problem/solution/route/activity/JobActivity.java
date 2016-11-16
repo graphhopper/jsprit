@@ -24,6 +24,8 @@ public abstract class JobActivity extends AbstractActivityNEW {
 
     private Collection<TimeWindow> timeWindows;
 
+    private int orderNumber;
+
     public JobActivity(AbstractJob job, String type, Location location, double operationTime,
                     Capacity capacity, Collection<TimeWindow> timeWindows) {
         super(type, location, capacity);
@@ -61,24 +63,16 @@ public abstract class JobActivity extends AbstractActivityNEW {
         return timeWindows;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getJob() == null) ? 0 : getJob().hashCode());
+        result = prime * result + ((job == null) ? 0 : job.hashCode());
+        result = prime * result + orderNumber;
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -92,14 +86,24 @@ public abstract class JobActivity extends AbstractActivityNEW {
         }
         JobActivity other = (JobActivity) obj;
         if (job == null) {
-            if (other.getJob() != null) {
+            if (other.job != null) {
                 return false;
             }
-        } else if (!job.equals(other.getJob())) {
+        } else if (!job.equals(other.job)) {
+            return false;
+        }
+        if (orderNumber != other.orderNumber) {
             return false;
         }
         return true;
     }
 
+    public int getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(int orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 
 }
