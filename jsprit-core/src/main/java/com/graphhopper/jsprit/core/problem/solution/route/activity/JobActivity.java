@@ -38,6 +38,7 @@ public abstract class JobActivity extends AbstractActivityNEW {
         super(sourceActivity);
         job = sourceActivity.getJob();
         operationTime = sourceActivity.getOperationTime();
+        orderNumber = sourceActivity.getOrderNumber();
         // REMARK - Balage1551 - Do we need to deep copy time window set? I
         // guess we don't.
         if (sourceActivity.timeWindows != null) {
