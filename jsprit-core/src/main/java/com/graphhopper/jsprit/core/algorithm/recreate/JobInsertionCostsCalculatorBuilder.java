@@ -174,6 +174,7 @@ public class JobInsertionCostsCalculatorBuilder {
      * @param memory
      * @param addDefaultMarginalCostCalc
      */
+    @Deprecated
     public JobInsertionCostsCalculatorBuilder setRouteLevel(int forwardLooking, int memory, boolean addDefaultMarginalCostCalc) {
         local = false;
         this.forwardLooking = forwardLooking;
@@ -193,6 +194,7 @@ public class JobInsertionCostsCalculatorBuilder {
         return this;
     }
 
+    @Deprecated
     public JobInsertionCostsCalculatorBuilder experimentalTimeScheduler(double timeSlice, int neighbors) {
         timeScheduling = true;
         this.timeSlice = timeSlice;
@@ -278,40 +280,28 @@ public class JobInsertionCostsCalculatorBuilder {
             actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), statesManager);
             configLocal = new ConfigureLocalActivityInsertionCalculator(vrp, (LocalActivityInsertionCostsCalculator) actInsertionCalc);
         } else if (activityInsertionCostCalculator == null && !addDefaultCostCalc) {
-            actInsertionCalc = new ActivityInsertionCostsCalculator() {
-
-                @Override
-                public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct,
-                        double depTimeAtPrevAct) {
-                    return 0.;
-                }
-
-            };
+            actInsertionCalc = (iContext, prevAct, nextAct, newAct, depTimeAtPrevAct) -> 0.;
         } else {
             actInsertionCalc = activityInsertionCostCalculator;
         }
 
-        JobActivityFactory activityFactory = new JobActivityFactory() {
+        JobActivityFactory activityFactory = job -> vrp.copyAndGetActivities(job);
 
-            @Override
-            public List<JobActivity> createActivities(Job job) {
-                return vrp.copyAndGetActivities(job);
-            }
+//        ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(),actInsertionCalc, constraintManager);
+//        shipmentInsertion.setJobActivityFactory(activityFactory);
+//        ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
+//        serviceInsertion.setJobActivityFactory(activityFactory);
 
-        };
-        ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(),actInsertionCalc, constraintManager);
-        shipmentInsertion.setJobActivityFactory(activityFactory);
-        ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
-        serviceInsertion.setJobActivityFactory(activityFactory);
+        GeneralJobInsertionCalculator generalJobInsertionCalculator = new GeneralJobInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(),actInsertionCalc, constraintManager);
 
         BreakInsertionCalculator breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
         breakInsertionCalculator.setJobActivityFactory(activityFactory);
 
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
-        switcher.put(Shipment.class, shipmentInsertion);
-        switcher.put(Service.class, serviceInsertion);
-        switcher.put(Pickup.class, serviceInsertion);
-        switcher.put(Delivery.class, serviceInsertion);
+        switcher.put(Job.class, generalJobInsertionCalculator);
+//        switcher.put(Service.class, serviceInsertion);
+//        switcher.put(Pickup.class, serviceInsertion);
+//        switcher.put(Delivery.class, serviceInsertion);
         switcher.put(Break.class, breakInsertionCalculator);
 
         CalculatorPlusListeners calculatorPlusListeners = new CalculatorPlusListeners(switcher);

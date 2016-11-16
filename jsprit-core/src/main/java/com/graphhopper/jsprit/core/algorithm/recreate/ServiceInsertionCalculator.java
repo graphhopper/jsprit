@@ -170,12 +170,11 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         if(insertionIndex == InsertionData.NO_INDEX) {
             return InsertionData.createEmptyInsertionData();
         }
-        InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
+        InsertionData insertionData = new InsertionData(bestCost, newVehicleDepartureTime, newVehicle, newDriver);
         deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
         deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliveryAct2Insert, insertionIndex));
         insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));
-        insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
         return insertionData;
     }
 }

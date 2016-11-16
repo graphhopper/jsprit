@@ -25,9 +25,9 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.JobActivityList;
 import com.graphhopper.jsprit.core.problem.job.SequentialJobActivityList;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
@@ -37,13 +37,12 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by schroeder on 11/11/16.
  */
-public class FirstCustomJobExample {
+public class FirstCustomJobWithMultipleActivitiesExample {
 
     static class CustomJob extends AbstractJob {
 
@@ -52,18 +51,23 @@ public class FirstCustomJobExample {
 
             List<Location> locs = new ArrayList<>();
 
+            List<Capacity> cap = new ArrayList<>();
+
             public BuilderBase(String id) {
                 super(id);
             }
 
-            public BuilderBase<T,B> addPickup(Location location){
+            public BuilderBase<T,B> addPickup(Location location, Capacity capacity){
                 locs.add(location);
+                cap.add(capacity);
                 return this;
             }
 
             public List<Location> getLocs() {
                 return locs;
             }
+
+            public List<Capacity> getCaps() { return cap; }
 
             protected void validate(){
 
@@ -106,8 +110,8 @@ public class FirstCustomJobExample {
         protected void createActivities(JobBuilder<? extends AbstractJob, ?> jobBuilder) {
             Builder builder = (Builder) jobBuilder;
             JobActivityList list = new SequentialJobActivityList(this);
-            for(Location loc : builder.getLocs()){
-                list.addActivity(new PickupActivityNEW(this,"pick",loc,0,Capacity.EMPTY, Arrays.asList(TimeWindow.ETERNITY)));
+            for(int i=0;i<builder.getLocs().size();i++){
+                list.addActivity(new PickupActivityNEW(this,"pick",builder.getLocs().get(i),0,builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
             }
             setActivities(list);
         }
@@ -117,11 +121,16 @@ public class FirstCustomJobExample {
 
     @Test
     public void test(){
-        CustomJob cj = CustomJob.Builder.newInstance("job").addPickup(Location.newInstance(10,0)).build();
+        CustomJob cj = CustomJob.Builder.newInstance("job")
+            .addPickup(Location.newInstance(10,0),Capacity.Builder.newInstance().addDimension(0,1).build())
+            .addPickup(Location.newInstance(5,0),Capacity.Builder.newInstance().addDimension(0,2).build())
+            .addPickup(Location.newInstance(20,0),Capacity.Builder.newInstance().addDimension(0,1).build())
+            .build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
             .addJob(cj).addVehicle(v).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        vra.setMaxIterations(0);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
         Assert.assertTrue(solution.getUnassignedJobs().isEmpty());

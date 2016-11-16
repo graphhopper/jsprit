@@ -29,6 +29,7 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.util.SolomonReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 
+
 /**
  * Created by schroeder on 23.07.14.
  */
