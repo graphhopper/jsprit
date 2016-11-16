@@ -18,12 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -31,6 +25,11 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.DefaultCosts;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -48,7 +47,7 @@ public class DBSCANClustererTest {
         VehicleRoute r = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).build();
 
         DBSCANClusterer c = new DBSCANClusterer(
-                        new DefaultCosts(EuclideanDistanceCalculator.getInstance()));
+            new DefaultCosts(EuclideanDistanceCalculator.getInstance()));
         c.setEpsDistance(3);
         List<Job> cluster = c.getRandomCluster(r);
         assertEquals(2, cluster.size());
@@ -81,10 +80,10 @@ public class DBSCANClustererTest {
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoute r = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3)
-                        .addService(s0).addService(s4).addService(s5).build();
+            .addService(s0).addService(s4).addService(s5).build();
 
         DBSCANClusterer c = new DBSCANClusterer(
-                        new DefaultCosts(EuclideanDistanceCalculator.getInstance()));
+            new DefaultCosts(EuclideanDistanceCalculator.getInstance()));
         c.setMinPts(1);
         c.setEpsDistance(2);
         List<List<Job>> cluster = c.getClusters(r);

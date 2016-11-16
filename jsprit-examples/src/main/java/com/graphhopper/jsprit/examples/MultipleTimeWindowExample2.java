@@ -49,8 +49,7 @@ public class MultipleTimeWindowExample2 {
 		 */
         VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType")
             .addCapacityDimension(0, 60)
-            .setCostPerWaitingTime(0.8)
-            ;
+            .setCostPerWaitingTime(0.8);
         VehicleType vehicleType = vehicleTypeBuilder.build();
 
 		/*
@@ -85,7 +84,7 @@ public class MultipleTimeWindowExample2 {
 
 
         Random random = RandomNumberGeneration.newInstance();
-        for(int i=0;i<40;i++){
+        for (int i = 0; i < 40; i++) {
             Service service = new Service.Builder("" + (i + 1))
                 .addTimeWindow(random.nextInt(50), 200)
                 .addTimeWindow(220 + random.nextInt(50), 350)
@@ -96,8 +95,8 @@ public class MultipleTimeWindowExample2 {
             vrpBuilder.addJob(service);
         }
 
-        for(int i=0;i<12;i++){
-            Service service = new Service.Builder(""+(i+51))
+        for (int i = 0; i < 12; i++) {
+            Service service = new Service.Builder("" + (i + 51))
 //                .addTimeWindow(0, 80)
 ////                .addTimeWindow(120, 200)
 //                .addTimeWindow(250,500)
@@ -134,12 +133,12 @@ public class MultipleTimeWindowExample2 {
 		/*
          * plot
 		 */
-        new Plotter(problem,bestSolution).setLabel(Plotter.Label.ID).plot("output/plot", "mtw");
+        new Plotter(problem, bestSolution).setLabel(Plotter.Label.ID).plot("output/plot", "mtw");
 
         SolutionAnalyser a = new SolutionAnalyser(problem, bestSolution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return problem.getTransportCosts().getTransportTime(from,to,0.,null,null);
+                return problem.getTransportCosts().getTransportTime(from, to, 0., null, null);
             }
         });
 

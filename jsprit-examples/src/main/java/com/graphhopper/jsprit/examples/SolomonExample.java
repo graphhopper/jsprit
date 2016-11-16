@@ -86,7 +86,7 @@ public class SolomonExample {
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
 		/*
-		 * Plot solution.
+         * Plot solution.
 		 */
         Plotter plotter = new Plotter(vrp, solution);
 //		plotter.setBoundingBox(30, 0, 50, 20);

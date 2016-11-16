@@ -17,14 +17,13 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeliverServiceDEPRECATEDTest {
 
@@ -35,8 +34,8 @@ public class DeliverServiceDEPRECATEDTest {
     @Before
     public void doBefore() {
         service = new Delivery.Builder("service").setLocation(Location.newInstance("loc")).
-                setTimeWindow(TimeWindow.newInstance(1., 2.)).
-                addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+            setTimeWindow(TimeWindow.newInstance(1., 2.)).
+            addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         deliver = new DeliverServiceDEPRECATED(service);
         deliver.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         deliver.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());

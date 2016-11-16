@@ -118,7 +118,7 @@ public class TimeWindow {
             return false;
         }
         if (Double.doubleToLongBits(start) != Double
-                        .doubleToLongBits(other.start)) {
+            .doubleToLongBits(other.start)) {
             return false;
         }
         return true;

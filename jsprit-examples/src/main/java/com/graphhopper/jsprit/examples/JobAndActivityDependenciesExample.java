@@ -266,7 +266,7 @@ public class JobAndActivityDependenciesExample {
         constraintManager.addConstraint(new GetUseAndDeliverKeySimpleHardActivityConstraint(stateManager, keyPicked, keyUsed, keyDelivered), ConstraintManager.Priority.CRITICAL);
         constraintManager.addConstraint(new GetUseAndDeliverHardRouteContraint(stateManager, keyPicked, keyUsed, keyDelivered));
 
-        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
         vra.setMaxIterations(100);
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();

@@ -1,10 +1,10 @@
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 
 /**
  * Simple activity list implementation.
@@ -13,7 +13,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
  * </p>
  *
  * @author balage
- *
  */
 public class SequentialJobActivityList extends AbstractListBackedJobActivityList {
 

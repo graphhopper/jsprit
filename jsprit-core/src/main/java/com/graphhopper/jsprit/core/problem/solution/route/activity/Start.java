@@ -58,8 +58,8 @@ public final class Start extends InternalActivity {
     @Override
     public String toString() {
         return "[type=" + getName() + "][location=" + location
-                + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-                + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
     }
 
 }

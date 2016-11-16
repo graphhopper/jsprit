@@ -17,15 +17,15 @@
  */
 package com.graphhopper.jsprit.core.util;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class SolutionVerifier implements AlgorithmEndsListener {

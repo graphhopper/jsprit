@@ -17,9 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
@@ -30,6 +27,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCostsCalculator, SoftRouteConstraint {
@@ -69,8 +68,8 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 
     private double getFixCostContribution(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle) {
         Capacity currentMaxLoadInRoute = getCurrentMaxLoadInRoute(currentRoute);
-        double relFixCost = getDeltaRelativeFixCost(currentRoute, newVehicle, jobToInsert,currentMaxLoadInRoute);
-        double absFixCost = getDeltaAbsoluteFixCost(currentRoute, newVehicle, jobToInsert,currentMaxLoadInRoute);
+        double relFixCost = getDeltaRelativeFixCost(currentRoute, newVehicle, jobToInsert, currentMaxLoadInRoute);
+        double absFixCost = getDeltaAbsoluteFixCost(currentRoute, newVehicle, jobToInsert, currentMaxLoadInRoute);
         double deltaFixCost = (1 - solution_completeness_ratio) * relFixCost + solution_completeness_ratio * absFixCost;
         double fixcost_contribution = weight_deltaFixCost * solution_completeness_ratio * deltaFixCost;
         return fixcost_contribution;
@@ -90,7 +89,9 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
         solution_completeness_ratio = ratio;
     }
 
-    public double getSolutionCompletenessRatio() { return solution_completeness_ratio; }
+    public double getSolutionCompletenessRatio() {
+        return solution_completeness_ratio;
+    }
 
     private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job, Capacity currentMaxLoadInRoute) {
         Capacity load = currentMaxLoadInRoute.add(job.getSize());

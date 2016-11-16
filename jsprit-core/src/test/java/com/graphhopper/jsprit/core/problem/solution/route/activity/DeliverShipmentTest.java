@@ -17,14 +17,13 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeliverShipmentTest {
 
@@ -33,10 +32,10 @@ public class DeliverShipmentTest {
     @Before
     public void doBefore() {
         Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickupLoc").build())
-                .setDeliveryLocation(Location.newInstance("deliveryLoc"))
-                .setPickupTimeWindow(TimeWindow.newInstance(1., 2.))
-                .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
-                .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+            .setDeliveryLocation(Location.newInstance("deliveryLoc"))
+            .setPickupTimeWindow(TimeWindow.newInstance(1., 2.))
+            .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
+            .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         deliver = new DeliverShipmentDEPRECATED(shipment);
         deliver.setTheoreticalEarliestOperationStartTime(shipment.getDeliveryTimeWindow().getStart());
         deliver.setTheoreticalLatestOperationStartTime(shipment.getDeliveryTimeWindow().getEnd());
@@ -92,7 +91,7 @@ public class DeliverShipmentTest {
     @Test
     public void whenGettingCapacity_itShouldReturnItCorrectly() {
         Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc"))
-                .addSizeDimension(0, 10).addSizeDimension(1, 100).build();
+            .addSizeDimension(0, 10).addSizeDimension(1, 100).build();
         PickupShipmentDEPRECATED pick = new PickupShipmentDEPRECATED(shipment);
         assertEquals(10, pick.getSize().get(0));
         assertEquals(100, pick.getSize().get(1));

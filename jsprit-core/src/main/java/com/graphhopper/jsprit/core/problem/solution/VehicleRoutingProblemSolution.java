@@ -17,11 +17,11 @@
  */
 package com.graphhopper.jsprit.core.problem.solution;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**

@@ -18,12 +18,12 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin.listener;
 
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 
 public class RuinListeners {

@@ -18,10 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -35,6 +31,9 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by schroeder on 08/01/16.
@@ -42,7 +41,7 @@ import com.graphhopper.jsprit.core.util.Solutions;
 public class IgnoreBreakTimeWindowTest {
 
     @Test
-    public void doNotIgnoreBreakTW(){
+    public void doNotIgnoreBreakTW() {
         VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType");
         VehicleType vehicleType = vehicleTypeBuilder.setCostPerWaitingTime(0.8).build();
 
@@ -65,30 +64,30 @@ public class IgnoreBreakTimeWindowTest {
 
 
         Service service4 = new Service.Builder("2").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(17,17)).build();
+            .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(17, 17)).build();
 
         Service service5 = new Service.Builder("3").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(18, 18)).build();
+            .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(18, 18)).build();
 
         Service service7 = new Service.Builder("4").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(10, 10)).build();
+            .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(10, 10)).build();
 
         Service service8 = new Service.Builder("5").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(12, 12)).build();
+            .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(12, 12)).build();
 
         Service service10 = new Service.Builder("6").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(16, 16)).build();
+            .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(16, 16)).build();
 
         Service service11 = new Service.Builder("7").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(13, 13)).build();
+            .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(13, 13)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-                        .addVehicle(vehicle2)
-                        .addJob(service4)
-                        .addJob(service5).addJob(service7)
-                        .addJob(service8).addJob(service10).addJob(service11)
-                        .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-                        .build();
+            .addVehicle(vehicle2)
+            .addJob(service4)
+            .addJob(service5).addJob(service7)
+            .addJob(service8).addJob(service10).addJob(service11)
+            .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+            .build();
 
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(50);
@@ -101,7 +100,7 @@ public class IgnoreBreakTimeWindowTest {
 
     private boolean breakShouldBeTime(VehicleRoutingProblemSolution solution) {
         boolean inTime = true;
-        for(TourActivity act : solution.getRoutes().iterator().next().getActivities()){
+        for (TourActivity act : solution.getRoutes().iterator().next().getActivities()) {
             if (act instanceof BreakActivity) {
                 TimeWindow timeWindow = ((BreakActivity) act).getJob().getTimeWindow();
                 if (act.getEndTime() < timeWindow.getStart()) {

@@ -18,21 +18,20 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import static org.mockito.Mockito.mock;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by schroeder on 15/08/16.
@@ -42,9 +41,9 @@ public class ConfigureFixCostCalculatorTest {
     VehicleRoutingProblem vrp;
 
     @Before
-    public void before(){
+    public void before() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        for(int i=0;i<100;i++){
+        for (int i = 0; i < 100; i++) {
             Service service = new Service.Builder("" + i).setLocation(Location.newInstance(0)).build();
             vrpBuilder.addJob(service);
         }
@@ -52,42 +51,42 @@ public class ConfigureFixCostCalculatorTest {
     }
 
     @Test
-    public void shouldCalculateCorrectly(){
+    public void shouldCalculateCorrectly() {
         List<Job> unassigned = new ArrayList<>();
         int count = 1;
-        for(String key : vrp.getJobs().keySet()) {
-            if(count <= 25) {
+        for (String key : vrp.getJobs().keySet()) {
+            if (count <= 25) {
                 unassigned.add(vrp.getJobs().get(key));
             }
             count++;
         }
-        JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class),mock(StateManager.class));
-        ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp,jicc);
+        JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class), mock(StateManager.class));
+        ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp, jicc);
         c.informInsertionStarts(new ArrayList<VehicleRoute>(), unassigned);
         Assert.assertEquals(0.75, jicc.getSolutionCompletenessRatio(), 0.001);
     }
 
     @Test
-    public void shouldBeMinRatio(){
+    public void shouldBeMinRatio() {
         List<Job> unassigned = new ArrayList<>();
         int count = 1;
-        for(String key : vrp.getJobs().keySet()) {
-            if(count <= 75) {
+        for (String key : vrp.getJobs().keySet()) {
+            if (count <= 75) {
                 unassigned.add(vrp.getJobs().get(key));
             }
             count++;
         }
-        JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class),mock(StateManager.class));
-        ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp,jicc);
+        JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class), mock(StateManager.class));
+        ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp, jicc);
         c.informInsertionStarts(new ArrayList<VehicleRoute>(), unassigned);
         Assert.assertEquals(0.5, jicc.getSolutionCompletenessRatio(), 0.001);
     }
 
     @Test
-    public void shouldBeOne(){
+    public void shouldBeOne() {
         List<Job> unassigned = new ArrayList<>();
-        JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class),mock(StateManager.class));
-        ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp,jicc);
+        JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class), mock(StateManager.class));
+        ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp, jicc);
         c.informInsertionStarts(new ArrayList<VehicleRoute>(), unassigned);
         Assert.assertEquals(1.0, jicc.getSolutionCompletenessRatio(), 0.001);
     }

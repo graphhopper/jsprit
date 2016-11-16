@@ -17,14 +17,14 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
+
+import java.util.Collection;
 
 /**
  * Service implementation of a job.
@@ -42,7 +42,7 @@ public class Service extends AbstractJob {
      * @author schroeder
      */
     public static abstract class BuilderBase<T extends Service, B extends BuilderBase<T, B>>
-    extends JobBuilder<T, B> {
+        extends JobBuilder<T, B> {
 
         protected String type = "service";
 
@@ -123,7 +123,7 @@ public class Service extends AbstractJob {
 
         @SuppressWarnings("unchecked")
         public B setTimeWindow(TimeWindow tw) {
-            if(tw == null) {
+            if (tw == null) {
                 throw new IllegalArgumentException("time-window arg must not be null");
             }
             timeWindows = new TimeWindowsImpl();
@@ -133,7 +133,7 @@ public class Service extends AbstractJob {
 
         @SuppressWarnings("unchecked")
         public B addTimeWindow(TimeWindow timeWindow) {
-            if(timeWindow == null) {
+            if (timeWindow == null) {
                 throw new IllegalArgumentException("time-window arg must not be null");
             }
             timeWindows.add(timeWindow);
@@ -146,11 +146,11 @@ public class Service extends AbstractJob {
 
         /**
          * Builds the service.
-         *
+         * <p>
          * <p>
          * The implementation of the builder <b>may</b> call the function {@linkplain #preProcess()} prior creating the
          * instant and <b>MUST</b> call the {@linkplain #postProcess(Service)} method after the instance is constructed:
-         *
+         * <p>
          * <pre>
          *    &#64;Override
          *    public Service build() {
@@ -160,12 +160,11 @@ public class Service extends AbstractJob {
          *        return service;
          *    }
          * </pre>
-         *
+         * <p>
          * </p>
          *
          * @return {@link Service}
-         * @throws IllegalArgumentException
-         *             if neither locationId nor coordinate is set.
+         * @throws IllegalArgumentException if neither locationId nor coordinate is set.
          */
 
         @Override
@@ -260,7 +259,6 @@ public class Service extends AbstractJob {
      * It is recommended to use getTimeWindows() instead. If you still use this, it returns the first time window of getTimeWindows() collection.
      *
      * @return time window
-     *
      */
     @Deprecated
     public TimeWindow getTimeWindow() {
@@ -287,8 +285,8 @@ public class Service extends AbstractJob {
     @Override
     public String toString() {
         return "[id=" + getId() + "][name=" + getName() + "][type=" + type + "][location="
-                        + getLocation() + "][capacity=" + getSize() + "][serviceTime="
-                        + getServiceDuration() + "][timeWindow=" + getTimeWindows() + "]";
+            + getLocation() + "][capacity=" + getSize() + "][serviceTime="
+            + getServiceDuration() + "][timeWindow=" + getTimeWindows() + "]";
     }
 
 
@@ -297,7 +295,6 @@ public class Service extends AbstractJob {
     public Capacity getSize() {
         return getServiceActivity().getSize();
     }
-
 
 
 }

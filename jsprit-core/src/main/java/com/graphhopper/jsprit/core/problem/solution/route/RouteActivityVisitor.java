@@ -17,11 +17,11 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 public class RouteActivityVisitor implements RouteVisitor {

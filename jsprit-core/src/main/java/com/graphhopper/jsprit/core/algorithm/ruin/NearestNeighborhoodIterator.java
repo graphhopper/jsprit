@@ -18,12 +18,11 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
-import java.util.Iterator;
-
+import com.graphhopper.jsprit.core.problem.job.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.graphhopper.jsprit.core.problem.job.Job;
+import java.util.Iterator;
 
 /**
  * Created by schroeder on 07/01/15.

@@ -137,7 +137,7 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
 		/*
-		 * write out problem and solution to xml-file
+         * write out problem and solution to xml-file
 		 */
         new VrpXMLWriter(problem, solutions).write("output/shipment-problem-with-solution.xml");
 

@@ -21,11 +21,7 @@ import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
 
@@ -94,7 +90,7 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
         if (!(newAct instanceof JobActivity)) {
             return ConstraintsStatus.FULFILLED;
         }
-        JobActivity newJobAct = (JobActivity)newAct;
+        JobActivity newJobAct = (JobActivity) newAct;
         if (!(newJobAct.getJob() instanceof Shipment)) {
             return ConstraintsStatus.FULFILLED;
         }

@@ -1,12 +1,12 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Basic interface of job-activies.
@@ -27,7 +27,7 @@ public abstract class JobActivity extends AbstractActivityNEW {
     private int orderNumber;
 
     public JobActivity(AbstractJob job, String type, Location location, double operationTime,
-                    Capacity capacity, Collection<TimeWindow> timeWindows) {
+                       Capacity capacity, Collection<TimeWindow> timeWindows) {
         super(type, location, capacity);
         this.job = job;
         this.operationTime = operationTime;

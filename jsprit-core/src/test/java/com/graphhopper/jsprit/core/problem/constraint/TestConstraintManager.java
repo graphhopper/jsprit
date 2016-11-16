@@ -17,16 +17,15 @@
  */
 package com.graphhopper.jsprit.core.problem.constraint;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class TestConstraintManager {
 

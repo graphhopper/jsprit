@@ -25,10 +25,10 @@ public final class DeliverShipmentDEPRECATED extends DeliveryActivityNEW {
     public static final String NAME = "deliverShipment";
 
     public DeliverShipmentDEPRECATED(Shipment shipment,
-                    BuilderBase<? extends Shipment, ?> builder) {
+                                     BuilderBase<? extends Shipment, ?> builder) {
         super(shipment, NAME, builder.getDeliveryLocation(), builder.getDeliveryServiceTime(),
-                        builder.getCapacity().invert(),
-                        builder.getDeliveryTimeWindows().getTimeWindows());
+            builder.getCapacity().invert(),
+            builder.getDeliveryTimeWindows().getTimeWindows());
     }
 
     public DeliverShipmentDEPRECATED(DeliverShipmentDEPRECATED sourceActivity) {
@@ -39,8 +39,8 @@ public final class DeliverShipmentDEPRECATED extends DeliveryActivityNEW {
     @Deprecated
     public DeliverShipmentDEPRECATED(Shipment s) {
         super(s, NAME, s.getDeliveryLocation(), s.getDeliveryServiceTime(),
-                        s.getSize().invert(),
-                        s.getDeliveryTimeWindows());
+            s.getSize().invert(),
+            s.getDeliveryTimeWindows());
     }
 
 }

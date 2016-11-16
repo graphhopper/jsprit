@@ -18,14 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -39,6 +31,11 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.util.SolomonReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.TestUtils;
+import org.junit.Test;
+
+import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 /**
  * to test skills with penalty vehicles
@@ -79,7 +76,7 @@ public class SolomonSkills_IT {
         skillProblemBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         VehicleRoutingProblem skillProblem = skillProblemBuilder.build();
 
-        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(skillProblem).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(skillProblem).setProperty(Jsprit.Parameter.FAST_REGRET, "true").buildAlgorithm();
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);

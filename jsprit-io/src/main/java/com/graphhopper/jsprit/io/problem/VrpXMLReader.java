@@ -17,37 +17,12 @@
  */
 package com.graphhopper.jsprit.io.problem;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.Break;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.*;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -58,6 +33,18 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Resource;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 public class VrpXMLReader {
 
@@ -111,10 +98,8 @@ public class VrpXMLReader {
     private ServiceBuilderFactory serviceBuilderFactory = new DefaultServiceBuilderFactory();
 
 
-
     /**
-     * @param schemaValidation
-     *            the schemaValidation to set
+     * @param schemaValidation the schemaValidation to set
      */
     @SuppressWarnings("UnusedDeclaration")
     public void setSchemaValidation(boolean schemaValidation) {
@@ -255,7 +240,7 @@ public class VrpXMLReader {
                         Service service = getService(serviceId);
                         if (service == null) {
                             throw new IllegalArgumentException("service to serviceId " + serviceId
-                                    + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
+                                + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
                         }
                         //!!!since job is part of initial route, it does not belong to jobs in problem, i.e. variable jobs that can be assigned/scheduled
                         freezedJobIds.add(serviceId);
@@ -268,7 +253,7 @@ public class VrpXMLReader {
                         Shipment shipment = getShipment(shipmentId);
                         if (shipment == null) {
                             throw new IllegalArgumentException("shipment to shipmentId " + shipmentId
-                                    + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
+                                + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
                         }
                         freezedJobIds.add(shipmentId);
                         if (type.equals("pickupShipment")) {
@@ -426,7 +411,7 @@ public class VrpXMLReader {
             }
             if (capacityString != null && capacityDimensionsExist) {
                 throw new IllegalArgumentException(
-                        "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                    "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
             Shipment.Builder builder;
@@ -576,7 +561,7 @@ public class VrpXMLReader {
             }
             if (capacityString != null && capacityDimensionsExist) {
                 throw new IllegalArgumentException(
-                        "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                    "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
             Service.BuilderBase<?, ?> builder;
@@ -668,7 +653,7 @@ public class VrpXMLReader {
             }
             if (capacityString != null && capacityDimensionsExist) {
                 throw new IllegalArgumentException(
-                        "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
+                    "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
             VehicleTypeImpl.Builder typeBuilder;

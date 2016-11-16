@@ -18,10 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm.state;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -29,6 +25,10 @@ import com.graphhopper.jsprit.core.problem.solution.route.RouteVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 
 public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor, StateUpdater {
 
@@ -91,7 +91,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         for (Vehicle vehicle : vehicles) {
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
             Location location = vehicle.getEndLocation();
-            if(!vehicle.isReturnToDepot()){
+            if (!vehicle.isReturnToDepot()) {
                 location = route.getEnd().getLocation();
             }
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = location;

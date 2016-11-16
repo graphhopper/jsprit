@@ -18,15 +18,6 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Collection;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.box.SchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
@@ -40,6 +31,14 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Collection;
 
 
 public class RefuseCollection_IT {
@@ -114,7 +113,7 @@ public class RefuseCollection_IT {
 		 */
         VehicleRoutingTransportCostsMatrix.Builder matrixBuilder = VehicleRoutingTransportCostsMatrix.Builder.newInstance(true);
         /*
-		 * read demand quantities
+         * read demand quantities
 		 */
         readDemandQuantitiesAsServices(vrpBuilder);
         readDistances(matrixBuilder);

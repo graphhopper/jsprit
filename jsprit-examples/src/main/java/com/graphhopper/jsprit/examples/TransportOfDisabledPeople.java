@@ -170,7 +170,7 @@ public class TransportOfDisabledPeople {
         constraintManager.addConstraint(wheelchair_bus_passenger_pickup_constraint);
 
 
-        VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
+        VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
         algorithm.setPrematureAlgorithmTermination(new IterationWithoutImprovementTermination(100));
 
 		/*
@@ -184,7 +184,7 @@ public class TransportOfDisabledPeople {
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
 		/*
-		 * write out problem and solution to xml-file
+         * write out problem and solution to xml-file
 		 */
 //		new VrpXMLWriter(problem, solutions).write("output/shipment-problem-with-solution.xml");
 

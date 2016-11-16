@@ -1,17 +1,9 @@
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * DAG (Directed Acyclic Graph) based activity list implementation.
@@ -20,7 +12,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
  * </p>
  *
  * @author balage
- *
  */
 public class GraphJobActivityList extends AbstractListBackedJobActivityList {
 
@@ -46,13 +37,10 @@ public class GraphJobActivityList extends AbstractListBackedJobActivityList {
     /**
      * Adds a dependency between two activities. If the activities not in the list, they are also added.
      *
-     * @param priorActivity
-     *            The prior activity.
-     * @param subsequentActivity
-     *            The subsequent activity.
-     * @throws IllegalArgumentException
-     *             If the activities can't be added (see {@linkplain #addActivity(JobActivity)}) or if the new
-     *             dependency would create a cycle in the dependency graph.
+     * @param priorActivity      The prior activity.
+     * @param subsequentActivity The subsequent activity.
+     * @throws IllegalArgumentException If the activities can't be added (see {@linkplain #addActivity(JobActivity)}) or if the new
+     *                                  dependency would create a cycle in the dependency graph.
      */
     public void addDependency(JobActivity priorActivity, JobActivity subsequentActivity) {
         // Add activities if not added yet
@@ -124,37 +112,37 @@ public class GraphJobActivityList extends AbstractListBackedJobActivityList {
         sb.append("------------------------------\n");
         sb.append("DIRECT DEPENDENCIES\n");
         sb.append(dependencies.entrySet().stream()
-                .flatMap(en -> en.getValue().stream().map(sa -> en.getKey().getName() + " -> " + sa.getName()))
-                .sorted()
-                .collect(Collectors.joining("\n")));
+            .flatMap(en -> en.getValue().stream().map(sa -> en.getKey().getName() + " -> " + sa.getName()))
+            .sorted()
+            .collect(Collectors.joining("\n")));
         sb.append("\nTRANSITIVE PRECEDING DEPENDENCIES\n");
         sb.append(transitivePrecedingDependencyCache.entrySet().stream()
-                .sorted((e1, e2) -> e1.getKey().getName().compareTo(e2.getKey().getName()))
-                .map(en -> en.getKey().getName() + ": " + en.getValue().stream()
-                        .map(pa -> pa.getName())
-                        .collect(Collectors.joining(", ")))
-                .collect(Collectors.joining("\n")));
+            .sorted((e1, e2) -> e1.getKey().getName().compareTo(e2.getKey().getName()))
+            .map(en -> en.getKey().getName() + ": " + en.getValue().stream()
+                .map(pa -> pa.getName())
+                .collect(Collectors.joining(", ")))
+            .collect(Collectors.joining("\n")));
         sb.append("\nTRANSITIVE SUBSEQUENT DEPENDENCIES\n");
         sb.append(transitiveSubsequentDependencyCache.entrySet().stream()
-                .sorted((e1, e2) -> e1.getKey().getName().compareTo(e2.getKey().getName()))
-                .map(en -> en.getKey().getName() + ": " + en.getValue().stream()
-                        .map(pa -> pa.getName())
-                        .sorted()
-                        .collect(Collectors.joining(", ")))
-                .collect(Collectors.joining("\n")));
+            .sorted((e1, e2) -> e1.getKey().getName().compareTo(e2.getKey().getName()))
+            .map(en -> en.getKey().getName() + ": " + en.getValue().stream()
+                .map(pa -> pa.getName())
+                .sorted()
+                .collect(Collectors.joining(", ")))
+            .collect(Collectors.joining("\n")));
         sb.append("\nTOPOLOGICAL ORDERINGS\n");
         sb.append(getPossibleOrderings().stream()
-                .sorted((l1, l2) -> {
-                    for (int i = 0; i < l1.size(); i++) {
-                        if (l1.get(i).equals(l2.get(i))) {
-                            continue;
-                        }
-                        return l1.get(i).getName().compareTo(l2.get(i).getName());
+            .sorted((l1, l2) -> {
+                for (int i = 0; i < l1.size(); i++) {
+                    if (l1.get(i).equals(l2.get(i))) {
+                        continue;
                     }
-                    return 0;
-                })
-                .map(e -> e.stream().map(a -> a.getName()).collect(Collectors.joining(", ")))
-                .collect(Collectors.joining("\n")));
+                    return l1.get(i).getName().compareTo(l2.get(i).getName());
+                }
+                return 0;
+            })
+            .map(e -> e.stream().map(a -> a.getName()).collect(Collectors.joining(", ")))
+            .collect(Collectors.joining("\n")));
 
         System.out.println(sb.toString());
     }
@@ -168,9 +156,9 @@ public class GraphJobActivityList extends AbstractListBackedJobActivityList {
         for (int i = 0; i < _activities.size(); i++) {
             JobActivity act = _activities.get(i);
             indegree[i] = (int) dependencies.entrySet().stream()
-                    .flatMap(en -> en.getValue().stream())
-                    .filter(a -> a.equals(act))
-                    .count();
+                .flatMap(en -> en.getValue().stream())
+                .filter(a -> a.equals(act))
+                .count();
         }
         allTopologicalSort(orderings, partialOrder, visited, indegree);
         return orderings;
@@ -178,21 +166,17 @@ public class GraphJobActivityList extends AbstractListBackedJobActivityList {
 
     /**
      * Recursive function for collection all possible topological orderings.
-     *
+     * <p>
      * <p>
      * <i>Migrated from the original C++ source of
      * <a href="http://www.geeksforgeeks.org/all-topological-sorts-of-a-directed-acyclic-graph/">Utkarsh Trivedi</a>
      * .</i>
      * </p>
      *
-     * @param orderings
-     *            The list of found orderings.
-     * @param partialOrder
-     *            The partial ordering under construction.
-     * @param visited
-     *            Markers on the already visited nodes.
-     * @param indegree
-     *            Dependency level of the nodes.
+     * @param orderings    The list of found orderings.
+     * @param partialOrder The partial ordering under construction.
+     * @param visited      Markers on the already visited nodes.
+     * @param indegree     Dependency level of the nodes.
      */
     private void allTopologicalSort(Set<List<JobActivity>> orderings, Deque<JobActivity> partialOrder, boolean[] visited, int[] indegree) {
         boolean flag = false;

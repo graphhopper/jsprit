@@ -19,14 +19,12 @@
 package com.graphhopper.jsprit.core.algorithm.termination;
 
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
+import junit.framework.Assert;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
-
-import junit.framework.Assert;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class IterationsWithoutImprovementTest {
 

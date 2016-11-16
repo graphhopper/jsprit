@@ -17,16 +17,16 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 
+import java.util.Collection;
+
 public class PickupActivityNEW extends JobActivity {
 
     public PickupActivityNEW(AbstractJob job, String name, Location location, double operationTime,
-                    Capacity capacity, Collection<TimeWindow> timeWindows) {
+                             Capacity capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity, timeWindows);
     }
 

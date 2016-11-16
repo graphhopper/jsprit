@@ -94,11 +94,12 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
             return this;
         }
 
-        public Builder addTransportTimeAndDistance(int fromIndex, int toIndex, double time, double distance){
+        public Builder addTransportTimeAndDistance(int fromIndex, int toIndex, double time, double distance) {
             addTransportTime(fromIndex, toIndex, time);
-            addTransportDistance(fromIndex,toIndex,distance);
+            addTransportDistance(fromIndex, toIndex, distance);
             return this;
         }
+
         /**
          * Builds the matrix.
          *

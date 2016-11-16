@@ -17,19 +17,14 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.util.NoiseMaker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 
 /**
@@ -98,7 +93,7 @@ public final class BestInsertion extends AbstractInsertionStrategy {
     }
 
     private void sometimesSortPriorities(List<Job> unassignedJobList) {
-        if(random.nextDouble() < 0.5){
+        if (random.nextDouble() < 0.5) {
             Collections.sort(unassignedJobList, new Comparator<Job>() {
                 @Override
                 public int compare(Job o1, Job o2) {

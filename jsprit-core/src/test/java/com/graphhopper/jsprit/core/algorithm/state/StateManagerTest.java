@@ -17,19 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -44,6 +31,16 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StateManagerTest {
 
@@ -61,15 +58,15 @@ public class StateManagerTest {
 
     private VehicleRoute getRoute(Vehicle vehicle) {
         return VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new ActFac())
-                        .addService(new Service.Builder("s")
-                                        .setLocation(Location.newInstance("loc")).build())
-                        .build();
+            .addService(new Service.Builder("s")
+                .setLocation(Location.newInstance("loc")).build())
+            .build();
     }
 
     private VehicleRoutingProblem vrpMock;
 
     @Before
-    public void doBefore(){
+    public void doBefore() {
         vrpMock = mock(VehicleRoutingProblem.class);
         when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.INFINITE);
     }
@@ -347,7 +344,7 @@ public class StateManagerTest {
     }
 
     @Test
-    public void arrayIniShouldWork(){
+    public void arrayIniShouldWork() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
@@ -361,9 +358,9 @@ public class StateManagerTest {
 
         StateManager stateManager = new StateManager(vrp);
         StateId myState = null;
-        for(int i=0;i<10;i++){
-            myState = stateManager.createStateId("myState"+i);
+        for (int i = 0; i < 10; i++) {
+            myState = stateManager.createStateId("myState" + i);
         }
-        stateManager.putTypedInternalRouteState(route,myState,1.);
+        stateManager.putTypedInternalRouteState(route, myState, 1.);
     }
 }

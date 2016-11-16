@@ -18,14 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm.box;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.listener.StrategySelectedListener;
@@ -41,8 +33,10 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-
 import junit.framework.Assert;
+import org.junit.Test;
+
+import java.util.*;
 
 /**
  * Created by schroeder on 06/03/15.

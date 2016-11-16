@@ -61,7 +61,7 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
                 loadAtDepot = defaultValue;
             }
             if (!loadAtDepot.add(insertionContext.getJob().getSize())
-                            .isLessOrEqual(capacityDimensions)) {
+                .isLessOrEqual(capacityDimensions)) {
                 return false;
             }
         } else if (insertionContext.getJob() instanceof Pickup || insertionContext.getJob() instanceof Service) {
@@ -70,7 +70,7 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
                 loadAtEnd = defaultValue;
             }
             if (!loadAtEnd.add(insertionContext.getJob().getSize())
-                            .isLessOrEqual(capacityDimensions)) {
+                .isLessOrEqual(capacityDimensions)) {
                 return false;
             }
         }

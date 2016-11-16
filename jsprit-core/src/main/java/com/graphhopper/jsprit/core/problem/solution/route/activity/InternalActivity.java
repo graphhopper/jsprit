@@ -7,7 +7,6 @@ import com.graphhopper.jsprit.core.problem.Location;
  * Common ancesstor for non-job-based, internal activities
  *
  * @author balage
- *
  */
 public abstract class InternalActivity extends AbstractActivityNEW implements InternalActivityMarker {
 

@@ -17,13 +17,12 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-
-import com.graphhopper.jsprit.core.problem.driver.Driver;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 /**
  * Data object that collects insertion information. It collects insertionCosts, insertionIndeces, vehicle and driver to be employed
@@ -77,17 +76,20 @@ public class InsertionData {
         return events;
     }
 
-    public List<Event> getUnmodifiableEvents() { return Collections.unmodifiableList(events); }
+    public List<Event> getUnmodifiableEvents() {
+        return Collections.unmodifiableList(events);
+    }
 
-    public <T extends Event> List<T> getUnmodifiableEventsByType(Class<T> eventType){
+    public <T extends Event> List<T> getUnmodifiableEventsByType(Class<T> eventType) {
         List<T> events = new ArrayList<>();
-        for(Event e : this.events){
-            if(e.getClass().equals(eventType)){
+        for (Event e : this.events) {
+            if (e.getClass().equals(eventType)) {
                 events.add(eventType.cast(e));
             }
         }
         return events;
     }
+
     /**
      * @return the additionalTime
      */
@@ -112,7 +114,7 @@ public class InsertionData {
         this.selectedDriver = driver;
     }
 
-    public InsertionData(double insertionCost, double vehicleDepartureTime, Vehicle selectedVehicle, Driver selectedDriver){
+    public InsertionData(double insertionCost, double vehicleDepartureTime, Vehicle selectedVehicle, Driver selectedDriver) {
         this.insertionCost = insertionCost;
         this.selectedVehicle = selectedVehicle;
         this.selectedDriver = selectedDriver;

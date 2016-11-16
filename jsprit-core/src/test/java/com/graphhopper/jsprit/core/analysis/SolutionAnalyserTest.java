@@ -19,17 +19,6 @@
 package com.graphhopper.jsprit.core.analysis;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -50,8 +39,15 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.DefaultCosts;
 import com.graphhopper.jsprit.core.util.TestUtils;
-
 import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class SolutionAnalyserTest {
 
@@ -66,55 +62,55 @@ public class SolutionAnalyserTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setType(type)
-                        .setStartLocation(Location.newInstance(-5, 0))
-                        .addSkill("skill1").addSkill("skill2")
-                        .build();
+            .setStartLocation(Location.newInstance(-5, 0))
+            .addSkill("skill1").addSkill("skill2")
+            .build();
 
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setType(type)
-                        .setStartLocation(Location.newInstance(5, 0)).build();
+            .setStartLocation(Location.newInstance(5, 0)).build();
 
         Service s1 = new Service.Builder("s1")
-                        .setTimeWindow(TimeWindow.newInstance(10, 20))
-                        .setLocation(Location.newInstance(-10, 1)).addSizeDimension(0, 2)
-                        .addRequiredSkill("skill1")
-                        .build();
+            .setTimeWindow(TimeWindow.newInstance(10, 20))
+            .setLocation(Location.newInstance(-10, 1)).addSizeDimension(0, 2)
+            .addRequiredSkill("skill1")
+            .build();
         Service s2 = new Service.Builder("s2")
-                        .setLocation(Location.newInstance(-10, 10))
-                        .addSizeDimension(0, 3)
-                        .addRequiredSkill("skill2").addRequiredSkill("skill1")
-                        .build();
+            .setLocation(Location.newInstance(-10, 10))
+            .addSizeDimension(0, 3)
+            .addRequiredSkill("skill2").addRequiredSkill("skill1")
+            .build();
         Shipment shipment1 = Shipment.Builder.newInstance("ship1")
-                        .setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
-                        .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
-                        .addSizeDimension(0, 10)
-                        .setPickupServiceTime(20.)
-                        .setDeliveryServiceTime(20.)
-                        .addRequiredSkill("skill3")
-                        .build();
+            .setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
+            .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
+            .addSizeDimension(0, 10)
+            .setPickupServiceTime(20.)
+            .setDeliveryServiceTime(20.)
+            .addRequiredSkill("skill3")
+            .build();
 
         Service s3 = new Service.Builder("s3")
-                        .setTimeWindow(TimeWindow.newInstance(10, 20))
-                        .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1))).addSizeDimension(0, 2).build();
+            .setTimeWindow(TimeWindow.newInstance(10, 20))
+            .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1))).addSizeDimension(0, 2).build();
 
         Service s4 = new Service.Builder("s4").setLocation(TestUtils.loc(Coordinate.newInstance(10, 10))).addSizeDimension(0, 3).build();
 
         Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
-                        .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
-                        .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).addSizeDimension(0, 10).build();
+            .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
+            .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).addSizeDimension(0, 10).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle)
-                        .addVehicle(vehicle2)
-                        .addJob(s1)
-                        .addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE);
+            .addVehicle(vehicle2)
+            .addJob(s1)
+            .addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE);
         vrpBuilder.setRoutingCost(new DefaultCosts(ManhattanDistanceCalculator.getInstance())
-                        .withCoordinateConverter(vrpBuilder.getLocations()));
+            .withCoordinateConverter(vrpBuilder.getLocations()));
         vrp = vrpBuilder.build();
 
         VehicleRoute route1 = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
-                        .addService(s1).addPickup(shipment1).addDelivery(shipment1).addService(s2).build();
+            .addService(s1).addPickup(shipment1).addDelivery(shipment1).addService(s2).build();
 
         VehicleRoute route2 = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
-                        .addService(s3).addPickup(shipment2).addDelivery(shipment2).addService(s4).build();
+            .addService(s3).addPickup(shipment2).addDelivery(shipment2).addService(s4).build();
 
         solution = new VehicleRoutingProblemSolution(Arrays.asList(route1, route2), 42);
     }
@@ -124,57 +120,57 @@ public class SolutionAnalyserTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setType(type)
-                        .setStartLocation(Location.newInstance(-5, 0))
-                        .setLatestArrival(150.)
-                        .build();
+            .setStartLocation(Location.newInstance(-5, 0))
+            .setLatestArrival(150.)
+            .build();
 
         Pickup s1 = new Pickup.Builder("s1")
-                        .setTimeWindow(TimeWindow.newInstance(10, 20))
-                        .setLocation(Location.newInstance(-10, 1))
-                        .addSizeDimension(0, 10)
-                        .build();
+            .setTimeWindow(TimeWindow.newInstance(10, 20))
+            .setLocation(Location.newInstance(-10, 1))
+            .addSizeDimension(0, 10)
+            .build();
         Delivery s2 = new Delivery.Builder("s2")
-                        .setLocation(Location.newInstance(-10, 10))
-                        .setTimeWindow(TimeWindow.newInstance(10, 20))
-                        .addSizeDimension(0, 20)
-                        .build();
+            .setLocation(Location.newInstance(-10, 10))
+            .setTimeWindow(TimeWindow.newInstance(10, 20))
+            .addSizeDimension(0, 20)
+            .build();
         Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
-                        .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
-                        .addSizeDimension(0, 15)
-                        .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
-                        .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
-                        .build();
+            .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
+            .addSizeDimension(0, 15)
+            .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
+            .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
+            .build();
 
         Pickup s3 = new Pickup.Builder("s3")
-                        .setTimeWindow(TimeWindow.newInstance(10, 20))
-                        .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1)))
-                        .addSizeDimension(0, 10)
-                        .build();
+            .setTimeWindow(TimeWindow.newInstance(10, 20))
+            .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1)))
+            .addSizeDimension(0, 10)
+            .build();
         Delivery s4 = new Delivery.Builder("s4").setLocation(Location.newInstance(10, 10))
-                        .addSizeDimension(0, 20)
-                        .setTimeWindow(TimeWindow.newInstance(10, 20))
-                        .build();
+            .addSizeDimension(0, 20)
+            .setTimeWindow(TimeWindow.newInstance(10, 20))
+            .build();
         Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
-                        .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
-                        .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5)))
-                        .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
-                        .addSizeDimension(0, 15).build();
+            .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
+            .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5)))
+            .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
+            .addSizeDimension(0, 15).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle)
-                        .addJob(s1)
-                        .addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
+            .addJob(s1)
+            .addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         vrpBuilder.setRoutingCost(new DefaultCosts(ManhattanDistanceCalculator.getInstance())
-                        .withCoordinateConverter(vrpBuilder.getLocations()));
+            .withCoordinateConverter(vrpBuilder.getLocations()));
         vrp = vrpBuilder.build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
-                        .addPickup(s3)
-                        .addPickup(shipment2).addDelivery(shipment2)
-                        .addDelivery(s4)
-                        .addDelivery(s2)
-                        .addPickup(shipment1).addDelivery(shipment1)
-                        .addPickup(s1)
-                        .build();
+            .addPickup(s3)
+            .addPickup(shipment2).addDelivery(shipment2)
+            .addDelivery(s4)
+            .addDelivery(s2)
+            .addPickup(shipment1).addDelivery(shipment1)
+            .addPickup(s1)
+            .build();
 
         solution = new VehicleRoutingProblemSolution(Arrays.asList(route), 300);
     }
@@ -234,12 +230,12 @@ public class SolutionAnalyserTest {
 
         // this should be the path taken by route 1 including depots
         Coordinate[] route1Path = new Coordinate[]{
-                        Coordinate.newInstance(-5, 0),
-                        Coordinate.newInstance(-10, 1),
-                        Coordinate.newInstance(-15, 2),
-                        Coordinate.newInstance(-16, 5),
-                        Coordinate.newInstance(-10, 10),
-                        Coordinate.newInstance(-5, 0)
+            Coordinate.newInstance(-5, 0),
+            Coordinate.newInstance(-10, 1),
+            Coordinate.newInstance(-15, 2),
+            Coordinate.newInstance(-16, 5),
+            Coordinate.newInstance(-10, 10),
+            Coordinate.newInstance(-5, 0)
 
         };
 
@@ -253,7 +249,7 @@ public class SolutionAnalyserTest {
         class ManhattanDistance {
             private double calc(Coordinate from, Coordinate to) {
                 return Math.abs(from.getX() - to.getX())
-                                + Math.abs(from.getY() - to.getY());
+                    + Math.abs(from.getY() - to.getY());
             }
         }
         ManhattanDistance md = new ManhattanDistance();
@@ -391,7 +387,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(2, analyser.getLoadRightAfterActivity(route.getActivities().get(0), route)
-                        .get(0));
+            .get(0));
     }
 
     @Test
@@ -404,7 +400,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(12, analyser.getLoadRightAfterActivity(route.getActivities().get(1), route)
-                        .get(0));
+            .get(0));
     }
 
     @Test
@@ -417,7 +413,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(2, analyser.getLoadRightAfterActivity(route.getActivities().get(2), route)
-                        .get(0));
+            .get(0));
     }
 
     @Test
@@ -430,7 +426,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(5, analyser.getLoadRightAfterActivity(route.getActivities().get(3), route)
-                        .get(0));
+            .get(0));
     }
 
     @Test
@@ -467,7 +463,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0, analyser.getLoadJustBeforeActivity(route.getActivities().get(0), route)
-                        .get(0));
+            .get(0));
     }
 
     @Test
@@ -480,7 +476,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(2, analyser.getLoadJustBeforeActivity(route.getActivities().get(1), route)
-                        .get(0));
+            .get(0));
     }
 
     @Test
@@ -493,7 +489,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(12, analyser.getLoadJustBeforeActivity(route.getActivities().get(2), route)
-                        .get(0));
+            .get(0));
     }
 
     @Test
@@ -506,7 +502,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(2, analyser.getLoadJustBeforeActivity(route.getActivities().get(3), route)
-                        .get(0));
+            .get(0));
     }
 
     @Test
@@ -1000,7 +996,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(4., analyser.getWaitingTimeAtActivity(route.getActivities().get(0), route),
-                        0.01);
+            0.01);
     }
 
     @Test
@@ -1013,7 +1009,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(1), route),
-                        0.01);
+            0.01);
     }
 
     @Test
@@ -1026,7 +1022,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(2), route),
-                        0.01);
+            0.01);
     }
 
     @Test
@@ -1039,7 +1035,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(3), route),
-                        0.01);
+            0.01);
     }
 
     @Test
@@ -1088,7 +1084,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(12., analyser.getDistanceAtActivity(route.getActivities().get(1), route),
-                        0.01);
+            0.01);
     }
 
     @Test
@@ -1101,7 +1097,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(16., analyser.getDistanceAtActivity(route.getActivities().get(2), route),
-                        0.01);
+            0.01);
     }
 
     @Test
@@ -1114,7 +1110,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(27., analyser.getDistanceAtActivity(route.getActivities().get(3), route),
-                        0.01);
+            0.01);
     }
 
     @Test
@@ -1152,7 +1148,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(0),
-                        route), 0.01);
+            route), 0.01);
     }
 
     @Test
@@ -1165,7 +1161,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(1),
-                        route), 0.01);
+            route), 0.01);
     }
 
     @Test
@@ -1178,7 +1174,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(2),
-                        route), 0.01);
+            route), 0.01);
     }
 
     @Test
@@ -1191,7 +1187,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(3),
-                        route), 0.01);
+            route), 0.01);
     }
 
     @Test
@@ -1252,7 +1248,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(0, analyser.getVariableTransportCostsAtActivity(route.getStart(), route),
-                        0.01);
+            0.01);
     }
 
     @Test
@@ -1265,7 +1261,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(6. * 2., analyser.getVariableTransportCostsAtActivity(
-                        route.getActivities().get(0), route), 0.01);
+            route.getActivities().get(0), route), 0.01);
     }
 
     @Test
@@ -1278,7 +1274,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(12. * 2., analyser.getVariableTransportCostsAtActivity(
-                        route.getActivities().get(1), route), 0.01);
+            route.getActivities().get(1), route), 0.01);
     }
 
     @Test
@@ -1291,7 +1287,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(16. * 2., analyser.getVariableTransportCostsAtActivity(
-                        route.getActivities().get(2), route), 0.01);
+            route.getActivities().get(2), route), 0.01);
     }
 
     @Test
@@ -1304,7 +1300,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(27. * 2., analyser.getVariableTransportCostsAtActivity(
-                        route.getActivities().get(3), route), 0.01);
+            route.getActivities().get(3), route), 0.01);
     }
 
     @Test
@@ -1317,7 +1313,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         assertEquals(42. * 2., analyser.getVariableTransportCostsAtActivity(route.getEnd(), route),
-                        0.01);
+            0.01);
     }
 
     @Test

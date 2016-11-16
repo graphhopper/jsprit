@@ -18,13 +18,13 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
 
 /**
  * Created by schroeder on 22/07/15.

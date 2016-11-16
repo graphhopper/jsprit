@@ -18,12 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm.box;
 
-import java.util.Collection;
-import java.util.Properties;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.graphhopper.jsprit.core.algorithm.PrettyAlgorithmBuilder;
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -32,24 +26,8 @@ import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
-import com.graphhopper.jsprit.core.algorithm.recreate.AbstractInsertionStrategy;
-import com.graphhopper.jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator;
-import com.graphhopper.jsprit.core.algorithm.recreate.BestInsertion;
-import com.graphhopper.jsprit.core.algorithm.recreate.BestInsertionConcurrent;
-import com.graphhopper.jsprit.core.algorithm.recreate.BreakScheduling;
-import com.graphhopper.jsprit.core.algorithm.recreate.DefaultScorer;
-import com.graphhopper.jsprit.core.algorithm.recreate.InsertionBuilder;
-import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertion;
-import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionConcurrent;
-import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionConcurrentFast;
-import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionFast;
-import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoods;
-import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoodsFactory;
-import com.graphhopper.jsprit.core.algorithm.ruin.RuinClusters;
-import com.graphhopper.jsprit.core.algorithm.ruin.RuinRadial;
-import com.graphhopper.jsprit.core.algorithm.ruin.RuinRandom;
-import com.graphhopper.jsprit.core.algorithm.ruin.RuinShareFactory;
-import com.graphhopper.jsprit.core.algorithm.ruin.RuinWorst;
+import com.graphhopper.jsprit.core.algorithm.recreate.*;
+import com.graphhopper.jsprit.core.algorithm.ruin.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
@@ -67,6 +45,12 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.util.NoiseMaker;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import com.graphhopper.jsprit.core.util.Solutions;
+
+import java.util.Collection;
+import java.util.Properties;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class Jsprit {
@@ -236,7 +220,7 @@ public class Jsprit {
             return this;
         }
 
-        public Builder setCustomAcceptor(SolutionAcceptor acceptor){
+        public Builder setCustomAcceptor(SolutionAcceptor acceptor) {
             this.solutionAcceptor = acceptor;
             return this;
         }
@@ -391,10 +375,9 @@ public class Jsprit {
         jobNeighborhoods.initialise();
 
         final double maxCosts;
-        if(properties.containsKey(Parameter.MAX_TRANSPORT_COSTS.toString())){
+        if (properties.containsKey(Parameter.MAX_TRANSPORT_COSTS.toString())) {
             maxCosts = Double.parseDouble(getProperty(Parameter.MAX_TRANSPORT_COSTS.toString()));
-        }
-        else{
+        } else {
             maxCosts = jobNeighborhoods.getMaxDistance();
         }
 
@@ -414,33 +397,33 @@ public class Jsprit {
         RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
         radial.setRandom(random);
         radial.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.RADIAL_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.RADIAL_MAX_SHARE.toString())),
+            random)
         );
 
         final RuinRandom random_for_regret = new RuinRandom(vrp, 0.5);
         random_for_regret.setRandom(random);
         random_for_regret.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MAX_SHARE.toString())),
+            random)
         );
 
         final RuinRandom random_for_best = new RuinRandom(vrp, 0.5);
         random_for_best.setRandom(random);
         random_for_best.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.RANDOM_BEST_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.RANDOM_BEST_MAX_SHARE.toString())),
+            random)
         );
 
         final RuinWorst worst = new RuinWorst(vrp, (int) (vrp.getJobs().values().size() * 0.5));
         worst.setRandom(random);
         worst.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
+            random)
         );
         IterationStartsListener noise = new IterationStartsListener() {
             @Override
@@ -460,9 +443,9 @@ public class Jsprit {
         final RuinClusters clusters = new RuinClusters(vrp, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods);
         clusters.setRandom(random);
         clusters.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
+            random)
         );
 
         AbstractInsertionStrategy regret;
@@ -470,7 +453,7 @@ public class Jsprit {
 
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
-            if(fastRegret){
+            if (fastRegret) {
                 RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
@@ -483,8 +466,7 @@ public class Jsprit {
                 regretInsertion.setScoringFunction(scorer);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
-            }
-            else {
+            } else {
                 RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
@@ -497,7 +479,7 @@ public class Jsprit {
                 regret = regretInsertion;
             }
         } else {
-            if(fastRegret) {
+            if (fastRegret) {
                 RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                     .setFastRegret(true)
@@ -509,8 +491,7 @@ public class Jsprit {
                 regretInsertion.setScoringFunction(scorer);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
-            }
-            else{
+            } else {
                 RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
@@ -546,7 +527,7 @@ public class Jsprit {
         best.setRandom(random);
 
         IterationStartsListener schrimpfThreshold = null;
-        if(acceptor == null) {
+        if (acceptor == null) {
             final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
             schrimpfThreshold = new IterationStartsListener() {
                 @Override
@@ -608,14 +589,14 @@ public class Jsprit {
 
 
         VehicleRoutingAlgorithm vra = prettyBuilder.build();
-        if(schrimpfThreshold != null) {
+        if (schrimpfThreshold != null) {
             vra.addListener(schrimpfThreshold);
         }
         vra.addListener(noiseConfigurator);
         vra.addListener(noise);
         vra.addListener(clusters);
 
-        if(toBoolean(getProperty(Parameter.BREAK_SCHEDULING.toString()))) {
+        if (toBoolean(getProperty(Parameter.BREAK_SCHEDULING.toString()))) {
             vra.addListener(new BreakScheduling(vrp, stateManager, constraintManager));
         }
         handleExecutorShutdown(vra);
@@ -711,7 +692,7 @@ public class Jsprit {
                         }
                     }
                 }
-                for(Job j : solution.getUnassignedJobs()){
+                for (Job j : solution.getUnassignedJobs()) {
                     costs += maxCosts * 2 * (4 - j.getPriority());
                 }
                 return costs;

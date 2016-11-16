@@ -26,21 +26,21 @@ import org.junit.Test;
 public class TimeWindowsImplTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void overlappingTW_shouldThrowException(){
+    public void overlappingTW_shouldThrowException() {
         TimeWindowsImpl tws = new TimeWindowsImpl();
         tws.add(TimeWindow.newInstance(50, 100));
-        tws.add(TimeWindow.newInstance(90,150));
+        tws.add(TimeWindow.newInstance(90, 150));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void overlappingTW2_shouldThrowException(){
+    public void overlappingTW2_shouldThrowException() {
         TimeWindowsImpl tws = new TimeWindowsImpl();
         tws.add(TimeWindow.newInstance(50, 100));
-        tws.add(TimeWindow.newInstance(40,150));
+        tws.add(TimeWindow.newInstance(40, 150));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void overlappingTW3_shouldThrowException(){
+    public void overlappingTW3_shouldThrowException() {
         TimeWindowsImpl tws = new TimeWindowsImpl();
         tws.add(TimeWindow.newInstance(50, 100));
         tws.add(TimeWindow.newInstance(50, 100));

@@ -17,17 +17,14 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Break.Builder;
 import com.graphhopper.jsprit.core.problem.job.Service;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 
 public class BreakActivityTest {
@@ -39,7 +36,7 @@ public class BreakActivityTest {
     @Before
     public void doBefore() {
         Builder breakBuilder = new Break.Builder("service")
-                        .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3);
+            .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3);
         service = breakBuilder.build();
         serviceActivity = BreakActivity.newInstance(service, breakBuilder);
         serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());

@@ -17,18 +17,9 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
-import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
-import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
-import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
-import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -42,6 +33,10 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 
 final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
@@ -151,7 +146,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
             }
 
             boolean pickupInsertionNotFulfilledBreak = true;
-            for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
+            for (TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
                 pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
                 ActivityContext activityContext = new ActivityContext();
@@ -161,10 +156,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                 if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
                     continue;
-                } else if(pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
+                } else if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
                     continue;
-                }
-                else if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
+                } else if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
                 }
                 double additionalPickupICosts = softActivityConstraint.getCosts(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
@@ -208,7 +202,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                             double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                             double deliveryAIC = calculate(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                             double totalActivityInsertionCosts = pickupAIC + deliveryAIC
-                                            + additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
+                                + additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
                             if (totalActivityInsertionCosts < bestCost) {
                                 bestCost = totalActivityInsertionCosts;
                                 pickupInsertionIndex = i;
@@ -226,17 +220,17 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                     }
                     //update prevAct and endTime
                     double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
-                    prevActEndTime_deliveryLoop = Math.max(nextActArrTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct_deliveryLoop,nextActArrTime,newDriver,newVehicle);
+                    prevActEndTime_deliveryLoop = Math.max(nextActArrTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct_deliveryLoop, nextActArrTime, newDriver, newVehicle);
                     prevAct_deliveryLoop = nextAct_deliveryLoop;
                     j++;
                 }
             }
-            if(pickupInsertionNotFulfilledBreak){
+            if (pickupInsertionNotFulfilledBreak) {
                 break;
             }
             //update prevAct and endTime
             double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);
-            prevActEndTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
+            prevActEndTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, nextActArrTime, newDriver, newVehicle);
             prevAct = nextAct;
             i++;
         }

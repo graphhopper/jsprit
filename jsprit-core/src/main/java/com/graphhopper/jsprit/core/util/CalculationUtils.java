@@ -1,4 +1,3 @@
-
 /*
  * Licensed to GraphHopper GmbH under one or more contributor
  * license agreements. See the NOTICE file distributed with this work for
@@ -33,7 +32,7 @@ public class CalculationUtils {
      * @return
      */
     @Deprecated
-    public static double getActivityEndTime(double actArrTime, TourActivity act){
-		return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
+    public static double getActivityEndTime(double actArrTime, TourActivity act) {
+        return Math.max(actArrTime, act.getTheoreticalEarliestOperationStartTime()) + act.getOperationTime();
     }
 }

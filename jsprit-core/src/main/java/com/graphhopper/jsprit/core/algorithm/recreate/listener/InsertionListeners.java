@@ -17,13 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate.listener;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 public class InsertionListeners {

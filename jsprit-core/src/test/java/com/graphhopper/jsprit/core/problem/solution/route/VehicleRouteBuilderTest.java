@@ -17,12 +17,6 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -30,6 +24,11 @@ import com.graphhopper.jsprit.core.problem.job.Shipment.Builder;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class VehicleRouteBuilderTest {
@@ -91,7 +90,7 @@ public class VehicleRouteBuilderTest {
         Shipment s2 = createStandardShipment("s2").build();
 
         Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("vehLoc")).setEndLocation(Location.newInstance("vehLoc"))
-                .build();
+            .build();
 
         VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
         builder.addPickup(s);
@@ -146,13 +145,12 @@ public class VehicleRouteBuilderTest {
         Location loc = Location.Builder.newInstance().setId("delLoc").build();
         TimeWindow tw = TimeWindow.newInstance(0, 10);
         return Shipment.Builder.newInstance(name)
-                .addSizeDimension(0, 10)
-                .setPickupTimeWindow(tw)
-                .setDeliveryTimeWindow(tw)
-                .setPickupLocation(loc)
-                .setDeliveryLocation(loc);
+            .addSizeDimension(0, 10)
+            .setPickupTimeWindow(tw)
+            .setDeliveryTimeWindow(tw)
+            .setPickupLocation(loc)
+            .setDeliveryLocation(loc);
     }
-
 
 
 }

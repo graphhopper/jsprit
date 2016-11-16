@@ -17,8 +17,6 @@
  */
 package com.graphhopper.jsprit.examples;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -38,6 +36,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 import com.graphhopper.jsprit.util.Examples;
+
+import java.util.Collection;
 
 
 public class VRPWithBackhaulsExample2 {
@@ -92,9 +92,9 @@ public class VRPWithBackhaulsExample2 {
 
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-                .setStateAndConstraintManager(stateManager, constraintManager)
-                .setProperty(Jsprit.Parameter.FIXED_COST_PARAM.toString(), "0.")
-                .buildAlgorithm();
+            .setStateAndConstraintManager(stateManager, constraintManager)
+            .setProperty(Jsprit.Parameter.FIXED_COST_PARAM.toString(), "0.")
+            .buildAlgorithm();
         vra.setMaxIterations(2000);
         vra.addListener(new AlgorithmSearchProgressChartListener("output/search"));
 
@@ -155,7 +155,7 @@ public class VRPWithBackhaulsExample2 {
 
             System.out.println("dist@" + route.getStart().getLocation().getId() + ": " + analyser.getDistanceAtActivity(route.getStart(), route));
             System.out.println("timeWindowViolation@" + route.getStart().getLocation().getId() + ": "
-                    + analyser.getTimeWindowViolationAtActivity(route.getStart(), route));
+                + analyser.getTimeWindowViolationAtActivity(route.getStart(), route));
             for (TourActivity act : route.getActivities()) {
                 System.out.println("--");
                 System.out.println("actType: " + act.getName() + " demand: " + act.getSize());
@@ -170,7 +170,7 @@ public class VRPWithBackhaulsExample2 {
             System.out.println("--");
             System.out.println("dist@" + route.getEnd().getLocation().getId() + ": " + analyser.getDistanceAtActivity(route.getEnd(), route));
             System.out.println(
-                    "timeWindowViolation@" + route.getEnd().getLocation().getId() + ": " + analyser.getTimeWindowViolationAtActivity(route.getEnd(), route));
+                "timeWindowViolation@" + route.getEnd().getLocation().getId() + ": " + analyser.getTimeWindowViolationAtActivity(route.getEnd(), route));
         }
 
         System.out.println("-----");

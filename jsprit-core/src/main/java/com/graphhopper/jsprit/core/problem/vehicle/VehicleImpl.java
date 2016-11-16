@@ -17,13 +17,12 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -227,7 +226,7 @@ public class VehicleImpl extends AbstractVehicle {
          *
          * @return vehicle
          * @throws IllegalArgumentException if both locationId and locationCoord is not set or (endLocationCoord!=null AND returnToDepot=false)
-         *                               or (endLocationId!=null AND returnToDepot=false)
+         *                                  or (endLocationId!=null AND returnToDepot=false)
          */
         public VehicleImpl build() {
             if (latestArrival < earliestStart)

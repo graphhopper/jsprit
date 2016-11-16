@@ -17,12 +17,12 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 
-import java.util.List;
-
 import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
+
+import java.util.List;
 
 
 /**
@@ -64,12 +64,10 @@ public class CoordinateJobDistance implements JobDistance {
     /**
      * Calculates the average distance of the two set of positions.
      *
-     * @param leftLocations
-     *            The position list of one side.
-     * @param rightLocations
-     *            The position list of the other side.
+     * @param leftLocations  The position list of one side.
+     * @param rightLocations The position list of the other side.
      * @return The Average distance. (Returns 0 when any of the sides contains
-     *         no distances.)
+     * no distances.)
      */
     protected double calcDist(List<Location> leftLocations, List<Location> rightLocations) {
         if (leftLocations.isEmpty() || rightLocations.isEmpty()) {

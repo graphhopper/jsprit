@@ -110,7 +110,7 @@ public final class Location implements HasIndex, HasId {
          * @param name
          * @return
          */
-        public Builder setName(String name){
+        public Builder setName(String name) {
             this.name = name;
             return this;
         }
@@ -161,7 +161,9 @@ public final class Location implements HasIndex, HasId {
         return coordinate;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     @Override
     public boolean equals(Object o) {

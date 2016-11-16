@@ -17,18 +17,9 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import java.util.Iterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
-import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
-import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
-import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
-import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -42,6 +33,10 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
 
 /**
  * Calculator that calculates the best insertion position for a {@link Service}.
@@ -119,7 +114,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
 
         double bestCost = bestKnownCosts;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
-		TimeWindow bestTimeWindow = null;
+        TimeWindow bestTimeWindow = null;
 
         /*
         generate new start and end for new vehicle
@@ -133,15 +128,15 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         int actIndex = 0;
         Iterator<TourActivity> activityIterator = currentRoute.getActivities().iterator();
         boolean tourEnd = false;
-        while(!tourEnd){
+        while (!tourEnd) {
             TourActivity nextAct;
-            if(activityIterator.hasNext()) nextAct = activityIterator.next();
-            else{
+            if (activityIterator.hasNext()) nextAct = activityIterator.next();
+            else {
                 nextAct = end;
                 tourEnd = true;
             }
             boolean not_fulfilled_break = true;
-			for(TimeWindow timeWindow : service.getTimeWindows()) {
+            for (TimeWindow timeWindow : service.getTimeWindows()) {
                 deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                 ActivityContext activityContext = new ActivityContext();
@@ -160,21 +155,21 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
                 } else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     not_fulfilled_break = false;
                 }
-			}
-            if(not_fulfilled_break) break;
+            }
+            if (not_fulfilled_break) break;
             double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
-            prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
+            prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, nextActArrTime, newDriver, newVehicle);
             prevAct = nextAct;
             actIndex++;
         }
-        if(insertionIndex == InsertionData.NO_INDEX) {
+        if (insertionIndex == InsertionData.NO_INDEX) {
             return InsertionData.createEmptyInsertionData();
         }
         InsertionData insertionData = new InsertionData(bestCost, newVehicleDepartureTime, newVehicle, newDriver);
         deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
         deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliveryAct2Insert, insertionIndex));
-        insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));
+        insertionData.getEvents().add(new SwitchVehicle(currentRoute, newVehicle, newVehicleDepartureTime));
         return insertionData;
     }
 }

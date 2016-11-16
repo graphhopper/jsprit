@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.problem.job.Job;
  */
 class Scorer {
 
-    static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction){
+    static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction) {
         if (best == null) {
             throw new IllegalStateException("cannot insert job " + unassignedJob.getId());
         }

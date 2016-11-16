@@ -388,12 +388,12 @@
         <xs:sequence>
             <xs:element name="timeWindows" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
-	                <xs:sequence>
-	                  <xs:element name="timeWindow" type="timeWindowType" minOccurs="1"
-	                          maxOccurs="unbounded"/>
-	                </xs:sequence>
+                    <xs:sequence>
+                        <xs:element name="timeWindow" type="timeWindowType" minOccurs="1"
+                                    maxOccurs="unbounded"/>
+                    </xs:sequence>
                 </xs:complexType>
-              </xs:element>
+            </xs:element>
             <xs:element name="duration" type="xs:double" minOccurs="1" maxOccurs="1" default="0.0"/>
             <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>

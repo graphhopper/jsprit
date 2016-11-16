@@ -27,7 +27,7 @@ public class SphericalDistanceCalculator implements DistanceCalculator {
         double deltaLatSin = Math.sin(deltaLat / 2);
         double deltaLonSin = Math.sin(deltaLon / 2);
         double a = deltaLatSin * deltaLatSin
-                        + deltaLonSin * deltaLonSin * Math.cos(lat1) * Math.cos(lat2);
+            + deltaLonSin * deltaLonSin * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.asin(Math.sqrt(a));
         double distance = R * c;
         return distance;

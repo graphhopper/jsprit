@@ -17,16 +17,15 @@
  */
 package com.graphhopper.jsprit.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FastVehicleRoutingTransportCostsMatrixTest {
 
@@ -67,7 +66,7 @@ public class FastVehicleRoutingTransportCostsMatrixTest {
     @Test
     public void whenAddingTimeAndDistanceToSymmetricMatrix_itShouldReturnCorrectValues2() {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, true);
-        matrixBuilder.addTransportTimeAndDistance(1, 2, 2.,100.);
+        matrixBuilder.addTransportTimeAndDistance(1, 2, 2., 100.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
         assertEquals(2., matrix.getTransportTime(loc(1), loc(2), 0.0, null, null), 0.1);
         assertEquals(2., matrix.getTransportTime(loc(2), loc(1), 0.0, null, null), 0.1);

@@ -17,12 +17,12 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 
 public class ReverseRouteActivityVisitor implements RouteVisitor {

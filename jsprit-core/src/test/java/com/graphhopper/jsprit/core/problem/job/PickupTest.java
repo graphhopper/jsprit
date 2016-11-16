@@ -17,14 +17,11 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import com.graphhopper.jsprit.core.problem.Location;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.problem.Location;
+import static org.junit.Assert.*;
 
 public class PickupTest {
 
@@ -95,14 +92,14 @@ public class PickupTest {
 
 
     @Test
-    public void whenSettingPriorities_itShouldBeSetCorrectly(){
+    public void whenSettingPriorities_itShouldBeSetCorrectly() {
         Pickup s = new Pickup.Builder("s").setLocation(Location.newInstance("loc"))
             .setPriority(3).build();
         Assert.assertEquals(3, s.getPriority());
     }
 
     @Test
-    public void whenNotSettingPriorities_defaultShouldBe(){
+    public void whenNotSettingPriorities_defaultShouldBe() {
         Pickup s = new Pickup.Builder("s").setLocation(Location.newInstance("loc"))
             .build();
         Assert.assertEquals(2, s.getPriority());

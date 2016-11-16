@@ -18,12 +18,12 @@
 
 package com.graphhopper.jsprit.core.util;
 
-import java.util.Comparator;
-
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
+import java.util.Comparator;
+
 public class VehicleIndexComparator implements Comparator<VehicleRoute> {
-        public int compare(VehicleRoute a, VehicleRoute b) {
-            return  a.getVehicle().getIndex() - b.getVehicle().getIndex();
-        }
+    public int compare(VehicleRoute a, VehicleRoute b) {
+        return a.getVehicle().getIndex() - b.getVehicle().getIndex();
+    }
 }

@@ -20,14 +20,14 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.job.Shipment.BuilderBase;
 
-public final class PickupShipmentDEPRECATED extends PickupActivityNEW{
+public final class PickupShipmentDEPRECATED extends PickupActivityNEW {
 
     public static final String NAME = "pickupShipment";
 
     public PickupShipmentDEPRECATED(Shipment shipment, BuilderBase<? extends Shipment, ?> builder) {
         super(shipment, NAME, builder.getPickupLocation(),
-                        builder.getPickupServiceTime(), builder.getCapacity(),
-                        builder.getPickupTimeWindows().getTimeWindows());
+            builder.getPickupServiceTime(), builder.getCapacity(),
+            builder.getPickupTimeWindows().getTimeWindows());
     }
 
     public PickupShipmentDEPRECATED(PickupShipmentDEPRECATED sourceActivity) {
@@ -38,7 +38,7 @@ public final class PickupShipmentDEPRECATED extends PickupActivityNEW{
     @Deprecated
     public PickupShipmentDEPRECATED(Shipment s) {
         super(s, NAME, s.getPickupLocation(), s.getPickupServiceTime(), s.getSize(),
-                        s.getPickupTimeWindows());
+            s.getPickupTimeWindows());
     }
 
 

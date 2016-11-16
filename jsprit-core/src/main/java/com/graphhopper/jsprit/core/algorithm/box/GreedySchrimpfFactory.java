@@ -56,7 +56,7 @@ public class GreedySchrimpfFactory {
         int randomShare = (int) (vrp.getJobs().size() * 0.5);
 
         Jsprit.Builder builder = Jsprit.Builder.newInstance(vrp);
-        builder.setProperty(Jsprit.Parameter.THRESHOLD_ALPHA,"0.0");
+        builder.setProperty(Jsprit.Parameter.THRESHOLD_ALPHA, "0.0");
         builder.setProperty(Jsprit.Strategy.RADIAL_BEST, "0.5");
         builder.setProperty(Jsprit.Strategy.RADIAL_REGRET, "0.0");
         builder.setProperty(Jsprit.Strategy.RANDOM_BEST, "0.5");

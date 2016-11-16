@@ -37,13 +37,10 @@ public class Capacity {
      * <p>
      * Note that this assumes that capacity dimension can be added up.
      *
-     * @param cap1
-     *            capacity to be added up
-     * @param cap2
-     *            capacity to be added up
+     * @param cap1 capacity to be added up
+     * @param cap2 capacity to be added up
      * @return new capacity
-     * @throws NullPointerException
-     *             if one of the args is null
+     * @throws NullPointerException if one of the args is null
      * @deprecated Use <code>cap1.add(cap2)</code> instead.
      */
 
@@ -55,18 +52,14 @@ public class Capacity {
     /**
      * Subtracts cap2subtract from cap and returns the resulting Capacity.
      *
-     * @param cap
-     *            capacity to be subtracted from
-     * @param cap2subtract
-     *            capacity to subtract
+     * @param cap          capacity to be subtracted from
+     * @param cap2subtract capacity to subtract
      * @return new capacity
-     * @throws NullPointerException
-     *             if one of the args is null
-     * @throws IllegalStateException
-     *             if number of capacityDimensions of cap1 and cap2 are
-     *             different (i.e.
-     *             <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>
-     *             ).
+     * @throws NullPointerException  if one of the args is null
+     * @throws IllegalStateException if number of capacityDimensions of cap1 and cap2 are
+     *                               different (i.e.
+     *                               <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>
+     *                               ).
      * @deprecated Use <code>cap1.subtract(cap2)</code> instead.
      */
     @Deprecated
@@ -78,11 +71,9 @@ public class Capacity {
      * Returns the inverted capacity, i.e. it multiplies all capacity dimensions
      * with -1.
      *
-     * @param cap2invert
-     *            capacity to be inverted
+     * @param cap2invert capacity to be inverted
      * @return inverted capacity
-     * @throws NullPointerException
-     *             if one of the args is null
+     * @throws NullPointerException if one of the args is null
      * @deprecated Use <code>cap2invert.invert()</code> instead.
      */
     @Deprecated
@@ -354,9 +345,9 @@ public class Capacity {
             throw new NullPointerException("capacity must not be null");
         }
         Capacity res = new Capacity(
-                        Math.max(getNuOfDimensions(), capToAdd.getNuOfDimensions()));
+            Math.max(getNuOfDimensions(), capToAdd.getNuOfDimensions()));
         for (int i = 0; i < Math.max(getNuOfDimensions(),
-                        capToAdd.getNuOfDimensions()); i++) {
+            capToAdd.getNuOfDimensions()); i++) {
             res.dimensions[i] = get(i) + capToAdd.get(i);
         }
 
@@ -368,9 +359,9 @@ public class Capacity {
             throw new NullPointerException("capacity must not be null");
         }
         Capacity res = new Capacity(
-                        Math.max(getNuOfDimensions(), capToSubstract.getNuOfDimensions()));
+            Math.max(getNuOfDimensions(), capToSubstract.getNuOfDimensions()));
         for (int i = 0; i < Math.max(getNuOfDimensions(),
-                        capToSubstract.getNuOfDimensions()); i++) {
+            capToSubstract.getNuOfDimensions()); i++) {
             res.dimensions[i] = get(i) - capToSubstract.get(i);
         }
         return res;
@@ -396,10 +387,10 @@ public class Capacity {
         int nuOfDimensions = 0;
         double sumQuotients = 0.0;
         for (int index = 0; index < Math.max(getNuOfDimensions(),
-                        denominator.getNuOfDimensions()); index++) {
+            denominator.getNuOfDimensions()); index++) {
             if (get(index) != 0 && denominator.get(index) == 0) {
                 throw new IllegalArgumentException(
-                                "numerator > 0 and denominator = 0. cannot divide by 0");
+                    "numerator > 0 and denominator = 0. cannot divide by 0");
             } else if (get(index) == 0 && denominator.get(index) == 0) {
                 continue;
             } else {

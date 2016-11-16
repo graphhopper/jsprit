@@ -18,13 +18,13 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
 
 
 final class ConfigureFixCostCalculator implements InsertionStartsListener, JobInsertedListener {
@@ -52,13 +52,13 @@ final class ConfigureFixCostCalculator implements InsertionStartsListener, JobIn
     public void informInsertionStarts(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         this.nuOfJobsToRecreate = unassignedJobs.size();
         double completenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) vrp.getJobs().values().size()));
-        calcConsideringFix.setSolutionCompletenessRatio(Math.max(minRatio,completenessRatio));
+        calcConsideringFix.setSolutionCompletenessRatio(Math.max(minRatio, completenessRatio));
     }
 
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
         nuOfJobsToRecreate--;
         double completenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) vrp.getJobs().values().size()));
-        calcConsideringFix.setSolutionCompletenessRatio(Math.max(minRatio,completenessRatio));
+        calcConsideringFix.setSolutionCompletenessRatio(Math.max(minRatio, completenessRatio));
     }
 }

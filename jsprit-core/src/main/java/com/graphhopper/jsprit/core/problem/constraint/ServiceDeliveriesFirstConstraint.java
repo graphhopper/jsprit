@@ -20,16 +20,11 @@ package com.graphhopper.jsprit.core.problem.constraint;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 
 /**
  * @author stefan schroeder
  * @author balage (generic job refactor)
- *
  */
 public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint {
 
@@ -50,7 +45,7 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
     }
 
     protected ConstraintsStatus newMethod(TourActivity prevAct, TourActivity newAct,
-                    TourActivity nextAct) {
+                                          TourActivity nextAct) {
         if (isShipment(newAct)) {
             // The new activity is a shipment
             if (nextAct instanceof DeliveryActivityNEW && isService(nextAct)) {
@@ -68,8 +63,8 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
             } else if (newAct instanceof DeliveryActivityNEW) {
                 // The new activity is a delivery
                 if (prevAct instanceof PickupActivityNEW || prevAct instanceof ServiceActivityNEW
-                                || (prevAct instanceof DeliveryActivityNEW
-                                                && isShipment(prevAct))) {
+                    || (prevAct instanceof DeliveryActivityNEW
+                    && isShipment(prevAct))) {
                     // The previous activity can't be a pickup or service (of
                     // any type of Job), nor a shipment delivery
                     // (Only service delivery.)

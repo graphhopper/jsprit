@@ -17,10 +17,10 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
+
 import java.util.Collection;
 import java.util.Random;
-
-import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 
 /**
  * Factory that creates a finite fleetmanager.

@@ -17,19 +17,19 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Break.Builder;
 
+import java.util.Collection;
+
 public class BreakActivity extends InternalJobActivity {
 
     public static BreakActivity newInstance(Break aBreak, Builder builder) {
         return new BreakActivity(aBreak, "break", builder.getLocation(), builder.getServiceTime(),
-                        builder.getCapacity(), builder.getTimeWindows().getTimeWindows());
+            builder.getCapacity(), builder.getTimeWindows().getTimeWindows());
     }
 
     // protected BreakActivity(Break aBreak) {
@@ -42,7 +42,7 @@ public class BreakActivity extends InternalJobActivity {
     }
 
     private BreakActivity(AbstractJob job, String name, Location location, double operationTime,
-                    Capacity capacity, Collection<TimeWindow> timeWindows) {
+                          Capacity capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity, timeWindows);
     }
 

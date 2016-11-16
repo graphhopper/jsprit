@@ -63,7 +63,7 @@ public class AvgServiceDistance implements JobDistance {
             }
         } else {
             throw new UnsupportedOperationException(
-                    "currently, this class just works services.");
+                "currently, this class just works services.");
         }
         return avgCost;
     }

@@ -17,9 +17,6 @@
  */
 package com.graphhopper.jsprit.examples;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -38,6 +35,9 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.io.problem.VrpXMLWriter;
 import com.graphhopper.jsprit.util.Examples;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 
 public class SimpleEnRoutePickupAndDeliveryExample {
@@ -68,14 +68,14 @@ public class SimpleEnRoutePickupAndDeliveryExample {
          */
 
         Shipment shipment1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 7)))
-                .setDeliveryLocation(loc(Coordinate.newInstance(6, 9))).build();
+            .setDeliveryLocation(loc(Coordinate.newInstance(6, 9))).build();
         Shipment shipment2 = Shipment.Builder.newInstance("2").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 13)))
-                .setDeliveryLocation(loc(Coordinate.newInstance(6, 11))).build();
+            .setDeliveryLocation(loc(Coordinate.newInstance(6, 11))).build();
 
         Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 7)))
-                .setDeliveryLocation(loc(Coordinate.newInstance(14, 9))).build();
+            .setDeliveryLocation(loc(Coordinate.newInstance(14, 9))).build();
         Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13)))
-                .setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
+            .setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

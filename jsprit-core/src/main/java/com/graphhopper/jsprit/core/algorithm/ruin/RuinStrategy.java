@@ -17,11 +17,11 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
 
 
 /**
