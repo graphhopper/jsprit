@@ -17,6 +17,10 @@
  */
 package com.graphhopper.jsprit.examples;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.Collection;
+
 import com.graphhopper.jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter.Label;
@@ -33,67 +37,111 @@ import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 import com.graphhopper.jsprit.util.Examples;
 
-import java.util.Collection;
-
 
 public class PickupAndDeliveryExample {
 
     public static void main(String[] args) {
 
-		/*
+//        List<Capacity> caps = new ArrayList<>();
+//        Random rnd = new Random(42);
+//
+//        for (int i = 0; i < 10000; i++) {
+//            int dim = rnd.nextInt(10) + 1;
+//            Capacity.Builder b = Capacity.Builder.newInstance();
+//            for (int j = 0; j < dim; j++) {
+//                b.addDimension(j, rnd.nextInt(1000) - 500);
+//            }
+//            caps.add(b.build());
+//        }
+//
+//        LocalTime st1 = LocalTime.now();
+//        for (int i = 0; i < caps.size(); i++) {
+//            for (int j = 0; j < caps.size(); j++) {
+//                Capacity c2 = caps.get(i).subtract(caps.get(j));
+//                if (c2.getNuOfDimensions() > 1000) {
+//                    System.out.println("x");
+//                }
+//            }
+//        }
+//        LocalTime en1 = LocalTime.now();
+//        Duration dur1 = Duration.between(en1, st1);
+//        System.out.println(dur1);
+//
+//        LocalTime st2 = LocalTime.now();
+//        for (int i = 0; i < caps.size(); i++) {
+//            for (int j = 0; j < caps.size(); j++) {
+//                Capacity c2 = Capacity.subtract(caps.get(i), caps.get(j));
+//                if (c2.getNuOfDimensions() > 1000) {
+//                    System.out.println("x");
+//                }
+//            }
+//        }
+//        LocalTime en2 = LocalTime.now();
+//        Duration dur2 = Duration.between(en2, st2);
+//        System.out.println(dur2);
+//        System.out.println((dur2.getSeconds() + (double) dur2.getNano() / 1000000000) / dur1.getSeconds() + (double) dur1.getNano() / 1000000000);
+//        System.exit(1);
+
+        /*
          * some preparation - create output folder
-		 */
+         */
         Examples.createOutputFolder();
 
-		/*
+        /*
          * Build the problem.
-		 *
-		 * But define a problem-builder first.
-		 */
+         *
+         * But define a problem-builder first.
+         */
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
-		/*
+        /*
          * A solomonReader reads solomon-instance files, and stores the required information in the builder.
-		 */
+         */
         new VrpXMLReader(vrpBuilder).read("input/pickups_and_deliveries_solomon_r101_withoutTWs.xml");
 
-		/*
-         * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for vrp-instances).
-		 */
+        /*
+         * Finally, the problem can be built. By default, transportCosts are crowFlyDistances (as usually used for
+         * vrp-instances).
+         */
 
         final VehicleRoutingProblem vrp = vrpBuilder.build();
 
         new Plotter(vrp).plot("output/pd_solomon_r101.png", "pd_r101");
 
 
-		/*
+        /*
          * Define the required vehicle-routing algorithms to solve the above problem.
-		 *
-		 * The algorithm can be defined and configured in an xml-file.
-		 */
+         *
+         * The algorithm can be defined and configured in an xml-file.
+         */
 //		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
         /*
          * Solve the problem.
-		 *
-		 *
-		 */
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+         *
+         *
+         */
 
-		/*
+        LocalTime st2 = LocalTime.now();
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+        LocalTime en2 = LocalTime.now();
+        Duration dur2 = Duration.between(en2, st2);
+        System.out.println(dur2);
+
+        /*
          * Retrieve best solution.
-		 */
+         */
         VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 
-		/*
-		 * print solution
-		 */
+        /*
+         * print solution
+         */
         SolutionPrinter.print(solution);
 
-		/*
-		 * Plot solution.
-		 */
+        /*
+         * Plot solution.
+         */
 //		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/pd_solomon_r101_solution.png","pd_r101");
         Plotter plotter = new Plotter(vrp, solution);
         plotter.setLabel(Label.SIZE);

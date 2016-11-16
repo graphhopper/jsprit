@@ -129,13 +129,13 @@ public class SolutionAnalyser {
         public void visit(TourActivity activity) {
             if (activity instanceof PickupActivityNEW) {
                 pickupCounter++;
-                pickedUp = Capacity.addup(pickedUp, ((PickupActivityNEW) activity).getJob().getSize());
+                pickedUp = pickedUp.add(((PickupActivityNEW) activity).getJob().getSize());
                 if (activity instanceof PickupServiceDEPRECATED) {
                     deliverAtEndCounter++;
                 }
             } else if (activity instanceof DeliveryActivityNEW) {
                 deliveryCounter++;
-                delivered = Capacity.addup(delivered, ((DeliveryActivityNEW) activity).getJob().getSize());
+                delivered = delivered.add(((DeliveryActivityNEW) activity).getJob().getSize());
                 if (activity instanceof DeliverServiceDEPRECATED) {
                     pickupAtBeginningCounter++;
                 }
@@ -591,7 +591,7 @@ public class SolutionAnalyser {
             service_time += getServiceTime(route);
             operation_time += getOperationTime(route);
             tw_violation += getTimeWindowViolation(route);
-            cap_violation = Capacity.addup(cap_violation, getCapacityViolation(route));
+            cap_violation = cap_violation.add(getCapacityViolation(route));
             fixed_costs += getFixedCosts(route);
             variable_transport_costs += getVariableTransportCosts(route);
             if (hasSkillConstraintViolation(route)) {
@@ -607,10 +607,10 @@ public class SolutionAnalyser {
             noPickupsAtBeginning += getNumberOfPickupsAtBeginning(route);
             noDeliveries += getNumberOfDeliveries(route);
             noDeliveriesAtEnd += getNumberOfDeliveriesAtEnd(route);
-            pickupLoad = Capacity.addup(pickupLoad, getLoadPickedUp(route));
-            pickupLoadAtBeginning = Capacity.addup(pickupLoadAtBeginning, getLoadAtBeginning(route));
-            deliveryLoad = Capacity.addup(deliveryLoad, getLoadDelivered(route));
-            deliveryLoadAtEnd = Capacity.addup(deliveryLoadAtEnd, getLoadAtEnd(route));
+            pickupLoad = pickupLoad.add(getLoadPickedUp(route));
+            pickupLoadAtBeginning = pickupLoadAtBeginning.add(getLoadAtBeginning(route));
+            deliveryLoad = deliveryLoad.add(getLoadDelivered(route));
+            deliveryLoadAtEnd = deliveryLoadAtEnd.add(getLoadAtEnd(route));
         }
         total_costs = solutionCostCalculator.getCosts(solution);
     }
@@ -733,7 +733,7 @@ public class SolutionAnalyser {
         verifyThatRouteContainsAct(activity, route);
         Capacity afterAct = stateManager.getActivityState(activity, InternalStates.LOAD, Capacity.class);
         if (afterAct != null && activity.getSize() != null) {
-            return Capacity.subtract(afterAct, activity.getSize());
+            return afterAct.subtract(activity.getSize());
         } else if (afterAct != null) {
             return afterAct;
         } else {
@@ -794,7 +794,8 @@ public class SolutionAnalyser {
             throw new IllegalArgumentException("route is missing.");
         }
         Capacity maxLoad = getMaxLoad(route);
-        return Capacity.max(Capacity.Builder.newInstance().build(), Capacity.subtract(maxLoad, route.getVehicle().getType().getCapacityDimensions()));
+        return Capacity.max(Capacity.Builder.newInstance().build(),
+                        maxLoad.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**
@@ -808,7 +809,8 @@ public class SolutionAnalyser {
             throw new IllegalArgumentException("route is missing.");
         }
         Capacity atBeginning = getLoadAtBeginning(route);
-        return Capacity.max(Capacity.Builder.newInstance().build(), Capacity.subtract(atBeginning, route.getVehicle().getType().getCapacityDimensions()));
+        return Capacity.max(Capacity.Builder.newInstance().build(),
+                        atBeginning.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**
@@ -822,7 +824,8 @@ public class SolutionAnalyser {
             throw new IllegalArgumentException("route is missing.");
         }
         Capacity atEnd = getLoadAtEnd(route);
-        return Capacity.max(Capacity.Builder.newInstance().build(), Capacity.subtract(atEnd, route.getVehicle().getType().getCapacityDimensions()));
+        return Capacity.max(Capacity.Builder.newInstance().build(),
+                        atEnd.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
 
@@ -840,7 +843,8 @@ public class SolutionAnalyser {
             throw new IllegalArgumentException("activity is missing.");
         }
         Capacity afterAct = getLoadRightAfterActivity(activity, route);
-        return Capacity.max(Capacity.Builder.newInstance().build(), Capacity.subtract(afterAct, route.getVehicle().getType().getCapacityDimensions()));
+        return Capacity.max(Capacity.Builder.newInstance().build(),
+                        afterAct.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**
