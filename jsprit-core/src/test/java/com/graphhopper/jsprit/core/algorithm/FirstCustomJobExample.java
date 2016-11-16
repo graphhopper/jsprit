@@ -32,9 +32,11 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -105,7 +107,7 @@ public class FirstCustomJobExample {
             Builder builder = (Builder) jobBuilder;
             JobActivityList list = new SequentialJobActivityList(this);
             for(Location loc : builder.getLocs()){
-                list.addActivity(new PickupActivityNEW(this,"pick",loc,0,Capacity.EMPTY,Collections.emptyList()));
+                list.addActivity(new PickupActivityNEW(this,"pick",loc,0,Capacity.EMPTY, Arrays.asList(TimeWindow.ETERNITY)));
             }
             setActivities(list);
         }
@@ -122,5 +124,6 @@ public class FirstCustomJobExample {
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
+        Assert.assertTrue(solution.getUnassignedJobs().isEmpty());
     }
 }

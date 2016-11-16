@@ -89,6 +89,7 @@ public class InsertionBuilder {
         return this;
     }
 
+    @Deprecated
     public InsertionBuilder setRouteLevel(int forwardLooking, int memory) {
         local = false;
         this.forwaredLooking = forwardLooking;
@@ -96,6 +97,7 @@ public class InsertionBuilder {
         return this;
     }
 
+    @Deprecated
     public InsertionBuilder setRouteLevel(int forwardLooking, int memory, boolean addDefaultMarginalCostCalculation) {
         local = false;
         this.forwaredLooking = forwardLooking;
