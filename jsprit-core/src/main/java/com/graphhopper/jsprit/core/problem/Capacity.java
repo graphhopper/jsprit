@@ -405,4 +405,22 @@ public class Capacity {
 
     }
 
+    public Capacity getNegativeDimensions() {
+        Capacity res = new Capacity(getNuOfDimensions());
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            if (get(i) < 0) res.dimensions[i] = get(i);
+            else res.dimensions[i] = 0;
+        }
+        return res;
+    }
+
+    public Capacity getPositiveDimensions() {
+        Capacity res = new Capacity(getNuOfDimensions());
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            if (get(i) > 0) res.dimensions[i] = get(i);
+            else res.dimensions[i] = 0;
+        }
+        return res;
+    }
+
 }

@@ -125,13 +125,13 @@ public class LoadConstraintTest {
      */
     @Test
     public void whenServiceRouteAndNewServiceFitsIn_itShouldReturnFulfilled() {
-        stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
-        Service s = mock(Service.class);
-        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 5).build());
-        ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
+        stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.emptyList());
+        Service s = Service.Builder.newInstance("service").setLocation(Location.newInstance(0))
+            .addSizeDimension(0, 5).build();
+        ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertTrue(loadconstraint.fulfilled(context));
+        assertTrue(loadConstraint.fulfilled(context));
     }
 
     @Test
@@ -242,13 +242,11 @@ public class LoadConstraintTest {
 
     @Test
     public void whenServiceRouteAndNewServiceDoesNotFitIn_itShouldReturnFulfilled() {
-        stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
-        Service s = mock(Service.class);
-        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 6).build());
-        ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
-
+        stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.emptyList());
+        Service s = Service.Builder.newInstance("service").setLocation(Location.newInstance(0)).addSizeDimension(0, 6).build();
+        ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        assertFalse(loadConstraint.fulfilled(context));
     }
 
     /*
@@ -259,45 +257,41 @@ public class LoadConstraintTest {
     @Test
     public void whenPDRouteRouteAndNewPickupFitsIn_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
-        Pickup s = mock(Pickup.class);
-        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
-        ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
-
+        Pickup s = Pickup.Builder.newInstance("pick").addSizeDimension(0, 10).setLocation(Location.newInstance(0)).build();
+        ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertTrue(loadconstraint.fulfilled(context));
+        assertTrue(loadConstraint.fulfilled(context));
     }
 
     @Test
     public void whenPDRouteRouteAndNewDeliveryFitsIn_itShouldReturnFulfilled() {
-        stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
-        Delivery s = mock(Delivery.class);
-        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 15).build());
-        ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
-
+        stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.emptyList());
+        Delivery s = Delivery.Builder.newInstance("del").addSizeDimension(0, 15).setLocation(Location.newInstance(0)).build();
+        ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertTrue(loadconstraint.fulfilled(context));
+        assertTrue(loadConstraint.fulfilled(context));
     }
 
     @Test
     public void whenPDRouteRouteAndNewPickupDoesNotFitIn_itShouldReturnNotFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
-        Pickup s = mock(Pickup.class);
-        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 11).build());
-        ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
-
+        Pickup s = Pickup.Builder.newInstance("pickup")
+            .setLocation(Location.newInstance(0))
+            .addSizeDimension(0, 11).build();
+        ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        assertFalse(loadConstraint.fulfilled(context));
     }
 
     @Test
     public void whenPDRouteRouteAndNewDeliveryDoesNotFitIn_itShouldReturnNotFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
-        Delivery s = mock(Delivery.class);
-        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 16).build());
-        ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
+        Delivery s = Delivery.Builder.newInstance("del").setLocation(Location.newInstance(0))
+            .addSizeDimension(0, 16).build();
+        ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        assertFalse(loadConstraint.fulfilled(context));
     }
 
     /*
@@ -612,12 +606,10 @@ public class LoadConstraintTest {
     @Test
     public void whenPDRouteAndNewServiceDoesNotFitIn_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
-        Service s = mock(Service.class);
-        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 6).build());
-        ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
-
+        Service s = Service.Builder.newInstance("service").addSizeDimension(0, 6).setLocation(Location.newInstance(0)).build();
+        ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        assertFalse(loadConstraint.fulfilled(context));
     }
 
     /*

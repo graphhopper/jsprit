@@ -21,6 +21,7 @@ package com.graphhopper.jsprit.core.problem.job;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 import java.util.*;
@@ -40,6 +41,7 @@ import java.util.*;
  * @see JobBuilder
  */
 public abstract class AbstractJob implements Job {
+
 
     /**
      * Base builder for all direct descendants.
@@ -259,6 +261,12 @@ public abstract class AbstractJob implements Job {
 
     protected Set<TimeWindow> allTimeWindows;
 
+    private Capacity sizeAtStart;
+
+    private Capacity sizeAtEnd;
+
+
+
     /**
      * Builder based constructor.
      *
@@ -302,12 +310,31 @@ public abstract class AbstractJob implements Job {
             addLocation(ja.getLocation());
             addTimeWindows(ja.getTimeWindows());
         });
+        sizeAtStart = calcSizeAt(true);
+        sizeAtEnd = calcSizeAt(false);
+    }
+
+    private Capacity calcSizeAt(boolean start) {
+        Capacity size = Capacity.EMPTY;
+        for (JobActivity act : activityList.getAll()) {
+            size = size.add(act.getSize());
+        }
+        if (start) return size.getNegativeDimensions().abs();
+        else return size.getPositiveDimensions();
     }
 
     private void addTimeWindows(Collection<TimeWindow> timeWindows) {
         if (timeWindows != null && !timeWindows.isEmpty()) {
             allTimeWindows.addAll(timeWindows);
         }
+    }
+
+    public Capacity getSizeAtStart() {
+        return sizeAtStart;
+    }
+
+    public Capacity getSizeAtEnd() {
+        return sizeAtEnd;
     }
 
     /**
