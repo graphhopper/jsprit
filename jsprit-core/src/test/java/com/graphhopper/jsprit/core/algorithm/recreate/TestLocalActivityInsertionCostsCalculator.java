@@ -28,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
@@ -89,6 +90,74 @@ public class TestLocalActivityInsertionCostsCalculator {
 
     private Location loc(String i) {
         return Location.Builder.newInstance().setId(i).build();
+    }
+
+    @Test
+    public void whenAddingServiceBetweenDiffStartAndEnd_costMustBeCorrect() {
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v")
+            .setStartLocation(Location.newInstance(0, 0))
+            .setEndLocation(Location.newInstance(20, 0))
+            .build();
+        Service s = Service.Builder.newInstance("s")
+            .setLocation(Location.newInstance(10, 0))
+            .build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+            .addVehicle(v)
+            .addJob(s)
+            .build();
+        VehicleRoute route = VehicleRoute.emptyRoute();
+        JobInsertionContext jobInsertionContext =
+            new JobInsertionContext(route, s, v, null, 0);
+        LocalActivityInsertionCostsCalculator localActivityInsertionCostsCalculator =
+            new LocalActivityInsertionCostsCalculator(
+                vrp.getTransportCosts(),
+                vrp.getActivityCosts(),
+                new StateManager(vrp));
+        double cost = localActivityInsertionCostsCalculator.getCosts(
+            jobInsertionContext,
+            new Start(v.getStartLocation(),0,Double.MAX_VALUE),
+            new End(v.getEndLocation(),0,Double.MAX_VALUE),
+            vrp.getActivities(s).get(0),
+            0);
+        assertEquals(20., cost, Math.ulp(20.));
+    }
+
+    @Test
+    public void whenAddingShipmentBetweenDiffStartAndEnd_costMustBeCorrect() {
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v")
+            .setStartLocation(Location.newInstance(0, 0))
+            .setEndLocation(Location.newInstance(20, 0))
+            .build();
+        Shipment s = Shipment.Builder.newInstance("p")
+            .setPickupLocation(Location.newInstance(10, 0))
+            .setDeliveryLocation(Location.newInstance(10, 7.5))
+            .build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+            .addVehicle(v)
+            .addJob(s)
+            .build();
+        VehicleRoute route = VehicleRoute.emptyRoute();
+        JobInsertionContext jobInsertionContext =
+            new JobInsertionContext(route, s, v, null, 0);
+        LocalActivityInsertionCostsCalculator localActivityInsertionCostsCalculator =
+            new LocalActivityInsertionCostsCalculator(
+                vrp.getTransportCosts(),
+                vrp.getActivityCosts(),
+                new StateManager(vrp));
+        double cost = localActivityInsertionCostsCalculator.getCosts(
+            jobInsertionContext,
+            new Start(v.getStartLocation(),0,Double.MAX_VALUE),
+            new End(v.getEndLocation(),0,Double.MAX_VALUE),
+            vrp.getActivities(s).get(0),
+            0);
+        assertEquals(20., cost, Math.ulp(20.));
+        cost = localActivityInsertionCostsCalculator.getCosts(
+            jobInsertionContext,
+            vrp.getActivities(s).get(0),
+            new End(v.getEndLocation(),0,Double.MAX_VALUE),
+            vrp.getActivities(s).get(1),
+            0);
+        assertEquals(10, cost, Math.ulp(10.));
     }
 
     @Test

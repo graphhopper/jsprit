@@ -22,6 +22,7 @@ import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -77,7 +78,9 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 
         double oldCosts = 0.;
         if (iFacts.getRoute().isEmpty()) {
-            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double tp_costs_prevAct_nextAct = 0.;
+            if (newAct instanceof DeliverShipment)
+                tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts += tp_costs_prevAct_nextAct;
         } else {
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
