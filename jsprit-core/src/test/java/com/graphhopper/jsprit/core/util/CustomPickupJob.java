@@ -18,11 +18,12 @@
 
 package com.graphhopper.jsprit.core.util;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.JobActivityList;
 import com.graphhopper.jsprit.core.problem.job.SequentialJobActivityList;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
@@ -42,6 +43,8 @@ public class CustomPickupJob extends AbstractJob {
 
         List<SizeDimension> cap = new ArrayList<>();
 
+        List<String> types = new ArrayList<>();
+
         public BuilderBase(String id) {
             super(id);
         }
@@ -49,6 +52,14 @@ public class CustomPickupJob extends AbstractJob {
         public CustomPickupJob.BuilderBase<T, B> addPickup(Location location, SizeDimension capacity) {
             locs.add(location);
             cap.add(capacity);
+            types.add("pickup");
+            return this;
+        }
+
+        public CustomPickupJob.BuilderBase<T, B> addDelivery(Location location, SizeDimension capacity) {
+            locs.add(location);
+            cap.add(capacity);
+            types.add("delivery");
             return this;
         }
 
@@ -58,6 +69,10 @@ public class CustomPickupJob extends AbstractJob {
 
         public List<SizeDimension> getCaps() {
             return cap;
+        }
+
+        public List<String> getTypes() {
+            return types;
         }
 
         protected void validate() {
@@ -103,7 +118,10 @@ public class CustomPickupJob extends AbstractJob {
         CustomPickupJob.Builder builder = (CustomPickupJob.Builder) jobBuilder;
         JobActivityList list = new SequentialJobActivityList(this);
         for (int i = 0; i < builder.getLocs().size(); i++) {
-            list.addActivity(new PickupActivityNEW(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
+            if (builder.getTypes().get(i).equals("pickup")) {
+                list.addActivity(new PickupActivityNEW(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
+            } else
+                list.addActivity(new DeliveryActivityNEW(this, "delivery", builder.getLocs().get(i), 0, builder.getCaps().get(i).invert(), Arrays.asList(TimeWindow.ETERNITY)));
         }
         setActivities(list);
     }

@@ -30,17 +30,7 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        // ConstraintsStatus oldRes = old(prevAct, newAct, nextAct);
         ConstraintsStatus newRes = newMethod(prevAct, newAct, nextAct);
-        // if (oldRes != newRes) {
-        // newRes = newMethod(prevAct, newAct, nextAct);
-        // }
-        // System.out.format("%14s (%4s) > %14s (%4s) > %14s (%4s) ====> %20s :
-        // %20s (%4s)\n",
-        // prevAct.getName(), isShipment(prevAct),
-        // newAct.getName(), isShipment(newAct),
-        // nextAct.getName(), isShipment(nextAct),
-        // oldRes, newRes, (oldRes == newRes));
         return newRes;
     }
 

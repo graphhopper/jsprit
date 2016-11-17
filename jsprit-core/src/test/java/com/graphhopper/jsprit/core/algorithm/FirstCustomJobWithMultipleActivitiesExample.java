@@ -19,8 +19,8 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -74,5 +74,43 @@ public class FirstCustomJobWithMultipleActivitiesExample {
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         Assert.assertFalse(solution.getUnassignedJobs().isEmpty());
+    }
+
+    @Test
+    public void shouldNotIgnoresCapacityWithMixedPicksAndDeliveries() {
+        CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
+            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+            .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+            .build();
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).build();
+        Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+            .addJob(cj).addVehicle(v).build();
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        vra.setMaxIterations(10);
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
+        Assert.assertFalse(solution.getUnassignedJobs().isEmpty());
+    }
+
+    @Test
+    public void shouldNotIgnoresCapacityWithMixedPicksAndDeliveriesV2() {
+        CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
+            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+            .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+            .build();
+        Assert.assertEquals(SizeDimension.Builder.newInstance().addDimension(0, 0).build(), cj.getSizeAtStart());
+        Assert.assertEquals(SizeDimension.Builder.newInstance().addDimension(0, 0).build(), cj.getSizeAtEnd());
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).build();
+        Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+            .addJob(cj).addVehicle(v).build();
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        vra.setMaxIterations(10);
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
+        Assert.assertTrue(solution.getUnassignedJobs().isEmpty());
     }
 }

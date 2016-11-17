@@ -61,33 +61,6 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
         }
         return true;
 
-//        if(loadAtDepot.add())
-//        if(insertionContext.getJob().getInitialPickup() < 0){
-//
-//        }
-//        else {
-//
-//        }
-//        if (insertionContext.getJob() instanceof Delivery) {
-//            SizeDimension loadAtDepot = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
-//            if (loadAtDepot == null) {
-//                loadAtDepot = SizeDimension.EMPTY;
-//            }
-//            if (!loadAtDepot.add(insertionContext.getJob().getSize())
-//                .isLessOrEqual(capacityOfNewVehicle)) {
-//                return false;
-//            }
-//        } else if (insertionContext.getJob() instanceof Pickup || insertionContext.getJob() instanceof Service) {
-//            SizeDimension loadAtEnd = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_END, SizeDimension.class);
-//            if (loadAtEnd == null) {
-//                loadAtEnd = SizeDimension.EMPTY;
-//            }
-//            if (!loadAtEnd.add(insertionContext.getJob().getSize())
-//                .isLessOrEqual(capacityOfNewVehicle)) {
-//                return false;
-//            }
-//        }
-//        return true;
     }
 
 }

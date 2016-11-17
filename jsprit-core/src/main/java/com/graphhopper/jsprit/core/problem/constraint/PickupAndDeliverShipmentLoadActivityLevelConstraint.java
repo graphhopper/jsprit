@@ -19,9 +19,9 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
 
@@ -37,7 +37,6 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 
     private RouteAndActivityStateGetter stateManager;
 
-    private SizeDimension defaultValue;
 
     /**
      * Constructs the constraint ensuring capacity constraint at each activity.
@@ -50,118 +49,29 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
     public PickupAndDeliverShipmentLoadActivityLevelConstraint(RouteAndActivityStateGetter stateManager) {
         super();
         this.stateManager = stateManager;
-        defaultValue = SizeDimension.Builder.newInstance().build();
     }
 
-    // private String visualize(JobInsertionContext iFacts, TourActivity
-    // prevAct, TourActivity newAct,
-    // TourActivity nextAct) {
-    // System.out.println(prevAct);
-    // System.out.println(newAct);
-    // System.out.println(nextAct);
-    // StringBuilder sb = new StringBuilder();
-    // for (TourActivity a : iFacts.getRoute().getActivities()) {
-    // if (a.equals(nextAct)) {
-    // if (sb.length() != 0) {
-    // sb.append(" -> ");
-    // }
-    // sb.append("[").append(newAct.getName()).append("]");
-    // }
-    // if (sb.length() != 0) {
-    // sb.append(" -> ");
-    // }
-    // sb.append(a.getName());
-    // }
-    //
-    // return sb.toString();
-    // }
+
 
     /**
      * Checks whether there is enough capacity to insert newAct between prevAct and nextAct.
      */
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        // ----> REMARK - Balage - This replaces the following check? Do we
-        // still need it? It's fragile and uses an instantof so it probably
-        // wrong!
-        // if (!(newAct instanceof PickupShipmentDEPRECATED) && !(newAct
-        // instanceof DeliverShipmentDEPRECATED))
-        // return ConstraintsStatus.FULFILLED;
-        if (!(newAct instanceof JobActivity)) {
-            return ConstraintsStatus.FULFILLED;
-        }
-        JobActivity newJobAct = (JobActivity) newAct;
-        if (!(newJobAct.getJob() instanceof Shipment)) {
-            return ConstraintsStatus.FULFILLED;
-        }
-        // <--- Check ends here
-
-        // System.out.println(visualize(iFacts, prevAct, newAct, nextAct));
         SizeDimension loadAtPrevAct;
         if (prevAct instanceof Start) {
             loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
-            if (loadAtPrevAct == null) {
-                loadAtPrevAct = defaultValue;
-            }
         } else {
             loadAtPrevAct = stateManager.getActivityState(prevAct, InternalStates.LOAD, SizeDimension.class);
-            if (loadAtPrevAct == null) {
-                loadAtPrevAct = defaultValue;
-            }
         }
-        SizeDimension vehicleCapacityDimensions = iFacts.getNewVehicle().getType().getCapacityDimensions();
-
-        if (newAct instanceof PickupActivityNEW) {
-            SizeDimension newCapacity = loadAtPrevAct.add(newAct.getLoadChange());
-            if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
-                return ConstraintsStatus.NOT_FULFILLED;
-            }
+        loadAtPrevAct = (loadAtPrevAct != null) ? loadAtPrevAct : SizeDimension.EMPTY;
+        SizeDimension capacityOfNewVehicle = iFacts.getNewVehicle().getType().getCapacityDimensions();
+        if (!(loadAtPrevAct.add(newAct.getLoadChange().getPositiveDimensions()).isLessOrEqual(capacityOfNewVehicle))) {
+            return ConstraintsStatus.NOT_FULFILLED;
         }
-        if (newAct instanceof DeliveryActivityNEW) {
-            SizeDimension newCapacity = loadAtPrevAct.add(newAct.getLoadChange().abs());
-            if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
-                return ConstraintsStatus.NOT_FULFILLED_BREAK;
-            }
+        if (!(loadAtPrevAct.add(newAct.getLoadChange().getNegativeDimensions().abs()).isLessOrEqual(capacityOfNewVehicle))) {
+            return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
         return ConstraintsStatus.FULFILLED;
     }
-
-    // OLD BODY
-    // if (!(newAct instanceof PickupShipmentDEPRECATED) && !(newAct instanceof
-    // DeliverShipmentDEPRECATED)) {
-    // return ConstraintsStatus.FULFILLED;
-    // }
-    // // System.out.println(visualize(iFacts, prevAct, newAct, nextAct));
-    // SizeDimension loadAtPrevAct;
-    // if (prevAct instanceof Start) {
-    // loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(),
-    // InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
-    // if (loadAtPrevAct == null) {
-    // loadAtPrevAct = defaultValue;
-    // }
-    // } else {
-    // loadAtPrevAct = stateManager.getActivityState(prevAct,
-    // InternalStates.LOAD, SizeDimension.class);
-    // if (loadAtPrevAct == null) {
-    // loadAtPrevAct = defaultValue;
-    // }
-    // }
-    // SizeDimension vehicleCapacityDimensions =
-    // iFacts.getNewVehicle().getType().getCapacityDimensions();
-    //
-    // if (newAct instanceof PickupShipmentDEPRECATED) {
-    // SizeDimension newCapacity = SizeDimension.addup(loadAtPrevAct, newAct.getSize());
-    // if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
-    // return ConstraintsStatus.NOT_FULFILLED;
-    // }
-    // }
-    // if (newAct instanceof DeliverShipmentDEPRECATED) {
-    // SizeDimension newCapacity = SizeDimension.addup(loadAtPrevAct,
-    // SizeDimension.invert(newAct.getSize()));
-    // if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
-    // return ConstraintsStatus.NOT_FULFILLED_BREAK;
-    // }
-    // }
-    // return ConstraintsStatus.FULFILLED;
-
 }

@@ -111,7 +111,7 @@ public class LiLimReader {
     public void read(InputStream inputStream) {
         readShipments(inputStream);
         buildShipments();
-        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, vehicleCapacity)
+        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("types").addCapacityDimension(0, vehicleCapacity)
             .setCostPerDistance(1.0).setFixedCost(fixCosts).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle")
             .setEarliestStart(depotOpeningTime).setLatestArrival(depotClosingTime)

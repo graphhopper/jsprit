@@ -19,7 +19,6 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.SizeDimension.SizeDimensionSign;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -37,12 +36,9 @@ public class ServiceLoadActivityLevelConstraint implements HardActivityConstrain
 
     private RouteAndActivityStateGetter stateManager;
 
-    private SizeDimension defaultValue;
-
     public ServiceLoadActivityLevelConstraint(RouteAndActivityStateGetter stateManager) {
         super();
         this.stateManager = stateManager;
-        defaultValue = SizeDimension.Builder.newInstance().build();
     }
 
     @Override
@@ -51,46 +47,27 @@ public class ServiceLoadActivityLevelConstraint implements HardActivityConstrain
         SizeDimension prevMaxLoad;
         if (prevAct instanceof Start) {
             futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXLOAD, SizeDimension.class);
-            if (futureMaxLoad == null) {
-                futureMaxLoad = defaultValue;
-            }
             prevMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
-            if (prevMaxLoad == null) {
-                prevMaxLoad = defaultValue;
-            }
         } else {
             futureMaxLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MAXLOAD, SizeDimension.class);
-            if (futureMaxLoad == null) {
-                futureMaxLoad = defaultValue;
-            }
             prevMaxLoad = stateManager.getActivityState(prevAct, InternalStates.PAST_MAXLOAD, SizeDimension.class);
-            if (prevMaxLoad == null) {
-                prevMaxLoad = defaultValue;
-            }
-
         }
-
-        if (newAct.getLoadChange().sign() == SizeDimensionSign.POSITIVE) {
-            if (!newAct.getLoadChange().add(futureMaxLoad).isLessOrEqual(
-                iFacts.getNewVehicle().getType().getCapacityDimensions())) {
-                return ConstraintsStatus.NOT_FULFILLED;
-            }
+        futureMaxLoad = (futureMaxLoad != null) ? futureMaxLoad : SizeDimension.EMPTY;
+        prevMaxLoad = (prevMaxLoad != null) ? prevMaxLoad : SizeDimension.EMPTY;
+        SizeDimension capacityOfNewVehicle = iFacts.getNewVehicle().getType().getCapacityDimensions();
+        if (!futureMaxLoad.add(newAct.getLoadChange().getPositiveDimensions()).isLessOrEqual(capacityOfNewVehicle)) {
+            return ConstraintsStatus.NOT_FULFILLED;
         }
-
-        /*
-         * REMARK - Balage - This negating could be a bottleneck if called too
-         * many times. Has to be mesured. If rational, the activities could
-         * store their size as absolute value as well. (We could rename
-         * getSize() as getCargoChange(), and the absolute value as
-         * getCargoSize(). For positive or zero activities as Service and Pickup
-         * they could refer to the same object.)
-         */
-        if (newAct.getLoadChange().sign() != SizeDimensionSign.POSITIVE) {
-            if (!newAct.getLoadChange().abs().add(prevMaxLoad).isLessOrEqual(
-                iFacts.getNewVehicle().getType().getCapacityDimensions())) {
-                return ConstraintsStatus.NOT_FULFILLED_BREAK;
-            }
+        if (!prevMaxLoad.add(newAct.getLoadChange().getNegativeDimensions().abs()).isLessOrEqual(capacityOfNewVehicle)) {
+            return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
+//        if(capacityOfNewVehicle)
+//        if (newAct.getLoadChange().sign() != SizeDimensionSign.POSITIVE) {
+//            if (!newAct.getLoadChange().abs().add(prevMaxLoad).isLessOrEqual(
+//                capacityOfNewVehicle)) {
+//                return ConstraintsStatus.NOT_FULFILLED_BREAK;
+//            }
+//        }
         return ConstraintsStatus.FULFILLED;
     }
 }
