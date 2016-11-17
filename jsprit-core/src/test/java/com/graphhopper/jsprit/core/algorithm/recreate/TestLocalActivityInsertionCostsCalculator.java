@@ -17,16 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateActivityTimes;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateFutureWaitingTimes;
@@ -48,6 +38,15 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestLocalActivityInsertionCostsCalculator {
 
@@ -469,7 +468,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
 		 */
         /*
-		old = 10 + 30 + 10 = 50
+        old = 10 + 30 + 10 = 50
 		new = 80 + 0 - 10 - min{80,40} = 30
 		 */
     }
@@ -569,7 +568,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
         StateManager stateManager = getStateManager(vrp, route);
         stateManager.updateTimeWindowStates();
-        stateManager.informInsertionStarts(Arrays.asList(route),new ArrayList<Job>());
+        stateManager.informInsertionStarts(Arrays.asList(route), new ArrayList<Job>());
 
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);

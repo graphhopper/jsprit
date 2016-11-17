@@ -17,17 +17,12 @@
  */
 package com.graphhopper.jsprit.core.algorithm.listener;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
-
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import java.util.*;
 
 
 public class VehicleRoutingAlgorithmListeners {

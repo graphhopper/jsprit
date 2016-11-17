@@ -17,16 +17,16 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-
 import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 
 public class InsertionBuilder {
@@ -180,23 +180,21 @@ public class InsertionBuilder {
             }
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
-                if(isFastRegret){
+                if (isFastRegret) {
                     RegretInsertionFast regret = new RegretInsertionFast(costCalculator, vrp, fleetManager);
                     regret.setSwitchAllowed(allowVehicleSwitch);
                     insertion = regret;
-                }
-                else {
+                } else {
                     RegretInsertion regret = new RegretInsertion(costCalculator, vrp);
                     insertion = regret;
                 }
 
             } else {
-                if(isFastRegret){
+                if (isFastRegret) {
                     RegretInsertionConcurrentFast regret = new RegretInsertionConcurrentFast(costCalculator, vrp, executor, fleetManager);
                     regret.setSwitchAllowed(allowVehicleSwitch);
                     insertion = regret;
-                }
-                else{
+                } else {
                     RegretInsertionConcurrent regret = new RegretInsertionConcurrent(costCalculator, vrp, executor);
                     insertion = regret;
                 }

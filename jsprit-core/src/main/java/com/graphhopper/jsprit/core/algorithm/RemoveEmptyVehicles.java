@@ -17,13 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public class RemoveEmptyVehicles implements InsertionEndsListener {

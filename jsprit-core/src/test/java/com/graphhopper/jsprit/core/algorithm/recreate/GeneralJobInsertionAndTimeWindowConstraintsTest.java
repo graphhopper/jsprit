@@ -44,9 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 
@@ -111,8 +109,8 @@ public class GeneralJobInsertionAndTimeWindowConstraintsTest {
 
     @Test
     public void whenInsertingServiceWithTW_itMustReturnTheCorrectInsertionIndex() {
-        Delivery delivery = new Delivery.Builder("del").addTimeWindow(30,40).setLocation(Location.newInstance("10,10")).build();
-        Pickup pickup = new Pickup.Builder("pick").addTimeWindow(60,80).setLocation(Location.newInstance("0,10")).build();
+        Delivery delivery = new Delivery.Builder("del").addTimeWindow(30, 40).setLocation(Location.newInstance("10,10")).build();
+        Pickup pickup = new Pickup.Builder("pick").addTimeWindow(60, 80).setLocation(Location.newInstance("0,10")).build();
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(1).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(40).setStartLocation(Location.newInstance("0,0")).setType(type).build();
@@ -124,10 +122,10 @@ public class GeneralJobInsertionAndTimeWindowConstraintsTest {
         VehicleRoute route = VehicleRoute.emptyRoute();
         route.setVehicleAndDepartureTime(vehicle, 0.0);
 
-        route.getTourActivities().addActivity(0,vrp.copyAndGetActivities(delivery).get(0));
+        route.getTourActivities().addActivity(0, vrp.copyAndGetActivities(delivery).get(0));
 
         StateManager stateManager = new StateManager(vrp);
-        stateManager.addStateUpdater(new UpdateVehicleDependentPracticalTimeWindows(stateManager,routingCosts,activityCosts));
+        stateManager.addStateUpdater(new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts, activityCosts));
 
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
         constraintManager.addTimeWindowConstraint();

@@ -17,15 +17,9 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import com.graphhopper.jsprit.core.problem.job.Job;
+
+import java.util.*;
 
 
 /**
@@ -149,7 +143,6 @@ public class TourActivities {
         assert jobRemoved == activityRemoved : "job removed, but belonging activity not.";
         return activityRemoved;
     }
-
 
 
     /**

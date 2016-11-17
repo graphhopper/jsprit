@@ -17,24 +17,21 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.stub;
-import static org.mockito.Mockito.when;
+import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
+import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
+import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
+import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
-import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
-import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
-import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 
 public class SearchStrategyManagerTest {

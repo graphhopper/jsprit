@@ -76,8 +76,8 @@ public final class End extends InternalActivity {
     @Override
     public String toString() {
         return "[type=" + getName() + "][location=" + location
-                + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-                + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
     }
 
 }
@@ -85,80 +85,80 @@ public final class End extends InternalActivity {
 
 /*
  * package com.graphhopper.jsprit.core.problem.solution.route.activity;
- * 
+ *
  * import com.graphhopper.jsprit.core.problem.SizeDimension; import com.graphhopper.jsprit.core.problem.AbstractActivityNEW;
  * import com.graphhopper.jsprit.core.problem.Location;
- * 
+ *
  * public final class End extends AbstractActivityNEW {
- * 
+ *
  * public static End newInstance(String locationId, double earliestArrival, double latestArrival) { return new
  * End(locationId, earliestArrival, latestArrival); }
- * 
+ *
  * public static End copyOf(End end) { return new End(end); }
- * 
+ *
  * private final static SizeDimension capacity = SizeDimension.Builder.newInstance().build();
- * 
- * 
+ *
+ *
  * private double endTime = -1;
- * 
- * 
+ *
+ *
  * private double theoretical_earliestOperationStartTime;
- * 
+ *
  * private double theoretical_latestOperationStartTime;
- * 
+ *
  * private double arrTime;
- * 
+ *
  * private Location location;
- * 
+ *
  * @Override public void setTheoreticalEarliestOperationStartTime(double theoreticalEarliestOperationStartTime) {
  * theoretical_earliestOperationStartTime = theoreticalEarliestOperationStartTime; }
- * 
+ *
  * @Override public void setTheoreticalLatestOperationStartTime(double theoreticalLatestOperationStartTime) {
  * theoretical_latestOperationStartTime = theoreticalLatestOperationStartTime; }
- * 
+ *
  * public End(Location location, double theoreticalStart, double theoreticalEnd) { super(); this.location = location;
  * theoretical_earliestOperationStartTime = theoreticalStart; theoretical_latestOperationStartTime = theoreticalEnd;
  * endTime = theoreticalEnd; setIndex(-2); }
- * 
+ *
  * public End(String locationId, double theoreticalStart, double theoreticalEnd) { super(); if (locationId != null) {
  * location = Location.Builder.newInstance().setId(locationId).build(); } theoretical_earliestOperationStartTime =
  * theoreticalStart; theoretical_latestOperationStartTime = theoreticalEnd; endTime = theoreticalEnd; setIndex(-2); }
- * 
+ *
  * public End(End end) { location = end.getLocation(); // this.locationId = end.getLocation().getId();
  * theoretical_earliestOperationStartTime = end.getTheoreticalEarliestOperationStartTime();
  * theoretical_latestOperationStartTime = end.getTheoreticalLatestOperationStartTime(); arrTime = end.getArrTime();
  * endTime = end.getEndTime(); setIndex(-2); }
- * 
+ *
  * @Override public double getTheoreticalEarliestOperationStartTime() { return theoretical_earliestOperationStartTime; }
- * 
+ *
  * @Override public double getTheoreticalLatestOperationStartTime() { return theoretical_latestOperationStartTime; }
- * 
+ *
  * @Override public double getEndTime() { return endTime; }
- * 
+ *
  * @Override public void setEndTime(double endTime) { this.endTime = endTime; }
- * 
+ *
  * public void setLocation(Location location) { this.location = location; }
- * 
+ *
  * @Override public Location getLocation() { return location; }
- * 
+ *
  * @Override public double getOperationTime() { return 0.0; }
- * 
- * 
+ *
+ *
  * @Override public String toString() { return "[type=" + getName() + "][location=" + location + "][twStart=" +
  * Activities.round(theoretical_earliestOperationStartTime) + "][twEnd=" +
  * Activities.round(theoretical_latestOperationStartTime) + "]"; }
- * 
+ *
  * @Override public String getName() { return "end"; }
- * 
+ *
  * @Override public double getArrTime() { return arrTime; }
- * 
+ *
  * @Override public void setArrTime(double arrTime) { this.arrTime = arrTime;
- * 
+ *
  * }
- * 
+ *
  * @Override public TourActivity duplicate() { return new End(this); }
- * 
+ *
  * @Override public SizeDimension getSize() { return capacity; }
- * 
+ *
  * }
  */

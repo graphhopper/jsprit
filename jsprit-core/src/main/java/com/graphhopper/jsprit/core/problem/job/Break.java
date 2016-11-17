@@ -31,7 +31,7 @@ public class Break extends Service implements InternalJobMarker {
     public static final class Builder extends Service.BuilderBase<Break, Builder> {
 
         private static final Location VARIABLE_LOCATION = Location
-                        .newInstance("@@@VARIABLE_LOCATION");
+            .newInstance("@@@VARIABLE_LOCATION");
 
         public Builder(String id) {
             super(id);

@@ -18,10 +18,9 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.job.Break;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.graphhopper.jsprit.core.problem.job.Break;
 
 
 /**
@@ -36,11 +35,11 @@ class SwitchVehicleListener implements EventListener {
         if (event instanceof SwitchVehicle) {
             SwitchVehicle switchVehicle = (SwitchVehicle) event;
             if (vehiclesDifferent((SwitchVehicle) event)) {
-                logger.trace("switch vehicle ({} to {})",((SwitchVehicle) event).getRoute().getVehicle().getId(),((SwitchVehicle) event).getVehicle().getId());
+                logger.trace("switch vehicle ({} to {})", ((SwitchVehicle) event).getRoute().getVehicle().getId(), ((SwitchVehicle) event).getVehicle().getId());
                 Break aBreak = ((SwitchVehicle) event).getRoute().getVehicle().getBreak();
                 if (aBreak != null) {
                     boolean removed = ((SwitchVehicle) event).getRoute().getTourActivities().removeJob(aBreak);
-                    if (removed) logger.trace("remove {}",aBreak.getId());
+                    if (removed) logger.trace("remove {}", aBreak.getId());
                 }
             }
             switchVehicle.getRoute().setVehicleAndDepartureTime(switchVehicle.getVehicle(), ((SwitchVehicle) event).getDepartureTime());

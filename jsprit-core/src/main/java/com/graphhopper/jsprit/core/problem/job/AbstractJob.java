@@ -18,12 +18,13 @@
 
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.*;
-
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+
+import java.util.*;
 
 /**
  * Abstract base class for all Job implementations.
@@ -40,6 +41,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
  * @see JobBuilder
  */
 public abstract class AbstractJob implements Job {
+
 
     /**
      * Base builder for all direct descendants.
@@ -59,16 +61,16 @@ public abstract class AbstractJob implements Job {
      * If you wish to allow your Job implementation to be extended, first create
      * your own abstract Builder class. The signature of your abstract builder
      * should be something like this (<i>self referencing generics</i>):
-     *
+     * <p>
      * <pre>
      * public static abstract class BuilderBase&lt;T extends MyJob, B extends BuilderBase&lt;T, B>>
      *                 extends JobBuilder&lt;T, B> {
      * }
      * </pre>
-     *
+     * <p>
      * This implenetation should contain all new fields, the new setters
      * following the pattern:
-     *
+     * <p>
      * <pre>
      * &#64;SuppressWarnings("unchecked")
      * public B setField(FieldType field) {
@@ -76,7 +78,7 @@ public abstract class AbstractJob implements Job {
      *     return (B) this;
      * }
      * </pre>
-     *
+     * <p>
      * Usually, the {@linkplain #validate()} method is implemented in this class
      * (and it should call <code>super.validate()</code>) as well, but the
      * abstract {@linkplain #createInstance()} is never. It is recommended that
@@ -93,7 +95,7 @@ public abstract class AbstractJob implements Job {
      * "http://stackoverflow.com/questions/7354740/is-there-a-way-to-refer-to-the-current-type-with-a-type-variable">
      * the answer of this topic</a> for more information about the pitfalls of
      * the self-refering generics pattern):
-     *
+     * <p>
      * <pre>
      * public static class Builder extends BuilderBase&lt;MyJob, Builder> {
      *     public Builder(String id) {
@@ -106,7 +108,7 @@ public abstract class AbstractJob implements Job {
      *     }
      * }
      * </pre>
-     *
+     * <p>
      * The sole method to be implemented is {@linkplain #createInstance()}. This
      * is now type-safe and generic-less.
      * </p>
@@ -135,13 +137,10 @@ public abstract class AbstractJob implements Job {
         /**
          * Adds capacity dimension.
          *
-         * @param dimensionIndex
-         *            the dimension index of the capacity value
-         * @param dimensionValue
-         *            the capacity value
+         * @param dimensionIndex the dimension index of the capacity value
+         * @param dimensionValue the capacity value
          * @return the builder
-         * @throws IllegalArgumentException
-         *             if dimensionValue < 0
+         * @throws IllegalArgumentException if dimensionValue < 0
          */
         @SuppressWarnings("unchecked")
         public B addSizeDimension(int dimensionIndex, int dimensionValue) {
@@ -193,7 +192,7 @@ public abstract class AbstractJob implements Job {
         public B setPriority(int priority) {
             if (priority < 1 || priority > 3) {
                 throw new IllegalArgumentException(
-                                "incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+                    "incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
             }
             this.priority = priority;
             return (B) this;
@@ -201,7 +200,7 @@ public abstract class AbstractJob implements Job {
 
         /**
          * Builds the job.
-         *
+         * <p>
          * <p>
          * You never has to override this method. Override the
          * {@linkplain #validate()} and {@linkplain #createInstance()} methods
@@ -210,10 +209,8 @@ public abstract class AbstractJob implements Job {
          * </p>
          *
          * @return {@link T} The new implementation of the corresponding Job.
-         *
-         * @see JobBuilder
-         *
          * @author balage
+         * @see JobBuilder
          */
         public final T build() {
             validate();
@@ -264,12 +261,16 @@ public abstract class AbstractJob implements Job {
 
     protected Set<TimeWindow> allTimeWindows;
 
+    private SizeDimension sizeAtStart;
+
+    private SizeDimension sizeAtEnd;
+
+
+
     /**
      * Builder based constructor.
      *
-     * @param builder
-     *            The builder instance.
-     *
+     * @param builder The builder instance.
      * @see JobBuilder
      */
     protected AbstractJob(JobBuilder<?, ?> builder) {
@@ -309,6 +310,17 @@ public abstract class AbstractJob implements Job {
             addLocation(ja.getLocation());
             addTimeWindows(ja.getTimeWindows());
         });
+        sizeAtStart = calcSizeAt(true);
+        sizeAtEnd = calcSizeAt(false);
+    }
+
+    private SizeDimension calcSizeAt(boolean start) {
+        SizeDimension size = SizeDimension.EMPTY;
+        for (JobActivity act : activityList.getAll()) {
+            size = size.add(act.getSize());
+        }
+        if (start) return size.getNegativeDimensions().abs();
+        else return size.getPositiveDimensions();
     }
 
     private void addTimeWindows(Collection<TimeWindow> timeWindows) {
@@ -317,9 +329,17 @@ public abstract class AbstractJob implements Job {
         }
     }
 
+    public SizeDimension getSizeAtStart() {
+        return sizeAtStart;
+    }
+
+    public SizeDimension getSizeAtEnd() {
+        return sizeAtEnd;
+    }
+
     /**
      * Creates the activities.
-     *
+     * <p>
      * <p>
      * This functions contract specifies that the implementation has to call
      * {@linkplain #prepareCaches()} function at the end, after all activities

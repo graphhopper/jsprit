@@ -17,19 +17,18 @@
  */
 package com.graphhopper.jsprit.core.problem.constraint;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Manager that manage hard- and soft constraints, both on route and activity level.
@@ -81,16 +80,16 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         return dependencyTypes;
     }
 
-    public void setDependencyType(String jobId, DependencyType dependencyType){
+    public void setDependencyType(String jobId, DependencyType dependencyType) {
         Job job = vrp.getJobs().get(jobId);
-        if(job != null) {
+        if (job != null) {
             dependencyTypes[job.getIndex()] = dependencyType;
         }
     }
 
-    public DependencyType getDependencyType(String jobId){
+    public DependencyType getDependencyType(String jobId) {
         Job job = vrp.getJobs().get(jobId);
-        if(job != null){
+        if (job != null) {
             return dependencyTypes[job.getIndex()];
         }
         return DependencyType.NO_TYPE;

@@ -17,9 +17,9 @@
  */
 package com.graphhopper.jsprit.core.algorithm.selector;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import java.util.Collection;
 
 
 public class SelectBest implements SolutionSelector {

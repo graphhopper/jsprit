@@ -17,21 +17,17 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Assert;
-import org.junit.Test;
-
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.TestUtils;
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.junit.Assert.*;
 
 public class ShipmentTest {
 
@@ -43,6 +39,15 @@ public class ShipmentTest {
             setDeliveryLocation(TestUtils.loc("foofoo")).setPickupServiceTime(10).setDeliveryServiceTime(20).build();
 
         assertTrue(one != two);
+    }
+
+    @Test
+    public void sizeAtStartAndEndShouldBeCorrect() {
+        Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).addSizeDimension(1, 5).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).
+            setDeliveryLocation(TestUtils.loc("foofoo")).setPickupServiceTime(10).setDeliveryServiceTime(20).build();
+        SizeDimension cap = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build();
+        assertTrue(one.getSizeAtStart().equals(cap));
+        assertTrue(one.getSizeAtEnd().equals(cap));
     }
 
     @Test
@@ -250,23 +255,22 @@ public class ShipmentTest {
 
     @Test
     public void whenAddingMultipleDeliveryTimeWindows_itShouldBeDoneCorrectly() {
-        TimeWindow tw1 = TimeWindow.newInstance(1,2);
-        TimeWindow tw2 = TimeWindow.newInstance(4,5);
+        TimeWindow tw1 = TimeWindow.newInstance(1, 2);
+        TimeWindow tw2 = TimeWindow.newInstance(4, 5);
         Shipment s = Shipment.Builder.newInstance("s").addDeliveryTimeWindow(tw1).addDeliveryTimeWindow(tw2)
             .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
-        assertEquals(s.getDeliveryTimeWindows().size(),2);
-        assertThat(s.getDeliveryTimeWindows(),hasItem(is(tw1)));
-        assertThat(s.getDeliveryTimeWindows(),hasItem(is(tw2)));
+        assertEquals(s.getDeliveryTimeWindows().size(), 2);
+        assertThat(s.getDeliveryTimeWindows(), hasItem(is(tw1)));
+        assertThat(s.getDeliveryTimeWindows(), hasItem(is(tw2)));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void whenAddingMultipleOverlappingDeliveryTimeWindows_itShouldThrowException() {
-        Shipment s = Shipment.Builder.newInstance("s").addDeliveryTimeWindow(1, 3).addDeliveryTimeWindow(2,5)
+        Shipment s = Shipment.Builder.newInstance("s").addDeliveryTimeWindow(1, 3).addDeliveryTimeWindow(2, 5)
             .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
         assertEquals(1.0, s.getDeliveryTimeWindow().getStart(), 0.01);
         assertEquals(2.0, s.getDeliveryTimeWindow().getEnd(), 0.01);
     }
-
 
 
     @Test
@@ -287,23 +291,22 @@ public class ShipmentTest {
 
     @Test
     public void whenAddingMultiplePickupTimeWindows_itShouldBeDoneCorrectly() {
-        TimeWindow tw1 = TimeWindow.newInstance(1,2);
-        TimeWindow tw2 = TimeWindow.newInstance(4,5);
+        TimeWindow tw1 = TimeWindow.newInstance(1, 2);
+        TimeWindow tw2 = TimeWindow.newInstance(4, 5);
         Shipment s = Shipment.Builder.newInstance("s").addPickupTimeWindow(tw1).addPickupTimeWindow(tw2)
             .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
-        assertEquals(s.getPickupTimeWindows().size(),2);
+        assertEquals(s.getPickupTimeWindows().size(), 2);
         assertThat(s.getPickupTimeWindows(), hasItem(is(tw1)));
         assertThat(s.getPickupTimeWindows(), hasItem(is(tw2)));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void whenAddingMultipleOverlappingPickupTimeWindows_itShouldThrowException() {
-        Shipment s = Shipment.Builder.newInstance("s").addPickupTimeWindow(1, 3).addPickupTimeWindow(2,5)
+        Shipment s = Shipment.Builder.newInstance("s").addPickupTimeWindow(1, 3).addPickupTimeWindow(2, 5)
             .setDeliveryLocation(TestUtils.loc("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
         assertEquals(1.0, s.getPickupTimeWindow().getStart(), 0.01);
         assertEquals(2.0, s.getPickupTimeWindow().getEnd(), 0.01);
     }
-
 
 
     @Test(expected = IllegalArgumentException.class)
@@ -391,7 +394,7 @@ public class ShipmentTest {
     }
 
     @Test
-    public void whenSettingPriorities_itShouldBeSetCorrectly(){
+    public void whenSettingPriorities_itShouldBeSetCorrectly() {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .setPriority(1).build();
@@ -399,7 +402,7 @@ public class ShipmentTest {
     }
 
     @Test
-    public void whenSettingPriorities_itShouldBeSetCorrectly2(){
+    public void whenSettingPriorities_itShouldBeSetCorrectly2() {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .setPriority(3).build();
@@ -407,7 +410,7 @@ public class ShipmentTest {
     }
 
     @Test
-    public void whenNotSettingPriorities_defaultShouldBe2(){
+    public void whenNotSettingPriorities_defaultShouldBe2() {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .build();
@@ -415,7 +418,7 @@ public class ShipmentTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenSettingIncorrectPriorities_itShouldThrowException(){
+    public void whenSettingIncorrectPriorities_itShouldThrowException() {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .setPriority(30).build();
@@ -423,7 +426,7 @@ public class ShipmentTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenSettingIncorrectPriorities_itShouldThrowException2(){
+    public void whenSettingIncorrectPriorities_itShouldThrowException2() {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .setPriority(0).build();

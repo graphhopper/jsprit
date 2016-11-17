@@ -23,9 +23,8 @@ import com.graphhopper.jsprit.core.distance.SphericalDistanceCalculator;
 
 /**
  * @author stefan schroeder
- *
  * @deprecated Use instead new {@linkplain DefaultCosts} with
- *             {@link ManhattanDistanceCalculator#getInstance()}
+ * {@link ManhattanDistanceCalculator#getInstance()}
  */
 @Deprecated
 public class GreatCircleCosts extends DefaultCosts {

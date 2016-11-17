@@ -461,7 +461,7 @@ public class Plotter {
     }
 
     private XYSeriesCollection makeSolutionSeries(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) throws NoLocationFoundException {
-        Map<String,Coordinate> coords = makeMap(vrp.getAllLocations());
+        Map<String, Coordinate> coords = makeMap(vrp.getAllLocations());
         XYSeriesCollection coll = new XYSeriesCollection();
         int counter = 1;
         for (VehicleRoute route : routes) {
@@ -487,7 +487,7 @@ public class Plotter {
 
     private Map<String, Coordinate> makeMap(Collection<Location> allLocations) {
         Map<String, Coordinate> coords = new HashMap<String, Coordinate>();
-        for(Location l : allLocations) coords.put(l.getId(),l.getCoordinate());
+        for (Location l : allLocations) coords.put(l.getId(), l.getCoordinate());
         return coords;
     }
 

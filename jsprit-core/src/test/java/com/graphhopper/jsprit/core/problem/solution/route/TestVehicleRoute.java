@@ -17,28 +17,23 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Iterator;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl.NoDriver;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Iterator;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class TestVehicleRoute {

@@ -20,11 +20,9 @@ package com.graphhopper.jsprit.core.problem;
 import java.util.Arrays;
 
 /**
- * SizeDimensionX with an arbitrary number of SizeDimension-dimension.
+ * SizeDimension with an arbitrary number of capacity-dimension.
  * <p>
- * <p>
- * Note that this assumes the the values of each SizeDimension dimension can be
- * added up and subtracted
+ * <p>Note that this assumes the the values of each capacity dimension can be added up and subtracted
  *
  * @author schroeder
  */
@@ -36,23 +34,6 @@ public class CapacityX {
         return cap1.add(cap2);
     }
 
-    /**
-     * Subtracts cap2subtract from cap and returns the resulting SizeDimensionX.
-     *
-     * @param cap
-     *            SizeDimension to be subtracted from
-     * @param cap2subtract
-     *            SizeDimension to subtract
-     * @return new SizeDimension
-     * @throws NullPointerException
-     *             if one of the args is null
-     * @throws IllegalStateException
-     *             if number of SizeDimensionDimensions of cap1 and cap2 are
-     *             different (i.e.
-     *             <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>
-     *             ).
-     * @deprecated Use <code>cap1.subtract(cap2)</code> instead.
-     */
     @Deprecated
     public static CapacityX subtract(CapacityX cap, CapacityX cap2subtract) {
         return cap.subtract(cap2subtract);
@@ -355,9 +336,9 @@ public class CapacityX {
             throw new NullPointerException("SizeDimension must not be null");
         }
         CapacityX res = new CapacityX(
-                        Math.max(getNuOfDimensions(), capToAdd.getNuOfDimensions()));
+            Math.max(getNuOfDimensions(), capToAdd.getNuOfDimensions()));
         for (int i = 0; i < Math.max(getNuOfDimensions(),
-                        capToAdd.getNuOfDimensions()); i++) {
+            capToAdd.getNuOfDimensions()); i++) {
             res.dimensions[i] = get(i) + capToAdd.get(i);
         }
 
@@ -369,9 +350,9 @@ public class CapacityX {
             throw new NullPointerException("SizeDimension must not be null");
         }
         CapacityX res = new CapacityX(
-                        Math.max(getNuOfDimensions(), capToSubstract.getNuOfDimensions()));
+            Math.max(getNuOfDimensions(), capToSubstract.getNuOfDimensions()));
         for (int i = 0; i < Math.max(getNuOfDimensions(),
-                        capToSubstract.getNuOfDimensions()); i++) {
+            capToSubstract.getNuOfDimensions()); i++) {
             res.dimensions[i] = get(i) - capToSubstract.get(i);
         }
         return res;
@@ -397,10 +378,10 @@ public class CapacityX {
         int nuOfDimensions = 0;
         double sumQuotients = 0.0;
         for (int index = 0; index < Math.max(getNuOfDimensions(),
-                        denominator.getNuOfDimensions()); index++) {
+            denominator.getNuOfDimensions()); index++) {
             if (get(index) != 0 && denominator.get(index) == 0) {
                 throw new IllegalArgumentException(
-                                "numerator > 0 and denominator = 0. cannot divide by 0");
+                    "numerator > 0 and denominator = 0. cannot divide by 0");
             } else if (get(index) == 0 && denominator.get(index) == 0) {
                 continue;
             } else {
@@ -413,6 +394,30 @@ public class CapacityX {
         }
         return 0.0;
 
+    }
+
+    public SizeDimension getNegativeDimensions() {
+        SizeDimension res = new SizeDimension(getNuOfDimensions());
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            if (get(i) < 0) {
+                res.dimensions[i] = get(i);
+            } else {
+                res.dimensions[i] = 0;
+            }
+        }
+        return res;
+    }
+
+    public SizeDimension getPositiveDimensions() {
+        SizeDimension res = new SizeDimension(getNuOfDimensions());
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            if (get(i) > 0) {
+                res.dimensions[i] = get(i);
+            } else {
+                res.dimensions[i] = 0;
+            }
+        }
+        return res;
     }
 
 }

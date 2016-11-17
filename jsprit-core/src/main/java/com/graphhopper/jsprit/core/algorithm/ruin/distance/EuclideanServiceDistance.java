@@ -44,7 +44,7 @@ public class EuclideanServiceDistance implements JobDistance {
             }
         } else {
             throw new UnsupportedOperationException(
-                            "currently, this class just works with shipments and services.");
+                "currently, this class just works with shipments and services.");
         }
         return avgCost;
     }

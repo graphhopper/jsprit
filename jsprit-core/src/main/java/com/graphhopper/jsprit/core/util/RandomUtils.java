@@ -18,12 +18,12 @@
 
 package com.graphhopper.jsprit.core.util;
 
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 /**
  * Created by schroeder on 14/01/15.

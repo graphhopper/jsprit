@@ -17,17 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -53,6 +42,16 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 
 public class GeneralJobInsertionWithShipmentsTest {
@@ -120,8 +119,8 @@ public class GeneralJobInsertionWithShipmentsTest {
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         VehicleRoute route = VehicleRoute.emptyRoute();
         List<JobActivity> tourActivities = getTourActivities(shipment);
-        route.setVehicleAndDepartureTime(vehicle,0);
-        add(tourActivities,route,0,0);
+        route.setVehicleAndDepartureTime(vehicle, 0);
+        add(tourActivities, route, 0, 0);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(0.0, iData.getInsertionCost(), 0.05);
@@ -144,8 +143,8 @@ public class GeneralJobInsertionWithShipmentsTest {
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         VehicleRoute route = VehicleRoute.emptyRoute();
         List<JobActivity> tourActivities = getTourActivities(shipment);
-        route.setVehicleAndDepartureTime(vehicle,0);
-        add(tourActivities,route,0,0);
+        route.setVehicleAndDepartureTime(vehicle, 0);
+        add(tourActivities, route, 0, 0);
 
         createInsertionCalculator(insertionContext -> false);
 
@@ -165,9 +164,9 @@ public class GeneralJobInsertionWithShipmentsTest {
         List<JobActivity> shipmentActivities = getTourActivities(shipment);
         List<JobActivity> shipment2Activities = getTourActivities(shipment2);
 
-        route.setVehicleAndDepartureTime(vehicle,0d);
-        add(shipmentActivities,route,0,0);
-        add(shipment2Activities,route,1,2);
+        route.setVehicleAndDepartureTime(vehicle, 0d);
+        add(shipmentActivities, route, 0, 0);
+        add(shipment2Activities, route, 1, 2);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(0.0, iData.getInsertionCost(), 0.05);
@@ -185,9 +184,9 @@ public class GeneralJobInsertionWithShipmentsTest {
         List<JobActivity> shipment2Activities = getTourActivities(shipment2);
         VehicleRoute route = VehicleRoute.emptyRoute();
 
-        route.setVehicleAndDepartureTime(vehicle,0d);
-        add(shipmentActivities,route,0,0);
-        add(shipment2Activities,route,1,2);
+        route.setVehicleAndDepartureTime(vehicle, 0d);
+        add(shipmentActivities, route, 0, 0);
+        add(shipment2Activities, route, 1, 2);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(2.0, iData.getInsertionCost(), 0.05);
@@ -207,8 +206,8 @@ public class GeneralJobInsertionWithShipmentsTest {
         VehicleRoute route = VehicleRoute.emptyRoute();
         route.setVehicleAndDepartureTime(vehicle, 0.0);
 
-        add(vrp,route,shipment,0,0);
-        add(vrp,route,shipment2,1,2);
+        add(vrp, route, shipment, 0, 0);
+        add(vrp, route, shipment2, 1, 2);
 
         StateManager stateManager = new StateManager(vrp);
         stateManager.updateLoadStates();
@@ -236,8 +235,8 @@ public class GeneralJobInsertionWithShipmentsTest {
         VehicleRoute route = VehicleRoute.emptyRoute();
         route.setVehicleAndDepartureTime(vehicle, 0.0);
 
-        add(vrp,route,shipment,0,0);
-        add(vrp,route,shipment2,1,2);
+        add(vrp, route, shipment, 0, 0);
+        add(vrp, route, shipment2, 1, 2);
 
         StateManager stateManager = new StateManager(vrp);
         stateManager.updateLoadStates();

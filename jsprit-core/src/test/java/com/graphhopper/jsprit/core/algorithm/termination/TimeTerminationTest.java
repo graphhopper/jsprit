@@ -18,9 +18,8 @@
 
 package com.graphhopper.jsprit.core.algorithm.termination;
 
-import org.junit.Test;
-
 import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * Created by schroeder on 16.12.14.

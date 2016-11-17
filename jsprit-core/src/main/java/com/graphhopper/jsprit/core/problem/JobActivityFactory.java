@@ -18,10 +18,10 @@
 
 package com.graphhopper.jsprit.core.problem;
 
-import java.util.List;
-
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+
+import java.util.List;
 
 /**
  * JobActivityFactory that creates the activities to the specified job.

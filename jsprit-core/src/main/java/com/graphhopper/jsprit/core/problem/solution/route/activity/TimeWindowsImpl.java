@@ -50,15 +50,15 @@ public class TimeWindowsImpl implements TimeWindows {
 
     private Collection<TimeWindow> timeWindows = new ArrayList<TimeWindow>();
 
-    public void add(TimeWindow timeWindow){
-        for(TimeWindow tw : timeWindows){
-            if(timeWindow.getStart() > tw.getStart() && timeWindow.getStart() < tw.getEnd()){
+    public void add(TimeWindow timeWindow) {
+        for (TimeWindow tw : timeWindows) {
+            if (timeWindow.getStart() > tw.getStart() && timeWindow.getStart() < tw.getEnd()) {
                 throw new IllegalArgumentException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
             }
-            if(timeWindow.getEnd() > tw.getStart() && timeWindow.getEnd() < tw.getEnd()){
+            if (timeWindow.getEnd() > tw.getStart() && timeWindow.getEnd() < tw.getEnd()) {
                 throw new IllegalArgumentException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
             }
-            if(timeWindow.getStart() <= tw.getStart() && timeWindow.getEnd() >= tw.getEnd()){
+            if (timeWindow.getStart() <= tw.getStart() && timeWindow.getEnd() >= tw.getEnd()) {
                 throw new IllegalArgumentException("time-windows cannot overlap each other. overlap: " + tw + ", " + timeWindow);
             }
         }

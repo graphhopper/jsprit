@@ -17,30 +17,16 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.SimpleJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.Break;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivities;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.job.*;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+
+import java.util.*;
 
 /**
  * Contains the tour, i.e. a number of activities, a vehicle servicing the tour and a driver.
@@ -188,7 +174,7 @@ public class VehicleRoute {
          * @throws IllegalArgumentException if service is null
          */
         public Builder addService(Service service) {
-            return addService(service,service.getTimeWindow());
+            return addService(service, service.getTimeWindow());
         }
 
         public Builder addService(Service service, TimeWindow timeWindow) {
@@ -214,7 +200,7 @@ public class VehicleRoute {
             if (currentbreak == null) {
                 throw new IllegalArgumentException("break must not be null");
             }
-            return addService(currentbreak,timeWindow);
+            return addService(currentbreak, timeWindow);
         }
 
         /**
@@ -234,7 +220,7 @@ public class VehicleRoute {
             if (pickup == null) {
                 throw new IllegalArgumentException("pickup must not be null");
             }
-            return addService(pickup,timeWindow);
+            return addService(pickup, timeWindow);
         }
 
         /**
@@ -254,7 +240,7 @@ public class VehicleRoute {
             if (delivery == null) {
                 throw new IllegalArgumentException("delivery must not be null");
             }
-            return addService(delivery,timeWindow);
+            return addService(delivery, timeWindow);
         }
 
         /**
@@ -290,7 +276,7 @@ public class VehicleRoute {
          * @throws IllegalArgumentException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
          */
         public Builder addDelivery(Shipment shipment) {
-            return addDelivery(shipment,shipment.getDeliveryTimeWindow());
+            return addDelivery(shipment, shipment.getDeliveryTimeWindow());
         }
 
         public Builder addDelivery(Shipment shipment, TimeWindow deliveryTimeWindow) {

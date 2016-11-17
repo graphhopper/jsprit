@@ -17,10 +17,6 @@
  */
 package com.graphhopper.jsprit.examples;
 
-import java.time.Duration;
-import java.time.LocalTime;
-import java.util.Collection;
-
 import com.graphhopper.jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter.Label;
@@ -36,6 +32,10 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 import com.graphhopper.jsprit.util.Examples;
+
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.Collection;
 
 
 public class PickupAndDeliveryExample {

@@ -18,7 +18,6 @@
 
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.algorithm.FirstCustomJobWithMultipleActivitiesExample;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
@@ -48,7 +47,7 @@ public class CustomJobTest {
                 super(id);
             }
 
-            public CustomJob.BuilderBase<T,B> addPickup(Location location, SizeDimension capacity){
+            public CustomJob.BuilderBase<T, B> addPickup(Location location, SizeDimension capacity) {
                 locs.add(location);
                 cap.add(capacity);
                 return this;
@@ -58,9 +57,11 @@ public class CustomJobTest {
                 return locs;
             }
 
-            public List<SizeDimension> getCaps() { return cap; }
+            public List<SizeDimension> getCaps() {
+                return cap;
+            }
 
-            protected void validate(){
+            protected void validate() {
 
             }
         }
@@ -81,6 +82,7 @@ public class CustomJobTest {
             }
 
         }
+
         /**
          * Builder based constructor.
          *
@@ -101,21 +103,21 @@ public class CustomJobTest {
         protected void createActivities(JobBuilder<? extends AbstractJob, ?> jobBuilder) {
             CustomJob.Builder builder = (CustomJob.Builder) jobBuilder;
             JobActivityList list = new SequentialJobActivityList(this);
-            for(int i=0;i<builder.getLocs().size();i++){
-                list.addActivity(new PickupActivityNEW(this,"pick",builder.getLocs().get(i),0,builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
+            for (int i = 0; i < builder.getLocs().size(); i++) {
+                list.addActivity(new PickupActivityNEW(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
             }
             setActivities(list);
         }
     }
 
     @Test
-    public void whenCreatingANewJobWithThreeDistinctActivities_jobShouldContainActivities(){
+    public void whenCreatingANewJobWithThreeDistinctActivities_jobShouldContainActivities() {
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10,0),SizeDimension.Builder.newInstance().addDimension(0,1).build())
-            .addPickup(Location.newInstance(5,0),SizeDimension.Builder.newInstance().addDimension(0,2).build())
-            .addPickup(Location.newInstance(20,0),SizeDimension.Builder.newInstance().addDimension(0,1).build())
+            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+            .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .build();
-        Assert.assertEquals(3,cj.getActivityList().size());
+        Assert.assertEquals(3, cj.getActivityList().size());
 
     }
 

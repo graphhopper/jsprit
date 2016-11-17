@@ -18,19 +18,14 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.util.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Created by schroeder on 07/01/15.
@@ -55,7 +50,7 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
 
         @Override
         public boolean hasNext() {
-            if(index < noItems && index < itemArray.length) {
+            if (index < noItems && index < itemArray.length) {
                 return true;
             }
             return false;
@@ -93,15 +88,15 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         this.vrp = vrp;
         this.jobDistance = jobDistance;
         this.capacity = capacity;
-        neighbors = new int[vrp.getJobsInclusiveInitialJobsInRoutes().size()+1][capacity];
-        jobs = new Job[vrp.getJobsInclusiveInitialJobsInRoutes().size()+1];
+        neighbors = new int[vrp.getJobsInclusiveInitialJobsInRoutes().size() + 1][capacity];
+        jobs = new Job[vrp.getJobsInclusiveInitialJobsInRoutes().size() + 1];
         logger.debug("initialize {}", this);
     }
 
     @Override
     public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo) {
-        int[] neighbors = this.neighbors[neighborTo.getIndex()-1];
-        return new ArrayIterator(nNeighbors,neighbors,jobs);
+        int[] neighbors = this.neighbors[neighborTo.getIndex() - 1];
+        return new ArrayIterator(nNeighbors, neighbors, jobs);
     }
 
     @Override
@@ -130,27 +125,26 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
                 ReferencedJob referencedJob = new ReferencedJob(job_j, distance);
                 jobList.add(referencedJob);
             }
-            Collections.sort(jobList,getComparator());
+            Collections.sort(jobList, getComparator());
             int[] jobIndices = new int[capacity];
-            for(int index=0;index<capacity;index++){
+            for (int index = 0; index < capacity; index++) {
                 jobIndices[index] = jobList.get(index).getJob().getIndex();
             }
-            neighbors[job_i.getIndex()-1] = jobIndices;
+            neighbors[job_i.getIndex() - 1] = jobIndices;
         }
         stopWatch.stop();
         logger.debug("pre-processing comp-time: {}", stopWatch);
     }
 
-    private Comparator<ReferencedJob> getComparator(){
+    private Comparator<ReferencedJob> getComparator() {
         return new Comparator<ReferencedJob>() {
             @Override
             public int compare(ReferencedJob o1, ReferencedJob o2) {
                 if (o1.getDistance() < o2.getDistance()) {
                     return -1;
-                } else if (o1.getDistance() > o2.getDistance()){
+                } else if (o1.getDistance() > o2.getDistance()) {
                     return 1;
-                }
-                else return 0;
+                } else return 0;
             }
         };
     }

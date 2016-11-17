@@ -61,7 +61,7 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
         double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         double newAct_arrTime = depTimeAtPrevAct + tp_time_prevAct_newAct;
-        double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct,newAct_arrTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double newAct_endTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
         //open routes
         if (nextAct instanceof End) {

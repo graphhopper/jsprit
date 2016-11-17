@@ -18,20 +18,8 @@
 
 package com.graphhopper.jsprit.core.analysis;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.algorithm.VariablePlusFixedSolutionCostCalculatorFactory;
-import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
-import com.graphhopper.jsprit.core.algorithm.state.StateId;
-import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
-import com.graphhopper.jsprit.core.algorithm.state.UpdateActivityTimes;
-import com.graphhopper.jsprit.core.algorithm.state.UpdateVariableCosts;
+import com.graphhopper.jsprit.core.algorithm.state.*;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
@@ -40,19 +28,14 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates a set of statistics for a solution.
@@ -70,8 +53,6 @@ public class SolutionAnalyser {
     private final static String LOAD_PICKED = "load-picked";
 
     private final static String LOAD_DELIVERED = "load-delivered";
-
-
 
 
     private static class LoadAndActivityCounter implements StateUpdater, ActivityVisitor {
@@ -362,7 +343,7 @@ public class SolutionAnalyser {
         }
 
         private double distance(TourActivity activity) {
-            return distanceCalculator.getDistance(prevAct.getLocation(), activity.getLocation(),prevActDeparture, route.getVehicle());
+            return distanceCalculator.getDistance(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getVehicle());
         }
 
         @Override
@@ -411,7 +392,7 @@ public class SolutionAnalyser {
 
         @Override
         public void finish() {
-            double distance = distanceCalculator.getDistance(prevAct.getLocation(), route.getEnd().getLocation(),prevAct.getEndTime(), route.getVehicle());
+            double distance = distanceCalculator.getDistance(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getVehicle());
             sum_distance += distance;
             stateManager.putRouteState(route, distance_id, sum_distance);
         }
@@ -526,7 +507,6 @@ public class SolutionAnalyser {
      * @param vrp
      * @param solution
      * @param distanceCalculator
-     *
      */
     public SolutionAnalyser(VehicleRoutingProblem vrp, VehicleRoutingProblemSolution solution, TransportDistance distanceCalculator) {
         this.vrp = vrp;
@@ -584,7 +564,7 @@ public class SolutionAnalyser {
 
     private void recalculateSolutionIndicators() {
         for (VehicleRoute route : solution.getRoutes()) {
-            maxOperationTime = Math.max(maxOperationTime,getOperationTime(route));
+            maxOperationTime = Math.max(maxOperationTime, getOperationTime(route));
             tp_distance += getDistance(route);
             tp_time += getTransportTime(route);
             waiting_time += getWaitingTime(route);
@@ -795,7 +775,7 @@ public class SolutionAnalyser {
         }
         SizeDimension maxLoad = getMaxLoad(route);
         return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
-                        maxLoad.subtract(route.getVehicle().getType().getCapacityDimensions()));
+            maxLoad.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**
@@ -810,7 +790,7 @@ public class SolutionAnalyser {
         }
         SizeDimension atBeginning = getLoadAtBeginning(route);
         return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
-                        atBeginning.subtract(route.getVehicle().getType().getCapacityDimensions()));
+            atBeginning.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**
@@ -825,7 +805,7 @@ public class SolutionAnalyser {
         }
         SizeDimension atEnd = getLoadAtEnd(route);
         return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
-                        atEnd.subtract(route.getVehicle().getType().getCapacityDimensions()));
+            atEnd.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
 
@@ -844,7 +824,7 @@ public class SolutionAnalyser {
         }
         SizeDimension afterAct = getLoadRightAfterActivity(activity, route);
         return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
-                        afterAct.subtract(route.getVehicle().getType().getCapacityDimensions()));
+            afterAct.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**
@@ -1295,7 +1275,9 @@ public class SolutionAnalyser {
         return operation_time;
     }
 
-    public Double getMaxOperationTime() { return maxOperationTime; }
+    public Double getMaxOperationTime() {
+        return maxOperationTime;
+    }
 
     /**
      * @return total waiting time for specified solution

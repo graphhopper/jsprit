@@ -17,12 +17,12 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 
 public class TestRefs {

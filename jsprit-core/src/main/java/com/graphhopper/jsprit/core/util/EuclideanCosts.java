@@ -25,9 +25,8 @@ import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 
 /**
  * @author stefan schroeder
- *
  * @deprecated Use instead new {@linkplain DefaultCosts} with
- *             {@link EuclideanDistanceCalculator#getInstance()}
+ * {@link EuclideanDistanceCalculator#getInstance()}
  */
 
 @Deprecated

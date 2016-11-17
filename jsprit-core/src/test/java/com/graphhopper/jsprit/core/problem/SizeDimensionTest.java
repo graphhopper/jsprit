@@ -26,7 +26,25 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class CapacityTest {
+public class SizeDimensionTest {
+
+    @Test
+    public void getNegativeShouldReturnCorrectCapacity() {
+        SizeDimension cap = SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, -3).build();
+        SizeDimension neg = cap.getNegativeDimensions();
+        Assert.assertEquals(2, neg.getNuOfDimensions());
+        Assert.assertEquals(0, neg.get(0));
+        Assert.assertEquals(-3, neg.get(1));
+    }
+
+    @Test
+    public void getPositiveShouldReturnCorrectCapacity() {
+        SizeDimension cap = SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, -3).build();
+        SizeDimension pos = cap.getPositiveDimensions();
+        Assert.assertEquals(2, pos.getNuOfDimensions());
+        Assert.assertEquals(2, pos.get(0));
+        Assert.assertEquals(0, pos.get(1));
+    }
 
     @Test
     public void whenSettingSimplyOneCapDimension_nuOfDimensionMustBeCorrect() {
@@ -373,16 +391,23 @@ public class CapacityTest {
     }
 
     @Test
-    public void shouldBeEqual(){
+    public void shouldBeEqual() {
         SizeDimension cap1 = SizeDimension.Builder.newInstance().build();
         SizeDimension cap2 = SizeDimension.Builder.newInstance().build();
         Assert.assertTrue(cap1.equals(cap2));
     }
 
     @Test
-    public void shouldBeEqual2(){
-        SizeDimension cap1 = SizeDimension.Builder.newInstance().addDimension(0,10).addDimension(1,100).addDimension(2,1000).build();
-        SizeDimension cap2 = SizeDimension.Builder.newInstance().addDimension(0,10).addDimension(2, 1000).addDimension(1,100).build();
+    public void shouldBeEqual2() {
+        SizeDimension cap1 = SizeDimension.Builder.newInstance().addDimension(0, 10).addDimension(1, 100).addDimension(2, 1000).build();
+        SizeDimension cap2 = SizeDimension.Builder.newInstance().addDimension(0, 10).addDimension(2, 1000).addDimension(1, 100).build();
         Assert.assertTrue(cap1.equals(cap2));
+    }
+
+    @Test
+    public void legacyTest() {
+        Capacity.Builder builder = Capacity.Builder.newInstance();
+        Assert.assertTrue(builder instanceof SizeDimension.Builder);
+        Assert.assertTrue(builder.build() instanceof SizeDimension);
     }
 }

@@ -17,14 +17,12 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.Location;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.problem.Location;
+import static org.junit.Assert.*;
 
 public class DeliveryTest {
 
@@ -43,6 +41,16 @@ public class DeliveryTest {
         assertEquals(2, one.getSize().get(0));
         assertEquals(4, one.getSize().get(1));
 
+    }
+
+    @Test
+    public void sizeAtStartAndEndShouldBeCorrect() {
+        Delivery one = new Delivery.Builder("s").setLocation(Location.newInstance("foofoo"))
+            .addSizeDimension(0, 2)
+            .addSizeDimension(1, 4)
+            .build();
+        assertTrue(one.getSizeAtStart().equals(one.getSize()));
+        assertTrue(one.getSizeAtEnd().equals(SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build()));
     }
 
     @Test
@@ -93,14 +101,14 @@ public class DeliveryTest {
     }
 
     @Test
-    public void whenSettingPriorities_itShouldBeSetCorrectly(){
+    public void whenSettingPriorities_itShouldBeSetCorrectly() {
         Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
             .setPriority(3).build();
         Assert.assertEquals(3, s.getPriority());
     }
 
     @Test
-    public void whenNotSettingPriorities_defaultShouldBe(){
+    public void whenNotSettingPriorities_defaultShouldBe() {
         Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
             .build();
         Assert.assertEquals(2, s.getPriority());

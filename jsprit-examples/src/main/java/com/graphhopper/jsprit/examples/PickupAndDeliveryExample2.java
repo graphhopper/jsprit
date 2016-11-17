@@ -89,7 +89,7 @@ public class PickupAndDeliveryExample2 {
         SolutionPrinter.print(solution);
 
 		/*
-		 * Plot solution.
+         * Plot solution.
 		 */
 //		SolutionPlotter.plotSolutionAsPNG(vrp, solution, "output/pd_solomon_r101_solution.png","pd_r101");
         Plotter plotter = new Plotter(vrp, solution);

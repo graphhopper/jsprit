@@ -19,12 +19,11 @@
 package com.graphhopper.jsprit.core.problem.vehicle;
 
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import com.graphhopper.jsprit.core.problem.Location;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.problem.Location;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class VehicleTypeKeyTest {
 

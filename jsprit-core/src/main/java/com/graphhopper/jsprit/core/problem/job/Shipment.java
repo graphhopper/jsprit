@@ -17,14 +17,14 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
+
+import java.util.Collection;
 
 
 /**
@@ -60,7 +60,7 @@ public class Shipment extends AbstractJob {
      * @author schroeder
      */
     public static abstract class BuilderBase<T extends Shipment, B extends BuilderBase<T, B>>
-    extends JobBuilder<T, B> {
+        extends JobBuilder<T, B> {
 
         private double pickupServiceTime = 0.0;
 
@@ -77,9 +77,8 @@ public class Shipment extends AbstractJob {
         /**
          * Returns new instance of this builder.
          *
-         * @param id
-         *            the id of the shipment which must be a unique identifier
-         *            among all jobs
+         * @param id the id of the shipment which must be a unique identifier
+         *           among all jobs
          * @return the builder
          */
 
@@ -92,8 +91,7 @@ public class Shipment extends AbstractJob {
         /**
          * Sets pickup location.
          *
-         * @param pickupLocation
-         *            pickup location
+         * @param pickupLocation pickup location
          * @return builder
          */
         @SuppressWarnings("unchecked")
@@ -109,12 +107,10 @@ public class Shipment extends AbstractJob {
          * ServiceTime is intended to be the time the implied activity takes at
          * the pickup-location.
          *
-         * @param serviceTime
-         *            the service time / duration the pickup of the associated
-         *            shipment takes
+         * @param serviceTime the service time / duration the pickup of the associated
+         *                    shipment takes
          * @return builder
-         * @throws IllegalArgumentException
-         *             if servicTime < 0.0
+         * @throws IllegalArgumentException if servicTime < 0.0
          */
         @SuppressWarnings("unchecked")
         public B setPickupServiceTime(double serviceTime) {
@@ -132,12 +128,10 @@ public class Shipment extends AbstractJob {
          * <p>
          * By default timeWindow is [0.0, Double.MAX_VALUE}
          *
-         * @param timeWindow
-         *            the time window within the pickup operation/activity can
-         *            START
+         * @param timeWindow the time window within the pickup operation/activity can
+         *                   START
          * @return builder
-         * @throws IllegalArgumentException
-         *             if timeWindow is null
+         * @throws IllegalArgumentException if timeWindow is null
          */
         @SuppressWarnings("unchecked")
         public B setPickupTimeWindow(TimeWindow timeWindow) {
@@ -150,12 +144,10 @@ public class Shipment extends AbstractJob {
         }
 
 
-
         /**
          * Sets delivery location.
          *
-         * @param deliveryLocation
-         *            delivery location
+         * @param deliveryLocation delivery location
          * @return builder
          */
         @SuppressWarnings("unchecked")
@@ -171,11 +163,9 @@ public class Shipment extends AbstractJob {
          * ServiceTime is intended to be the time the implied activity takes at
          * the delivery-location.
          *
-         * @param deliveryServiceTime
-         *            the service time / duration of shipment's delivery
+         * @param deliveryServiceTime the service time / duration of shipment's delivery
          * @return builder
-         * @throws IllegalArgumentException
-         *             if serviceTime < 0.0
+         * @throws IllegalArgumentException if serviceTime < 0.0
          */
         @SuppressWarnings("unchecked")
         public B setDeliveryServiceTime(double deliveryServiceTime) {
@@ -193,12 +183,10 @@ public class Shipment extends AbstractJob {
          * <p>
          * By default timeWindow is [0.0, Double.MAX_VALUE}
          *
-         * @param timeWindow
-         *            the time window within the associated delivery is allowed
-         *            to START
+         * @param timeWindow the time window within the associated delivery is allowed
+         *                   to START
          * @return builder
-         * @throws IllegalArgumentException
-         *             if timeWindow is null
+         * @throws IllegalArgumentException if timeWindow is null
          */
         @SuppressWarnings("unchecked")
         public B setDeliveryTimeWindow(TimeWindow timeWindow) {
@@ -321,12 +309,12 @@ public class Shipment extends AbstractJob {
 
     public PickupShipmentDEPRECATED getPickupActivity() {
         return (PickupShipmentDEPRECATED) getActivityList().findByType(PickupShipmentDEPRECATED.NAME)
-                        .get();
+            .get();
     }
 
     public DeliverShipmentDEPRECATED getDeliveryActivity() {
         return (DeliverShipmentDEPRECATED) getActivityList().findByType(DeliverShipmentDEPRECATED.NAME)
-                        .get();
+            .get();
     }
 
     // =================== DEPRECATED GETTERS

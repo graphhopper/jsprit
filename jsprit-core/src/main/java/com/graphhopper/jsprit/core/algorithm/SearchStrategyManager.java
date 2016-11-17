@@ -17,19 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyListener;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 
 public class SearchStrategyManager {

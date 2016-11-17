@@ -17,9 +17,9 @@
  */
 package com.graphhopper.jsprit.core.util;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import java.util.Collection;
 
 
 public class Solutions {

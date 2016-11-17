@@ -26,12 +26,7 @@ import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmLis
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
-import com.graphhopper.jsprit.core.algorithm.ruin.ClusterRuinStrategyFactory;
-import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoods;
-import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoodsFactory;
-import com.graphhopper.jsprit.core.algorithm.ruin.RadialRuinStrategyFactory;
-import com.graphhopper.jsprit.core.algorithm.ruin.RandomRuinStrategyFactory;
-import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
+import com.graphhopper.jsprit.core.algorithm.ruin.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
@@ -589,7 +584,7 @@ public class VehicleRoutingAlgorithms {
         else costCalculator = solutionCostCalculator;
 
         PrettyAlgorithmBuilder prettyAlgorithmBuilder = PrettyAlgorithmBuilder.newInstance(vrp, vehicleFleetManager, stateManager, constraintManager);
-        if(addCoreConstraints)
+        if (addCoreConstraints)
             prettyAlgorithmBuilder.addCoreStateAndConstraintStuff();
         //construct initial solution creator
         final InsertionStrategy initialInsertionStrategy = createInitialSolution(config, vrp, vehicleFleetManager, stateManager, algorithmListeners, definedClasses, executorService, nuOfThreads, costCalculator, constraintManager, addDefaultCostCalculators);
@@ -871,10 +866,12 @@ public class VehicleRoutingAlgorithms {
                 ruin = getRadialRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin, jobDistance);
             } else if (ruin_name.equals("clusterRuin")) {
                 String initialNumberJobsToRemoveString = moduleConfig.getString("ruin.initRemoveJobs");
-                if (initialNumberJobsToRemoveString == null) throw new IllegalStateException("module.ruin.initRemoveJobs is missing.");
+                if (initialNumberJobsToRemoveString == null)
+                    throw new IllegalStateException("module.ruin.initRemoveJobs is missing.");
                 int initialNumberJobsToRemove = Integer.valueOf(initialNumberJobsToRemoveString);
-            	ruin = getClusterRuin(vrp, routeStates, definedClasses, ruinKey, initialNumberJobsToRemove);
-            } else throw new IllegalStateException("ruin[@name] " + ruin_name + " is not known. Use either randomRuin or radialRuin.");
+                ruin = getClusterRuin(vrp, routeStates, definedClasses, ruinKey, initialNumberJobsToRemove);
+            } else
+                throw new IllegalStateException("ruin[@name] " + ruin_name + " is not known. Use either randomRuin or radialRuin.");
 
             String insertionName = moduleConfig.getString("insertion[@name]");
             if (insertionName == null)
@@ -916,12 +913,12 @@ public class VehicleRoutingAlgorithms {
     }
 
     private static RuinStrategy getClusterRuin(final VehicleRoutingProblem vrp, final StateManager routeStates, TypedMap definedClasses, ModKey modKey, int initialNumberJobsToRemove) {
-    	JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new DefaultJobDistance(vrp.getTransportCosts()));
-    	RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
+        JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new DefaultJobDistance(vrp.getTransportCosts()));
+        RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
         RuinStrategy ruin = definedClasses.get(stratKey);
         if (ruin == null) {
-        	ruin = new ClusterRuinStrategyFactory(initialNumberJobsToRemove, jobNeighborhoods).createStrategy(vrp);
-        	definedClasses.put(stratKey, ruin);
+            ruin = new ClusterRuinStrategyFactory(initialNumberJobsToRemove, jobNeighborhoods).createStrategy(vrp);
+            definedClasses.put(stratKey, ruin);
         }
         return ruin;
     }

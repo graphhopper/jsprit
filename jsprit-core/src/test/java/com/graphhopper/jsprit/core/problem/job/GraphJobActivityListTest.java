@@ -1,18 +1,17 @@
 package com.graphhopper.jsprit.core.problem.job;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GraphJobActivityListTest {
 

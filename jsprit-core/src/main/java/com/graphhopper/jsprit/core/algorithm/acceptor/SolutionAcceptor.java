@@ -18,9 +18,9 @@
 
 package com.graphhopper.jsprit.core.algorithm.acceptor;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import java.util.Collection;
 
 
 /**

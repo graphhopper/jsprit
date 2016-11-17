@@ -16,15 +16,6 @@
  * limitations under the License.
  */
 package com.graphhopper.jsprit.core.algorithm;
-import static org.junit.Assert.assertEquals;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
-
-import org.junit.Test;
 
 import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
@@ -37,6 +28,15 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
+import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_withTimeAndDistanceCosts_IT {
@@ -92,7 +92,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_withTimeAndD
     }
 
 
-    private void readDemandQuantities(VehicleRoutingProblem.Builder vrpBuilder) throws  IOException {
+    private void readDemandQuantities(VehicleRoutingProblem.Builder vrpBuilder) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("refuseCollectionExample_Quantities")));
         String line = null;
         boolean firstLine = true;
@@ -108,7 +108,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_withTimeAndD
             Service service = new Service.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
                 .setLocation(Location.newInstance(lineTokens[0])).build();
             /*
-			 * and add it to problem
+             * and add it to problem
 			 */
             vrpBuilder.addJob(service);
         }

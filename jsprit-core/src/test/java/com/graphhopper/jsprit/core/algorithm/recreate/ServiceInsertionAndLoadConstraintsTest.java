@@ -17,16 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
@@ -51,6 +41,14 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 
 public class ServiceInsertionAndLoadConstraintsTest {
@@ -125,7 +123,7 @@ public class ServiceInsertionAndLoadConstraintsTest {
         VehicleRoute route = VehicleRoute.emptyRoute();
         route.setVehicleAndDepartureTime(vehicle, 0.0);
 
-        route.getTourActivities().addActivity(0,vrp.copyAndGetActivities(delivery).get(0));
+        route.getTourActivities().addActivity(0, vrp.copyAndGetActivities(delivery).get(0));
 
         JobActivityFactory activityFactory = new CopyJobActivityFactory();
 

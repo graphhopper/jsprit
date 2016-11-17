@@ -17,19 +17,18 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 
 public class SearchStrategy {

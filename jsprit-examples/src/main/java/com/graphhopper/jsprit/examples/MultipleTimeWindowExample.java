@@ -17,8 +17,6 @@
  */
 package com.graphhopper.jsprit.examples;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
@@ -34,6 +32,8 @@ import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.DefaultCosts;
 import com.graphhopper.jsprit.core.util.Solutions;
 
+import java.util.Collection;
+
 
 public class MultipleTimeWindowExample {
 
@@ -46,7 +46,7 @@ public class MultipleTimeWindowExample {
          */
         final int WEIGHT_INDEX = 0;
         VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType")
-                .addCapacityDimension(WEIGHT_INDEX, 10).setCostPerWaitingTime(1.);
+            .addCapacityDimension(WEIGHT_INDEX, 10).setCostPerWaitingTime(1.);
         VehicleType vehicleType = vehicleTypeBuilder.build();
 
         /*
@@ -61,39 +61,39 @@ public class MultipleTimeWindowExample {
          * build services at the required locations, each with a capacity-demand of 1.
          */
         Service service1 = new Service.Builder("1")
-                .addTimeWindow(50, 100)
-                .addTimeWindow(20, 35)
-                .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(10, 0)).build();
+            .addTimeWindow(50, 100)
+            .addTimeWindow(20, 35)
+            .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(10, 0)).build();
 
         Service service2 = new Service.Builder("2")
-                .addSizeDimension(WEIGHT_INDEX, 1)
+            .addSizeDimension(WEIGHT_INDEX, 1)
 //            .setServiceTime(10)
-                .setLocation(Location.newInstance(20, 0)).setServiceTime(10).build();
+            .setLocation(Location.newInstance(20, 0)).setServiceTime(10).build();
 
         Service service3 = new Service.Builder("3")
-                .addTimeWindow(5, 10)
-                .addTimeWindow(35, 50)
-                .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(30, 0)).build();
+            .addTimeWindow(5, 10)
+            .addTimeWindow(35, 50)
+            .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(30, 0)).build();
 
         Service service4 = new Service.Builder("4")
 //            .addTimeWindow(5,10)
-                .addTimeWindow(20, 40)
-                .addTimeWindow(45, 80)
-                .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(40, 0)).build();
+            .addTimeWindow(20, 40)
+            .addTimeWindow(45, 80)
+            .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(40, 0)).build();
 
         Service service5 = new Service.Builder("5")
-                .addTimeWindow(5, 10)
-                .addTimeWindow(20, 40)
-                .addTimeWindow(60, 100)
-                .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(20, 0)).build();
+            .addTimeWindow(5, 10)
+            .addTimeWindow(20, 40)
+            .addTimeWindow(60, 100)
+            .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(20, 0)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(vehicle);
         vrpBuilder.addJob(service1).addJob(service2)
-                .addJob(service3)
-                .addJob(service4)
-                .addJob(service5);
+            .addJob(service3)
+            .addJob(service4)
+            .addJob(service5);
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         vrpBuilder.setRoutingCost(new DefaultCosts(ManhattanDistanceCalculator.getInstance()));
         VehicleRoutingProblem problem = vrpBuilder.build();

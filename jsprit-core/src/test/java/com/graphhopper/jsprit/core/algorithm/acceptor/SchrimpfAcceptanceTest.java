@@ -17,20 +17,19 @@
  */
 package com.graphhopper.jsprit.core.algorithm.acceptor;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SchrimpfAcceptanceTest {
 

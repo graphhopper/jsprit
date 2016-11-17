@@ -1,22 +1,21 @@
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.solution.route.activity.InternalActivityMarker;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.graphhopper.jsprit.core.problem.solution.route.activity.InternalActivityMarker;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-
 /**
  * Abstract ancestor of the container implementations for activities of an {@linkplain AbstractJob}.
- *
+ * <p>
  * <p>
  * It provides functions to query all, the preceding or subsequent activities.
  * </p>
  *
  * @author balage
- *
  */
 public abstract class JobActivityList {
 
@@ -39,8 +38,7 @@ public abstract class JobActivityList {
     /**
      * Adds an activity to the list.
      *
-     * @param activity
-     *            The activity to insert.
+     * @param activity The activity to insert.
      */
     public abstract void addActivity(JobActivity activity);
 
@@ -48,8 +46,7 @@ public abstract class JobActivityList {
     /**
      * Validates that an activity could be inserted to the queue.
      *
-     * @param activity
-     *            The activity to insert.
+     * @param activity The activity to insert.
      */
     protected void validateActivity(JobActivity activity) {
         // Internal activities can be inserted only when the job itself is internal
@@ -75,8 +72,7 @@ public abstract class JobActivityList {
     /**
      * Returns all the activities to be done before the <code>activity</code>.
      *
-     * @param activity
-     *            The activity to compare to.
+     * @param activity The activity to compare to.
      * @return The list of the preceding activities.
      */
     public abstract Set<JobActivity> getPreceding(JobActivity activity);
@@ -84,8 +80,7 @@ public abstract class JobActivityList {
     /**
      * Returns all the activities to be done after the <code>activity</code>.
      *
-     * @param activity
-     *            The activity to compare to.
+     * @param activity The activity to compare to.
      * @return The list of the subsequent activities.
      */
     public abstract Set<JobActivity> getSubsequent(JobActivity activity);

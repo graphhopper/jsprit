@@ -1,10 +1,10 @@
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 
 /**
  * Simple activity list implementation.
@@ -13,7 +13,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
  * </p>
  *
  * @author balage
- *
  */
 public abstract class AbstractListBackedJobActivityList extends JobActivityList {
 
@@ -50,11 +49,9 @@ public abstract class AbstractListBackedJobActivityList extends JobActivityList 
     }
 
     /**
-     * @param activity
-     *            The activity to be found.
+     * @param activity The activity to be found.
      * @return The index of the activity in the sequential row.
-     * @throws IllegalArgumentException
-     *             When the activity is not in the queue.
+     * @throws IllegalArgumentException When the activity is not in the queue.
      */
     protected int indexOf(JobActivity activity) {
         int idx = _activities.indexOf(activity);

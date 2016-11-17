@@ -73,7 +73,7 @@ public class VRPWithBackhaulsExample {
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
         constraintManager.addConstraint(new ServiceDeliveriesFirstConstraint(), ConstraintManager.Priority.CRITICAL);
 
-        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
         vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
         /*
          * Solve the problem.
@@ -88,7 +88,7 @@ public class VRPWithBackhaulsExample {
         VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 
 		/*
-		 * print solution
+         * print solution
 		 */
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 

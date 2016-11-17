@@ -30,9 +30,9 @@ import com.graphhopper.jsprit.core.problem.Location;
  */
 public interface TourActivity extends HasIndex {
 
-	public void setTheoreticalEarliestOperationStartTime(double earliest);
+    public void setTheoreticalEarliestOperationStartTime(double earliest);
 
-	public void setTheoreticalLatestOperationStartTime(double latest);
+    public void setTheoreticalLatestOperationStartTime(double latest);
 
     /**
      * Returns the name of this activity.

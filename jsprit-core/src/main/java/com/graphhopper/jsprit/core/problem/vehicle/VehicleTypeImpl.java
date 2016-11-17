@@ -144,8 +144,7 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param inMeterPerSeconds
          * @return this builder
-         * @throws IllegalArgumentException
-         *             if velocity is smaller than zero
+         * @throws IllegalArgumentException if velocity is smaller than zero
          */
         public VehicleTypeImpl.Builder setAverageVelocity(double inMeterPerSeconds) {
             if (inMeterPerSeconds < 0.0) {
@@ -163,8 +162,7 @@ public class VehicleTypeImpl implements VehicleType {
          *
          * @param fixedCost
          * @return this builder
-         * @throws IllegalArgumentException
-         *             if fixedCost is smaller than zero
+         * @throws IllegalArgumentException if fixedCost is smaller than zero
          */
         public VehicleTypeImpl.Builder setFixedCost(double fixedCost) {
             if (fixedCost < 0.0) {
@@ -268,7 +266,7 @@ public class VehicleTypeImpl implements VehicleType {
          * @param dimVal
          * @return the builder
          * @throws IllegalArgumentException if dimVal < 0
-         * @throws IllegalArgumentException    if capacity dimension is already set
+         * @throws IllegalArgumentException if capacity dimension is already set
          */
         public Builder addCapacityDimension(int dimIndex, int dimVal) {
             if (dimVal < 0) {
@@ -276,8 +274,8 @@ public class VehicleTypeImpl implements VehicleType {
             }
             if (capacityDimensions != null) {
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                                "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(SizeDimension capacity)." +
-                                "You used both methods.");
+                    "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(SizeDimension capacity)." +
+                    "You used both methods.");
             }
             dimensionAdded = true;
             capacityBuilder.addDimension(dimIndex, dimVal);
@@ -298,8 +296,8 @@ public class VehicleTypeImpl implements VehicleType {
         public Builder setCapacityDimensions(SizeDimension capacity) {
             if (dimensionAdded) {
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                                "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(SizeDimension capacity)." +
-                                "You used both methods.");
+                    "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(SizeDimension capacity)." +
+                    "You used both methods.");
             }
             capacityDimensions = capacity;
             return this;
@@ -316,7 +314,7 @@ public class VehicleTypeImpl implements VehicleType {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                        + ((typeId == null) ? 0 : typeId.hashCode());
+            + ((typeId == null) ? 0 : typeId.hashCode());
         return result;
     }
 
@@ -393,8 +391,8 @@ public class VehicleTypeImpl implements VehicleType {
     @Override
     public String toString() {
         return "[typeId=" + typeId + "]" +
-                        "[capacity=" + capacityDimensions + "]" +
-                        "[costs=" + vehicleCostParams + "]";
+            "[capacity=" + capacityDimensions + "]" +
+            "[costs=" + vehicleCostParams + "]";
     }
 
     @Override

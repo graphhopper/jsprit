@@ -1,12 +1,11 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.Location;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
-import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.Location;
 
 public abstract class AbstractActivityNEW implements TourActivity {
 
@@ -111,9 +110,9 @@ public abstract class AbstractActivityNEW implements TourActivity {
     @Override
     public String toString() {
         return "[name=" + getName() + "][locationId=" + getLocation().getId()
-                        + "][size=" + getSize().toString()
-                        + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-                        + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][size=" + getSize().toString()
+            + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
     }
 
 
@@ -125,7 +124,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
             Constructor<? extends AbstractActivityNEW> constructor = getClass().getConstructor(getClass());
             return constructor.newInstance(this);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException e) {
+            | InvocationTargetException e) {
             System.out.println(this.getClass().getCanonicalName() + " : " + this);
             throw new IllegalStateException(e);
         }

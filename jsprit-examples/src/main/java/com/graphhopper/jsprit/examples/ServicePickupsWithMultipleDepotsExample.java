@@ -120,7 +120,7 @@ public class ServicePickupsWithMultipleDepotsExample {
         new VrpXMLWriter(problem, solutions).write("output/shipment-problem-with-solution.xml");
 
 		/*
-		 * print nRoutes and totalCosts of bestSolution
+         * print nRoutes and totalCosts of bestSolution
 		 */
         SolutionPrinter.print(bestSolution);
 

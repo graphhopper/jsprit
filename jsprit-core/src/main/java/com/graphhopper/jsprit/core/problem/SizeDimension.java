@@ -30,10 +30,9 @@ import java.util.EnumSet;
  * @author schroeder
  * @author balage
  */
-public class SizeDimension {
+public class SizeDimension extends Capacity {
 
-    public static final SizeDimension EMPTY = SizeDimension.Builder.newInstance().build();
-
+    public static final SizeDimension EMPTY = new SizeDimension(0);
 
     /**
      * Divides every dimension of numerator size dimension by the corresponding
@@ -58,10 +57,12 @@ public class SizeDimension {
         return numerator.divide(denominator);
     }
 
+
     /**
      * Makes a deep copy of SizeDimension.
      *
-     * @param size dimension size dimension to be copied
+     * @param size
+     *            dimension size dimension to be copied
      * @return copy
      */
     public static SizeDimension copyOf(SizeDimension sizeDimension) {
@@ -77,7 +78,7 @@ public class SizeDimension {
      * @author schroeder
      * @author balage
      */
-    public static class Builder {
+    public static class Builder extends Capacity.Builder {
 
         /**
          * default is 1 dimension with size of zero
@@ -85,7 +86,8 @@ public class SizeDimension {
         private int[] dimensions = new int[1];
 
         /**
-         * Returns a new instance of SizeDimension with one dimension and a value/size of 0
+         * Returns a new instance of SizeDimension with one dimension and a
+         * value/size of 0
          *
          * @return this builder
          */
@@ -99,13 +101,18 @@ public class SizeDimension {
         /**
          * add size dimension dimension
          * <p>
-         * <p>Note that it automatically resizes dimensions according to index, i.e. if index=7 there are 8 dimensions.
-         * New dimensions then are initialized with 0
+         * <p>
+         * Note that it automatically resizes dimensions according to index,
+         * i.e. if index=7 there are 8 dimensions. New dimensions then are
+         * initialized with 0
          *
-         * @param index    dimensionIndex
-         * @param dimValue dimensionValue
+         * @param index
+         *            dimensionIndex
+         * @param dimValue
+         *            dimensionValue
          * @return this builder
          */
+        @Override
         public Builder addDimension(int index, int dimValue) {
             if (index >= dimensions.length) {
                 int requiredSize = index + 1;
@@ -127,11 +134,12 @@ public class SizeDimension {
          *            values from
          * @return this builder
          */
+        @Override
         public Builder setDimensions(SizeDimension other) {
             if (other.getNuOfDimensions() >= dimensions.length) {
                 dimensions = Arrays.copyOf(other.dimensions, other.dimensions.length);
             } else {
-                for(int i = 0; i < other.getNuOfDimensions(); i++) {
+                for (int i = 0; i < other.getNuOfDimensions(); i++) {
                     dimensions[i] = other.dimensions[i];
                 }
             }
@@ -143,14 +151,49 @@ public class SizeDimension {
          *
          * @return SizeDimension
          */
+        @Override
         public SizeDimension build() {
             return new SizeDimension(this);
         }
 
-
     }
 
-    private int[] dimensions;
+    protected int[] dimensions;
+
+    /**
+     * Return the maximum, i.e. the maximum of each size dimension dimension.
+     *
+     * @param size1
+     *            first size dimension to compare
+     * @param size2
+     *            second size dimension to compare
+     * @return size dimension maximum of each size dimension dimension
+     */
+    public static SizeDimension max(SizeDimension size1, SizeDimension size2) {
+        if (size1 == null || size2 == null) {
+            throw new IllegalArgumentException("arg must not be null");
+        }
+        SizeDimension res = new SizeDimension(
+                        Math.max(size1.getNuOfDimensions(), size2.getNuOfDimensions()));
+        for (int i = 0; i < Math.max(size1.getNuOfDimensions(), size2.getNuOfDimensions()); i++) {
+            res.dimensions[i] = Math.max(size1.get(i), size2.get(i));
+        }
+
+        return res;
+    }
+
+    public static SizeDimension min(SizeDimension size1, SizeDimension size2) {
+        if (size1 == null || size2 == null) {
+            throw new IllegalArgumentException("arg must not be null");
+        }
+        SizeDimension res = new SizeDimension(
+                        Math.max(size1.getNuOfDimensions(), size2.getNuOfDimensions()));
+        for (int i = 0; i < Math.max(size1.getNuOfDimensions(), size2.getNuOfDimensions()); i++) {
+            res.dimensions[i] = Math.min(size1.get(i), size2.get(i));
+        }
+        return res;
+    }
+
 
     /**
      * copy constructor
@@ -169,11 +212,13 @@ public class SizeDimension {
         dimensions = new int[numberOfDimensions];
     }
 
+
     /**
      * Returns the number of specified size dimension dimensions.
      *
      * @return noDimensions
      */
+    @Override
     public int getNuOfDimensions() {
         return dimensions.length;
     }
@@ -190,6 +235,7 @@ public class SizeDimension {
      *            dimension index of the size dimension value to be retrieved
      * @return the according dimension value
      */
+    @Override
     public int get(int index) {
         if (index < dimensions.length) {
             return dimensions[index];
@@ -208,6 +254,7 @@ public class SizeDimension {
      * @throws NullPointerException
      *             if one of the args is null
      */
+    @Override
     public boolean isLessOrEqual(SizeDimension toCompare) {
         if (toCompare == null) {
             throw new NullPointerException();
@@ -230,6 +277,7 @@ public class SizeDimension {
      * @throws NullPointerException
      *             if one of the args is null
      */
+    @Override
     public boolean isGreaterOrEqual(SizeDimension toCompare) {
         if (toCompare == null) {
             throw new NullPointerException();
@@ -251,38 +299,6 @@ public class SizeDimension {
         }
         sb.append(']');
         return sb.toString();
-    }
-
-    /**
-     * Return the maximum, i.e. the maximum of each size dimension dimension.
-     *
-     * @param size1
-     *            first size dimension to compare
-     * @param size2
-     *            second size dimension to compare
-     * @return size dimension maximum of each size dimension dimension
-     */
-    public static SizeDimension max(SizeDimension size1, SizeDimension size2) {
-        if (size1 == null || size2 == null) {
-            throw new IllegalArgumentException("arg must not be null");
-        }
-        SizeDimension res = new SizeDimension(Math.max(size1.getNuOfDimensions(), size2.getNuOfDimensions()));
-        for (int i = 0; i < Math.max(size1.getNuOfDimensions(), size2.getNuOfDimensions()); i++) {
-            res.dimensions[i] = Math.max(size1.get(i), size2.get(i));
-        }
-
-        return res;
-    }
-
-    public static SizeDimension min(SizeDimension size1, SizeDimension size2) {
-        if (size1 == null || size2 == null) {
-            throw new IllegalArgumentException("arg must not be null");
-        }
-        SizeDimension res = new SizeDimension(Math.max(size1.getNuOfDimensions(), size2.getNuOfDimensions()));
-        for (int i = 0; i < Math.max(size1.getNuOfDimensions(), size2.getNuOfDimensions()); i++) {
-            res.dimensions[i] = Math.min(size1.get(i), size2.get(i));
-        }
-        return res;
     }
 
     @Override
@@ -330,6 +346,7 @@ public class SizeDimension {
      *
      * @return The sign of the size dimension.
      */
+    @Override
     public SizeDimensionSign sign() {
         EnumSet<SizeDimensionSign> possibleSigns = EnumSet.of(SizeDimensionSign.POSITIVE, SizeDimensionSign.NEGATIVE, SizeDimensionSign.ZERO);
         for (int i = 0; i < getNuOfDimensions(); i++) {
@@ -367,6 +384,7 @@ public class SizeDimension {
      * @throws NullPointerException
      *             if the <code>sizeToAdd</code> is null
      */
+    @Override
     public SizeDimension add(SizeDimension sizeToAdd) {
         if (sizeToAdd == null) {
             throw new NullPointerException("size dimension must not be null");
@@ -394,6 +412,7 @@ public class SizeDimension {
      * @throws NullPointerException
      *             if the <code>sizeToSubtract</code> is null
      */
+    @Override
     public SizeDimension subtract(SizeDimension sizeToSubstract) {
         if (sizeToSubstract == null) {
             throw new NullPointerException("size dimension must not be null");
@@ -411,6 +430,7 @@ public class SizeDimension {
      *
      * @return The inverted value of calling object.
      */
+    @Override
     public SizeDimension invert() {
         SizeDimension res = new SizeDimension(getNuOfDimensions());
         for (int i = 0; i < getNuOfDimensions(); i++) {
@@ -426,6 +446,7 @@ public class SizeDimension {
      *
      * @return The absolute value of calling object.
      */
+    @Override
     public SizeDimension abs() {
         SizeDimension res = new SizeDimension(getNuOfDimensions());
         for (int i = 0; i < getNuOfDimensions(); i++) {
@@ -453,6 +474,7 @@ public class SizeDimension {
      *             if a size dimension is not 0, but the denominator has a 0
      *             value for the same dimension.
      */
+    @Override
     public double divide(SizeDimension denominator) {
         int nuOfDimensions = 0;
         double sumQuotients = 0.0;
@@ -473,6 +495,52 @@ public class SizeDimension {
         }
         return 0.0;
 
+    }
+
+    /**
+     * Returns the negative part of the size dimension.
+     *
+     * <p>
+     * The function returns a new {{@linkplain SizeDimension} object with the
+     * same number of dimensions and with all positive dimension set to zero.
+     * </p>
+     *
+     * @return Returns the negative part of the size dimension
+     */
+    @Override
+    public SizeDimension getNegativeDimensions() {
+        SizeDimension res = new SizeDimension(getNuOfDimensions());
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            if (get(i) < 0) {
+                res.dimensions[i] = get(i);
+            } else {
+                res.dimensions[i] = 0;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Returns the positive part of the size dimension.
+     *
+     * <p>
+     * The function returns a new {{@linkplain SizeDimension} object with the
+     * same number of dimensions and with all negative dimension set to zero.
+     * </p>
+     *
+     * @return Returns the positive part of the size dimension
+     */
+    @Override
+    public SizeDimension getPositiveDimensions() {
+        SizeDimension res = new SizeDimension(getNuOfDimensions());
+        for (int i = 0; i < getNuOfDimensions(); i++) {
+            if (get(i) > 0) {
+                res.dimensions[i] = get(i);
+            } else {
+                res.dimensions[i] = 0;
+            }
+        }
+        return res;
     }
 
 }

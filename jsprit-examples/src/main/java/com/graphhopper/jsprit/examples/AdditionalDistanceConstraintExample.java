@@ -19,8 +19,6 @@
 package com.graphhopper.jsprit.examples;
 
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
@@ -41,6 +39,8 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
+
+import java.util.Collection;
 
 //import jsprit.core.problem.solution.route.state.StateFactory; //v1.3.1
 
@@ -153,7 +153,7 @@ public class AdditionalDistanceConstraintExample {
         constraintManager.addConstraint(new DistanceConstraint(120., distanceStateId, stateManager, costMatrix), ConstraintManager.Priority.CRITICAL);
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager, constraintManager)
-                .buildAlgorithm();
+            .buildAlgorithm();
 //        vra.setMaxIterations(250); //v1.3.1
         vra.setMaxIterations(250); //head of development - upcoming release (v1.4)
 

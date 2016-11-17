@@ -90,7 +90,7 @@ public class SolomonExampleWithSpecifiedVehicleEndLocationsWithoutTWs {
         VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 
 		/*
-		 * print solution
+         * print solution
 		 */
         SolutionPrinter.print(solution);
 

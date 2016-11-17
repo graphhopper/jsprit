@@ -18,9 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
-import java.util.Collection;
-import java.util.Random;
-
 import com.graphhopper.jsprit.core.algorithm.acceptor.SchrimpfAcceptance;
 import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener;
@@ -32,6 +29,9 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
+
+import java.util.Collection;
+import java.util.Random;
 
 /**
  * Created by schroeder on 10.12.14.
@@ -86,7 +86,7 @@ public class PrettyAlgorithmBuilder {
 
     public VehicleRoutingAlgorithm build() {
         if (coreStuff) {
-            AlgorithmUtil.addCoreConstraints(constraintManager,stateManager,vrp);
+            AlgorithmUtil.addCoreConstraints(constraintManager, stateManager, vrp);
         }
         VehicleRoutingAlgorithm vra = new VehicleRoutingAlgorithm(vrp, searchStrategyManager, objectiveFunction);
         vra.addListener(stateManager);

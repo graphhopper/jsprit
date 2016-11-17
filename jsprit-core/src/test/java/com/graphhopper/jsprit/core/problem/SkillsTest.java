@@ -18,12 +18,12 @@
 
 package com.graphhopper.jsprit.core.problem;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by schroeder on 01.07.14.

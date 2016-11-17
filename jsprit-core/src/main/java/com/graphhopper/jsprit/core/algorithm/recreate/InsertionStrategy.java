@@ -17,11 +17,11 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
+import java.util.Collection;
 
 
 /**

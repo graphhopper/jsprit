@@ -82,7 +82,7 @@ public class PickupAndDeliveryOpenExample {
         VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 
 		/*
-		 * print solution
+         * print solution
 		 */
         SolutionPrinter.print(solution);
 

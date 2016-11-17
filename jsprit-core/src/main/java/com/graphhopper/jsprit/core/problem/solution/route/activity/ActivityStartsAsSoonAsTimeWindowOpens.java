@@ -25,7 +25,7 @@ public class ActivityStartsAsSoonAsTimeWindowOpens implements ActivityStartStrat
 
     @Override
     public double getActivityStartTime(TourActivity activity, double arrivalTime) {
-        return Math.max(activity.getTheoreticalEarliestOperationStartTime(),arrivalTime);
+        return Math.max(activity.getTheoreticalEarliestOperationStartTime(), arrivalTime);
     }
 
 }

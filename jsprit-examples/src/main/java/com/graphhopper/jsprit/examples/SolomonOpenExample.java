@@ -70,7 +70,7 @@ public class SolomonOpenExample {
 //		VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
 //		VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, "input/algorithmConfig_fix.xml");
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS, "4")
-        .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+            .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
             .setProperty(Jsprit.Parameter.CONSTRUCTION, Jsprit.Construction.BEST_INSERTION.toString()).buildAlgorithm();
 //		vra.setPrematureBreak(100);
 //		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
@@ -89,7 +89,7 @@ public class SolomonOpenExample {
         VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
 
 		/*
-		 * print solution
+         * print solution
 		 */
         SolutionPrinter.print(solution);
 

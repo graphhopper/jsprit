@@ -19,11 +19,7 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ExchangeActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 
 
 /**
@@ -57,9 +53,8 @@ public final class ReturnedShipment extends Shipment {
         /**
          * Returns new instance of this builder.
          *
-         * @param id
-         *            the id of the shipment which must be a unique identifier
-         *            among all jobs
+         * @param id the id of the shipment which must be a unique identifier
+         *           among all jobs
          * @return the builder
          */
 
@@ -71,8 +66,7 @@ public final class ReturnedShipment extends Shipment {
         /**
          * Sets backhaul location.
          *
-         * @param backhaulLocation
-         *            backhaul location
+         * @param backhaulLocation backhaul location
          * @return builder
          */
 
@@ -88,12 +82,10 @@ public final class ReturnedShipment extends Shipment {
          * ServiceTime is intended to be the time the implied activity takes at
          * the backhaul-location.
          *
-         * @param serviceTime
-         *            the service time / duration the backhaul of the associated
-         *            shipment takes
+         * @param serviceTime the service time / duration the backhaul of the associated
+         *                    shipment takes
          * @return builder
-         * @throws IllegalArgumentException
-         *             if servicTime < 0.0
+         * @throws IllegalArgumentException if servicTime < 0.0
          */
 
         public Builder setBackhaulServiceTime(double serviceTime) {
@@ -111,12 +103,10 @@ public final class ReturnedShipment extends Shipment {
          * <p>
          * By default timeWindow is [0.0, Double.MAX_VALUE}
          *
-         * @param timeWindow
-         *            the time window within the backhaul operation/activity can
-         *            START
+         * @param timeWindow the time window within the backhaul operation/activity can
+         *                   START
          * @return builder
-         * @throws IllegalArgumentException
-         *             if timeWindow is null
+         * @throws IllegalArgumentException if timeWindow is null
          */
 
         public Builder setBackhaulTimeWindow(TimeWindow timeWindow) {
@@ -127,8 +117,6 @@ public final class ReturnedShipment extends Shipment {
             backhaulTimeWindows.add(timeWindow);
             return this;
         }
-
-
 
 
         public Builder addBackhaulTimeWindow(TimeWindow timeWindow) {
@@ -204,7 +192,6 @@ public final class ReturnedShipment extends Shipment {
     }
 
 
-
     ReturnedShipment(BuilderBase<? extends ReturnedShipment, ?> builder) {
         super(builder);
     }
@@ -215,41 +202,41 @@ public final class ReturnedShipment extends Shipment {
         Builder shipmentBuilder = (Builder) builder;
         JobActivityList list = new SequentialJobActivityList(this);
         list.addActivity(new PickupActivityNEW(this, ACTIVITY_NAME_PICKUP,
-                        shipmentBuilder.getPickupLocation(),
-                        shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
-                        shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
+            shipmentBuilder.getPickupLocation(),
+            shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
+            shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
         list.addActivity(new ExchangeActivityNEW(this, ACTIVITY_NAME_DELIVERY,
-                        shipmentBuilder.getDeliveryLocation(),
-                        shipmentBuilder.getDeliveryServiceTime(),
-                        shipmentBuilder.getBackhaulCapacity()
-                                        .subtract(shipmentBuilder.getCapacity()),
-                        shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
+            shipmentBuilder.getDeliveryLocation(),
+            shipmentBuilder.getDeliveryServiceTime(),
+            shipmentBuilder.getBackhaulCapacity()
+                .subtract(shipmentBuilder.getCapacity()),
+            shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
         list.addActivity(new DeliveryActivityNEW(this, ACTIVITY_NAME_BACKHAUL,
-                        shipmentBuilder.getBackhaulLocation(),
-                        shipmentBuilder.getBackhaulServiceTime(),
-                        shipmentBuilder.getBackhaulCapacity(),
-                        shipmentBuilder.getBackhaulTimeWindows().getTimeWindows()));
+            shipmentBuilder.getBackhaulLocation(),
+            shipmentBuilder.getBackhaulServiceTime(),
+            shipmentBuilder.getBackhaulCapacity(),
+            shipmentBuilder.getBackhaulTimeWindows().getTimeWindows()));
         setActivities(list);
     }
 
     // TODO: RENAME WHEN SHIPMENT IS RETURNING THE SAME TYPE OF ACTIVIT
     public PickupActivityNEW getPickupActivityTO_BE_RENAMED_LATER() {
         return (PickupActivityNEW) getActivityList()
-                        .findByType(ACTIVITY_NAME_PICKUP)
-                        .get();
+            .findByType(ACTIVITY_NAME_PICKUP)
+            .get();
     }
 
     // TODO: RENAME WHEN SHIPMENT IS RETURNING THE SAME TYPE OF ACTIVIT
     public ExchangeActivityNEW getDeliveryActivityTO_BE_RENAMED_LATER() {
         return (ExchangeActivityNEW) getActivityList()
-                        .findByType(ACTIVITY_NAME_DELIVERY)
-                        .get();
+            .findByType(ACTIVITY_NAME_DELIVERY)
+            .get();
     }
 
     public DeliveryActivityNEW getBackhaulActivityTO_BE_RENAMED_LATER() {
         return (DeliveryActivityNEW) getActivityList()
-                        .findByType(ACTIVITY_NAME_BACKHAUL)
-                        .get();
+            .findByType(ACTIVITY_NAME_BACKHAUL)
+            .get();
     }
 
 

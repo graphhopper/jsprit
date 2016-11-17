@@ -35,7 +35,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
-
 import com.graphhopper.jsprit.io.problem.VrpXMLWriter;
 import com.graphhopper.jsprit.util.Examples;
 
@@ -86,7 +85,7 @@ public class SimpleVRPWithBackhaulsExample {
         ConstraintManager constraintManager = new ConstraintManager(problem, stateManager);
         constraintManager.addConstraint(new ServiceDeliveriesFirstConstraint(), ConstraintManager.Priority.CRITICAL);
 
-        VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setStateAndConstraintManager(stateManager,constraintManager)
+        VehicleRoutingAlgorithm algorithm = Jsprit.Builder.newInstance(problem).setStateAndConstraintManager(stateManager, constraintManager)
             .buildAlgorithm();
 
 		/*

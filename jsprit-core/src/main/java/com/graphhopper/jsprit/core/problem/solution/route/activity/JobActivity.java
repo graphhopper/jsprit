@@ -1,12 +1,12 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Basic interface of job-activies.
@@ -27,7 +27,7 @@ public abstract class JobActivity extends AbstractActivityNEW {
     private int orderNumber;
 
     public JobActivity(AbstractJob job, String type, Location location, double operationTime,
-                    SizeDimension capacity, Collection<TimeWindow> timeWindows) {
+                       SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(type, location, capacity);
         this.job = job;
         this.operationTime = operationTime;
@@ -38,6 +38,7 @@ public abstract class JobActivity extends AbstractActivityNEW {
         super(sourceActivity);
         job = sourceActivity.getJob();
         operationTime = sourceActivity.getOperationTime();
+        orderNumber = sourceActivity.getOrderNumber();
         // REMARK - Balage1551 - Do we need to deep copy time window set? I
         // guess we don't.
         if (sourceActivity.timeWindows != null) {

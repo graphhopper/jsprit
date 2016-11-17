@@ -51,7 +51,7 @@ public class BreakExample {
         VehicleType vehicleType = vehicleTypeBuilder.build();
 
 		/*
-		 * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
+         * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
 		 */
         Builder vehicleBuilder = Builder.newInstance("v1");
         vehicleBuilder.setStartLocation(Location.newInstance(10, 10));

@@ -39,12 +39,12 @@ public class CostFactory {
                 //assume: locationId="x,y"
                 String[] splitted = id.split(",");
                 return Coordinate.newInstance(Double.parseDouble(splitted[0]),
-                                Double.parseDouble(splitted[1]));
+                    Double.parseDouble(splitted[1]));
             }
 
         };
         return new DefaultCosts(ManhattanDistanceCalculator.getInstance())
-                        .withCoordinateConverter(locations);
+            .withCoordinateConverter(locations);
     }
 
     /**
@@ -63,11 +63,11 @@ public class CostFactory {
                 //assume: locationId="x,y"
                 String[] splitted = id.split(",");
                 return Coordinate.newInstance(Double.parseDouble(splitted[0]),
-                                Double.parseDouble(splitted[1]));
+                    Double.parseDouble(splitted[1]));
             }
 
         };
         return new DefaultCosts(EuclideanDistanceCalculator.getInstance())
-                        .withCoordinateConverter(locations);
+            .withCoordinateConverter(locations);
     }
 }

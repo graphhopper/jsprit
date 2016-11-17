@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 /**
  * Created by schroeder on 15/10/15.
  */
-public class DefaultScorer implements ScoringFunction  {
+public class DefaultScorer implements ScoringFunction {
 
     private VehicleRoutingProblem vrp;
 
@@ -52,18 +52,18 @@ public class DefaultScorer implements ScoringFunction  {
     public double score(InsertionData best, Job job) {
         Vehicle selectedVehicle = best.getSelectedVehicle();
         double maxFromStart = job.getAllLocations().stream()
-                .mapToDouble(l -> getDistance(selectedVehicle.getStartLocation(), l))
-                .max()
-                .orElse(0d);
+            .mapToDouble(l -> getDistance(selectedVehicle.getStartLocation(), l))
+            .max()
+            .orElse(0d);
         double maxToEnd = job.getAllLocations().stream()
-                .mapToDouble(l -> getDistance(selectedVehicle.getEndLocation(), l))
-                .max()
-                .orElse(0d);
+            .mapToDouble(l -> getDistance(selectedVehicle.getEndLocation(), l))
+            .max()
+            .orElse(0d);
         double maxDepotDistance = Math.max(maxFromStart, maxToEnd);
         double minTimeToOperate = job.getTimeWindows().stream()
-                .mapToDouble(tw -> tw.getEnd() - tw.getStart())
-                .min()
-                .orElse(0d);
+            .mapToDouble(tw -> tw.getEnd() - tw.getStart())
+            .min()
+            .orElse(0d);
         return Math.max(timeWindowParam * minTimeToOperate, minTimeWindowScore) + depotDistanceParam * maxDepotDistance;
     }
 //

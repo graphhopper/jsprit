@@ -18,12 +18,6 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
-import org.junit.Test;
-
 import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -32,6 +26,11 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
+import org.junit.Test;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertTrue;
 
 public class UnassignedJobListTest {
 
