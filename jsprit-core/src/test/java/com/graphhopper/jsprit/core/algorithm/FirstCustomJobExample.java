@@ -19,14 +19,14 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
-import com.graphhopper.jsprit.core.util.CustomPickupJob;
+import com.graphhopper.jsprit.core.util.CustomJob;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class FirstCustomJobExample {
 
     @Test
     public void test() {
-        CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job").addPickup(Location.newInstance(10, 0), SizeDimension.EMPTY).build();
+        CustomJob cj = CustomJob.Builder.newInstance("job").addPickup(Location.newInstance(10, 0), SizeDimension.EMPTY).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
             .addJob(cj).addVehicle(v).build();

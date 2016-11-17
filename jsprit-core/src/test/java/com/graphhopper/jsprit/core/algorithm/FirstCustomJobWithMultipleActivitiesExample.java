@@ -28,7 +28,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
-import com.graphhopper.jsprit.core.util.CustomPickupJob;
+import com.graphhopper.jsprit.core.util.CustomJob;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class FirstCustomJobWithMultipleActivitiesExample {
 
     @Test
     public void shouldRunOK() {
-        CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
+        CustomJob cj = CustomJob.Builder.newInstance("job")
             .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
             .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
@@ -60,7 +60,7 @@ public class FirstCustomJobWithMultipleActivitiesExample {
 
     @Test
     public void shouldNotIgnoresCapacity() {
-        CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
+        CustomJob cj = CustomJob.Builder.newInstance("job")
             .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
             .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
@@ -78,7 +78,7 @@ public class FirstCustomJobWithMultipleActivitiesExample {
 
     @Test
     public void shouldNotIgnoresCapacityWithMixedPicksAndDeliveries() {
-        CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
+        CustomJob cj = CustomJob.Builder.newInstance("job")
             .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
             .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
@@ -96,7 +96,7 @@ public class FirstCustomJobWithMultipleActivitiesExample {
 
     @Test
     public void shouldNotIgnoresCapacityWithMixedPicksAndDeliveriesV2() {
-        CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
+        CustomJob cj = CustomJob.Builder.newInstance("job")
             .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
             .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())

@@ -34,9 +34,9 @@ import java.util.List;
 /**
  * Created by schroeder on 16/11/16.
  */
-public class CustomPickupJob extends AbstractJob {
+public class CustomJob extends AbstractJob {
 
-    public static abstract class BuilderBase<T extends CustomPickupJob, B extends CustomPickupJob.BuilderBase<T, B>>
+    public static abstract class BuilderBase<T extends CustomJob, B extends CustomJob.BuilderBase<T, B>>
         extends JobBuilder<T, B> {
 
         List<Location> locs = new ArrayList<>();
@@ -49,14 +49,14 @@ public class CustomPickupJob extends AbstractJob {
             super(id);
         }
 
-        public CustomPickupJob.BuilderBase<T, B> addPickup(Location location, SizeDimension capacity) {
+        public CustomJob.BuilderBase<T, B> addPickup(Location location, SizeDimension capacity) {
             locs.add(location);
             cap.add(capacity);
             types.add("pickup");
             return this;
         }
 
-        public CustomPickupJob.BuilderBase<T, B> addDelivery(Location location, SizeDimension capacity) {
+        public CustomJob.BuilderBase<T, B> addDelivery(Location location, SizeDimension capacity) {
             locs.add(location);
             cap.add(capacity);
             types.add("delivery");
@@ -80,10 +80,10 @@ public class CustomPickupJob extends AbstractJob {
         }
     }
 
-    public static final class Builder extends CustomPickupJob.BuilderBase<CustomPickupJob, CustomPickupJob.Builder> {
+    public static final class Builder extends CustomJob.BuilderBase<CustomJob, CustomJob.Builder> {
 
-        public static CustomPickupJob.Builder newInstance(String id) {
-            return new CustomPickupJob.Builder(id);
+        public static CustomJob.Builder newInstance(String id) {
+            return new CustomJob.Builder(id);
         }
 
         public Builder(String id) {
@@ -91,8 +91,8 @@ public class CustomPickupJob extends AbstractJob {
         }
 
         @Override
-        protected CustomPickupJob createInstance() {
-            return new CustomPickupJob(this);
+        protected CustomJob createInstance() {
+            return new CustomJob(this);
         }
 
     }
@@ -103,7 +103,7 @@ public class CustomPickupJob extends AbstractJob {
      * @param builder The builder instance.
      * @see JobBuilder
      */
-    protected CustomPickupJob(JobBuilder<?, ?> builder) {
+    protected CustomJob(JobBuilder<?, ?> builder) {
         super(builder);
 
     }
@@ -115,7 +115,7 @@ public class CustomPickupJob extends AbstractJob {
 
     @Override
     protected void createActivities(JobBuilder<? extends AbstractJob, ?> jobBuilder) {
-        CustomPickupJob.Builder builder = (CustomPickupJob.Builder) jobBuilder;
+        CustomJob.Builder builder = (CustomJob.Builder) jobBuilder;
         JobActivityList list = new SequentialJobActivityList(this);
         for (int i = 0; i < builder.getLocs().size(); i++) {
             if (builder.getTypes().get(i).equals("pickup")) {
