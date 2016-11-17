@@ -18,7 +18,7 @@
 package com.graphhopper.jsprit.core.problem.vehicle;
 
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 
 /**
  * Implementation of {@link VehicleType}.
@@ -113,9 +113,9 @@ public class VehicleTypeImpl implements VehicleType {
 
         private String profile = "car";
 
-        private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+        private SizeDimension.Builder capacityBuilder = SizeDimension.Builder.newInstance();
 
-        private Capacity capacityDimensions = null;
+        private SizeDimension capacityDimensions = null;
 
         private boolean dimensionAdded = false;
 
@@ -276,7 +276,7 @@ public class VehicleTypeImpl implements VehicleType {
             }
             if (capacityDimensions != null) {
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                                "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+                                "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(SizeDimension capacity)." +
                                 "You used both methods.");
             }
             dimensionAdded = true;
@@ -295,10 +295,10 @@ public class VehicleTypeImpl implements VehicleType {
          * @return this builder
          * @throws IllegalArgumentException if capacityDimension has already been added
          */
-        public Builder setCapacityDimensions(Capacity capacity) {
+        public Builder setCapacityDimensions(SizeDimension capacity) {
             if (dimensionAdded) {
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                                "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+                                "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(SizeDimension capacity)." +
                                 "You used both methods.");
             }
             capacityDimensions = capacity;
@@ -353,7 +353,7 @@ public class VehicleTypeImpl implements VehicleType {
 
     private final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
 
-    private final Capacity capacityDimensions;
+    private final SizeDimension capacityDimensions;
 
     private final double maxVelocity;
 
@@ -408,7 +408,7 @@ public class VehicleTypeImpl implements VehicleType {
     }
 
     @Override
-    public Capacity getCapacityDimensions() {
+    public SizeDimension getCapacityDimensions() {
         return capacityDimensions;
     }
 

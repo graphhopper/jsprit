@@ -20,107 +20,99 @@ package com.graphhopper.jsprit.core.problem;
 import java.util.Arrays;
 
 /**
- * Capacity with an arbitrary number of capacity-dimension.
+ * SizeDimensionX with an arbitrary number of SizeDimension-dimension.
  * <p>
- * <p>Note that this assumes the the values of each capacity dimension can be added up and subtracted
+ * <p>
+ * Note that this assumes the the values of each SizeDimension dimension can be
+ * added up and subtracted
  *
  * @author schroeder
  */
-public class Capacity {
+public class CapacityX {
 
-    public static final Capacity EMPTY = Capacity.Builder.newInstance().build();
-
-    /**
-     * Adds up two capacities, i.e. sums up each and every capacity dimension,
-     * and returns the resulting Capacity.
-     * <p>
-     * <p>
-     * Note that this assumes that capacity dimension can be added up.
-     *
-     * @param cap1
-     *            capacity to be added up
-     * @param cap2
-     *            capacity to be added up
-     * @return new capacity
-     * @throws NullPointerException
-     *             if one of the args is null
-     * @deprecated Use <code>cap1.add(cap2)</code> instead.
-     */
 
     @Deprecated
-    public static Capacity addup(Capacity cap1, Capacity cap2) {
+    public static CapacityX addup(CapacityX cap1, CapacityX cap2) {
         return cap1.add(cap2);
     }
 
     /**
-     * Subtracts cap2subtract from cap and returns the resulting Capacity.
+     * Subtracts cap2subtract from cap and returns the resulting SizeDimensionX.
      *
      * @param cap
-     *            capacity to be subtracted from
+     *            SizeDimension to be subtracted from
      * @param cap2subtract
-     *            capacity to subtract
-     * @return new capacity
+     *            SizeDimension to subtract
+     * @return new SizeDimension
      * @throws NullPointerException
      *             if one of the args is null
      * @throws IllegalStateException
-     *             if number of capacityDimensions of cap1 and cap2 are
+     *             if number of SizeDimensionDimensions of cap1 and cap2 are
      *             different (i.e.
      *             <code>cap1.getNuOfDimension() != cap2.getNuOfDimension()</code>
      *             ).
      * @deprecated Use <code>cap1.subtract(cap2)</code> instead.
      */
     @Deprecated
-    public static Capacity subtract(Capacity cap, Capacity cap2subtract) {
+    public static CapacityX subtract(CapacityX cap, CapacityX cap2subtract) {
         return cap.subtract(cap2subtract);
     }
 
     /**
-     * Returns the inverted capacity, i.e. it multiplies all capacity dimensions
-     * with -1.
+     * Returns the inverted SizeDimension, i.e. it multiplies all SizeDimension
+     * dimensions with -1.
      *
      * @param cap2invert
-     *            capacity to be inverted
-     * @return inverted capacity
+     *            SizeDimension to be inverted
+     * @return inverted SizeDimension
      * @throws NullPointerException
      *             if one of the args is null
      * @deprecated Use <code>cap2invert.invert()</code> instead.
      */
     @Deprecated
-    public static Capacity invert(Capacity cap2invert) {
+    public static CapacityX invert(CapacityX cap2invert) {
         return cap2invert.invert();
     }
 
     /**
-     * Divides every dimension of numerator capacity by the corresponding dimension of denominator capacity,
-     * , and averages each quotient.
+     * Divides every dimension of numerator SizeDimension by the corresponding
+     * dimension of denominator SizeDimension, , and averages each quotient.
      * <p>
-     * <p>If both nominator.get(i) and denominator.get(i) equal to 0, dimension i is ignored.
-     * <p>If both capacities are have only dimensions with dimensionVal=0, it returns 0.0
+     * <p>
+     * If both nominator.get(i) and denominator.get(i) equal to 0, dimension i
+     * is ignored.
+     * <p>
+     * If both capacities are have only dimensions with dimensionVal=0, it
+     * returns 0.0
      *
-     * @param numerator   the numerator
-     * @param denominator the denominator
+     * @param numerator
+     *            the numerator
+     * @param denominator
+     *            the denominator
      * @return quotient
-     * @throws IllegalStateException if numerator.get(i) != 0 and denominator.get(i) == 0
+     * @throws IllegalStateException
+     *             if numerator.get(i) != 0 and denominator.get(i) == 0
      */
-    public static double divide(Capacity numerator, Capacity denominator) {
+    public static double divide(CapacityX numerator, CapacityX denominator) {
         return numerator.divide(denominator);
     }
 
     /**
-     * Makes a deep copy of Capacity.
+     * Makes a deep copy of SizeDimensionX.
      *
-     * @param capacity capacity to be copied
+     * @param SizeDimension
+     *            SizeDimension to be copied
      * @return copy
      */
-    public static Capacity copyOf(Capacity capacity) {
-        if (capacity == null) {
+    public static CapacityX copyOf(CapacityX SizeDimension) {
+        if (SizeDimension == null) {
             return null;
         }
-        return new Capacity(capacity);
+        return new CapacityX(SizeDimension);
     }
 
     /**
-     * Builder that builds Capacity
+     * Builder that builds SizeDimensionX
      *
      * @author schroeder
      */
@@ -132,7 +124,8 @@ public class Capacity {
         private int[] dimensions = new int[1];
 
         /**
-         * Returns a new instance of Capacity with one dimension and a value/size of 0
+         * Returns a new instance of SizeDimensionX with one dimension and a
+         * value/size of 0
          *
          * @return this builder
          */
@@ -144,13 +137,17 @@ public class Capacity {
         }
 
         /**
-         * add capacity dimension
+         * add SizeDimension dimension
          * <p>
-         * <p>Note that it automatically resizes dimensions according to index, i.e. if index=7 there are 8 dimensions.
-         * New dimensions then are initialized with 0
+         * <p>
+         * Note that it automatically resizes dimensions according to index,
+         * i.e. if index=7 there are 8 dimensions. New dimensions then are
+         * initialized with 0
          *
-         * @param index    dimensionIndex
-         * @param dimValue dimensionValue
+         * @param index
+         *            dimensionIndex
+         * @param dimValue
+         *            dimensionValue
          * @return this builder
          */
         public Builder addDimension(int index, int dimValue) {
@@ -173,12 +170,12 @@ public class Capacity {
         }
 
         /**
-         * Builds an immutable Capacity and returns it.
+         * Builds an immutable SizeDimensionX and returns it.
          *
-         * @return Capacity
+         * @return SizeDimensionX
          */
-        public Capacity build() {
-            return new Capacity(this);
+        public CapacityX build() {
+            return new CapacityX(this);
         }
 
 
@@ -189,26 +186,27 @@ public class Capacity {
     /**
      * copy constructor
      *
-     * @param capacity capacity to be copied
+     * @param SizeDimension
+     *            SizeDimension to be copied
      */
-    Capacity(Capacity capacity) {
-        dimensions = new int[capacity.getNuOfDimensions()];
-        for (int i = 0; i < capacity.getNuOfDimensions(); i++) {
-            dimensions[i] = capacity.get(i);
+    CapacityX(CapacityX SizeDimension) {
+        dimensions = new int[SizeDimension.getNuOfDimensions()];
+        for (int i = 0; i < SizeDimension.getNuOfDimensions(); i++) {
+            dimensions[i] = SizeDimension.get(i);
         }
     }
 
-    Capacity(Builder builder) {
+    CapacityX(Builder builder) {
         dimensions = builder.dimensions;
     }
 
-    private Capacity(int numberOfDimensions) {
+    private CapacityX(int numberOfDimensions) {
         dimensions = new int[numberOfDimensions];
         // Arrays.fill(dimensions, 0); // Just to be safe, not needed
     }
 
     /**
-     * Returns the number of specified capacity dimensions.
+     * Returns the number of specified SizeDimension dimensions.
      *
      * @return noDimensions
      */
@@ -218,11 +216,14 @@ public class Capacity {
 
 
     /**
-     * Returns value of capacity-dimension with specified index.
+     * Returns value of SizeDimension-dimension with specified index.
      * <p>
-     * <p>If capacity dimension does not exist, it returns 0 (rather than IndexOutOfBoundsException).
+     * <p>
+     * If SizeDimension dimension does not exist, it returns 0 (rather than
+     * IndexOutOfBoundsException).
      *
-     * @param index dimension index of the capacity value to be retrieved
+     * @param index
+     *            dimension index of the SizeDimension value to be retrieved
      * @return the according dimension value
      */
     public int get(int index) {
@@ -233,13 +234,17 @@ public class Capacity {
     }
 
     /**
-     * Returns true if this capacity is less or equal than the capacity toCompare, i.e. if none of the capacity dimensions > than the corresponding dimension in toCompare.
+     * Returns true if this SizeDimension is less or equal than the
+     * SizeDimension toCompare, i.e. if none of the SizeDimension dimensions >
+     * than the corresponding dimension in toCompare.
      *
-     * @param toCompare the capacity to compare
-     * @return true if this capacity is less or equal than toCompare
-     * @throws NullPointerException if one of the args is null
+     * @param toCompare
+     *            the SizeDimension to compare
+     * @return true if this SizeDimension is less or equal than toCompare
+     * @throws NullPointerException
+     *             if one of the args is null
      */
-    public boolean isLessOrEqual(Capacity toCompare) {
+    public boolean isLessOrEqual(CapacityX toCompare) {
         if (toCompare == null) {
             throw new NullPointerException();
         }
@@ -252,13 +257,16 @@ public class Capacity {
     }
 
     /**
-     * Returns true if this capacity is greater or equal than the capacity toCompare
+     * Returns true if this SizeDimension is greater or equal than the
+     * SizeDimension toCompare
      *
-     * @param toCompare the capacity to compare
-     * @return true if this capacity is greater or equal than toCompare
-     * @throws NullPointerException if one of the args is null
+     * @param toCompare
+     *            the SizeDimension to compare
+     * @return true if this SizeDimension is greater or equal than toCompare
+     * @throws NullPointerException
+     *             if one of the args is null
      */
-    public boolean isGreaterOrEqual(Capacity toCompare) {
+    public boolean isGreaterOrEqual(CapacityX toCompare) {
         if (toCompare == null) {
             throw new NullPointerException();
         }
@@ -280,28 +288,30 @@ public class Capacity {
     }
 
     /**
-     * Return the maximum, i.e. the maximum of each capacity dimension.
+     * Return the maximum, i.e. the maximum of each SizeDimension dimension.
      *
-     * @param cap1 first capacity to compare
-     * @param cap2 second capacity to compare
-     * @return capacity maximum of each capacity dimension
+     * @param cap1
+     *            first SizeDimension to compare
+     * @param cap2
+     *            second SizeDimension to compare
+     * @return SizeDimension maximum of each SizeDimension dimension
      */
-    public static Capacity max(Capacity cap1, Capacity cap2) {
+    public static CapacityX max(CapacityX cap1, CapacityX cap2) {
         if (cap1 == null || cap2 == null) {
             throw new IllegalArgumentException("arg must not be null");
         }
-        Capacity.Builder toReturnBuilder = Capacity.Builder.newInstance();
+        CapacityX.Builder toReturnBuilder = CapacityX.Builder.newInstance();
         for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
             toReturnBuilder.addDimension(i, Math.max(cap1.get(i), cap2.get(i)));
         }
         return toReturnBuilder.build();
     }
 
-    public static Capacity min(Capacity cap1, Capacity cap2) {
+    public static CapacityX min(CapacityX cap1, CapacityX cap2) {
         if (cap1 == null || cap2 == null) {
             throw new IllegalArgumentException("arg must not be null");
         }
-        Capacity.Builder toReturnBuilder = Capacity.Builder.newInstance();
+        CapacityX.Builder toReturnBuilder = CapacityX.Builder.newInstance();
         for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
             toReturnBuilder.addDimension(i, Math.min(cap1.get(i), cap2.get(i)));
         }
@@ -313,13 +323,13 @@ public class Capacity {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Capacity)) {
+        if (!(o instanceof CapacityX)) {
             return false;
         }
 
-        Capacity capacity = (Capacity) o;
+        CapacityX SizeDimension = (CapacityX) o;
 
-        if (!Arrays.equals(dimensions, capacity.dimensions)) {
+        if (!Arrays.equals(dimensions, SizeDimension.dimensions)) {
             return false;
         }
 
@@ -331,15 +341,6 @@ public class Capacity {
         return Arrays.hashCode(dimensions);
     }
 
-
-    public static Capacity createNullCapacity(Capacity capacity) {
-        return capacity == null ? null : new Capacity(capacity.getNuOfDimensions());
-    }
-
-    public static Capacity createNullCapacity(int numberOfDimensions) {
-        return new Capacity(numberOfDimensions);
-    }
-
     public boolean isPositive() {
         for (int i = 0; i < getNuOfDimensions(); i++) {
             if (get(i) < 0) {
@@ -349,11 +350,11 @@ public class Capacity {
         return true;
     }
 
-    public Capacity add(Capacity capToAdd) {
+    public CapacityX add(CapacityX capToAdd) {
         if (capToAdd == null) {
-            throw new NullPointerException("capacity must not be null");
+            throw new NullPointerException("SizeDimension must not be null");
         }
-        Capacity res = new Capacity(
+        CapacityX res = new CapacityX(
                         Math.max(getNuOfDimensions(), capToAdd.getNuOfDimensions()));
         for (int i = 0; i < Math.max(getNuOfDimensions(),
                         capToAdd.getNuOfDimensions()); i++) {
@@ -363,11 +364,11 @@ public class Capacity {
         return res;
     }
 
-    public Capacity subtract(Capacity capToSubstract) {
+    public CapacityX subtract(CapacityX capToSubstract) {
         if (capToSubstract == null) {
-            throw new NullPointerException("capacity must not be null");
+            throw new NullPointerException("SizeDimension must not be null");
         }
-        Capacity res = new Capacity(
+        CapacityX res = new CapacityX(
                         Math.max(getNuOfDimensions(), capToSubstract.getNuOfDimensions()));
         for (int i = 0; i < Math.max(getNuOfDimensions(),
                         capToSubstract.getNuOfDimensions()); i++) {
@@ -376,23 +377,23 @@ public class Capacity {
         return res;
     }
 
-    public Capacity invert() {
-        Capacity res = new Capacity(getNuOfDimensions());
+    public CapacityX invert() {
+        CapacityX res = new CapacityX(getNuOfDimensions());
         for (int i = 0; i < getNuOfDimensions(); i++) {
             res.dimensions[i] = -get(i);
         }
         return res;
     }
 
-    public Capacity abs() {
-        Capacity res = new Capacity(getNuOfDimensions());
+    public CapacityX abs() {
+        CapacityX res = new CapacityX(getNuOfDimensions());
         for (int i = 0; i < getNuOfDimensions(); i++) {
             res.dimensions[i] = Math.abs(get(i));
         }
         return res;
     }
 
-    public double divide(Capacity denominator) {
+    public double divide(CapacityX denominator) {
         int nuOfDimensions = 0;
         double sumQuotients = 0.0;
         for (int index = 0; index < Math.max(getNuOfDimensions(),
@@ -404,7 +405,7 @@ public class Capacity {
                 continue;
             } else {
                 nuOfDimensions++;
-                sumQuotients += (double) get(index) / (double) denominator.get(index);
+                sumQuotients += get(index) / (double) denominator.get(index);
             }
         }
         if (nuOfDimensions > 0) {

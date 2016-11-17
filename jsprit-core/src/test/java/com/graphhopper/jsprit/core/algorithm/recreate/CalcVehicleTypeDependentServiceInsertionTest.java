@@ -28,7 +28,7 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -64,12 +64,12 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
         when(fleetManager.getAvailableVehicles()).thenReturn(Arrays.asList(veh1, veh2));
 
         VehicleType type = mock(VehicleType.class);
-        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
+        when(type.getCapacityDimensions()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 10).build());
         when(veh1.getType()).thenReturn(type);
 
         when(veh2.getType()).thenReturn(type);
 
-        when(service.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(service.getSize()).thenReturn(SizeDimension.Builder.newInstance().build());
         when(service.getTimeWindow()).thenReturn(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
 
         when(vehicleRoute.getDriver()).thenReturn(null);

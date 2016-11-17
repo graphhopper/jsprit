@@ -20,7 +20,7 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.*;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -115,7 +115,7 @@ public abstract class AbstractJob implements Job {
      */
     public abstract static class JobBuilder<T extends AbstractJob, B extends JobBuilder<T, B>> {
 
-        protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+        protected SizeDimension.Builder capacityBuilder = SizeDimension.Builder.newInstance();
 
         protected Skills.Builder skillBuilder = Skills.Builder.newInstance();
 
@@ -173,7 +173,7 @@ public abstract class AbstractJob implements Job {
         }
 
         @SuppressWarnings("unchecked")
-        public B addAllSizeDimensions(Capacity size) {
+        public B addAllSizeDimensions(SizeDimension size) {
             for (int i = 0; i < size.getNuOfDimensions(); i++) {
                 capacityBuilder.addDimension(i, size.get(i));
             }
@@ -226,7 +226,7 @@ public abstract class AbstractJob implements Job {
 
         protected abstract T createInstance();
 
-        public Capacity getCapacity() {
+        public SizeDimension getCapacity() {
             return capacityBuilder.build();
         }
 

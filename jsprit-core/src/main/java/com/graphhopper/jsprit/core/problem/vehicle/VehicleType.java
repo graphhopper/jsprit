@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 
 /**
  * Basic interface for vehicle-type-data.
@@ -36,9 +36,9 @@ public interface VehicleType {
     /**
      * Returns capacity dimensions.
      *
-     * @return {@link com.graphhopper.jsprit.core.problem.Capacity}
+     * @return {@link com.graphhopper.jsprit.core.problem.SizeDimension}
      */
-    public Capacity getCapacityDimensions();
+    public SizeDimension getCapacityDimensions();
 
     /**
      * Returns maximum velocity of this vehicle-type.

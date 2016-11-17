@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.Collection;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
@@ -396,7 +396,7 @@ public class Shipment extends AbstractJob {
 
     @Override
     @Deprecated
-    public Capacity getSize() {
+    public SizeDimension getSize() {
         return getPickupActivity().getSize();
     }
 

@@ -204,12 +204,12 @@ public class VehicleRoutingProblemTest {
     public void whenDelivieriesAreAdded_vrpShouldContainThem() {
         Delivery s1 = mock(Delivery.class);
         when(s1.getId()).thenReturn("s1");
-        when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(s1.getSize()).thenReturn(SizeDimension.Builder.newInstance().build());
         when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
         when(s1.getActivityList()).thenReturn(new SequentialJobActivityList(s1));
         Delivery s2 = mock(Delivery.class);
         when(s2.getId()).thenReturn("s2");
-        when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(s2.getSize()).thenReturn(SizeDimension.Builder.newInstance().build());
         when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
         when(s2.getActivityList()).thenReturn(new SequentialJobActivityList(s2));
 
@@ -227,12 +227,12 @@ public class VehicleRoutingProblemTest {
     public void whenDelivieriesAreAddedAllAtOnce_vrpShouldContainThem() {
         Delivery s1 = mock(Delivery.class);
         when(s1.getId()).thenReturn("s1");
-        when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(s1.getSize()).thenReturn(SizeDimension.Builder.newInstance().build());
         when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
         when(s1.getActivityList()).thenReturn(new SequentialJobActivityList(s1));
         Delivery s2 = mock(Delivery.class);
         when(s2.getId()).thenReturn("s2");
-        when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().build());
+        when(s2.getSize()).thenReturn(SizeDimension.Builder.newInstance().build());
         when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
         when(s2.getActivityList()).thenReturn(new SequentialJobActivityList(s2));
 

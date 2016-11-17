@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -68,7 +68,7 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
     }
 
     private double getFixCostContribution(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle) {
-        Capacity currentMaxLoadInRoute = getCurrentMaxLoadInRoute(currentRoute);
+        SizeDimension currentMaxLoadInRoute = getCurrentMaxLoadInRoute(currentRoute);
         double relFixCost = getDeltaRelativeFixCost(currentRoute, newVehicle, jobToInsert,currentMaxLoadInRoute);
         double absFixCost = getDeltaAbsoluteFixCost(currentRoute, newVehicle, jobToInsert,currentMaxLoadInRoute);
         double deltaFixCost = (1 - solution_completeness_ratio) * relFixCost + solution_completeness_ratio * absFixCost;
@@ -92,8 +92,8 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
 
     public double getSolutionCompletenessRatio() { return solution_completeness_ratio; }
 
-    private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job, Capacity currentMaxLoadInRoute) {
-        Capacity load = currentMaxLoadInRoute.add(job.getSize());
+    private double getDeltaAbsoluteFixCost(VehicleRoute route, Vehicle newVehicle, Job job, SizeDimension currentMaxLoadInRoute) {
+        SizeDimension load = currentMaxLoadInRoute.add(job.getSize());
         double currentFix = 0.0;
         if (route.getVehicle() != null) {
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
@@ -106,25 +106,25 @@ final class JobInsertionConsideringFixCostsCalculator implements JobInsertionCos
         return newVehicle.getType().getVehicleCostParams().fix - currentFix;
     }
 
-    private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job, Capacity currentLoad) {
-        Capacity load = currentLoad.add(job.getSize());
+    private double getDeltaRelativeFixCost(VehicleRoute route, Vehicle newVehicle, Job job, SizeDimension currentLoad) {
+        SizeDimension load = currentLoad.add(job.getSize());
         double currentRelFix = 0.0;
         if (route.getVehicle() != null) {
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
-                currentRelFix += route.getVehicle().getType().getVehicleCostParams().fix * Capacity.divide(currentLoad, route.getVehicle().getType().getCapacityDimensions());
+                currentRelFix += route.getVehicle().getType().getVehicleCostParams().fix * SizeDimension.divide(currentLoad, route.getVehicle().getType().getCapacityDimensions());
             }
         }
         if (!newVehicle.getType().getCapacityDimensions().isGreaterOrEqual(load)) {
             return Double.MAX_VALUE;
         }
-        double relativeFixCost = newVehicle.getType().getVehicleCostParams().fix * (Capacity.divide(load, newVehicle.getType().getCapacityDimensions())) - currentRelFix;
+        double relativeFixCost = newVehicle.getType().getVehicleCostParams().fix * (SizeDimension.divide(load, newVehicle.getType().getCapacityDimensions())) - currentRelFix;
         return relativeFixCost;
     }
 
-    private Capacity getCurrentMaxLoadInRoute(VehicleRoute route) {
-        Capacity maxLoad = stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class);
+    private SizeDimension getCurrentMaxLoadInRoute(VehicleRoute route) {
+        SizeDimension maxLoad = stateGetter.getRouteState(route, InternalStates.MAXLOAD, SizeDimension.class);
         if (maxLoad == null) {
-            maxLoad = Capacity.Builder.newInstance().build();
+            maxLoad = SizeDimension.Builder.newInstance().build();
         }
         return maxLoad;
     }

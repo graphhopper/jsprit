@@ -42,12 +42,12 @@ public class PickupAndDeliveryExample {
 
     public static void main(String[] args) {
 
-//        List<Capacity> caps = new ArrayList<>();
+//        List<SizeDimension> caps = new ArrayList<>();
 //        Random rnd = new Random(42);
 //
 //        for (int i = 0; i < 10000; i++) {
 //            int dim = rnd.nextInt(10) + 1;
-//            Capacity.Builder b = Capacity.Builder.newInstance();
+//            SizeDimension.Builder b = SizeDimension.Builder.newInstance();
 //            for (int j = 0; j < dim; j++) {
 //                b.addDimension(j, rnd.nextInt(1000) - 500);
 //            }
@@ -57,7 +57,7 @@ public class PickupAndDeliveryExample {
 //        LocalTime st1 = LocalTime.now();
 //        for (int i = 0; i < caps.size(); i++) {
 //            for (int j = 0; j < caps.size(); j++) {
-//                Capacity c2 = caps.get(i).subtract(caps.get(j));
+//                SizeDimension c2 = caps.get(i).subtract(caps.get(j));
 //                if (c2.getNuOfDimensions() > 1000) {
 //                    System.out.println("x");
 //                }
@@ -70,7 +70,7 @@ public class PickupAndDeliveryExample {
 //        LocalTime st2 = LocalTime.now();
 //        for (int i = 0; i < caps.size(); i++) {
 //            for (int j = 0; j < caps.size(); j++) {
-//                Capacity c2 = Capacity.subtract(caps.get(i), caps.get(j));
+//                SizeDimension c2 = SizeDimension.subtract(caps.get(i), caps.get(j));
 //                if (c2.getNuOfDimensions() > 1000) {
 //                    System.out.println("x");
 //                }

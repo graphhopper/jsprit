@@ -30,7 +30,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -143,9 +143,9 @@ public class StateManagerTest {
         VehicleRoute route = getRoute(mock(Vehicle.class));
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
-        Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
+        SizeDimension capacity = SizeDimension.Builder.newInstance().addDimension(0, 500).build();
         stateManager.putRouteState(route, id, capacity);
-        Capacity getCap = stateManager.getRouteState(route, id, Capacity.class);
+        SizeDimension getCap = stateManager.getRouteState(route, id, SizeDimension.class);
         assertEquals(500, getCap.get(0));
     }
 
@@ -178,9 +178,9 @@ public class StateManagerTest {
         when(activity.getIndex()).thenReturn(1);
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
-        Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
+        SizeDimension capacity = SizeDimension.Builder.newInstance().addDimension(0, 500).build();
         stateManager.putActivityState(activity, id, capacity);
-        Capacity getCap = stateManager.getActivityState(activity, id, Capacity.class);
+        SizeDimension getCap = stateManager.getActivityState(activity, id, SizeDimension.class);
         assertEquals(500, getCap.get(0));
     }
 
@@ -246,9 +246,9 @@ public class StateManagerTest {
         VehicleRoute route = getRoute(vehicle);
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
-        Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
+        SizeDimension capacity = SizeDimension.Builder.newInstance().addDimension(0, 500).build();
         stateManager.putRouteState(route, vehicle, id, capacity);
-        Capacity getCap = stateManager.getRouteState(route, vehicle, id, Capacity.class);
+        SizeDimension getCap = stateManager.getRouteState(route, vehicle, id, SizeDimension.class);
         assertEquals(500, getCap.get(0));
     }
 
@@ -259,11 +259,11 @@ public class StateManagerTest {
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
-        Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
+        SizeDimension capacity = SizeDimension.Builder.newInstance().addDimension(0, 500).build();
         TourActivity act = mock(TourActivity.class);
         when(act.getIndex()).thenReturn(1);
         stateManager.putActivityState(act, vehicle, id, capacity);
-        Capacity getCap = stateManager.getActivityState(act, vehicle, id, Capacity.class);
+        SizeDimension getCap = stateManager.getActivityState(act, vehicle, id, SizeDimension.class);
         assertEquals(500, getCap.get(0));
     }
 

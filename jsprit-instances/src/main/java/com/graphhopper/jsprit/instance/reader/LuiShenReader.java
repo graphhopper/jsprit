@@ -53,7 +53,7 @@ public class LuiShenReader {
      * <p>
      * <p>The instance-file is a solomon file. The vehicle-file is a
      * txt-file that has the following columns:
-     * <p>Vehicle;Capacity;Cost_a;Cost_b;Cost_c
+     * <p>Vehicle;SizeDimension;Cost_a;Cost_b;Cost_c
      * <p>Concrete vehicleType:
      * <p>A;100;300;60;30
      * <p>

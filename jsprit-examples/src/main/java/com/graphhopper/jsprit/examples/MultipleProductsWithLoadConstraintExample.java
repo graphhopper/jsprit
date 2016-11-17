@@ -23,7 +23,7 @@ import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -93,7 +93,7 @@ public class MultipleProductsWithLoadConstraintExample {
 
         @Override
         public ConstraintsStatus fulfilled(JobInsertionContext jobInsertionContext, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double departureTimeAtPrevAct) {
-            Capacity loadAtPrevAct = getLoadAtPreviousAct(prevAct);
+            SizeDimension loadAtPrevAct = getLoadAtPreviousAct(prevAct);
 
             if (isPickup(newAct)) {
                 if ((isApplePickup(newAct) && hasBananasInVehicle(loadAtPrevAct)) ||
@@ -117,11 +117,11 @@ public class MultipleProductsWithLoadConstraintExample {
             throw new IllegalStateException("can only constraint shipments");
         }
 
-        private boolean hasApplesInVehicle(Capacity loadAtPrevAct) {
+        private boolean hasApplesInVehicle(SizeDimension loadAtPrevAct) {
             return loadAtPrevAct.get(APPLES_DIMENSION_INDEX) > 0;
         }
 
-        private boolean hasBananasInVehicle(Capacity loadAtPrevAct) {
+        private boolean hasBananasInVehicle(SizeDimension loadAtPrevAct) {
             return loadAtPrevAct.get(BANANAS_DIMENSION_INDEX) > 0;
         }
 
@@ -149,11 +149,11 @@ public class MultipleProductsWithLoadConstraintExample {
             return newAct.getName().equals("deliverShipment");
         }
 
-        private Capacity getLoadAtPreviousAct(TourActivity prevAct) {
-//            Capacity prevLoad = stateManager.getActivityState(prevAct, StateFactory.LOAD, Capacity.class); //v1.3.1
-            Capacity prevLoad = stateManager.getActivityState(prevAct, InternalStates.LOAD, Capacity.class); //1.3.2-SNAPSHOT & upcoming release v1.4
+        private SizeDimension getLoadAtPreviousAct(TourActivity prevAct) {
+//            SizeDimension prevLoad = stateManager.getActivityState(prevAct, StateFactory.LOAD, SizeDimension.class); //v1.3.1
+            SizeDimension prevLoad = stateManager.getActivityState(prevAct, InternalStates.LOAD, SizeDimension.class); //1.3.2-SNAPSHOT & upcoming release v1.4
             if (prevLoad != null) return prevLoad;
-            else return Capacity.Builder.newInstance().build();
+            else return SizeDimension.Builder.newInstance().build();
         }
     }
 

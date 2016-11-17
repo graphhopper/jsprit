@@ -19,7 +19,7 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.algorithm.FirstCustomJobWithMultipleActivitiesExample;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -42,13 +42,13 @@ public class CustomJobTest {
 
             List<Location> locs = new ArrayList<>();
 
-            List<Capacity> cap = new ArrayList<>();
+            List<SizeDimension> cap = new ArrayList<>();
 
             public BuilderBase(String id) {
                 super(id);
             }
 
-            public CustomJob.BuilderBase<T,B> addPickup(Location location, Capacity capacity){
+            public CustomJob.BuilderBase<T,B> addPickup(Location location, SizeDimension capacity){
                 locs.add(location);
                 cap.add(capacity);
                 return this;
@@ -58,7 +58,7 @@ public class CustomJobTest {
                 return locs;
             }
 
-            public List<Capacity> getCaps() { return cap; }
+            public List<SizeDimension> getCaps() { return cap; }
 
             protected void validate(){
 
@@ -93,8 +93,8 @@ public class CustomJobTest {
         }
 
         @Override
-        public Capacity getSize() {
-            return Capacity.EMPTY;
+        public SizeDimension getSize() {
+            return SizeDimension.EMPTY;
         }
 
         @Override
@@ -111,9 +111,9 @@ public class CustomJobTest {
     @Test
     public void whenCreatingANewJobWithThreeDistinctActivities_jobShouldContainActivities(){
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10,0),Capacity.Builder.newInstance().addDimension(0,1).build())
-            .addPickup(Location.newInstance(5,0),Capacity.Builder.newInstance().addDimension(0,2).build())
-            .addPickup(Location.newInstance(20,0),Capacity.Builder.newInstance().addDimension(0,1).build())
+            .addPickup(Location.newInstance(10,0),SizeDimension.Builder.newInstance().addDimension(0,1).build())
+            .addPickup(Location.newInstance(5,0),SizeDimension.Builder.newInstance().addDimension(0,2).build())
+            .addPickup(Location.newInstance(20,0),SizeDimension.Builder.newInstance().addDimension(0,1).build())
             .build();
         Assert.assertEquals(3,cj.getActivityList().size());
 

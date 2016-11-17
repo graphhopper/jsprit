@@ -19,7 +19,7 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
@@ -98,8 +98,8 @@ public class FirstCustomJobExample {
         }
 
         @Override
-        public Capacity getSize() {
-            return Capacity.EMPTY;
+        public SizeDimension getSize() {
+            return SizeDimension.EMPTY;
         }
 
         @Override
@@ -107,7 +107,7 @@ public class FirstCustomJobExample {
             Builder builder = (Builder) jobBuilder;
             JobActivityList list = new SequentialJobActivityList(this);
             for(Location loc : builder.getLocs()){
-                list.addActivity(new PickupActivityNEW(this,"pick",loc,0,Capacity.EMPTY, Arrays.asList(TimeWindow.ETERNITY)));
+                list.addActivity(new PickupActivityNEW(this,"pick",loc,0,SizeDimension.EMPTY, Arrays.asList(TimeWindow.ETERNITY)));
             }
             setActivities(list);
         }

@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import java.util.Collection;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 public class ServiceActivityNEW extends JobActivity {
 
     public ServiceActivityNEW(AbstractJob job, String name, Location location, double operationTime,
-                    Capacity capacity, Collection<TimeWindow> timeWindows) {
+                    SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity, timeWindows);
     }
 

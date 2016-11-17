@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 
 public final class Start extends InternalActivity {
@@ -35,7 +35,7 @@ public final class Start extends InternalActivity {
     }
 
     public Start(Location location, double theoreticalStart, double theoreticalEnd) {
-        super("start", location, Capacity.EMPTY);
+        super("start", location, SizeDimension.EMPTY);
         setTheoreticalEarliestOperationStartTime(theoreticalStart);
         setTheoreticalLatestOperationStartTime(theoreticalEnd);
         endTime = theoreticalStart;

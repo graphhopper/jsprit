@@ -19,7 +19,7 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
@@ -51,13 +51,13 @@ public class FirstCustomJobWithMultipleActivitiesExample {
 
             List<Location> locs = new ArrayList<>();
 
-            List<Capacity> cap = new ArrayList<>();
+            List<SizeDimension> cap = new ArrayList<>();
 
             public BuilderBase(String id) {
                 super(id);
             }
 
-            public BuilderBase<T,B> addPickup(Location location, Capacity capacity){
+            public BuilderBase<T,B> addPickup(Location location, SizeDimension capacity){
                 locs.add(location);
                 cap.add(capacity);
                 return this;
@@ -67,7 +67,7 @@ public class FirstCustomJobWithMultipleActivitiesExample {
                 return locs;
             }
 
-            public List<Capacity> getCaps() { return cap; }
+            public List<SizeDimension> getCaps() { return cap; }
 
             protected void validate(){
 
@@ -102,8 +102,8 @@ public class FirstCustomJobWithMultipleActivitiesExample {
         }
 
         @Override
-        public Capacity getSize() {
-            return Capacity.EMPTY;
+        public SizeDimension getSize() {
+            return SizeDimension.EMPTY;
         }
 
         @Override
@@ -122,9 +122,9 @@ public class FirstCustomJobWithMultipleActivitiesExample {
     @Test
     public void test(){
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10,0),Capacity.Builder.newInstance().addDimension(0,1).build())
-            .addPickup(Location.newInstance(5,0),Capacity.Builder.newInstance().addDimension(0,2).build())
-            .addPickup(Location.newInstance(20,0),Capacity.Builder.newInstance().addDimension(0,1).build())
+            .addPickup(Location.newInstance(10,0),SizeDimension.Builder.newInstance().addDimension(0,1).build())
+            .addPickup(Location.newInstance(5,0),SizeDimension.Builder.newInstance().addDimension(0,2).build())
+            .addPickup(Location.newInstance(20,0),SizeDimension.Builder.newInstance().addDimension(0,1).build())
             .build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()

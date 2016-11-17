@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -36,23 +36,23 @@ class UpdateMaxCapacityUtilisationAtRoute implements ActivityVisitor, StateUpdat
 
     private StateManager stateManager;
 
-    private Capacity currentLoad = Capacity.Builder.newInstance().build();
+    private SizeDimension currentLoad = SizeDimension.Builder.newInstance().build();
 
     private VehicleRoute route;
 
-    private Capacity maxLoad;
+    private SizeDimension maxLoad;
 
-    private Capacity defaultValue;
+    private SizeDimension defaultValue;
 
     public UpdateMaxCapacityUtilisationAtRoute(StateManager stateManager) {
         super();
         this.stateManager = stateManager;
-        defaultValue = Capacity.Builder.newInstance().build();
+        defaultValue = SizeDimension.Builder.newInstance().build();
     }
 
     @Override
     public void begin(VehicleRoute route) {
-        currentLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+        currentLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
         if (currentLoad == null) {
             currentLoad = defaultValue;
         }
@@ -63,7 +63,7 @@ class UpdateMaxCapacityUtilisationAtRoute implements ActivityVisitor, StateUpdat
     @Override
     public void visit(TourActivity act) {
         currentLoad = currentLoad.add(act.getSize());
-        maxLoad = Capacity.max(maxLoad, currentLoad);
+        maxLoad = SizeDimension.max(maxLoad, currentLoad);
     }
 
     @Override
