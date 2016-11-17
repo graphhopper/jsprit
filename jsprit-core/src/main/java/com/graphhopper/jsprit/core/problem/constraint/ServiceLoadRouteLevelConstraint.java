@@ -19,9 +19,7 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
@@ -37,44 +35,59 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
 
     private RouteAndActivityStateGetter stateManager;
 
-    private Capacity defaultValue;
-
     public ServiceLoadRouteLevelConstraint(RouteAndActivityStateGetter stateManager) {
         super();
         this.stateManager = stateManager;
-        defaultValue = Capacity.Builder.newInstance().build();
     }
 
     @Override
     public boolean fulfilled(JobInsertionContext insertionContext) {
         Capacity maxLoadAtRoute = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.MAXLOAD, Capacity.class);
-        if (maxLoadAtRoute == null) {
-            maxLoadAtRoute = defaultValue;
-        }
-        Capacity capacityDimensions = insertionContext.getNewVehicle().getType().getCapacityDimensions();
-        if (!maxLoadAtRoute.isLessOrEqual(capacityDimensions)) {
+        maxLoadAtRoute = (maxLoadAtRoute != null) ? maxLoadAtRoute : Capacity.EMPTY;
+        Capacity capacityOfNewVehicle = insertionContext.getNewVehicle().getType().getCapacityDimensions();
+        if (!maxLoadAtRoute.isLessOrEqual(capacityOfNewVehicle)) {
             return false;
         }
-        if (insertionContext.getJob() instanceof Delivery) {
-            Capacity loadAtDepot = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-            if (loadAtDepot == null) {
-                loadAtDepot = defaultValue;
-            }
-            if (!loadAtDepot.add(insertionContext.getJob().getSize())
-                .isLessOrEqual(capacityDimensions)) {
-                return false;
-            }
-        } else if (insertionContext.getJob() instanceof Pickup || insertionContext.getJob() instanceof Service) {
-            Capacity loadAtEnd = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_END, Capacity.class);
-            if (loadAtEnd == null) {
-                loadAtEnd = defaultValue;
-            }
-            if (!loadAtEnd.add(insertionContext.getJob().getSize())
-                .isLessOrEqual(capacityDimensions)) {
-                return false;
-            }
+        AbstractJob job = (AbstractJob) insertionContext.getJob();
+        Capacity loadAtDepot = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+        loadAtDepot = (loadAtDepot != null) ? loadAtDepot : Capacity.EMPTY;
+        if (!(loadAtDepot.add(job.getPickupAtStart()).isLessOrEqual(capacityOfNewVehicle))) {
+            return false;
+        }
+        Capacity loadAtEnd = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_END, Capacity.class);
+        loadAtEnd = (loadAtEnd != null) ? loadAtEnd : Capacity.EMPTY;
+        if (!(loadAtEnd.add(job.getDeliveryAtEnd()).isLessOrEqual(capacityOfNewVehicle))) {
+            return false;
         }
         return true;
+
+//        if(loadAtDepot.add())
+//        if(insertionContext.getJob().getInitialPickup() < 0){
+//
+//        }
+//        else {
+//
+//        }
+//        if (insertionContext.getJob() instanceof Delivery) {
+//            Capacity loadAtDepot = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+//            if (loadAtDepot == null) {
+//                loadAtDepot = Capacity.EMPTY;
+//            }
+//            if (!loadAtDepot.add(insertionContext.getJob().getSize())
+//                .isLessOrEqual(capacityOfNewVehicle)) {
+//                return false;
+//            }
+//        } else if (insertionContext.getJob() instanceof Pickup || insertionContext.getJob() instanceof Service) {
+//            Capacity loadAtEnd = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_END, Capacity.class);
+//            if (loadAtEnd == null) {
+//                loadAtEnd = Capacity.EMPTY;
+//            }
+//            if (!loadAtEnd.add(insertionContext.getJob().getSize())
+//                .isLessOrEqual(capacityOfNewVehicle)) {
+//                return false;
+//            }
+//        }
+//        return true;
     }
 
 }
