@@ -22,10 +22,7 @@ import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.Collection;
@@ -89,26 +86,19 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
         double additionalDistance = distancePrevAct2NewAct + distanceNewAct2nextAct - distancePrevAct2NextAct;
         if(currentDistance + additionalDistance > maxDistance) return ConstraintsStatus.NOT_FULFILLED;
 
-
+        StateId tempStateId = stateManager.createStateId("tempStateId");
         double additionalDistanceOfPickup = 0;
         if(newAct instanceof DeliverShipment){
-            int iIndexOfPickup = iFacts.getRelatedActivityContext().getInsertionIndex();
-            TourActivity pickup = iFacts.getAssociatedActivities().get(0);
-            TourActivity actBeforePickup;
-            if(iIndexOfPickup > 0) actBeforePickup = iFacts.getRoute().getActivities().get(iIndexOfPickup-1);
-            else actBeforePickup = new Start(iFacts.getNewVehicle().getStartLocation(),0,Double.MAX_VALUE);
-            TourActivity actAfterPickup = iFacts.getRoute().getActivities().get(iIndexOfPickup);
-            //ToDo account here fore End and returnToDepot
-            double distanceActBeforePickup2Pickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), pickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getNewVehicle());
-            double distancePickup2ActAfterPickup = distanceCalculator.getDistance(pickup.getLocation(), actAfterPickup.getLocation(), iFacts.getRelatedActivityContext().getEndTime(), iFacts.getNewVehicle());
-            double distanceBeforePickup2AfterPickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), actAfterPickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getNewVehicle());
-            additionalDistanceOfPickup = distanceActBeforePickup2Pickup  + distancePickup2ActAfterPickup - distanceBeforePickup2AfterPickup;
+            additionalDistanceOfPickup = stateManager.getActivityState(
+                iFacts.getAssociatedActivities().get(0), tempStateId, Double.class);
         }
-
 
         if(currentDistance + additionalDistance + additionalDistanceOfPickup > maxDistance){
             return ConstraintsStatus.NOT_FULFILLED;
         }
+        
+        if (newAct instanceof PickupShipment)
+            stateManager.putActivityState(newAct, tempStateId, additionalDistance);
 
         return ConstraintsStatus.FULFILLED;
     }
