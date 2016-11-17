@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,6 +41,16 @@ public class PickupTest {
         assertEquals(2, one.getSize().get(0));
         assertEquals(4, one.getSize().get(1));
 
+    }
+
+    @Test
+    public void sizeAtStartAndEndShouldBeCorrect() {
+        Pickup one = new Pickup.Builder("s").setLocation(Location.newInstance("foofoo"))
+            .addSizeDimension(0, 2)
+            .addSizeDimension(1, 4)
+            .build();
+        assertTrue(one.getSizeAtEnd().equals(one.getSize()));
+        assertTrue(one.getSizeAtStart().equals(Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build()));
     }
 
     @Test

@@ -27,6 +27,24 @@ import static org.junit.Assert.*;
 public class CapacityTest {
 
     @Test
+    public void getNegativeShouldReturnCorrectCapacity() {
+        Capacity cap = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, -3).build();
+        Capacity neg = cap.getNegativeDimensions();
+        Assert.assertEquals(2, neg.getNuOfDimensions());
+        Assert.assertEquals(0, neg.get(0));
+        Assert.assertEquals(-3, neg.get(1));
+    }
+
+    @Test
+    public void getPositiveShouldReturnCorrectCapacity() {
+        Capacity cap = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, -3).build();
+        Capacity pos = cap.getPositiveDimensions();
+        Assert.assertEquals(2, pos.getNuOfDimensions());
+        Assert.assertEquals(2, pos.get(0));
+        Assert.assertEquals(0, pos.get(1));
+    }
+
+    @Test
     public void whenSettingSimplyOneCapDimension_nuOfDimensionMustBeCorrect() {
         Capacity.Builder capBuilder = Capacity.Builder.newInstance();
         capBuilder.addDimension(0, 4);
