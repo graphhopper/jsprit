@@ -18,7 +18,7 @@
 
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
@@ -117,7 +117,7 @@ public abstract class AbstractJob implements Job {
      */
     public abstract static class JobBuilder<T extends AbstractJob, B extends JobBuilder<T, B>> {
 
-        protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+        protected SizeDimension.Builder capacityBuilder = SizeDimension.Builder.newInstance();
 
         protected Skills.Builder skillBuilder = Skills.Builder.newInstance();
 
@@ -172,7 +172,7 @@ public abstract class AbstractJob implements Job {
         }
 
         @SuppressWarnings("unchecked")
-        public B addAllSizeDimensions(Capacity size) {
+        public B addAllSizeDimensions(SizeDimension size) {
             for (int i = 0; i < size.getNuOfDimensions(); i++) {
                 capacityBuilder.addDimension(i, size.get(i));
             }
@@ -223,7 +223,7 @@ public abstract class AbstractJob implements Job {
 
         protected abstract T createInstance();
 
-        public Capacity getCapacity() {
+        public SizeDimension getCapacity() {
             return capacityBuilder.build();
         }
 
@@ -261,9 +261,9 @@ public abstract class AbstractJob implements Job {
 
     protected Set<TimeWindow> allTimeWindows;
 
-    private Capacity sizeAtStart;
+    private SizeDimension sizeAtStart;
 
-    private Capacity sizeAtEnd;
+    private SizeDimension sizeAtEnd;
 
 
 
@@ -314,8 +314,8 @@ public abstract class AbstractJob implements Job {
         sizeAtEnd = calcSizeAt(false);
     }
 
-    private Capacity calcSizeAt(boolean start) {
-        Capacity size = Capacity.EMPTY;
+    private SizeDimension calcSizeAt(boolean start) {
+        SizeDimension size = SizeDimension.EMPTY;
         for (JobActivity act : activityList.getAll()) {
             size = size.add(act.getSize());
         }
@@ -329,11 +329,11 @@ public abstract class AbstractJob implements Job {
         }
     }
 
-    public Capacity getSizeAtStart() {
+    public SizeDimension getSizeAtStart() {
         return sizeAtStart;
     }
 
-    public Capacity getSizeAtEnd() {
+    public SizeDimension getSizeAtEnd() {
         return sizeAtEnd;
     }
 

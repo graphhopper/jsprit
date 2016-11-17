@@ -18,7 +18,7 @@
 
 package com.graphhopper.jsprit.core.util;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.JobActivityList;
@@ -40,13 +40,13 @@ public class CustomPickupJob extends AbstractJob {
 
         List<Location> locs = new ArrayList<>();
 
-        List<Capacity> cap = new ArrayList<>();
+        List<SizeDimension> cap = new ArrayList<>();
 
         public BuilderBase(String id) {
             super(id);
         }
 
-        public CustomPickupJob.BuilderBase<T, B> addPickup(Location location, Capacity capacity) {
+        public CustomPickupJob.BuilderBase<T, B> addPickup(Location location, SizeDimension capacity) {
             locs.add(location);
             cap.add(capacity);
             return this;
@@ -56,7 +56,7 @@ public class CustomPickupJob extends AbstractJob {
             return locs;
         }
 
-        public List<Capacity> getCaps() {
+        public List<SizeDimension> getCaps() {
             return cap;
         }
 
@@ -94,8 +94,8 @@ public class CustomPickupJob extends AbstractJob {
     }
 
     @Override
-    public Capacity getSize() {
-        return Capacity.EMPTY;
+    public SizeDimension getSize() {
+        return SizeDimension.EMPTY;
     }
 
     @Override

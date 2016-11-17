@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import org.junit.Assert;
@@ -81,7 +81,7 @@ public class ServiceTest {
             .addSizeDimension(1, 4)
             .build();
         assertTrue(one.getSizeAtEnd().equals(one.getSize()));
-        assertTrue(one.getSizeAtStart().equals(Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build()));
+        assertTrue(one.getSizeAtStart().equals(SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build()));
     }
 
     @Test

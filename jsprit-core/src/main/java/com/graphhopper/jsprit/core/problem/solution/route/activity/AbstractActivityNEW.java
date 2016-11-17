@@ -1,7 +1,7 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 
 import java.lang.reflect.Constructor;
@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class AbstractActivityNEW implements TourActivity {
 
     private int index;
-    protected Capacity capacity;
+    protected SizeDimension capacity;
     protected double arrTime;
     protected double endTime;
     protected double theoreticalEarliest = 0;
@@ -19,7 +19,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
     protected Location location;
 
 
-    public AbstractActivityNEW(String type, Location location, Capacity capacity) {
+    public AbstractActivityNEW(String type, Location location, SizeDimension capacity) {
         super();
         this.capacity = capacity;
         this.type = type;
@@ -88,7 +88,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
     }
 
     @Override
-    public Capacity getSize() {
+    public SizeDimension getSize() {
         return capacity;
     }
 

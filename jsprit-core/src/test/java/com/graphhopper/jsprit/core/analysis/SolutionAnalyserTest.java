@@ -20,7 +20,7 @@ package com.graphhopper.jsprit.core.analysis;
 
 
 import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
@@ -1325,7 +1325,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity atBeginning = analyser.getCapacityViolationAtBeginning(route);
+        SizeDimension atBeginning = analyser.getCapacityViolationAtBeginning(route);
         for (int i = 0; i < atBeginning.getNuOfDimensions(); i++) {
             assertTrue(atBeginning.get(i) == 0);
         }
@@ -1340,7 +1340,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity atEnd = analyser.getCapacityViolationAtEnd(route);
+        SizeDimension atEnd = analyser.getCapacityViolationAtEnd(route);
         for (int i = 0; i < atEnd.getNuOfDimensions(); i++) {
             assertTrue(atEnd.get(i) == 0);
         }
@@ -1357,7 +1357,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolation(route);
+        SizeDimension cap = analyser.getCapacityViolation(route);
         assertEquals(50, cap.get(0));
     }
 
@@ -1372,7 +1372,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity atEnd = analyser.getCapacityViolationAtEnd(route);
+        SizeDimension atEnd = analyser.getCapacityViolationAtEnd(route);
         assertEquals(5, atEnd.get(0));
     }
 
@@ -1386,7 +1386,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         TourActivity act = route.getStart();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
             assertTrue(cap.get(i) == 0);
         }
@@ -1404,7 +1404,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAtBeginning(route);
+        SizeDimension cap = analyser.getCapacityViolationAtBeginning(route);
         assertEquals(25, cap.get(0));
     }
 
@@ -1420,7 +1420,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getStart(), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getStart(), route);
         assertEquals(25, cap.get(0));
     }
 
@@ -1435,7 +1435,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(0), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(0), route);
         assertEquals(35, cap.get(0));
     }
 
@@ -1450,7 +1450,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(1), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(1), route);
         assertEquals(50, cap.get(0));
     }
 
@@ -1465,7 +1465,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(2), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(2), route);
         assertEquals(35, cap.get(0));
     }
 
@@ -1480,7 +1480,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(3), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(3), route);
         assertEquals(15, cap.get(0));
     }
 
@@ -1495,7 +1495,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(4), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(4), route);
         assertEquals(0, cap.get(0));
     }
 
@@ -1510,7 +1510,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(5), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(5), route);
         assertEquals(10, cap.get(0));
     }
 
@@ -1525,7 +1525,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(6), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(6), route);
         assertEquals(0, cap.get(0));
     }
 
@@ -1540,7 +1540,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(7), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(7), route);
         assertEquals(5, cap.get(0));
     }
 
@@ -1555,7 +1555,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(route.getEnd(), route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(route.getEnd(), route);
         assertEquals(5, cap.get(0));
     }
 
@@ -1569,7 +1569,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         TourActivity act = route.getActivities().get(0);
-        Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
             assertTrue(cap.get(i) == 0);
         }
@@ -1585,7 +1585,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         TourActivity act = route.getActivities().get(1);
-        Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
             assertTrue(cap.get(i) == 0);
         }
@@ -1601,7 +1601,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         TourActivity act = route.getActivities().get(2);
-        Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
             assertTrue(cap.get(i) == 0);
         }
@@ -1617,7 +1617,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         TourActivity act = route.getActivities().get(3);
-        Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
             assertTrue(cap.get(i) == 0);
         }
@@ -1633,7 +1633,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         TourActivity act = route.getEnd();
-        Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
+        SizeDimension cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
             assertTrue(cap.get(i) == 0);
         }

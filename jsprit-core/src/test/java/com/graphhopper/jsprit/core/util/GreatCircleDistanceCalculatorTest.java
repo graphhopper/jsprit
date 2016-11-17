@@ -18,10 +18,11 @@
 
 package com.graphhopper.jsprit.core.util;
 
-import com.graphhopper.jsprit.core.distance.SphericalDistanceCalculator;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import com.graphhopper.jsprit.core.distance.SphericalDistanceCalculator;
 
 /**
  * Created by schroeder on 28.11.14.
@@ -37,9 +38,9 @@ public class GreatCircleDistanceCalculatorTest {
         double lat2 = 54.0833333;
 
         double greatCircle = SphericalDistanceCalculator.getInstance().calculateDistance(
-            Coordinate.newInstance(lon1, lat1),
-            Coordinate.newInstance(lon2, lat2)
-        );
+                        Coordinate.newInstance(lon1, lat1),
+                        Coordinate.newInstance(lon2, lat2)
+                        );
         assertEquals(600, greatCircle, 30.);
     }
 

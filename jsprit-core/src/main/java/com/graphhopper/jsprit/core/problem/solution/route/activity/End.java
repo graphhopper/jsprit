@@ -35,7 +35,7 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 
 public final class End extends InternalActivity {
@@ -53,7 +53,7 @@ public final class End extends InternalActivity {
     }
 
     public End(Location location, double theoreticalStart, double theoreticalEnd) {
-        super("end", location, Capacity.EMPTY);
+        super("end", location, SizeDimension.EMPTY);
         setTheoreticalEarliestOperationStartTime(theoreticalStart);
         setTheoreticalLatestOperationStartTime(theoreticalEnd);
         endTime = theoreticalStart;
@@ -86,7 +86,7 @@ public final class End extends InternalActivity {
 /*
  * package com.graphhopper.jsprit.core.problem.solution.route.activity;
  *
- * import com.graphhopper.jsprit.core.problem.Capacity; import com.graphhopper.jsprit.core.problem.AbstractActivityNEW;
+ * import com.graphhopper.jsprit.core.problem.SizeDimension; import com.graphhopper.jsprit.core.problem.AbstractActivityNEW;
  * import com.graphhopper.jsprit.core.problem.Location;
  *
  * public final class End extends AbstractActivityNEW {
@@ -96,7 +96,7 @@ public final class End extends InternalActivity {
  *
  * public static End copyOf(End end) { return new End(end); }
  *
- * private final static Capacity capacity = Capacity.Builder.newInstance().build();
+ * private final static SizeDimension capacity = SizeDimension.Builder.newInstance().build();
  *
  *
  * private double endTime = -1;
@@ -158,7 +158,7 @@ public final class End extends InternalActivity {
  *
  * @Override public TourActivity duplicate() { return new End(this); }
  *
- * @Override public Capacity getSize() { return capacity; }
+ * @Override public SizeDimension getSize() { return capacity; }
  *
  * }
  */

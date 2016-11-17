@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
 
 /**
@@ -60,7 +60,7 @@ public class Delivery extends Service {
 
     @Override
     @Deprecated
-    public Capacity getSize() {
+    public SizeDimension getSize() {
         return super.getSize().abs();
     }
 

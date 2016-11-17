@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Break;
@@ -34,7 +34,7 @@ public class BreakActivity extends InternalJobActivity {
 
     // protected BreakActivity(Break aBreak) {
     // super(aBreak, "Break", aBreak.getLocation(), aBreak.getServiceDuration(),
-    // Capacity.createNullCapacity(aBreak.getSize()), aBreak.getTimeWindows());
+    // SizeDimension.createNullCapacity(aBreak.getSize()), aBreak.getTimeWindows());
     // }
 
     public BreakActivity(BreakActivity breakActivity) {
@@ -42,7 +42,7 @@ public class BreakActivity extends InternalJobActivity {
     }
 
     private BreakActivity(AbstractJob job, String name, Location location, double operationTime,
-                          Capacity capacity, Collection<TimeWindow> timeWindows) {
+                          SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity, timeWindows);
     }
 

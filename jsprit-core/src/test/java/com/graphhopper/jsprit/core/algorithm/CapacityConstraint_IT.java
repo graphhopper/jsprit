@@ -20,7 +20,7 @@ package com.graphhopper.jsprit.core.algorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
@@ -101,8 +101,8 @@ public class CapacityConstraint_IT {
         });
 
         for (VehicleRoute r : solution.getRoutes()) {
-            Capacity loadAtBeginning = sa.getLoadAtBeginning(r);
-            Capacity capacityDimensions = r.getVehicle().getType().getCapacityDimensions();
+            SizeDimension loadAtBeginning = sa.getLoadAtBeginning(r);
+            SizeDimension capacityDimensions = r.getVehicle().getType().getCapacityDimensions();
             //            System.out.println(r.getVehicle().getId() + " load@beginning: "  + loadAtBeginning);
             //            System.out.println("cap: " + capacityDimensions);
             Assert.assertTrue("capacity has been exceeded",

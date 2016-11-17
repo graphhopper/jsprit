@@ -20,7 +20,7 @@ package com.graphhopper.jsprit.core.analysis;
 
 import com.graphhopper.jsprit.core.algorithm.VariablePlusFixedSolutionCostCalculatorFactory;
 import com.graphhopper.jsprit.core.algorithm.state.*;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -67,9 +67,9 @@ public class SolutionAnalyser {
 
         private int deliverAtEndCounter;
 
-        private Capacity pickedUp;
+        private SizeDimension pickedUp;
 
-        private Capacity delivered;
+        private SizeDimension delivered;
 
         private StateId pickup_count_id;
 
@@ -102,8 +102,8 @@ public class SolutionAnalyser {
             pickupAtBeginningCounter = 0;
             deliveryCounter = 0;
             deliverAtEndCounter = 0;
-            pickedUp = Capacity.Builder.newInstance().build();
-            delivered = Capacity.Builder.newInstance().build();
+            pickedUp = SizeDimension.Builder.newInstance().build();
+            delivered = SizeDimension.Builder.newInstance().build();
         }
 
         @Override
@@ -481,7 +481,7 @@ public class SolutionAnalyser {
     private Double service_time;
     private Double operation_time;
     private Double tw_violation;
-    private Capacity cap_violation;
+    private SizeDimension cap_violation;
     private Double fixed_costs;
     private Double variable_transport_costs;
     private Boolean hasSkillConstraintViolation;
@@ -491,10 +491,10 @@ public class SolutionAnalyser {
     private Integer noPickupsAtBeginning;
     private Integer noDeliveries;
     private Integer noDeliveriesAtEnd;
-    private Capacity pickupLoad;
-    private Capacity pickupLoadAtBeginning;
-    private Capacity deliveryLoad;
-    private Capacity deliveryLoadAtEnd;
+    private SizeDimension pickupLoad;
+    private SizeDimension pickupLoadAtBeginning;
+    private SizeDimension deliveryLoad;
+    private SizeDimension deliveryLoadAtEnd;
 
     private double maxOperationTime;
 
@@ -603,7 +603,7 @@ public class SolutionAnalyser {
         service_time = 0.;
         operation_time = 0.;
         tw_violation = 0.;
-        cap_violation = Capacity.Builder.newInstance().build();
+        cap_violation = SizeDimension.Builder.newInstance().build();
         fixed_costs = 0.;
         variable_transport_costs = 0.;
         total_costs = 0.;
@@ -614,10 +614,10 @@ public class SolutionAnalyser {
         noPickupsAtBeginning = 0;
         noDeliveries = 0;
         noDeliveriesAtEnd = 0;
-        pickupLoad = Capacity.Builder.newInstance().build();
-        pickupLoadAtBeginning = Capacity.Builder.newInstance().build();
-        deliveryLoad = Capacity.Builder.newInstance().build();
-        deliveryLoadAtEnd = Capacity.Builder.newInstance().build();
+        pickupLoad = SizeDimension.Builder.newInstance().build();
+        pickupLoadAtBeginning = SizeDimension.Builder.newInstance().build();
+        deliveryLoad = SizeDimension.Builder.newInstance().build();
+        deliveryLoadAtEnd = SizeDimension.Builder.newInstance().build();
     }
 
     /**
@@ -634,33 +634,33 @@ public class SolutionAnalyser {
      * @param route to get the load at beginning from
      * @return load at start location of specified route
      */
-    public Capacity getLoadAtBeginning(VehicleRoute route) {
+    public SizeDimension getLoadAtBeginning(VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
-        return stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+        return stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
     }
 
     /**
      * @param route to get the load at the end from
      * @return load at end location of specified route
      */
-    public Capacity getLoadAtEnd(VehicleRoute route) {
+    public SizeDimension getLoadAtEnd(VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
-        return stateManager.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class);
+        return stateManager.getRouteState(route, InternalStates.LOAD_AT_END, SizeDimension.class);
     }
 
     /**
      * @param route to get max load from
      * @return max load of specified route, i.e. for each capacity dimension the max value.
      */
-    public Capacity getMaxLoad(VehicleRoute route) {
+    public SizeDimension getMaxLoad(VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
-        return stateManager.getRouteState(route, InternalStates.MAXLOAD, Capacity.class);
+        return stateManager.getRouteState(route, InternalStates.MAXLOAD, SizeDimension.class);
     }
 
     /**
@@ -669,7 +669,7 @@ public class SolutionAnalyser {
      * route. If act is End, it returns the load atEnd of specified route.
      * Returns null if no load can be found.
      */
-    public Capacity getLoadRightAfterActivity(TourActivity activity, VehicleRoute route) {
+    public SizeDimension getLoadRightAfterActivity(TourActivity activity, VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
@@ -683,7 +683,7 @@ public class SolutionAnalyser {
             return getLoadAtEnd(route);
         }
         verifyThatRouteContainsAct(activity, route);
-        return stateManager.getActivityState(activity, InternalStates.LOAD, Capacity.class);
+        return stateManager.getActivityState(activity, InternalStates.LOAD, SizeDimension.class);
     }
 
     private void verifyThatRouteContainsAct(TourActivity activity, VehicleRoute route) {
@@ -697,7 +697,7 @@ public class SolutionAnalyser {
      * @return load just before the specified activity. If act is Start, it returns the load atBeginning of the specified
      * route. If act is End, it returns the load atEnd of specified route.
      */
-    public Capacity getLoadJustBeforeActivity(TourActivity activity, VehicleRoute route) {
+    public SizeDimension getLoadJustBeforeActivity(TourActivity activity, VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
@@ -711,7 +711,7 @@ public class SolutionAnalyser {
             return getLoadAtEnd(route);
         }
         verifyThatRouteContainsAct(activity, route);
-        Capacity afterAct = stateManager.getActivityState(activity, InternalStates.LOAD, Capacity.class);
+        SizeDimension afterAct = stateManager.getActivityState(activity, InternalStates.LOAD, SizeDimension.class);
         if (afterAct != null && activity.getSize() != null) {
             return afterAct.subtract(activity.getSize());
         } else if (afterAct != null) {
@@ -747,34 +747,34 @@ public class SolutionAnalyser {
      * @param route to get the picked load from
      * @return picked load (without load at beginning)
      */
-    public Capacity getLoadPickedUp(VehicleRoute route) {
+    public SizeDimension getLoadPickedUp(VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
-        return stateManager.getRouteState(route, stateManager.createStateId(LOAD_PICKED), Capacity.class);
+        return stateManager.getRouteState(route, stateManager.createStateId(LOAD_PICKED), SizeDimension.class);
     }
 
     /**
      * @param route to get delivered load from
      * @return delivered laod (without load at end)
      */
-    public Capacity getLoadDelivered(VehicleRoute route) {
+    public SizeDimension getLoadDelivered(VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
-        return stateManager.getRouteState(route, stateManager.createStateId(LOAD_DELIVERED), Capacity.class);
+        return stateManager.getRouteState(route, stateManager.createStateId(LOAD_DELIVERED), SizeDimension.class);
     }
 
     /**
      * @param route to get the capacity violation from
      * @return the capacity violation on this route, i.e. maxLoad - vehicleCapacity
      */
-    public Capacity getCapacityViolation(VehicleRoute route) {
+    public SizeDimension getCapacityViolation(VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
-        Capacity maxLoad = getMaxLoad(route);
-        return Capacity.max(Capacity.Builder.newInstance().build(),
+        SizeDimension maxLoad = getMaxLoad(route);
+        return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
             maxLoad.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
@@ -784,12 +784,12 @@ public class SolutionAnalyser {
      * dimension with dimIndex=0 and dimIndex=1 and dimIndex=1 is violated by 4 units then this method returns
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
-    public Capacity getCapacityViolationAtBeginning(VehicleRoute route) {
+    public SizeDimension getCapacityViolationAtBeginning(VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
-        Capacity atBeginning = getLoadAtBeginning(route);
-        return Capacity.max(Capacity.Builder.newInstance().build(),
+        SizeDimension atBeginning = getLoadAtBeginning(route);
+        return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
             atBeginning.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
@@ -799,12 +799,12 @@ public class SolutionAnalyser {
      * dimension with dimIndex=0 and dimIndex=1 and dimIndex=1 is violated by 4 units then this method returns
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
-    public Capacity getCapacityViolationAtEnd(VehicleRoute route) {
+    public SizeDimension getCapacityViolationAtEnd(VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
-        Capacity atEnd = getLoadAtEnd(route);
-        return Capacity.max(Capacity.Builder.newInstance().build(),
+        SizeDimension atEnd = getLoadAtEnd(route);
+        return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
             atEnd.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
@@ -815,15 +815,15 @@ public class SolutionAnalyser {
      * dimension with dimIndex=0 and dimIndex=1 and dimIndex=1 is violated by 4 units then this method returns
      * [[dimIndex=0][dimValue=0][dimIndex=1][dimValue=4]]
      */
-    public Capacity getCapacityViolationAfterActivity(TourActivity activity, VehicleRoute route) {
+    public SizeDimension getCapacityViolationAfterActivity(TourActivity activity, VehicleRoute route) {
         if (route == null) {
             throw new IllegalArgumentException("route is missing.");
         }
         if (activity == null) {
             throw new IllegalArgumentException("activity is missing.");
         }
-        Capacity afterAct = getLoadRightAfterActivity(activity, route);
-        return Capacity.max(Capacity.Builder.newInstance().build(),
+        SizeDimension afterAct = getLoadRightAfterActivity(activity, route);
+        return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
             afterAct.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
@@ -1235,28 +1235,28 @@ public class SolutionAnalyser {
     /**
      * @return load picked up in solution (without load at beginning of each route)
      */
-    public Capacity getLoadPickedUp() {
+    public SizeDimension getLoadPickedUp() {
         return pickupLoad;
     }
 
     /**
      * @return load picked up in solution at beginning of each route
      */
-    public Capacity getLoadAtBeginning() {
+    public SizeDimension getLoadAtBeginning() {
         return pickupLoadAtBeginning;
     }
 
     /**
      * @return load delivered in solution (without load at end of each route)
      */
-    public Capacity getLoadDelivered() {
+    public SizeDimension getLoadDelivered() {
         return deliveryLoad;
     }
 
     /**
      * @return load delivered in solution at end of each route
      */
-    public Capacity getLoadAtEnd() {
+    public SizeDimension getLoadAtEnd() {
         return deliveryLoadAtEnd;
     }
 
@@ -1303,7 +1303,7 @@ public class SolutionAnalyser {
     /**
      * @return total capacity violation for specified solution
      */
-    public Capacity getCapacityViolation() {
+    public SizeDimension getCapacityViolation() {
         return cap_violation;
     }
 

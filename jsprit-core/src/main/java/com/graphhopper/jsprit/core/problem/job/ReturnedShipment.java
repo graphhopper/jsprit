@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 
@@ -48,7 +48,7 @@ public final class ReturnedShipment extends Shipment {
 
         protected TimeWindowsImpl backhaulTimeWindows = new TimeWindowsImpl();
 
-        protected Capacity.Builder backhaulCapacityBuilder = Capacity.Builder.newInstance();
+        protected SizeDimension.Builder backhaulCapacityBuilder = SizeDimension.Builder.newInstance();
 
         /**
          * Returns new instance of this builder.
@@ -141,7 +141,7 @@ public final class ReturnedShipment extends Shipment {
             return this;
         }
 
-        public Builder addAllBackhaulSizeDimensions(Capacity size) {
+        public Builder addAllBackhaulSizeDimensions(SizeDimension size) {
             for (int i = 0; i < size.getNuOfDimensions(); i++) {
                 backhaulCapacityBuilder.addDimension(i, size.get(i));
             }
@@ -171,8 +171,8 @@ public final class ReturnedShipment extends Shipment {
             return backhaulTimeWindows;
         }
 
-        private Capacity getBackhaulCapacity() {
-            Capacity backhaulCapacity = backhaulCapacityBuilder.build();
+        private SizeDimension getBackhaulCapacity() {
+            SizeDimension backhaulCapacity = backhaulCapacityBuilder.build();
             // If no capacity is specified, the backhaul capacity will be the
             // same as the picking one.
             if (backhaulCapacity.getNuOfDimensions() == 0) {

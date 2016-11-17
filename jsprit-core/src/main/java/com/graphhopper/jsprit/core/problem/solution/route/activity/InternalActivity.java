@@ -1,6 +1,6 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 
 /**
@@ -10,7 +10,7 @@ import com.graphhopper.jsprit.core.problem.Location;
  */
 public abstract class InternalActivity extends AbstractActivityNEW implements InternalActivityMarker {
 
-    public InternalActivity(String name, Location location, Capacity capacity) {
+    public InternalActivity(String name, Location location, SizeDimension capacity) {
         super(name, location, capacity);
     }
 

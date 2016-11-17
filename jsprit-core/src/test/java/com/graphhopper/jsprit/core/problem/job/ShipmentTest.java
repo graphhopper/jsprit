@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.util.Coordinate;
@@ -45,7 +45,7 @@ public class ShipmentTest {
     public void sizeAtStartAndEndShouldBeCorrect() {
         Shipment one = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).addSizeDimension(1, 5).setPickupLocation(Location.Builder.newInstance().setId("foo").build()).
             setDeliveryLocation(TestUtils.loc("foofoo")).setPickupServiceTime(10).setDeliveryServiceTime(20).build();
-        Capacity cap = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build();
+        SizeDimension cap = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build();
         assertTrue(one.getSizeAtStart().equals(cap));
         assertTrue(one.getSizeAtEnd().equals(cap));
     }

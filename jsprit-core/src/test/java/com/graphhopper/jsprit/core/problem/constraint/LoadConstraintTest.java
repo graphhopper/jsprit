@@ -19,7 +19,7 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -63,7 +63,7 @@ public class LoadConstraintTest {
     public void doBefore() {
         Vehicle vehicle = mock(Vehicle.class);
         VehicleType type = mock(VehicleType.class);
-        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 20).build());
+        when(type.getCapacityDimensions()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 20).build());
         when(vehicle.getType()).thenReturn(type);
 
         VehicleRoutingProblem.Builder serviceProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -105,9 +105,9 @@ public class LoadConstraintTest {
     @Test
     public void whenCustomJob_itShouldNotIgnoreCapacity() {
         CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), Capacity.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), Capacity.Builder.newInstance().addDimension(0, 2).build())
-            .addPickup(Location.newInstance(20, 0), Capacity.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+            .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .build();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
@@ -138,7 +138,7 @@ public class LoadConstraintTest {
     public void whenServiceRouteAndNewServiceFitsInBetweenStartAndAct1_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -155,7 +155,7 @@ public class LoadConstraintTest {
     public void whenServiceRouteAndNewServiceFitsInBetweenAc1AndAct2_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -172,7 +172,7 @@ public class LoadConstraintTest {
     public void whenServiceRouteAndNewServiceFitsInBetweenAc2AndEnd_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -192,7 +192,7 @@ public class LoadConstraintTest {
     public void whenServiceRouteAndNewServiceDoesNotFitInBetweenStartAndAct1_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -209,7 +209,7 @@ public class LoadConstraintTest {
     public void whenServiceRouteAndNewServiceDoesNotFitInBetweenAc1AndAct2_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -226,7 +226,7 @@ public class LoadConstraintTest {
     public void whenServiceRouteAndNewServiceDoesNotFitInBetweenAc2AndEnd_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -301,7 +301,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -318,7 +318,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -335,7 +335,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldFitInBetweenAct2AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 10).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 10).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -355,7 +355,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldNotFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -372,7 +372,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldNotFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -389,7 +389,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldNotFitInBetweenAct2AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 11).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -410,7 +410,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newDeliveryShouldFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Delivery s = mock(Delivery.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 15).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 15).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -428,7 +428,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newDeliveryShouldNotFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Delivery s = mock(Delivery.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 16).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 16).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -446,7 +446,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newDeliveryShouldFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Delivery s = mock(Delivery.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -464,7 +464,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newDeliveryNotShouldFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Delivery s = mock(Delivery.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -482,7 +482,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newDeliveryShouldFitInBetweenAct2AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Delivery s = mock(Delivery.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -500,7 +500,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newDeliveryShouldNotFitInBetweenAct2AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Delivery s = mock(Delivery.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -518,7 +518,7 @@ public class LoadConstraintTest {
     public void whenPDRouteAndNewServiceFitsInBetweenAc1AndAct2_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -535,7 +535,7 @@ public class LoadConstraintTest {
     public void whenPDRouteAndNewServiceFitsInBetweenAc2AndEnd_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -555,7 +555,7 @@ public class LoadConstraintTest {
     public void whenPDRouteAndNewServiceDoesNotFitInBetweenStartAndAct1_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -572,7 +572,7 @@ public class LoadConstraintTest {
     public void whenPDRouteAndNewServiceDoesNotFitInBetweenAc1AndAct2_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -589,7 +589,7 @@ public class LoadConstraintTest {
     public void whenPDRouteAndNewServiceDoesNotFitInBetweenAc2AndEnd_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -624,7 +624,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 20).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 20).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -642,7 +642,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldNotFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 21).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 21).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -660,7 +660,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 10).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 10).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -678,7 +678,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldNotFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 11).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -696,7 +696,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldFitInBetweenAct2AndAct3() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -714,7 +714,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldNotFitInBetweenAct2AndAct3() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -732,7 +732,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldFitInBetweenAct3AndAct4() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 10).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 10).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -750,7 +750,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldNotFitInBetweenAct3AndAct4() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 11).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -768,7 +768,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldFitInBetweenAct4AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 20).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 20).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -786,7 +786,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndPickupOfNewShipmentShouldNotFitInBetweenAct4AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 21).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 21).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -808,7 +808,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 20).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 20).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -826,7 +826,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 21).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 21).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -844,7 +844,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 10).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 10).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -862,7 +862,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 11).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -880,7 +880,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenAct2AndAct3() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 5).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 5).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -898,7 +898,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenAct2AndAct3() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 6).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -916,7 +916,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenAct3AndAct4() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 10).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 10).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -934,7 +934,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenAct3AndAct4() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 11).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -952,7 +952,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenAct4AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 20).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 20).build();
 
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
@@ -970,7 +970,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenAct4AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(shipmentRoute), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 21).build();
+        SizeDimension newSize = SizeDimension.Builder.newInstance().addDimension(0, 21).build();
 
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 

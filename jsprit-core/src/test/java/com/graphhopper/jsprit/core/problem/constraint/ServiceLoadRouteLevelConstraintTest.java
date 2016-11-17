@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
@@ -57,17 +57,17 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Before
     public void doBefore() {
         VehicleType type = mock(VehicleType.class);
-        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build());
+        when(type.getCapacityDimensions()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build());
         vehicle = mock(Vehicle.class);
         when(vehicle.getType()).thenReturn(type);
 
         route = mock(VehicleRoute.class);
 
-        Capacity currentLoad = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build();
+        SizeDimension currentLoad = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build();
         stateGetter = mock(RouteAndActivityStateGetter.class);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(currentLoad);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(currentLoad);
-        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(currentLoad);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class)).thenReturn(currentLoad);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, SizeDimension.class)).thenReturn(currentLoad);
+        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, SizeDimension.class)).thenReturn(currentLoad);
 
         constraint = new ServiceLoadRouteLevelConstraint(stateGetter);
 
@@ -80,7 +80,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusDeliverySizeDoesNotExceedsVehicleCapacity_itShouldReturnTrue() {
         Service service = Delivery.Builder.newInstance("del").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build()).build();
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
@@ -92,7 +92,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusDeliverySizeExceedsVehicleCapacityInAllDimension_itShouldReturnFalse() {
         Service service = Delivery.Builder.newInstance("d").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build()).build();
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
@@ -104,7 +104,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusDeliverySizeExceedsVehicleCapacityInOneDimension_itShouldReturnFalse() {
         Service service = Delivery.Builder.newInstance("d").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 3).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 3).build()).build();
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
@@ -117,7 +117,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusDeliverySizeJustFitIntoVehicle_itShouldReturnTrue() {
         Service service = Delivery.Builder.newInstance("d").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 2).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 2).build()).build();
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
@@ -129,7 +129,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusPickupSizeDoesNotExceedsVehicleCapacity_itShouldReturnTrue() {
         Service service = Pickup.Builder.newInstance("p").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build()).build();
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
@@ -142,7 +142,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusPickupSizeExceedsVehicleCapacityInAllDimension_itShouldReturnFalse() {
         Service service = Pickup.Builder.newInstance("p").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build()).build();
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
@@ -154,7 +154,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusPickupSizeExceedsVehicleCapacityInOneDimension_itShouldReturnFalse() {
         Service service = Pickup.Builder.newInstance("p").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 3).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 3).build()).build();
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
@@ -167,7 +167,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusPickupSizeJustFitIntoVehicle_itShouldReturnTrue() {
         Service service = Pickup.Builder.newInstance("p").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 2).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 2).build()).build();
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
@@ -180,7 +180,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusServiceSizeDoesNotExceedsVehicleCapacity_itShouldReturnTrue() {
         Service service = Service.Builder.newInstance("s").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build()).build();
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
@@ -196,7 +196,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusServiceSizeExceedsVehicleCapacityInAllDimension_itShouldReturnFalse() {
         Service service = Service.Builder.newInstance("s").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build()).build();
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
@@ -209,7 +209,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusServiceSizeExceedsVehicleCapacityInOneDimension_itShouldReturnFalse() {
         Service service = Service.Builder.newInstance("s").setLocation(l())
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 3).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 3).build()).build();
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
@@ -221,7 +221,7 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenLoadPlusServiceSizeJustFitIntoVehicle_itShouldReturnTrue() {
         Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(0))
-            .addAllSizeDimensions(Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 2).build()).build();
+            .addAllSizeDimensions(SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 2).build()).build();
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
@@ -234,22 +234,22 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenAddingAServiceAndNewVehicleDoesNotHaveTheCapacity_itShouldReturnFalse() {
         Service service = mock(Service.class);
-        when(service.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
+        when(service.getSize()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 2).build());
 
-        Capacity atBeginning = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
-        Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
+        SizeDimension atBeginning = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
+        SizeDimension atEnd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
 
         RouteAndActivityStateGetter stateGetter = mock(RouteAndActivityStateGetter.class);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
-        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class)).thenReturn(atBeginning);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, SizeDimension.class)).thenReturn(atEnd);
+        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, SizeDimension.class)).thenReturn(atBeginning);
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
 
         VehicleType type = mock(VehicleType.class);
-        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 1).addDimension(2, 2).build());
+        when(type.getCapacityDimensions()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, 1).addDimension(2, 2).build());
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.getType()).thenReturn(type);
 
@@ -262,22 +262,22 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenAddingADeliveryAndNewVehicleDoesNotHaveTheCapacity_itShouldReturnFalse() {
         Service service = mock(Delivery.class);
-        when(service.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
+        when(service.getSize()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 2).build());
 
-        Capacity atBeginning = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
-        Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
+        SizeDimension atBeginning = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
+        SizeDimension atEnd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
 
         RouteAndActivityStateGetter stateGetter = mock(RouteAndActivityStateGetter.class);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
-        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class)).thenReturn(atBeginning);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, SizeDimension.class)).thenReturn(atEnd);
+        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, SizeDimension.class)).thenReturn(atBeginning);
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
 
         VehicleType type = mock(VehicleType.class);
-        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 1).addDimension(2, 2).build());
+        when(type.getCapacityDimensions()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, 1).addDimension(2, 2).build());
         vehicle = mock(Vehicle.class);
         when(vehicle.getType()).thenReturn(type);
 
@@ -290,22 +290,22 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Test
     public void whenAddingAPickupAndNewVehicleDoesNotHaveTheCapacity_itShouldReturnFalse() {
         Pickup service = mock(Pickup.class);
-        when(service.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
+        when(service.getSize()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 2).build());
 
-        Capacity atBeginning = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
-        Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
+        SizeDimension atBeginning = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
+        SizeDimension atEnd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
 
         RouteAndActivityStateGetter stateGetter = mock(RouteAndActivityStateGetter.class);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(atEnd);
-        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(atBeginning);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class)).thenReturn(atBeginning);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, SizeDimension.class)).thenReturn(atEnd);
+        when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, SizeDimension.class)).thenReturn(atBeginning);
 
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
 
         VehicleType type = mock(VehicleType.class);
-        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 1).addDimension(2, 2).build());
+        when(type.getCapacityDimensions()).thenReturn(SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, 1).addDimension(2, 2).build());
         vehicle = mock(Vehicle.class);
         when(vehicle.getType()).thenReturn(type);
 

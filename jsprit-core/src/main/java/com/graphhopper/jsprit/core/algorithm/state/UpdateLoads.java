@@ -19,7 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
@@ -48,21 +48,21 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
     /*
      * default has one dimension with a value of zero
      */
-    private Capacity currentLoad;
+    private SizeDimension currentLoad;
 
-    private Capacity defaultValue;
+    private SizeDimension defaultValue;
 
     private VehicleRoute route;
 
     public UpdateLoads(StateManager stateManager) {
         super();
         this.stateManager = stateManager;
-        defaultValue = Capacity.Builder.newInstance().build();
+        defaultValue = SizeDimension.Builder.newInstance().build();
     }
 
     @Override
     public void begin(VehicleRoute route) {
-        currentLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+        currentLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
         if (currentLoad == null) {
             currentLoad = defaultValue;
         }
@@ -74,17 +74,17 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
         currentLoad = currentLoad.add(act.getSize());
         stateManager.putInternalTypedActivityState(act, InternalStates.LOAD, currentLoad);
         //		assert currentLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "currentLoad at activity must not be > vehicleCapacity";
-        //		assert currentLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "currentLoad at act must not be < 0 in one of the applied dimensions";
+        //		assert currentLoad.isGreaterOrEqual(SizeDimension.Builder.newInstance().build()) : "currentLoad at act must not be < 0 in one of the applied dimensions";
     }
 
     @Override
     public void finish() {
-        currentLoad = Capacity.Builder.newInstance().build();
+        currentLoad = SizeDimension.Builder.newInstance().build();
     }
 
     void insertionStarts(VehicleRoute route) {
-        Capacity loadAtDepot = Capacity.Builder.newInstance().build();
-        Capacity loadAtEnd = Capacity.Builder.newInstance().build();
+        SizeDimension loadAtDepot = SizeDimension.Builder.newInstance().build();
+        SizeDimension loadAtEnd = SizeDimension.Builder.newInstance().build();
         for (Job j : route.getTourActivities().getJobs()) {
             if (j instanceof Delivery) {
                 loadAtDepot = loadAtDepot.add(j.getSize());
@@ -106,14 +106,14 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
         if (job2insert instanceof Delivery) {
-            Capacity loadAtDepot = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+            SizeDimension loadAtDepot = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
             if (loadAtDepot == null) {
                 loadAtDepot = defaultValue;
             }
             stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING,
                 loadAtDepot.add(job2insert.getSize()));
         } else if (job2insert instanceof Pickup || job2insert instanceof Service) {
-            Capacity loadAtEnd = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_END, Capacity.class);
+            SizeDimension loadAtEnd = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_END, SizeDimension.class);
             if (loadAtEnd == null) {
                 loadAtEnd = defaultValue;
             }

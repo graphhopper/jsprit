@@ -18,7 +18,7 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
@@ -37,7 +37,7 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
 
     private RouteAndActivityStateGetter stateManager;
 
-    private Capacity defaultValue;
+    private SizeDimension defaultValue;
 
     /**
      * Constructs the constraint ensuring capacity constraint at each activity.
@@ -50,7 +50,7 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
     public PickupAndDeliverShipmentLoadActivityLevelConstraint(RouteAndActivityStateGetter stateManager) {
         super();
         this.stateManager = stateManager;
-        defaultValue = Capacity.Builder.newInstance().build();
+        defaultValue = SizeDimension.Builder.newInstance().build();
     }
 
     // private String visualize(JobInsertionContext iFacts, TourActivity
@@ -97,28 +97,28 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
         // <--- Check ends here
 
         // System.out.println(visualize(iFacts, prevAct, newAct, nextAct));
-        Capacity loadAtPrevAct;
+        SizeDimension loadAtPrevAct;
         if (prevAct instanceof Start) {
-            loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+            loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
             if (loadAtPrevAct == null) {
                 loadAtPrevAct = defaultValue;
             }
         } else {
-            loadAtPrevAct = stateManager.getActivityState(prevAct, InternalStates.LOAD, Capacity.class);
+            loadAtPrevAct = stateManager.getActivityState(prevAct, InternalStates.LOAD, SizeDimension.class);
             if (loadAtPrevAct == null) {
                 loadAtPrevAct = defaultValue;
             }
         }
-        Capacity vehicleCapacityDimensions = iFacts.getNewVehicle().getType().getCapacityDimensions();
+        SizeDimension vehicleCapacityDimensions = iFacts.getNewVehicle().getType().getCapacityDimensions();
 
         if (newAct instanceof PickupActivityNEW) {
-            Capacity newCapacity = loadAtPrevAct.add(newAct.getSize());
+            SizeDimension newCapacity = loadAtPrevAct.add(newAct.getSize());
             if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
         if (newAct instanceof DeliveryActivityNEW) {
-            Capacity newCapacity = loadAtPrevAct.add(newAct.getSize().abs());
+            SizeDimension newCapacity = loadAtPrevAct.add(newAct.getSize().abs());
             if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
             }
@@ -132,32 +132,32 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
     // return ConstraintsStatus.FULFILLED;
     // }
     // // System.out.println(visualize(iFacts, prevAct, newAct, nextAct));
-    // Capacity loadAtPrevAct;
+    // SizeDimension loadAtPrevAct;
     // if (prevAct instanceof Start) {
     // loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(),
-    // InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+    // InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
     // if (loadAtPrevAct == null) {
     // loadAtPrevAct = defaultValue;
     // }
     // } else {
     // loadAtPrevAct = stateManager.getActivityState(prevAct,
-    // InternalStates.LOAD, Capacity.class);
+    // InternalStates.LOAD, SizeDimension.class);
     // if (loadAtPrevAct == null) {
     // loadAtPrevAct = defaultValue;
     // }
     // }
-    // Capacity vehicleCapacityDimensions =
+    // SizeDimension vehicleCapacityDimensions =
     // iFacts.getNewVehicle().getType().getCapacityDimensions();
     //
     // if (newAct instanceof PickupShipmentDEPRECATED) {
-    // Capacity newCapacity = Capacity.addup(loadAtPrevAct, newAct.getSize());
+    // SizeDimension newCapacity = SizeDimension.addup(loadAtPrevAct, newAct.getSize());
     // if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
     // return ConstraintsStatus.NOT_FULFILLED;
     // }
     // }
     // if (newAct instanceof DeliverShipmentDEPRECATED) {
-    // Capacity newCapacity = Capacity.addup(loadAtPrevAct,
-    // Capacity.invert(newAct.getSize()));
+    // SizeDimension newCapacity = SizeDimension.addup(loadAtPrevAct,
+    // SizeDimension.invert(newAct.getSize()));
     // if (!newCapacity.isLessOrEqual(vehicleCapacityDimensions)) {
     // return ConstraintsStatus.NOT_FULFILLED_BREAK;
     // }

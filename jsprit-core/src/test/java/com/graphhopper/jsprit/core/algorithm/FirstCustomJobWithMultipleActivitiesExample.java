@@ -19,7 +19,7 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -43,9 +43,9 @@ public class FirstCustomJobWithMultipleActivitiesExample {
     @Test
     public void shouldRunOK() {
         CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), Capacity.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), Capacity.Builder.newInstance().addDimension(0, 2).build())
-            .addPickup(Location.newInstance(20, 0), Capacity.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+            .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .build();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 4).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
@@ -61,9 +61,9 @@ public class FirstCustomJobWithMultipleActivitiesExample {
     @Test
     public void shouldNotIgnoresCapacity() {
         CustomPickupJob cj = CustomPickupJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), Capacity.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), Capacity.Builder.newInstance().addDimension(0, 2).build())
-            .addPickup(Location.newInstance(20, 0), Capacity.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+            .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .build();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();

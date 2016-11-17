@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
-import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -34,27 +34,27 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute implement
 
     private VehicleRoute route;
 
-    private Capacity maxLoad;
+    private SizeDimension maxLoad;
 
-    private Capacity defaultValue;
+    private SizeDimension defaultValue;
 
     public UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(StateManager stateManager) {
         this.stateManager = stateManager;
-        defaultValue = Capacity.Builder.newInstance().build();
+        defaultValue = SizeDimension.Builder.newInstance().build();
     }
 
     @Override
     public void begin(VehicleRoute route) {
         this.route = route;
-        maxLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+        maxLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, SizeDimension.class);
         if (maxLoad == null) maxLoad = defaultValue;
     }
 
     @Override
     public void visit(TourActivity act) {
-        maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class));
+        maxLoad = SizeDimension.max(maxLoad, stateManager.getActivityState(act, InternalStates.LOAD, SizeDimension.class));
         stateManager.putInternalTypedActivityState(act, InternalStates.PAST_MAXLOAD, maxLoad);
-//		assert maxLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
+//		assert maxLoad.isGreaterOrEqual(SizeDimension.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
 //		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can never be bigger than vehicleCap";
     }
 
