@@ -43,9 +43,9 @@ public class DeliverServiceDEPRECATEDTest {
 
     @Test
     public void whenCallingCapacity_itShouldReturnCorrectCapacity() {
-        assertEquals(-10, deliver.getSize().get(0));
-        assertEquals(-100, deliver.getSize().get(1));
-        assertEquals(-1000, deliver.getSize().get(2));
+        assertEquals(-10, deliver.getLoadChange().get(0));
+        assertEquals(-100, deliver.getLoadChange().get(1));
+        assertEquals(-1000, deliver.getLoadChange().get(2));
     }
 
     @Test
@@ -81,9 +81,9 @@ public class DeliverServiceDEPRECATEDTest {
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
         assertEquals("loc", copy.getLocation().getId());
-        assertEquals(-10, copy.getSize().get(0));
-        assertEquals(-100, copy.getSize().get(1));
-        assertEquals(-1000, copy.getSize().get(2));
+        assertEquals(-10, copy.getLoadChange().get(0));
+        assertEquals(-100, copy.getLoadChange().get(1));
+        assertEquals(-1000, copy.getLoadChange().get(2));
         assertTrue(copy != deliver);
     }
 

@@ -17,9 +17,9 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.HasIndex;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 
 /**
  * Basic interface for tour-activities.
@@ -108,7 +108,7 @@ public interface TourActivity extends HasIndex {
      *
      * @return capacity
      */
-    public abstract SizeDimension getSize();
+    public abstract SizeDimension getLoadChange();
 
     /**
      * Makes a deep copy of this activity.
@@ -116,5 +116,15 @@ public interface TourActivity extends HasIndex {
      * @return copied activity
      */
     public abstract TourActivity duplicate();
+
+    /**
+     * Returns the capacity size of the activity. It is the absolute value of
+     * the loadChange.
+     *
+     * @return capacity
+     */
+    public default SizeDimension getLoadSize() {
+        return getLoadChange().abs();
+    }
 
 }

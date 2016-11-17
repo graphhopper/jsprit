@@ -62,7 +62,7 @@ class UpdateMaxCapacityUtilisationAtRoute implements ActivityVisitor, StateUpdat
 
     @Override
     public void visit(TourActivity act) {
-        currentLoad = currentLoad.add(act.getSize());
+        currentLoad = currentLoad.add(act.getLoadChange());
         maxLoad = SizeDimension.max(maxLoad, currentLoad);
     }
 

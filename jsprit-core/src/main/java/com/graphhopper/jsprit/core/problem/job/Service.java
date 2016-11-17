@@ -293,7 +293,7 @@ public class Service extends AbstractJob {
     @Override
     @Deprecated
     public SizeDimension getSize() {
-        return getServiceActivity().getSize();
+        return getServiceActivity().getLoadChange();
     }
 
 

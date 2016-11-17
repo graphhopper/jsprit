@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class AbstractActivityNEW implements TourActivity {
 
     private int index;
-    protected SizeDimension capacity;
+    protected SizeDimension loadChange;
     protected double arrTime;
     protected double endTime;
     protected double theoreticalEarliest = 0;
@@ -19,9 +19,9 @@ public abstract class AbstractActivityNEW implements TourActivity {
     protected Location location;
 
 
-    public AbstractActivityNEW(String type, Location location, SizeDimension capacity) {
+    public AbstractActivityNEW(String type, Location location, SizeDimension loadChange) {
         super();
-        this.capacity = capacity;
+        this.loadChange = loadChange;
         this.type = type;
         this.location = location;
     }
@@ -30,7 +30,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
     public AbstractActivityNEW(AbstractActivityNEW sourceActivity) {
         arrTime = sourceActivity.getArrTime();
         endTime = sourceActivity.getEndTime();
-        capacity = sourceActivity.getSize();
+        loadChange = sourceActivity.getLoadChange();
         setIndex(sourceActivity.getIndex());
         theoreticalEarliest = sourceActivity.getTheoreticalEarliestOperationStartTime();
         theoreticalLatest = sourceActivity.getTheoreticalLatestOperationStartTime();
@@ -88,8 +88,8 @@ public abstract class AbstractActivityNEW implements TourActivity {
     }
 
     @Override
-    public SizeDimension getSize() {
-        return capacity;
+    public SizeDimension getLoadChange() {
+        return loadChange;
     }
 
     @Override
@@ -110,7 +110,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
     @Override
     public String toString() {
         return "[name=" + getName() + "][locationId=" + getLocation().getId()
-            + "][size=" + getSize().toString()
+            + "][size=" + getLoadChange().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
     }

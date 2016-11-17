@@ -44,9 +44,9 @@ public class ServiceActivityNEWTest {
 
     @Test
     public void whenCallingCapacity_itShouldReturnCorrectCapacity() {
-        Assert.assertEquals(10, serviceActivity.getSize().get(0));
-        Assert.assertEquals(100, serviceActivity.getSize().get(1));
-        Assert.assertEquals(1000, serviceActivity.getSize().get(2));
+        Assert.assertEquals(10, serviceActivity.getLoadChange().get(0));
+        Assert.assertEquals(100, serviceActivity.getLoadChange().get(1));
+        Assert.assertEquals(1000, serviceActivity.getLoadChange().get(2));
     }
 
 

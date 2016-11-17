@@ -385,7 +385,7 @@ public class Shipment extends AbstractJob {
     @Override
     @Deprecated
     public SizeDimension getSize() {
-        return getPickupActivity().getSize();
+        return getPickupActivity().getLoadChange();
     }
 
 }

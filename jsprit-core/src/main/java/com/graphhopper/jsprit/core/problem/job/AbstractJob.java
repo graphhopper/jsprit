@@ -317,7 +317,7 @@ public abstract class AbstractJob implements Job {
     private SizeDimension calcSizeAt(boolean start) {
         SizeDimension size = SizeDimension.EMPTY;
         for (JobActivity act : activityList.getAll()) {
-            size = size.add(act.getSize());
+            size = size.add(act.getLoadChange());
         }
         if (start) return size.getNegativeDimensions().abs();
         else return size.getPositiveDimensions();

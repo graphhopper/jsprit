@@ -27,7 +27,7 @@ public class EndTest {
     @Test
     public void whenCallingCapacity_itShouldReturnEmptyCapacity() {
         End end = End.newInstance("loc", 0., 0.);
-        assertEquals(0, end.getSize().get(0));
+        assertEquals(0, end.getLoadChange().get(0));
     }
 
     @Test
