@@ -70,8 +70,8 @@ public class ServiceLoadActivityLevelConstraint implements HardActivityConstrain
 
         }
 
-        if (newAct.getSize().sign() == SizeDimensionSign.POSITIVE) {
-            if (!newAct.getSize().add(futureMaxLoad).isLessOrEqual(
+        if (newAct.getLoadChange().sign() == SizeDimensionSign.POSITIVE) {
+            if (!newAct.getLoadChange().add(futureMaxLoad).isLessOrEqual(
                 iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
@@ -85,8 +85,8 @@ public class ServiceLoadActivityLevelConstraint implements HardActivityConstrain
          * getCargoSize(). For positive or zero activities as Service and Pickup
          * they could refer to the same object.)
          */
-        if (newAct.getSize().sign() != SizeDimensionSign.POSITIVE) {
-            if (!newAct.getSize().abs().add(prevMaxLoad).isLessOrEqual(
+        if (newAct.getLoadChange().sign() != SizeDimensionSign.POSITIVE) {
+            if (!newAct.getLoadChange().abs().add(prevMaxLoad).isLessOrEqual(
                 iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
             }

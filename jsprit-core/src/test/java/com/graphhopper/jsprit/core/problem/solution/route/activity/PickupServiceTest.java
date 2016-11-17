@@ -43,9 +43,9 @@ public class PickupServiceTest {
 
     @Test
     public void whenCallingCapacity_itShouldReturnCorrectCapacity() {
-        assertEquals(10, pickup.getSize().get(0));
-        assertEquals(100, pickup.getSize().get(1));
-        assertEquals(1000, pickup.getSize().get(2));
+        assertEquals(10, pickup.getLoadChange().get(0));
+        assertEquals(100, pickup.getLoadChange().get(1));
+        assertEquals(1000, pickup.getLoadChange().get(2));
     }
 
 
@@ -82,9 +82,9 @@ public class PickupServiceTest {
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
         assertEquals("loc", copy.getLocation().getId());
-        assertEquals(10, copy.getSize().get(0));
-        assertEquals(100, copy.getSize().get(1));
-        assertEquals(1000, copy.getSize().get(2));
+        assertEquals(10, copy.getLoadChange().get(0));
+        assertEquals(100, copy.getLoadChange().get(1));
+        assertEquals(1000, copy.getLoadChange().get(2));
         assertTrue(copy != pickup);
     }
 

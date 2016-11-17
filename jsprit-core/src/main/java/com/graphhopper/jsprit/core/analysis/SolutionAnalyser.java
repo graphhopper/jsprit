@@ -712,8 +712,8 @@ public class SolutionAnalyser {
         }
         verifyThatRouteContainsAct(activity, route);
         SizeDimension afterAct = stateManager.getActivityState(activity, InternalStates.LOAD, SizeDimension.class);
-        if (afterAct != null && activity.getSize() != null) {
-            return afterAct.subtract(activity.getSize());
+        if (afterAct != null && activity.getLoadChange() != null) {
+            return afterAct.subtract(activity.getLoadChange());
         } else if (afterAct != null) {
             return afterAct;
         } else {

@@ -45,7 +45,7 @@ public class BreakActivityTest {
 
     @Test
     public void whenCallingCapacity_itShouldReturnCorrectCapacity() {
-        assertEquals(0, serviceActivity.getSize().get(0));
+        assertEquals(0, serviceActivity.getLoadChange().get(0));
     }
 
     @Test

@@ -158,7 +158,7 @@ public class VRPWithBackhaulsExample2 {
                 + analyser.getTimeWindowViolationAtActivity(route.getStart(), route));
             for (TourActivity act : route.getActivities()) {
                 System.out.println("--");
-                System.out.println("actType: " + act.getName() + " demand: " + act.getSize());
+                System.out.println("actType: " + act.getName() + " demand: " + act.getLoadChange());
                 System.out.println("dist@" + act.getLocation().getId() + ": " + analyser.getDistanceAtActivity(act, route));
                 System.out.println("load(before)@" + act.getLocation().getId() + ": " + analyser.getLoadJustBeforeActivity(act, route));
                 System.out.println("load(after)@" + act.getLocation().getId() + ": " + analyser.getLoadRightAfterActivity(act, route));

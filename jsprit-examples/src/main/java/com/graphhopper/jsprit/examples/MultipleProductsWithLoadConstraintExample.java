@@ -74,11 +74,11 @@ public class MultipleProductsWithLoadConstraintExample {
         }
 
         private boolean isApplePickup(TourActivity act) {
-            return act.getSize().get(APPLES_DIMENSION_INDEX) > 0;
+            return act.getLoadChange().get(APPLES_DIMENSION_INDEX) > 0;
         }
 
         private boolean isBananaPickup(TourActivity act) {
-            return act.getSize().get(BANANAS_DIMENSION_INDEX) > 0;
+            return act.getLoadChange().get(BANANAS_DIMENSION_INDEX) > 0;
         }
     }
 
@@ -126,19 +126,19 @@ public class MultipleProductsWithLoadConstraintExample {
         }
 
         private boolean isBananaPickup(TourActivity act) {
-            return act.getSize().get(BANANAS_DIMENSION_INDEX) > 0;
+            return act.getLoadChange().get(BANANAS_DIMENSION_INDEX) > 0;
         }
 
         private boolean isBananaDelivery(TourActivity act) {
-            return act.getSize().get(BANANAS_DIMENSION_INDEX) < 0;
+            return act.getLoadChange().get(BANANAS_DIMENSION_INDEX) < 0;
         }
 
         private boolean isApplePickup(TourActivity act) {
-            return act.getSize().get(APPLES_DIMENSION_INDEX) > 0;
+            return act.getLoadChange().get(APPLES_DIMENSION_INDEX) > 0;
         }
 
         private boolean isAppleDelivery(TourActivity act) {
-            return act.getSize().get(APPLES_DIMENSION_INDEX) < 0;
+            return act.getLoadChange().get(APPLES_DIMENSION_INDEX) < 0;
         }
 
         private boolean isPickup(TourActivity newAct) {
