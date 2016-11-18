@@ -17,49 +17,51 @@
  */
 package com.graphhopper.jsprit.core.problem;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class SizeDimensionTest {
 
     @Test
     public void signShouldBePositive() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).build();
-        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.POSITIVE));
+        Assert.assertEquals(SizeDimension.SizeDimensionSign.POSITIVE, sd.sign());
     }
 
     @Test
     public void signShouldBePositive2() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 0).build();
-        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.POSITIVE));
+        Assert.assertEquals(SizeDimension.SizeDimensionSign.POSITIVE, sd.sign());
     }
 
     @Test
     public void signShouldBeNegative() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, -2).build();
-        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.NEGATIVE));
+        Assert.assertEquals(SizeDimension.SizeDimensionSign.NEGATIVE, sd.sign());
     }
 
     @Test
     public void signShouldBeNegative2() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, -2).build();
-        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.NEGATIVE));
+        Assert.assertEquals(SizeDimension.SizeDimensionSign.NEGATIVE, sd.sign());
     }
 
     @Test
     public void signShouldBeMixed() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, 2).build();
-        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.MIXED));
+        Assert.assertEquals(SizeDimension.SizeDimensionSign.MIXED, sd.sign());
     }
 
     @Test
     public void signShouldBeZero() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build();
-        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.ZERO));
+        Assert.assertEquals(SizeDimension.SizeDimensionSign.ZERO, sd.sign());
     }
 
     @Test
