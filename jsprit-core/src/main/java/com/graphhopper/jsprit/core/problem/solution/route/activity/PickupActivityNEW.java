@@ -17,16 +17,17 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.AbstractJob;
-
 import java.util.Collection;
+
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
+import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class PickupActivityNEW extends JobActivity {
 
     public PickupActivityNEW(AbstractJob job, String name, Location location, double operationTime,
-                             SizeDimension capacity, Collection<TimeWindow> timeWindows) {
+                    SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity, timeWindows);
     }
 
@@ -34,5 +35,12 @@ public class PickupActivityNEW extends JobActivity {
         super(sourceActivity);
     }
 
+    public PickupActivityNEW(AbstractJob service,
+                    Service.BuilderBase<? extends Service, ?> serviceBuilder) {
+        this(service, serviceBuilder.getType(), serviceBuilder.getLocation(),
+                        serviceBuilder.getServiceTime(),
+                        serviceBuilder.getCapacity(),
+                        serviceBuilder.getTimeWindows().getTimeWindows());
+    }
 
 }

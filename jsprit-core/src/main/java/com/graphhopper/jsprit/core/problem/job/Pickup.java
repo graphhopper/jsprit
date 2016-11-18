@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 
 /**
@@ -50,9 +51,11 @@ public class Pickup extends Service {
     @Override
     protected void createActivities(JobBuilder<?, ?> builder) {
         JobActivityList list = new SequentialJobActivityList(this);
-        // TODO - Balage1551
-        //      addActivity(new PickupActivityNEW(this, "pickup", getLocation(), getServiceDuration(), getSize()));
-        list.addActivity(new PickupServiceDEPRECATED(this, (Builder) builder));
+        if (TheBigRedButton.PUSHED) {
+            list.addActivity(new PickupActivityNEW(this, (Builder) builder));
+        } else {
+            list.addActivity(new PickupServiceDEPRECATED(this, (Builder) builder));
+        }
         setActivities(list);
     }
 

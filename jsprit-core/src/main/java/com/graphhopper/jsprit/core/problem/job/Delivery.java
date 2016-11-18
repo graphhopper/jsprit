@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
 
 /**
  * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
@@ -51,10 +52,11 @@ public class Delivery extends Service {
     @Override
     protected void createActivities(JobBuilder<?, ?> builder) {
         JobActivityList list = new SequentialJobActivityList(this);
-        // TODO - Balage1551
-        // addActivity(new DeliveryActivityNEW(this, "pickup", getLocation(),
-        // getServiceDuration(), getSize()));
-        list.addActivity(new DeliverServiceDEPRECATED(this, (Builder) builder));
+        if (TheBigRedButton.PUSHED) {
+            list.addActivity(new DeliveryActivityNEW(this, (Builder) builder));
+        } else {
+            list.addActivity(new DeliverServiceDEPRECATED(this, (Builder) builder));
+        }
         setActivities(list);
     }
 

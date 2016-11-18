@@ -17,14 +17,16 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
-
-import java.util.Collection;
 
 
 /**
@@ -60,7 +62,7 @@ public class Shipment extends AbstractJob {
      * @author schroeder
      */
     public static abstract class BuilderBase<T extends Shipment, B extends BuilderBase<T, B>>
-        extends JobBuilder<T, B> {
+    extends JobBuilder<T, B> {
 
         private double pickupServiceTime = 0.0;
 
@@ -299,22 +301,30 @@ public class Shipment extends AbstractJob {
     protected void createActivities(JobBuilder<?, ?> builder) {
         Builder shipmentBuilder = (Builder) builder;
         JobActivityList list = new SequentialJobActivityList(this);
-        // TODO - Balage1551
-        //      list.addActivity(new PickupActivityNEW(this, "pickup", getPickupLocation(), getPickupServiceTime(), getSize()));
-        //      list.addActivity(new PickupActivityNEW(this, "delivery", getDeliveryLocation(), getDeliveryServiceTime(), getSize()));
-        list.addActivity(new PickupShipmentDEPRECATED(this, shipmentBuilder));
-        list.addActivity(new DeliverShipmentDEPRECATED(this, shipmentBuilder));
+        if (TheBigRedButton.PUSHED) {
+            list.addActivity(new PickupActivityNEW(this, "pickupShipment",
+                            shipmentBuilder.getPickupLocation(),
+                            shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
+                            shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
+            list.addActivity(new DeliveryActivityNEW(this, "deliverShipment",
+                            shipmentBuilder.getDeliveryLocation(),
+                            shipmentBuilder.getDeliveryServiceTime(), shipmentBuilder.getCapacity(),
+                            shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
+        } else {
+            list.addActivity(new PickupShipmentDEPRECATED(this, shipmentBuilder));
+            list.addActivity(new DeliverShipmentDEPRECATED(this, shipmentBuilder));
+        }
         setActivities(list);
     }
 
-    public PickupShipmentDEPRECATED getPickupActivity() {
-        return (PickupShipmentDEPRECATED) getActivityList().findByType(PickupShipmentDEPRECATED.NAME)
-            .get();
+    public PickupActivityNEW getPickupActivity() {
+        return (PickupActivityNEW) getActivityList().findByType(PickupShipmentDEPRECATED.NAME)
+                        .get();
     }
 
-    public DeliverShipmentDEPRECATED getDeliveryActivity() {
-        return (DeliverShipmentDEPRECATED) getActivityList().findByType(DeliverShipmentDEPRECATED.NAME)
-            .get();
+    public DeliveryActivityNEW getDeliveryActivity() {
+        return (DeliveryActivityNEW) getActivityList().findByType(DeliverShipmentDEPRECATED.NAME)
+                        .get();
     }
 
     // =================== DEPRECATED GETTERS
