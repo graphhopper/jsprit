@@ -113,4 +113,22 @@ public class FirstCustomJobWithMultipleActivitiesExample {
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
         Assert.assertTrue(solution.getUnassignedJobs().isEmpty());
     }
+
+    @Test
+    public void shouldNotIgnoresCapacityWithExchange() {
+        CustomJob cj = CustomJob.Builder.newInstance("job")
+            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 0).build())
+            .addExchange(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, -3).addDimension(1, 2).build())
+            .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(1, 1).build())
+            .build();
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).addCapacityDimension(1, 2).build();
+        Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+            .addJob(cj).addVehicle(v).build();
+        VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+        vra.setMaxIterations(10);
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
+        Assert.assertTrue(solution.getUnassignedJobs().isEmpty());
+    }
 }
