@@ -63,6 +63,8 @@ public class Plotter {
     private final static Color PICKUP_COLOR = Color.GREEN;
     private final static Color DELIVERY_COLOR = Color.BLUE;
     private final static Color SERVICE_COLOR = Color.BLUE;
+    private final static Color EXCHANGE_COLOR = Color.ORANGE;
+
 
     private final static Shape ELLIPSE = new Ellipse2D.Double(-3, -3, 6, 6);
 
@@ -116,6 +118,7 @@ public class Plotter {
             if (activity.equals(Activity.SERVICE)) return SERVICE_COLOR;
             if (activity.equals(Activity.START)) return START_COLOR;
             if (activity.equals(Activity.END)) return END_COLOR;
+            if (activity.equals(Activity.EXCHANGE)) return EXCHANGE_COLOR;
             throw new IllegalStateException("activity at " + dataItem.toString() + " cannot be assigned to a color");
         }
 
