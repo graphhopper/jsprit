@@ -24,7 +24,7 @@ import org.junit.Before;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
-public class PickupActivityTest extends JobActivityTest {
+public class ServiceActivityTest extends JobActivityTest {
 
     @Before
     public void doBefore() {

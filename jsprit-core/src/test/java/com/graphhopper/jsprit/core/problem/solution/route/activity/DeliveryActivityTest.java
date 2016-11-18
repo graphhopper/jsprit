@@ -20,26 +20,28 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
 
-public class PickupActivityTest extends JobActivityTest {
+public class DeliveryActivityTest extends JobActivityTest {
 
     @Before
     public void doBefore() {
-        service = new Service.Builder("service").setLocation(Location.newInstance("loc")).
-                        setTimeWindow(TimeWindow.newInstance(1., 2.)).
+        service = new Delivery.Builder("service").setLocation(Location.newInstance("loc"))
+                        .setTimeWindow(TimeWindow.newInstance(1., 2.)).
                         setServiceTime(20d).
                         addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         createActivity(service);
     }
 
     @Override
+    @Test
     public void whenCallingCapacity_itShouldReturnCorrectCapacity() {
-        assertEquals(10, activity.getLoadChange().get(0));
-        assertEquals(100, activity.getLoadChange().get(1));
-        assertEquals(1000, activity.getLoadChange().get(2));
+        assertEquals(-10, activity.getLoadChange().get(0));
+        assertEquals(-100, activity.getLoadChange().get(1));
+        assertEquals(-1000, activity.getLoadChange().get(2));
     }
 
 }
