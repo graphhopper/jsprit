@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.reporting;
 
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -156,20 +157,20 @@ public class SolutionPrinter {
     }
 
     private static void printVerbose(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
-        String leftAlgin = "| %-7s | %-20s | %-21s | %-15s | %-15s | %-15s | %-15s |%n";
-        out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
-        out.printf("| detailed solution                                                                                                              |%n");
-        out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
-        out.printf("| route   | vehicle              | activity              | job             | arrTime         | endTime         | costs           |%n");
+        String leftAlgin = "| %-7s | %-20s | %-21s | %-15s | %-15s | %-15s | %-15s | %-15s |%n";
+        out.format("+--------------------------------------------------------------------------------------------------------------------------------------------------+%n");
+        out.printf("| detailed solution                                                                                                                                |%n");
+        out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+-----------------+%n");
+        out.printf("| route   | vehicle              | activity              | job             | load            | arrTime         | endTime         | costs           |%n");
         int routeNu = 1;
 
         List<VehicleRoute> list = new ArrayList<VehicleRoute>(solution.getRoutes());
         Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
         for (VehicleRoute route : list) {
-            out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+%n");
+            out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+-----------------+%n");
             double costs = 0;
-            out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", "undef", Math.round(route.getStart().getEndTime()),
-                Math.round(costs));
+            SizeDimension load = getInitialLoad(route);
+            out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", getString(load), "undef", Math.round(route.getStart().getEndTime()), Math.round(costs));
             TourActivity prevAct = route.getStart();
             for (TourActivity act : route.getActivities()) {
                 String jobId;
@@ -184,7 +185,8 @@ public class SolutionPrinter {
                     route.getVehicle());
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 costs += c;
-                out.format(leftAlgin, routeNu, getVehicleString(route), type, jobId,
+                load = load.add(act.getLoadChange());
+                out.format(leftAlgin, routeNu, getVehicleString(route), type, jobId, getString(load),
                     Math.round(act.getArrTime()),
                     Math.round(act.getEndTime()), Math.round(costs));
                 prevAct = act;
@@ -193,11 +195,11 @@ public class SolutionPrinter {
                 route.getDriver(), route.getVehicle());
             c += problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
             costs += c;
-            out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef",
+            out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", getString(load), Math.round(route.getEnd().getArrTime()), "undef",
                 Math.round(costs));
             routeNu++;
         }
-        out.format("+--------------------------------------------------------------------------------------------------------------------------------+%n");
+        out.format("+--------------------------------------------------------------------------------------------------------------------------------------------------+%n");
         if (!solution.getUnassignedJobs().isEmpty()) {
             out.format("+----------------+%n");
             out.format("| unassignedJobs |%n");
@@ -209,6 +211,27 @@ public class SolutionPrinter {
             out.format("+----------------+%n");
         }
     }
+
+    private static String getString(SizeDimension load) {
+        String l = "[";
+        for (int i = 0; i < load.getNuOfDimensions(); i++) {
+            if (i > 0) l += ", " + load.get(i);
+            else {
+                l += load.get(i);
+            }
+        }
+        l += "]";
+        return l;
+    }
+
+    private static SizeDimension getInitialLoad(VehicleRoute route) {
+        SizeDimension initialLoad = SizeDimension.EMPTY;
+        for (TourActivity act : route.getActivities()) {
+            initialLoad = initialLoad.add(act.getLoadChange());
+        }
+        return initialLoad.getNegativeDimensions().abs();
+    }
+
 
     private static String getVehicleString(VehicleRoute route) {
         return route.getVehicle().getId();
