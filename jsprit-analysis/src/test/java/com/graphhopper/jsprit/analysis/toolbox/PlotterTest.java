@@ -68,6 +68,22 @@ public class PlotterTest {
     }
 
     @Test
+    public void testPlotWithExchange() {
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).addCapacityDimension(1, 3).build();
+        Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
+            .setType(type).build();
+        CustomJob cj = CustomJob.Builder.newInstance("job")
+            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).build())
+            .addExchange(Location.newInstance(-5, 4), SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, 1).build())
+            .addDelivery(Location.newInstance(20, 10), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+            .build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(cj).addVehicle(vehicle).build();
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(Jsprit.createAlgorithm(vrp).searchSolutions());
+        new Plotter(vrp).plotJobRelations(true).plot("output/plotExchange", "plot");
+        new Plotter(vrp, solution).plot("output/plotSolution", "plot");
+    }
+
+    @Test
     public void testPlotWithShipments() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))

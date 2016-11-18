@@ -319,6 +319,11 @@ public class Plotter {
         deliveryActItem.setShapeVisible(true);
         lic.add(deliveryActItem);
 
+        LegendItem exchangeActItem = new LegendItem("exchangeAct", Color.ORANGE);
+        exchangeActItem.setShape(ELLIPSE);
+        exchangeActItem.setShapeVisible(true);
+        lic.add(exchangeActItem);
+
         if (routes != null && !routes.isEmpty()) {
             LegendItem item = new LegendItem("firstActivity", Color.BLACK);
             Shape upTriangle = ShapeUtilities.createUpTriangle(3.0f);
