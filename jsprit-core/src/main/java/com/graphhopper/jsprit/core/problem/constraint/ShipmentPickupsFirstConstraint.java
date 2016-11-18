@@ -18,20 +18,27 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 public class ShipmentPickupsFirstConstraint implements HardActivityConstraint {
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (newAct instanceof DeliverShipmentDEPRECATED && nextAct instanceof PickupShipmentDEPRECATED) {
+        // Balage1551 - Temporal solution to eliminate DEPRECATED
+        if (AbstractActivityNEW.isShipment(newAct) && newAct instanceof DeliveryActivityNEW
+                        && AbstractActivityNEW.isShipment(nextAct)
+                        && nextAct instanceof PickupActivityNEW) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
-        if (newAct instanceof PickupShipmentDEPRECATED && prevAct instanceof DeliverShipmentDEPRECATED) {
+        if (AbstractActivityNEW.isShipment(newAct) && newAct instanceof PickupActivityNEW
+                        && AbstractActivityNEW.isShipment(prevAct)
+                        && prevAct instanceof DeliveryActivityNEW) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
+
         return ConstraintsStatus.FULFILLED;
     }
 
