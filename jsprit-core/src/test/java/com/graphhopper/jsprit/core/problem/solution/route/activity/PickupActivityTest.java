@@ -26,21 +26,23 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
-@Deprecated
-public class PickupServiceTest {
+public class PickupActivityTest {
 
     private Service service;
 
-    private PickupServiceDEPRECATED pickup;
+    private PickupActivityNEW pickup;
 
     @Before
     public void doBefore() {
         service = new Service.Builder("service").setLocation(Location.newInstance("loc")).
                         setTimeWindow(TimeWindow.newInstance(1., 2.)).
+                        setServiceTime(20d).
                         addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
-        pickup = new PickupServiceDEPRECATED(service);
-        pickup.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
-        pickup.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
+        pickup = (PickupActivityNEW) service.getServiceActivity();
+        pickup.setTheoreticalEarliestOperationStartTime(
+                        pickup.getTimeWindows().iterator().next().getStart());
+        pickup.setTheoreticalLatestOperationStartTime(
+                        pickup.getTimeWindows().iterator().next().getEnd());
     }
 
     @Test
@@ -50,6 +52,21 @@ public class PickupServiceTest {
         assertEquals(1000, pickup.getLoadChange().get(2));
     }
 
+
+    @Test
+    public void whenCallingJob_itShouldReturnCorrectJob() {
+        assertEquals(service, pickup.getJob());
+    }
+
+    @Test
+    public void whenCallingOperationTime_itShouldReturnCorrectValue() {
+        assertEquals(20d, pickup.getOperationTime(), 0.01);
+    }
+
+    @Test
+    public void whenCallingOrderNumber_itShouldReturnCorrectValue() {
+        assertEquals(1d, pickup.getOrderNumber(), 0.01);
+    }
 
     @Test
     public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
@@ -80,7 +97,11 @@ public class PickupServiceTest {
 
     @Test
     public void whenCopyingStart_itShouldBeDoneCorrectly() {
-        PickupServiceDEPRECATED copy = (PickupServiceDEPRECATED) pickup.duplicate();
+        PickupActivityNEW copy = (PickupActivityNEW) pickup.duplicate();
+        assertEquals(pickup.getJob(), copy.getJob());
+        assertEquals(pickup.getOrderNumber(), copy.getOrderNumber());
+        assertEquals(20d, copy.getOperationTime(), 0.01);
+        assertEquals(pickup.getType(), copy.getType());
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
         assertEquals("loc", copy.getLocation().getId());

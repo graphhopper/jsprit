@@ -18,8 +18,20 @@
 
 package com.graphhopper.jsprit.core.analysis;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.algorithm.VariablePlusFixedSolutionCostCalculatorFactory;
-import com.graphhopper.jsprit.core.algorithm.state.*;
+import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
+import com.graphhopper.jsprit.core.algorithm.state.StateId;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.algorithm.state.StateUpdater;
+import com.graphhopper.jsprit.core.algorithm.state.UpdateActivityTimes;
+import com.graphhopper.jsprit.core.algorithm.state.UpdateVariableCosts;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
@@ -28,14 +40,19 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Calculates a set of statistics for a solution.
@@ -192,7 +209,8 @@ public class SolutionAnalyser {
                 stateManager.putActivityState(activity, backhaul_id, true);
                 backhaulConstraintOnRouteViolated = true;
             } else {
-                if (activity instanceof PickupServiceDEPRECATED || activity instanceof ServiceActivityNEW || activity instanceof PickupShipmentDEPRECATED) {
+                if (activity instanceof PickupActivityNEW
+                                || activity instanceof ServiceActivityNEW) {
                     pickupOccured = true;
                     stateManager.putActivityState(activity, backhaul_id, false);
                 } else {
@@ -440,6 +458,7 @@ public class SolutionAnalyser {
         }
     }
 
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(SolutionAnalyser.class);
 
     private VehicleRoutingProblem vrp;
@@ -775,7 +794,7 @@ public class SolutionAnalyser {
         }
         SizeDimension maxLoad = getMaxLoad(route);
         return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
-            maxLoad.subtract(route.getVehicle().getType().getCapacityDimensions()));
+                        maxLoad.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**
@@ -790,7 +809,7 @@ public class SolutionAnalyser {
         }
         SizeDimension atBeginning = getLoadAtBeginning(route);
         return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
-            atBeginning.subtract(route.getVehicle().getType().getCapacityDimensions()));
+                        atBeginning.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**
@@ -805,7 +824,7 @@ public class SolutionAnalyser {
         }
         SizeDimension atEnd = getLoadAtEnd(route);
         return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
-            atEnd.subtract(route.getVehicle().getType().getCapacityDimensions()));
+                        atEnd.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
 
@@ -824,7 +843,7 @@ public class SolutionAnalyser {
         }
         SizeDimension afterAct = getLoadRightAfterActivity(activity, route);
         return SizeDimension.max(SizeDimension.Builder.newInstance().build(),
-            afterAct.subtract(route.getVehicle().getType().getCapacityDimensions()));
+                        afterAct.subtract(route.getVehicle().getType().getCapacityDimensions()));
     }
 
     /**

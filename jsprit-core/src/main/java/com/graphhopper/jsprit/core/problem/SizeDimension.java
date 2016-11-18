@@ -357,9 +357,9 @@ public class SizeDimension extends Capacity {
                 possibleSigns.remove(SizeDimensionSign.NEGATIVE);
                 possibleSigns.remove(SizeDimensionSign.ZERO);
             }
-        }
-        if (possibleSigns.isEmpty()) {
-            return SizeDimensionSign.MIXED;
+            if (possibleSigns.isEmpty()) {
+                return SizeDimensionSign.MIXED;
+            }
         }
         if (possibleSigns.contains(SizeDimensionSign.ZERO)) {
             return SizeDimensionSign.ZERO;
