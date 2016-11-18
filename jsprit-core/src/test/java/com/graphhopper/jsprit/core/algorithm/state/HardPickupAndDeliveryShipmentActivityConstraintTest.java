@@ -17,8 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import com.graphhopper.jsprit.core.problem.constraint.PickupAndDeliverShipmentLoadActivityLevelConstraint;
@@ -26,15 +31,11 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 
 public class HardPickupAndDeliveryShipmentActivityConstraintTest {
@@ -62,7 +63,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
         shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 1).build();
 
 
-//		when(vehicle.getCapacity()).thenReturn(2);
+        //		when(vehicle.getCapacity()).thenReturn(2);
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).build();
         vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance("start")).build();
 
@@ -76,8 +77,8 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 
     @Test
     public void whenPickupActivityIsInsertedAndLoadIsSufficient_returnFullFilled() {
-        PickupServiceDEPRECATED pickupService = (PickupServiceDEPRECATED) vrp.getActivities(s1).get(0);
-        PickupServiceDEPRECATED anotherService = (PickupServiceDEPRECATED) vrp.getActivities(s2).get(0);
+        PickupActivityNEW pickupService = (PickupActivityNEW) vrp.getActivities(s1).get(0);
+        PickupActivityNEW anotherService = (PickupActivityNEW) vrp.getActivities(s2).get(0);
         PickupShipmentDEPRECATED pickupShipment = (PickupShipmentDEPRECATED) vrp.getActivities(shipment).get(0);
 
         assertEquals(ConstraintsStatus.FULFILLED, constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
@@ -85,24 +86,24 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 
     @Test
     public void whenPickupActivityIsInsertedAndLoadIsNotSufficient_returnNOT_FullFilled() {
-        PickupServiceDEPRECATED pickupService = (PickupServiceDEPRECATED) vrp.getActivities(s1).get(0);
-        PickupServiceDEPRECATED anotherService = (PickupServiceDEPRECATED) vrp.getActivities(s2).get(0);
+        PickupActivityNEW pickupService = (PickupActivityNEW) vrp.getActivities(s1).get(0);
+        PickupActivityNEW anotherService = (PickupActivityNEW) vrp.getActivities(s2).get(0);
         PickupShipmentDEPRECATED pickupShipment = (PickupShipmentDEPRECATED) vrp.getActivities(shipment).get(0);
 
         stateManager.putInternalTypedActivityState(pickupService, InternalStates.LOAD, SizeDimension.Builder.newInstance().addDimension(0, 2).build());
-//		when(stateManager.getActivityState(pickupService, StateFactory.LOAD)).thenReturn(StateFactory.createState(2.0));
+        //		when(stateManager.getActivityState(pickupService, StateFactory.LOAD)).thenReturn(StateFactory.createState(2.0));
         assertEquals(ConstraintsStatus.NOT_FULFILLED, constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
     }
 
     @Test
     public void whenDeliveryActivityIsInsertedAndLoadIsSufficient_returnFullFilled() {
-        PickupServiceDEPRECATED pickupService = (PickupServiceDEPRECATED) vrp.getActivities(s1).get(0);
-        PickupServiceDEPRECATED anotherService = (PickupServiceDEPRECATED) vrp.getActivities(s2).get(0);
+        PickupActivityNEW pickupService = (PickupActivityNEW) vrp.getActivities(s1).get(0);
+        PickupActivityNEW anotherService = (PickupActivityNEW) vrp.getActivities(s2).get(0);
 
         DeliverShipmentDEPRECATED deliverShipment = (DeliverShipmentDEPRECATED) vrp.getActivities(shipment).get(1);
 
         stateManager.putInternalTypedActivityState(pickupService, InternalStates.LOAD, SizeDimension.Builder.newInstance().addDimension(0, 1).build());
-//		stateManager.putInternalActivityState(pickupService, StateFactory.LOAD, StateFactory.createState(1));
+        //		stateManager.putInternalActivityState(pickupService, StateFactory.LOAD, StateFactory.createState(1));
         assertEquals(ConstraintsStatus.FULFILLED, constraint.fulfilled(iFacts, pickupService, deliverShipment, anotherService, 0.0));
     }
 
