@@ -24,7 +24,6 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 
@@ -216,8 +215,7 @@ public class JobInsertionCostsCalculatorBuilder {
         if (local) {
             standardLocal = createStandardLocal(vrp, states);
         } else {
-            checkServicesOnly();
-            standardLocal = createStandardRoute(vrp, states, forwardLooking, memory);
+            throw new UnsupportedOperationException("route level cal is not supported anymore");
         }
         baseCalculator = standardLocal.getCalculator();
         addAlgorithmListeners(standardLocal.getAlgorithmListener());
@@ -237,17 +235,6 @@ public class JobInsertionCostsCalculatorBuilder {
             baseCalculator = calcPlusListeners.getCalculator();
         }
         return createFinalInsertion(fleetManager, baseCalculator, states);
-    }
-
-    private void checkServicesOnly() {
-        for (Job j : vrp.getJobs().values()) {
-            if (j instanceof Shipment) {
-                throw new UnsupportedOperationException("currently the 'insert-on-route-level' option is only available for services (i.e. service, pickup, delivery), \n" +
-                    "if you want to deal with shipments switch to option 'local-level' by either setting bestInsertionBuilder.setLocalLevel() or \n"
-                    + "by omitting the xml-tag '<level forwardLooking=2 memory=1>route</level>' when defining your insertionStrategy in algo-config.xml file");
-            }
-        }
-
     }
 
     private void addInsertionListeners(List<InsertionListener> list) {
