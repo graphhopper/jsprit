@@ -17,16 +17,50 @@
  */
 package com.graphhopper.jsprit.core.problem;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Random;
-
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Random;
+
+import static org.junit.Assert.*;
+
 public class SizeDimensionTest {
+
+    @Test
+    public void signShouldBePositive() {
+        SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).build();
+        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.POSITIVE));
+    }
+
+    @Test
+    public void signShouldBePositive2() {
+        SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 0).build();
+        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.POSITIVE));
+    }
+
+    @Test
+    public void signShouldBeNegative() {
+        SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, -2).build();
+        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.NEGATIVE));
+    }
+
+    @Test
+    public void signShouldBeNegative2() {
+        SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, -2).build();
+        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.NEGATIVE));
+    }
+
+    @Test
+    public void signShouldBeMixed() {
+        SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, 2).build();
+        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.MIXED));
+    }
+
+    @Test
+    public void signShouldBeZero() {
+        SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build();
+        Assert.assertTrue(sd.sign().equals(SizeDimension.SizeDimensionSign.ZERO));
+    }
 
     @Test
     public void getNegativeShouldReturnCorrectCapacity() {
