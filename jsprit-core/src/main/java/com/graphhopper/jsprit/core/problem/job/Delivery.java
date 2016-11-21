@@ -26,9 +26,10 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActiv
  *
  * @author schroeder
  */
-public class Delivery extends Service {
+public class Delivery extends AbstractSingleActivityJob<DeliveryActivityNEW> {
 
-    public static final class Builder extends Service.BuilderBase<Delivery, Builder> {
+    public static final class Builder
+    extends AbstractSingleActivityJob.BuilderBase<Delivery, Builder> {
 
         public Builder(String id) {
             super(id);
@@ -49,15 +50,19 @@ public class Delivery extends Service {
         super(builder);
     }
 
+
     @Override
-    protected void createActivities(JobBuilder<?, ?> builder) {
-        JobActivityList list = new SequentialJobActivityList(this);
+    protected DeliveryActivityNEW createActivity(
+                    BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
         if (TheBigRedButton.PUSHED) {
-            list.addActivity(new DeliveryActivityNEW(this, (Builder) builder));
+            return new DeliveryActivityNEW(this, builder.type, builder.location,
+                            builder.serviceTime,
+                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
         } else {
-            list.addActivity(new DeliverServiceDEPRECATED(this, (Builder) builder));
+            return new DeliverServiceDEPRECATED(this, builder.type, builder.location,
+                            builder.serviceTime,
+                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
         }
-        setActivities(list);
     }
 
     @Override

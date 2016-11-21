@@ -34,12 +34,4 @@ public final class PickupShipmentDEPRECATED extends PickupActivityNEW {
         super(sourceActivity);
     }
 
-    // Only for testing
-    @Deprecated
-    public PickupShipmentDEPRECATED(Shipment s) {
-        super(s, NAME, s.getPickupLocation(), s.getPickupServiceTime(), s.getSize(),
-            s.getPickupTimeWindows());
-    }
-
-
 }

@@ -25,9 +25,10 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService
  *
  * @author schroeder
  */
-public class Pickup extends Service {
+public class Pickup extends AbstractSingleActivityJob<PickupActivityNEW> {
 
-    public static final class Builder extends Service.BuilderBase<Pickup, Builder> {
+    public static final class Builder
+    extends AbstractSingleActivityJob.BuilderBase<Pickup, Builder> {
 
         public Builder(String id) {
             super(id);
@@ -49,14 +50,17 @@ public class Pickup extends Service {
     }
 
     @Override
-    protected void createActivities(JobBuilder<?, ?> builder) {
-        JobActivityList list = new SequentialJobActivityList(this);
+    protected PickupActivityNEW createActivity(
+                    AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
         if (TheBigRedButton.PUSHED) {
-            list.addActivity(new PickupActivityNEW(this, (Builder) builder));
+            return new PickupActivityNEW(this, builder.type, builder.location, builder.serviceTime,
+                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
         } else {
-            list.addActivity(new PickupServiceDEPRECATED(this, (Builder) builder));
+            return new PickupServiceDEPRECATED(this, builder.type, builder.location,
+                            builder.serviceTime,
+                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
         }
-        setActivities(list);
     }
+
 
 }

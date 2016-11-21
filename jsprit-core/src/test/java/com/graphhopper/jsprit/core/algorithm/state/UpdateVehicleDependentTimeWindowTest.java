@@ -18,6 +18,19 @@
 
 package com.graphhopper.jsprit.core.algorithm.state;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -34,16 +47,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
-import static org.junit.Assert.*;
 
 /**
  * unit tests to test vehicle dependent time window updater
@@ -104,8 +107,8 @@ public class UpdateVehicleDependentTimeWindowTest {
         vrp = vrpBuilder.build();
 
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new CopyJobActivityFactory())
-            .addService(service).addService(service2)
-            .addService(service3).build();
+                        .addService(service).addService(service2)
+                        .addService(service3).build();
 
 
         stateManager = new StateManager(vrp);
@@ -139,68 +142,68 @@ public class UpdateVehicleDependentTimeWindowTest {
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3() {
         assertEquals(70., stateManager.getActivityState(route.getActivities().get(2), vehicle,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
 
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3_v2() {
         assertEquals(70., stateManager.getActivityState(route.getActivities().get(2), vehicle,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3WithVehicle2() {
         assertEquals(30., stateManager.getActivityState(route.getActivities().get(2), vehicle2,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3WithVehicle3() {
         assertEquals(90., stateManager.getActivityState(route.getActivities().get(2), vehicle3,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2() {
         assertEquals(60., stateManager.getActivityState(route.getActivities().get(1), vehicle,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2_v2() {
         assertEquals(60., stateManager.getActivityState(route.getActivities().get(1), vehicle,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithVehicle2() {
         assertEquals(20., stateManager.getActivityState(route.getActivities().get(1), vehicle2,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithVehicle3() {
         assertEquals(80., stateManager.getActivityState(route.getActivities().get(1), vehicle3,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2WithEquivalentOfVehicle3() {
         assertEquals(80., stateManager.getActivityState(route.getActivities().get(1), equivalentOf3,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1WithVehicle2() {
         assertEquals(10., stateManager.getActivityState(route.getActivities().get(0), vehicle2,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1WithVehicle3() {
         assertEquals(70., stateManager.getActivityState(route.getActivities().get(0), vehicle3,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
 
@@ -209,15 +212,16 @@ public class UpdateVehicleDependentTimeWindowTest {
         //
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
         Service service = new Service.Builder("s1").setLocation(Location.newInstance("10,0"))
-            .addTimeWindow(10, 20).addTimeWindow(30, 40).build();
+                        .addTimeWindow(10, 20).addTimeWindow(30, 40).build();
         Service service2 = new Service.Builder("s2")
-            .addTimeWindow(20, 30).addTimeWindow(40, 60).addTimeWindow(70, 80).setLocation(Location.newInstance("20,0")).build();
+                        .addTimeWindow(20, 30).addTimeWindow(40, 60).addTimeWindow(70, 80).setLocation(Location.newInstance("20,0")).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2).addVehicle(vehicle)
-            .setRoutingCost(routingCosts).build();
+                        .setRoutingCost(routingCosts).build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
-            .addService(service).addService(service2, TimeWindow.newInstance(70, 80)).build();
+                        .addService(service).addService(service2, TimeWindow.newInstance(70, 80))
+                        .build();
 
         StateManager stateManager = new StateManager(vrp);
         UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts, activityCosts);
@@ -227,7 +231,7 @@ public class UpdateVehicleDependentTimeWindowTest {
             public Collection<Vehicle> get(VehicleRoute route) {
                 Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
                 vehicles.add(route.getVehicle());
-//                vehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
+                //                vehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
                 return vehicles;
             }
 
@@ -236,26 +240,26 @@ public class UpdateVehicleDependentTimeWindowTest {
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
 
         assertEquals(80., stateManager.getActivityState(route.getActivities().get(1), vehicle,
-            InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+                        InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     public void updateOfOpenRoutesShouldBeDoneCorrectly() {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v")
-            .setReturnToDepot(false)
-            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build())
-            .setLatestArrival(51)
-            .build();
+                        .setReturnToDepot(false)
+                        .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build())
+                        .setLatestArrival(51)
+                        .build();
 
         Service service = new Service.Builder("s")
-            .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(50, 0)).build()).build();
+                        .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(50, 0)).build()).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-            .addJob(service).addVehicle(vehicle).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-            .build();
+                        .addJob(service).addVehicle(vehicle).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+                        .build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle)
-            .setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).build();
+                        .setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).build();
 
         stateManager = new StateManager(vrp);
         UpdateVehicleDependentPracticalTimeWindows updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts());

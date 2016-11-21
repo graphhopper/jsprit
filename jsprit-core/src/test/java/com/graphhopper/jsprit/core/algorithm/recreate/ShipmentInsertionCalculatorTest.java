@@ -290,7 +290,7 @@ public class ShipmentInsertionCalculatorTest {
 
         JobActivityFactory activityFactory = mock(JobActivityFactory.class);
         List<JobActivity> activities = new ArrayList<>();
-        activities.add(service.getServiceActivity());
+        activities.add(service.getActivity());
         when(activityFactory.createActivities(service)).thenReturn(activities);
         insertionCalculator.setJobActivityFactory(activityFactory);
         serviceInsertionCalc.setJobActivityFactory(activityFactory);

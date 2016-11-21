@@ -21,17 +21,17 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 
 public abstract class JobActivityTest {
 
-    protected Service service;
+    protected AbstractSingleActivityJob<?> service;
 
     protected JobActivity activity;
 
-    public void createActivity(Service service) {
+    public void createActivity(AbstractSingleActivityJob<?> service) {
         this.service = service;
-        activity = service.getServiceActivity();
+        activity = service.getActivity();
         activity.setTheoreticalEarliestOperationStartTime(
                         activity.getTimeWindows().iterator().next().getStart());
         activity.setTheoreticalLatestOperationStartTime(
@@ -39,7 +39,6 @@ public abstract class JobActivityTest {
     }
 
     @Test
-
     public abstract void whenCallingCapacity_itShouldReturnCorrectCapacity();
 
 

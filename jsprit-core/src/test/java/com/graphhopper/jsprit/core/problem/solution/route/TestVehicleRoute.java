@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl.NoDriver;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
@@ -35,6 +36,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActiv
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -99,7 +101,12 @@ public class TestVehicleRoute {
             assertEquals(1, count);
         }
         {
-            route.getTourActivities().addActivity(ServiceActivityNEW.newInstance(new Service.Builder("3").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build()));
+            Service service = new Service.Builder("3").build();
+            ServiceActivityNEW serviceAct = new ServiceActivityNEW(service, "service",
+                            Location.newInstance("1"),
+                            0d, SizeDimension.Builder.newInstance().addDimension(0, 30).build(),
+                            TimeWindows.ANY_TIME.getTimeWindows());
+            route.getTourActivities().addActivity(serviceAct);
             Iterator<TourActivity> iter = route.getTourActivities().iterator();
             int count = 0;
             while (iter.hasNext()) {

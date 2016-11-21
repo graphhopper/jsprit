@@ -26,12 +26,12 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity
  *
  * @author schroeder
  */
-public class Break extends Service implements InternalJobMarker {
+public class Break extends AbstractSingleActivityJob<BreakActivity> implements InternalJobMarker {
 
     public static final class Builder extends Service.BuilderBase<Break, Builder> {
 
         private static final Location VARIABLE_LOCATION = Location
-            .newInstance("@@@VARIABLE_LOCATION");
+                        .newInstance("@@@VARIABLE_LOCATION");
 
         public Builder(String id) {
             super(id);
@@ -68,11 +68,11 @@ public class Break extends Service implements InternalJobMarker {
         variableLocation = (builder.getLocation() == null);
     }
 
+
     @Override
-    protected void createActivities(JobBuilder<?, ?> builder) {
-        JobActivityList list = new SequentialJobActivityList(this);
-        list.addActivity(BreakActivity.newInstance(this, (Builder) builder));
-        setActivities(list);
+    protected BreakActivity createActivity(
+                    BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
+        return BreakActivity.newInstance(this, (Builder) builder);
     }
 
 

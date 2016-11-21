@@ -18,6 +18,19 @@
 
 package com.graphhopper.jsprit.analysis.toolbox;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
+
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.stream.file.FileSinkDGS;
+
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertActivity;
@@ -27,6 +40,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionEndsList
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -40,24 +54,12 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.stream.file.FileSinkDGS;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Writes out what happens when algorithm searches (in graphstream dgs-file).
  */
 public class AlgorithmEventsRecorder
-    implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
+        implements RuinListener, IterationStartsListener, InsertionStartsListener, BeforeJobInsertionListener, InsertionEndsListener, AlgorithmEndsListener {
 
     private boolean renderShipments = false;
 
@@ -328,7 +330,7 @@ public class AlgorithmEventsRecorder
         if (job instanceof Service) {
             Service service = (Service) job;
             addNode(service.getId(), service.getLocation().getCoordinate());
-            markService(service);
+            markSingleActivityJob(service);
         } else if (job instanceof Shipment) {
             Shipment shipment = (Shipment) job;
             String fromNodeId = getFromNodeId(shipment);
@@ -348,7 +350,7 @@ public class AlgorithmEventsRecorder
         markDelivery(getToNodeId(shipment));
     }
 
-    private void markService(Service service) {
+    private void markSingleActivityJob(AbstractSingleActivityJob<?> service) {
         if (service instanceof Delivery) {
             markDelivery(service.getId());
         } else {
@@ -518,7 +520,7 @@ public class AlgorithmEventsRecorder
 
     private void markInserted(Job job) {
         if (job instanceof Service) {
-            markService((Service) job);
+            markSingleActivityJob((Service) job);
         } else {
             markShipment((Shipment) job);
         }
