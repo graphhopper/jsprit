@@ -37,6 +37,177 @@ import java.util.List;
 
 final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator {
 
+    static class ActAndIndex {
+
+        private int index;
+
+        private TourActivity act;
+
+        public ActAndIndex(int index, TourActivity act) {
+            this.index = index;
+            this.act = act;
+        }
+    }
+
+    static class IndexedTourActivity {
+
+        int index;
+
+        TourActivity act;
+
+        public IndexedTourActivity(int index, TourActivity act) {
+            this.index = index;
+            this.act = act;
+        }
+
+        void setTourActivity(TourActivity act) {
+            this.act = act;
+        }
+    }
+
+    static class Route {
+
+        private IndexedTourActivity[] acts;
+
+        private int[] successors;
+
+        private int[] predecessors;
+
+        private IndexedTourActivity first;
+
+        private List<IndexedTourActivity> actsToInsert;
+
+        public Route(List<IndexedTourActivity> currentRoute, List<IndexedTourActivity> toInsert) {
+            actsToInsert = toInsert;
+            successors = new int[currentRoute.size() + toInsert.size()];
+            predecessors = new int[currentRoute.size() + toInsert.size()];
+            for (int i = 0; i < successors.length; i++) {
+                successors[i] = -1;
+                predecessors[i] = -1;
+            }
+            first = currentRoute.get(0);
+            ini(currentRoute, toInsert);
+        }
+
+        private void ini(List<IndexedTourActivity> currentRoute, List<IndexedTourActivity> toInsert) {
+            acts = new IndexedTourActivity[currentRoute.size() + toInsert.size()];
+            IndexedTourActivity prevAct = currentRoute.get(0);
+            acts[prevAct.index] = prevAct;
+            for (int i = 1; i < currentRoute.size(); i++) {
+                acts[currentRoute.get(i).index] = currentRoute.get(i);
+                setSuccessor(prevAct, currentRoute.get(i));
+                setPredecessor(currentRoute.get(i), prevAct);
+                prevAct = currentRoute.get(i);
+            }
+            for (IndexedTourActivity actToInsert : toInsert) {
+                acts[actToInsert.index] = actToInsert;
+            }
+        }
+
+        public IndexedTourActivity getFirst() {
+            return first;
+        }
+
+        void addAfter(IndexedTourActivity toInsert, IndexedTourActivity after) {
+            IndexedTourActivity actAfterAfter = getSuccessor(after);
+            setSuccessor(after, toInsert);
+            setSuccessor(toInsert, actAfterAfter);
+            setPredecessor(toInsert, after);
+            setPredecessor(actAfterAfter, toInsert);
+        }
+
+        IndexedTourActivity addAfter(JobActivity toInsert_, IndexedTourActivity after) {
+            IndexedTourActivity toInsert = find(toInsert_);
+            toInsert.setTourActivity(toInsert_);
+            IndexedTourActivity actAfterAfter = getSuccessor(after);
+            setSuccessor(after, toInsert);
+            setSuccessor(toInsert, actAfterAfter);
+            setPredecessor(toInsert, after);
+            setPredecessor(actAfterAfter, toInsert);
+            return toInsert;
+        }
+
+        private IndexedTourActivity find(JobActivity toInsert_) {
+            for (IndexedTourActivity a : actsToInsert) {
+                if (a.act.getIndex() == toInsert_.getIndex()) {
+                    return a;
+                }
+            }
+            throw new IllegalStateException("should not be");
+        }
+
+
+        void setSuccessor(IndexedTourActivity act, IndexedTourActivity successor) {
+            if (successor == null) successors[act.index] = -1;
+            else successors[act.index] = successor.index;
+        }
+
+        void setPredecessor(IndexedTourActivity act, IndexedTourActivity predecessor) {
+            if (predecessor == null) predecessors[act.index] = -1;
+            else predecessors[act.index] = predecessor.index;
+        }
+
+        void remove(IndexedTourActivity toRemove) {
+            IndexedTourActivity predecessor = getPredecessor(toRemove);
+            IndexedTourActivity successor = getSuccessor(toRemove);
+            setSuccessor(toRemove, null);
+            setPredecessor(toRemove, null);
+            setSuccessor(predecessor, successor);
+            setPredecessor(successor, predecessor);
+        }
+
+        void remove(JobActivity toRemove_) {
+            IndexedTourActivity toRemove = find(toRemove_);
+            IndexedTourActivity predecessor = getPredecessor(toRemove);
+            IndexedTourActivity successor = getSuccessor(toRemove);
+            setSuccessor(toRemove, null);
+            setPredecessor(toRemove, null);
+            setSuccessor(predecessor, successor);
+            setPredecessor(successor, predecessor);
+        }
+
+        IndexedTourActivity getSuccessor(IndexedTourActivity act) {
+            if (hasSuccessor(act)) {
+                return acts[successors[act.index]];
+            }
+            return null;
+        }
+
+        IndexedTourActivity getPredecessor(IndexedTourActivity act) {
+            if (hasPredecessor(act)) {
+                return acts[predecessors[act.index]];
+            }
+            return null;
+        }
+
+        boolean hasSuccessor(IndexedTourActivity act) {
+            return successors[act.index] != -1;
+        }
+
+        boolean hasPredecessor(IndexedTourActivity act) {
+            return predecessors[act.index] != -1;
+        }
+
+        Route copy() {
+            return null;
+        }
+
+        public ActAndIndex indexOf(TourActivity activity) {
+            int i = 0;
+            IndexedTourActivity prev = getFirst();
+            while (hasSuccessor(prev)) {
+                IndexedTourActivity succ = getSuccessor(prev);
+                if (succ.act.getIndex() == activity.getIndex()) {
+                    return new ActAndIndex(i + 1, succ.act);
+                }
+                i++;
+                prev = succ;
+            }
+            return null;
+        }
+
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(GeneralJobInsertionCalculator.class);
 
     private HardRouteConstraint hardRouteLevelConstraint;
@@ -75,7 +246,7 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
 
     /**
      * Calculates the marginal cost of inserting job i locally. This is based on the
-     * assumption that cost changes can entirely covered by only looking at the predecessor i-1 and its successor i+1.
+     * assumption that cost changes can entirely covered by only looking at the predecessors i-1 and its successor i+1.
      */
     @Override
     public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
@@ -103,7 +274,12 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         newRoute.addAll(currentRoute.getTourActivities().getActivities());
         newRoute.add(end);
 
-        List<InsertionData> bestData = calculateInsertionCosts(insertionContext, 1, actList, newRoute, additionalICostsAtRouteLevel, newVehicleDepartureTime);
+        List<IndexedTourActivity> current = makeIndices(newRoute, 0);
+        List<IndexedTourActivity> actsToInsert = makeIndices(actList, current.size());
+        Route route = new Route(current, actsToInsert);
+
+        List<Integer> insertionIndices = new ArrayList<>();
+        List<InsertionData> bestData = calculateInsertionCosts(insertionContext, 0, route.getFirst(), route, actList, additionalICostsAtRouteLevel, newVehicleDepartureTime, insertionIndices);
         if (bestData.isEmpty()) {
             return InsertionData.createEmptyInsertionData();
         } else {
@@ -117,11 +293,22 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         }
     }
 
-    private List<InsertionData> calculateInsertionCosts(JobInsertionContext insertionContext, int index, List<JobActivity> actList, List<TourActivity> newRoute, double additionalCosts, double departureTime) {
+    private List<IndexedTourActivity> makeIndices(List<? extends TourActivity> acts, int startIndex) {
+        int index = startIndex;
+        List<IndexedTourActivity> indexed = new ArrayList<>();
+        for (TourActivity act : acts) {
+            indexed.add(new IndexedTourActivity(index, act));
+            index++;
+        }
+        return indexed;
+    }
+
+    private List<InsertionData> calculateInsertionCosts(JobInsertionContext insertionContext, int startIndex, IndexedTourActivity startAct, Route route, List<JobActivity> actList, double additionalCosts, double departureTime, List<Integer> insertionIndeces) {
         List<InsertionData> iData = new ArrayList<>();
         double departureTimeAtPrevAct = departureTime;
-        TourActivity prevAct = newRoute.get(index - 1);
-        for (int i = index; i < newRoute.size(); i++) {
+        IndexedTourActivity prevAct = startAct;
+        int index = startIndex;
+        while (route.hasSuccessor(prevAct)) {
             JobActivity jobActivity = actList.get(0);
             if (jobActivity.getTimeWindows().isEmpty()) {
                 throw new IllegalStateException("at least a single time window must be set");
@@ -130,34 +317,38 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
                 JobActivity copiedJobActivity = (JobActivity) jobActivity.duplicate();
                 copiedJobActivity.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
                 copiedJobActivity.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
+                //Todo: add correct info, e.g. arrival and end time - assure functionality by unit tests - current no info set, but no unit test fails -> this should not be
                 ActivityContext activityContext = new ActivityContext();
-                activityContext.setInsertionIndex(i);
+                activityContext.setInsertionIndex(index + 1);
+//                activityContext.setArrivalTime();
                 insertionContext.setActivityContext(activityContext);
-                HardActivityConstraint.ConstraintsStatus constraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, copiedJobActivity, newRoute.get(i), departureTimeAtPrevAct);
+                HardActivityConstraint.ConstraintsStatus constraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct.act, copiedJobActivity, route.getSuccessor(prevAct).act, departureTimeAtPrevAct);
                 if (constraintStatus.equals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED)) {
                     continue;
                 } else if (constraintStatus.equals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK)) {
                     return iData;
                 }
-                double miscCosts = softActivityConstraint.getCosts(insertionContext, prevAct, copiedJobActivity, newRoute.get(i), departureTimeAtPrevAct);
-                double c = calculate(insertionContext, prevAct, copiedJobActivity, newRoute.get(i), departureTimeAtPrevAct);
-                List<TourActivity> modifiedRoute = new ArrayList<>(newRoute);
-                modifiedRoute.add(i, copiedJobActivity);
+                double miscCosts = softActivityConstraint.getCosts(insertionContext, prevAct.act, copiedJobActivity, route.getSuccessor(prevAct).act, departureTimeAtPrevAct);
+                double c = calculate(insertionContext, prevAct.act, copiedJobActivity, route.getSuccessor(prevAct).act, departureTimeAtPrevAct);
+                IndexedTourActivity toInsert = route.addAfter(copiedJobActivity, prevAct);
                 double totalCosts = additionalCosts + c + miscCosts;
                 if (actList.size() == 1) {
                     InsertionData iD = new InsertionData(totalCosts, insertionContext.getNewDepTime(), insertionContext.getNewVehicle(), insertionContext.getNewDriver());
                     iD.getEvents().add(new SwitchVehicle(insertionContext.getRoute(), insertionContext.getNewVehicle(), insertionContext.getNewDepTime()));
-                    iD.getEvents().addAll(getInsertActivityEvents(insertionContext, modifiedRoute));
+                    iD.getEvents().addAll(getInsertActivityEvents(insertionContext, route));
                     iData.add(iD);
 
                 } else {
-                    double departureTimeFromJobActivity = getDeparture(prevAct, copiedJobActivity, departureTimeAtPrevAct, insertionContext.getNewDriver(), insertionContext.getNewVehicle());
-                    List<InsertionData> insertions = calculateInsertionCosts(insertionContext, i + 1, actList.subList(1, actList.size()), modifiedRoute, totalCosts, departureTimeFromJobActivity);
+                    double departureTimeFromJobActivity = getDeparture(prevAct.act, copiedJobActivity, departureTimeAtPrevAct, insertionContext.getNewDriver(), insertionContext.getNewVehicle());
+                    insertionIndeces.add(index + 1);
+                    List<InsertionData> insertions = calculateInsertionCosts(insertionContext, index + 1, toInsert, route, actList.subList(1, actList.size()), totalCosts, departureTimeFromJobActivity, insertionIndeces);
                     iData.addAll(insertions);
                 }
+                route.remove(toInsert);
             }
-            departureTimeAtPrevAct = getDeparture(prevAct, newRoute.get(i), departureTimeAtPrevAct, insertionContext.getNewDriver(), insertionContext.getNewVehicle());
-            prevAct = newRoute.get(i);
+            departureTimeAtPrevAct = getDeparture(prevAct.act, route.getSuccessor(prevAct).act, departureTimeAtPrevAct, insertionContext.getNewDriver(), insertionContext.getNewVehicle());
+            prevAct = route.getSuccessor(prevAct);
+            index++;
         }
         return iData;
     }
@@ -168,14 +359,13 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         return actStart + activityCosts.getActivityDuration(activity, actArrTime, driver, vehicle);
     }
 
-    private Collection<? extends Event> getInsertActivityEvents(JobInsertionContext insertionContext, List<TourActivity> modifiedRoute) {
+    private Collection<? extends Event> getInsertActivityEvents(JobInsertionContext insertionContext, Route modifiedRoute) {
         List<InsertActivity> insertActivities = new ArrayList<>();
         for (int i = insertionContext.getAssociatedActivities().size() - 1; i >= 0; i--) {
             TourActivity activity = insertionContext.getAssociatedActivities().get(i);
-            int activityIndexInModifiedRoute = modifiedRoute.indexOf(activity);
-            TourActivity activityInModifiedRoute = modifiedRoute.get(activityIndexInModifiedRoute);
+            ActAndIndex actAndIndex = modifiedRoute.indexOf(activity);
             insertActivities.add(new InsertActivity(insertionContext.getRoute(), insertionContext.getNewVehicle(),
-                activityInModifiedRoute, activityIndexInModifiedRoute - i - 1));
+                actAndIndex.act, actAndIndex.index - i - 1));
         }
         return insertActivities;
     }
