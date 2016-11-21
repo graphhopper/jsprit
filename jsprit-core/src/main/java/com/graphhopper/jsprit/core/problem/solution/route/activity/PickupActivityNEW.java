@@ -22,7 +22,6 @@ import java.util.Collection;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
-import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class PickupActivityNEW extends JobActivity {
 
@@ -33,14 +32,6 @@ public class PickupActivityNEW extends JobActivity {
 
     public PickupActivityNEW(PickupActivityNEW sourceActivity) {
         super(sourceActivity);
-    }
-
-    public PickupActivityNEW(AbstractJob service,
-                    Service.BuilderBase<? extends Service, ?> serviceBuilder) {
-        this(service, serviceBuilder.getType(), serviceBuilder.getLocation(),
-                        serviceBuilder.getServiceTime(),
-                        serviceBuilder.getCapacity(),
-                        serviceBuilder.getTimeWindows().getTimeWindows());
     }
 
 }

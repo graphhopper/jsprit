@@ -35,12 +35,4 @@ public final class DeliverShipmentDEPRECATED extends DeliveryActivityNEW {
         super(sourceActivity);
     }
 
-    // Only for testing
-    @Deprecated
-    public DeliverShipmentDEPRECATED(Shipment s) {
-        super(s, NAME, s.getDeliveryLocation(), s.getDeliveryServiceTime(),
-            s.getSize().invert(),
-            s.getDeliveryTimeWindows());
-    }
-
 }

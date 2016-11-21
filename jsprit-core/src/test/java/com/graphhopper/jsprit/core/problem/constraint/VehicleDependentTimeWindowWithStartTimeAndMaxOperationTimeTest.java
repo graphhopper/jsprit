@@ -166,7 +166,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     public void whenNewJobIsInsertedWithOldVeh_itJustShouldReturnTrue() {
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("50,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
 
@@ -181,7 +181,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     public void whenNewJobIsInsertedWithOldVeh_itJustShouldReturnFalse() {
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("1000,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
 
@@ -196,7 +196,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     public void whenNewJobIsInsertedInBetweenAct1And2WithOldVeh_itJustShouldReturnTrue() {
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("50,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
 
@@ -214,7 +214,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
     public void whenNewJobIsInsertedInBetweenAct1And2WithOldVeh_itJustShouldReturnFalse() {
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("51,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
 
@@ -235,7 +235,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("40,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v2, route.getDriver(), 0.);
 
@@ -253,7 +253,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("40,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v3, route.getDriver(), 0.);
 
@@ -270,7 +270,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("40,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v4, route.getDriver(), 0.);
 
@@ -287,7 +287,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("40,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
 
@@ -304,7 +304,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("40,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
 
@@ -321,7 +321,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("40,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
 
@@ -336,7 +336,7 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         assertEquals(60., route.getEnd().getArrTime(), 0.01);
 
         Service s4 = new Service.Builder("s4").setLocation(Location.newInstance("40,0")).build();
-        JobActivity serviceAct = s4.getServiceActivity();
+        JobActivity serviceAct = s4.getActivity();
 
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v5, route.getDriver(), 60.);
 

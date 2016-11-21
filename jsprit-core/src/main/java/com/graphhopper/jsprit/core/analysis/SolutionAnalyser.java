@@ -122,11 +122,12 @@ public class SolutionAnalyser {
 
         @Override
         public void visit(TourActivity activity) {
-            if (activity instanceof PickupActivityNEW) {
+            if (activity instanceof PickupActivityNEW || activity instanceof ServiceActivityNEW) {
                 pickupCounter++;
-                pickedUp = pickedUp.add(((PickupActivityNEW) activity).getJob().getSize());
+                pickedUp = pickedUp.add(activity.getLoadChange());
                 if (!AbstractActivityNEW.isShipment(activity)
-                                && activity instanceof PickupActivityNEW) {
+                                && (activity instanceof PickupActivityNEW
+                                                || activity instanceof ServiceActivityNEW)) {
                     deliverAtEndCounter++;
                 }
             } else if (activity instanceof DeliveryActivityNEW) {
@@ -214,7 +215,7 @@ public class SolutionAnalyser {
             } else {
                 if (!AbstractActivityNEW.isShipment(activity)
                                 && (activity instanceof PickupActivityNEW
-                                || activity instanceof ServiceActivityNEW)) {
+                                                || activity instanceof ServiceActivityNEW)) {
                     pickupOccured = true;
                     stateManager.putActivityState(activity, backhaul_id, false);
                 } else {
