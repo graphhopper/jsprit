@@ -308,7 +308,8 @@ public class Shipment extends AbstractJob {
                             shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
             list.addActivity(new DeliveryActivityNEW(this, "deliverShipment",
                             shipmentBuilder.getDeliveryLocation(),
-                            shipmentBuilder.getDeliveryServiceTime(), shipmentBuilder.getCapacity(),
+                            shipmentBuilder.getDeliveryServiceTime(),
+                            shipmentBuilder.getCapacity().invert(),
                             shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
         } else {
             list.addActivity(new PickupShipmentDEPRECATED(this, shipmentBuilder));

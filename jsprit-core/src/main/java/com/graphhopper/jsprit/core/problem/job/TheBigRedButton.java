@@ -1,5 +1,5 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 public class TheBigRedButton {
-    public static boolean PUSHED = false;
+    public static boolean PUSHED = true;
 }
