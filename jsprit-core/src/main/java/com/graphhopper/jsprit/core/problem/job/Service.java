@@ -17,14 +17,15 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
-
-import java.util.Collection;
 
 /**
  * Service implementation of a job.
@@ -42,7 +43,7 @@ public class Service extends AbstractJob {
      * @author schroeder
      */
     public static abstract class BuilderBase<T extends Service, B extends BuilderBase<T, B>>
-        extends JobBuilder<T, B> {
+    extends JobBuilder<T, B> {
 
         protected String type = "service";
 
@@ -223,9 +224,11 @@ public class Service extends AbstractJob {
     protected void createActivities(JobBuilder<?, ?> builder) {
         Builder serviceBuilder = (Builder) builder;
         JobActivityList list = new SequentialJobActivityList(this);
-        // TODO - Balage1551
-        //        list.addActivity(new ServiceActivityNEW(this, "service", getLocation(), getServiceDuration(), getSize()));
-        list.addActivity(new PickupServiceDEPRECATED(this, serviceBuilder));
+        if (TheBigRedButton.PUSHED) {
+            list.addActivity(new ServiceActivityNEW(this, serviceBuilder));
+        } else {
+            list.addActivity(new PickupServiceDEPRECATED(this, serviceBuilder));
+        }
         setActivities(list);
     }
 
@@ -285,8 +288,8 @@ public class Service extends AbstractJob {
     @Override
     public String toString() {
         return "[id=" + getId() + "][name=" + getName() + "][type=" + type + "][location="
-            + getLocation() + "][capacity=" + getSize() + "][serviceTime="
-            + getServiceDuration() + "][timeWindow=" + getTimeWindows() + "]";
+                        + getLocation() + "][capacity=" + getSize() + "][serviceTime="
+                        + getServiceDuration() + "][timeWindow=" + getTimeWindows() + "]";
     }
 
 

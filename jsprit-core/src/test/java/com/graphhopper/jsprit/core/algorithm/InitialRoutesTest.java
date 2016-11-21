@@ -19,6 +19,15 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit.Builder;
@@ -37,19 +46,13 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Collection;
-
-import static org.junit.Assert.*;
 
 public class InitialRoutesTest {
 
@@ -158,26 +161,26 @@ public class InitialRoutesTest {
     public void maxCapacityShouldNotBeExceeded() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 100).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("veh")
-            .setStartLocation(Location.Builder.newInstance().setId("start").setCoordinate(Coordinate.newInstance(0, 0)).build())
-            .setType(type)
-            .build();
+                        .setStartLocation(Location.Builder.newInstance().setId("start").setCoordinate(Coordinate.newInstance(0, 0)).build())
+                        .setType(type)
+                        .build();
 
         Shipment shipment = Shipment.Builder.newInstance("s")
-            .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
-            .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
-            .addSizeDimension(0, 100)
-            .build();
+                        .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
+                        .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
+                        .addSizeDimension(0, 100)
+                        .build();
 
         Shipment another_shipment = Shipment.Builder.newInstance("another_s")
-            .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
-            .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
-            .addSizeDimension(0, 50)
-            .build();
+                        .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
+                        .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
+                        .addSizeDimension(0, 50)
+                        .build();
 
         VehicleRoute iniRoute = VehicleRoute.Builder.newInstance(vehicle).addPickup(shipment).addDelivery(shipment).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).addJob(another_shipment)
-            .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addInitialVehicleRoute(iniRoute).build();
+                        .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addInitialVehicleRoute(iniRoute).build();
 
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
         vra.setMaxIterations(10);
@@ -191,7 +194,7 @@ public class InitialRoutesTest {
     private boolean secondActIsPickup(Collection<VehicleRoutingProblemSolution> solutions) {
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
         TourActivity secondAct = solution.getRoutes().iterator().next().getActivities().get(1);
-        return secondAct instanceof PickupShipmentDEPRECATED;
+        return secondAct instanceof PickupActivityNEW;
     }
 
     @Test

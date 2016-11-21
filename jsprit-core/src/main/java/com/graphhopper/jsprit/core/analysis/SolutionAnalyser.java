@@ -40,15 +40,12 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -128,13 +125,15 @@ public class SolutionAnalyser {
             if (activity instanceof PickupActivityNEW) {
                 pickupCounter++;
                 pickedUp = pickedUp.add(((PickupActivityNEW) activity).getJob().getSize());
-                if (activity instanceof PickupServiceDEPRECATED) {
+                if (!AbstractActivityNEW.isShipment(activity)
+                                && activity instanceof PickupActivityNEW) {
                     deliverAtEndCounter++;
                 }
             } else if (activity instanceof DeliveryActivityNEW) {
                 deliveryCounter++;
                 delivered = delivered.add(((DeliveryActivityNEW) activity).getJob().getSize());
-                if (activity instanceof DeliverServiceDEPRECATED) {
+                if (!AbstractActivityNEW.isShipment(activity)
+                                && activity instanceof DeliveryActivityNEW) {
                     pickupAtBeginningCounter++;
                 }
             }
@@ -159,7 +158,7 @@ public class SolutionAnalyser {
 
         private final StateManager stateManager;
 
-        private Map<String, PickupShipmentDEPRECATED> openShipments;
+        private Map<String, PickupActivityNEW> openShipments;
 
         private VehicleRoute route;
 
@@ -178,25 +177,28 @@ public class SolutionAnalyser {
         @Override
         public void begin(VehicleRoute route) {
             this.route = route;
-            openShipments = new HashMap<String, PickupShipmentDEPRECATED>();
+            openShipments = new HashMap<>();
             pickupOccured = false;
             shipmentConstraintOnRouteViolated = false;
             backhaulConstraintOnRouteViolated = false;
         }
 
+
         @Override
         public void visit(TourActivity activity) {
             //shipment
-            if (activity instanceof PickupShipmentDEPRECATED) {
-                openShipments.put(((PickupShipmentDEPRECATED) activity).getJob().getId(), (PickupShipmentDEPRECATED) activity);
-            } else if (activity instanceof DeliverShipmentDEPRECATED) {
-                String jobId = ((DeliverShipmentDEPRECATED) activity).getJob().getId();
+            if (AbstractActivityNEW.isShipment(activity) && activity instanceof PickupActivityNEW) {
+                openShipments.put(((PickupActivityNEW) activity).getJob().getId(),
+                                (PickupActivityNEW) activity);
+            } else if (AbstractActivityNEW.isShipment(activity)
+                            && activity instanceof DeliveryActivityNEW) {
+                String jobId = ((DeliveryActivityNEW) activity).getJob().getId();
                 if (!openShipments.containsKey(jobId)) {
                     //deliverShipment without pickupShipment
                     stateManager.putActivityState(activity, shipment_id, true);
                     shipmentConstraintOnRouteViolated = true;
                 } else {
-                    PickupShipmentDEPRECATED removed = openShipments.remove(jobId);
+                    PickupActivityNEW removed = openShipments.remove(jobId);
                     stateManager.putActivityState(removed, shipment_id, false);
                     stateManager.putActivityState(activity, shipment_id, false);
                 }
@@ -205,12 +207,14 @@ public class SolutionAnalyser {
             }
 
             //backhaul
-            if (activity instanceof DeliverServiceDEPRECATED && pickupOccured) {
+            if (!AbstractActivityNEW.isShipment(activity) && activity instanceof DeliveryActivityNEW
+                            && pickupOccured) {
                 stateManager.putActivityState(activity, backhaul_id, true);
                 backhaulConstraintOnRouteViolated = true;
             } else {
-                if (activity instanceof PickupActivityNEW
-                                || activity instanceof ServiceActivityNEW) {
+                if (!AbstractActivityNEW.isShipment(activity)
+                                && (activity instanceof PickupActivityNEW
+                                || activity instanceof ServiceActivityNEW)) {
                     pickupOccured = true;
                     stateManager.putActivityState(activity, backhaul_id, false);
                 } else {

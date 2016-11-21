@@ -22,11 +22,11 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 public final class PickupServiceDEPRECATED extends PickupActivityNEW {
 
     public PickupServiceDEPRECATED(Service service,
-                                   Service.BuilderBase<? extends Service, ?> builder) {
+                    Service.BuilderBase<? extends Service, ?> builder) {
         super(service, builder.getType(), builder.getLocation(),
-            builder.getServiceTime(),
-            builder.getCapacity(),
-            builder.getTimeWindows().getTimeWindows());
+                        builder.getServiceTime(),
+                        builder.getCapacity(),
+                        builder.getTimeWindows().getTimeWindows());
     }
 
 
@@ -37,7 +37,7 @@ public final class PickupServiceDEPRECATED extends PickupActivityNEW {
     @Deprecated
     public PickupServiceDEPRECATED(Service service) {
         super(service, service.getType(), service.getLocation(), service.getServiceDuration(),
-            service.getSize(), service.getServiceTimeWindows());
+                        service.getSize(), service.getServiceTimeWindows());
     }
 
 

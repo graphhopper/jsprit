@@ -36,4 +36,5 @@ public class TestUtils {
     public static Location loc(Coordinate coordinate) {
         return Location.Builder.newInstance().setCoordinate(coordinate).build();
     }
+
 }
