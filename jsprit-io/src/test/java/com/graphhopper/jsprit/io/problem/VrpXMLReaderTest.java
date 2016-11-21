@@ -39,6 +39,7 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.Solutions;
@@ -318,7 +319,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Service s1 = (Service) vrp.getJobs().get("1");
-        assertEquals("service", s1.getType());
+        assertEquals("pickup", s1.getType());
     }
 
     @Test
@@ -625,8 +626,8 @@ public class VrpXMLReaderTest {
         assertEquals(1, solutions.get(0).getRoutes().size());
         List<TourActivity> activities = solutions.get(0).getRoutes().iterator().next().getTourActivities().getActivities();
         assertEquals(4, activities.size());
-        assertTrue(activities.get(0) instanceof PickupActivityNEW);
-        assertTrue(activities.get(1) instanceof PickupActivityNEW);
+        assertTrue(activities.get(0) instanceof ServiceActivityNEW);
+        assertTrue(activities.get(1) instanceof ServiceActivityNEW);
         assertTrue(activities.get(2) instanceof PickupActivityNEW);
         assertTrue(activities.get(3) instanceof DeliveryActivityNEW);
     }
