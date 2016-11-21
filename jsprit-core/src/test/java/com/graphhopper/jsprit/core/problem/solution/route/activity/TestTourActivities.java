@@ -33,14 +33,14 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 public class TestTourActivities {
 
     private Service service;
-    private ServiceActivityNEW act;
+    private ServiceActivity act;
     private TourActivities tour;
 
     @Before
     public void doBefore() {
         Location loc = Location.newInstance("loc");
         service = new Service.Builder("yo").setLocation(loc).build();
-        act = new ServiceActivityNEW(service, "s1",
+        act = new ServiceActivity(service, "s1",
                         loc, 0d, SizeDimension.Builder.newInstance().addDimension(0, 10).build(),
                         TimeWindows.ANY_TIME.getTimeWindows());
         tour = new TourActivities();

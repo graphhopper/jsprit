@@ -23,15 +23,14 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 
-public class ServiceActivityNEW extends JobActivity {
+public class PickupActivity extends JobActivity {
 
-    public ServiceActivityNEW(AbstractJob job, String type, Location location, double operationTime,
+    public PickupActivity(AbstractJob job, String name, Location location, double operationTime,
                     SizeDimension capacity, Collection<TimeWindow> timeWindows) {
-        super(job, type, location, operationTime, capacity, timeWindows);
+        super(job, name, location, operationTime, capacity, timeWindows);
     }
 
-
-    public ServiceActivityNEW(ServiceActivityNEW sourceActivity) {
+    public PickupActivity(PickupActivity sourceActivity) {
         super(sourceActivity);
     }
 

@@ -18,14 +18,14 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 
 /**
  * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
  *
  * @author schroeder
  */
-public class Delivery extends AbstractSingleActivityJob<DeliveryActivityNEW> {
+public class Delivery extends AbstractSingleActivityJob<DeliveryActivity> {
 
     public static final class Builder
     extends AbstractSingleActivityJob.BuilderBase<Delivery, Builder> {
@@ -51,9 +51,9 @@ public class Delivery extends AbstractSingleActivityJob<DeliveryActivityNEW> {
 
 
     @Override
-    protected DeliveryActivityNEW createActivity(
+    protected DeliveryActivity createActivity(
                     BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-            return new DeliveryActivityNEW(this, builder.type, builder.location,
+            return new DeliveryActivity(this, builder.type, builder.location,
                             builder.serviceTime,
                             builder.getCapacity().invert(), builder.timeWindows.getTimeWindows());
     }

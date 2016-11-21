@@ -37,9 +37,9 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.Solutions;
@@ -626,10 +626,10 @@ public class VrpXMLReaderTest {
         assertEquals(1, solutions.get(0).getRoutes().size());
         List<TourActivity> activities = solutions.get(0).getRoutes().iterator().next().getTourActivities().getActivities();
         assertEquals(4, activities.size());
-        assertTrue(activities.get(0) instanceof ServiceActivityNEW);
-        assertTrue(activities.get(1) instanceof ServiceActivityNEW);
-        assertTrue(activities.get(2) instanceof PickupActivityNEW);
-        assertTrue(activities.get(3) instanceof DeliveryActivityNEW);
+        assertTrue(activities.get(0) instanceof ServiceActivity);
+        assertTrue(activities.get(1) instanceof ServiceActivity);
+        assertTrue(activities.get(2) instanceof PickupActivity);
+        assertTrue(activities.get(3) instanceof DeliveryActivity);
     }
 
     @Test

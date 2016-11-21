@@ -18,9 +18,9 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 public class ShipmentPickupsFirstConstraint implements HardActivityConstraint {
@@ -28,14 +28,14 @@ public class ShipmentPickupsFirstConstraint implements HardActivityConstraint {
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         // Balage1551 - Temporal solution to eliminate DEPRECATED
-        if (AbstractActivityNEW.isShipment(newAct) && newAct instanceof DeliveryActivityNEW
-                        && AbstractActivityNEW.isShipment(nextAct)
-                        && nextAct instanceof PickupActivityNEW) {
+        if (AbstractActivity.isShipment(newAct) && newAct instanceof DeliveryActivity
+                        && AbstractActivity.isShipment(nextAct)
+                        && nextAct instanceof PickupActivity) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
-        if (AbstractActivityNEW.isShipment(newAct) && newAct instanceof PickupActivityNEW
-                        && AbstractActivityNEW.isShipment(prevAct)
-                        && prevAct instanceof DeliveryActivityNEW) {
+        if (AbstractActivity.isShipment(newAct) && newAct instanceof PickupActivity
+                        && AbstractActivity.isShipment(prevAct)
+                        && prevAct instanceof DeliveryActivity) {
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
 

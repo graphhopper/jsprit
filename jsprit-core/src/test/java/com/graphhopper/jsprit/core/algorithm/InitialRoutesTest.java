@@ -46,7 +46,7 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -194,7 +194,7 @@ public class InitialRoutesTest {
     private boolean secondActIsPickup(Collection<VehicleRoutingProblemSolution> solutions) {
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
         TourActivity secondAct = solution.getRoutes().iterator().next().getActivities().get(1);
-        return secondAct instanceof PickupActivityNEW;
+        return secondAct instanceof PickupActivity;
     }
 
     @Test

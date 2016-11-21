@@ -32,10 +32,10 @@ import com.graphhopper.jsprit.core.problem.driver.DriverImpl.NoDriver;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -103,7 +103,7 @@ public class TestVehicleRoute {
         }
         {
             Service service = new Service.Builder("3").setLocation(loc).build();
-            ServiceActivityNEW serviceAct = new ServiceActivityNEW(service, "service",
+            ServiceActivity serviceAct = new ServiceActivity(service, "service",
                             loc,
                             0d, SizeDimension.Builder.newInstance().addDimension(0, 30).build(),
                             TimeWindows.ANY_TIME.getTimeWindows());
@@ -315,7 +315,7 @@ public class TestVehicleRoute {
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("pick.pickup", act.getName());
-        assertTrue(act instanceof PickupActivityNEW);
+        assertTrue(act instanceof PickupActivity);
         assertTrue(((JobActivity) act).getJob() instanceof Pickup);
 
     }
@@ -329,7 +329,7 @@ public class TestVehicleRoute {
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("pick.pickup", act.getName());
-        assertTrue(act instanceof PickupActivityNEW);
+        assertTrue(act instanceof PickupActivity);
         assertTrue(((JobActivity) act).getJob() instanceof Pickup);
 
     }
@@ -343,7 +343,7 @@ public class TestVehicleRoute {
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("delivery.delivery", act.getName());
-        assertTrue(act instanceof DeliveryActivityNEW);
+        assertTrue(act instanceof DeliveryActivity);
         assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
     }
@@ -357,7 +357,7 @@ public class TestVehicleRoute {
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("delivery.delivery", act.getName());
-        assertTrue(act instanceof DeliveryActivityNEW);
+        assertTrue(act instanceof DeliveryActivity);
         assertTrue(((JobActivity) act).getJob() instanceof Delivery);
 
     }

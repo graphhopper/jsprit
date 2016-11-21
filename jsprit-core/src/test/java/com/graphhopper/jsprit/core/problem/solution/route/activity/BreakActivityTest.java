@@ -96,10 +96,10 @@ public class BreakActivityTest {
         Location loc = Location.newInstance("loc");
         Service s1 = new Service.Builder("s").setLocation(loc).build();
         Service s2 = new Service.Builder("s").setLocation(loc).build();
-        ServiceActivityNEW d1 = new ServiceActivityNEW(s1, "s1",
+        ServiceActivity d1 = new ServiceActivity(s1, "s1",
                         loc, 0d, SizeDimension.EMPTY,
                         TimeWindows.ANY_TIME.getTimeWindows());
-        ServiceActivityNEW d2 = new ServiceActivityNEW(s2, "s2",
+        ServiceActivity d2 = new ServiceActivity(s2, "s2",
                         loc, 0d, SizeDimension.EMPTY,
                         TimeWindows.ANY_TIME.getTimeWindows());
 
@@ -111,10 +111,10 @@ public class BreakActivityTest {
         Location loc = Location.newInstance("loc");
         Service s1 = new Service.Builder("s").setLocation(loc).build();
         Service s2 = new Service.Builder("s2").setLocation(loc).build();
-        ServiceActivityNEW d1 = new ServiceActivityNEW(s1, "s1",
+        ServiceActivity d1 = new ServiceActivity(s1, "s1",
                         loc, 0d, SizeDimension.EMPTY,
                         TimeWindows.ANY_TIME.getTimeWindows());
-        ServiceActivityNEW d2 = new ServiceActivityNEW(s2, "s2",
+        ServiceActivity d2 = new ServiceActivity(s2, "s2",
                         loc, 0d, SizeDimension.EMPTY,
                         TimeWindows.ANY_TIME.getTimeWindows());
 

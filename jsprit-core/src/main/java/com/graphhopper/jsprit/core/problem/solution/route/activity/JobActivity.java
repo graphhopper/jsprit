@@ -16,7 +16,7 @@ import java.util.HashSet;
  *
  * @author schroeder
  */
-public abstract class JobActivity extends AbstractActivityNEW {
+public abstract class JobActivity extends AbstractActivity {
 
     private AbstractJob job;
 

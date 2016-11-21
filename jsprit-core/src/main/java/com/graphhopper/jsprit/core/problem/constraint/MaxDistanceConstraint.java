@@ -25,8 +25,8 @@ import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -99,7 +99,7 @@ public class MaxDistanceConstraint implements HardActivityConstraint {
 
         double additionalDistanceOfPickup = 0;
         // Balage1551 - Temporal solution to eliminate DEPRECATED
-        if (newAct instanceof DeliveryActivityNEW && AbstractActivityNEW.isShipment(newAct)) {
+        if (newAct instanceof DeliveryActivity && AbstractActivity.isShipment(newAct)) {
             int iIndexOfPickup = iFacts.getRelatedActivityContext().getInsertionIndex();
             TourActivity pickup = iFacts.getAssociatedActivities().get(0);
             TourActivity actBeforePickup;

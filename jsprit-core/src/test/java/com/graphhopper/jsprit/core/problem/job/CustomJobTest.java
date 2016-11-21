@@ -20,7 +20,7 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import org.junit.Assert;
 import org.junit.Test;
@@ -104,7 +104,7 @@ public class CustomJobTest {
             CustomJob.Builder builder = (CustomJob.Builder) jobBuilder;
             JobActivityList list = new SequentialJobActivityList(this);
             for (int i = 0; i < builder.getLocs().size(); i++) {
-                list.addActivity(new PickupActivityNEW(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
+                list.addActivity(new PickupActivity(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
             }
             setActivities(list);
         }

@@ -21,8 +21,8 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 
 public interface TourShipmentActivityFactory {
 
-    public AbstractActivityNEW createPickup(Shipment shipment);
+    public AbstractActivity createPickup(Shipment shipment);
 
-    public AbstractActivityNEW createDelivery(Shipment shipment);
+    public AbstractActivity createDelivery(Shipment shipment);
 
 }

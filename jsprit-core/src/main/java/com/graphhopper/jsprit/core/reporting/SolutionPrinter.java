@@ -22,7 +22,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
@@ -179,8 +179,8 @@ public class SolutionPrinter {
                 } else {
                     jobId = "-";
                 }
-                String type = (act instanceof AbstractActivityNEW)
-                    ? ((AbstractActivityNEW) act).getType() : act.getName();
+                String type = (act instanceof AbstractActivity)
+                    ? ((AbstractActivity) act).getType() : act.getName();
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
                     route.getVehicle());
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());

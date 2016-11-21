@@ -21,8 +21,8 @@ import java.util.Collection;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
@@ -299,11 +299,11 @@ public class Shipment extends AbstractJob {
     protected void createActivities(JobBuilder<?, ?> builder) {
         Builder shipmentBuilder = (Builder) builder;
         JobActivityList list = new SequentialJobActivityList(this);
-        list.addActivity(new PickupActivityNEW(this, "pickupShipment",
+        list.addActivity(new PickupActivity(this, "pickupShipment",
                         shipmentBuilder.getPickupLocation(),
                         shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
                         shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
-        list.addActivity(new DeliveryActivityNEW(this, "deliverShipment",
+        list.addActivity(new DeliveryActivity(this, "deliverShipment",
                         shipmentBuilder.getDeliveryLocation(),
                         shipmentBuilder.getDeliveryServiceTime(),
                         shipmentBuilder.getCapacity().invert(),
@@ -312,12 +312,12 @@ public class Shipment extends AbstractJob {
         setActivities(list);
     }
 
-    public PickupActivityNEW getPickupActivity() {
-        return (PickupActivityNEW) getActivityList().findByType("pickupShipment").get();
+    public PickupActivity getPickupActivity() {
+        return (PickupActivity) getActivityList().findByType("pickupShipment").get();
     }
 
-    public DeliveryActivityNEW getDeliveryActivity() {
-        return (DeliveryActivityNEW) getActivityList().findByType("deliverShipment").get();
+    public DeliveryActivity getDeliveryActivity() {
+        return (DeliveryActivity) getActivityList().findByType("deliverShipment").get();
     }
 
     // =================== DEPRECATED GETTERS

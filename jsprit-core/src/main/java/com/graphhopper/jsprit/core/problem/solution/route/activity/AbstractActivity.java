@@ -8,7 +8,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 
-public abstract class AbstractActivityNEW implements TourActivity {
+public abstract class AbstractActivity implements TourActivity {
 
     private int index;
     protected SizeDimension loadChange;
@@ -20,7 +20,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
     protected Location location;
 
 
-    public AbstractActivityNEW(String type, Location location, SizeDimension loadChange) {
+    public AbstractActivity(String type, Location location, SizeDimension loadChange) {
         super();
         this.loadChange = loadChange;
         this.type = type;
@@ -28,7 +28,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
     }
 
 
-    public AbstractActivityNEW(AbstractActivityNEW sourceActivity) {
+    public AbstractActivity(AbstractActivity sourceActivity) {
         arrTime = sourceActivity.getArrTime();
         endTime = sourceActivity.getEndTime();
         loadChange = sourceActivity.getLoadChange();
@@ -122,7 +122,7 @@ public abstract class AbstractActivityNEW implements TourActivity {
         // TODO - Balage1551 - It uses safe reflection. But this is reflection which is expensive, so
         // in case it is a bottleneck, this should be refactored
         try {
-            Constructor<? extends AbstractActivityNEW> constructor = getClass().getConstructor(getClass());
+            Constructor<? extends AbstractActivity> constructor = getClass().getConstructor(getClass());
             return constructor.newInstance(this);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException e) {

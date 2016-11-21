@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -48,7 +48,7 @@ public class StateManagerTest {
 
         @Override
         public List<JobActivity> createActivities(Job job) {
-            ServiceActivityNEW act = mock(ServiceActivityNEW.class);
+            ServiceActivity act = mock(ServiceActivity.class);
             when(act.getIndex()).thenReturn(1);
             List<JobActivity> acts = new ArrayList<>();
             acts.add(act);

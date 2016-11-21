@@ -1,7 +1,7 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,8 +23,8 @@ public class GraphJobActivityListTest {
     }
 
 
-    private ServiceActivityNEW createActivity(AbstractJob job, String name) {
-        ServiceActivityNEW act = mock(ServiceActivityNEW.class);
+    private ServiceActivity createActivity(AbstractJob job, String name) {
+        ServiceActivity act = mock(ServiceActivity.class);
         when(act.getName()).thenReturn(name);
         when(act.getJob()).thenReturn(job);
         when(act.toString()).thenReturn(name);
@@ -45,7 +45,7 @@ public class GraphJobActivityListTest {
     @Test
     public void whenAddingAnActivity_itMustHaveTheCorrectJob() {
         GraphJobActivityList list = new GraphJobActivityList(job);
-        ServiceActivityNEW actA = createActivity(job, "A");
+        ServiceActivity actA = createActivity(job, "A");
         list.addActivity(actA);
         assertEquals(1, list.size());
         assertEquals(actA, list.getAll().get(0));
@@ -54,7 +54,7 @@ public class GraphJobActivityListTest {
     @Test
     public void whenAddingAnActivity_itMustInitializeTheCache() {
         GraphJobActivityList list = new GraphJobActivityList(job);
-        ServiceActivityNEW actA = createActivity(job, "A");
+        ServiceActivity actA = createActivity(job, "A");
         list.addActivity(actA);
         assertEquals(1, list.dependencies.size());
         assertEquals(setOf(actA), list.dependencies.keySet());
@@ -68,7 +68,7 @@ public class GraphJobActivityListTest {
     @Test
     public void whenAddingAnActivityTwice_itMustHaveToAddOnlyOnce() {
         GraphJobActivityList list = new GraphJobActivityList(job);
-        ServiceActivityNEW actA = createActivity(job, "A");
+        ServiceActivity actA = createActivity(job, "A");
         list.addActivity(actA);
         list.addActivity(actA);
         assertEquals(1, list.size());
@@ -84,8 +84,8 @@ public class GraphJobActivityListTest {
     @Test
     public void whenAddingADependency_itMustAddTheActivities() {
         GraphJobActivityList list = new GraphJobActivityList(job);
-        ServiceActivityNEW actA = createActivity(job, "A");
-        ServiceActivityNEW actB = createActivity(job, "B");
+        ServiceActivity actA = createActivity(job, "A");
+        ServiceActivity actB = createActivity(job, "B");
         list.addActivity(actA);
         list.addDependency(actA, actB);
         assertEquals(2, list.size());
@@ -96,8 +96,8 @@ public class GraphJobActivityListTest {
     @Test
     public void whenAddingADependency_itMustUpdateCaches() {
         GraphJobActivityList list = new GraphJobActivityList(job);
-        ServiceActivityNEW actA = createActivity(job, "A");
-        ServiceActivityNEW actB = createActivity(job, "B");
+        ServiceActivity actA = createActivity(job, "A");
+        ServiceActivity actB = createActivity(job, "B");
         list.addDependency(actA, actB);
         assertEquals(setOf(actB), list.dependencies.get(actA));
         assertEquals(setOf(actA), list.transitivePrecedingDependencyCache.get(actB));
@@ -107,9 +107,9 @@ public class GraphJobActivityListTest {
     @Test
     public void whenAddingASecondDependency_itMustUpdateCachesTransitively() {
         GraphJobActivityList list = new GraphJobActivityList(job);
-        ServiceActivityNEW actA = createActivity(job, "A");
-        ServiceActivityNEW actB = createActivity(job, "B");
-        ServiceActivityNEW actC = createActivity(job, "C");
+        ServiceActivity actA = createActivity(job, "A");
+        ServiceActivity actB = createActivity(job, "B");
+        ServiceActivity actC = createActivity(job, "C");
         list.addDependency(actA, actB);
         list.addDependency(actB, actC);
         assertEquals(setOf(actB), list.dependencies.get(actA));
@@ -123,8 +123,8 @@ public class GraphJobActivityListTest {
     @Test(expected = IllegalArgumentException.class)
     public void whenAddingADependencyWhichCreatesCycly_itMustThrowAnException() {
         GraphJobActivityList list = new GraphJobActivityList(job);
-        ServiceActivityNEW actA = createActivity(job, "A");
-        ServiceActivityNEW actB = createActivity(job, "B");
+        ServiceActivity actA = createActivity(job, "A");
+        ServiceActivity actB = createActivity(job, "B");
         list.addDependency(actA, actB);
         list.addDependency(actB, actA);
     }
@@ -132,11 +132,11 @@ public class GraphJobActivityListTest {
 
     @Test
     public void complexTest() {
-        ServiceActivityNEW actA = createActivity(job, "A");
-        ServiceActivityNEW actB = createActivity(job, "B");
-        ServiceActivityNEW actC = createActivity(job, "C");
-        ServiceActivityNEW actD = createActivity(job, "D");
-        ServiceActivityNEW actE = createActivity(job, "E");
+        ServiceActivity actA = createActivity(job, "A");
+        ServiceActivity actB = createActivity(job, "B");
+        ServiceActivity actC = createActivity(job, "C");
+        ServiceActivity actD = createActivity(job, "D");
+        ServiceActivity actE = createActivity(job, "E");
 
         GraphJobActivityList list = new GraphJobActivityList(job);
         list.addDependency(actA, actB);

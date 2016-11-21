@@ -23,9 +23,9 @@ import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.JobActivityList;
 import com.graphhopper.jsprit.core.problem.job.SequentialJobActivityList;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ExchangeActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ExchangeActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 import java.util.ArrayList;
@@ -131,11 +131,11 @@ public class CustomJob extends AbstractJob {
         JobActivityList list = new SequentialJobActivityList(this);
         for (int i = 0; i < builder.getLocs().size(); i++) {
             if (builder.getTypes().get(i).equals("pickup")) {
-                list.addActivity(new PickupActivityNEW(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
+                list.addActivity(new PickupActivity(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
             } else if (builder.getTypes().get(i).equals("delivery")) {
-                list.addActivity(new DeliveryActivityNEW(this, "delivery", builder.getLocs().get(i), 0, builder.getCaps().get(i).invert(), Arrays.asList(TimeWindow.ETERNITY)));
+                list.addActivity(new DeliveryActivity(this, "delivery", builder.getLocs().get(i), 0, builder.getCaps().get(i).invert(), Arrays.asList(TimeWindow.ETERNITY)));
             } else {
-                list.addActivity(new ExchangeActivityNEW(this, "exchange", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
+                list.addActivity(new ExchangeActivity(this, "exchange", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
             }
         }
         setActivities(list);
