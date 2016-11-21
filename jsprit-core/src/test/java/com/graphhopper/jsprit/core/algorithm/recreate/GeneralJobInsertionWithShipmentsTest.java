@@ -106,6 +106,7 @@ public class GeneralJobInsertionWithShipmentsTest {
     @Test
     public void whenCalculatingInsertionCostsOfShipment_itShouldReturnCorrectCostValue() {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).build();
         VehicleRoute route = VehicleRoute.emptyRoute();
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(40.0, iData.getInsertionCost(), 0.05);
@@ -115,6 +116,9 @@ public class GeneralJobInsertionWithShipmentsTest {
     public void whenCalculatingInsertionIntoExistingRoute_itShouldReturnCorrectCosts() {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
+
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(shipment2).build();
+
         VehicleRoute route = VehicleRoute.emptyRoute();
         List<JobActivity> tourActivities = shipment.getActivityList().getAll();
         route.setVehicleAndDepartureTime(vehicle, 0);
@@ -131,6 +135,9 @@ public class GeneralJobInsertionWithShipmentsTest {
     public void whenInsertingShipmentInRouteWithNotEnoughCapacity_itShouldReturnNoInsertion() {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
+
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(shipment2).build();
+
         VehicleRoute route = VehicleRoute.emptyRoute();
         List<JobActivity> tourActivities = shipment.getActivityList().getAll();
         route.setVehicleAndDepartureTime(vehicle, 0);
@@ -149,6 +156,8 @@ public class GeneralJobInsertionWithShipmentsTest {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,10")).build();
+
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(shipment2).addJob(shipment3).build();
 
         VehicleRoute route = VehicleRoute.emptyRoute();
         List<JobActivity> shipmentActivities = shipment.getActivityList().getAll();
@@ -170,8 +179,11 @@ public class GeneralJobInsertionWithShipmentsTest {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,9")).build();
-        List<JobActivity> shipmentActivities = shipment.getActivityList().getAll();
-        List<JobActivity> shipment2Activities = shipment2.getActivityList().getAll();
+
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(shipment2).addJob(shipment3).build();
+
+        List<JobActivity> shipmentActivities = getTourActivities(shipment);
+        List<JobActivity> shipment2Activities = getTourActivities(shipment2);
         VehicleRoute route = VehicleRoute.emptyRoute();
 
         route.setVehicleAndDepartureTime(vehicle, 0d);
