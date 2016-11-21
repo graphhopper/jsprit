@@ -87,7 +87,8 @@ public class TestVehicleRoute {
     @Test
     public void whenBuildingANonEmptyTour2Times_tourIterIteratesOverActivitiesCorrectly() {
         VehicleRoute.Builder routeBuilder = VehicleRoute.Builder.newInstance(vehicle, driver);
-        routeBuilder.addService(new Service.Builder("2").addSizeDimension(0, 30).setLocation(Location.newInstance("1")).build());
+        Location loc = Location.newInstance("1");
+        routeBuilder.addService(new Service.Builder("2").addSizeDimension(0, 30).setLocation(loc).build());
         VehicleRoute route = routeBuilder.build();
 
         {
@@ -101,9 +102,9 @@ public class TestVehicleRoute {
             assertEquals(1, count);
         }
         {
-            Service service = new Service.Builder("3").build();
+            Service service = new Service.Builder("3").setLocation(loc).build();
             ServiceActivityNEW serviceAct = new ServiceActivityNEW(service, "service",
-                            Location.newInstance("1"),
+                            loc,
                             0d, SizeDimension.Builder.newInstance().addDimension(0, 30).build(),
                             TimeWindows.ANY_TIME.getTimeWindows());
             route.getTourActivities().addActivity(serviceAct);

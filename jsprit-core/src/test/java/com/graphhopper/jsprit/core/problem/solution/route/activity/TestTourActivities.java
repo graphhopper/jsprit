@@ -38,8 +38,8 @@ public class TestTourActivities {
 
     @Before
     public void doBefore() {
-        Service service = new Service.Builder("yo").build();
         Location loc = Location.newInstance("loc");
+        service = new Service.Builder("yo").setLocation(loc).build();
         act = new ServiceActivityNEW(service, "s1",
                         loc, 0d, SizeDimension.Builder.newInstance().addDimension(0, 10).build(),
                         TimeWindows.ANY_TIME.getTimeWindows());

@@ -62,5 +62,10 @@ public class Pickup extends AbstractSingleActivityJob<PickupActivityNEW> {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Builder getBuilder(String id) {
+        return Builder.newInstance(id);
+    }
 
 }

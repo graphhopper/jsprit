@@ -199,7 +199,7 @@ public class VehicleRoute {
             if (service == null) {
                 throw new IllegalArgumentException("service must not be null");
             }
-            return addService(service, timeWindow);
+            return addSingleActivityJob(service, timeWindow);
         }
 
         private Builder addSingleActivityJob(AbstractSingleActivityJob<?> service) {

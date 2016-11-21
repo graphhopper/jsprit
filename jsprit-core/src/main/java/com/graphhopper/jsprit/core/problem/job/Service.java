@@ -55,13 +55,18 @@ public class Service extends AbstractSingleActivityJob<ServiceActivityNEW> {
     @Override
     protected ServiceActivityNEW createActivity(
                     AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-        if (TheBigRedButton.PUSHED) {
-            return new ServiceActivityNEW(this, builder.type, builder.location, builder.serviceTime,
-                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
-        } else {
-            return new ServiceActivityNEW(this, builder.type, builder.location, builder.serviceTime,
-                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
-        }
+        return new ServiceActivityNEW(this, builder.type,
+                        builder.location, builder.serviceTime, builder.getCapacity(),
+                        builder.timeWindows.getTimeWindows());
+        // return new PickupActivityNEW(this, builder.type, builder.location,
+        // builder.serviceTime,
+        // builder.getCapacity(), builder.timeWindows.getTimeWindows());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Builder getBuilder(String id) {
+        return Builder.newInstance(id);
     }
 
 }

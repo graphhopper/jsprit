@@ -57,11 +57,11 @@ public class Delivery extends AbstractSingleActivityJob<DeliveryActivityNEW> {
         if (TheBigRedButton.PUSHED) {
             return new DeliveryActivityNEW(this, builder.type, builder.location,
                             builder.serviceTime,
-                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
+                            builder.getCapacity().invert(), builder.timeWindows.getTimeWindows());
         } else {
             return new DeliverServiceDEPRECATED(this, builder.type, builder.location,
                             builder.serviceTime,
-                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
+                            builder.getCapacity().invert(), builder.timeWindows.getTimeWindows());
         }
     }
 
@@ -69,6 +69,12 @@ public class Delivery extends AbstractSingleActivityJob<DeliveryActivityNEW> {
     @Deprecated
     public SizeDimension getSize() {
         return super.getSize().abs();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Builder getBuilder(String id) {
+        return Builder.newInstance(id);
     }
 
 }

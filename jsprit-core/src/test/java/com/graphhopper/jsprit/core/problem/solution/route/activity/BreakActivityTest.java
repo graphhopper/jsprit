@@ -93,9 +93,9 @@ public class BreakActivityTest {
 
     @Test
     public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual() {
-        Service s1 = new Service.Builder("s").build();
-        Service s2 = new Service.Builder("s").build();
         Location loc = Location.newInstance("loc");
+        Service s1 = new Service.Builder("s").setLocation(loc).build();
+        Service s2 = new Service.Builder("s").setLocation(loc).build();
         ServiceActivityNEW d1 = new ServiceActivityNEW(s1, "s1",
                         loc, 0d, SizeDimension.EMPTY,
                         TimeWindows.ANY_TIME.getTimeWindows());
@@ -108,9 +108,9 @@ public class BreakActivityTest {
 
     @Test
     public void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual() {
-        Service s1 = new Service.Builder("s").build();
-        Service s2 = new Service.Builder("s2").build();
         Location loc = Location.newInstance("loc");
+        Service s1 = new Service.Builder("s").setLocation(loc).build();
+        Service s2 = new Service.Builder("s2").setLocation(loc).build();
         ServiceActivityNEW d1 = new ServiceActivityNEW(s1, "s1",
                         loc, 0d, SizeDimension.EMPTY,
                         TimeWindows.ANY_TIME.getTimeWindows());

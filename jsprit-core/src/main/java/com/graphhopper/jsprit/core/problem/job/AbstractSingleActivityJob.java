@@ -280,5 +280,7 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
         return getActivity().getLoadChange();
     }
 
+    public abstract <X extends BuilderBase<AbstractSingleActivityJob<? extends A>, ? extends BuilderBase<AbstractSingleActivityJob<? extends A>, ?>>> X getBuilder(
+                    String id);
 
 }

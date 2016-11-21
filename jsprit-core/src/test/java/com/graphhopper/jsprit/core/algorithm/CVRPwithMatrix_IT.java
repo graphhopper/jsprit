@@ -17,14 +17,25 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
+import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -32,14 +43,6 @@ import com.graphhopper.jsprit.core.util.ChristofidesReader;
 import com.graphhopper.jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
 import com.graphhopper.jsprit.core.util.JobType;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class CVRPwithMatrix_IT {
 
@@ -95,21 +98,22 @@ public class CVRPwithMatrix_IT {
         List<Location> locations = new ArrayList<Location>();
         for (Vehicle v : vrp_.getVehicles()) {
             Location l = Location.Builder.newInstance().setIndex(getIndex()).setId(v.getStartLocation().getId())
-                .setCoordinate(v.getStartLocation().getCoordinate()).build();
+                            .setCoordinate(v.getStartLocation().getCoordinate()).build();
             VehicleImpl.Builder newVehicleBuilder = VehicleImpl.Builder.newInstance(v.getId()).setType(v.getType())
-                .setEarliestStart(v.getEarliestDeparture()).setLatestArrival(v.getLatestArrival())
-                .setStartLocation(l).setReturnToDepot(return_to_depot);
+                            .setEarliestStart(v.getEarliestDeparture()).setLatestArrival(v.getLatestArrival())
+                            .setStartLocation(l).setReturnToDepot(return_to_depot);
             VehicleImpl newVehicle = newVehicleBuilder.build();
             vrpBuilder.addVehicle(newVehicle);
             locations.add(l);
         }
         for (Job j : vrp_.getJobs().values()) {
-            Service s = (Service) j;
+            AbstractSingleActivityJob<?> s = (AbstractSingleActivityJob<?>) j;
             Location l = Location.Builder.newInstance().setIndex(getIndex())
-                .setId(s.getLocation().getId()).setCoordinate(s.getLocation().getCoordinate()).build();
-            Service newService = new Service.Builder(s.getId()).setServiceTime(s.getServiceDuration())
-                .addSizeDimension(0, s.getSize().get(0))
-                .setLocation(l).build();
+                            .setId(s.getLocation().getId()).setCoordinate(s.getLocation().getCoordinate()).build();
+            AbstractSingleActivityJob<?> newService = s.getBuilder(s.getId())
+                            .setServiceTime(s.getServiceDuration())
+                            .addSizeDimension(0, s.getSize().get(0))
+                            .setLocation(l).build();
             vrpBuilder.addJob(newService);
             locations.add(l);
         }

@@ -80,4 +80,10 @@ public class Break extends AbstractSingleActivityJob<BreakActivity> implements I
         return variableLocation;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Builder getBuilder(String id) {
+        return Builder.newInstance(id);
+    }
+
 }
