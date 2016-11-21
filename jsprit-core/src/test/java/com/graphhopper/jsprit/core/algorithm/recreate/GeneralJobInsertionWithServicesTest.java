@@ -50,7 +50,7 @@ import static org.mockito.Mockito.mock;
 
 public class GeneralJobInsertionWithServicesTest {
 
-    GeneralJobInsertionCalculator jobInsertion;
+    GeneralJobInsertionCalculatorV2 jobInsertion;
 
     VehicleRoutingTransportCosts costs;
 
@@ -127,7 +127,7 @@ public class GeneralJobInsertionWithServicesTest {
 
         VehicleRoutingActivityCosts actCosts = mock(VehicleRoutingActivityCosts.class);
 
-        jobInsertion = new GeneralJobInsertionCalculator(costs, vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, actCosts, states), cManager);
+        jobInsertion = new GeneralJobInsertionCalculatorV2(costs, vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, actCosts, states), cManager);
     }
 
     @Test

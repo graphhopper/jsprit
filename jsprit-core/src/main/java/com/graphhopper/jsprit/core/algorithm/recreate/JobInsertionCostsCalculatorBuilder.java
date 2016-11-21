@@ -272,7 +272,7 @@ public class JobInsertionCostsCalculatorBuilder {
 //        ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
 //        serviceInsertion.setJobActivityFactory(activityFactory);
 
-        GeneralJobInsertionCalculator generalJobInsertionCalculator = new GeneralJobInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
+        GeneralJobInsertionCalculatorV2 generalJobInsertionCalculator = new GeneralJobInsertionCalculatorV2(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
 
         BreakInsertionCalculator breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
         breakInsertionCalculator.setJobActivityFactory(activityFactory);

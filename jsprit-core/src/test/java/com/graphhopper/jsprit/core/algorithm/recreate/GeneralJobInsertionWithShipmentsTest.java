@@ -85,7 +85,7 @@ public class GeneralJobInsertionWithShipmentsTest {
 
     ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
-    GeneralJobInsertionCalculator insertionCalculator;
+    GeneralJobInsertionCalculatorV2 insertionCalculator;
 
     Vehicle vehicle;
 
@@ -102,12 +102,13 @@ public class GeneralJobInsertionWithShipmentsTest {
     private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
         ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
         constraintManager.addConstraint(hardRouteLevelConstraint);
-        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
     }
 
     @Test
     public void whenCalculatingInsertionCostsOfShipment_itShouldReturnCorrectCostValue() {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).build();
         VehicleRoute route = VehicleRoute.emptyRoute();
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(40.0, iData.getInsertionCost(), 0.05);
@@ -117,6 +118,9 @@ public class GeneralJobInsertionWithShipmentsTest {
     public void whenCalculatingInsertionIntoExistingRoute_itShouldReturnCorrectCosts() {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
+
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(shipment2).build();
+
         VehicleRoute route = VehicleRoute.emptyRoute();
         List<JobActivity> tourActivities = getTourActivities(shipment);
         route.setVehicleAndDepartureTime(vehicle, 0);
@@ -141,6 +145,9 @@ public class GeneralJobInsertionWithShipmentsTest {
     public void whenInsertingShipmentInRouteWithNotEnoughCapacity_itShouldReturnNoInsertion() {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
+
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(shipment2).build();
+
         VehicleRoute route = VehicleRoute.emptyRoute();
         List<JobActivity> tourActivities = getTourActivities(shipment);
         route.setVehicleAndDepartureTime(vehicle, 0);
@@ -159,6 +166,8 @@ public class GeneralJobInsertionWithShipmentsTest {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,10")).build();
+
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(shipment2).addJob(shipment3).build();
 
         VehicleRoute route = VehicleRoute.emptyRoute();
         List<JobActivity> shipmentActivities = getTourActivities(shipment);
@@ -180,6 +189,9 @@ public class GeneralJobInsertionWithShipmentsTest {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,9")).build();
+
+        VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(shipment2).addJob(shipment3).build();
+
         List<JobActivity> shipmentActivities = getTourActivities(shipment);
         List<JobActivity> shipment2Activities = getTourActivities(shipment2);
         VehicleRoute route = VehicleRoute.emptyRoute();
@@ -217,7 +229,7 @@ public class GeneralJobInsertionWithShipmentsTest {
         constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager), ConstraintManager.Priority.CRITICAL);
         constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(), ConstraintManager.Priority.CRITICAL);
 
-        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
         assertTrue(iData instanceof InsertionData.NoInsertionFound);
@@ -245,7 +257,7 @@ public class GeneralJobInsertionWithShipmentsTest {
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
         constraintManager.addLoadConstraint();
 
-        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         stateManager.informInsertionStarts(Arrays.asList(route), null);
 
         //		Service service = new Service.Builder("pick", 1).setLocationId("5,5").build();

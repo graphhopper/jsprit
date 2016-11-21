@@ -85,7 +85,7 @@ public class GeneralJobInsertionAndLoadConstraintsTest {
 
     ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
-    GeneralJobInsertionCalculator insertionCalculator;
+    GeneralJobInsertionCalculatorV2 insertionCalculator;
 
     VehicleRoutingProblem vehicleRoutingProblem;
 
@@ -104,7 +104,7 @@ public class GeneralJobInsertionAndLoadConstraintsTest {
     private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
         ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
         constraintManager.addConstraint(hardRouteLevelConstraint);
-        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class GeneralJobInsertionAndLoadConstraintsTest {
         constraintManager.addLoadConstraint();
         stateManager.informInsertionStarts(Arrays.asList(route), null);
 
-        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, pickup, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
         List<InsertActivity> insertActivities = iData.getUnmodifiableEventsByType(InsertActivity.class);
