@@ -18,7 +18,6 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupServiceDEPRECATED;
 
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
@@ -52,14 +51,8 @@ public class Pickup extends AbstractSingleActivityJob<PickupActivityNEW> {
     @Override
     protected PickupActivityNEW createActivity(
                     AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-        if (TheBigRedButton.PUSHED) {
             return new PickupActivityNEW(this, builder.type, builder.location, builder.serviceTime,
                             builder.getCapacity(), builder.timeWindows.getTimeWindows());
-        } else {
-            return new PickupServiceDEPRECATED(this, builder.type, builder.location,
-                            builder.serviceTime,
-                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
-        }
     }
 
     @SuppressWarnings("unchecked")

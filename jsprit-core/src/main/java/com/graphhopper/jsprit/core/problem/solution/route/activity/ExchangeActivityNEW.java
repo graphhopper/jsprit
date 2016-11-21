@@ -17,17 +17,23 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.AbstractJob;
-
 import java.util.Collection;
+
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 
 public class ExchangeActivityNEW extends JobActivity {
 
     public ExchangeActivityNEW(AbstractJob job, String name, Location location,
-                               double operationTime, SizeDimension capacity, Collection<TimeWindow> timeWindows) {
-        super(job, name, location, operationTime, capacity, timeWindows);
+                    double operationTime, SizeDimension size, Collection<TimeWindow> timeWindows) {
+        super(job, name, location, operationTime, size, timeWindows);
+    }
+
+    public ExchangeActivityNEW(AbstractJob job, String name, Location location,
+                    double operationTime, SizeDimension deliverySize, SizeDimension backhaulSize,
+                    Collection<TimeWindow> timeWindows) {
+        this(job, name, location, operationTime, backhaulSize.subtract(deliverySize), timeWindows);
     }
 
     public ExchangeActivityNEW(ExchangeActivityNEW sourceActivity) {

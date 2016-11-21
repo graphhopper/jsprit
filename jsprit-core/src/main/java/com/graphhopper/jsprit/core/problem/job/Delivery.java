@@ -18,7 +18,6 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverServiceDEPRECATED;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
 
 /**
@@ -54,15 +53,9 @@ public class Delivery extends AbstractSingleActivityJob<DeliveryActivityNEW> {
     @Override
     protected DeliveryActivityNEW createActivity(
                     BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-        if (TheBigRedButton.PUSHED) {
             return new DeliveryActivityNEW(this, builder.type, builder.location,
                             builder.serviceTime,
                             builder.getCapacity().invert(), builder.timeWindows.getTimeWindows());
-        } else {
-            return new DeliverServiceDEPRECATED(this, builder.type, builder.location,
-                            builder.serviceTime,
-                            builder.getCapacity().invert(), builder.timeWindows.getTimeWindows());
-        }
     }
 
     @Override
