@@ -18,6 +18,14 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -26,12 +34,6 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-import junit.framework.Assert;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by schroeder on 06/03/15.
@@ -52,11 +54,11 @@ public class RuinClustersTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2)
-            .addJob(s6).addJob(s7).addJob(s0).addJob(s3).addJob(s4).addJob(s5).addVehicle(v).build();
+                        .addJob(s6).addJob(s7).addJob(s0).addJob(s3).addJob(s4).addJob(s5).addVehicle(v).build();
 
         VehicleRoute vr1 = VehicleRoute.Builder.newInstance(v).addService(s0).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         VehicleRoute vr2 = VehicleRoute.Builder.newInstance(v)
-            .addService(s6).addService(s7).addService(s4).addService(s5).setJobActivityFactory(vrp.getJobActivityFactory()).build();
+                        .addService(s6).addService(s7).addService(s4).addService(s5).setJobActivityFactory(vrp.getJobActivityFactory()).build();
 
         JobNeighborhoods n = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new DefaultJobDistance(vrp.getTransportCosts()));
         n.initialise();
@@ -64,7 +66,7 @@ public class RuinClustersTest {
         Random r = RandomNumberGeneration.newInstance();
         rc.setRandom(r);
         Collection<Job> ruined = rc.ruinRoutes(Arrays.asList(vr1, vr2));
-        Assert.assertEquals(5, ruined.size());
+        assertEquals(5, ruined.size());
 
     }
 

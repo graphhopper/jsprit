@@ -18,6 +18,10 @@
 
 package com.graphhopper.jsprit.core.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
@@ -27,10 +31,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActiv
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ExchangeActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by schroeder on 16/11/16.

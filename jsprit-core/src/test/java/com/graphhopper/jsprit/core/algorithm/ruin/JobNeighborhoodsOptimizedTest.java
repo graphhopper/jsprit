@@ -17,22 +17,22 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.CoordinateJobDistance;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 public class JobNeighborhoodsOptimizedTest {
@@ -123,10 +123,10 @@ public class JobNeighborhoodsOptimizedTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        Assert.assertEquals(s6, services.get(0));
-        Assert.assertEquals(s5, services.get(1));
-        Assert.assertEquals(target, services.get(2));
-        Assert.assertEquals(s2, services.get(3));
+        assertEquals(s6, services.get(0));
+        assertEquals(s5, services.get(1));
+        assertEquals(target, services.get(2));
+        assertEquals(s2, services.get(3));
     }
 
     @Test

@@ -17,21 +17,25 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
-import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
-import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
-import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.stub;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
+import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
+import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
+import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 
 
 public class SearchStrategyManagerTest {
@@ -205,9 +209,9 @@ public class SearchStrategyManagerTest {
         RandomNumberGeneration.reset();
         SearchStrategyManager managerUnderTest = new SearchStrategyManager();
         SearchStrategy mockedStrategy1 = new SearchStrategy("strat1"
-            , mock(SolutionSelector.class), mock(SolutionAcceptor.class), mock(SolutionCostCalculator.class));
+                        , mock(SolutionSelector.class), mock(SolutionAcceptor.class), mock(SolutionCostCalculator.class));
         SearchStrategy mockedStrategy2 = new SearchStrategy("strat2"
-            , mock(SolutionSelector.class), mock(SolutionAcceptor.class), mock(SolutionCostCalculator.class));
+                        , mock(SolutionSelector.class), mock(SolutionAcceptor.class), mock(SolutionCostCalculator.class));
 
         managerUnderTest.addStrategy(mockedStrategy1, 0.2);
         managerUnderTest.addStrategy(mockedStrategy2, 0.8);
@@ -224,7 +228,7 @@ public class SearchStrategyManagerTest {
 
         for (int i = 0; i < 1000; i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                Assert.assertFalse(true);
+                fail();
             }
         }
         Assert.assertTrue(true);

@@ -1,12 +1,12 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.AbstractJob;
-import com.graphhopper.jsprit.core.problem.job.Job;
-
 import java.util.Collection;
 import java.util.HashSet;
+
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
+import com.graphhopper.jsprit.core.problem.job.Job;
 
 /**
  * Basic interface of job-activies.
@@ -27,7 +27,7 @@ public abstract class JobActivity extends AbstractActivity {
     private int orderNumber;
 
     public JobActivity(AbstractJob job, String type, Location location, double operationTime,
-                       SizeDimension capacity, Collection<TimeWindow> timeWindows) {
+                    SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(type, location, capacity);
         this.job = job;
         this.operationTime = operationTime;
@@ -64,6 +64,12 @@ public abstract class JobActivity extends AbstractActivity {
         return timeWindows;
     }
 
+    public TimeWindow getSingleTimeWindow() {
+        if (timeWindows.size() > 1) {
+            throw new IllegalArgumentException("More than one time window in. " + this);
+        }
+        return timeWindows.iterator().next();
+    }
 
     @Override
     public int hashCode() {

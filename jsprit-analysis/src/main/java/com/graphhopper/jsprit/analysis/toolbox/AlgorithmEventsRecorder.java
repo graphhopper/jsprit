@@ -329,14 +329,14 @@ public class AlgorithmEventsRecorder
     private void addJob(Job job) {
         if (job instanceof Service) {
             Service service = (Service) job;
-            addNode(service.getId(), service.getLocation().getCoordinate());
+            addNode(service.getId(), service.getActivity().getLocation().getCoordinate());
             markSingleActivityJob(service);
         } else if (job instanceof Shipment) {
             Shipment shipment = (Shipment) job;
             String fromNodeId = getFromNodeId(shipment);
-            addNode(fromNodeId, shipment.getPickupLocation().getCoordinate());
+            addNode(fromNodeId, shipment.getPickupActivity().getLocation().getCoordinate());
             String toNodeId = getToNodeId(shipment);
-            addNode(toNodeId, shipment.getDeliveryLocation().getCoordinate());
+            addNode(toNodeId, shipment.getDeliveryActivity().getLocation().getCoordinate());
             markShipment(shipment);
             if (renderShipments) {
                 Edge e = graph.addEdge("shipment_" + fromNodeId + "_" + toNodeId, fromNodeId, toNodeId, true);

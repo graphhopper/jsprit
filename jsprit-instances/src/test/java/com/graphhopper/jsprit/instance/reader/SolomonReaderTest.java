@@ -17,15 +17,16 @@
  */
 package com.graphhopper.jsprit.instance.reader;
 
+import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.junit.Test;
-
-import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
 
 
 public class SolomonReaderTest {
@@ -40,7 +41,9 @@ public class SolomonReaderTest {
 
     private String getPath() {
         URL resource = getClass().getClassLoader().getResource("C101_solomon.txt");
-        if (resource == null) throw new IllegalStateException("file C101_solomon.txt does not exist");
+        if (resource == null) {
+            throw new IllegalStateException("file C101_solomon.txt does not exist");
+        }
         return resource.getPath();
     }
 
@@ -86,7 +89,7 @@ public class SolomonReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(90, ((Service) vrp.getJobs().get("2")).getServiceDuration(), 0.1);
+        assertEquals(90, ((Service) vrp.getJobs().get("2")).getActivity().getOperationTime(), 0.1);
     }
 
     @Test
@@ -94,7 +97,7 @@ public class SolomonReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(262.0, ((Service) vrp.getJobs().get("62")).getTimeWindow().getStart(), 0.1);
+        assertEquals(262.0, ((Service) vrp.getJobs().get("62")).getActivity().getSingleTimeWindow().getStart(), 0.1);
     }
 
     @Test
@@ -102,7 +105,7 @@ public class SolomonReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(144.0, ((Service) vrp.getJobs().get("87")).getTimeWindow().getEnd(), 0.1);
+        assertEquals(144.0, ((Service) vrp.getJobs().get("87")).getActivity().getSingleTimeWindow().getEnd(), 0.1);
     }
 
 

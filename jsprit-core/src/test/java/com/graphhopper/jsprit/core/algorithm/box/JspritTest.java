@@ -18,6 +18,18 @@
 
 package com.graphhopper.jsprit.core.algorithm.box;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.listener.StrategySelectedListener;
@@ -33,10 +45,6 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-import junit.framework.Assert;
-import org.junit.Test;
-
-import java.util.*;
 
 /**
  * Created by schroeder on 06/03/15.
@@ -60,16 +68,17 @@ public class JspritTest {
             }
 
             private void count(String strategyId) {
-                if (!counts.containsKey(strategyId)) counts.put(strategyId, 1);
+                if (!counts.containsKey(strategyId)) {
+                    counts.put(strategyId, 1);
+                }
                 counts.put(strategyId, counts.get(strategyId) + 1);
             }
 
         });
         try {
             vra.searchSolutions();
-            Assert.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            fail();
         }
 
     }
@@ -81,7 +90,7 @@ public class JspritTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(s2).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-            .setProperty(Jsprit.Strategy.RADIAL_BEST, "100.").buildAlgorithm();
+                        .setProperty(Jsprit.Strategy.RADIAL_BEST, "100.").buildAlgorithm();
         vra.setMaxIterations(100);
         final Map<String, Integer> counts = new HashMap<String, Integer>();
         vra.addListener(new StrategySelectedListener() {
@@ -92,14 +101,16 @@ public class JspritTest {
             }
 
             private void count(String strategyId) {
-                if (!counts.containsKey(strategyId)) counts.put(strategyId, 1);
+                if (!counts.containsKey(strategyId)) {
+                    counts.put(strategyId, 1);
+                }
                 Integer integer = counts.get(strategyId);
                 counts.put(strategyId, integer + 1);
             }
 
         });
         vra.searchSolutions();
-        Assert.assertTrue(counts.containsKey(Jsprit.Strategy.RADIAL_BEST.toString()));
+        assertTrue(counts.containsKey(Jsprit.Strategy.RADIAL_BEST.toString()));
     }
 
     @Test
@@ -121,13 +132,15 @@ public class JspritTest {
             }
 
             private void count(String strategyId) {
-                if (!counts.containsKey(strategyId)) counts.put(strategyId, 1);
+                if (!counts.containsKey(strategyId)) {
+                    counts.put(strategyId, 1);
+                }
                 counts.put(strategyId, counts.get(strategyId) + 1);
             }
 
         });
         vra.searchSolutions();
-        Assert.assertTrue(!counts.containsKey(Jsprit.Strategy.RADIAL_BEST));
+        assertTrue(!counts.containsKey(Jsprit.Strategy.RADIAL_BEST));
     }
 
     @Test
@@ -150,13 +163,15 @@ public class JspritTest {
             }
 
             private void count(String strategyId) {
-                if (!counts.containsKey(strategyId)) counts.put(strategyId, 1);
+                if (!counts.containsKey(strategyId)) {
+                    counts.put(strategyId, 1);
+                }
                 counts.put(strategyId, counts.get(strategyId) + 1);
             }
 
         });
         vra.searchSolutions();
-        Assert.assertTrue(!counts.containsKey(Jsprit.Strategy.RADIAL_BEST));
+        assertTrue(!counts.containsKey(Jsprit.Strategy.RADIAL_BEST));
     }
 
 
@@ -198,7 +213,7 @@ public class JspritTest {
 
         for (int i = 0; i < 100; i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                org.junit.Assert.assertFalse(true);
+                fail();
             }
         }
         org.junit.Assert.assertTrue(true);
@@ -243,7 +258,7 @@ public class JspritTest {
 
         for (int i = 0; i < 100; i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                org.junit.Assert.assertFalse(true);
+                fail();
             }
         }
         org.junit.Assert.assertTrue(true);
@@ -260,9 +275,9 @@ public class JspritTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
-            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
-            .setProperty(Jsprit.Parameter.THREADS, "2").buildAlgorithm();
+                        .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
+                        .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+                        .setProperty(Jsprit.Parameter.THREADS, "2").buildAlgorithm();
         vra.setMaxIterations(100);
         final List<String> firstRecord = new ArrayList<String>();
         vra.addListener(new RuinListener() {
@@ -284,9 +299,9 @@ public class JspritTest {
         vra.searchSolutions();
 
         VehicleRoutingAlgorithm second = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS, "4")
-            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
-            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
-            .buildAlgorithm();
+                        .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
+                        .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+                        .buildAlgorithm();
         second.setMaxIterations(100);
         final List<String> secondRecord = new ArrayList<String>();
         second.addListener(new RuinListener() {
@@ -307,13 +322,12 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        assertEquals(secondRecord.size(), firstRecord.size());
         for (int i = 0; i < firstRecord.size(); i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                Assert.assertFalse(true);
+                fail();
             }
         }
-        Assert.assertTrue(true);
     }
 
     @Test
@@ -367,13 +381,12 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        assertEquals(secondRecord.size(), firstRecord.size());
         for (int i = 0; i < firstRecord.size(); i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                Assert.assertFalse(true);
+                fail();
             }
         }
-        Assert.assertTrue(true);
     }
 
     @Test
@@ -408,13 +421,12 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        assertEquals(secondRecord.size(), firstRecord.size());
         for (int i = 0; i < firstRecord.size(); i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                Assert.assertFalse(true);
+                fail();
             }
         }
-        Assert.assertTrue(true);
     }
 
     @Test
@@ -428,9 +440,9 @@ public class JspritTest {
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
-            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
-            .setProperty(Jsprit.Parameter.THREADS, "4").buildAlgorithm();
+                        .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
+                        .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+                        .setProperty(Jsprit.Parameter.THREADS, "4").buildAlgorithm();
         vra.setMaxIterations(100);
         final List<String> firstRecord = new ArrayList<String>();
         final List<Double> firstRecordCosts = new ArrayList<Double>();
@@ -445,9 +457,9 @@ public class JspritTest {
         vra.searchSolutions();
 
         VehicleRoutingAlgorithm second = Jsprit.Builder.newInstance(vrp)
-            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
-            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
-            .setProperty(Jsprit.Parameter.THREADS, "5").buildAlgorithm();
+                        .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
+                        .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+                        .setProperty(Jsprit.Parameter.THREADS, "5").buildAlgorithm();
         second.setMaxIterations(100);
         final List<String> secondRecord = new ArrayList<String>();
         final List<Double> secondRecordCosts = new ArrayList<Double>();
@@ -460,21 +472,20 @@ public class JspritTest {
         });
         second.searchSolutions();
 
-//        for(int i=0;i<firstRecord.size();i++){
-//            System.out.print(firstRecord.get(i) + " (" + ((int)(firstRecordCosts.get(i)*100.))/100. + "), ");
-//        }
-//        System.out.println();
-//        for(int i=0;i<secondRecord.size();i++){
-//            System.out.print(secondRecord.get(i) + " (" + ((int)(firstRecordCosts.get(i)*100.))/100. + "), ");
-//        }
+        //        for(int i=0;i<firstRecord.size();i++){
+        //            System.out.print(firstRecord.get(i) + " (" + ((int)(firstRecordCosts.get(i)*100.))/100. + "), ");
+        //        }
+        //        System.out.println();
+        //        for(int i=0;i<secondRecord.size();i++){
+        //            System.out.print(secondRecord.get(i) + " (" + ((int)(firstRecordCosts.get(i)*100.))/100. + "), ");
+        //        }
 
-        Assert.assertEquals(secondRecord.size(), firstRecord.size());
+        assertEquals(secondRecord.size(), firstRecord.size());
         for (int i = 0; i < firstRecord.size(); i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                Assert.assertFalse(true);
+                fail();
             }
         }
-        Assert.assertTrue(true);
     }
 
     @Test
@@ -482,7 +493,7 @@ public class JspritTest {
         String s1 = "s2234";
         String s2 = "s1";
         int c = s1.compareTo(s2);
-        Assert.assertEquals(1, c);
+        assertEquals(1, c);
     }
 
 

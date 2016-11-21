@@ -17,9 +17,21 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -31,16 +43,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StateManagerTest {
 
@@ -214,7 +216,7 @@ public class StateManagerTest {
     public void whenCreatingNewState_itShouldHaveAnIndex() {
         StateManager stateManager = new StateManager(vrpMock);
         StateId stateId = stateManager.createStateId("foo-state");
-        Assert.assertEquals(21, stateId.getIndex());
+        assertEquals(21, stateId.getIndex());
     }
 
     @Test
@@ -222,8 +224,8 @@ public class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-foo-state");
-        Assert.assertEquals(21, fooState.getIndex());
-        Assert.assertEquals(22, foofooState.getIndex());
+        assertEquals(21, fooState.getIndex());
+        assertEquals(22, foofooState.getIndex());
     }
 
     @Test
@@ -231,8 +233,8 @@ public class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-state");
-        Assert.assertEquals(21, fooState.getIndex());
-        Assert.assertEquals(21, foofooState.getIndex());
+        assertEquals(21, fooState.getIndex());
+        assertEquals(21, foofooState.getIndex());
     }
 
     @Test

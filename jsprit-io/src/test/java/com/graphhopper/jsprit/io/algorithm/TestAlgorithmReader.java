@@ -17,6 +17,16 @@
  */
 package com.graphhopper.jsprit.io.algorithm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.SearchStrategyModule;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -38,16 +48,6 @@ import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithms.TypedMap.Rui
 import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithms.TypedMap.SelectorKey;
 import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithms.TypedMap.StrategyModuleKey;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
-import junit.framework.Assert;
-import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 public class TestAlgorithmReader {
@@ -71,7 +71,7 @@ public class TestAlgorithmReader {
     @Test
     public void itShouldReadMaxIterations() {
         VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, getClass().getResource("algorithmConfigForReaderTest.xml"));
-        Assert.assertEquals(2000, vra.getMaxIterations());
+        assertEquals(2000, vra.getMaxIterations());
     }
 
     static class IterationCounter implements IterationEndsListener {
@@ -91,7 +91,7 @@ public class TestAlgorithmReader {
         IterationCounter iCounter = new IterationCounter();
         vra.addListener(iCounter);
         vra.searchSolutions();
-        Assert.assertEquals(100, iCounter.iterations);
+        assertEquals(100, iCounter.iterations);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class TestAlgorithmReader {
         IterationCounter iCounter = new IterationCounter();
         vra.addListener(iCounter);
         vra.searchSolutions();
-        Assert.assertEquals(25, iCounter.iterations);
+        assertEquals(25, iCounter.iterations);
     }
 
 
@@ -227,7 +227,7 @@ public class TestAlgorithmReader {
 
             @Override
             public void addModuleListener(
-                SearchStrategyModuleListener moduleListener) {
+                    SearchStrategyModuleListener moduleListener) {
 
             }
         };

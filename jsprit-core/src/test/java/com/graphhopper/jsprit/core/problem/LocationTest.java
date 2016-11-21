@@ -18,9 +18,12 @@
 
 package com.graphhopper.jsprit.core.problem;
 
-import com.graphhopper.jsprit.core.util.Coordinate;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.graphhopper.jsprit.core.util.Coordinate;
 
 /**
  * Created by schroeder on 16.12.14.
@@ -30,61 +33,61 @@ public class LocationTest {
     @Test
     public void whenIndexSet_buildLocation() {
         Location l = Location.Builder.newInstance().setIndex(1).build();
-        Assert.assertEquals(1, l.getIndex());
+        assertEquals(1, l.getIndex());
         Assert.assertTrue(true);
     }
 
     @Test
     public void whenNameSet_buildLocation() {
         Location l = Location.Builder.newInstance().setName("mystreet 6a").setIndex(1).build();
-        Assert.assertEquals("mystreet 6a", l.getName());
+        assertEquals("mystreet 6a", l.getName());
     }
 
     @Test
     public void whenIndexSetWitFactory_returnCorrectLocation() {
         Location l = Location.newInstance(1);
-        Assert.assertEquals(1, l.getIndex());
+        assertEquals(1, l.getIndex());
         Assert.assertTrue(true);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void whenIndexSmallerZero_throwException() {
-        Location l = Location.Builder.newInstance().setIndex(-1).build();
+        Location.Builder.newInstance().setIndex(-1).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void whenCoordinateAndIdAndIndexNotSet_throwException() {
-        Location l = Location.Builder.newInstance().build();
+        Location.Builder.newInstance().build();
     }
 
     @Test
     public void whenIdSet_build() {
         Location l = Location.Builder.newInstance().setId("id").build();
-        Assert.assertEquals("id", l.getId());
+        assertEquals("id", l.getId());
         Assert.assertTrue(true);
     }
 
     @Test
     public void whenIdSetWithFactory_returnCorrectLocation() {
         Location l = Location.newInstance("id");
-        Assert.assertEquals("id", l.getId());
+        assertEquals("id", l.getId());
         Assert.assertTrue(true);
     }
 
     @Test
     public void whenCoordinateSet_build() {
         Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 20)).build();
-        Assert.assertEquals(10., l.getCoordinate().getX(), 0.001);
-        Assert.assertEquals(20., l.getCoordinate().getY(), 0.001);
+        assertEquals(10., l.getCoordinate().getX(), 0.001);
+        assertEquals(20., l.getCoordinate().getY(), 0.001);
         Assert.assertTrue(true);
     }
 
     @Test
     public void whenCoordinateSetWithFactory_returnCorrectLocation() {
-//        Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10,20)).build();
+        //        Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10,20)).build();
         Location l = Location.newInstance(10, 20);
-        Assert.assertEquals(10., l.getCoordinate().getX(), 0.001);
-        Assert.assertEquals(20., l.getCoordinate().getY(), 0.001);
+        assertEquals(10., l.getCoordinate().getX(), 0.001);
+        assertEquals(20., l.getCoordinate().getY(), 0.001);
         Assert.assertTrue(true);
     }
 

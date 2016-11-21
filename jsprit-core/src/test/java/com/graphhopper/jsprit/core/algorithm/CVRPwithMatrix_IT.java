@@ -25,15 +25,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -57,7 +54,7 @@ public class CVRPwithMatrix_IT {
         VehicleRoutingProblem vrp = createVrpWithLocationIndecesAndMatrix(vrp_, true);
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET, "true").buildAlgorithm();
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        Assert.assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
+        assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
         assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
     }
 
@@ -69,7 +66,7 @@ public class CVRPwithMatrix_IT {
         VehicleRoutingProblem vrp = createVrpWithLocationIndecesAndMatrix(vrp_, false);
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET, "true").buildAlgorithm();
         try {
-            Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+            vra.searchSolutions();
             assertTrue(true);
         } catch (Exception e) {
             assertFalse(true);
@@ -83,13 +80,7 @@ public class CVRPwithMatrix_IT {
         VehicleRoutingProblem vrp_ = vrpBuilder.build();
         final VehicleRoutingProblem vrp = createVrpWithLocationIndecesAndMatrix(vrp_, false);
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET, "true").buildAlgorithm();
-        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        SolutionAnalyser sa = new SolutionAnalyser(vrp, Solutions.bestOf(solutions), new TransportDistance() {
-            @Override
-            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
-            }
-        });
+        vra.searchSolutions();
     }
 
 
@@ -109,10 +100,11 @@ public class CVRPwithMatrix_IT {
         for (Job j : vrp_.getJobs().values()) {
             AbstractSingleActivityJob<?> s = (AbstractSingleActivityJob<?>) j;
             Location l = Location.Builder.newInstance().setIndex(getIndex())
-                            .setId(s.getLocation().getId()).setCoordinate(s.getLocation().getCoordinate()).build();
+                            .setId(s.getActivity().getLocation().getId())
+                            .setCoordinate(s.getActivity().getLocation().getCoordinate()).build();
             AbstractSingleActivityJob<?> newService = s.getBuilder(s.getId())
-                            .setServiceTime(s.getServiceDuration())
-                            .addSizeDimension(0, s.getSize().get(0))
+                            .setServiceTime(s.getActivity().getOperationTime())
+                            .addSizeDimension(0, s.getActivity().getLoadChange().abs().get(0))
                             .setLocation(l).build();
             vrpBuilder.addJob(newService);
             locations.add(l);

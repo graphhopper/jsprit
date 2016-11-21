@@ -18,16 +18,18 @@
 
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
  * Created by schroeder on 16/11/16.
@@ -37,7 +39,7 @@ public class CustomJobTest {
     static class CustomJob extends AbstractJob {
 
         public static abstract class BuilderBase<T extends CustomJob, B extends CustomJob.BuilderBase<T, B>>
-            extends JobBuilder<T, B> {
+        extends JobBuilder<T, B> {
 
             List<Location> locs = new ArrayList<>();
 
@@ -61,6 +63,7 @@ public class CustomJobTest {
                 return cap;
             }
 
+            @Override
             protected void validate() {
 
             }
@@ -113,11 +116,11 @@ public class CustomJobTest {
     @Test
     public void whenCreatingANewJobWithThreeDistinctActivities_jobShouldContainActivities() {
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .build();
-        Assert.assertEquals(3, cj.getActivityList().size());
+                        .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+                        .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .build();
+        assertEquals(3, cj.getActivityList().size());
 
     }
 

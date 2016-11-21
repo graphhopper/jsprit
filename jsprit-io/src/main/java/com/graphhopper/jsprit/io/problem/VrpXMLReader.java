@@ -114,7 +114,6 @@ public class VrpXMLReader {
      * @param schemaValidation
      *            the schemaValidation to set
      */
-    @SuppressWarnings("UnusedDeclaration")
     public void setSchemaValidation(boolean schemaValidation) {
         this.schemaValidation = schemaValidation;
     }
@@ -229,16 +228,6 @@ public class VrpXMLReader {
                 if (type == null) {
                     throw new IllegalArgumentException("act[@type] is missing.");
                 }
-                double arrTime = 0.;
-                double endTime = 0.;
-                String arrTimeS = actConfig.getString("arrTime");
-                if (arrTimeS != null) {
-                    arrTime = Double.parseDouble(arrTimeS);
-                }
-                String endTimeS = actConfig.getString("endTime");
-                if (endTimeS != null) {
-                    endTime = Double.parseDouble(endTimeS);
-                }
 
                 String serviceId = actConfig.getString("serviceId");
                 if (type.equals("break")) {
@@ -246,7 +235,7 @@ public class VrpXMLReader {
                     routeBuilder.addService(currentbreak);
                 } else {
                     if (serviceId != null) {
-                        AbstractSingleActivityJob service = getService(serviceId);
+                        AbstractSingleActivityJob<?> service = getService(serviceId);
                         if (service == null) {
                             throw new IllegalArgumentException("service to serviceId " + serviceId
                                     + " is missing (reference in one of your initial routes). make sure you define the service you refer to here in <services> </services>.");
@@ -321,23 +310,13 @@ public class VrpXMLReader {
                     if (type == null) {
                         throw new IllegalArgumentException("act[@type] is missing.");
                     }
-                    double arrTime = 0.;
-                    double endTime = 0.;
-                    String arrTimeS = actConfig.getString("arrTime");
-                    if (arrTimeS != null) {
-                        arrTime = Double.parseDouble(arrTimeS);
-                    }
-                    String endTimeS = actConfig.getString("endTime");
-                    if (endTimeS != null) {
-                        endTime = Double.parseDouble(endTimeS);
-                    }
                     if (type.equals("break")) {
                         Break currentbreak = getBreak(vehicleId);
                         routeBuilder.addService(currentbreak);
                     } else {
                         String serviceId = actConfig.getString("serviceId");
                         if (serviceId != null) {
-                            AbstractSingleActivityJob service = getService(serviceId);
+                            AbstractSingleActivityJob<?> service = getService(serviceId);
                             routeBuilder.addService(service);
                         } else {
                             String shipmentId = actConfig.getString("shipmentId");

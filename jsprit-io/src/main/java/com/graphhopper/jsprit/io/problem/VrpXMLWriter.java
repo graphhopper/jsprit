@@ -17,22 +17,14 @@
  */
 package com.graphhopper.jsprit.io.problem;
 
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.Skills;
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Break;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
-import com.graphhopper.jsprit.core.util.Solutions;
-import com.graphhopper.jsprit.core.util.VehicleIndexComparator;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.xml.serialize.OutputFormat;
@@ -42,13 +34,26 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
+import com.graphhopper.jsprit.core.util.Solutions;
+import com.graphhopper.jsprit.core.util.VehicleIndexComparator;
 
 
 public class VrpXMLWriter {
@@ -87,13 +92,16 @@ public class VrpXMLWriter {
 
     public VrpXMLWriter(VehicleRoutingProblem vrp) {
         this.vrp = vrp;
-        this.solutions = null;
+        solutions = null;
     }
 
+    @SuppressWarnings("unused")
     private static Logger logger = LoggerFactory.getLogger(VrpXMLWriter.class);
 
     public void write(String filename) {
-        if (!filename.endsWith(".xml")) filename += ".xml";
+        if (!filename.endsWith(".xml")) {
+            filename += ".xml";
+        }
         log.info("write vrp: " + filename);
         XMLConf xmlConfig = new XMLConf();
         xmlConfig.setFileName(filename);
@@ -153,7 +161,9 @@ public class VrpXMLWriter {
     }
 
     private void writeInitialRoutes(XMLConf xmlConfig) {
-        if (vrp.getInitialVehicleRoutes().isEmpty()) return;
+        if (vrp.getInitialVehicleRoutes().isEmpty()) {
+            return;
+        }
         String path = "initialRoutes.route";
         int routeCounter = 0;
         for (VehicleRoute route : vrp.getInitialVehicleRoutes()) {
@@ -172,7 +182,8 @@ public class VrpXMLWriter {
                     } else if (job instanceof Break) {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
                     } else {
-                        throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
+                        throw new IllegalStateException(
+                                "cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
                     }
                 }
                 xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").arrTime", act.getArrTime());
@@ -186,7 +197,9 @@ public class VrpXMLWriter {
     }
 
     private void writeSolutions(XMLConf xmlConfig) {
-        if (solutions == null) return;
+        if (solutions == null) {
+            return;
+        }
         String solutionPath = "solutions.solution";
         int counter = 0;
         for (VehicleRoutingProblemSolution solution : solutions) {
@@ -205,17 +218,23 @@ public class VrpXMLWriter {
                     if (act instanceof JobActivity) {
                         Job job = ((JobActivity) act).getJob();
                         if (job instanceof Break) {
-                            xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
+                            xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId",
+                                    job.getId());
                         } else if (job instanceof Service) {
-                            xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").serviceId", job.getId());
+                            xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").serviceId",
+                                    job.getId());
                         } else if (job instanceof Shipment) {
-                            xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").shipmentId", job.getId());
+                            xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").shipmentId",
+                                    job.getId());
                         } else {
-                            throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
+                            throw new IllegalStateException(
+                                    "cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
                         }
                     }
-                    xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").arrTime", act.getArrTime());
-                    xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").endTime", act.getEndTime());
+                    xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").arrTime",
+                            act.getArrTime());
+                    xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").endTime",
+                            act.getEndTime());
                     actCounter++;
                 }
                 xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").end", route.getEnd().getArrTime());
@@ -234,27 +253,32 @@ public class VrpXMLWriter {
         String shipmentPathString = "services.service";
         int counter = 0;
         for (Job j : jobs) {
-            if (!(j instanceof Service)) continue;
+            if (!(j instanceof Service)) {
+                continue;
+            }
             Service service = (Service) j;
+            ServiceActivity activity = service.getActivity();
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ")[@id]", service.getId());
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ")[@type]", service.getType());
-            if (service.getLocation().getId() != null)
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.id", service.getLocation().getId());
-            if (service.getLocation().getCoordinate() != null) {
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.coord[@x]", service.getLocation().getCoordinate().getX());
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.coord[@y]", service.getLocation().getCoordinate().getY());
+            if (activity.getLocation().getId() != null) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.id", activity.getLocation().getId());
             }
-            if (service.getLocation().getIndex() != Location.NO_INDEX) {
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.index", service.getLocation().getIndex());
+            if (activity.getLocation().getCoordinate() != null) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.coord[@x]", activity.getLocation().getCoordinate().getX());
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.coord[@y]", activity.getLocation().getCoordinate().getY());
             }
-            for (int i = 0; i < service.getSize().getNuOfDimensions(); i++) {
+            if (activity.getLocation().getIndex() != Location.NO_INDEX) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").location.index", activity.getLocation().getIndex());
+            }
+            SizeDimension loadChange = activity.getLoadChange().abs();
+            for (int i = 0; i < loadChange.getNuOfDimensions(); i++) {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")[@index]", i);
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")", service.getSize().get(i));
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")", loadChange.get(i));
             }
 
             Collection<TimeWindow> tws = service.getTimeWindows();
             int index = 0;
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").duration", service.getServiceDuration());
+            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").duration", activity.getOperationTime());
             for (TimeWindow tw : tws) {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(" + index + ").start", tw.getStart());
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(" + index + ").end", tw.getEnd());
@@ -279,41 +303,49 @@ public class VrpXMLWriter {
         String shipmentPathString = "shipments.shipment";
         int counter = 0;
         for (Job j : jobs) {
-            if (!(j instanceof Shipment)) continue;
+            if (!(j instanceof Shipment)) {
+                continue;
+            }
             Shipment shipment = (Shipment) j;
+            PickupActivity pickupActivity = shipment.getPickupActivity();
+            DeliveryActivity deliveryActivity = shipment.getDeliveryActivity();
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ")[@id]", shipment.getId());
 //			xmlConfig.setProperty(shipmentPathString + "("+counter+")[@type]", service.getType());
-            if (shipment.getPickupLocation().getId() != null)
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.id", shipment.getPickupLocation().getId());
-            if (shipment.getPickupLocation().getCoordinate() != null) {
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.coord[@x]", shipment.getPickupLocation().getCoordinate().getX());
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.coord[@y]", shipment.getPickupLocation().getCoordinate().getY());
+            if (pickupActivity.getLocation().getId() != null) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.id", pickupActivity.getLocation().getId());
             }
-            if (shipment.getPickupLocation().getIndex() != Location.NO_INDEX) {
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.index", shipment.getPickupLocation().getIndex());
+            if (pickupActivity.getLocation().getCoordinate() != null) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.coord[@x]", pickupActivity.getLocation().getCoordinate().getX());
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.coord[@y]", pickupActivity.getLocation().getCoordinate().getY());
+            }
+            if (pickupActivity.getLocation().getIndex() != Location.NO_INDEX) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.location.index", pickupActivity.getLocation().getIndex());
             }
 
-            Collection<TimeWindow> pu_tws = shipment.getPickupTimeWindows();
+            Collection<TimeWindow> pu_tws = pickupActivity.getTimeWindows();
             int index = 0;
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.duration", shipment.getPickupServiceTime());
+            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.duration", pickupActivity.getOperationTime());
             for (TimeWindow tw : pu_tws) {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(" + index + ").start", tw.getStart());
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
                 ++index;
             }
 
-            if (shipment.getDeliveryLocation().getId() != null)
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.id", shipment.getDeliveryLocation().getId());
-            if (shipment.getDeliveryLocation().getCoordinate() != null) {
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.coord[@x]", shipment.getDeliveryLocation().getCoordinate().getX());
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.coord[@y]", shipment.getDeliveryLocation().getCoordinate().getY());
+            if (deliveryActivity.getLocation().getId() != null) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.id", deliveryActivity.getLocation().getId());
             }
-            if (shipment.getDeliveryLocation().getIndex() != Location.NO_INDEX) {
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.index", shipment.getDeliveryLocation().getIndex());
+            if (deliveryActivity.getLocation().getCoordinate() != null) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.coord[@x]",
+                        deliveryActivity.getLocation().getCoordinate().getX());
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.coord[@y]",
+                        deliveryActivity.getLocation().getCoordinate().getY());
+            }
+            if (deliveryActivity.getLocation().getIndex() != Location.NO_INDEX) {
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.index", deliveryActivity.getLocation().getIndex());
             }
 
-            Collection<TimeWindow> del_tws = shipment.getDeliveryTimeWindows();
-            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.duration", shipment.getDeliveryServiceTime());
+            Collection<TimeWindow> del_tws = deliveryActivity.getTimeWindows();
+            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.duration", deliveryActivity.getOperationTime());
             index = 0;
             for (TimeWindow tw : del_tws) {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(" + index + ").start", tw.getStart());
@@ -321,9 +353,11 @@ public class VrpXMLWriter {
                 ++index;
             }
 
-            for (int i = 0; i < shipment.getSize().getNuOfDimensions(); i++) {
+            SizeDimension loadChange = deliveryActivity.getLoadChange().abs();
+            for (int i = 0; i < loadChange.getNuOfDimensions(); i++) {
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")[@index]", i);
-                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")", shipment.getSize().get(i));
+                xmlConfig.setProperty(shipmentPathString + "(" + counter + ").capacity-dimensions.dimension(" + i + ")",
+                        loadChange.get(i));
             }
 
             //skills
@@ -375,7 +409,7 @@ public class VrpXMLWriter {
             if (vehicle.getBreak() != null) {
                 Collection<TimeWindow> tws = vehicle.getBreak().getTimeWindows();
                 int index = 0;
-                xmlConfig.setProperty(vehiclePathString + "(" + counter + ").breaks.duration", vehicle.getBreak().getServiceDuration());
+                xmlConfig.setProperty(vehiclePathString + "(" + counter + ").breaks.duration", vehicle.getBreak().getActivity().getOperationTime());
                 for (TimeWindow tw : tws) {
                     xmlConfig.setProperty(vehiclePathString + "(" + counter + ").breaks.timeWindows.timeWindow(" + index + ").start", tw.getStart());
                     xmlConfig.setProperty(vehiclePathString + "(" + counter + ").breaks.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
@@ -422,11 +456,16 @@ public class VrpXMLWriter {
     }
 
     private String createSkillString(Skills skills) {
-        if (skills.values().size() == 0) return null;
+        if (skills.values().size() == 0) {
+            return null;
+        }
         String skillString = null;
         for (String skill : skills.values()) {
-            if (skillString == null) skillString = skill;
-            else skillString += ", " + skill;
+            if (skillString == null) {
+                skillString = skill;
+            } else {
+                skillString += ", " + skill;
+            }
         }
         return skillString;
     }

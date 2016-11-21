@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -267,7 +266,7 @@ public class UpdateVehicleDependentTimeWindowTest {
         stateManager.reCalculateStates(route);
 
         Double activityState = stateManager.getActivityState(route.getActivities().get(0), route.getVehicle(), InternalStates.LATEST_OPERATION_START_TIME, Double.class);
-        Assert.assertEquals(51d, activityState, 0.01);
+        assertEquals(51d, activityState, 0.01);
 
     }
 

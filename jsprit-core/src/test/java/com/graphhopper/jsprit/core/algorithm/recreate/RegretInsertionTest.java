@@ -18,6 +18,15 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
@@ -39,14 +48,14 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.vehicle.*;
+import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
-import junit.framework.Assert;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class RegretInsertionTest {
 
@@ -64,7 +73,7 @@ public class RegretInsertionTest {
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
         regretInsertion.insertJobs(routes, vrp.getJobs().values());
-        Assert.assertEquals(1, routes.size());
+        assertEquals(1, routes.size());
     }
 
     @Test
@@ -81,7 +90,7 @@ public class RegretInsertionTest {
         Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>();
 
         regretInsertion.insertJobs(routes, vrp.getJobs().values());
-        Assert.assertEquals(2, routes.iterator().next().getActivities().size());
+        assertEquals(2, routes.iterator().next().getActivities().size());
     }
 
     @Test
@@ -100,7 +109,7 @@ public class RegretInsertionTest {
         CkeckJobSequence position = new CkeckJobSequence(2, s1);
         regretInsertion.addListener(position);
         regretInsertion.insertJobs(routes, vrp.getJobs().values());
-        Assert.assertTrue(position.isCorrect());
+        assertTrue(position.isCorrect());
     }
 
     @Test
@@ -111,19 +120,19 @@ public class RegretInsertionTest {
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0, 5)).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0, -5)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2)
-            .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+                        .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
 
         StateManager stateManager = new StateManager(vrp);
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-            .addCoreStateAndConstraintStuff(true)
-            .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
-            .setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
+                        .addCoreStateAndConstraintStuff(true)
+                        .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+                        .setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
 
-        Assert.assertEquals(2, solution.getRoutes().size());
+        assertEquals(2, solution.getRoutes().size());
     }
 
     static class JobInRouteUpdater implements StateUpdater, ActivityVisitor {
@@ -134,8 +143,6 @@ public class RegretInsertionTest {
 
         private StateId job2AssignedId;
 
-        private VehicleRoute route;
-
         public JobInRouteUpdater(StateManager stateManager, StateId job1AssignedId, StateId job2AssignedId) {
             this.stateManager = stateManager;
             this.job1AssignedId = job1AssignedId;
@@ -144,7 +151,6 @@ public class RegretInsertionTest {
 
         @Override
         public void begin(VehicleRoute route) {
-            this.route = route;
         }
 
         @Override
@@ -173,8 +179,8 @@ public class RegretInsertionTest {
         private StateManager stateManager;
 
         public RouteConstraint(StateId job1Assigned, StateId job2Assigned, StateManager stateManager) {
-            this.job1AssignedId = job1Assigned;
-            this.job2AssignedId = job2Assigned;
+            job1AssignedId = job1Assigned;
+            job2AssignedId = job2Assigned;
             this.stateManager = stateManager;
         }
 
@@ -182,20 +188,26 @@ public class RegretInsertionTest {
         public boolean fulfilled(JobInsertionContext insertionContext) {
             if (insertionContext.getJob().getId().equals("s1")) {
                 Boolean job2Assigned = stateManager.getProblemState(job2AssignedId, Boolean.class);
-                if (job2Assigned == null || job2Assigned == false) return true;
-                else {
+                if (job2Assigned == null || job2Assigned == false) {
+                    return true;
+                } else {
                     for (Job j : insertionContext.getRoute().getTourActivities().getJobs()) {
-                        if (j.getId().equals("s2")) return true;
+                        if (j.getId().equals("s2")) {
+                            return true;
+                        }
                     }
                 }
                 return false;
             }
             if (insertionContext.getJob().getId().equals("s2")) {
                 Boolean job1Assigned = stateManager.getProblemState(job1AssignedId, Boolean.class);
-                if (job1Assigned == null || job1Assigned == false) return true;
-                else {
+                if (job1Assigned == null || job1Assigned == false) {
+                    return true;
+                } else {
                     for (Job j : insertionContext.getRoute().getTourActivities().getJobs()) {
-                        if (j.getId().equals("s1")) return true;
+                        if (j.getId().equals("s1")) {
+                            return true;
+                        }
                     }
                 }
                 return false;
@@ -215,7 +227,7 @@ public class RegretInsertionTest {
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance(0, 10)).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance(0, -10)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addJob(s4)
-            .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+                        .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
 
         final StateManager stateManager = new StateManager(vrp);
         StateId job1Assigned = stateManager.createStateId("job1-assigned");
@@ -227,28 +239,28 @@ public class RegretInsertionTest {
         constraintManager.setDependencyType("s2", DependencyType.INTRA_ROUTE);
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-            .addCoreStateAndConstraintStuff(true)
-            .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
-            .setStateAndConstraintManager(stateManager, constraintManager)
-//            .setProperty(Jsprit.Strategy.CLUSTER_REGRET, "0.")
-//            .setProperty(Jsprit.Strategy.CLUSTER_BEST, "0.")
-//            .setProperty(Jsprit.Strategy.RADIAL_REGRET, "0.")
-//            .setProperty(Jsprit.Strategy.RADIAL_BEST, "0.")
-//            .setProperty(Jsprit.Strategy.RANDOM_REGRET, "1.")
-//            .setProperty(Jsprit.Strategy.RANDOM_BEST, "0.")
-//            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
-//            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
-            .buildAlgorithm();
+                        .addCoreStateAndConstraintStuff(true)
+                        .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+                        .setStateAndConstraintManager(stateManager, constraintManager)
+                        //            .setProperty(Jsprit.Strategy.CLUSTER_REGRET, "0.")
+                        //            .setProperty(Jsprit.Strategy.CLUSTER_BEST, "0.")
+                        //            .setProperty(Jsprit.Strategy.RADIAL_REGRET, "0.")
+                        //            .setProperty(Jsprit.Strategy.RADIAL_BEST, "0.")
+                        //            .setProperty(Jsprit.Strategy.RANDOM_REGRET, "1.")
+                        //            .setProperty(Jsprit.Strategy.RANDOM_BEST, "0.")
+                        //            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.")
+                        //            .setProperty(Jsprit.Strategy.WORST_BEST, "0.")
+                        .buildAlgorithm();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         for (VehicleRoute route : solution.getRoutes()) {
             if (route.getTourActivities().servesJob(s1)) {
                 if (!route.getTourActivities().servesJob(s2)) {
-                    Assert.assertFalse(true);
-                } else Assert.assertTrue(true);
+                    fail();
+                }
             }
         }
-//        Assert.assertEquals(1, solution.getRoutes().size());
+        //        assertEquals(1, solution.getRoutes().size());
     }
 
     @Test
@@ -262,7 +274,7 @@ public class RegretInsertionTest {
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance(0, 10)).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance(0, -10)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addJob(s4)
-            .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+                        .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
 
         final StateManager stateManager = new StateManager(vrp);
         StateId job1Assigned = stateManager.createStateId("job1-assigned");
@@ -274,18 +286,18 @@ public class RegretInsertionTest {
         constraintManager.setDependencyType("s2", DependencyType.INTRA_ROUTE);
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-            .addCoreStateAndConstraintStuff(true)
-            .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
-            .setProperty(Jsprit.Parameter.THREADS, "4")
-            .setStateAndConstraintManager(stateManager, constraintManager)
-            .buildAlgorithm();
+                        .addCoreStateAndConstraintStuff(true)
+                        .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+                        .setProperty(Jsprit.Parameter.THREADS, "4")
+                        .setStateAndConstraintManager(stateManager, constraintManager)
+                        .buildAlgorithm();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         for (VehicleRoute route : solution.getRoutes()) {
             if (route.getTourActivities().servesJob(s1)) {
                 if (!route.getTourActivities().servesJob(s2)) {
-                    Assert.assertFalse(true);
-                } else Assert.assertTrue(true);
+                    fail();
+                }
             }
         }
     }
@@ -293,14 +305,14 @@ public class RegretInsertionTest {
     @Test
     public void shipment1ShouldBeAddedFirst() {
         Shipment s1 = Shipment.Builder.newInstance("s1")
-            .setPickupLocation(Location.Builder.newInstance().setId("pick1").setCoordinate(Coordinate.newInstance(-1, 10)).build())
-            .setDeliveryLocation(Location.Builder.newInstance().setId("del1").setCoordinate(Coordinate.newInstance(1, 10)).build())
-            .build();
+                        .setPickupLocation(Location.Builder.newInstance().setId("pick1").setCoordinate(Coordinate.newInstance(-1, 10)).build())
+                        .setDeliveryLocation(Location.Builder.newInstance().setId("del1").setCoordinate(Coordinate.newInstance(1, 10)).build())
+                        .build();
 
         Shipment s2 = Shipment.Builder.newInstance("s2")
-            .setPickupLocation(Location.Builder.newInstance().setId("pick2").setCoordinate(Coordinate.newInstance(-1, 20)).build())
-            .setDeliveryLocation(Location.Builder.newInstance().setId("del2").setCoordinate(Coordinate.newInstance(1, 20)).build())
-            .build();
+                        .setPickupLocation(Location.Builder.newInstance().setId("pick2").setCoordinate(Coordinate.newInstance(-1, 20)).build())
+                        .setDeliveryLocation(Location.Builder.newInstance().setId("del2").setCoordinate(Coordinate.newInstance(1, 20)).build())
+                        .build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
@@ -313,7 +325,7 @@ public class RegretInsertionTest {
         CkeckJobSequence position = new CkeckJobSequence(2, s2);
         regretInsertion.addListener(position);
         regretInsertion.insertJobs(routes, vrp.getJobs().values());
-        Assert.assertTrue(position.isCorrect());
+        assertTrue(position.isCorrect());
     }
 
     private JobInsertionCostsCalculator getShipmentCalculator(final VehicleRoutingProblem vrp) {
@@ -369,7 +381,8 @@ public class RegretInsertionTest {
                 Vehicle vehicle = vrp.getVehicles().iterator().next();
                 InsertionData iData;
                 if (currentRoute.isEmpty()) {
-                    double mc = getCost(service.getLocation(), vehicle.getStartLocation());
+                    double mc = getCost(service.getActivity().getLocation(),
+                                    vehicle.getStartLocation());
                     iData = new InsertionData(2 * mc, -1, 0, vehicle, newDriver);
                     iData.getEvents().add(new InsertActivity(currentRoute, vehicle, vrp.copyAndGetActivities(newJob).get(0), 0));
                     iData.getEvents().add(new SwitchVehicle(currentRoute, vehicle, newVehicleDepartureTime));
@@ -400,8 +413,9 @@ public class RegretInsertionTest {
             }
 
             private double getMarginalCost(Service service, TourActivity prevAct, TourActivity act) {
-                double prev_new = getCost(prevAct.getLocation(), service.getLocation());
-                double new_act = getCost(service.getLocation(), act.getLocation());
+                double prev_new = getCost(prevAct.getLocation(),
+                                service.getActivity().getLocation());
+                double new_act = getCost(service.getActivity().getLocation(), act.getLocation());
                 double prev_act = getCost(prevAct.getLocation(), act.getLocation());
                 return prev_new + new_act - prev_act;
             }
@@ -411,12 +425,12 @@ public class RegretInsertionTest {
             }
         };
 
-//        LocalActivityInsertionCostsCalculator local = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(),vrp.getActivityCosts());
-//        StateManager stateManager = new StateManager(vrp);
-//        ConstraintManager manager = new ConstraintManager(vrp,stateManager);
-//        ServiceInsertionCalculator calculator = new ServiceInsertionCalculator(vrp.getTransportCosts(), local, manager);
-//        calculator.setJobActivityFactory(vrp.getJobActivityFactory());
-//        return calculator;
+        //        LocalActivityInsertionCostsCalculator local = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(),vrp.getActivityCosts());
+        //        StateManager stateManager = new StateManager(vrp);
+        //        ConstraintManager manager = new ConstraintManager(vrp,stateManager);
+        //        ServiceInsertionCalculator calculator = new ServiceInsertionCalculator(vrp.getTransportCosts(), local, manager);
+        //        calculator.setJobActivityFactory(vrp.getJobActivityFactory());
+        //        return calculator;
     }
 
 }

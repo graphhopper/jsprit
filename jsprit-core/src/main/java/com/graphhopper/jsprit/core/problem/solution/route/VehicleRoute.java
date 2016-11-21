@@ -203,7 +203,7 @@ public class VehicleRoute {
         }
 
         private Builder addSingleActivityJob(AbstractSingleActivityJob<?> service) {
-            return addSingleActivityJob(service, service.getActivity().getTimeWindows().iterator().next());
+            return addSingleActivityJob(service, service.getActivity().getSingleTimeWindow());
         }
 
 
@@ -219,6 +219,7 @@ public class VehicleRoute {
             tourActivities.addActivity(act);
             return this;
         }
+
 
         public Builder addBreak(Break currentbreak) {
             if (currentbreak == null) {
@@ -282,7 +283,8 @@ public class VehicleRoute {
          * @throws IllegalArgumentException if method has already been called with the specified shipment.
          */
         public Builder addPickup(Shipment shipment) {
-            return addPickup(shipment, shipment.getPickupTimeWindow());
+            return addPickup(shipment,
+                            shipment.getPickupActivity().getSingleTimeWindow());
         }
 
         public Builder addPickup(Shipment shipment, TimeWindow pickupTimeWindow) {
@@ -307,7 +309,7 @@ public class VehicleRoute {
          * @throws IllegalArgumentException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
          */
         public Builder addDelivery(Shipment shipment) {
-            return addDelivery(shipment, shipment.getDeliveryTimeWindow());
+            return addDelivery(shipment, shipment.getDeliveryActivity().getSingleTimeWindow());
         }
 
         public Builder addDelivery(Shipment shipment, TimeWindow deliveryTimeWindow) {

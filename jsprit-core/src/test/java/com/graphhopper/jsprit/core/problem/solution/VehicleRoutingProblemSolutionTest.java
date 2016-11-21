@@ -17,18 +17,18 @@
  */
 package com.graphhopper.jsprit.core.problem.solution;
 
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 public class VehicleRoutingProblemSolutionTest {
 
@@ -79,7 +79,7 @@ public class VehicleRoutingProblemSolutionTest {
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), badJobs, 10.0);
-        Assert.assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
+        assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class VehicleRoutingProblemSolutionTest {
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
         sol.getUnassignedJobs().addAll(badJobs);
-        Assert.assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
+        assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
     }
 
 }

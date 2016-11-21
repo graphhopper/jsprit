@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
@@ -27,8 +29,6 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-
-import java.util.Collection;
 
 
 /**
@@ -52,7 +52,6 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 
     private SizeDimension defaultValue;
 
-    private VehicleRoute route;
 
     public UpdateLoads(StateManager stateManager) {
         super();
@@ -66,7 +65,6 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
         if (currentLoad == null) {
             currentLoad = defaultValue;
         }
-        this.route = route;
     }
 
     @Override
@@ -111,14 +109,14 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
                 loadAtDepot = defaultValue;
             }
             stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING,
-                loadAtDepot.add(job2insert.getSize()));
+                            loadAtDepot.add(job2insert.getSize()));
         } else if (job2insert instanceof Pickup || job2insert instanceof Service) {
             SizeDimension loadAtEnd = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_END, SizeDimension.class);
             if (loadAtEnd == null) {
                 loadAtEnd = defaultValue;
             }
             stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_END,
-                loadAtEnd.add(job2insert.getSize()));
+                            loadAtEnd.add(job2insert.getSize()));
         }
     }
 

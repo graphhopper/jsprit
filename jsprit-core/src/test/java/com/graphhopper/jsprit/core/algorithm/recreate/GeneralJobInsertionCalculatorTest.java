@@ -19,14 +19,15 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 
-import static org.mockito.Mockito.mock;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 /**
  * Created by schroeder on 19/11/16.
@@ -52,42 +53,42 @@ public class GeneralJobInsertionCalculatorTest {
     @Test
     public void testSuccessor() {
         GeneralJobInsertionCalculator.Route route = new GeneralJobInsertionCalculator.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
-        Assert.assertEquals(start, route.getFirst());
-        Assert.assertEquals(act, route.getSuccessor(route.getFirst()));
-        Assert.assertEquals(end, route.getSuccessor(act));
-        Assert.assertEquals(null, route.getSuccessor(toInsert));
+        assertEquals(start, route.getFirst());
+        assertEquals(act, route.getSuccessor(route.getFirst()));
+        assertEquals(end, route.getSuccessor(act));
+        assertEquals(null, route.getSuccessor(toInsert));
     }
 
     @Test
     public void testPredecessor() {
         GeneralJobInsertionCalculator.Route route = new GeneralJobInsertionCalculator.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
-        Assert.assertEquals(null, route.getPredecessor(route.getFirst()));
-        Assert.assertEquals(route.getFirst(), route.getPredecessor(act));
-        Assert.assertEquals(act, route.getPredecessor(route.getSuccessor(act)));
-        Assert.assertEquals(null, route.getSuccessor(toInsert));
+        assertEquals(null, route.getPredecessor(route.getFirst()));
+        assertEquals(route.getFirst(), route.getPredecessor(act));
+        assertEquals(act, route.getPredecessor(route.getSuccessor(act)));
+        assertEquals(null, route.getSuccessor(toInsert));
     }
 
     @Test
     public void insertNew() {
         GeneralJobInsertionCalculator.Route route = new GeneralJobInsertionCalculator.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
-        Assert.assertEquals(route.getFirst(), route.getPredecessor(act));
+        assertEquals(route.getFirst(), route.getPredecessor(act));
         route.addAfter(toInsert, route.getFirst());
-        Assert.assertEquals(toInsert, route.getPredecessor(act));
-        Assert.assertEquals(route.getFirst(), route.getPredecessor(toInsert));
-        Assert.assertEquals(start, route.getFirst());
-        Assert.assertEquals(toInsert, route.getSuccessor(route.getFirst()));
-        Assert.assertEquals(act, route.getSuccessor(toInsert));
+        assertEquals(toInsert, route.getPredecessor(act));
+        assertEquals(route.getFirst(), route.getPredecessor(toInsert));
+        assertEquals(start, route.getFirst());
+        assertEquals(toInsert, route.getSuccessor(route.getFirst()));
+        assertEquals(act, route.getSuccessor(toInsert));
     }
 
     @Test
     public void removeAct() {
         GeneralJobInsertionCalculator.Route route = new GeneralJobInsertionCalculator.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
-        Assert.assertEquals(route.getFirst(), route.getPredecessor(act));
+        assertEquals(route.getFirst(), route.getPredecessor(act));
         route.remove(act);
-        Assert.assertEquals(null, route.getPredecessor(act));
-        Assert.assertEquals(null, route.getSuccessor(act));
-        Assert.assertEquals(start, route.getFirst());
-        Assert.assertEquals(end, route.getSuccessor(start));
+        assertEquals(null, route.getPredecessor(act));
+        assertEquals(null, route.getSuccessor(act));
+        assertEquals(start, route.getFirst());
+        assertEquals(end, route.getSuccessor(start));
 
     }
 

@@ -1,6 +1,5 @@
 package com.graphhopper.jsprit.core.problem;
 
-import java.util.Arrays;
 
 import com.graphhopper.jsprit.core.problem.SizeDimension.SizeDimensionSign;
 
