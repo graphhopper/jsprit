@@ -85,7 +85,7 @@ public class GeneralJobInsertionAndTimeWindowConstraintsTest {
 
     ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
-    GeneralJobInsertionCalculatorV2 insertionCalculator;
+    GeneralJobInsertionCalculator insertionCalculator;
 
     VehicleRoutingProblem vehicleRoutingProblem;
 
@@ -104,7 +104,7 @@ public class GeneralJobInsertionAndTimeWindowConstraintsTest {
     private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
         ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
         constraintManager.addConstraint(hardRouteLevelConstraint);
-        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class GeneralJobInsertionAndTimeWindowConstraintsTest {
         constraintManager.addTimeWindowConstraint();
         stateManager.informInsertionStarts(Arrays.asList(route), null);
 
-        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, pickup, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
         Assert.assertTrue(iData instanceof InsertionData.NoInsertionFound);

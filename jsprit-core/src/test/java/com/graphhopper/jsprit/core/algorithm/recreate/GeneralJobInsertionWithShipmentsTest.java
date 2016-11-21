@@ -85,7 +85,7 @@ public class GeneralJobInsertionWithShipmentsTest {
 
     ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
-    GeneralJobInsertionCalculatorV2 insertionCalculator;
+    GeneralJobInsertionCalculator insertionCalculator;
 
     Vehicle vehicle;
 
@@ -102,7 +102,7 @@ public class GeneralJobInsertionWithShipmentsTest {
     private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
         ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
         constraintManager.addConstraint(hardRouteLevelConstraint);
-        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
     }
 
     @Test
@@ -229,7 +229,7 @@ public class GeneralJobInsertionWithShipmentsTest {
         constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager), ConstraintManager.Priority.CRITICAL);
         constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(), ConstraintManager.Priority.CRITICAL);
 
-        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
         assertTrue(iData instanceof InsertionData.NoInsertionFound);
@@ -257,7 +257,7 @@ public class GeneralJobInsertionWithShipmentsTest {
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
         constraintManager.addLoadConstraint();
 
-        insertionCalculator = new GeneralJobInsertionCalculatorV2(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new GeneralJobInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         stateManager.informInsertionStarts(Arrays.asList(route), null);
 
         //		Service service = new Service.Builder("pick", 1).setLocationId("5,5").build();

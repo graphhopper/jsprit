@@ -33,25 +33,25 @@ import static org.mockito.Mockito.mock;
  */
 public class GeneralJobInsertionCalculatorTest {
 
-    GeneralJobInsertionCalculatorV2.IndexedTourActivity start;
+    GeneralJobInsertionCalculator.IndexedTourActivity start;
 
-    GeneralJobInsertionCalculatorV2.IndexedTourActivity act;
+    GeneralJobInsertionCalculator.IndexedTourActivity act;
 
-    GeneralJobInsertionCalculatorV2.IndexedTourActivity end;
+    GeneralJobInsertionCalculator.IndexedTourActivity end;
 
-    GeneralJobInsertionCalculatorV2.IndexedTourActivity toInsert;
+    GeneralJobInsertionCalculator.IndexedTourActivity toInsert;
 
     @Before
     public void doBefore() {
-        start = new GeneralJobInsertionCalculatorV2.IndexedTourActivity(0, mock(TourActivity.class));
-        act = new GeneralJobInsertionCalculatorV2.IndexedTourActivity(1, mock(TourActivity.class));
-        end = new GeneralJobInsertionCalculatorV2.IndexedTourActivity(2, mock(TourActivity.class));
-        toInsert = new GeneralJobInsertionCalculatorV2.IndexedTourActivity(3, mock(TourActivity.class));
+        start = new GeneralJobInsertionCalculator.IndexedTourActivity(0, mock(TourActivity.class));
+        act = new GeneralJobInsertionCalculator.IndexedTourActivity(1, mock(TourActivity.class));
+        end = new GeneralJobInsertionCalculator.IndexedTourActivity(2, mock(TourActivity.class));
+        toInsert = new GeneralJobInsertionCalculator.IndexedTourActivity(3, mock(TourActivity.class));
     }
 
     @Test
     public void testSuccessor() {
-        GeneralJobInsertionCalculatorV2.Route route = new GeneralJobInsertionCalculatorV2.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
+        GeneralJobInsertionCalculator.Route route = new GeneralJobInsertionCalculator.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
         Assert.assertEquals(start, route.getFirst());
         Assert.assertEquals(act, route.getSuccessor(route.getFirst()));
         Assert.assertEquals(end, route.getSuccessor(act));
@@ -60,7 +60,7 @@ public class GeneralJobInsertionCalculatorTest {
 
     @Test
     public void testPredecessor() {
-        GeneralJobInsertionCalculatorV2.Route route = new GeneralJobInsertionCalculatorV2.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
+        GeneralJobInsertionCalculator.Route route = new GeneralJobInsertionCalculator.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
         Assert.assertEquals(null, route.getPredecessor(route.getFirst()));
         Assert.assertEquals(route.getFirst(), route.getPredecessor(act));
         Assert.assertEquals(act, route.getPredecessor(route.getSuccessor(act)));
@@ -69,7 +69,7 @@ public class GeneralJobInsertionCalculatorTest {
 
     @Test
     public void insertNew() {
-        GeneralJobInsertionCalculatorV2.Route route = new GeneralJobInsertionCalculatorV2.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
+        GeneralJobInsertionCalculator.Route route = new GeneralJobInsertionCalculator.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
         Assert.assertEquals(route.getFirst(), route.getPredecessor(act));
         route.addAfter(toInsert, route.getFirst());
         Assert.assertEquals(toInsert, route.getPredecessor(act));
@@ -81,7 +81,7 @@ public class GeneralJobInsertionCalculatorTest {
 
     @Test
     public void removeAct() {
-        GeneralJobInsertionCalculatorV2.Route route = new GeneralJobInsertionCalculatorV2.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
+        GeneralJobInsertionCalculator.Route route = new GeneralJobInsertionCalculator.Route(Arrays.asList(start, act, end), Arrays.asList(toInsert));
         Assert.assertEquals(route.getFirst(), route.getPredecessor(act));
         route.remove(act);
         Assert.assertEquals(null, route.getPredecessor(act));
