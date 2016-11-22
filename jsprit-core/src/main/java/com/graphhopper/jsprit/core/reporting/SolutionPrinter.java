@@ -17,6 +17,16 @@
  */
 package com.graphhopper.jsprit.core.reporting;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -25,13 +35,11 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-
-import java.io.PrintWriter;
-import java.nio.CharBuffer;
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.Alignment;
+import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.IntColumnType;
+import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.LongColumnType;
+import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 
 
 /**
@@ -90,29 +98,6 @@ public class SolutionPrinter {
         SYSTEM_OUT_AS_PRINT_WRITER.flush();
     }
 
-    protected static String drawLineBase(String pattern, int count) {
-        Object[] par = new Object[count];
-        Arrays.fill(par, "");
-        String text = String.format(pattern, par);
-        return text;
-    }
-
-    protected static String drawLine(String pattern, int count) {
-        String text = drawLineBase(pattern, count);
-        return text.replaceAll(" ", "-").replaceAll(Pattern.quote("|"), "+");
-    }
-
-
-    protected static String drawHeading(String pattern, int count, String text) {
-        String base = drawLineBase(pattern, count).trim();
-        int internalWidth = base.lastIndexOf('|') - base.indexOf('|') - 1;
-        if (text == null) {
-            return "+" + CharBuffer.allocate(internalWidth).toString().replace('\0', '-') + "+\n";
-        } else {
-            return "| " + String.format("%-" + (internalWidth - 2) + "s", text) + " |\n";
-        }
-    }
-
     /**
      * Prints costs and #vehicles to the given writer
      *
@@ -120,30 +105,39 @@ public class SolutionPrinter {
      * @param solution the solution to be printed
      */
     public static void print(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution, Print print) {
-        String leftAlign = "| %-30s | %-8s |%n";
 
-        out.printf(drawHeading(leftAlign, 2, null));
-        out.printf(drawHeading(leftAlign, 2, "problem"));
-        out.printf(drawLine(leftAlign, 2));
-        out.format(leftAlign, "indicator", "value");
-        out.printf(drawLine(leftAlign, 2));
+        DynamicTableDefinition problemTableDef = new DynamicTableDefinition.Builder()
+                        .withHeading("Problem")
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "indicator")
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "value")
+                                        .build())
+                        .build();
 
-        out.format(leftAlign, "noJobs", problem.getJobs().values().size());
-        getNuOfJobs(problem).entrySet().forEach(en -> out.format(leftAlign, "   " + en.getKey().getSimpleName(), en.getValue()));
-        out.format(leftAlign, "fleetsize", problem.getFleetSize().toString());
-        out.printf(drawLine(leftAlign, 2));
+        DynamicTablePrinter problemTablePrinter = new DynamicTablePrinter(problemTableDef);
+        problemTablePrinter.addRow().add("fleetsize").add(problem.getFleetSize());
+        problemTablePrinter.addSeparator();
+        problemTablePrinter.addRow().add("noJobs").add(problem.getJobs().values().size());
+        for (Entry<Class<? extends Job>, Long> jc : getNuOfJobs(problem).entrySet()) {
+            problemTablePrinter.addRow().add("   " + jc.getKey().getSimpleName())
+            .add(jc.getValue());
+        }
+        out.println(problemTablePrinter.print());
 
+        DynamicTableDefinition solutionTableDef = new DynamicTableDefinition.Builder()
+                        .withHeading("Solution")
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "indicator")
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "value")
+                                        .build())
+                        .build();
 
-        String leftAlignSolution = "| %-13s | %-40s |%n";
-        out.printf(drawHeading(leftAlignSolution, 2, null));
-        out.printf(drawHeading(leftAlignSolution, 2, "solution"));
-        out.printf(drawLine(leftAlignSolution, 2));
-        out.format(leftAlignSolution, "indicator", "value");
-        out.printf(drawLine(leftAlignSolution, 2));
-        out.format(leftAlignSolution, "costs", solution.getCost());
-        out.format(leftAlignSolution, "noVehicles", solution.getRoutes().size());
-        out.format(leftAlignSolution, "unassgndJobs", solution.getUnassignedJobs().size());
-        out.printf(drawLine(leftAlignSolution, 2));
+        DynamicTablePrinter solutionTablePrinter = new DynamicTablePrinter(solutionTableDef);
+        solutionTablePrinter.addRow().add("costs")
+        .add(String.format("%6.2f", solution.getCost()).trim());
+        solutionTablePrinter.addRow().add("noVehicles").add(solution.getRoutes().size());
+        solutionTablePrinter.addRow().add("unassgndJobs").add(solution.getUnassignedJobs().size());
+        out.println(solutionTablePrinter.print());
 
         if (print.equals(Print.VERBOSE)) {
             printVerbose(out, problem, solution);
@@ -157,20 +151,51 @@ public class SolutionPrinter {
     }
 
     private static void printVerbose(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
-        String leftAlgin = "| %-7s | %-20s | %-21s | %-15s | %-15s | %-15s | %-15s | %-15s |%n";
-        out.format("+--------------------------------------------------------------------------------------------------------------------------------------------------+%n");
-        out.printf("| detailed solution                                                                                                                                |%n");
-        out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+-----------------+%n");
-        out.printf("| route   | vehicle              | activity              | job             | load            | arrTime         | endTime         | costs           |%n");
+
+        DynamicTableDefinition tableDef = new DynamicTableDefinition.Builder()
+                        .withHeading("Detailed solution")
+                        .addColumn(new ColumnDefinition.Builder(new IntColumnType(), "route")
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "vehicle")
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "activity")
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType("-"), "job")
+                                        .withMinWidth(10)
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "load")
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "location")
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new LongColumnType("-"), "arrTime")
+                                        .withAlignment(Alignment.RIGHT)
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new LongColumnType("-"), "endTime")
+                                        .withAlignment(Alignment.RIGHT)
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new LongColumnType(), "cost")
+                                        .withAlignment(Alignment.RIGHT)
+                                        .build())
+                        .build();
+
+        DynamicTablePrinter tablePrinter = new DynamicTablePrinter(tableDef);
         int routeNu = 1;
 
         List<VehicleRoute> list = new ArrayList<VehicleRoute>(solution.getRoutes());
         Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
         for (VehicleRoute route : list) {
-            out.format("+---------+----------------------+-----------------------+-----------------+-----------------+-----------------+-----------------+-----------------+%n");
+            if (routeNu != 1) {
+                tablePrinter.addSeparator();
+            }
+
             double costs = 0;
             SizeDimension load = getInitialLoad(route);
-            out.format(leftAlgin, routeNu, getVehicleString(route), route.getStart().getName(), "-", getString(load), "undef", Math.round(route.getStart().getEndTime()), Math.round(costs));
+            tablePrinter.addRow().add(routeNu).add(getVehicleString(route)).add(route.getStart().getName()).add(null)
+            .add(getString(load))
+            .add(getLocationString(route.getStart().getLocation()))
+            .add(null)
+            .add(Math.round(route.getStart().getEndTime())).add(Math.round(costs));
+
             TourActivity prevAct = route.getStart();
             for (TourActivity act : route.getActivities()) {
                 String jobId;
@@ -180,43 +205,72 @@ public class SolutionPrinter {
                     jobId = "-";
                 }
                 String type = (act instanceof AbstractActivity)
-                    ? ((AbstractActivity) act).getType() : act.getName();
-                double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
-                    route.getVehicle());
-                c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
-                costs += c;
-                load = load.add(act.getLoadChange());
-                out.format(leftAlgin, routeNu, getVehicleString(route), type, jobId, getString(load),
-                    Math.round(act.getArrTime()),
-                    Math.round(act.getEndTime()), Math.round(costs));
-                prevAct = act;
+                                ? ((AbstractActivity) act).getType() : act.getName();
+                                double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
+                                                route.getVehicle());
+                                c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
+                                costs += c;
+                                load = load.add(act.getLoadChange());
+
+                                tablePrinter.addRow().add(routeNu).add(getVehicleString(route)).add(type).add(jobId)
+                                .add(getString(load)).add(getLocationString(act.getLocation()))
+                                .add(Math.round(act.getArrTime()))
+                                .add(Math.round(act.getEndTime())).add(Math.round(costs));
+                                prevAct = act;
             }
             double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(),
-                route.getDriver(), route.getVehicle());
+                            route.getDriver(), route.getVehicle());
             c += problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
             costs += c;
-            out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", getString(load), Math.round(route.getEnd().getArrTime()), "undef",
-                Math.round(costs));
+
+            tablePrinter.addRow().add(routeNu).add(getVehicleString(route))
+            .add(route.getEnd().getName()).add(null)
+            .add(getString(load))
+            .add(getLocationString(route.getEnd().getLocation()))
+            .add(null).add(Math.round(route.getEnd().getEndTime()))
+            .add(Math.round(costs));
+
             routeNu++;
         }
-        out.format("+--------------------------------------------------------------------------------------------------------------------------------------------------+%n");
+        out.println(tablePrinter.print());
+
+
         if (!solution.getUnassignedJobs().isEmpty()) {
-            out.format("+----------------+%n");
-            out.format("| unassignedJobs |%n");
-            out.format("+----------------+%n");
-            String unassignedJobAlgin = "| %-14s |%n";
+
+            DynamicTableDefinition unassignedTableDef = new DynamicTableDefinition.Builder()
+                            .withHeading("Unassigned jobs")
+                            .addColumn(new ColumnDefinition.Builder(new StringColumnType(),
+                                            "id")
+                                            .withMinWidth(10)
+                                            .build())
+                            .addColumn(new ColumnDefinition.Builder(new StringColumnType(),
+                                            "type")
+                                            .build())
+                            .build();
+
+            DynamicTablePrinter unassignedTablePrinter = new DynamicTablePrinter(unassignedTableDef);
+
             for (Job j : solution.getUnassignedJobs()) {
-                out.format(unassignedJobAlgin, j.getId());
+                unassignedTablePrinter.addRow().add(j.getId()).add(j.getClass().getSimpleName());
             }
-            out.format("+----------------+%n");
+            out.println(unassignedTablePrinter.print());
+        }
+    }
+
+    private static String getLocationString(Location l) {
+        if (l == null) {
+            return null;
+        } else {
+            return l.getId();
         }
     }
 
     private static String getString(SizeDimension load) {
         String l = "[";
         for (int i = 0; i < load.getNuOfDimensions(); i++) {
-            if (i > 0) l += ", " + load.get(i);
-            else {
+            if (i > 0) {
+                l += ", " + load.get(i);
+            } else {
                 l += load.get(i);
             }
         }
@@ -239,8 +293,8 @@ public class SolutionPrinter {
 
     private static Map<Class<? extends Job>, Long> getNuOfJobs(VehicleRoutingProblem problem) {
         return problem.getJobs().values().stream()
-            .map(j -> (Class<? extends Job>) j.getClass())
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+                        .map(j -> (Class<? extends Job>) j.getClass())
+                        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 
 }
