@@ -18,19 +18,6 @@
 
 package com.graphhopper.jsprit.analysis.toolbox;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.zip.GZIPOutputStream;
-
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.stream.file.FileSinkDGS;
-
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertActivity;
@@ -40,20 +27,26 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionEndsList
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.stream.file.FileSinkDGS;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Writes out what happens when algorithm searches (in graphstream dgs-file).
@@ -125,16 +118,15 @@ public class AlgorithmEventsRecorder
     }
 
     private void markAllNodesAsInserted() {
-        for (Job j : vrp.getJobs().values()) {
-            markInserted(j);
-        }
+        vrp.getJobs().values().forEach(this::markInserted);
     }
 
     private void addRoutes(Collection<VehicleRoute> routes) {
         for (VehicleRoute route : routes) {
             String prevNode = makeStartId(route.getVehicle());
             for (TourActivity act : route.getActivities()) {
-                String actNodeId = getNodeId(act);
+                JobActivity jobActivity = (JobActivity) act;
+                String actNodeId = makeNodeId(jobActivity);
                 addEdge(prevNode + "_" + actNodeId, prevNode, actNodeId);
                 prevNode = actNodeId;
             }
@@ -144,23 +136,6 @@ public class AlgorithmEventsRecorder
             }
 
         }
-    }
-
-    private String getNodeId(TourActivity act) {
-        String nodeId = null;
-        if (act instanceof JobActivity) {
-            Job job = ((JobActivity) act).getJob();
-            if (job instanceof Service) {
-                nodeId = job.getId();
-            } else if (job instanceof Shipment) {
-                if (act.getName().equals("pickupShipment")) {
-                    nodeId = getFromNodeId((Shipment) job);
-                } else {
-                    nodeId = getToNodeId((Shipment) job);
-                }
-            }
-        }
-        return nodeId;
     }
 
     private boolean record() {
@@ -177,47 +152,49 @@ public class AlgorithmEventsRecorder
         if (!record()) {
             return;
         }
-        if (job instanceof Service) {
-            removeService(job, fromRoute);
-        } else if (job instanceof Shipment) {
-            removeShipment(job, fromRoute);
+        for (JobActivity act : job.getActivityList().getAll()) {
+            removeActivity(act, fromRoute);
         }
     }
 
-    private void removeShipment(Job job, VehicleRoute fromRoute) {
-        Shipment shipment = (Shipment) job;
-        String fromNodeId = getFromNodeId(shipment);
-        String toNodeId = getToNodeId(shipment);
-//        removeNodeAndBelongingEdges(fromNodeId,fromRoute);
-//        removeNodeAndBelongingEdges(toNodeId,fromRoute);
-
-        Edge enteringToNode = getEnteringEdge(toNodeId);
-        if (enteringToNode.getNode0().getId().equals(fromNodeId)) {
-            markRemoved(graph.getNode(fromNodeId));
-            markRemoved(graph.getNode(toNodeId));
-            // i -> from -> to -> j: rem(i,from), rem(from,to), rem(to,j), add(i,j)
-            Edge enteringFromNode = getEnteringEdge(fromNodeId);
-            removeEdge(enteringFromNode.getId());
-            removeEdge(enteringToNode.getId());
-            if (graph.getNode(toNodeId).getLeavingEdgeSet().isEmpty()) {
-                if (fromRoute.getVehicle().isReturnToDepot()) {
-                    throw new IllegalStateException("leaving edge is missing");
-                }
-                return;
-            }
-
-            Edge leavingToNode = getLeavingEdge(toNodeId);
-            removeEdge(leavingToNode.getId());
-            Node from = enteringFromNode.getNode0();
-            Node to = leavingToNode.getNode1();
-            if (!fromRoute.getActivities().isEmpty()) {
-                addEdge(makeEdgeId(from, to), from.getId(), to.getId());
-            }
-        } else {
-            removeNodeAndBelongingEdges(fromNodeId, fromRoute);
-            removeNodeAndBelongingEdges(toNodeId, fromRoute);
-        }
+    private void removeActivity(JobActivity act, VehicleRoute fromRoute) {
+        removeNodeAndBelongingEdges(makeNodeId(act), fromRoute);
     }
+
+//    private void removeShipment(Job job, VehicleRoute fromRoute) {
+//        Shipment shipment = (Shipment) job;
+//        String fromNodeId = getFromNodeId(shipment);
+//        String toNodeId = getToNodeId(shipment);
+////        removeNodeAndBelongingEdges(fromNodeId,fromRoute);
+////        removeNodeAndBelongingEdges(toNodeId,fromRoute);
+//
+//        Edge enteringToNode = getEnteringEdge(toNodeId);
+//        if (enteringToNode.getNode0().getId().equals(fromNodeId)) {
+//            markRemoved(graph.getNode(fromNodeId));
+//            markRemoved(graph.getNode(toNodeId));
+//            // i -> from -> to -> j: rem(i,from), rem(from,to), rem(to,j), add(i,j)
+//            Edge enteringFromNode = getEnteringEdge(fromNodeId);
+//            removeEdge(enteringFromNode.getId());
+//            removeEdge(enteringToNode.getId());
+//            if (graph.getNode(toNodeId).getLeavingEdgeSet().isEmpty()) {
+//                if (fromRoute.getVehicle().isReturnToDepot()) {
+//                    throw new IllegalStateException("leaving edge is missing");
+//                }
+//                return;
+//            }
+//
+//            Edge leavingToNode = getLeavingEdge(toNodeId);
+//            removeEdge(leavingToNode.getId());
+//            Node from = enteringFromNode.getNode0();
+//            Node to = leavingToNode.getNode1();
+//            if (!fromRoute.getActivities().isEmpty()) {
+//                addEdge(makeEdgeId(from, to), from.getId(), to.getId());
+//            }
+//        } else {
+//            removeNodeAndBelongingEdges(fromNodeId, fromRoute);
+//            removeNodeAndBelongingEdges(toNodeId, fromRoute);
+//        }
+//    }
 
     private Edge getLeavingEdge(String toNodeId) {
         Collection<Edge> edges = graph.getNode(toNodeId).getLeavingEdgeSet();
@@ -257,10 +234,10 @@ public class AlgorithmEventsRecorder
         return shipment.getId() + "_pickup";
     }
 
-    private void removeService(Job job, VehicleRoute fromRoute) {
-        String nodeId = job.getId();
-        removeNodeAndBelongingEdges(nodeId, fromRoute);
-    }
+//    private void removeService(Job job, VehicleRoute fromRoute) {
+//        String nodeId = job.getId();
+//        removeNodeAndBelongingEdges(nodeId, fromRoute);
+//    }
 
     private void removeNodeAndBelongingEdges(String nodeId, VehicleRoute fromRoute) {
         Node node = graph.getNode(nodeId);
@@ -318,52 +295,29 @@ public class AlgorithmEventsRecorder
     }
 
     private void initialiseGraph(VehicleRoutingProblem problem) {
-        for (Vehicle vehicle : problem.getVehicles()) {
-            addVehicle(vehicle);
-        }
-        for (Job job : problem.getJobs().values()) {
-            addJob(job);
-        }
+        problem.getVehicles().forEach(this::addVehicle);
+        problem.getJobs().values().forEach(this::addJob);
     }
 
     private void addJob(Job job) {
-        if (job instanceof Service) {
-            Service service = (Service) job;
-            addNode(service.getId(), service.getActivity().getLocation().getCoordinate());
-            markSingleActivityJob(service);
-        } else if (job instanceof Shipment) {
-            Shipment shipment = (Shipment) job;
-            String fromNodeId = getFromNodeId(shipment);
-            addNode(fromNodeId, shipment.getPickupActivity().getLocation().getCoordinate());
-            String toNodeId = getToNodeId(shipment);
-            addNode(toNodeId, shipment.getDeliveryActivity().getLocation().getCoordinate());
-            markShipment(shipment);
-            if (renderShipments) {
-                Edge e = graph.addEdge("shipment_" + fromNodeId + "_" + toNodeId, fromNodeId, toNodeId, true);
-                e.addAttribute("ui.class", "shipment");
-            }
+        for (JobActivity act : job.getActivityList().getAll()) {
+            Node node = addNode(makeNodeId(act), act.getLocation().getCoordinate());
+            setActTypeAttribute(node, act);
         }
     }
 
-    private void markShipment(Shipment shipment) {
-        markPickup(getFromNodeId(shipment));
-        markDelivery(getToNodeId(shipment));
+    private String makeNodeId(JobActivity act) {
+        return act.getJob().getId() + "_" + act.getIndex();
     }
 
-    private void markSingleActivityJob(AbstractSingleActivityJob<?> service) {
-        if (service instanceof Delivery) {
-            markDelivery(service.getId());
-        } else {
-            markPickup(service.getId());
+    private void setActTypeAttribute(Node node, JobActivity act) {
+        if (act instanceof PickupActivity) {
+            node.addAttribute("ui.class", "pickup");
+        } else if (act instanceof DeliveryActivity) {
+            node.addAttribute("ui.class", "delivery");
+        } else if (act instanceof ExchangeActivity) {
+            node.addAttribute("ui.class", "exchange");
         }
-    }
-
-    private void markPickup(String id) {
-        graph.getNode(id).addAttribute("ui.class", "pickup");
-    }
-
-    private void markDelivery(String id) {
-        graph.getNode(id).addAttribute("ui.class", "delivery");
     }
 
     private void addVehicle(Vehicle vehicle) {
@@ -393,10 +347,11 @@ public class AlgorithmEventsRecorder
         return vehicle.getId() + "_end";
     }
 
-    private void addNode(String nodeId, Coordinate nodeCoord) {
+    private Node addNode(String nodeId, Coordinate coordinate) {
         Node node = graph.addNode(nodeId);
-        node.addAttribute("x", nodeCoord.getX());
-        node.addAttribute("y", nodeCoord.getY());
+        node.addAttribute("x", coordinate.getX());
+        node.addAttribute("y", coordinate.getY());
+        return node;
     }
 
     @Override
@@ -412,7 +367,8 @@ public class AlgorithmEventsRecorder
         for (VehicleRoute route : vehicleRoutes) {
             String prevNode = makeStartId(route.getVehicle());
             for (TourActivity act : route.getActivities()) {
-                String actNode = getNodeId(act);
+                JobActivity jobActivity = (JobActivity) act;
+                String actNode = makeNodeId(jobActivity);
                 removeEdge(prevNode + "_" + actNode);
                 prevNode = actNode;
             }
@@ -434,49 +390,51 @@ public class AlgorithmEventsRecorder
     }
 
     private void insertJob(Job job, InsertionData data, VehicleRoute route) {
-        if (job instanceof Service) {
-            insertService(job, data, route);
-        } else if (job instanceof Shipment) {
-            insertShipment(job, data, route);
+        for (InsertActivity activity : data.getUnmodifiableEventsByType(InsertActivity.class)) {
+            insertNode(makeNodeId((JobActivity) activity.getActivity()), activity.getIndex(), data, route);
         }
+
+//        if (job instanceof Service) {
+//            insertService(job, data, route);
+//        } else if (job instanceof Shipment) {
+//            insertShipment(job, data, route);
+//        }
     }
 
-    private void insertShipment(Job job, InsertionData data, VehicleRoute route) {
-        String fromNodeId = getFromNodeId((Shipment) job);
-        String toNodeId = getToNodeId((Shipment) job);
-        int deliveryIndex = data.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex();
-        insertNode(toNodeId, deliveryIndex, data, route);
+//    private void insertShipment(Job job, InsertionData data, VehicleRoute route) {
+//        String fromNodeId = getFromNodeId((Shipment) job);
+//        String toNodeId = getToNodeId((Shipment) job);
+//        int deliveryIndex = data.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex();
+//        insertNode(toNodeId, deliveryIndex, data, route);
+//
+//        List<JobActivity> del = vrp.getActivities(job);
+//        VehicleRoute copied = VehicleRoute.copyOf(route);
+//        copied.getTourActivities().addActivity(deliveryIndex, del.get(1));
+//
+//        int pickupIndex = data.getUnmodifiableEventsByType(InsertActivity.class).get(1).getIndex();
+//        insertNode(fromNodeId, pickupIndex, data, copied);
+//    }
 
-        List<JobActivity> del = vrp.getActivities(job);
-        VehicleRoute copied = VehicleRoute.copyOf(route);
-        copied.getTourActivities().addActivity(deliveryIndex, del.get(1));
-
-        int pickupIndex = data.getUnmodifiableEventsByType(InsertActivity.class).get(1).getIndex();
-        insertNode(fromNodeId, pickupIndex, data, copied);
-    }
-
-    private void insertService(Job job, InsertionData data, VehicleRoute route) {
-        insertNode(job.getId(), data.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex(), data, route);
-    }
+//    private void insertService(Job job, InsertionData data, VehicleRoute route) {
+//        insertNode(job.getId(), data.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex(), data, route);
+//    }
 
     private void insertNode(String nodeId, int insertionIndex, InsertionData data, VehicleRoute route) {
-//        VehicleRoute copied = VehicleRoute.copyOf(route);
-
         String node_i;
 
         if (isFirst(insertionIndex)) {
             node_i = makeStartId(data.getSelectedVehicle());
         } else {
-            AbstractActivity jobActivity = (AbstractActivity) route.getActivities().get(insertionIndex - 1);
-            node_i = getNodeId(jobActivity);
+            JobActivity jobActivity = (JobActivity) route.getActivities().get(insertionIndex - 1);
+            node_i = makeNodeId(jobActivity);
         }
         String edgeId_1 = node_i + "_" + nodeId;
         String node_j;
         if (isLast(insertionIndex, route)) {
             node_j = makeEndId(data.getSelectedVehicle());
         } else {
-            AbstractActivity jobActivity = (AbstractActivity) route.getActivities().get(insertionIndex);
-            node_j = getNodeId(jobActivity);
+            JobActivity jobActivity = (JobActivity) route.getActivities().get(insertionIndex);
+            node_j = makeNodeId(jobActivity);
         }
         String edgeId_2 = nodeId + "_" + node_j;
 
@@ -519,10 +477,8 @@ public class AlgorithmEventsRecorder
     }
 
     private void markInserted(Job job) {
-        if (job instanceof Service) {
-            markSingleActivityJob((Service) job);
-        } else {
-            markShipment((Shipment) job);
+        for (JobActivity act : job.getActivityList().getAll()) {
+            setActTypeAttribute(graph.getNode(makeNodeId(act)), act);
         }
     }
 
