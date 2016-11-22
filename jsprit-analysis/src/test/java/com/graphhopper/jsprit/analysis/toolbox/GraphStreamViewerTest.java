@@ -22,6 +22,7 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -40,16 +41,17 @@ public class GraphStreamViewerTest {
 
     @Test
     public void testPlotCustomJob() {
-
-        Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 50).build();
+        Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setType(type).setBreak(Break.Builder.newInstance("myBreak").addTimeWindow(5, 10).build()).setStartLocation(Location.newInstance(0, 0))
             .build();
         CustomJob cj = CustomJob.Builder.newInstance("job")
             .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
             .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addDelivery(Location.newInstance(20, 00), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+            .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
             .build();
-        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(cj).addVehicle(vehicle).build();
-        new GraphStreamViewer(vrp).display();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addJob(cj).addVehicle(vehicle).build();
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(Jsprit.createAlgorithm(vrp).searchSolutions());
+        new GraphStreamViewer(vrp, solution).display();
     }
 
     @Test

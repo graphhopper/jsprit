@@ -413,12 +413,13 @@ public class GraphStreamViewer {
 
     }
 
-    private void renderActivity(Graph g, JobActivity act) {
+    private Node renderActivity(Graph g, JobActivity act) {
         Node n = g.addNode(makeId(act.getJob().getId(), Integer.toString(act.getIndex())));
         setLabel(n, act);
         n.addAttribute("x", act.getLocation().getCoordinate().getX());
         n.addAttribute("y", act.getLocation().getCoordinate().getY());
         n.setAttribute("ui.class", getType(act));
+        return n;
     }
 
     private void setLabel(Node n, JobActivity act) {
@@ -597,6 +598,9 @@ public class GraphStreamViewer {
             Job job = jobActivity.getJob();
             String currIdentifier = makeId(job.getId(), Integer.toString(act.getIndex()));
             Node thisNode = g.getNode(currIdentifier);
+            if (thisNode == null) {
+                thisNode = renderActivity(g, jobActivity);
+            }
             setLabel(thisNode, jobActivity);
             g.addEdge(makeEdgeId(routeId, vehicle_edgeId), prevIdentifier, currIdentifier, true);
             setAttribute(act, thisNode);
