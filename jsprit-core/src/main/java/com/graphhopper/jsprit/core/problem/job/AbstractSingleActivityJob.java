@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
 /**
@@ -139,6 +140,16 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
             return (B) this;
         }
 
+        public B addTimeWindows(TimeWindows timeWindows) {
+            return addTimeWindows(timeWindows.getTimeWindows());
+        }
+
+        @SuppressWarnings("unchecked")
+        public B addTimeWindows(Collection<TimeWindow> timeWindows) {
+            timeWindows.forEach(t -> addTimeWindow(t));
+            return (B) this;
+        }
+
         public B addTimeWindow(double earliest, double latest) {
             return addTimeWindow(TimeWindow.newInstance(earliest, latest));
         }
@@ -218,42 +229,43 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
         return (A) getActivityList().getAll().get(0);
     }
 
-    /**
-     * Returns location.
-     *
-     * @return location
-     */
-    @Deprecated
-    public Location getLocation() {
-        return getActivity().getLocation();
-    }
-
-
-    /**
-     * Returns the service-time/duration a service takes at service-location.
-     *
-     * @return service duration
-     */
-    @Deprecated
-    public double getServiceDuration() {
-        return getActivity().getOperationTime();
-    }
-
-    /**
-     * Returns the time-window a service(-operation) is allowed to start.
-     * It is recommended to use getTimeWindows() instead. If you still use this, it returns the first time window of getTimeWindows() collection.
-     *
-     * @return time window
-     */
-    @Deprecated
-    public TimeWindow getTimeWindow() {
-        return getTimeWindows().iterator().next();
-    }
-
-    @Deprecated
-    public Collection<TimeWindow> getServiceTimeWindows() {
-        return getActivity().getTimeWindows();
-    }
+    // /**
+    // * Returns location.
+    // *
+    // * @return location
+    // */
+    // @Deprecated
+    // public Location getLocation() {
+    // return getActivity().getLocation();
+    // }
+    //
+    //
+    // /**
+    // * Returns the service-time/duration a service takes at service-location.
+    // *
+    // * @return service duration
+    // */
+    // @Deprecated
+    // public double getServiceDuration() {
+    // return getActivity().getOperationTime();
+    // }
+    //
+    // /**
+    // * Returns the time-window a service(-operation) is allowed to start.
+    // * It is recommended to use getTimeWindows() instead. If you still use
+    // this, it returns the first time window of getTimeWindows() collection.
+    // *
+    // * @return time window
+    // */
+    // @Deprecated
+    // public TimeWindow getTimeWindow() {
+    // return getTimeWindows().iterator().next();
+    // }
+    //
+    // @Deprecated
+    // public Collection<TimeWindow> getServiceTimeWindows() {
+    // return getActivity().getTimeWindows();
+    // }
 
     /**
      * @return the name

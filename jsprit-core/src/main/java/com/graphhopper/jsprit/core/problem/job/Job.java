@@ -18,11 +18,15 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 
-import com.graphhopper.jsprit.core.problem.*;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-
 import java.util.List;
 import java.util.Set;
+
+import com.graphhopper.jsprit.core.problem.HasId;
+import com.graphhopper.jsprit.core.problem.HasIndex;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
  * Basic interface for all jobs.
@@ -45,6 +49,7 @@ public interface Job extends HasId, HasIndex {
      *
      * @return SizeDimension
      */
+    @Deprecated
     public SizeDimension getSize();
 
     public Skills getRequiredSkills();

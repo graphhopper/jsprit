@@ -18,6 +18,11 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
@@ -30,8 +35,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.CustomJob;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Created by schroeder on 11/11/16.
@@ -43,14 +46,14 @@ public class FirstCustomJobWithMultipleActivitiesExample {
     @Test
     public void shouldRunOK() {
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .build();
+                        .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+                        .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .build();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 4).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-            .addJob(cj).addVehicle(v).build();
+                        .addJob(cj).addVehicle(v).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(10);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
@@ -61,14 +64,14 @@ public class FirstCustomJobWithMultipleActivitiesExample {
     @Test
     public void shouldNotIgnoresCapacity() {
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .build();
+                        .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+                        .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .build();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-            .addJob(cj).addVehicle(v).build();
+                        .addJob(cj).addVehicle(v).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(10);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
@@ -79,14 +82,14 @@ public class FirstCustomJobWithMultipleActivitiesExample {
     @Test
     public void shouldNotIgnoresCapacityWithMixedPicksAndDeliveries() {
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
-            .build();
+                        .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+                        .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+                        .build();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-            .addJob(cj).addVehicle(v).build();
+                        .addJob(cj).addVehicle(v).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(10);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
@@ -97,16 +100,16 @@ public class FirstCustomJobWithMultipleActivitiesExample {
     @Test
     public void shouldNotIgnoresCapacityWithMixedPicksAndDeliveriesV2() {
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
-            .build();
-        Assert.assertEquals(SizeDimension.Builder.newInstance().addDimension(0, 0).build(), cj.getSizeAtStart());
-        Assert.assertEquals(SizeDimension.Builder.newInstance().addDimension(0, 0).build(), cj.getSizeAtEnd());
+                        .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+                        .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+                        .build();
+        assertEquals(SizeDimension.Builder.newInstance().addDimension(0, 0).build(), cj.getSizeAtStart());
+        assertEquals(SizeDimension.Builder.newInstance().addDimension(0, 0).build(), cj.getSizeAtEnd());
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-            .addJob(cj).addVehicle(v).build();
+                        .addJob(cj).addVehicle(v).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(10);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
@@ -117,14 +120,14 @@ public class FirstCustomJobWithMultipleActivitiesExample {
     @Test
     public void shouldNotIgnoresCapacityWithExchange() {
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 0).build())
-            .addExchange(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, -3).addDimension(1, 2).build())
-            .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(1, 1).build())
-            .build();
+                        .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 0).build())
+                        .addExchange(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, -3).addDimension(1, 2).build())
+                        .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(1, 1).build())
+                        .build();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).addCapacityDimension(1, 2).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-            .addJob(cj).addVehicle(v).build();
+                        .addJob(cj).addVehicle(v).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(10);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());

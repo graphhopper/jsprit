@@ -22,7 +22,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.RandomUtils;
 import org.apache.commons.math3.ml.clustering.Clusterable;
@@ -49,9 +49,9 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 
     public static class JobActivityWrapper implements Clusterable {
 
-        private AbstractActivityNEW jobActivity;
+        private AbstractActivity jobActivity;
 
-        public JobActivityWrapper(AbstractActivityNEW jobActivity) {
+        public JobActivityWrapper(AbstractActivity jobActivity) {
             this.jobActivity = jobActivity;
         }
 
@@ -60,7 +60,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
             return new double[]{jobActivity.getLocation().getCoordinate().getX(), jobActivity.getLocation().getCoordinate().getY()};
         }
 
-        public AbstractActivityNEW getActivity() {
+        public AbstractActivity getActivity() {
             return jobActivity;
         }
     }
@@ -161,7 +161,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
     private List<JobActivityWrapper> wrap(List<TourActivity> activities) {
         List<JobActivityWrapper> wl = new ArrayList<JobActivityWrapper>();
         for (TourActivity act : activities) {
-            wl.add(new JobActivityWrapper((AbstractActivityNEW) act));
+            wl.add(new JobActivityWrapper((AbstractActivity) act));
         }
         return wl;
     }

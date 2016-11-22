@@ -18,6 +18,12 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
+import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -25,10 +31,6 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import junit.framework.Assert;
-import org.junit.Test;
-
-import java.util.Arrays;
 
 
 public class ExternalInitialSolutionIsInValidTest {
@@ -54,9 +56,8 @@ public class ExternalInitialSolutionIsInValidTest {
 
         try {
             vra.searchSolutions();
-            Assert.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertFalse(true);
+            fail();
         }
 
     }

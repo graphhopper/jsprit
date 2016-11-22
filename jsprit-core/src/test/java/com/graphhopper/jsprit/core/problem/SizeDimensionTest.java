@@ -31,55 +31,55 @@ public class SizeDimensionTest {
     @Test
     public void signShouldBePositive() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).build();
-        Assert.assertEquals(SizeDimension.SizeDimensionSign.POSITIVE, sd.sign());
+        assertEquals(SizeDimension.SizeDimensionSign.POSITIVE, sd.sign());
     }
 
     @Test
     public void signShouldBePositive2() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 0).build();
-        Assert.assertEquals(SizeDimension.SizeDimensionSign.POSITIVE, sd.sign());
+        assertEquals(SizeDimension.SizeDimensionSign.POSITIVE, sd.sign());
     }
 
     @Test
     public void signShouldBeNegative() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, -2).build();
-        Assert.assertEquals(SizeDimension.SizeDimensionSign.NEGATIVE, sd.sign());
+        assertEquals(SizeDimension.SizeDimensionSign.NEGATIVE, sd.sign());
     }
 
     @Test
     public void signShouldBeNegative2() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, -2).build();
-        Assert.assertEquals(SizeDimension.SizeDimensionSign.NEGATIVE, sd.sign());
+        assertEquals(SizeDimension.SizeDimensionSign.NEGATIVE, sd.sign());
     }
 
     @Test
     public void signShouldBeMixed() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, 2).build();
-        Assert.assertEquals(SizeDimension.SizeDimensionSign.MIXED, sd.sign());
+        assertEquals(SizeDimension.SizeDimensionSign.MIXED, sd.sign());
     }
 
     @Test
     public void signShouldBeZero() {
         SizeDimension sd = SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build();
-        Assert.assertEquals(SizeDimension.SizeDimensionSign.ZERO, sd.sign());
+        assertEquals(SizeDimension.SizeDimensionSign.ZERO, sd.sign());
     }
 
     @Test
     public void getNegativeShouldReturnCorrectCapacity() {
         SizeDimension cap = SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, -3).build();
         SizeDimension neg = cap.getNegativeDimensions();
-        Assert.assertEquals(2, neg.getNuOfDimensions());
-        Assert.assertEquals(0, neg.get(0));
-        Assert.assertEquals(-3, neg.get(1));
+        assertEquals(2, neg.getNuOfDimensions());
+        assertEquals(0, neg.get(0));
+        assertEquals(-3, neg.get(1));
     }
 
     @Test
     public void getPositiveShouldReturnCorrectCapacity() {
         SizeDimension cap = SizeDimension.Builder.newInstance().addDimension(0, 2).addDimension(1, -3).build();
         SizeDimension pos = cap.getPositiveDimensions();
-        Assert.assertEquals(2, pos.getNuOfDimensions());
-        Assert.assertEquals(2, pos.get(0));
-        Assert.assertEquals(0, pos.get(1));
+        assertEquals(2, pos.getNuOfDimensions());
+        assertEquals(2, pos.get(0));
+        assertEquals(0, pos.get(1));
     }
 
     @Test
@@ -440,6 +440,7 @@ public class SizeDimensionTest {
         Assert.assertTrue(cap1.equals(cap2));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void legacyTest() {
         Capacity.Builder builder = Capacity.Builder.newInstance();

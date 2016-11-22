@@ -17,12 +17,13 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.junit.Test;
 
 
 public class TestJobDistanceAvgCosts {

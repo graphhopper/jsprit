@@ -40,13 +40,13 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
@@ -122,19 +122,19 @@ public class SolutionAnalyser {
 
         @Override
         public void visit(TourActivity activity) {
-            if (activity instanceof PickupActivityNEW || activity instanceof ServiceActivityNEW) {
+            if (activity instanceof PickupActivity || activity instanceof ServiceActivity) {
                 pickupCounter++;
                 pickedUp = pickedUp.add(activity.getLoadChange());
-                if (!AbstractActivityNEW.isShipment(activity)
-                                && (activity instanceof PickupActivityNEW
-                                                || activity instanceof ServiceActivityNEW)) {
+                if (!AbstractActivity.isShipment(activity)
+                                && (activity instanceof PickupActivity
+                                                || activity instanceof ServiceActivity)) {
                     deliverAtEndCounter++;
                 }
-            } else if (activity instanceof DeliveryActivityNEW) {
+            } else if (activity instanceof DeliveryActivity) {
                 deliveryCounter++;
-                delivered = delivered.add(((DeliveryActivityNEW) activity).getJob().getSize());
-                if (!AbstractActivityNEW.isShipment(activity)
-                                && activity instanceof DeliveryActivityNEW) {
+                delivered = delivered.add(((DeliveryActivity) activity).getJob().getSize());
+                if (!AbstractActivity.isShipment(activity)
+                                && activity instanceof DeliveryActivity) {
                     pickupAtBeginningCounter++;
                 }
             }
@@ -159,7 +159,7 @@ public class SolutionAnalyser {
 
         private final StateManager stateManager;
 
-        private Map<String, PickupActivityNEW> openShipments;
+        private Map<String, PickupActivity> openShipments;
 
         private VehicleRoute route;
 
@@ -188,18 +188,18 @@ public class SolutionAnalyser {
         @Override
         public void visit(TourActivity activity) {
             //shipment
-            if (AbstractActivityNEW.isShipment(activity) && activity instanceof PickupActivityNEW) {
-                openShipments.put(((PickupActivityNEW) activity).getJob().getId(),
-                                (PickupActivityNEW) activity);
-            } else if (AbstractActivityNEW.isShipment(activity)
-                            && activity instanceof DeliveryActivityNEW) {
-                String jobId = ((DeliveryActivityNEW) activity).getJob().getId();
+            if (AbstractActivity.isShipment(activity) && activity instanceof PickupActivity) {
+                openShipments.put(((PickupActivity) activity).getJob().getId(),
+                                (PickupActivity) activity);
+            } else if (AbstractActivity.isShipment(activity)
+                            && activity instanceof DeliveryActivity) {
+                String jobId = ((DeliveryActivity) activity).getJob().getId();
                 if (!openShipments.containsKey(jobId)) {
                     //deliverShipment without pickupShipment
                     stateManager.putActivityState(activity, shipment_id, true);
                     shipmentConstraintOnRouteViolated = true;
                 } else {
-                    PickupActivityNEW removed = openShipments.remove(jobId);
+                    PickupActivity removed = openShipments.remove(jobId);
                     stateManager.putActivityState(removed, shipment_id, false);
                     stateManager.putActivityState(activity, shipment_id, false);
                 }
@@ -208,14 +208,14 @@ public class SolutionAnalyser {
             }
 
             //backhaul
-            if (!AbstractActivityNEW.isShipment(activity) && activity instanceof DeliveryActivityNEW
+            if (!AbstractActivity.isShipment(activity) && activity instanceof DeliveryActivity
                             && pickupOccured) {
                 stateManager.putActivityState(activity, backhaul_id, true);
                 backhaulConstraintOnRouteViolated = true;
             } else {
-                if (!AbstractActivityNEW.isShipment(activity)
-                                && (activity instanceof PickupActivityNEW
-                                                || activity instanceof ServiceActivityNEW)) {
+                if (!AbstractActivity.isShipment(activity)
+                                && (activity instanceof PickupActivity
+                                                || activity instanceof ServiceActivity)) {
                     pickupOccured = true;
                     stateManager.putActivityState(activity, backhaul_id, false);
                 } else {

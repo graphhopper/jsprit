@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -121,9 +121,9 @@ public class VrpXMLWriterTest {
 
         Service s1_read = (Service) vrp.getJobs().get("1");
         assertEquals("1", s1_read.getId());
-        Assert.assertEquals("loc", s1_read.getLocation().getId());
+        assertEquals("loc", s1_read.getActivity().getLocation().getId());
         assertEquals("pickup", s1_read.getType());
-        assertEquals(2.0, s1_read.getServiceDuration(), 0.01);
+        assertEquals(2.0, s1_read.getActivity().getOperationTime(), 0.01);
     }
 
     @Test
@@ -157,7 +157,7 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         Shipment s1_read = (Shipment) readVrp.getJobs().get("1");
         assertTrue(s1_read.getName().equals("cleaning"));
-        Assert.assertEquals(1, s1_read.getPickupLocation().getIndex());
+        assertEquals(1, s1_read.getPickupActivity().getLocation().getIndex());
     }
 
     @Test
@@ -180,9 +180,10 @@ public class VrpXMLWriterTest {
 
         Service s1_read = (Service) vrp.getJobs().get("1");
 
-        Assert.assertEquals(2, s1_read.getSize().getNuOfDimensions());
-        Assert.assertEquals(20, s1_read.getSize().get(0));
-        Assert.assertEquals(200, s1_read.getSize().get(1));
+        SizeDimension size = s1_read.getActivity().getLoadChange();
+        assertEquals(2, size.getNuOfDimensions());
+        assertEquals(20, size.get(0));
+        assertEquals(200, size.get(1));
 
     }
 
@@ -216,9 +217,8 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        Assert.assertEquals("pickLoc", ((Shipment) readVrp.getJobs().get("1")).getPickupLocation().getId());
-        Assert.assertEquals("delLoc", ((Shipment) readVrp.getJobs().get("1")).getDeliveryLocation().getId());
-
+        assertEquals("pickLoc", ((Shipment) readVrp.getJobs().get("1")).getPickupActivity().getLocation().getId());
+        assertEquals("delLoc", ((Shipment) readVrp.getJobs().get("1")).getDeliveryActivity().getLocation().getId());
     }
 
     @Test
@@ -251,10 +251,9 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        Assert.assertEquals(1.0, ((Shipment) readVrp.getJobs().get("1")).getPickupTimeWindow().getStart(), 0.01);
-        Assert.assertEquals(2.0, ((Shipment) readVrp.getJobs().get("1")).getPickupTimeWindow().getEnd(), 0.01);
-
-
+        TimeWindow tw = ((Shipment) readVrp.getJobs().get("1")).getPickupActivity().getSingleTimeWindow();
+        assertEquals(1.0, tw.getStart(), 0.01);
+        assertEquals(2.0, tw.getEnd(), 0.01);
     }
 
     @Test
@@ -287,9 +286,9 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        Assert.assertEquals(3.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryTimeWindow().getStart(), 0.01);
-        Assert.assertEquals(4.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryTimeWindow().getEnd(), 0.01);
-
+        TimeWindow tw = ((Shipment) readVrp.getJobs().get("1")).getDeliveryActivity().getSingleTimeWindow();
+        assertEquals(3.0, tw.getStart(), 0.01);
+        assertEquals(4.0, tw.getEnd(), 0.01);
     }
 
     @Test
@@ -322,8 +321,8 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        assertEquals(100.0, ((Shipment) readVrp.getJobs().get("1")).getPickupServiceTime(), 0.01);
-        assertEquals(50.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryServiceTime(), 0.01);
+        assertEquals(100.0, ((Shipment) readVrp.getJobs().get("1")).getPickupActivity().getOperationTime(), 0.01);
+        assertEquals(50.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryActivity().getOperationTime(), 0.01);
 
     }
 
@@ -357,7 +356,7 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        Assert.assertEquals("[x=1.0][y=2.0]", ((Shipment) readVrp.getJobs().get("1")).getPickupLocation().getId());
+        assertEquals("[x=1.0][y=2.0]", ((Shipment) readVrp.getJobs().get("1")).getPickupActivity().getLocation().getId());
     }
 
     @Test
@@ -376,7 +375,7 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         Vehicle veh1 = getVehicle("v1", readVrp);
 
-        Assert.assertEquals(3, veh1.getSkills().values().size());
+        assertEquals(3, veh1.getSkills().values().size());
     }
 
     @Test
@@ -451,7 +450,7 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         Vehicle veh = getVehicle("v1", readVrp);
 
-        Assert.assertEquals(0, veh.getSkills().values().size());
+        assertEquals(0, veh.getSkills().values().size());
     }
 
     private Vehicle getVehicle(String v1, VehicleRoutingProblem readVrp) {
@@ -481,7 +480,7 @@ public class VrpXMLWriterTest {
         new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 
-        Assert.assertEquals(3, readVrp.getJobs().get("1").getRequiredSkills().values().size());
+        assertEquals(3, readVrp.getJobs().get("1").getRequiredSkills().values().size());
     }
 
     @Test
@@ -578,11 +577,11 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        Assert.assertEquals(1.0, ((Shipment) readVrp.getJobs().get("1")).getPickupLocation().getCoordinate().getX(), 0.01);
-        Assert.assertEquals(2.0, ((Shipment) readVrp.getJobs().get("1")).getPickupLocation().getCoordinate().getY(), 0.01);
+        assertEquals(1.0, ((Shipment) readVrp.getJobs().get("1")).getPickupActivity().getLocation().getCoordinate().getX(), 0.01);
+        assertEquals(2.0, ((Shipment) readVrp.getJobs().get("1")).getPickupActivity().getLocation().getCoordinate().getY(), 0.01);
 
-        Assert.assertEquals(5.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryLocation().getCoordinate().getX(), 0.01);
-        Assert.assertEquals(6.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryLocation().getCoordinate().getY(), 0.01);
+        assertEquals(5.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryActivity().getLocation().getCoordinate().getX(), 0.01);
+        assertEquals(6.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryActivity().getLocation().getCoordinate().getY(), 0.01);
     }
 
     @Test
@@ -610,13 +609,13 @@ public class VrpXMLWriterTest {
         new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 
-        Assert.assertEquals(3, (readVrp.getJobs().get("1")).getSize().getNuOfDimensions());
-        Assert.assertEquals(10, (readVrp.getJobs().get("1")).getSize().get(0));
-        Assert.assertEquals(0, (readVrp.getJobs().get("1")).getSize().get(1));
-        Assert.assertEquals(100, (readVrp.getJobs().get("1")).getSize().get(2));
+        assertEquals(3, (readVrp.getJobs().get("1")).getSize().getNuOfDimensions());
+        assertEquals(10, (readVrp.getJobs().get("1")).getSize().get(0));
+        assertEquals(0, (readVrp.getJobs().get("1")).getSize().get(1));
+        assertEquals(100, (readVrp.getJobs().get("1")).getSize().get(2));
 
-        Assert.assertEquals(1, (readVrp.getJobs().get("2")).getSize().getNuOfDimensions());
-        Assert.assertEquals(20, (readVrp.getJobs().get("2")).getSize().get(0));
+        assertEquals(1, (readVrp.getJobs().get("2")).getSize().getNuOfDimensions());
+        assertEquals(20, (readVrp.getJobs().get("2")).getSize().get(0));
     }
 
     @Test
@@ -642,8 +641,8 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 
         Vehicle v = getVehicle("v1", readVrp.getVehicles());
-        Assert.assertEquals("loc", v.getStartLocation().getId());
-        Assert.assertEquals("loc", v.getEndLocation().getId());
+        assertEquals("loc", v.getStartLocation().getId());
+        assertEquals("loc", v.getEndLocation().getId());
 
     }
 
@@ -661,7 +660,7 @@ public class VrpXMLWriterTest {
         new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 
-        Assert.assertEquals(2, readVrp.getJobs().get("1").getRequiredSkills().values().size());
+        assertEquals(2, readVrp.getJobs().get("1").getRequiredSkills().values().size());
     }
 
     @Test
@@ -775,7 +774,7 @@ public class VrpXMLWriterTest {
 
         Vehicle v = getVehicle("v2", readVrp.getVehicles());
         assertEquals("vehType2", v.getType().getTypeId());
-        Assert.assertEquals(200, v.getType().getCapacityDimensions().get(0));
+        assertEquals(200, v.getType().getCapacityDimensions().get(0));
 
     }
 
@@ -804,8 +803,8 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 
         Vehicle v = getVehicle("v2", readVrp.getVehicles());
-        Assert.assertEquals("startLoc", v.getStartLocation().getId());
-        Assert.assertEquals("endLoc", v.getEndLocation().getId());
+        assertEquals("startLoc", v.getStartLocation().getId());
+        assertEquals("endLoc", v.getEndLocation().getId());
     }
 
     @Test
@@ -834,11 +833,11 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 
         Vehicle v = getVehicle("v2", readVrp.getVehicles());
-        Assert.assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
-        Assert.assertEquals(2.0, v.getStartLocation().getCoordinate().getY(), 0.01);
+        assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
+        assertEquals(2.0, v.getStartLocation().getCoordinate().getY(), 0.01);
 
-        Assert.assertEquals(4.0, v.getEndLocation().getCoordinate().getX(), 0.01);
-        Assert.assertEquals(5.0, v.getEndLocation().getCoordinate().getY(), 0.01);
+        assertEquals(4.0, v.getEndLocation().getCoordinate().getX(), 0.01);
+        assertEquals(5.0, v.getEndLocation().getCoordinate().getY(), 0.01);
     }
 
     @Test
@@ -864,10 +863,10 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 
         Vehicle v = getVehicle("v", readVrp.getVehicles());
-        Assert.assertEquals(3, v.getType().getCapacityDimensions().getNuOfDimensions());
-        Assert.assertEquals(100, v.getType().getCapacityDimensions().get(0));
-        Assert.assertEquals(1000, v.getType().getCapacityDimensions().get(1));
-        Assert.assertEquals(10000, v.getType().getCapacityDimensions().get(2));
+        assertEquals(3, v.getType().getCapacityDimensions().getNuOfDimensions());
+        assertEquals(100, v.getType().getCapacityDimensions().get(0));
+        assertEquals(1000, v.getType().getCapacityDimensions().get(1));
+        assertEquals(10000, v.getType().getCapacityDimensions().get(2));
     }
 
     @Test
@@ -893,9 +892,9 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
 
         Vehicle v = getVehicle("v", readVrp.getVehicles());
-        Assert.assertEquals(11, v.getType().getCapacityDimensions().getNuOfDimensions());
-        Assert.assertEquals(0, v.getType().getCapacityDimensions().get(9));
-        Assert.assertEquals(10000, v.getType().getCapacityDimensions().get(10));
+        assertEquals(11, v.getType().getCapacityDimensions().getNuOfDimensions());
+        assertEquals(0, v.getType().getCapacityDimensions().get(9));
+        assertEquals(10000, v.getType().getCapacityDimensions().get(10));
     }
 
     private Vehicle getVehicle(String string, Collection<Vehicle> vehicles) {
@@ -934,7 +933,7 @@ public class VrpXMLWriterTest {
         new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
 
         assertEquals(1, solutionsToRead.size());
-        Assert.assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(), 0.01);
+        assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(), 0.01);
         assertTrue(Solutions.bestOf(solutionsToRead).getUnassignedJobs().isEmpty());
     }
 
@@ -966,9 +965,9 @@ public class VrpXMLWriterTest {
         new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
 
         assertEquals(1, solutionsToRead.size());
-        Assert.assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(), 0.01);
-        Assert.assertEquals(1, Solutions.bestOf(solutionsToRead).getUnassignedJobs().size());
-        Assert.assertEquals("2", Solutions.bestOf(solutionsToRead).getUnassignedJobs().iterator().next().getId());
+        assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(), 0.01);
+        assertEquals(1, Solutions.bestOf(solutionsToRead).getUnassignedJobs().size());
+        assertEquals("2", Solutions.bestOf(solutionsToRead).getUnassignedJobs().iterator().next().getId());
     }
 
 }

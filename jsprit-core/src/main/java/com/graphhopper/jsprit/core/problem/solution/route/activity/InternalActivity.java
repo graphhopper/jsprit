@@ -8,7 +8,7 @@ import com.graphhopper.jsprit.core.problem.Location;
  *
  * @author balage
  */
-public abstract class InternalActivity extends AbstractActivityNEW implements InternalActivityMarker {
+public abstract class InternalActivity extends AbstractActivity implements InternalActivityMarker {
 
     public InternalActivity(String name, Location location, SizeDimension capacity) {
         super(name, location, capacity);

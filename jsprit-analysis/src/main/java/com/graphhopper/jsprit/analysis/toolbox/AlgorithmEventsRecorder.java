@@ -47,7 +47,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -329,14 +329,14 @@ public class AlgorithmEventsRecorder
     private void addJob(Job job) {
         if (job instanceof Service) {
             Service service = (Service) job;
-            addNode(service.getId(), service.getLocation().getCoordinate());
+            addNode(service.getId(), service.getActivity().getLocation().getCoordinate());
             markSingleActivityJob(service);
         } else if (job instanceof Shipment) {
             Shipment shipment = (Shipment) job;
             String fromNodeId = getFromNodeId(shipment);
-            addNode(fromNodeId, shipment.getPickupLocation().getCoordinate());
+            addNode(fromNodeId, shipment.getPickupActivity().getLocation().getCoordinate());
             String toNodeId = getToNodeId(shipment);
-            addNode(toNodeId, shipment.getDeliveryLocation().getCoordinate());
+            addNode(toNodeId, shipment.getDeliveryActivity().getLocation().getCoordinate());
             markShipment(shipment);
             if (renderShipments) {
                 Edge e = graph.addEdge("shipment_" + fromNodeId + "_" + toNodeId, fromNodeId, toNodeId, true);
@@ -467,7 +467,7 @@ public class AlgorithmEventsRecorder
         if (isFirst(insertionIndex)) {
             node_i = makeStartId(data.getSelectedVehicle());
         } else {
-            AbstractActivityNEW jobActivity = (AbstractActivityNEW) route.getActivities().get(insertionIndex - 1);
+            AbstractActivity jobActivity = (AbstractActivity) route.getActivities().get(insertionIndex - 1);
             node_i = getNodeId(jobActivity);
         }
         String edgeId_1 = node_i + "_" + nodeId;
@@ -475,7 +475,7 @@ public class AlgorithmEventsRecorder
         if (isLast(insertionIndex, route)) {
             node_j = makeEndId(data.getSelectedVehicle());
         } else {
-            AbstractActivityNEW jobActivity = (AbstractActivityNEW) route.getActivities().get(insertionIndex);
+            AbstractActivity jobActivity = (AbstractActivity) route.getActivities().get(insertionIndex);
             node_j = getNodeId(jobActivity);
         }
         String edgeId_2 = nodeId + "_" + node_j;

@@ -18,6 +18,16 @@
 
 package com.graphhopper.jsprit.instance.reader;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -28,12 +38,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class TSPLIB95Reader {
@@ -131,19 +135,24 @@ public class TSPLIB95Reader {
                 continue;
             }
             if (isCoordSection) {
-                if (coords == null) throw new IllegalStateException("DIMENSION tag missing");
+                if (coords == null) {
+                    throw new IllegalStateException("DIMENSION tag missing");
+                }
                 String[] tokens = line.trim().split("\\s+");
                 Integer id = Integer.parseInt(tokens[0]);
                 if (switchCoordinates) {
                     coords[coordIndex] = Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[1]));
-                } else
+                } else {
                     coords[coordIndex] = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
+                }
                 indexMap.put(id, coordIndex);
                 coordIndex++;
                 continue;
             }
             if (isDemandSection) {
-                if (demands == null) throw new IllegalStateException("DIMENSION tag missing");
+                if (demands == null) {
+                    throw new IllegalStateException("DIMENSION tag missing");
+                }
                 String[] tokens = line.trim().split("\\s+");
                 Integer id = Integer.parseInt(tokens[0]);
                 int index = indexMap.get(id);
@@ -160,7 +169,9 @@ public class TSPLIB95Reader {
             }
             if (isEdgeWeightSection) {
                 String[] tokens = line.trim().split("\\s+");
-                for (String s : tokens) edgeWeights.add(Double.parseDouble(s));
+                for (String s : tokens) {
+                    edgeWeights.add(Double.parseDouble(s));
+                }
                 continue;
             }
         }
@@ -169,8 +180,8 @@ public class TSPLIB95Reader {
         for (Integer depotId : depotIds) {
             VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, capacity).build();
             VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle")
-                .setStartLocation(Location.Builder.newInstance().setId(depotId.toString()).setCoordinate(coords[depotId - 1]).build())
-                .setType(type).build();
+                    .setStartLocation(Location.Builder.newInstance().setId(depotId.toString()).setCoordinate(coords[depotId - 1]).build())
+                    .setType(type).build();
             vrpBuilder.addVehicle(vehicle);
         }
 
@@ -180,23 +191,27 @@ public class TSPLIB95Reader {
             if (depotIds.isEmpty()) {
                 if (index == 0) {
                     VehicleImpl vehicle = VehicleImpl.Builder.newInstance("traveling_salesman")
-                        .setStartLocation(Location.Builder.newInstance().setId(id)
-                            .setCoordinate(coords[index]).setIndex(index).build())
-                        .build();
+                            .setStartLocation(Location.Builder.newInstance().setId(id)
+                                    .setCoordinate(coords[index]).setIndex(index).build())
+                            .build();
                     vrpBuilder.addVehicle(vehicle);
                     continue;
                 }
             }
             Service service = new Service.Builder(id)
-                .setLocation(Location.Builder.newInstance().setId(id)
-                    .setCoordinate(coords[index]).setIndex(index).build())
-                .addSizeDimension(0, demands[index]).build();
+                    .setLocation(Location.Builder.newInstance().setId(id)
+                            .setCoordinate(coords[index]).setIndex(index).build())
+                    .addSizeDimension(0, demands[index]).build();
             vrpBuilder.addJob(service);
         }
         if (edgeType.equals("GEO")) {
             List<Location> locations = new ArrayList<Location>();
-            for (Vehicle v : vrpBuilder.getAddedVehicles()) locations.add(v.getStartLocation());
-            for (Job j : vrpBuilder.getAddedJobs()) locations.add(((Service) j).getLocation());
+            for (Vehicle v : vrpBuilder.getAddedVehicles()) {
+                locations.add(v.getStartLocation());
+            }
+            for (Job j : vrpBuilder.getAddedJobs()) {
+                locations.add(((Service) j).getActivity().getLocation());
+            }
             vrpBuilder.setRoutingCost(getGEOMatrix(locations));
         } else if (edgeType.equals("EXPLICIT")) {
             if (edgeWeightFormat.equals("UPPER_ROW")) {

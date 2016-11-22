@@ -201,17 +201,17 @@ public final class ReturnedShipment extends Shipment {
     protected void createActivities(JobBuilder<?, ?> builder) {
         Builder shipmentBuilder = (Builder) builder;
         JobActivityList list = new SequentialJobActivityList(this);
-        list.addActivity(new PickupActivityNEW(this, ACTIVITY_NAME_PICKUP,
+        list.addActivity(new PickupActivity(this, ACTIVITY_NAME_PICKUP,
             shipmentBuilder.getPickupLocation(),
             shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
             shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
-        list.addActivity(new ExchangeActivityNEW(this, ACTIVITY_NAME_DELIVERY,
+        list.addActivity(new ExchangeActivity(this, ACTIVITY_NAME_DELIVERY,
             shipmentBuilder.getDeliveryLocation(),
             shipmentBuilder.getDeliveryServiceTime(),
             shipmentBuilder.getBackhaulCapacity()
                 .subtract(shipmentBuilder.getCapacity()),
             shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
-        list.addActivity(new DeliveryActivityNEW(this, ACTIVITY_NAME_BACKHAUL,
+        list.addActivity(new DeliveryActivity(this, ACTIVITY_NAME_BACKHAUL,
             shipmentBuilder.getBackhaulLocation(),
             shipmentBuilder.getBackhaulServiceTime(),
             shipmentBuilder.getBackhaulCapacity(),
@@ -220,21 +220,21 @@ public final class ReturnedShipment extends Shipment {
     }
 
     // TODO: RENAME WHEN SHIPMENT IS RETURNING THE SAME TYPE OF ACTIVIT
-    public PickupActivityNEW getPickupActivityTO_BE_RENAMED_LATER() {
-        return (PickupActivityNEW) getActivityList()
+    public PickupActivity getPickupActivityTO_BE_RENAMED_LATER() {
+        return (PickupActivity) getActivityList()
             .findByType(ACTIVITY_NAME_PICKUP)
             .get();
     }
 
     // TODO: RENAME WHEN SHIPMENT IS RETURNING THE SAME TYPE OF ACTIVIT
-    public ExchangeActivityNEW getDeliveryActivityTO_BE_RENAMED_LATER() {
-        return (ExchangeActivityNEW) getActivityList()
+    public ExchangeActivity getDeliveryActivityTO_BE_RENAMED_LATER() {
+        return (ExchangeActivity) getActivityList()
             .findByType(ACTIVITY_NAME_DELIVERY)
             .get();
     }
 
-    public DeliveryActivityNEW getBackhaulActivityTO_BE_RENAMED_LATER() {
-        return (DeliveryActivityNEW) getActivityList()
+    public DeliveryActivity getBackhaulActivityTO_BE_RENAMED_LATER() {
+        return (DeliveryActivity) getActivityList()
             .findByType(ACTIVITY_NAME_BACKHAUL)
             .get();
     }

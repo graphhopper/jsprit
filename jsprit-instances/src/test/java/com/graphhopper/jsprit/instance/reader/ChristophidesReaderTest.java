@@ -17,15 +17,16 @@
  */
 package com.graphhopper.jsprit.instance.reader;
 
+import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.junit.Test;
-
-import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
 
 
 public class ChristophidesReaderTest {
@@ -40,7 +41,9 @@ public class ChristophidesReaderTest {
 
     private String getPath(String string) {
         URL resource = this.getClass().getClassLoader().getResource(string);
-        if (resource == null) throw new IllegalStateException("resource " + string + " does not exist");
+        if (resource == null) {
+            throw new IllegalStateException("resource " + string + " does not exist");
+        }
         return resource.getPath();
     }
 
@@ -97,7 +100,7 @@ public class ChristophidesReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(builder).read(getPath("vrpnc13.txt"));
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(50.0, ((Service) vrp.getJobs().get("2")).getServiceDuration(), 0.1);
+        assertEquals(50.0, ((Service) vrp.getJobs().get("2")).getActivity().getOperationTime(), 0.1);
     }
 
 

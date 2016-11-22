@@ -17,6 +17,14 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.algorithm.state.UpdateVehicleDependentPracticalTimeWindows;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -39,13 +47,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Arrays;
-
-import static org.mockito.Mockito.mock;
 
 
 public class GeneralJobInsertionAndTimeWindowConstraintsTest {

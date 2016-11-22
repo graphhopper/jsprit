@@ -17,7 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 
 /**
  * Service implementation of a job.
@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivi
  *
  * @author schroeder
  */
-public class Service extends AbstractSingleActivityJob<ServiceActivityNEW> {
+public class Service extends AbstractSingleActivityJob<ServiceActivity> {
 
 
     public static final class Builder
@@ -53,9 +53,9 @@ public class Service extends AbstractSingleActivityJob<ServiceActivityNEW> {
     }
 
     @Override
-    protected ServiceActivityNEW createActivity(
+    protected ServiceActivity createActivity(
                     AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-        return new ServiceActivityNEW(this, builder.type,
+        return new ServiceActivity(this, builder.type,
                         builder.location, builder.serviceTime, builder.getCapacity(),
                         builder.timeWindows.getTimeWindows());
         // return new PickupActivityNEW(this, builder.type, builder.location,

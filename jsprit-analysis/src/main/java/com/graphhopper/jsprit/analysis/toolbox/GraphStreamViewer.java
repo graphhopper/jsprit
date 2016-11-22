@@ -18,18 +18,19 @@
 package com.graphhopper.jsprit.analysis.toolbox;
 
 
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import com.graphhopper.jsprit.core.util.Time;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -38,16 +39,25 @@ import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
-import javax.swing.*;
-import java.awt.*;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.Time;
 
 
 public class GraphStreamViewer {
 
     public static class StyleSheets {
 
-        public static String BLUE_FOREST =
-            "graph { fill-color: #141F2E; }" +
+        public static String BLUE_FOREST = "graph { fill-color: #141F2E; }" +
                 "node {" +
                 "	size: 7px, 7px;" +
                 "   fill-color: #A0FFA0;" +
@@ -96,27 +106,25 @@ public class GraphStreamViewer {
                 "	fill-color: #D3D3D3;" +
                 "	arrow-size: 6px,3px;" +
                 "}" +
-//                    "edge.inserted {" +
-//                    "	fill-color: #A0FFA0;" +
-//                    "	arrow-size: 6px,3px;" +
-//                    "   shadow-mode: gradient-radial;" +
-//                    "   shadow-width: 10px; shadow-color: #EEF, #000; shadow-offset: 0px;" +
-//                    "}" +
-//                    "edge.removed {" +
-//                    "	fill-color: #FF0000;" +
-//                    "	arrow-size: 6px,3px;" +
-//                    "   shadow-mode: gradient-radial;" +
-//                    "   shadow-width: 10px; shadow-color: #EEF, #000; shadow-offset: 0px;" +
-//                    "}" +
+                //                    "edge.inserted {" +
+                //                    "	fill-color: #A0FFA0;" +
+                //                    "	arrow-size: 6px,3px;" +
+                //                    "   shadow-mode: gradient-radial;" +
+                //                    "   shadow-width: 10px; shadow-color: #EEF, #000; shadow-offset: 0px;" +
+                //                    "}" +
+                //                    "edge.removed {" +
+                //                    "	fill-color: #FF0000;" +
+                //                    "	arrow-size: 6px,3px;" +
+                //                    "   shadow-mode: gradient-radial;" +
+                //                    "   shadow-width: 10px; shadow-color: #EEF, #000; shadow-offset: 0px;" +
+                //                    "}" +
                 "edge.shipment {" +
                 "	fill-color: #999;" +
                 "	arrow-size: 6px,3px;" +
                 "}";
 
 
-        @SuppressWarnings("UnusedDeclaration")
-        public static String SIMPLE_WHITE =
-            "node {" +
+        public static String SIMPLE_WHITE = "node {" +
                 "	size: 10px, 10px;" +
                 "   fill-color: #6CC644;" +
                 "	text-alignment: at-right;" +
@@ -184,8 +192,7 @@ public class GraphStreamViewer {
         return view;
     }
 
-    public static String STYLESHEET =
-        "node {" +
+    public static String STYLESHEET = "node {" +
             "	size: 10px, 10px;" +
             "   fill-color: #6CC644;" +
             "	text-alignment: at-right;" +
@@ -286,7 +293,7 @@ public class GraphStreamViewer {
     }
 
     public GraphStreamViewer setRenderDelay(long ms) {
-        this.renderDelay_in_ms = ms;
+        renderDelay_in_ms = ms;
         return this;
     }
 
@@ -296,19 +303,22 @@ public class GraphStreamViewer {
     }
 
     public GraphStreamViewer setGraphStreamFrameScalingFactor(double factor) {
-        this.scaling = factor;
+        scaling = factor;
         return this;
     }
 
     /**
-     * Sets the camera-view. Center describes the center-focus of the camera and zoomFactor its
-     * zoomFactor.
+     * Sets the camera-view. Center describes the center-focus of the camera and zoomFactor its zoomFactor.
      * <p>
-     * <p>a zoomFactor < 1 zooms in and > 1 out.
+     * <p>
+     * a zoomFactor < 1 zooms in and > 1 out.
      *
-     * @param centerX    x coordinate of center
-     * @param centerY    y coordinate of center
-     * @param zoomFactor zoom factor
+     * @param centerX
+     *            x coordinate of center
+     * @param centerY
+     *            y coordinate of center
+     * @param zoomFactor
+     *            zoom factor
      * @return the viewer
      */
     public GraphStreamViewer setCameraView(double centerX, double centerY, double zoomFactor) {
@@ -436,7 +446,9 @@ public class GraphStreamViewer {
         jobs.setPreferredSize(new Dimension((int) (40 * scaling), (int) (25 * scaling)));
 
         int noJobs = 0;
-        if (this.vrp != null) noJobs = this.vrp.getJobs().values().size();
+        if (vrp != null) {
+            noJobs = vrp.getJobs().values().size();
+        }
 
         JFormattedTextField nJobs = new JFormattedTextField(noJobs);
         nJobs.setFont(font);
@@ -492,32 +504,40 @@ public class GraphStreamViewer {
     }
 
     private Integer getNoRoutes() {
-        if (solution != null) return solution.getRoutes().size();
+        if (solution != null) {
+            return solution.getRoutes().size();
+        }
         return 0;
     }
 
     private Double getSolutionCosts() {
-        if (solution != null) return solution.getCost();
+        if (solution != null) {
+            return solution.getCost();
+        }
         return 0.0;
     }
 
     private void renderShipment(Graph g, Shipment shipment, Label label, boolean renderShipments) {
 
-        Node n1 = g.addNode(makeId(shipment.getId(), shipment.getPickupLocation().getId()));
-        if (label.equals(Label.ID)) n1.addAttribute("ui.label", shipment.getId());
-        n1.addAttribute("x", shipment.getPickupLocation().getCoordinate().getX());
-        n1.addAttribute("y", shipment.getPickupLocation().getCoordinate().getY());
+        Node n1 = g.addNode(makeId(shipment.getId(), shipment.getPickupActivity().getLocation().getId()));
+        if (label.equals(Label.ID)) {
+            n1.addAttribute("ui.label", shipment.getId());
+        }
+        n1.addAttribute("x", shipment.getPickupActivity().getLocation().getCoordinate().getX());
+        n1.addAttribute("y", shipment.getPickupActivity().getLocation().getCoordinate().getY());
         n1.setAttribute("ui.class", "pickup");
 
-        Node n2 = g.addNode(makeId(shipment.getId(), shipment.getDeliveryLocation().getId()));
-        if (label.equals(Label.ID)) n2.addAttribute("ui.label", shipment.getId());
-        n2.addAttribute("x", shipment.getDeliveryLocation().getCoordinate().getX());
-        n2.addAttribute("y", shipment.getDeliveryLocation().getCoordinate().getY());
+        Node n2 = g.addNode(makeId(shipment.getId(), shipment.getDeliveryActivity().getLocation().getId()));
+        if (label.equals(Label.ID)) {
+            n2.addAttribute("ui.label", shipment.getId());
+        }
+        n2.addAttribute("x", shipment.getDeliveryActivity().getLocation().getCoordinate().getX());
+        n2.addAttribute("y", shipment.getDeliveryActivity().getLocation().getCoordinate().getY());
         n2.setAttribute("ui.class", "delivery");
 
         if (renderShipments) {
-            Edge s = g.addEdge(shipment.getId(), makeId(shipment.getId(), shipment.getPickupLocation().getId()),
-                makeId(shipment.getId(), shipment.getDeliveryLocation().getId()), true);
+            Edge s = g.addEdge(shipment.getId(), makeId(shipment.getId(), shipment.getPickupActivity().getLocation().getId()),
+                    makeId(shipment.getId(), shipment.getDeliveryActivity().getLocation().getId()), true);
             s.addAttribute("ui.class", "shipment");
         }
 
@@ -533,12 +553,18 @@ public class GraphStreamViewer {
     }
 
     private void renderService(Graph g, Service service, Label label) {
-        Node n = g.addNode(makeId(service.getId(), service.getLocation().getId()));
-        if (label.equals(Label.ID)) n.addAttribute("ui.label", service.getId());
-        n.addAttribute("x", service.getLocation().getCoordinate().getX());
-        n.addAttribute("y", service.getLocation().getCoordinate().getY());
-        if (service.getType().equals("pickup")) n.setAttribute("ui.class", "pickup");
-        if (service.getType().equals("delivery")) n.setAttribute("ui.class", "delivery");
+        Node n = g.addNode(makeId(service.getId(), service.getActivity().getLocation().getId()));
+        if (label.equals(Label.ID)) {
+            n.addAttribute("ui.label", service.getId());
+        }
+        n.addAttribute("x", service.getActivity().getLocation().getCoordinate().getX());
+        n.addAttribute("y", service.getActivity().getLocation().getCoordinate().getY());
+        if (service.getType().equals("pickup")) {
+            n.setAttribute("ui.class", "pickup");
+        }
+        if (service.getType().equals("delivery")) {
+            n.setAttribute("ui.class", "delivery");
+        }
     }
 
     private String makeId(String id, String locationId) {
@@ -548,7 +574,9 @@ public class GraphStreamViewer {
     private void renderVehicle(Graph g, Vehicle vehicle, Label label) {
         String nodeId = makeId(vehicle.getId(), vehicle.getStartLocation().getId());
         Node vehicleStart = g.addNode(nodeId);
-        if (label.equals(Label.ID)) vehicleStart.addAttribute("ui.label", "depot");
+        if (label.equals(Label.ID)) {
+            vehicleStart.addAttribute("ui.label", "depot");
+        }
 //		if(label.equals(Label.ACTIVITY)) n.addAttribute("ui.label", "start");
         vehicleStart.addAttribute("x", vehicle.getStartLocation().getCoordinate().getX());
         vehicleStart.addAttribute("y", vehicle.getStartLocation().getCoordinate().getY());
@@ -556,7 +584,9 @@ public class GraphStreamViewer {
 
         if (!vehicle.getStartLocation().getId().equals(vehicle.getEndLocation().getId())) {
             Node vehicleEnd = g.addNode(makeId(vehicle.getId(), vehicle.getEndLocation().getId()));
-            if (label.equals(Label.ID)) vehicleEnd.addAttribute("ui.label", "depot");
+            if (label.equals(Label.ID)) {
+                vehicleEnd.addAttribute("ui.label", "depot");
+            }
             vehicleEnd.addAttribute("x", vehicle.getEndLocation().getCoordinate().getX());
             vehicleEnd.addAttribute("y", vehicle.getEndLocation().getCoordinate().getY());
             vehicleEnd.setAttribute("ui.class", "depot");
@@ -588,9 +618,11 @@ public class GraphStreamViewer {
                 actNode.addAttribute("ui.label", Time.parseSecondsToTime(act.getEndTime()));
             }
             g.addEdge(makeEdgeId(routeId, vehicle_edgeId), prevIdentifier, currIdentifier, true);
-            if (act instanceof PickupActivityNEW) g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
-            else if (act instanceof DeliveryActivityNEW)
+            if (act instanceof PickupActivity) {
+                g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
+            } else if (act instanceof DeliveryActivity) {
                 g.getNode(currIdentifier).addAttribute("ui.class", "deliveryInRoute");
+            }
             prevIdentifier = currIdentifier;
             vehicle_edgeId++;
             sleep(renderDelay_in_ms);

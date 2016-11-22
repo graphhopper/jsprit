@@ -17,6 +17,15 @@
  */
 package com.graphhopper.jsprit.instance.reader;
 
+import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -27,13 +36,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Test;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 
 public class BelhaizaReaderTest {
@@ -48,7 +50,9 @@ public class BelhaizaReaderTest {
 
     private String getPath() {
         URL resource = getClass().getClassLoader().getResource("cm101.txt");
-        if (resource == null) throw new IllegalStateException("file C101_solomon.txt does not exist");
+        if (resource == null) {
+            throw new IllegalStateException("file C101_solomon.txt does not exist");
+        }
         return resource.getPath();
     }
 
@@ -94,7 +98,7 @@ public class BelhaizaReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new BelhaizaReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(90, ((Service) vrp.getJobs().get("2")).getServiceDuration(), 0.1);
+        assertEquals(90, ((Service) vrp.getJobs().get("2")).getActivity().getOperationTime(), 0.1);
     }
 
     @Test
@@ -163,6 +167,7 @@ public class BelhaizaReaderTest {
     }
 
     @Test
+    @Ignore
     public void testAlgo() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new BelhaizaReader(builder).read(getPath());

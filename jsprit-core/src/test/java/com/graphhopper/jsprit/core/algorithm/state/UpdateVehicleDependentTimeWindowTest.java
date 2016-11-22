@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -212,7 +211,7 @@ public class UpdateVehicleDependentTimeWindowTest {
         //
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
         Service service = new Service.Builder("s1").setLocation(Location.newInstance("10,0"))
-                        .addTimeWindow(10, 20).addTimeWindow(30, 40).build();
+                        .addTimeWindow(30, 40).build();
         Service service2 = new Service.Builder("s2")
                         .addTimeWindow(20, 30).addTimeWindow(40, 60).addTimeWindow(70, 80).setLocation(Location.newInstance("20,0")).build();
 
@@ -267,7 +266,7 @@ public class UpdateVehicleDependentTimeWindowTest {
         stateManager.reCalculateStates(route);
 
         Double activityState = stateManager.getActivityState(route.getActivities().get(0), route.getVehicle(), InternalStates.LATEST_OPERATION_START_TIME, Double.class);
-        Assert.assertEquals(51d, activityState, 0.01);
+        assertEquals(51d, activityState, 0.01);
 
     }
 

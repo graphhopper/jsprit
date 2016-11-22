@@ -30,9 +30,9 @@ import com.graphhopper.jsprit.core.problem.constraint.PickupAndDeliverShipmentLo
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -77,18 +77,18 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 
     @Test
     public void whenPickupActivityIsInsertedAndLoadIsSufficient_returnFullFilled() {
-        ServiceActivityNEW pickupService = (ServiceActivityNEW) vrp.getActivities(s1).get(0);
-        ServiceActivityNEW anotherService = (ServiceActivityNEW) vrp.getActivities(s2).get(0);
-        PickupActivityNEW pickupShipment = (PickupActivityNEW) vrp.getActivities(shipment).get(0);
+        ServiceActivity pickupService = (ServiceActivity) vrp.getActivities(s1).get(0);
+        ServiceActivity anotherService = (ServiceActivity) vrp.getActivities(s2).get(0);
+        PickupActivity pickupShipment = (PickupActivity) vrp.getActivities(shipment).get(0);
 
         assertEquals(ConstraintsStatus.FULFILLED, constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
     }
 
     @Test
     public void whenPickupActivityIsInsertedAndLoadIsNotSufficient_returnNOT_FullFilled() {
-        ServiceActivityNEW pickupService = (ServiceActivityNEW) vrp.getActivities(s1).get(0);
-        ServiceActivityNEW anotherService = (ServiceActivityNEW) vrp.getActivities(s2).get(0);
-        PickupActivityNEW pickupShipment = (PickupActivityNEW) vrp.getActivities(shipment).get(0);
+        ServiceActivity pickupService = (ServiceActivity) vrp.getActivities(s1).get(0);
+        ServiceActivity anotherService = (ServiceActivity) vrp.getActivities(s2).get(0);
+        PickupActivity pickupShipment = (PickupActivity) vrp.getActivities(shipment).get(0);
 
         stateManager.putInternalTypedActivityState(pickupService, InternalStates.LOAD, SizeDimension.Builder.newInstance().addDimension(0, 2).build());
         //		when(stateManager.getActivityState(pickupService, StateFactory.LOAD)).thenReturn(StateFactory.createState(2.0));
@@ -97,10 +97,10 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 
     @Test
     public void whenDeliveryActivityIsInsertedAndLoadIsSufficient_returnFullFilled() {
-        ServiceActivityNEW pickupService = (ServiceActivityNEW) vrp.getActivities(s1).get(0);
-        ServiceActivityNEW anotherService = (ServiceActivityNEW) vrp.getActivities(s2).get(0);
+        ServiceActivity pickupService = (ServiceActivity) vrp.getActivities(s1).get(0);
+        ServiceActivity anotherService = (ServiceActivity) vrp.getActivities(s2).get(0);
 
-        DeliveryActivityNEW deliverShipment = (DeliveryActivityNEW) vrp.getActivities(shipment)
+        DeliveryActivity deliverShipment = (DeliveryActivity) vrp.getActivities(shipment)
                         .get(1);
 
         stateManager.putInternalTypedActivityState(pickupService, InternalStates.LOAD, SizeDimension.Builder.newInstance().addDimension(0, 1).build());

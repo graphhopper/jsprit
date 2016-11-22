@@ -18,20 +18,21 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
 
 /**
  * Created by schroeder on 15/08/16.
@@ -63,7 +64,7 @@ public class ConfigureFixCostCalculatorTest {
         JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class), mock(StateManager.class));
         ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp, jicc);
         c.informInsertionStarts(new ArrayList<VehicleRoute>(), unassigned);
-        Assert.assertEquals(0.75, jicc.getSolutionCompletenessRatio(), 0.001);
+        assertEquals(0.75, jicc.getSolutionCompletenessRatio(), 0.001);
     }
 
     @Test
@@ -79,7 +80,7 @@ public class ConfigureFixCostCalculatorTest {
         JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class), mock(StateManager.class));
         ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp, jicc);
         c.informInsertionStarts(new ArrayList<VehicleRoute>(), unassigned);
-        Assert.assertEquals(0.5, jicc.getSolutionCompletenessRatio(), 0.001);
+        assertEquals(0.5, jicc.getSolutionCompletenessRatio(), 0.001);
     }
 
     @Test
@@ -88,6 +89,6 @@ public class ConfigureFixCostCalculatorTest {
         JobInsertionConsideringFixCostsCalculator jicc = new JobInsertionConsideringFixCostsCalculator(mock(JobInsertionCostsCalculator.class), mock(StateManager.class));
         ConfigureFixCostCalculator c = new ConfigureFixCostCalculator(vrp, jicc);
         c.informInsertionStarts(new ArrayList<VehicleRoute>(), unassigned);
-        Assert.assertEquals(1.0, jicc.getSolutionCompletenessRatio(), 0.001);
+        assertEquals(1.0, jicc.getSolutionCompletenessRatio(), 0.001);
     }
 }

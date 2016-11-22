@@ -22,25 +22,23 @@ import java.util.Collection;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
-import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 
-public final class PickupServiceDEPRECATED extends PickupActivityNEW {
+public class ExchangeActivity extends JobActivity {
 
+    public ExchangeActivity(AbstractJob job, String name, Location location,
+                    double operationTime, SizeDimension size, Collection<TimeWindow> timeWindows) {
+        super(job, name, location, operationTime, size, timeWindows);
+    }
 
-    public PickupServiceDEPRECATED(PickupServiceDEPRECATED sourceActivity) {
+    public ExchangeActivity(AbstractJob job, String name, Location location,
+                    double operationTime, SizeDimension deliverySize, SizeDimension backhaulSize,
+                    Collection<TimeWindow> timeWindows) {
+        this(job, name, location, operationTime, backhaulSize.subtract(deliverySize), timeWindows);
+    }
+
+    public ExchangeActivity(ExchangeActivity sourceActivity) {
         super(sourceActivity);
     }
 
-    public PickupServiceDEPRECATED(AbstractJob job, String name, Location location,
-                    double operationTime, SizeDimension capacity,
-                    Collection<TimeWindow> timeWindows) {
-        super(job, name, location, operationTime, capacity, timeWindows);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public AbstractSingleActivityJob<PickupActivityNEW> getJob() {
-        return (AbstractSingleActivityJob<PickupActivityNEW>) super.getJob();
-    }
 
 }

@@ -24,7 +24,7 @@ import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -263,7 +263,7 @@ public class VehicleRoutingProblem {
                     if (breakActivities.isEmpty()) {
                         throw new IllegalArgumentException("at least one activity for break needs to be created by activityFactory");
                     }
-                    for (AbstractActivityNEW act : breakActivities) {
+                    for (AbstractActivity act : breakActivities) {
                         act.setIndex(activityIndexCounter);
                         incActivityIndexCounter();
                     }
@@ -284,7 +284,7 @@ public class VehicleRoutingProblem {
                 addedVehicleIds.add(route.getVehicle().getId());
             }
             for (TourActivity act : route.getActivities()) {
-                AbstractActivityNEW abstractAct = (AbstractActivityNEW) act;
+                AbstractActivity abstractAct = (AbstractActivity) act;
                 abstractAct.setIndex(activityIndexCounter);
                 incActivityIndexCounter();
                 if (act instanceof JobActivity) {

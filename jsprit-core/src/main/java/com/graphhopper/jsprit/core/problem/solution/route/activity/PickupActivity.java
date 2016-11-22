@@ -22,23 +22,16 @@ import java.util.Collection;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
 
-public final class DeliverServiceDEPRECATED extends DeliveryActivityNEW {
+public class PickupActivity extends JobActivity {
 
-    public DeliverServiceDEPRECATED(AbstractJob job, String name, Location location,
-                    double operationTime, SizeDimension capacity,
-                    Collection<TimeWindow> timeWindows) {
+    public PickupActivity(AbstractJob job, String name, Location location, double operationTime,
+                    SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity, timeWindows);
     }
 
-    public DeliverServiceDEPRECATED(DeliverServiceDEPRECATED sourceActivity) {
+    public PickupActivity(PickupActivity sourceActivity) {
         super(sourceActivity);
-    }
-
-    @Override
-    public Delivery getJob() {
-        return (Delivery) super.getJob();
     }
 
 }

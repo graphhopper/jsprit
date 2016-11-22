@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.Location;
@@ -40,9 +39,10 @@ public class DeliveryTest {
                         .addSizeDimension(0, 2)
                         .addSizeDimension(1, 4)
                         .build();
-        assertEquals(2, one.getSize().getNuOfDimensions());
-        assertEquals(2, one.getSize().get(0));
-        assertEquals(4, one.getSize().get(1));
+        SizeDimension size = one.getActivity().getLoadChange().abs();
+        assertEquals(2, size.getNuOfDimensions());
+        assertEquals(2, size.get(0));
+        assertEquals(4, size.get(1));
 
     }
 
@@ -52,7 +52,8 @@ public class DeliveryTest {
                         .addSizeDimension(0, 2)
                         .addSizeDimension(1, 4)
                         .build();
-        assertEquals(one.getSize(), one.getSizeAtStart());
+        SizeDimension size = one.getActivity().getLoadChange().abs();
+        assertEquals(size, one.getSizeAtStart());
         assertEquals(SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0)
                         .build(), one.getSizeAtEnd());
     }
@@ -61,16 +62,18 @@ public class DeliveryTest {
     public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero() {
         Delivery one = new Delivery.Builder("s").setLocation(Location.newInstance("foofoo"))
                         .build();
-        assertEquals(1, one.getSize().getNuOfDimensions());
-        assertEquals(0, one.getSize().get(0));
+        SizeDimension size = one.getActivity().getLoadChange();
+        assertEquals(1, size.getNuOfDimensions());
+        assertEquals(0, size.get(0));
     }
 
     @Test
     public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
         Delivery one = new Delivery.Builder("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
                         .build();
-        assertEquals(1, one.getSize().getNuOfDimensions());
-        assertEquals(1, one.getSize().get(0));
+        SizeDimension size = one.getActivity().getLoadChange().abs();
+        assertEquals(1, size.getNuOfDimensions());
+        assertEquals(1, size.get(0));
     }
 
     @Test
@@ -108,14 +111,14 @@ public class DeliveryTest {
     public void whenSettingPriorities_itShouldBeSetCorrectly() {
         Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
                         .setPriority(3).build();
-        Assert.assertEquals(3, s.getPriority());
+        assertEquals(3, s.getPriority());
     }
 
     @Test
     public void whenNotSettingPriorities_defaultShouldBe() {
         Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
                         .build();
-        Assert.assertEquals(2, s.getPriority());
+        assertEquals(2, s.getPriority());
     }
 
 

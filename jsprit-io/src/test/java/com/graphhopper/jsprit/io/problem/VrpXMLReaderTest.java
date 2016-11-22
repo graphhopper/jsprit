@@ -31,15 +31,17 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivityNEW;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.Solutions;
@@ -291,7 +293,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Service s1 = (Service) vrp.getJobs().get("1");
-        assertEquals(1, s1.getSize().get(0));
+        assertEquals(1, s1.getActivity().getLoadChange().get(0));
     }
 
     @Test
@@ -300,7 +302,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Service s1 = (Service) vrp.getJobs().get("1");
-        assertEquals(10.0, s1.getServiceDuration(), 0.01);
+        assertEquals(10.0, s1.getActivity().getOperationTime(), 0.01);
     }
 
     @Test
@@ -309,8 +311,9 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Service s1 = (Service) vrp.getJobs().get("1");
-        assertEquals(0.0, s1.getTimeWindow().getStart(), 0.01);
-        assertEquals(4000.0, s1.getTimeWindow().getEnd(), 0.01);
+        TimeWindow tw = s1.getActivity().getSingleTimeWindow();
+        assertEquals(0.0, tw.getStart(), 0.01);
+        assertEquals(4000.0, tw.getEnd(), 0.01);
     }
 
     @Test
@@ -453,7 +456,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals(10, s.getSize().get(0));
+        assertEquals(-10, s.getDeliveryActivity().getLoadChange().get(0));
     }
 
     @Test
@@ -462,7 +465,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals(10.0, s.getPickupServiceTime(), 0.01);
+        assertEquals(10.0, s.getPickupActivity().getOperationTime(), 0.01);
     }
 
     @Test
@@ -471,8 +474,9 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals(1000.0, s.getPickupTimeWindow().getStart(), 0.01);
-        assertEquals(4000.0, s.getPickupTimeWindow().getEnd(), 0.01);
+        TimeWindow tw = s.getPickupActivity().getSingleTimeWindow();
+        assertEquals(1000.0, tw.getStart(), 0.01);
+        assertEquals(4000.0, tw.getEnd(), 0.01);
     }
 
     @Test
@@ -481,8 +485,9 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals(6000.0, s.getDeliveryTimeWindow().getStart(), 0.01);
-        assertEquals(10000.0, s.getDeliveryTimeWindow().getEnd(), 0.01);
+        TimeWindow tw = s.getDeliveryActivity().getSingleTimeWindow();
+        assertEquals(6000.0, tw.getStart(), 0.01);
+        assertEquals(10000.0, tw.getEnd(), 0.01);
     }
 
     @Test
@@ -491,7 +496,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals(100.0, s.getDeliveryServiceTime(), 0.01);
+        assertEquals(100.0, s.getDeliveryActivity().getOperationTime(), 0.01);
     }
 
     @Test
@@ -500,8 +505,9 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals(10.0, s.getDeliveryLocation().getCoordinate().getX(), 0.01);
-        assertEquals(0.0, s.getDeliveryLocation().getCoordinate().getY(), 0.01);
+        Location deliveryLocation = s.getDeliveryActivity().getLocation();
+        assertEquals(10.0, deliveryLocation.getCoordinate().getX(), 0.01);
+        assertEquals(0.0, deliveryLocation.getCoordinate().getY(), 0.01);
     }
 
     @Test
@@ -510,8 +516,9 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals(10.0, s.getPickupLocation().getCoordinate().getX(), 0.01);
-        assertEquals(10.0, s.getPickupLocation().getCoordinate().getY(), 0.01);
+        Location pickupLocation = s.getPickupActivity().getLocation();
+        assertEquals(10.0, pickupLocation.getCoordinate().getX(), 0.01);
+        assertEquals(10.0, pickupLocation.getCoordinate().getY(), 0.01);
     }
 
     @Test
@@ -520,7 +527,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals("i(9,9)", s.getDeliveryLocation().getId());
+        assertEquals("i(9,9)", s.getDeliveryActivity().getLocation().getId());
     }
 
     @Test
@@ -529,7 +536,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("3");
-        assertEquals("i(3,9)", s.getPickupLocation().getId());
+        assertEquals("i(3,9)", s.getPickupActivity().getLocation().getId());
     }
 
     @Test
@@ -538,7 +545,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("4");
-        assertEquals("[x=10.0][y=10.0]", s.getPickupLocation().getId());
+        assertEquals("[x=10.0][y=10.0]", s.getPickupActivity().getLocation().getId());
     }
 
     @Test
@@ -547,7 +554,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("4");
-        assertEquals("[x=10.0][y=0.0]", s.getDeliveryLocation().getId());
+        assertEquals("[x=10.0][y=0.0]", s.getDeliveryActivity().getLocation().getId());
     }
 
     @Test
@@ -556,7 +563,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("4");
-        assertEquals(0.0, s.getPickupServiceTime(), 0.01);
+        assertEquals(0.0, s.getPickupActivity().getOperationTime(), 0.01);
     }
 
     @Test
@@ -565,7 +572,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         Shipment s = (Shipment) vrp.getJobs().get("4");
-        assertEquals(100.0, s.getDeliveryServiceTime(), 0.01);
+        assertEquals(100.0, s.getDeliveryActivity().getOperationTime(), 0.01);
     }
 
     @Test
@@ -626,10 +633,10 @@ public class VrpXMLReaderTest {
         assertEquals(1, solutions.get(0).getRoutes().size());
         List<TourActivity> activities = solutions.get(0).getRoutes().iterator().next().getTourActivities().getActivities();
         assertEquals(4, activities.size());
-        assertTrue(activities.get(0) instanceof ServiceActivityNEW);
-        assertTrue(activities.get(1) instanceof ServiceActivityNEW);
-        assertTrue(activities.get(2) instanceof PickupActivityNEW);
-        assertTrue(activities.get(3) instanceof DeliveryActivityNEW);
+        assertTrue(activities.get(0) instanceof ServiceActivity);
+        assertTrue(activities.get(1) instanceof ServiceActivity);
+        assertTrue(activities.get(2) instanceof PickupActivity);
+        assertTrue(activities.get(3) instanceof DeliveryActivity);
     }
 
     @Test

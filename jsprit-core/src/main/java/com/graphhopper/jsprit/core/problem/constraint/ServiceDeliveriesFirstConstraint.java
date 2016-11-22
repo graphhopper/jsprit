@@ -38,22 +38,22 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
                                           TourActivity nextAct) {
         if (isShipment(newAct)) {
             // The new activity is a shipment
-            if (nextAct instanceof DeliveryActivityNEW && isService(nextAct)) {
+            if (nextAct instanceof DeliveryActivity && isService(nextAct)) {
                 // Next activity can't be a service delivery
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         } else {
             // The new activity is a service
-            if (newAct instanceof PickupActivityNEW || newAct instanceof ServiceActivityNEW) {
+            if (newAct instanceof PickupActivity || newAct instanceof ServiceActivity) {
                 // The new activity is a pickup or a service
-                if (nextAct instanceof DeliveryActivityNEW && isService(nextAct)) {
+                if (nextAct instanceof DeliveryActivity && isService(nextAct)) {
                     // Next activity can't be a service delivera
                     return ConstraintsStatus.NOT_FULFILLED;
                 }
-            } else if (newAct instanceof DeliveryActivityNEW) {
+            } else if (newAct instanceof DeliveryActivity) {
                 // The new activity is a delivery
-                if (prevAct instanceof PickupActivityNEW || prevAct instanceof ServiceActivityNEW
-                    || (prevAct instanceof DeliveryActivityNEW
+                if (prevAct instanceof PickupActivity || prevAct instanceof ServiceActivity
+                    || (prevAct instanceof DeliveryActivity
                     && isShipment(prevAct))) {
                     // The previous activity can't be a pickup or service (of
                     // any type of Job), nor a shipment delivery

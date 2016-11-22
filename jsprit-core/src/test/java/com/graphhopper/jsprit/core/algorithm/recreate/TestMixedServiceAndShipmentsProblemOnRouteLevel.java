@@ -17,18 +17,23 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
-import com.graphhopper.jsprit.core.problem.vehicle.*;
+import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.TestUtils;
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 
 public class TestMixedServiceAndShipmentsProblemOnRouteLevel {

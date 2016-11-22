@@ -19,12 +19,13 @@
 package com.graphhopper.jsprit.core.algorithm.termination;
 
 
-import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
-import junit.framework.Assert;
-import org.junit.Test;
-
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.junit.Test;
+
+import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 
 public class IterationsWithoutImprovementTest {
 
@@ -41,7 +42,7 @@ public class IterationsWithoutImprovementTest {
                 break;
             }
         }
-        Assert.assertEquals(100, terminatedAfter);
+        assertEquals(100, terminatedAfter);
     }
 
     @Test
@@ -57,7 +58,7 @@ public class IterationsWithoutImprovementTest {
                 break;
             }
         }
-        Assert.assertEquals(1, terminatedAfter);
+        assertEquals(1, terminatedAfter);
     }
 
     @Test
@@ -67,13 +68,15 @@ public class IterationsWithoutImprovementTest {
         int terminatedAfter = 0;
         for (int i = 0; i < 200; i++) {
             when(discoveredSolution.isAccepted()).thenReturn(false);
-            if (i == 49) when(discoveredSolution.isAccepted()).thenReturn(true);
+            if (i == 49) {
+                when(discoveredSolution.isAccepted()).thenReturn(true);
+            }
             boolean terminate = termination.isPrematureBreak(discoveredSolution);
             if (terminate) {
                 terminatedAfter = i;
                 break;
             }
         }
-        Assert.assertEquals(150, terminatedAfter);
+        assertEquals(150, terminatedAfter);
     }
 }

@@ -176,16 +176,30 @@ public class VehicleRoute {
         }
 
         /**
-         * Adds a service to this route. Activity is initialized with .getTimeWindow(). If you want to explicitly set another time window
-         * use .addService(Service service, TimeWindow timeWindow)
+         * Adds a service to this route. Activity is initialized with
+         * .getSingleTimeWindow(). If you want to explicitly set another time
+         * window use {@linkplain #addService(Service TimeWindow)}
          * <p>
-         * <p>This implies that for this service a serviceActivity is created with {@link TourActivityFactory} and added to the sequence of tourActivities.
          * <p>
-         * <p>The resulting activity occurs in the activity-sequence in the order adding/inserting.
+         * This implies that for this service a serviceActivity is created with
+         * {@link TourActivityFactory} and added to the sequence of
+         * tourActivities.
+         * <p>
+         * <p>
+         * The resulting activity occurs in the activity-sequence in the order
+         * adding/inserting.
          *
-         * @param service to be added
+         * <p>
+         * <i><b>Note: Using this method is not recommended. Use the
+         * {@linkplain #addService(AbstractSingleActivityJob, TimeWindow)}
+         * instead.</b></i>
+         * </p>
+         *
+         * @param service
+         *            to be added
          * @return this builder
-         * @throws IllegalArgumentException if service is null
+         * @throws IllegalArgumentException
+         *             if service is null
          */
         public Builder addService(AbstractSingleActivityJob<?> service) {
             if (service == null) {
@@ -203,7 +217,7 @@ public class VehicleRoute {
         }
 
         private Builder addSingleActivityJob(AbstractSingleActivityJob<?> service) {
-            return addSingleActivityJob(service, service.getActivity().getTimeWindows().iterator().next());
+            return addSingleActivityJob(service, service.getActivity().getSingleTimeWindow());
         }
 
 
@@ -219,6 +233,7 @@ public class VehicleRoute {
             tourActivities.addActivity(act);
             return this;
         }
+
 
         public Builder addBreak(Break currentbreak) {
             if (currentbreak == null) {
@@ -237,7 +252,13 @@ public class VehicleRoute {
         /**
          * Adds a pickup to this route.
          *
-         * @param pickup pickup to be added
+         * <p>
+         * <i><b>Note: Using this method is not recommended. Use the
+         * {@linkplain #addPickup(Pickup, TimeWindow)} instead.</b></i>
+         * </p>
+         *
+         * @param pickup
+         *            pickup to be added
          * @return the builder
          */
         public Builder addPickup(Pickup pickup) {
@@ -257,7 +278,14 @@ public class VehicleRoute {
         /**
          * Adds a delivery to this route.
          *
-         * @param delivery delivery to be added
+         * <p>
+         * <i><b>Note: Using this method is not recommended. Use the
+         * {@linkplain #addDelivery(Delivery, TimeWindow)} instead.</b></i>
+         * </p>
+         *
+         *
+         * @param delivery
+         *            delivery to be added
          * @return the builder
          */
         public Builder addDelivery(Delivery delivery) {
@@ -277,12 +305,21 @@ public class VehicleRoute {
         /**
          * Adds a the pickup of the specified shipment.
          *
-         * @param shipment to be picked up and added to this route
+         * <p>
+         * <i><b>Note: Using this method is not recommended. Use the
+         * {@linkplain #addPickup(Shipment, TimeWindow)} instead.</b></i>
+         * </p>
+         *
+         * @param shipment
+         *            to be picked up and added to this route
          * @return the builder
-         * @throws IllegalArgumentException if method has already been called with the specified shipment.
+         * @throws IllegalArgumentException
+         *             if method has already been called with the specified
+         *             shipment.
          */
         public Builder addPickup(Shipment shipment) {
-            return addPickup(shipment, shipment.getPickupTimeWindow());
+            return addPickup(shipment,
+                            shipment.getPickupActivity().getSingleTimeWindow());
         }
 
         public Builder addPickup(Shipment shipment, TimeWindow pickupTimeWindow) {
@@ -300,14 +337,23 @@ public class VehicleRoute {
         }
 
         /**
-         * Adds a the delivery of the specified shipment.
+         * Adds a the delivery of the specified shipment. The shipment could
+         * have only one time window.
          *
-         * @param shipment to be delivered and add to this vehicleRoute
+         * <p>
+         * <i><b>Note: Using this method is not recommended. Use the
+         * {@linkplain #addDelivery(Shipment, TimeWindow)} instead.</b></i>
+         * </p>
+         *
+         * @param shipment
+         *            to be delivered and add to this vehicleRoute
          * @return builder
-         * @throws IllegalArgumentException if specified shipment has not been picked up yet (i.e. method addPickup(shipment) has not been called yet).
+         * @throws IllegalArgumentException
+         *             if specified shipment has not been picked up yet (i.e.
+         *             method addPickup(shipment) has not been called yet).
          */
         public Builder addDelivery(Shipment shipment) {
-            return addDelivery(shipment, shipment.getDeliveryTimeWindow());
+            return addDelivery(shipment, shipment.getDeliveryActivity().getSingleTimeWindow());
         }
 
         public Builder addDelivery(Shipment shipment, TimeWindow deliveryTimeWindow) {

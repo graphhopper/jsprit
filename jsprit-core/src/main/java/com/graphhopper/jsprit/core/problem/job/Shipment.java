@@ -17,14 +17,10 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipmentDEPRECATED;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivityNEW;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipmentDEPRECATED;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
@@ -301,96 +297,91 @@ public class Shipment extends AbstractJob {
     protected void createActivities(JobBuilder<?, ?> builder) {
         Builder shipmentBuilder = (Builder) builder;
         JobActivityList list = new SequentialJobActivityList(this);
-        if (TheBigRedButton.PUSHED) {
-            list.addActivity(new PickupActivityNEW(this, "pickupShipment",
-                            shipmentBuilder.getPickupLocation(),
-                            shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
-                            shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
-            list.addActivity(new DeliveryActivityNEW(this, "deliverShipment",
-                            shipmentBuilder.getDeliveryLocation(),
-                            shipmentBuilder.getDeliveryServiceTime(), shipmentBuilder.getCapacity(),
-                            shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
-        } else {
-            list.addActivity(new PickupShipmentDEPRECATED(this, shipmentBuilder));
-            list.addActivity(new DeliverShipmentDEPRECATED(this, shipmentBuilder));
-        }
+        list.addActivity(new PickupActivity(this, "pickupShipment",
+                        shipmentBuilder.getPickupLocation(),
+                        shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
+                        shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
+        list.addActivity(new DeliveryActivity(this, "deliverShipment",
+                        shipmentBuilder.getDeliveryLocation(),
+                        shipmentBuilder.getDeliveryServiceTime(),
+                        shipmentBuilder.getCapacity().invert(),
+                        shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
+
         setActivities(list);
     }
 
-    public PickupActivityNEW getPickupActivity() {
-        return (PickupActivityNEW) getActivityList().findByType(PickupShipmentDEPRECATED.NAME)
-                        .get();
+    public PickupActivity getPickupActivity() {
+        return (PickupActivity) getActivityList().findByType("pickupShipment").get();
     }
 
-    public DeliveryActivityNEW getDeliveryActivity() {
-        return (DeliveryActivityNEW) getActivityList().findByType(DeliverShipmentDEPRECATED.NAME)
-                        .get();
+    public DeliveryActivity getDeliveryActivity() {
+        return (DeliveryActivity) getActivityList().findByType("deliverShipment").get();
     }
 
     // =================== DEPRECATED GETTERS
 
-    @Deprecated
-    public Location getPickupLocation() {
-        return getPickupActivity().getLocation();
-    }
-
-    /**
-     * Returns the pickup service-time.
-     * <p>
-     * <p>
-     * By default service-time is 0.0.
-     *
-     * @return service-time
-     */
-    @Deprecated
-    public double getPickupServiceTime() {
-        return getPickupActivity().getOperationTime();
-    }
-
-    @Deprecated
-    public Location getDeliveryLocation() {
-        return getDeliveryActivity().getLocation();
-    }
-
-    /**
-     * Returns service-time of delivery.
-     *
-     * @return service-time of delivery
-     */
-    @Deprecated
-    public double getDeliveryServiceTime() {
-        return getDeliveryActivity().getOperationTime();
-    }
-
-    /**
-     * Returns the time-window of delivery.
-     *
-     * @return time-window of delivery
-     */
-    @Deprecated
-    public TimeWindow getDeliveryTimeWindow() {
-        return getDeliveryTimeWindows().iterator().next();
-    }
-
-    @Deprecated
-    public Collection<TimeWindow> getDeliveryTimeWindows() {
-        return getDeliveryActivity().getTimeWindows();
-    }
-
-    /**
-     * Returns the time-window of pickup.
-     *
-     * @return time-window of pickup
-     */
-    @Deprecated
-    public TimeWindow getPickupTimeWindow() {
-        return getPickupTimeWindows().iterator().next();
-    }
-
-    @Deprecated
-    public Collection<TimeWindow> getPickupTimeWindows() {
-        return getPickupActivity().getTimeWindows();
-    }
+    // @Deprecated
+    // public Location getPickupLocation() {
+    // return getPickupActivity().getLocation();
+    // }
+    //
+    // /**
+    // * Returns the pickup service-time.
+    // * <p>
+    // * <p>
+    // * By default service-time is 0.0.
+    // *
+    // * @return service-time
+    // */
+    // @Deprecated
+    // public double getPickupServiceTime() {
+    // return getPickupActivity().getOperationTime();
+    // }
+    //
+    // @Deprecated
+    // public Location getDeliveryLocation() {
+    // return getDeliveryActivity().getLocation();
+    // }
+    //
+    // /**
+    // * Returns service-time of delivery.
+    // *
+    // * @return service-time of delivery
+    // */
+    // @Deprecated
+    // public double getDeliveryServiceTime() {
+    // return getDeliveryActivity().getOperationTime();
+    // }
+    //
+    // /**
+    // * Returns the time-window of delivery.
+    // *
+    // * @return time-window of delivery
+    // */
+    // @Deprecated
+    // public TimeWindow getDeliveryTimeWindow() {
+    // return getDeliveryTimeWindows().iterator().next();
+    // }
+    //
+    // @Deprecated
+    // public Collection<TimeWindow> getDeliveryTimeWindows() {
+    // return getDeliveryActivity().getTimeWindows();
+    // }
+    //
+    // /**
+    // * Returns the time-window of pickup.
+    // *
+    // * @return time-window of pickup
+    // */
+    // @Deprecated
+    // public TimeWindow getPickupTimeWindow() {
+    // return getPickupTimeWindows().iterator().next();
+    // }
+    //
+    // @Deprecated
+    // public Collection<TimeWindow> getPickupTimeWindows() {
+    // return getPickupActivity().getTimeWindows();
+    // }
 
     @Override
     @Deprecated
