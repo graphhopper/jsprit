@@ -211,7 +211,7 @@ public class UpdateVehicleDependentTimeWindowTest {
         //
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
         Service service = new Service.Builder("s1").setLocation(Location.newInstance("10,0"))
-                        .addTimeWindow(10, 20).addTimeWindow(30, 40).build();
+                        .addTimeWindow(30, 40).build();
         Service service2 = new Service.Builder("s2")
                         .addTimeWindow(20, 30).addTimeWindow(40, 60).addTimeWindow(70, 80).setLocation(Location.newInstance("20,0")).build();
 

@@ -39,7 +39,7 @@ public class DeliveryTest {
                         .addSizeDimension(0, 2)
                         .addSizeDimension(1, 4)
                         .build();
-        SizeDimension size = one.getActivity().getLoadChange();
+        SizeDimension size = one.getActivity().getLoadChange().abs();
         assertEquals(2, size.getNuOfDimensions());
         assertEquals(2, size.get(0));
         assertEquals(4, size.get(1));
@@ -52,7 +52,7 @@ public class DeliveryTest {
                         .addSizeDimension(0, 2)
                         .addSizeDimension(1, 4)
                         .build();
-        SizeDimension size = one.getActivity().getLoadChange();
+        SizeDimension size = one.getActivity().getLoadChange().abs();
         assertEquals(size, one.getSizeAtStart());
         assertEquals(SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0)
                         .build(), one.getSizeAtEnd());
@@ -71,7 +71,7 @@ public class DeliveryTest {
     public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
         Delivery one = new Delivery.Builder("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
                         .build();
-        SizeDimension size = one.getActivity().getLoadChange();
+        SizeDimension size = one.getActivity().getLoadChange().abs();
         assertEquals(1, size.getNuOfDimensions());
         assertEquals(1, size.get(0));
     }
