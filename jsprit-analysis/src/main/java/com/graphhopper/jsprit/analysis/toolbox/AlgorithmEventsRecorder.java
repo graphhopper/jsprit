@@ -28,7 +28,6 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsLi
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
@@ -127,12 +126,12 @@ public class AlgorithmEventsRecorder
             for (TourActivity act : route.getActivities()) {
                 JobActivity jobActivity = (JobActivity) act;
                 String actNodeId = makeNodeId(jobActivity);
-                addEdge(prevNode + "_" + actNodeId, prevNode, actNodeId);
+                addEdge(makeEdgeId(prevNode, actNodeId), prevNode, actNodeId);
                 prevNode = actNodeId;
             }
             if (route.getVehicle().isReturnToDepot()) {
                 String lastNode = makeEndId(route.getVehicle());
-                addEdge(prevNode + "_" + lastNode, prevNode, lastNode);
+                addEdge(makeEdgeId(prevNode, lastNode), prevNode, lastNode);
             }
 
         }
@@ -152,8 +151,10 @@ public class AlgorithmEventsRecorder
         if (!record()) {
             return;
         }
+        VehicleRoute copy = VehicleRoute.copyOf(fromRoute);
         for (JobActivity act : job.getActivityList().getAll()) {
-            removeActivity(act, fromRoute);
+            removeActivity(act, copy);
+            boolean removed = copy.getTourActivities().removeActivity(act);
         }
     }
 
@@ -161,40 +162,6 @@ public class AlgorithmEventsRecorder
         removeNodeAndBelongingEdges(makeNodeId(act), fromRoute);
     }
 
-//    private void removeShipment(Job job, VehicleRoute fromRoute) {
-//        Shipment shipment = (Shipment) job;
-//        String fromNodeId = getFromNodeId(shipment);
-//        String toNodeId = getToNodeId(shipment);
-////        removeNodeAndBelongingEdges(fromNodeId,fromRoute);
-////        removeNodeAndBelongingEdges(toNodeId,fromRoute);
-//
-//        Edge enteringToNode = getEnteringEdge(toNodeId);
-//        if (enteringToNode.getNode0().getId().equals(fromNodeId)) {
-//            markRemoved(graph.getNode(fromNodeId));
-//            markRemoved(graph.getNode(toNodeId));
-//            // i -> from -> to -> j: rem(i,from), rem(from,to), rem(to,j), add(i,j)
-//            Edge enteringFromNode = getEnteringEdge(fromNodeId);
-//            removeEdge(enteringFromNode.getId());
-//            removeEdge(enteringToNode.getId());
-//            if (graph.getNode(toNodeId).getLeavingEdgeSet().isEmpty()) {
-//                if (fromRoute.getVehicle().isReturnToDepot()) {
-//                    throw new IllegalStateException("leaving edge is missing");
-//                }
-//                return;
-//            }
-//
-//            Edge leavingToNode = getLeavingEdge(toNodeId);
-//            removeEdge(leavingToNode.getId());
-//            Node from = enteringFromNode.getNode0();
-//            Node to = leavingToNode.getNode1();
-//            if (!fromRoute.getActivities().isEmpty()) {
-//                addEdge(makeEdgeId(from, to), from.getId(), to.getId());
-//            }
-//        } else {
-//            removeNodeAndBelongingEdges(fromNodeId, fromRoute);
-//            removeNodeAndBelongingEdges(toNodeId, fromRoute);
-//        }
-//    }
 
     private Edge getLeavingEdge(String toNodeId) {
         Collection<Edge> edges = graph.getNode(toNodeId).getLeavingEdgeSet();
@@ -226,38 +193,32 @@ public class AlgorithmEventsRecorder
         return null;
     }
 
-    private String getToNodeId(Shipment shipment) {
-        return shipment.getId() + "_delivery";
-    }
-
-    private String getFromNodeId(Shipment shipment) {
-        return shipment.getId() + "_pickup";
-    }
-
-//    private void removeService(Job job, VehicleRoute fromRoute) {
-//        String nodeId = job.getId();
-//        removeNodeAndBelongingEdges(nodeId, fromRoute);
-//    }
 
     private void removeNodeAndBelongingEdges(String nodeId, VehicleRoute fromRoute) {
         Node node = graph.getNode(nodeId);
         markRemoved(node);
         Edge entering = getEnteringEdge(nodeId);
-        removeEdge(entering.getId());
-
+        boolean enteringIsNotNull = entering != null;
+        if (enteringIsNotNull) {
+            removeEdge(entering.getId());
+        }
         if (node.getLeavingEdgeSet().isEmpty()) {
             if (fromRoute.getVehicle().isReturnToDepot()) {
                 throw new IllegalStateException("leaving edge is missing");
             }
             return;
         }
-
         Edge leaving = getLeavingEdge(nodeId);
-        removeEdge((leaving.getId()));
-        Node from = entering.getNode0();
-        Node to = leaving.getNode1();
-        if (!fromRoute.getActivities().isEmpty()) {
-            addEdge(makeEdgeId(from, to), from.getId(), to.getId());
+        boolean leavingIsNotNull = leaving != null;
+        if (leavingIsNotNull) {
+            removeEdge((leaving.getId()));
+        }
+        if (enteringIsNotNull && leavingIsNotNull) {
+            Node from = entering.getNode0();
+            Node to = leaving.getNode1();
+            if (!fromRoute.getActivities().isEmpty()) {
+                addEdge(makeEdgeId(from, to), from.getId(), to.getId());
+            }
         }
     }
 
@@ -365,16 +326,16 @@ public class AlgorithmEventsRecorder
 
     private void removeRoutes(Collection<VehicleRoute> vehicleRoutes) {
         for (VehicleRoute route : vehicleRoutes) {
-            String prevNode = makeStartId(route.getVehicle());
+            String prevNodeId = makeStartId(route.getVehicle());
             for (TourActivity act : route.getActivities()) {
                 JobActivity jobActivity = (JobActivity) act;
-                String actNode = makeNodeId(jobActivity);
-                removeEdge(prevNode + "_" + actNode);
-                prevNode = actNode;
+                String actNodeId = makeNodeId(jobActivity);
+                removeEdge(makeEdgeId(prevNodeId, actNodeId));
+                prevNodeId = actNodeId;
             }
             if (route.getVehicle().isReturnToDepot()) {
-                String lastNode = makeEndId(route.getVehicle());
-                removeEdge(prevNode + "_" + lastNode);
+                String lastNodeId = makeEndId(route.getVehicle());
+                removeEdge(makeEdgeId(prevNodeId, lastNodeId));
             }
         }
     }
@@ -386,66 +347,46 @@ public class AlgorithmEventsRecorder
         }
         markInserted(job);
         handleVehicleSwitch(data, route);
-        insertJob(job, data, route);
+        insertJob(data, route);
     }
 
-    private void insertJob(Job job, InsertionData data, VehicleRoute route) {
+    private void insertJob(InsertionData data, VehicleRoute route) {
+        VehicleRoute copy = VehicleRoute.copyOf(route);
         for (InsertActivity activity : data.getUnmodifiableEventsByType(InsertActivity.class)) {
-            insertNode(makeNodeId((JobActivity) activity.getActivity()), activity.getIndex(), data, route);
+            insertNodeIntoExistingRoute(makeNodeId((JobActivity) activity.getActivity()), activity.getIndex(), data, copy);
+            copy.getTourActivities().addActivity(activity.getIndex(), activity.getActivity());
         }
-
-//        if (job instanceof Service) {
-//            insertService(job, data, route);
-//        } else if (job instanceof Shipment) {
-//            insertShipment(job, data, route);
-//        }
     }
 
-//    private void insertShipment(Job job, InsertionData data, VehicleRoute route) {
-//        String fromNodeId = getFromNodeId((Shipment) job);
-//        String toNodeId = getToNodeId((Shipment) job);
-//        int deliveryIndex = data.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex();
-//        insertNode(toNodeId, deliveryIndex, data, route);
-//
-//        List<JobActivity> del = vrp.getActivities(job);
-//        VehicleRoute copied = VehicleRoute.copyOf(route);
-//        copied.getTourActivities().addActivity(deliveryIndex, del.get(1));
-//
-//        int pickupIndex = data.getUnmodifiableEventsByType(InsertActivity.class).get(1).getIndex();
-//        insertNode(fromNodeId, pickupIndex, data, copied);
-//    }
 
-//    private void insertService(Job job, InsertionData data, VehicleRoute route) {
-//        insertNode(job.getId(), data.getUnmodifiableEventsByType(InsertActivity.class).get(0).getIndex(), data, route);
-//    }
-
-    private void insertNode(String nodeId, int insertionIndex, InsertionData data, VehicleRoute route) {
-        String node_i;
-
+    private void insertNodeIntoExistingRoute(String nodeId, int insertionIndex, InsertionData data, VehicleRoute route) {
+        String fromNodeId;
         if (isFirst(insertionIndex)) {
-            node_i = makeStartId(data.getSelectedVehicle());
+            fromNodeId = makeStartId(data.getSelectedVehicle());
         } else {
             JobActivity jobActivity = (JobActivity) route.getActivities().get(insertionIndex - 1);
-            node_i = makeNodeId(jobActivity);
+            fromNodeId = makeNodeId(jobActivity);
         }
-        String edgeId_1 = node_i + "_" + nodeId;
-        String node_j;
+        String firstEdgeId = makeEdgeId(fromNodeId, nodeId);
+        String toNodeId;
         if (isLast(insertionIndex, route)) {
-            node_j = makeEndId(data.getSelectedVehicle());
+            toNodeId = makeEndId(data.getSelectedVehicle());
         } else {
             JobActivity jobActivity = (JobActivity) route.getActivities().get(insertionIndex);
-            node_j = makeNodeId(jobActivity);
+            toNodeId = makeNodeId(jobActivity);
         }
-        String edgeId_2 = nodeId + "_" + node_j;
-
-        addEdge(edgeId_1, node_i, nodeId);
-
+        String secondEdgeId = makeEdgeId(nodeId, toNodeId);
+        addEdge(firstEdgeId, fromNodeId, nodeId);
         if (!(isLast(insertionIndex, route) && !data.getSelectedVehicle().isReturnToDepot())) {
-            addEdge(edgeId_2, nodeId, node_j);
+            addEdge(secondEdgeId, nodeId, toNodeId);
             if (!route.getActivities().isEmpty()) {
-                removeEdge(node_i + "_" + node_j);
+                removeEdge(makeEdgeId(fromNodeId, toNodeId));
             }
         }
+    }
+
+    private String makeEdgeId(String fromNodeId, String toNodeId) {
+        return fromNodeId + "_" + toNodeId;
     }
 
     private void handleVehicleSwitch(InsertionData data, VehicleRoute route) {
@@ -456,22 +397,19 @@ public class AlgorithmEventsRecorder
             }
         }
         if (vehicleSwitch && !route.getActivities().isEmpty()) {
-            String oldStart = makeStartId(route.getVehicle());
-            String firstAct = ((JobActivity) route.getActivities().get(0)).getJob().getId();
-            String oldEnd = makeEndId(route.getVehicle());
-            String lastAct = ((JobActivity) route.getActivities().get(route.getActivities().size() - 1)).getJob().getId();
-            removeEdge(oldStart + "_" + firstAct);
-
+            String oldStartId = makeStartId(route.getVehicle());
+            String firstActNodeId = makeNodeId((JobActivity) route.getActivities().get(0));
+            String oldEndNodeId = makeEndId(route.getVehicle());
+            String lastActNodeId = makeNodeId((JobActivity) route.getActivities().get(route.getActivities().size() - 1));
+            removeEdge(makeEdgeId(oldStartId, firstActNodeId));
             if (route.getVehicle().isReturnToDepot()) {
-                removeEdge(lastAct + "_" + oldEnd);
+                removeEdge(makeEdgeId(lastActNodeId, oldEndNodeId));
             }
-
-            String newStart = makeStartId(data.getSelectedVehicle());
-            String newEnd = makeEndId(data.getSelectedVehicle());
-            addEdge(newStart + "_" + firstAct, newStart, firstAct);
-
+            String newStartNodeId = makeStartId(data.getSelectedVehicle());
+            String newEndNodeId = makeEndId(data.getSelectedVehicle());
+            addEdge(makeEdgeId(newStartNodeId, firstActNodeId), newStartNodeId, firstActNodeId);
             if (data.getSelectedVehicle().isReturnToDepot()) {
-                addEdge(lastAct + "_" + newEnd, lastAct, newEnd);
+                addEdge(makeEdgeId(lastActNodeId, newEndNodeId), lastActNodeId, newEndNodeId);
             }
         }
     }
@@ -488,7 +426,9 @@ public class AlgorithmEventsRecorder
     }
 
     private void markEdgeRemoved(String edgeId) {
-        graph.getEdge(edgeId).addAttribute("ui.class", "removed");
+        Edge edge = graph.getEdge(edgeId);
+        if (edge == null) return;
+        edge.addAttribute("ui.class", "removed");
     }
 
     private boolean isFirst(int index) {
