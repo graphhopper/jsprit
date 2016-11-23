@@ -45,7 +45,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Coordinate;
-import com.graphhopper.jsprit.core.util.CustomJob;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.TestUtils;
 
@@ -523,10 +522,9 @@ public class ReturnedShipmentTest {
     @Test
     public void firstTest() {
         Set<Job> jobs = new HashSet<>();
-        jobs.add(GenericCustomJob.Builder.newInstance("job").addPickup(Location.newInstance(10, 0)).withSize(SizeDimension.of(1))
-                        .withTimeWindow(TimeWindow.newInstance(0, 30)).finish()
-                        .addExchange(Location.newInstance(5, 30)).finish().addDelivery(Location.newInstance(10, 0))
-                        .withSize(SizeDimension.of(1)).finish()
+        jobs.add(CustomJob.Builder.newInstance("job")
+                        .addPickup(Location.newInstance(10, 0), SizeDimension.of(1), 0d, TimeWindow.newInstance(0, 30))
+                        .addExchange(Location.newInstance(5, 30)).addDelivery(Location.newInstance(10, 0), SizeDimension.of(1))
                         .build());
         jobs.add(CustomJob.Builder.newInstance("job2")
                         .addPickup(Location.newInstance(20, 0), SizeDimension.of(1))
