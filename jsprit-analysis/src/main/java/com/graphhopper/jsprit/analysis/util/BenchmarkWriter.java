@@ -21,6 +21,7 @@ import com.graphhopper.jsprit.core.util.BenchmarkResult;
 
 import java.util.Collection;
 
+@Deprecated
 public interface BenchmarkWriter {
     public void write(Collection<BenchmarkResult> results);
 }

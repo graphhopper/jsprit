@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 
+@Deprecated
 public class HtmlBenchmarkTableWriter implements BenchmarkWriter {
 
     private String filename;
