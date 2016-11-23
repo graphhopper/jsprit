@@ -52,6 +52,9 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsIm
  */
 public class Shipment extends AbstractJob {
 
+    public static final String DELIVERY_ACTIVITY_NAME = "deliverShipment";
+    public static final String PICKUP_ACTIVITY_NAME = "pickupShipment";
+
     /**
      * Builder that builds the shipment.
      *
@@ -297,11 +300,11 @@ public class Shipment extends AbstractJob {
     protected void createActivities(JobBuilder<?, ?> builder) {
         Builder shipmentBuilder = (Builder) builder;
         JobActivityList list = new SequentialJobActivityList(this);
-        list.addActivity(new PickupActivity(this, "pickupShipment",
+        list.addActivity(new PickupActivity(this, PICKUP_ACTIVITY_NAME,
                         shipmentBuilder.getPickupLocation(),
                         shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
                         shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
-        list.addActivity(new DeliveryActivity(this, "deliverShipment",
+        list.addActivity(new DeliveryActivity(this, DELIVERY_ACTIVITY_NAME,
                         shipmentBuilder.getDeliveryLocation(),
                         shipmentBuilder.getDeliveryServiceTime(),
                         shipmentBuilder.getCapacity().invert(),
@@ -311,11 +314,11 @@ public class Shipment extends AbstractJob {
     }
 
     public PickupActivity getPickupActivity() {
-        return (PickupActivity) getActivityList().findByType("pickupShipment").get();
+        return (PickupActivity) getActivityList().findByType(PICKUP_ACTIVITY_NAME).get();
     }
 
     public DeliveryActivity getDeliveryActivity() {
-        return (DeliveryActivity) getActivityList().findByType("deliverShipment").get();
+        return (DeliveryActivity) getActivityList().findByType(DELIVERY_ACTIVITY_NAME).get();
     }
 
     // =================== DEPRECATED GETTERS

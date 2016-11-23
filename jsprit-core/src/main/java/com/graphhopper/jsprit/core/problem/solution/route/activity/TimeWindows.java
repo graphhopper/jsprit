@@ -32,4 +32,29 @@ public interface TimeWindows {
     public final TimeWindows ANY_TIME = TimeWindowsImpl.INTERNAL_ANY_TIME;
 
     public Collection<TimeWindow> getTimeWindows();
+
+
+    public static TimeWindows of(TimeWindow tw) {
+        TimeWindowsImpl tws = new TimeWindowsImpl();
+        tws.add(tw);
+        return tws;
+    }
+
+    public static TimeWindows of(TimeWindow tw, TimeWindow tw2) {
+        TimeWindowsImpl tws = new TimeWindowsImpl();
+        tws.add(tw);
+        tws.add(tw2);
+        return tws;
+    }
+
+    public static TimeWindows of(TimeWindow tw, TimeWindow tw2, TimeWindow... others) {
+        TimeWindowsImpl tws = new TimeWindowsImpl();
+        tws.add(tw);
+        tws.add(tw2);
+        for (TimeWindow otw : others) {
+            tws.add(otw);
+        }
+        return tws;
+    }
+
 }
