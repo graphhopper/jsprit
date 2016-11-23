@@ -25,6 +25,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -519,28 +522,36 @@ public class ReturnedShipmentTest {
 
     @Test
     public void firstTest() {
-        CustomJob cj = CustomJob.Builder.newInstance("job")
-                        .addPickup(Location.newInstance(10, 0), SizeDimension.of(1, 0))
-                        .addExchange(Location.newInstance(5, 0), SizeDimension.of(-3, 2))
+        Set<Job> jobs = new HashSet<>();
+        jobs.add(GenericCustomJob.Builder.newInstance("job").addPickup(Location.newInstance(10, 0)).withSize(SizeDimension.of(1))
+                        .withTimeWindow(TimeWindow.newInstance(0, 30)).finish()
+                        .addExchange(Location.newInstance(5, 30)).finish().addDelivery(Location.newInstance(10, 0))
+                        .withSize(SizeDimension.of(1)).finish()
+                        .build());
+        jobs.add(CustomJob.Builder.newInstance("job2")
+                        .addPickup(Location.newInstance(20, 0), SizeDimension.of(1))
+                        .addExchange(Location.newInstance(20, 30), SizeDimension.EMPTY)
                         .addDelivery(Location.newInstance(20, 0), SizeDimension.of(1))
+                        .build());
+        jobs.add(CustomJob.Builder.newInstance("job3")
+                        .addPickup(Location.newInstance(20, 30), SizeDimension.of(1))
+                        .addExchange(Location.newInstance(40, 30), SizeDimension.EMPTY)
+                        .addDelivery(Location.newInstance(20, 30), SizeDimension.of(1))
+                        .build());
+        jobs.add(CustomJob.Builder.newInstance("job4")
+                        .addPickup(Location.newInstance(20, 30), SizeDimension.of(1))
+                        .addExchange(Location.newInstance(40, 30), SizeDimension.EMPTY)
+                        .addDelivery(Location.newInstance(20, 30), SizeDimension.of(1))
+                        .build());
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2)
                         .build();
-        CustomJob cj2 = CustomJob.Builder.newInstance("job2")
-                        .addPickup(Location.newInstance(20, 0), SizeDimension.of(1, 0))
-                        .addExchange(Location.newInstance(30, 0), SizeDimension.of(-3, 2))
-                        .addDelivery(Location.newInstance(20, 0), SizeDimension.of(1))
-                        .build();
-        CustomJob cj3 = CustomJob.Builder.newInstance("job3")
-                        .addPickup(Location.newInstance(20, 0), SizeDimension.of(1, 0))
-                        .addExchange(Location.newInstance(30, 0), SizeDimension.of(-3, 2))
-                        .addDelivery(Location.newInstance(20, 0), SizeDimension.of(1))
-                        .build();
-        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3)
-                        .addCapacityDimension(1, 2).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type)
+                        .setStartLocation(Location.newInstance(0, 0)).build();
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setType(type)
                         .setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
                         .setFleetSize(FleetSize.FINITE)
-                        .addJob(cj).addJob(cj2).addJob(cj3).addVehicle(v).build();
+                        .addAllJobs(jobs).addVehicle(v).addVehicle(v2).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(10);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());

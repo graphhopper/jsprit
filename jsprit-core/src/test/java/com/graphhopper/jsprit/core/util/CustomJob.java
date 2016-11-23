@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import com.graphhopper.jsprit.core.problem.Location;
@@ -38,7 +39,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 public class CustomJob extends AbstractJob {
 
     public static abstract class BuilderBase<T extends CustomJob, B extends CustomJob.BuilderBase<T, B>>
-        extends JobBuilder<T, B> {
+    extends JobBuilder<T, B> {
 
         List<Location> locs = new ArrayList<>();
 
@@ -46,33 +47,52 @@ public class CustomJob extends AbstractJob {
 
         List<String> types = new ArrayList<>();
 
+        List<TimeWindow> timeWindows = new ArrayList<>();
+
         public BuilderBase(String id) {
             super(id);
         }
 
-        public CustomJob.BuilderBase<T, B> addPickup(Location location, SizeDimension loadChange) {
-            add(location, loadChange);
+        private void add(Location location, SizeDimension loadChange, TimeWindow tw) {
+            locs.add(location);
+            cap.add(loadChange);
+            timeWindows.add(tw);
+        }
+
+        public CustomJob.BuilderBase<T, B> addPickup(Location location, SizeDimension loadChange,
+                        TimeWindow tw) {
+            add(location, loadChange, tw);
             types.add("pickup");
             return this;
         }
 
-        private void add(Location location, SizeDimension loadChange) {
-            locs.add(location);
-            cap.add(loadChange);
+        public CustomJob.BuilderBase<T, B> addPickup(Location location, SizeDimension loadChange) {
+            return addPickup(location, loadChange, TimeWindow.ETERNITY);
         }
 
-        public CustomJob.BuilderBase<T, B> addDelivery(Location location, SizeDimension loadChange) {
-            add(location, loadChange);
+        public CustomJob.BuilderBase<T, B> addDelivery(Location location, SizeDimension loadChange,
+                        TimeWindow tw) {
+            add(location, loadChange, tw);
             types.add("delivery");
             return this;
         }
 
-        public CustomJob.BuilderBase<T, B> addExchange(Location location, SizeDimension loadChange) {
-            add(location, loadChange);
+        public CustomJob.BuilderBase<T, B> addDelivery(Location location,
+                        SizeDimension loadChange) {
+            return addDelivery(location, loadChange, TimeWindow.ETERNITY);
+        }
+
+        public CustomJob.BuilderBase<T, B> addExchange(Location location, SizeDimension loadChange,
+                        TimeWindow tw) {
+            add(location, loadChange, tw);
             types.add("exchange");
             return this;
         }
 
+        public CustomJob.BuilderBase<T, B> addExchange(Location location,
+                        SizeDimension loadChange) {
+            return addExchange(location, loadChange, TimeWindow.ETERNITY);
+        }
 
 
         public List<Location> getLocs() {
@@ -87,6 +107,11 @@ public class CustomJob extends AbstractJob {
             return types;
         }
 
+        public List<TimeWindow> getTimeWindows() {
+            return timeWindows;
+        }
+
+        @Override
         protected void validate() {
 
         }
@@ -105,6 +130,10 @@ public class CustomJob extends AbstractJob {
         @Override
         protected CustomJob createInstance() {
             return new CustomJob(this);
+        }
+
+        public Collection<TimeWindow> getTimeWindows(int i) {
+            return Arrays.asList(timeWindows.get(i));
         }
 
     }
@@ -131,11 +160,14 @@ public class CustomJob extends AbstractJob {
         JobActivityList list = new SequentialJobActivityList(this);
         for (int i = 0; i < builder.getLocs().size(); i++) {
             if (builder.getTypes().get(i).equals("pickup")) {
-                list.addActivity(new PickupActivity(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
+                list.addActivity(new PickupActivity(this, "pick", builder.getLocs().get(i), 0, builder.getCaps().get(i),
+                                builder.getTimeWindows(i)));
             } else if (builder.getTypes().get(i).equals("delivery")) {
-                list.addActivity(new DeliveryActivity(this, "delivery", builder.getLocs().get(i), 0, builder.getCaps().get(i).invert(), Arrays.asList(TimeWindow.ETERNITY)));
+                list.addActivity(new DeliveryActivity(this, "delivery", builder.getLocs().get(i), 0,
+                                builder.getCaps().get(i).invert(), builder.getTimeWindows(i)));
             } else {
-                list.addActivity(new ExchangeActivity(this, "exchange", builder.getLocs().get(i), 0, builder.getCaps().get(i), Arrays.asList(TimeWindow.ETERNITY)));
+                list.addActivity(new ExchangeActivity(this, "exchange", builder.getLocs().get(i), 0,
+                                builder.getCaps().get(i), builder.getTimeWindows(i)));
             }
         }
         setActivities(list);
