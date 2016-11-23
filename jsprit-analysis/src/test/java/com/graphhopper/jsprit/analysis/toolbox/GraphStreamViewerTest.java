@@ -18,11 +18,15 @@
 
 package com.graphhopper.jsprit.analysis.toolbox;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.job.CustomJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -30,8 +34,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  * Created by schroeder on 18/11/16.
@@ -42,14 +44,16 @@ public class GraphStreamViewerTest {
     @Test
     public void testPlotCustomJob() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 50).build();
-        Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setType(type).setBreak(Break.Builder.newInstance("myBreak").addTimeWindow(5, 10).build()).setStartLocation(Location.newInstance(0, 0))
-            .build();
+        Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setType(type).setBreak(Break.Builder.newInstance("myBreak").addTimeWindow(5, 10).build())
+                .setStartLocation(Location.newInstance(0, 0))
+                .build();
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
-            .build();
-        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addJob(cj).addVehicle(vehicle).build();
+                .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+                .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+                .build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addJob(cj)
+                .addVehicle(vehicle).build();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(Jsprit.createAlgorithm(vrp).searchSolutions());
         new GraphStreamViewer(vrp, solution).display();
     }
@@ -58,12 +62,12 @@ public class GraphStreamViewerTest {
     public void testPlotCustomJobSolution() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
-            .setType(type).build();
+                .setType(type).build();
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(-5, 4), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addDelivery(Location.newInstance(20, 10), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
-            .build();
+                .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                .addPickup(Location.newInstance(-5, 4), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+                .addDelivery(Location.newInstance(20, 10), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+                .build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(cj).addVehicle(vehicle).build();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(Jsprit.createAlgorithm(vrp).searchSolutions());
         new Plotter(vrp, solution).plot("output/plotSolution", "plot");
@@ -73,12 +77,12 @@ public class GraphStreamViewerTest {
     public void testPlotWithExchange() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).addCapacityDimension(1, 3).build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
-            .setType(type).build();
+                .setType(type).build();
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).build())
-            .addExchange(Location.newInstance(-5, 4), SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, 1).build())
-            .addDelivery(Location.newInstance(20, 10), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
-            .build();
+                .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).build())
+                .addExchange(Location.newInstance(-5, 4), SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, 1).build())
+                .addDelivery(Location.newInstance(20, 10), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
+                .build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(cj).addVehicle(vehicle).build();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(Jsprit.createAlgorithm(vrp).searchSolutions());
         new Plotter(vrp).plotJobRelations(true).plot("output/plotExchange", "plot");
@@ -89,9 +93,9 @@ public class GraphStreamViewerTest {
     public void testPlotWithShipments() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
-            .setType(type).build();
+                .setType(type).build();
         Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.newInstance(-5, 4))
-            .addSizeDimension(0, 2).setDeliveryLocation(Location.newInstance(20, 10)).build();
+                .addSizeDimension(0, 2).setDeliveryLocation(Location.newInstance(20, 10)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(Jsprit.createAlgorithm(vrp).searchSolutions());
         new Plotter(vrp).plotJobRelations(true).plot("output/plotJobs", "plot");

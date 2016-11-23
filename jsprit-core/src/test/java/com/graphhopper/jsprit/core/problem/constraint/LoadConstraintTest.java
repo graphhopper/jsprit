@@ -37,6 +37,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.CustomJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -51,7 +52,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import com.graphhopper.jsprit.core.util.CustomJob;
 
 /**
  * unit tests to test load constraints
@@ -112,10 +112,10 @@ public class LoadConstraintTest {
     @Test
     public void whenCustomJob_itShouldNotIgnoreCapacity() {
         CustomJob cj = CustomJob.Builder.newInstance("job")
-            .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
-            .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
-            .build();
+                        .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
+                        .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
+                        .build();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem.Builder.newInstance().addJob(cj).addVehicle(v).build();
@@ -134,7 +134,7 @@ public class LoadConstraintTest {
     public void whenServiceRouteAndNewServiceFitsIn_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(serviceRoute), Collections.emptyList());
         Service s = Service.Builder.newInstance("service").setLocation(Location.newInstance(0))
-            .addSizeDimension(0, 5).build();
+                        .addSizeDimension(0, 5).build();
         ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
@@ -283,8 +283,8 @@ public class LoadConstraintTest {
     public void whenPDRouteRouteAndNewPickupDoesNotFitIn_itShouldReturnNotFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Pickup s = Pickup.Builder.newInstance("pickup")
-            .setLocation(Location.newInstance(0))
-            .addSizeDimension(0, 11).build();
+                        .setLocation(Location.newInstance(0))
+                        .addSizeDimension(0, 11).build();
         ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, serviceRoute.getVehicle(), null, 0.);
         assertFalse(loadConstraint.fulfilled(context));
@@ -294,7 +294,7 @@ public class LoadConstraintTest {
     public void whenPDRouteRouteAndNewDeliveryDoesNotFitIn_itShouldReturnNotFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.<Job>emptyList());
         Delivery s = Delivery.Builder.newInstance("del").setLocation(Location.newInstance(0))
-            .addSizeDimension(0, 16).build();
+                        .addSizeDimension(0, 16).build();
         ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, serviceRoute.getVehicle(), null, 0.);
@@ -314,7 +314,7 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getStart(), newAct, pickupDeliveryRoute.getActivities().get(0), 0.);
 
@@ -331,7 +331,7 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getActivities().get(0), newAct, pickupDeliveryRoute.getActivities().get(1), 0.);
 
@@ -348,7 +348,7 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getActivities().get(1), newAct, pickupDeliveryRoute.getEnd(), 0.);
 
@@ -368,7 +368,7 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getStart(), newAct, pickupDeliveryRoute.getActivities().get(0), 0.);
 
@@ -385,7 +385,7 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getActivities().get(0), newAct, pickupDeliveryRoute.getActivities().get(1), 0.);
 
@@ -402,7 +402,7 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getActivities().get(1), newAct, pickupDeliveryRoute.getEnd(), 0.);
 
@@ -423,8 +423,8 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         DeliveryActivity newAct = new DeliveryActivity(s, "del", null, 0,
-            newSize.invert(),
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(),
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getStart(), newAct, pickupDeliveryRoute.getActivities().get(0), 0.);
 
@@ -441,8 +441,8 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         DeliveryActivity newAct = new DeliveryActivity(s, "del", null, 0,
-            newSize.invert(),
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(),
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getStart(), newAct, pickupDeliveryRoute.getActivities().get(0), 0.);
 
@@ -459,8 +459,8 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         DeliveryActivity newAct = new DeliveryActivity(s, "del", null, 0,
-            newSize.invert(),
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(),
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getActivities().get(0), newAct, pickupDeliveryRoute.getActivities().get(1), 0.);
 
@@ -477,8 +477,8 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         DeliveryActivity newAct = new DeliveryActivity(s, "del", null, 0,
-            newSize.invert(),
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(),
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getActivities().get(0), newAct, pickupDeliveryRoute.getActivities().get(1), 0.);
 
@@ -495,8 +495,8 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         DeliveryActivity newAct = new DeliveryActivity(s, "del", null, 0,
-            newSize.invert(),
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(),
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getActivities().get(1), newAct, pickupDeliveryRoute.getEnd(), 0.);
 
@@ -513,8 +513,8 @@ public class LoadConstraintTest {
 
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, pickupDeliveryRoute.getVehicle(), null, 0.);
         DeliveryActivity newAct = new DeliveryActivity(s, "del", null, 0,
-            newSize.invert(),
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(),
+                        TimeWindows.ANY_TIME.getTimeWindows());
 
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickupDeliveryRoute.getActivities().get(1), newAct, pickupDeliveryRoute.getEnd(), 0.);
 
@@ -637,7 +637,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getStart(), newAct, shipmentRoute.getActivities().get(0), 0.);
 
@@ -655,7 +655,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getStart(), newAct, shipmentRoute.getActivities().get(0), 0.);
 
@@ -673,7 +673,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(0), newAct, shipmentRoute.getActivities().get(1), 0.);
 
@@ -691,7 +691,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(0), newAct, shipmentRoute.getActivities().get(1), 0.);
 
@@ -709,7 +709,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(1), newAct, shipmentRoute.getActivities().get(2), 0.);
 
@@ -727,7 +727,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(1), newAct, shipmentRoute.getActivities().get(2), 0.);
 
@@ -745,7 +745,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(2), newAct, shipmentRoute.getActivities().get(3), 0.);
 
@@ -763,7 +763,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(2), newAct, shipmentRoute.getActivities().get(3), 0.);
 
@@ -781,7 +781,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(3), newAct, shipmentRoute.getEnd(), 0.);
 
@@ -799,7 +799,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         PickupActivity newAct = new PickupActivity(s, "pick", null, 0, newSize,
-            TimeWindows.ANY_TIME.getTimeWindows());
+                        TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(3), newAct, shipmentRoute.getEnd(), 0.);
 
@@ -821,7 +821,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getStart(), newAct, shipmentRoute.getActivities().get(0), 0.);
 
@@ -839,7 +839,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getStart(), newAct, shipmentRoute.getActivities().get(0), 0.);
 
@@ -857,7 +857,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(0), newAct, shipmentRoute.getActivities().get(1), 0.);
 
@@ -875,7 +875,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(0), newAct, shipmentRoute.getActivities().get(1), 0.);
 
@@ -893,7 +893,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(1), newAct, shipmentRoute.getActivities().get(2), 0.);
 
@@ -911,7 +911,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(1), newAct, shipmentRoute.getActivities().get(2), 0.);
 
@@ -929,7 +929,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(2), newAct, shipmentRoute.getActivities().get(3), 0.);
 
@@ -947,7 +947,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(2), newAct, shipmentRoute.getActivities().get(3), 0.);
 
@@ -965,7 +965,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(3), newAct, shipmentRoute.getEnd(), 0.);
 
@@ -982,7 +982,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         JobInsertionContext context = new JobInsertionContext(shipmentRoute, s, shipmentRoute.getVehicle(), null, 0.);
 
         DeliveryActivity newAct = new DeliveryActivity(s, "pick", null, 0,
-            newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
+                        newSize.invert(), TimeWindows.ANY_TIME.getTimeWindows());
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipmentRoute.getActivities().get(3), newAct, shipmentRoute.getEnd(), 0.);
 

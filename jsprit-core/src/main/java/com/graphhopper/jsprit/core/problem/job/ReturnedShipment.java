@@ -17,9 +17,13 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ExchangeActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
 
 /**
@@ -30,9 +34,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
  */
 public final class ReturnedShipment extends Shipment {
 
-    public static final String ACTIVITY_NAME_PICKUP = "pickup";
-    public static final String ACTIVITY_NAME_DELIVERY = "delivery";
-    public static final String ACTIVITY_NAME_BACKHAUL = "backhaul";
+    public static final String BACKHAUL_ACTIVITY_NAME = "backhaul";
 
     /**
      * Builder that builds the shipment.
@@ -201,43 +203,41 @@ public final class ReturnedShipment extends Shipment {
     protected void createActivities(JobBuilder<?, ?> builder) {
         Builder shipmentBuilder = (Builder) builder;
         JobActivityList list = new SequentialJobActivityList(this);
-        list.addActivity(new PickupActivity(this, ACTIVITY_NAME_PICKUP,
-            shipmentBuilder.getPickupLocation(),
-            shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
-            shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
-        list.addActivity(new ExchangeActivity(this, ACTIVITY_NAME_DELIVERY,
-            shipmentBuilder.getDeliveryLocation(),
-            shipmentBuilder.getDeliveryServiceTime(),
-            shipmentBuilder.getBackhaulCapacity()
-                .subtract(shipmentBuilder.getCapacity()),
-            shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
-        list.addActivity(new DeliveryActivity(this, ACTIVITY_NAME_BACKHAUL,
-            shipmentBuilder.getBackhaulLocation(),
-            shipmentBuilder.getBackhaulServiceTime(),
-            shipmentBuilder.getBackhaulCapacity(),
-            shipmentBuilder.getBackhaulTimeWindows().getTimeWindows()));
+        list.addActivity(new PickupActivity(this, PICKUP_ACTIVITY_NAME,
+                        shipmentBuilder.getPickupLocation(),
+                        shipmentBuilder.getPickupServiceTime(), shipmentBuilder.getCapacity(),
+                        shipmentBuilder.getPickupTimeWindows().getTimeWindows()));
+        list.addActivity(new ExchangeActivity(this, DELIVERY_ACTIVITY_NAME,
+                        shipmentBuilder.getDeliveryLocation(),
+                        shipmentBuilder.getDeliveryServiceTime(),
+                        shipmentBuilder.getBackhaulCapacity()
+                        .subtract(shipmentBuilder.getCapacity()),
+                        shipmentBuilder.getDeliveryTimeWindows().getTimeWindows()));
+        list.addActivity(new DeliveryActivity(this, BACKHAUL_ACTIVITY_NAME,
+                        shipmentBuilder.getBackhaulLocation(),
+                        shipmentBuilder.getBackhaulServiceTime(),
+                        shipmentBuilder.getBackhaulCapacity(),
+                        shipmentBuilder.getBackhaulTimeWindows().getTimeWindows()));
         setActivities(list);
     }
 
-    // TODO: RENAME WHEN SHIPMENT IS RETURNING THE SAME TYPE OF ACTIVIT
-    public PickupActivity getPickupActivityTO_BE_RENAMED_LATER() {
+    @Override
+    public PickupActivity getPickupActivity() {
         return (PickupActivity) getActivityList()
-            .findByType(ACTIVITY_NAME_PICKUP)
-            .get();
+                        .findByType(PICKUP_ACTIVITY_NAME)
+                        .get();
     }
 
-    // TODO: RENAME WHEN SHIPMENT IS RETURNING THE SAME TYPE OF ACTIVIT
-    public ExchangeActivity getDeliveryActivityTO_BE_RENAMED_LATER() {
+    public ExchangeActivity getExchangeActivity() {
         return (ExchangeActivity) getActivityList()
-            .findByType(ACTIVITY_NAME_DELIVERY)
-            .get();
+                        .findByType(DELIVERY_ACTIVITY_NAME)
+                        .get();
     }
 
-    public DeliveryActivity getBackhaulActivityTO_BE_RENAMED_LATER() {
+    public DeliveryActivity getBackhaulActivity() {
         return (DeliveryActivity) getActivityList()
-            .findByType(ACTIVITY_NAME_BACKHAUL)
-            .get();
+                        .findByType(BACKHAUL_ACTIVITY_NAME)
+                        .get();
     }
-
 
 }

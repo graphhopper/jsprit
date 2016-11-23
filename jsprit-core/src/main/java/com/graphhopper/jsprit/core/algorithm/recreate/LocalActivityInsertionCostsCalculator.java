@@ -22,6 +22,8 @@ import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -51,7 +53,7 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
     public LocalActivityInsertionCostsCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts actCosts, RouteAndActivityStateGetter stateManager) {
         super();
         this.routingCosts = routingCosts;
-        this.activityCosts = actCosts;
+        activityCosts = actCosts;
         this.stateManager = stateManager;
     }
 
@@ -65,8 +67,9 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 
         double act_costs_newAct = activityCosts.getActivityCost(newAct, newAct_arrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
-        if (isEnd(nextAct) && !toDepot(iFacts.getNewVehicle()))
+        if (isEnd(nextAct) && !toDepot(iFacts.getNewVehicle())) {
             return tp_costs_prevAct_newAct + solutionCompletenessRatio * activityCostsWeight * act_costs_newAct;
+        }
 
         double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double tp_time_newAct_nextAct = routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
@@ -78,7 +81,10 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 
         double oldCosts = 0.;
         if (iFacts.getRoute().isEmpty()) {
-            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double tp_costs_prevAct_nextAct = 0.;
+            if (newAct instanceof DeliveryActivity && AbstractActivity.isShipment(newAct)) {
+                tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            }
             oldCosts += tp_costs_prevAct_nextAct;
         } else {
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
@@ -88,7 +94,9 @@ class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCal
 
             double endTimeDelay_nextAct = Math.max(0, endTime_nextAct_new - endTime_nextAct_old);
             Double futureWaiting = stateManager.getActivityState(nextAct, iFacts.getRoute().getVehicle(), InternalStates.FUTURE_WAITING, Double.class);
-            if (futureWaiting == null) futureWaiting = 0.;
+            if (futureWaiting == null) {
+                futureWaiting = 0.;
+            }
             double waitingTime_savings_timeUnit = Math.min(futureWaiting, endTimeDelay_nextAct);
             double waitingTime_savings = waitingTime_savings_timeUnit * iFacts.getRoute().getVehicle().getType().getVehicleCostParams().perWaitingTimeUnit;
             oldCosts += solutionCompletenessRatio * activityCostsWeight * waitingTime_savings;

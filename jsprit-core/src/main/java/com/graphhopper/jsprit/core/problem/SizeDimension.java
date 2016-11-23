@@ -72,6 +72,19 @@ public class SizeDimension extends Capacity {
         return new SizeDimension(sizeDimension);
     }
 
+    public static SizeDimension of(int value) {
+        return Builder.newInstance().addDimension(0, value).build();
+    }
+
+    public static SizeDimension of(int value, int value2) {
+        return Builder.newInstance().addDimension(0, value).addDimension(1, value2).build();
+    }
+
+    public static SizeDimension of(int value, int value2, int value3) {
+        return Builder.newInstance().addDimension(0, value).addDimension(1, value2)
+                        .addDimension(2, value3).build();
+    }
+
     /**
      * Builder that builds SizeDimension
      *

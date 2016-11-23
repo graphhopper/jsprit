@@ -65,6 +65,22 @@ public class TimeWindowsImpl implements TimeWindows {
         timeWindows.add(timeWindow);
     }
 
+    public void addAll(TimeWindows timeWindows) {
+        addAll(timeWindows.getTimeWindows());
+    }
+
+    public void addAll(Collection<TimeWindow> timeWindows) {
+        for (TimeWindow tw : timeWindows) {
+            add(tw);
+        }
+    }
+
+    public void addAll(TimeWindow... otherTimeWindows) {
+        for (TimeWindow tw : otherTimeWindows) {
+            add(tw);
+        }
+    }
+
     @Override
     public Collection<TimeWindow> getTimeWindows() {
         return Collections.unmodifiableCollection(timeWindows);
