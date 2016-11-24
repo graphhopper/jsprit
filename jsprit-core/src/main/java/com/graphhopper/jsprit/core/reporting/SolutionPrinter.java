@@ -201,7 +201,7 @@ public class SolutionPrinter {
         DynamicTablePrinter tablePrinter = new DynamicTablePrinter(tableDef);
         int routeNu = 1;
 
-        List<VehicleRoute> list = new ArrayList<VehicleRoute>(solution.getRoutes());
+        List<VehicleRoute> list = new ArrayList<>(solution.getRoutes());
         Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
         for (VehicleRoute route : list) {
             if (routeNu != 1) {
@@ -282,24 +282,28 @@ public class SolutionPrinter {
         PrinterColumnList<RoutePrinterContext> columns = new PrinterColumnList<>("Detailed route");
         columns
         .addColumn(new RouteNumberPrinterColumn())
-                        .addColumn(new VehicleNamePrinterColumn())
+        .addColumn(new VehicleNamePrinterColumn())
         .addColumn(new ActivityTypePrinterColumn())
-                        .addColumn(new JobNamePrinterColumn(b -> b.withMinWidth(10))).addColumn(new JobTypePrinterColumn())
-                        .addColumn(new JobPriorityPrinterColumn()).addColumn(new ActivityLoadChangePrinterColumn())
-                        .addColumn(new RouteLoadPrinterColumn()).addColumn(new LoacationPrinterColumn())
+        .addColumn(new JobNamePrinterColumn(b -> b.withMinWidth(10)))
+        .addColumn(new JobTypePrinterColumn())
+        .addColumn(new JobPriorityPrinterColumn())
+        .addColumn(new ActivityLoadChangePrinterColumn())
+        .addColumn(new RouteLoadPrinterColumn())
+        .addColumn(new LoacationPrinterColumn())
         .addColumn(new ActivityOperationTimePrinterColumn())
         .addColumn(new ArrivalTimePrinterColumn())
         .addColumn(new EndTimePrinterColumn())
-                        .addColumn(new HumanReadableArrivalTimePrinterColumn())
-                        .addColumn(new HumanReadableEndTimePrinterColumn().withOrigin(LocalDateTime.now()))
-                        .addColumn(new TransportCostPrinterColumn()).addColumn(new ActivityCostPrinterColumn())
-                        .addColumn(new RouteCostPrinterColumn())
+        .addColumn(new HumanReadableArrivalTimePrinterColumn())
+        .addColumn(new HumanReadableEndTimePrinterColumn().withOrigin(LocalDateTime.now()))
+        .addColumn(new TransportCostPrinterColumn())
+        .addColumn(new ActivityCostPrinterColumn())
+        .addColumn(new RouteCostPrinterColumn())
         ;
 
         ConfigurableTablePrinter<RoutePrinterContext> tablePrinter = new ConfigurableTablePrinter<>(columns);
         int routeNu = 1;
 
-        List<VehicleRoute> list = new ArrayList<VehicleRoute>(solution.getRoutes());
+        List<VehicleRoute> list = new ArrayList<>(solution.getRoutes());
         Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
         for (VehicleRoute route : list) {
             if (routeNu != 1) {
