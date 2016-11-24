@@ -43,12 +43,15 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.LongColumnTy
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 import com.graphhopper.jsprit.core.reporting.route.ActivityCostPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityLoadChangePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.ActivityOperationTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ArrivalTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.EndTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.HumanReadableArrivalTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.HumanReadableEndTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.JobNamePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.JobPriorityPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.JobTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.LoacationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RouteCostPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RouteLoadPrinterColumn;
@@ -277,14 +280,21 @@ public class SolutionPrinter {
     private static void printVerbose2(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
 
         PrinterColumnList<RoutePrinterContext> columns = new PrinterColumnList<>("Detailed route");
-        columns.addColumn(new RouteNumberPrinterColumn()).addColumn(new VehicleNamePrinterColumn())
-        .addColumn(new ActivityTypePrinterColumn()).addColumn(new JobNamePrinterColumn(b -> b.withMinWidth(10)))
-        .addColumn(new ActivityLoadChangePrinterColumn()).addColumn(new RouteLoadPrinterColumn())
-        .addColumn(new LoacationPrinterColumn()).addColumn(new ArrivalTimePrinterColumn())
-        .addColumn(new EndTimePrinterColumn()).addColumn(new HumanReadableArrivalTimePrinterColumn())
-        .addColumn(new HumanReadableEndTimePrinterColumn().withOrigin(LocalDateTime.now()))
-        .addColumn(new TransportCostPrinterColumn()).addColumn(new ActivityCostPrinterColumn())
-        .addColumn(new RouteCostPrinterColumn());
+        columns
+        .addColumn(new RouteNumberPrinterColumn())
+                        .addColumn(new VehicleNamePrinterColumn())
+        .addColumn(new ActivityTypePrinterColumn())
+                        .addColumn(new JobNamePrinterColumn(b -> b.withMinWidth(10))).addColumn(new JobTypePrinterColumn())
+                        .addColumn(new JobPriorityPrinterColumn()).addColumn(new ActivityLoadChangePrinterColumn())
+                        .addColumn(new RouteLoadPrinterColumn()).addColumn(new LoacationPrinterColumn())
+        .addColumn(new ActivityOperationTimePrinterColumn())
+        .addColumn(new ArrivalTimePrinterColumn())
+        .addColumn(new EndTimePrinterColumn())
+                        .addColumn(new HumanReadableArrivalTimePrinterColumn())
+                        .addColumn(new HumanReadableEndTimePrinterColumn().withOrigin(LocalDateTime.now()))
+                        .addColumn(new TransportCostPrinterColumn()).addColumn(new ActivityCostPrinterColumn())
+                        .addColumn(new RouteCostPrinterColumn())
+        ;
 
         ConfigurableTablePrinter<RoutePrinterContext> tablePrinter = new ConfigurableTablePrinter<>(columns);
         int routeNu = 1;
