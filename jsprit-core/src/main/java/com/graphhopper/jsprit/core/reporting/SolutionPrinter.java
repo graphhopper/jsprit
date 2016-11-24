@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.reporting;
 
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +41,21 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.IntColumnType;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.LongColumnType;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.route.ActivityCostPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.ActivityLoadChangePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.ActivityTypePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.ArrivalTimePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.EndTimePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.HumanReadableArrivalTimePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.HumanReadableEndTimePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.JobNamePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.LoacationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.RouteCostPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.RouteLoadPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.RouteNumberPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
+import com.graphhopper.jsprit.core.reporting.route.TransportCostPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.VehicleNamePrinterColumn;
 
 
 /**
@@ -141,6 +157,7 @@ public class SolutionPrinter {
 
         if (print.equals(Print.VERBOSE)) {
             printVerbose(out, problem, solution);
+            printVerbose2(out, problem, solution);
         }
     }
 
@@ -247,6 +264,58 @@ public class SolutionPrinter {
                                             "type")
                                             .build())
                             .build();
+
+            DynamicTablePrinter unassignedTablePrinter = new DynamicTablePrinter(unassignedTableDef);
+
+            for (Job j : solution.getUnassignedJobs()) {
+                unassignedTablePrinter.addRow().add(j.getId()).add(j.getClass().getSimpleName());
+            }
+            out.println(unassignedTablePrinter.print());
+        }
+    }
+
+    private static void printVerbose2(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
+
+        PrinterColumnList<RoutePrinterContext> columns = new PrinterColumnList<>("Detailed route");
+        columns.addColumn(new RouteNumberPrinterColumn()).addColumn(new VehicleNamePrinterColumn())
+        .addColumn(new ActivityTypePrinterColumn()).addColumn(new JobNamePrinterColumn(b -> b.withMinWidth(10)))
+        .addColumn(new ActivityLoadChangePrinterColumn()).addColumn(new RouteLoadPrinterColumn())
+        .addColumn(new LoacationPrinterColumn()).addColumn(new ArrivalTimePrinterColumn())
+        .addColumn(new EndTimePrinterColumn()).addColumn(new HumanReadableArrivalTimePrinterColumn())
+        .addColumn(new HumanReadableEndTimePrinterColumn().withOrigin(LocalDateTime.now()))
+        .addColumn(new TransportCostPrinterColumn()).addColumn(new ActivityCostPrinterColumn())
+        .addColumn(new RouteCostPrinterColumn());
+
+        ConfigurableTablePrinter<RoutePrinterContext> tablePrinter = new ConfigurableTablePrinter<>(columns);
+        int routeNu = 1;
+
+        List<VehicleRoute> list = new ArrayList<VehicleRoute>(solution.getRoutes());
+        Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
+        for (VehicleRoute route : list) {
+            if (routeNu != 1) {
+                tablePrinter.addSeparator();
+            }
+
+            RoutePrinterContext context = new RoutePrinterContext(routeNu, route, route.getStart(), problem);
+            tablePrinter.addRow(context);
+
+            for (TourActivity act : route.getActivities()) {
+                context.setActivity(act);
+                tablePrinter.addRow(context);
+            }
+
+            context.setActivity(route.getEnd());
+            tablePrinter.addRow(context);
+
+            routeNu++;
+        }
+        out.println(tablePrinter.print());
+
+        if (!solution.getUnassignedJobs().isEmpty()) {
+
+            DynamicTableDefinition unassignedTableDef = new DynamicTableDefinition.Builder().withHeading("Unassigned jobs")
+                            .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "id").withMinWidth(10).build())
+                            .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "type").build()).build();
 
             DynamicTablePrinter unassignedTablePrinter = new DynamicTablePrinter(unassignedTableDef);
 

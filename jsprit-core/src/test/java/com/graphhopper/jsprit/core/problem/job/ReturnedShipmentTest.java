@@ -527,7 +527,7 @@ public class ReturnedShipmentTest {
                         .addExchange(Location.newInstance(5, 30)).addDelivery(Location.newInstance(10, 0), SizeDimension.of(1))
                         .build());
         jobs.add(CustomJob.Builder.newInstance("job2")
-                        .addPickup(Location.newInstance(20, 0), SizeDimension.of(1))
+                        .addPickup(Location.newInstance(20, 0), SizeDimension.of(1), 0d, TimeWindow.newInstance(0, 30))
                         .addExchange(Location.newInstance(20, 30), SizeDimension.EMPTY)
                         .addDelivery(Location.newInstance(20, 0), SizeDimension.of(1))
                         .build());
