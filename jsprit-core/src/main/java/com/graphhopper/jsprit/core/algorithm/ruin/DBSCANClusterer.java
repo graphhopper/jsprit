@@ -31,6 +31,7 @@ import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by schroeder on 04/02/15.
@@ -54,17 +55,6 @@ public class DBSCANClusterer {
             this.id = objCounter;
         }
 
-//        private List<Location> getLocations(Job job){
-//            List<Location> locs = new ArrayList<Location>();
-//            if(job instanceof Service) {
-//                locs.add(((Service) job).getLocation());
-//            }
-//            else if(job instanceof Shipment){
-//                locs.add(((Shipment) job).getPickupLocation());
-//                locs.add(((Shipment) job).getDeliveryLocation());
-//            }
-//            return locs;
-//        }
 
         public List<Location> getLocations() {
             return locations;
@@ -87,7 +77,7 @@ public class DBSCANClusterer {
         private VehicleRoutingTransportCosts costs;
 
         public MyDistance(List<LocationWrapper> locations, VehicleRoutingTransportCosts costs) {
-            this.locations = new HashMap<Integer, LocationWrapper>();
+            this.locations = new HashMap<>();
             for (LocationWrapper lw : locations) {
                 this.locations.put((int) lw.getPoint()[0], lw);
             }
@@ -149,20 +139,16 @@ public class DBSCANClusterer {
     }
 
     private List<LocationWrapper> getLocationWrappers(VehicleRoute route) {
-        List<LocationWrapper> locations = new ArrayList<LocationWrapper>(route.getTourActivities().getJobs().size());
-        Map<Job, List<Location>> jobs2locations = new HashMap<Job, List<Location>>();
-        for (TourActivity act : route.getActivities()) {
-            if (act instanceof JobActivity) {
-                Job job = ((JobActivity) act).getJob();
-                if (!jobs2locations.containsKey(job)) {
-                    jobs2locations.put(job, new ArrayList<Location>());
-                }
-                jobs2locations.get(job).add(act.getLocation());
+        List<LocationWrapper> locations = new ArrayList<>(route.getTourActivities().getJobs().size());
+        Map<Job, List<Location>> jobs2locations = new HashMap<>();
+        route.getActivities().stream().filter(act -> act instanceof JobActivity).forEach(act -> {
+            Job job = ((JobActivity) act).getJob();
+            if (!jobs2locations.containsKey(job)) {
+                jobs2locations.put(job, new ArrayList<>());
             }
-        }
-        for (Job j : jobs2locations.keySet()) {
-            locations.add(new LocationWrapper(j, jobs2locations.get(j)));
-        }
+            jobs2locations.get(job).add(act.getLocation());
+        });
+        locations.addAll(jobs2locations.keySet().stream().map(j -> new LocationWrapper(j, jobs2locations.get(j))).collect(Collectors.toList()));
         return locations;
     }
 
@@ -175,7 +161,7 @@ public class DBSCANClusterer {
     }
 
     private List<List<Job>> makeList(List<Cluster<LocationWrapper>> clusterResults) {
-        List<List<Job>> l = new ArrayList<List<Job>>();
+        List<List<Job>> l = new ArrayList<>();
         for (Cluster<LocationWrapper> c : clusterResults) {
             List<Job> l_ = getJobList(c);
             l.add(l_);
@@ -184,11 +170,9 @@ public class DBSCANClusterer {
     }
 
     private List<Job> getJobList(Cluster<LocationWrapper> c) {
-        List<Job> l_ = new ArrayList<Job>();
+        List<Job> l_ = new ArrayList<>();
         if (c == null) return l_;
-        for (LocationWrapper lw : c.getPoints()) {
-            l_.add(lw.getJob());
-        }
+        l_.addAll(c.getPoints().stream().map(LocationWrapper::getJob).collect(Collectors.toList()));
         return l_;
     }
 
