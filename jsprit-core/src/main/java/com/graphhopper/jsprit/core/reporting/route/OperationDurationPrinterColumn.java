@@ -2,34 +2,29 @@ package com.graphhopper.jsprit.core.reporting.route;
 
 import java.util.function.Consumer;
 
-import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
 
-public class EndTimePrinterColumn extends AbstractTimePrinterColumn<EndTimePrinterColumn> {
+public class OperationDurationPrinterColumn extends AbstractDurationPrinterColumn<OperationDurationPrinterColumn> {
 
-    public EndTimePrinterColumn() {
+    public OperationDurationPrinterColumn() {
         super();
     }
 
-    public EndTimePrinterColumn(Consumer<Builder> decorator) {
+    public OperationDurationPrinterColumn(Consumer<Builder> decorator) {
         super(decorator);
     }
 
+
     @Override
     protected String getTitle() {
-        return "endTime";
+        return "opTime";
     }
 
     @Override
     public Long getValue(RoutePrinterContext context) {
         TourActivity act = context.getActivity();
-        if (act instanceof End) {
-            return null;
-        } else {
-            return (long) act.getEndTime();
-        }
+        return (long) act.getOperationTime();
     }
-
 
 }

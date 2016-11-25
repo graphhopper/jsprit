@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.reporting;
 
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,23 +43,28 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.IntColumnTyp
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.LongColumnType;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 import com.graphhopper.jsprit.core.reporting.route.ActivityCostPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.ActivityDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityLoadChangePrinterColumn;
-import com.graphhopper.jsprit.core.reporting.route.ActivityOperationTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ArrivalTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.EndTimePrinterColumn;
-import com.graphhopper.jsprit.core.reporting.route.HumanReadableArrivalTimePrinterColumn;
-import com.graphhopper.jsprit.core.reporting.route.HumanReadableEndTimePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.HumanReadableTimeFormatter;
 import com.graphhopper.jsprit.core.reporting.route.JobNamePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.JobPriorityPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.JobTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.LoacationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.OperationDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RouteCostPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RouteLoadPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RouteNumberPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
+import com.graphhopper.jsprit.core.reporting.route.SelectedTimeWindowPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.StartTimePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.TimeWindowsPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.TransportCostPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.TravelDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.VehicleNamePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.WaitingDurationPrinterColumn;
 
 
 /**
@@ -280,6 +286,7 @@ public class SolutionPrinter {
     private static void printVerbose2(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
 
         PrinterColumnList<RoutePrinterContext> columns = new PrinterColumnList<>("Detailed route");
+        HumanReadableTimeFormatter dateFormatter = new HumanReadableTimeFormatter(LocalDateTime.now(), ChronoUnit.SECONDS);
         columns
         .addColumn(new RouteNumberPrinterColumn())
         .addColumn(new VehicleNamePrinterColumn())
@@ -290,14 +297,27 @@ public class SolutionPrinter {
         .addColumn(new ActivityLoadChangePrinterColumn())
         .addColumn(new RouteLoadPrinterColumn())
         .addColumn(new LoacationPrinterColumn())
-        .addColumn(new ActivityOperationTimePrinterColumn())
+        .addColumn(new OperationDurationPrinterColumn())
+        .addColumn(new OperationDurationPrinterColumn().asHumanReadable())
+        .addColumn(new TravelDurationPrinterColumn())
+        .addColumn(new TravelDurationPrinterColumn().asHumanReadable())
+        .addColumn(new ActivityDurationPrinterColumn())
+        .addColumn(new ActivityDurationPrinterColumn().asHumanReadable())
+        .addColumn(new WaitingDurationPrinterColumn())
+        .addColumn(new WaitingDurationPrinterColumn().asHumanReadable())
         .addColumn(new ArrivalTimePrinterColumn())
+        .addColumn(new ArrivalTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
+        .addColumn(new StartTimePrinterColumn())
+        .addColumn(new StartTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
         .addColumn(new EndTimePrinterColumn())
-        .addColumn(new HumanReadableArrivalTimePrinterColumn())
-        .addColumn(new HumanReadableEndTimePrinterColumn().withOrigin(LocalDateTime.now()))
+        .addColumn(new EndTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
         .addColumn(new TransportCostPrinterColumn())
         .addColumn(new ActivityCostPrinterColumn())
         .addColumn(new RouteCostPrinterColumn())
+        .addColumn(new SelectedTimeWindowPrinterColumn())
+        .addColumn(new SelectedTimeWindowPrinterColumn().asHumanReadable().withFormatter(dateFormatter))
+        .addColumn(new TimeWindowsPrinterColumn())
+        .addColumn(new TimeWindowsPrinterColumn().asHumanReadable().withFormatter(dateFormatter))
         ;
 
         ConfigurableTablePrinter<RoutePrinterContext> tablePrinter = new ConfigurableTablePrinter<>(columns);

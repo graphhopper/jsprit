@@ -6,19 +6,19 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
 
-public class EndTimePrinterColumn extends AbstractTimePrinterColumn<EndTimePrinterColumn> {
+public class StartTimePrinterColumn extends AbstractTimePrinterColumn<StartTimePrinterColumn> {
 
-    public EndTimePrinterColumn() {
+    public StartTimePrinterColumn() {
         super();
     }
 
-    public EndTimePrinterColumn(Consumer<Builder> decorator) {
+    public StartTimePrinterColumn(Consumer<Builder> decorator) {
         super(decorator);
     }
 
     @Override
     protected String getTitle() {
-        return "endTime";
+        return "startTime";
     }
 
     @Override
@@ -27,7 +27,7 @@ public class EndTimePrinterColumn extends AbstractTimePrinterColumn<EndTimePrint
         if (act instanceof End) {
             return null;
         } else {
-            return (long) act.getEndTime();
+            return (long) (act.getEndTime() - act.getOperationTime());
         }
     }
 
