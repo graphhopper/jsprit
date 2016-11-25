@@ -8,7 +8,7 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 
-public class ActivityTypePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String> {
+public class ActivityTypePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, ActivityTypePrinterColumn> {
 
     public ActivityTypePrinterColumn() {
         super();
@@ -20,12 +20,17 @@ public class ActivityTypePrinterColumn extends AbstractPrinterColumn<RoutePrinte
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType(), "activity");
+        return new ColumnDefinition.Builder(new StringColumnType());
     }
 
     @Override
     public String getData(RoutePrinterContext context) {
         return ((AbstractActivity) context.getActivity()).getType();
+    }
+
+    @Override
+    protected String getDefaultTitle() {
+        return "activity";
     }
 
 }

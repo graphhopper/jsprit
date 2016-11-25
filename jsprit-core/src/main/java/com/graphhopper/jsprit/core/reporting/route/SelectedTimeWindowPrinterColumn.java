@@ -21,7 +21,7 @@ public class SelectedTimeWindowPrinterColumn extends AbstractTimeWindowPrinterCo
     }
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "selTimeWindow";
     }
 

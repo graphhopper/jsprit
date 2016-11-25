@@ -20,7 +20,7 @@ public class RouteLoadPrinterColumn extends AbstractSizeDimensionPrinterColumn {
     }
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "load";
     }
 

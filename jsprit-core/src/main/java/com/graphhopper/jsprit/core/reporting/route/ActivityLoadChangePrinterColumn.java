@@ -23,7 +23,7 @@ public class ActivityLoadChangePrinterColumn extends AbstractSizeDimensionPrinte
     }
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "load change";
     }
 

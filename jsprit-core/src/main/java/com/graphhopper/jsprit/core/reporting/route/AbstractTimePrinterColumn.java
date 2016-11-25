@@ -8,7 +8,8 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 
 public abstract class AbstractTimePrinterColumn<T extends AbstractTimePrinterColumn<T>>
-extends AbstractPrinterColumn<RoutePrinterContext, String> {
+extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractTimePrinterColumn<T>>
+implements HumanReadableEnabled<T> {
 
     private HumanReadableTimeFormatter formatter;
     private boolean humanReadable = false;
@@ -22,12 +23,14 @@ extends AbstractPrinterColumn<RoutePrinterContext, String> {
         formatter = new HumanReadableTimeFormatter();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T withFormatter(HumanReadableTimeFormatter formatter) {
         this.formatter = formatter;
         return (T) this;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T asHumanReadable() {
         this.humanReadable = true;
@@ -37,7 +40,7 @@ extends AbstractPrinterColumn<RoutePrinterContext, String> {
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType("-"), getTitle() + (humanReadable ? " (H)" : ""));
+        return new ColumnDefinition.Builder(new StringColumnType("-"));
     }
 
     @Override
@@ -54,7 +57,5 @@ extends AbstractPrinterColumn<RoutePrinterContext, String> {
     }
 
     protected abstract Long getValue(RoutePrinterContext context);
-
-    protected abstract String getTitle();
 
 }

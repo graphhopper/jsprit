@@ -19,7 +19,7 @@ public class WaitingDurationPrinterColumn extends AbstractDurationPrinterColumn<
 
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "waiting";
     }
 

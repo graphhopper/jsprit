@@ -16,7 +16,7 @@ public class ActivityCostPrinterColumn extends AbstractCostPrinterColumn {
 
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "actCost";
     }
 

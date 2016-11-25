@@ -11,7 +11,8 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 
-public abstract class AbstractSizeDimensionPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String> {
+public abstract class AbstractSizeDimensionPrinterColumn
+extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractSizeDimensionPrinterColumn> {
 
     public AbstractSizeDimensionPrinterColumn() {
         super();
@@ -23,7 +24,7 @@ public abstract class AbstractSizeDimensionPrinterColumn extends AbstractPrinter
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType(), getTitle());
+        return new ColumnDefinition.Builder(new StringColumnType());
     }
 
     @Override
@@ -36,8 +37,6 @@ public abstract class AbstractSizeDimensionPrinterColumn extends AbstractPrinter
             return null;
         }
     }
-
-    protected abstract String getTitle();
 
     protected abstract SizeDimension getSizeDimension(RoutePrinterContext context);
 

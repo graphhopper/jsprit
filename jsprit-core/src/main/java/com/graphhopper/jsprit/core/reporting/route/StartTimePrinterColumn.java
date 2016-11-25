@@ -17,7 +17,7 @@ public class StartTimePrinterColumn extends AbstractTimePrinterColumn<StartTimeP
     }
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "startTime";
     }
 

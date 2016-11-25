@@ -21,7 +21,7 @@ implements CostAndTimeExtractor {
 
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "travel";
     }
 

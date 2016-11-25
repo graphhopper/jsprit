@@ -17,7 +17,7 @@ public class EndTimePrinterColumn extends AbstractTimePrinterColumn<EndTimePrint
     }
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "endTime";
     }
 

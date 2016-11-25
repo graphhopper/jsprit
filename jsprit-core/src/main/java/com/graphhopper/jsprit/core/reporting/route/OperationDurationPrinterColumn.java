@@ -17,7 +17,7 @@ public class OperationDurationPrinterColumn extends AbstractDurationPrinterColum
 
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "opTime";
     }
 

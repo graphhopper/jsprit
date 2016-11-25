@@ -234,6 +234,16 @@ public class DynamicTableDefinition {
                 this.title = title;
             }
 
+            public Builder(ColumnType<?> type) {
+                super();
+                this.type = type;
+            }
+
+            public Builder withTitle(String title) {
+                this.title = title;
+                return this;
+            }
+
             public Builder withMinWidth(int minWidth) {
                 this.minWidth = minWidth;
                 return this;

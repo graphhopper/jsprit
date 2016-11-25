@@ -18,7 +18,7 @@ public class ArrivalTimePrinterColumn extends AbstractTimePrinterColumn<ArrivalT
 
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "arrTime";
     }
 

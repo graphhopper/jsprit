@@ -19,7 +19,7 @@ public class TimeWindowsPrinterColumn extends AbstractTimeWindowPrinterColumn<Ti
     }
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "timeWindows";
     }
 

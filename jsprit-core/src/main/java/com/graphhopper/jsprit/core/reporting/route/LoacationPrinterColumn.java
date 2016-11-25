@@ -9,7 +9,7 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 
-public class LoacationPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String> {
+public class LoacationPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, LoacationPrinterColumn> {
 
     public LoacationPrinterColumn() {
         super();
@@ -21,7 +21,12 @@ public class LoacationPrinterColumn extends AbstractPrinterColumn<RoutePrinterCo
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType("-"), "location");
+        return new ColumnDefinition.Builder(new StringColumnType("-"));
+    }
+
+    @Override
+    protected String getDefaultTitle() {
+        return "location";
     }
 
     @Override

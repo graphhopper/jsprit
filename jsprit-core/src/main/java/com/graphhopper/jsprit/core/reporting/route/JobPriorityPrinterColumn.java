@@ -11,7 +11,7 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 
-public class JobPriorityPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String> {
+public class JobPriorityPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, JobPriorityPrinterColumn> {
 
     private static final String[] PRIORITY_NAMES = new String[] { "", "HIGH", "MEDIUM", "LOW" };
 
@@ -25,7 +25,12 @@ public class JobPriorityPrinterColumn extends AbstractPrinterColumn<RoutePrinter
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType("-"), "priority").withAlignment(Alignment.CENTER);
+        return new ColumnDefinition.Builder(new StringColumnType("-")).withAlignment(Alignment.CENTER);
+    }
+
+    @Override
+    protected String getDefaultTitle() {
+        return "priority";
     }
 
     @Override

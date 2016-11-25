@@ -8,8 +8,9 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.IntColumnType;
 
-public abstract class AbstractCostPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, Integer>
-                implements CostAndTimeExtractor {
+public abstract class AbstractCostPrinterColumn
+extends AbstractPrinterColumn<RoutePrinterContext, Integer, AbstractCostPrinterColumn>
+implements CostAndTimeExtractor {
 
     public AbstractCostPrinterColumn() {
         super();
@@ -21,9 +22,7 @@ public abstract class AbstractCostPrinterColumn extends AbstractPrinterColumn<Ro
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new IntColumnType(), getTitle()).withAlignment(Alignment.RIGHT);
+        return new ColumnDefinition.Builder(new IntColumnType()).withAlignment(Alignment.RIGHT);
     }
-
-    protected abstract String getTitle();
 
 }

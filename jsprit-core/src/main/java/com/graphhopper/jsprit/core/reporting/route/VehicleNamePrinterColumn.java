@@ -7,7 +7,7 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
 
-public class VehicleNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String> {
+public class VehicleNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, VehicleNamePrinterColumn> {
 
     public VehicleNamePrinterColumn() {
         super();
@@ -19,7 +19,12 @@ public class VehicleNamePrinterColumn extends AbstractPrinterColumn<RoutePrinter
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType(), "vehicle");
+        return new ColumnDefinition.Builder(new StringColumnType());
+    }
+
+    @Override
+    protected String getDefaultTitle() {
+        return "vehicle";
     }
 
     @Override

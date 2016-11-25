@@ -19,7 +19,7 @@ public class TransportCostPrinterColumn extends AbstractCostPrinterColumn {
     }
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "transCost";
     }
 

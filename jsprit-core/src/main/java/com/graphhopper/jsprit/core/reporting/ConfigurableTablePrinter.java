@@ -1,10 +1,17 @@
 package com.graphhopper.jsprit.core.reporting;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.QuoteMode;
 
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.Alignment;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
@@ -68,6 +75,10 @@ public class ConfigurableTablePrinter<C extends PrinterContext> {
                 throw new IndexOutOfBoundsException("Invalid index: " + index);
             }
             return row[index];
+        }
+
+        public List<String> getAll() {
+            return Arrays.asList(row);
         }
     }
 
@@ -178,5 +189,71 @@ public class ConfigurableTablePrinter<C extends PrinterContext> {
         return colWidth;
     }
 
+    public static class CsvConfig {
+        private char delimiter = ';';
+        private char quote = '\"';
+        private char escape = '\\';
+        private boolean printHeader = true;
+
+        public char getDelimiter() {
+            return delimiter;
+        }
+
+        public CsvConfig withDelimiter(char delimiter) {
+            this.delimiter = delimiter;
+            return this;
+        }
+
+        public char getQuote() {
+            return quote;
+        }
+
+        public CsvConfig withQuote(char quote) {
+            this.quote = quote;
+            return this;
+        }
+
+        public char getEscape() {
+            return escape;
+        }
+
+        public CsvConfig withEscape(char escape) {
+            this.escape = escape;
+            return this;
+        }
+
+        public boolean isPrintHeader() {
+            return printHeader;
+        }
+
+        public CsvConfig withPrintHeader(boolean printHeader) {
+            this.printHeader = printHeader;
+            return this;
+        }
+
+    }
+
+    public String exportToCsv(CsvConfig config) {
+        CSVFormat format = CSVFormat.DEFAULT
+                        .withDelimiter(config.delimiter)
+                        .withQuote(config.quote)
+                        .withQuoteMode(QuoteMode.NON_NUMERIC)
+                        .withEscape(config.escape);
+
+        StringWriter sw = new StringWriter();
+        try (CSVPrinter printer = new CSVPrinter(sw, format)) {
+            printer.printRecord(columnList.getColumns().stream()
+                            .map(c -> c.getColumnDefinition().getTitle())
+                            .collect(Collectors.toList()));
+            for(TableRow r : rows) {
+                if (!(r instanceof ConfigurableTablePrinter.Separator)) {
+                    printer.printRecord(r.getAll());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sw.toString();
+    }
 
 }
