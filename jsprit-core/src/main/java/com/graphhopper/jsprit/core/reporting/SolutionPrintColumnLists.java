@@ -4,16 +4,30 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
+import com.graphhopper.jsprit.core.reporting.route.ActivityCostPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.ActivityDurationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.ActivityLoadChangePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ArrivalTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.EndTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.HumanReadableEnabled;
 import com.graphhopper.jsprit.core.reporting.route.HumanReadableTimeFormatter;
 import com.graphhopper.jsprit.core.reporting.route.JobNamePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.JobPriorityPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.JobTypePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.LoacationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.OperationDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RouteCostPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.RouteLoadPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RouteNumberPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
+import com.graphhopper.jsprit.core.reporting.route.SelectedTimeWindowPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.StartTimePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.TimeWindowsPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.TransportCostPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.TravelDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.VehicleNamePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.route.WaitingDurationPrinterColumn;
 
 public class SolutionPrintColumnLists {
 
@@ -72,8 +86,50 @@ public class SolutionPrintColumnLists {
         minimalSet.add(RouteCostPrinterColumn.class);
         COLUMNS.put(PredefinedList.MINIMAL, minimalSet);
 
-        COLUMNS.put(PredefinedList.DEFAULT, minimalSet);
-        COLUMNS.put(PredefinedList.VERBOSE, minimalSet);
+        List<Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>>> defaultSet = new ArrayList<>();
+        defaultSet.add(RouteNumberPrinterColumn.class);
+        defaultSet.add(VehicleNamePrinterColumn.class);
+        defaultSet.add(ActivityTypePrinterColumn.class);
+        defaultSet.add(JobNamePrinterColumn.class);
+        defaultSet.add(LoacationPrinterColumn.class);
+        defaultSet.add(ActivityLoadChangePrinterColumn.class);
+        defaultSet.add(OperationDurationPrinterColumn.class);
+        defaultSet.add(ArrivalTimePrinterColumn.class);
+        defaultSet.add(StartTimePrinterColumn.class);
+        defaultSet.add(EndTimePrinterColumn.class);
+        defaultSet.add(ActivityCostPrinterColumn.class);
+        defaultSet.add(RouteCostPrinterColumn.class);
+        COLUMNS.put(PredefinedList.DEFAULT, defaultSet);
+
+        List<Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>>> verboseSet = new ArrayList<>();
+        verboseSet.add(RouteNumberPrinterColumn.class);
+        verboseSet.add(VehicleNamePrinterColumn.class);
+        verboseSet.add(ActivityTypePrinterColumn.class);
+
+        verboseSet.add(JobNamePrinterColumn.class);
+        verboseSet.add(JobTypePrinterColumn.class);
+        verboseSet.add(JobPriorityPrinterColumn.class);
+
+        verboseSet.add(LoacationPrinterColumn.class);
+        verboseSet.add(ActivityLoadChangePrinterColumn.class);
+        verboseSet.add(RouteLoadPrinterColumn.class);
+        verboseSet.add(TimeWindowsPrinterColumn.class);
+
+        verboseSet.add(OperationDurationPrinterColumn.class);
+        verboseSet.add(TravelDurationPrinterColumn.class);
+        verboseSet.add(WaitingDurationPrinterColumn.class);
+        verboseSet.add(ActivityDurationPrinterColumn.class);
+
+        verboseSet.add(ArrivalTimePrinterColumn.class);
+        verboseSet.add(StartTimePrinterColumn.class);
+        verboseSet.add(EndTimePrinterColumn.class);
+        verboseSet.add(SelectedTimeWindowPrinterColumn.class);
+
+        verboseSet.add(TransportCostPrinterColumn.class);
+        verboseSet.add(ActivityCostPrinterColumn.class);
+        verboseSet.add(RouteCostPrinterColumn.class);
+
+        COLUMNS.put(PredefinedList.VERBOSE, verboseSet);
     }
 
     public static PrinterColumnList<RoutePrinterContext> getNumeric(PredefinedList listType) {

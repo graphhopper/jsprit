@@ -280,53 +280,8 @@ public class SolutionPrinter {
     private static void printVerbose2(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution,
                     PrinterColumnList<RoutePrinterContext> columns) {
 
-        // PrinterColumnList<RoutePrinterContext> columns = new
-        // PrinterColumnList<>("Detailed route");
-        // HumanReadableTimeFormatter dateFormatter = new
-        // HumanReadableTimeFormatter(LocalDateTime.now(), ChronoUnit.SECONDS);
-        // columns
-        // .addColumn(new RouteNumberPrinterColumn())
-        // .addColumn(new VehicleNamePrinterColumn())
-        // .addColumn(new ActivityTypePrinterColumn())
-        // .addColumn(new JobNamePrinterColumn(b -> b.withMinWidth(10)))
-        // .addColumn(new JobTypePrinterColumn())
-        // .addColumn(new JobPriorityPrinterColumn())
-        // .addColumn(new ActivityLoadChangePrinterColumn())
-        // .addColumn(new RouteLoadPrinterColumn())
-        // .addColumn(new LoacationPrinterColumn())
-        // .addColumn(new OperationDurationPrinterColumn())
-        // .addColumn(new OperationDurationPrinterColumn().asHumanReadable())
-        // .addColumn(new TravelDurationPrinterColumn())
-        // .addColumn(new TravelDurationPrinterColumn().asHumanReadable())
-        // .addColumn(new ActivityDurationPrinterColumn())
-        // .addColumn(new ActivityDurationPrinterColumn().asHumanReadable())
-        // .addColumn(new WaitingDurationPrinterColumn())
-        // .addColumn(new WaitingDurationPrinterColumn().asHumanReadable())
-        // .addColumn(new ArrivalTimePrinterColumn())
-        // .addColumn(new
-        // ArrivalTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-        // .addColumn(new StartTimePrinterColumn())
-        // .addColumn(new
-        // StartTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-        // .addColumn(new EndTimePrinterColumn())
-        // .addColumn(new
-        // EndTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-        // .addColumn(new TransportCostPrinterColumn())
-        // .addColumn(new ActivityCostPrinterColumn())
-        // .addColumn(new RouteCostPrinterColumn())
-        // .addColumn(new SelectedTimeWindowPrinterColumn())
-        // .addColumn(new
-        // SelectedTimeWindowPrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-        // .addColumn(new TimeWindowsPrinterColumn())
-        // .addColumn(new
-        // TimeWindowsPrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-        // ;
-        // columns = VerbosePrintColumnLists.getNumeric(PredefinedList.MINIMAL);
-
         ConfigurableTablePrinter<RoutePrinterContext> tablePrinter = buildTablePrinter(problem, solution, columns);
         out.println(tablePrinter.print());
-
-        // out.println(tablePrinter.exportToCsv(new CsvConfig()));
 
         if (!solution.getUnassignedJobs().isEmpty()) {
 
