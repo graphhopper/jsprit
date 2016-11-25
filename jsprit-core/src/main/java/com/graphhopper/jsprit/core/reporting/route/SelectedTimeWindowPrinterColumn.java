@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
 public class SelectedTimeWindowPrinterColumn extends AbstractTimeWindowPrinterColumn<SelectedTimeWindowPrinterColumn> {
 
@@ -16,7 +16,7 @@ public class SelectedTimeWindowPrinterColumn extends AbstractTimeWindowPrinterCo
         super();
     }
 
-    public SelectedTimeWindowPrinterColumn(Consumer<Builder> decorator) {
+    public SelectedTimeWindowPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

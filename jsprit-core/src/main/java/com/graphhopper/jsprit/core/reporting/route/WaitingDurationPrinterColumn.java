@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
 public class WaitingDurationPrinterColumn extends AbstractDurationPrinterColumn<WaitingDurationPrinterColumn> {
 
@@ -13,7 +13,7 @@ public class WaitingDurationPrinterColumn extends AbstractDurationPrinterColumn<
         super();
     }
 
-    public WaitingDurationPrinterColumn(Consumer<Builder> decorator) {
+    public WaitingDurationPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

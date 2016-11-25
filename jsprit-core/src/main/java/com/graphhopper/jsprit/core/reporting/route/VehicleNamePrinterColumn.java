@@ -3,9 +3,8 @@ package com.graphhopper.jsprit.core.reporting.route;
 import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 public class VehicleNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, VehicleNamePrinterColumn> {
 
@@ -13,7 +12,7 @@ public class VehicleNamePrinterColumn extends AbstractPrinterColumn<RoutePrinter
         super();
     }
 
-    public VehicleNamePrinterColumn(Consumer<Builder> decorator) {
+    public VehicleNamePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

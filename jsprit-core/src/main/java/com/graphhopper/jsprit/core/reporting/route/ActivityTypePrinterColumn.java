@@ -4,9 +4,8 @@ import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 public class ActivityTypePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, ActivityTypePrinterColumn> {
 
@@ -14,7 +13,7 @@ public class ActivityTypePrinterColumn extends AbstractPrinterColumn<RoutePrinte
         super();
     }
 
-    public ActivityTypePrinterColumn(Consumer<Builder> decorator) {
+    public ActivityTypePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

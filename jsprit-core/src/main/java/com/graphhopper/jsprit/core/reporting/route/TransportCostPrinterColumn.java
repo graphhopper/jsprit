@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
 public class TransportCostPrinterColumn extends AbstractCostPrinterColumn {
 
@@ -14,7 +14,7 @@ public class TransportCostPrinterColumn extends AbstractCostPrinterColumn {
         super();
     }
 
-    public TransportCostPrinterColumn(Consumer<Builder> decorator) {
+    public TransportCostPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

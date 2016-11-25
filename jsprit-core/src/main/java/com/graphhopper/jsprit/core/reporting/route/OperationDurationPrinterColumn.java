@@ -3,7 +3,7 @@ package com.graphhopper.jsprit.core.reporting.route;
 import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
 public class OperationDurationPrinterColumn extends AbstractDurationPrinterColumn<OperationDurationPrinterColumn> {
 
@@ -11,7 +11,7 @@ public class OperationDurationPrinterColumn extends AbstractDurationPrinterColum
         super();
     }
 
-    public OperationDurationPrinterColumn(Consumer<Builder> decorator) {
+    public OperationDurationPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

@@ -1,9 +1,11 @@
-package com.graphhopper.jsprit.core.reporting;
+package com.graphhopper.jsprit.core.reporting.columndefinition;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
+import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.PrinterColumnList;
 import com.graphhopper.jsprit.core.reporting.route.ActivityCostPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityLoadChangePrinterColumn;
@@ -29,48 +31,34 @@ import com.graphhopper.jsprit.core.reporting.route.TravelDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.VehicleNamePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.WaitingDurationPrinterColumn;
 
+/**
+ * Utility class to provide predefined column lists for Solution printing.
+ *
+ * @author balage
+ *
+ */
 public class SolutionPrintColumnLists {
 
-
+    /**
+     * The predefined column sets.
+     *
+     * @author balage
+     *
+     */
     public enum PredefinedList {
-        MINIMAL, DEFAULT, VERBOSE
+        /**
+         * A minimal column set.
+         */
+        MINIMAL,
+        /**
+         * A general, most often used column set.
+         */
+        DEFAULT,
+        /**
+         * A verbose column set containing all columns.
+         */
+        VERBOSE
     }
-
-    // .addColumn(new RouteNumberPrinterColumn())
-    // .addColumn(new VehicleNamePrinterColumn())
-    // .addColumn(new ActivityTypePrinterColumn())
-    // .addColumn(new JobNamePrinterColumn(b -> b.withMinWidth(10)))
-    // .addColumn(new JobTypePrinterColumn())
-    // .addColumn(new JobPriorityPrinterColumn())
-    // .addColumn(new ActivityLoadChangePrinterColumn())
-    // .addColumn(new RouteLoadPrinterColumn())
-    // .addColumn(new LoacationPrinterColumn())
-    // .addColumn(new OperationDurationPrinterColumn())
-    // .addColumn(new OperationDurationPrinterColumn().asHumanReadable())
-    // .addColumn(new TravelDurationPrinterColumn())
-    // .addColumn(new TravelDurationPrinterColumn().asHumanReadable())
-    // .addColumn(new ActivityDurationPrinterColumn())
-    // .addColumn(new ActivityDurationPrinterColumn().asHumanReadable())
-    // .addColumn(new WaitingDurationPrinterColumn())
-    // .addColumn(new WaitingDurationPrinterColumn().asHumanReadable())
-    // .addColumn(new ArrivalTimePrinterColumn())
-    // .addColumn(new
-    // ArrivalTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-    // .addColumn(new StartTimePrinterColumn())
-    // .addColumn(new
-    // StartTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-    // .addColumn(new EndTimePrinterColumn())
-    // .addColumn(new
-    // EndTimePrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-    // .addColumn(new TransportCostPrinterColumn())
-    // .addColumn(new ActivityCostPrinterColumn())
-    // .addColumn(new RouteCostPrinterColumn())
-    // .addColumn(new SelectedTimeWindowPrinterColumn())
-    // .addColumn(new
-    // SelectedTimeWindowPrinterColumn().asHumanReadable().withFormatter(dateFormatter))
-    // .addColumn(new TimeWindowsPrinterColumn())
-    // .addColumn(new
-    // TimeWindowsPrinterColumn().asHumanReadable().withFormatter(dateFormatter))
 
     private static final EnumMap<PredefinedList, List<Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>>>> COLUMNS;
 
@@ -132,19 +120,56 @@ public class SolutionPrintColumnLists {
         COLUMNS.put(PredefinedList.VERBOSE, verboseSet);
     }
 
+    /**
+     * Returns the predefined column set with all time, time window and duration
+     * columns printed as numbers.
+     *
+     * @param listType
+     *            The predefined list id.
+     * @return The column list containing the predefined columns.
+     */
     public static PrinterColumnList<RoutePrinterContext> getNumeric(PredefinedList listType) {
         return getList(listType, false, null);
     }
 
+    /**
+     * Returns the predefined column set with all time, time window and duration
+     * columns printed with human readable format, using default formatting.
+     *
+     * @param listType
+     *            The predefined list id.
+     * @return The column list containing the predefined columns.
+     */
     public static PrinterColumnList<RoutePrinterContext> getHumanReadable(PredefinedList listType) {
         return getList(listType, true, null);
     }
 
+    /**
+     * Returns the predefined column set with all time, time window and duration
+     * columns printed with human readable format, using the provided formatter.
+     *
+     * @param listType
+     *            The predefined list id.
+     * @param timeFormatter
+     *            the time formatter to use
+     * @return The column list containing the predefined columns.
+     */
     public static PrinterColumnList<RoutePrinterContext> getHumanReadable(PredefinedList listType,
                     HumanReadableTimeFormatter timeFormatter) {
         return getList(listType, true, timeFormatter);
     }
 
+    /**
+     * Generates the list.
+     *
+     * @param listType
+     *            The id of the list.
+     * @param humanReadable
+     *            Whether human readable format should be used
+     * @param timeFormatter
+     *            The formatter to use (if null, the default will be used)
+     * @return The generated column list.
+     */
     private static PrinterColumnList<RoutePrinterContext> getList(PredefinedList listType, boolean humanReadable,
                     HumanReadableTimeFormatter timeFormatter) {
         PrinterColumnList<RoutePrinterContext> res = new PrinterColumnList<>();
@@ -161,6 +186,8 @@ public class SolutionPrintColumnLists {
                 }
                 res.addColumn(col);
             } catch (InstantiationException | IllegalAccessException e) {
+                // Technically you can't get here as long as all column
+                // implementation has default constructor
                 throw new IllegalStateException(e);
             }
         }

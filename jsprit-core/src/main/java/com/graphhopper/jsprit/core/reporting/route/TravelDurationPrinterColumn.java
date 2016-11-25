@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
 public class TravelDurationPrinterColumn extends AbstractDurationPrinterColumn<TravelDurationPrinterColumn>
 implements CostAndTimeExtractor {
@@ -15,7 +15,7 @@ implements CostAndTimeExtractor {
         super();
     }
 
-    public TravelDurationPrinterColumn(Consumer<Builder> decorator) {
+    public TravelDurationPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

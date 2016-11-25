@@ -3,9 +3,8 @@ package com.graphhopper.jsprit.core.reporting.route;
 import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 public abstract class AbstractTimePrinterColumn<T extends AbstractTimePrinterColumn<T>>
 extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractTimePrinterColumn<T>>
@@ -18,7 +17,7 @@ implements HumanReadableEnabled<T> {
         this(null);
     }
 
-    public AbstractTimePrinterColumn(Consumer<Builder> decorator) {
+    public AbstractTimePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
         formatter = new HumanReadableTimeFormatter();
     }

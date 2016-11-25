@@ -6,9 +6,8 @@ import java.util.stream.Collectors;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 public abstract class AbstractTimeWindowPrinterColumn<T extends AbstractTimeWindowPrinterColumn<T>>
 extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractTimeWindowPrinterColumn<T>>
@@ -21,7 +20,7 @@ implements HumanReadableEnabled<T> {
         this(null);
     }
 
-    public AbstractTimeWindowPrinterColumn(Consumer<Builder> decorator) {
+    public AbstractTimeWindowPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
         formatter = new HumanReadableTimeFormatter();
     }

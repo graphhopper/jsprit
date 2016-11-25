@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
 public class StartTimePrinterColumn extends AbstractTimePrinterColumn<StartTimePrinterColumn> {
 
@@ -12,7 +12,7 @@ public class StartTimePrinterColumn extends AbstractTimePrinterColumn<StartTimeP
         super();
     }
 
-    public StartTimePrinterColumn(Consumer<Builder> decorator) {
+    public StartTimePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

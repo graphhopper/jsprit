@@ -32,9 +32,10 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.ConfigurableTablePrinter.CsvConfig;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
-import com.graphhopper.jsprit.core.reporting.SolutionPrintColumnLists.PredefinedList;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.SolutionPrintColumnLists;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.SolutionPrintColumnLists.PredefinedList;
 import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
 
 

@@ -6,9 +6,8 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 public class JobNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, JobNamePrinterColumn> {
 
@@ -16,7 +15,7 @@ public class JobNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterCont
         super();
     }
 
-    public JobNamePrinterColumn(Consumer<Builder> decorator) {
+    public JobNamePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

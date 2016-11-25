@@ -7,9 +7,8 @@ import java.util.stream.IntStream;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 public abstract class AbstractSizeDimensionPrinterColumn
 extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractSizeDimensionPrinterColumn> {
@@ -18,7 +17,7 @@ extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractSizeDimension
         super();
     }
 
-    public AbstractSizeDimensionPrinterColumn(Consumer<Builder> decorator) {
+    public AbstractSizeDimensionPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

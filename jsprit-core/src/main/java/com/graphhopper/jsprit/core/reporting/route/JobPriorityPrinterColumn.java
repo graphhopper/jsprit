@@ -6,10 +6,9 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.Alignment;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnAlignment;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 public class JobPriorityPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, JobPriorityPrinterColumn> {
 
@@ -19,13 +18,13 @@ public class JobPriorityPrinterColumn extends AbstractPrinterColumn<RoutePrinter
         super();
     }
 
-    public JobPriorityPrinterColumn(Consumer<Builder> decorator) {
+    public JobPriorityPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType("-")).withAlignment(Alignment.CENTER);
+        return new ColumnDefinition.Builder(new StringColumnType("-")).withAlignment(ColumnAlignment.CENTER);
     }
 
     @Override

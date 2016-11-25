@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
 public class ActivityLoadChangePrinterColumn extends AbstractSizeDimensionPrinterColumn {
 
@@ -13,12 +13,12 @@ public class ActivityLoadChangePrinterColumn extends AbstractSizeDimensionPrinte
         super();
     }
 
-    public ActivityLoadChangePrinterColumn(Consumer<Builder> decorator) {
+    public ActivityLoadChangePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 
     @Override
-    public Builder getColumnBuilder() {
+    public ColumnDefinition.Builder getColumnBuilder() {
         return super.getColumnBuilder().withMinWidth(10);
     }
 

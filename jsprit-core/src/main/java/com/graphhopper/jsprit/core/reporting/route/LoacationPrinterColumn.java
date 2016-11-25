@@ -5,9 +5,8 @@ import java.util.function.Consumer;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 public class LoacationPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, LoacationPrinterColumn> {
 
@@ -15,7 +14,7 @@ public class LoacationPrinterColumn extends AbstractPrinterColumn<RoutePrinterCo
         super();
     }
 
-    public LoacationPrinterColumn(Consumer<Builder> decorator) {
+    public LoacationPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 

@@ -5,7 +5,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.PrinterContext;
 
-public class RoutePrinterContext extends PrinterContext {
+public class RoutePrinterContext implements PrinterContext {
 
     private int routeNr;
     private VehicleRoute route;
