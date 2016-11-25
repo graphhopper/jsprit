@@ -41,7 +41,7 @@ import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefini
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.IntColumnType;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.LongColumnType;
 import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
-import com.graphhopper.jsprit.core.reporting.VerbosePrintColumnLists.PredefinedList;
+import com.graphhopper.jsprit.core.reporting.SolutionPrintColumnLists.PredefinedList;
 import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
 
 
@@ -102,7 +102,7 @@ public class SolutionPrinter {
     }
 
     public static void print(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution, Print print) {
-        print(out, problem, solution, print, VerbosePrintColumnLists.getNumeric(PredefinedList.DEFAULT));
+        print(out, problem, solution, print, SolutionPrintColumnLists.getNumeric(PredefinedList.DEFAULT));
     }
 
     public static void print(VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution,

@@ -15,7 +15,7 @@ import com.graphhopper.jsprit.core.reporting.route.RouteNumberPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
 import com.graphhopper.jsprit.core.reporting.route.VehicleNamePrinterColumn;
 
-public class VerbosePrintColumnLists {
+public class SolutionPrintColumnLists {
 
 
     public enum PredefinedList {
