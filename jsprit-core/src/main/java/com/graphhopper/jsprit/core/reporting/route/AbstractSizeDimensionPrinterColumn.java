@@ -7,25 +7,52 @@ import java.util.stream.IntStream;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.HumanReadableTimeFormatter;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
-public abstract class AbstractSizeDimensionPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String> {
+/**
+ * Abstract base class for size columns.
+ *
+ * <p>
+ * The representation of a size is the dimension values listed comma separated
+ * and wrapped by brackets. (For example: [2, 0, -1])
+ * </p>
+ *
+ * @author balage
+ *
+ * @See {@linkplain HumanReadableTimeFormatter}
+ */
+public abstract class AbstractSizeDimensionPrinterColumn
+extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractSizeDimensionPrinterColumn> {
 
+    /**
+     * Constructor.
+     */
     public AbstractSizeDimensionPrinterColumn() {
         super();
     }
 
-    public AbstractSizeDimensionPrinterColumn(Consumer<Builder> decorator) {
+    /**
+     * Constructor with a post creation decorator provided.
+     */
+    public AbstractSizeDimensionPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType(), getTitle());
+        return new ColumnDefinition.Builder(new StringColumnType());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The result is a string representation of the size (the dimension values
+     * listed comma separated and wrapped by brackets) or null.
+     * </p>
+     */
     @Override
     public String getData(RoutePrinterContext context) {
         SizeDimension sd = getSizeDimension(context);
@@ -37,8 +64,13 @@ public abstract class AbstractSizeDimensionPrinterColumn extends AbstractPrinter
         }
     }
 
-    protected abstract String getTitle();
-
+    /**
+     * Extracts the size dimension.
+     *
+     * @param context
+     *            The context.
+     * @return The size dimension or null.
+     */
     protected abstract SizeDimension getSizeDimension(RoutePrinterContext context);
 
     protected SizeDimension calculateInitialLoad(RoutePrinterContext context) {

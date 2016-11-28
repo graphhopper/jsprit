@@ -2,21 +2,33 @@ package com.graphhopper.jsprit.core.reporting.route;
 
 import java.util.function.Consumer;
 
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
+/**
+ * Cost of the activity.
+ *
+ * @author balage
+ *
+ */
 public class ActivityCostPrinterColumn extends AbstractCostPrinterColumn {
 
+    /**
+     * Constructor.
+     */
     public ActivityCostPrinterColumn() {
         super();
     }
 
-    public ActivityCostPrinterColumn(Consumer<Builder> decorator) {
+    /**
+     * Constructor with a post creation decorator provided.
+     */
+    public ActivityCostPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 
 
     @Override
-    protected String getTitle() {
+    protected String getDefaultTitle() {
         return "actCost";
     }
 
