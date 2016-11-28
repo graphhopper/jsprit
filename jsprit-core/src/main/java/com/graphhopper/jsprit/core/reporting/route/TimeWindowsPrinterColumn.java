@@ -8,12 +8,29 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
+/**
+ * The time windows of the activity.
+ *
+ * <p>
+ * Returns all time windows assigned to the activity.
+ * </p>
+ *
+ * @author balage
+ *
+ * @see {@linkplain SelectedTimeWindowPrinterColumn}
+ */
 public class TimeWindowsPrinterColumn extends AbstractTimeWindowPrinterColumn<TimeWindowsPrinterColumn> {
 
+    /**
+     * Constructor.
+     */
     public TimeWindowsPrinterColumn() {
         super();
     }
 
+    /**
+     * Constructor with a post creation decorator provided.
+     */
     public TimeWindowsPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }

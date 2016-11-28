@@ -9,12 +9,28 @@ import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
+/**
+ * Name (id) of the job.
+ *
+ * <p>
+ * This column provides the {@linkplain Job#getId()} of the associated job of
+ * the activity for job activities and null for other route activities.
+ * </p>
+ *
+ * @author balage
+ */
 public class JobNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, JobNamePrinterColumn> {
 
+    /**
+     * Constructor.
+     */
     public JobNamePrinterColumn() {
         super();
     }
 
+    /**
+     * Constructor with a post creation decorator provided.
+     */
     public JobNamePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }

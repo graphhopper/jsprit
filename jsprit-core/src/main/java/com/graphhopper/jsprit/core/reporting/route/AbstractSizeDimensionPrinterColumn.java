@@ -8,15 +8,34 @@ import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.HumanReadableTimeFormatter;
 import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
+/**
+ * Abstract base class for size columns.
+ *
+ * <p>
+ * The representation of a size is the dimension values listed comma separated
+ * and wrapped by brackets. (For example: [2, 0, -1])
+ * </p>
+ *
+ * @author balage
+ *
+ * @See {@linkplain HumanReadableTimeFormatter}
+ */
 public abstract class AbstractSizeDimensionPrinterColumn
 extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractSizeDimensionPrinterColumn> {
 
+    /**
+     * Constructor.
+     */
     public AbstractSizeDimensionPrinterColumn() {
         super();
     }
 
+    /**
+     * Constructor with a post creation decorator provided.
+     */
     public AbstractSizeDimensionPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
@@ -26,6 +45,14 @@ extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractSizeDimension
         return new ColumnDefinition.Builder(new StringColumnType());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The result is a string representation of the size (the dimension values
+     * listed comma separated and wrapped by brackets) or null.
+     * </p>
+     */
     @Override
     public String getData(RoutePrinterContext context) {
         SizeDimension sd = getSizeDimension(context);
@@ -37,6 +64,13 @@ extends AbstractPrinterColumn<RoutePrinterContext, String, AbstractSizeDimension
         }
     }
 
+    /**
+     * Extracts the size dimension.
+     *
+     * @param context
+     *            The context.
+     * @return The size dimension or null.
+     */
     protected abstract SizeDimension getSizeDimension(RoutePrinterContext context);
 
     protected SizeDimension calculateInitialLoad(RoutePrinterContext context) {

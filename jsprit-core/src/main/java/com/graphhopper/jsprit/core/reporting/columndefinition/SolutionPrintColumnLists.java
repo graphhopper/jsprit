@@ -12,8 +12,6 @@ import com.graphhopper.jsprit.core.reporting.route.ActivityLoadChangePrinterColu
 import com.graphhopper.jsprit.core.reporting.route.ActivityTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ArrivalTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.EndTimePrinterColumn;
-import com.graphhopper.jsprit.core.reporting.route.HumanReadableEnabled;
-import com.graphhopper.jsprit.core.reporting.route.HumanReadableTimeFormatter;
 import com.graphhopper.jsprit.core.reporting.route.JobNamePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.JobPriorityPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.JobTypePrinterColumn;

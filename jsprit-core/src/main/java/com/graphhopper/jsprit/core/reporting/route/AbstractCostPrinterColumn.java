@@ -7,6 +7,17 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnAlignment;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 import com.graphhopper.jsprit.core.reporting.columndefinition.IntColumnType;
 
+/**
+ * Abstract base class for cost calculators.
+ *
+ * <p>
+ * this implementation only defines the ColumnDefinition as a right aligned
+ * integer column.
+ * </p>
+ *
+ * @author balage
+ *
+ */
 public abstract class AbstractCostPrinterColumn
 extends AbstractPrinterColumn<RoutePrinterContext, Integer, AbstractCostPrinterColumn>
 implements CostAndTimeExtractor {

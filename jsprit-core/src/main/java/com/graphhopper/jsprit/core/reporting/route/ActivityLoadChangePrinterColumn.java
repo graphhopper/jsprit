@@ -7,12 +7,29 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 
+/**
+ * The load change value (signed size) of the activity.
+ * 
+ * <p>
+ * If the activity is a route start, the returned value is the initial load,
+ * otherwise the loadChange value of the activity.
+ * </p>
+ *
+ * @author balage
+ *
+ */
 public class ActivityLoadChangePrinterColumn extends AbstractSizeDimensionPrinterColumn {
 
+    /**
+     * Constructor.
+     */
     public ActivityLoadChangePrinterColumn() {
         super();
     }
 
+    /**
+     * Constructor with a post creation decorator provided.
+     */
     public ActivityLoadChangePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
@@ -27,6 +44,13 @@ public class ActivityLoadChangePrinterColumn extends AbstractSizeDimensionPrinte
         return "load change";
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the activity is a route start, the returned value is the initial load,
+     * otherwise the loadChange value of the activity.
+     * </p>
+     */
     @Override
     protected SizeDimension getSizeDimension(RoutePrinterContext context) {
         TourActivity act = context.getActivity();
