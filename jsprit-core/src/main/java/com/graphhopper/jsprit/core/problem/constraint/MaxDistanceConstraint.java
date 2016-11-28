@@ -78,7 +78,7 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
         double distancePrevAct2NewAct = distanceCalculator.getDistance(prevAct.getLocation(), newAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
         double distanceNewAct2nextAct = distanceCalculator.getDistance(newAct.getLocation(), nextAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
         double distancePrevAct2NextAct = distanceCalculator.getDistance(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewVehicle());
-        if(routeIsEmpty) distancePrevAct2NextAct = 0;
+        if(prevAct instanceof Start && nextAct instanceof End) distancePrevAct2NextAct = 0;
         if(nextAct instanceof End && !iFacts.getNewVehicle().isReturnToDepot()){
             distanceNewAct2nextAct = 0;
             distancePrevAct2NextAct = 0;
@@ -96,7 +96,7 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
         if(currentDistance + additionalDistance + additionalDistanceOfPickup > maxDistance){
             return ConstraintsStatus.NOT_FULFILLED;
         }
-        
+
         if (newAct instanceof PickupShipment)
             stateManager.putActivityState(newAct, tempStateId, additionalDistance);
 
