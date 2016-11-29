@@ -22,7 +22,6 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
  * @see {@linkplain StartTimePrinterColumn}
  * @see {@linkplain EndTimePrinterColumn}
  * @see {@linkplain TravelDurationPrinterColumn}
- * @see {@linkplain WaitingDurationPrinterColumn}
  * @see {@linkplain OperationDurationPrinterColumn}
  * @see {@linkplain ActivityDurationPrinterColumn}
  */

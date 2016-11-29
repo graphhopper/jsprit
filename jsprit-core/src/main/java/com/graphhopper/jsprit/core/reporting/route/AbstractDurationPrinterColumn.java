@@ -3,7 +3,7 @@ package com.graphhopper.jsprit.core.reporting.route;
 import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.columndefinition.HumanReadableTimeFormatter;
+import com.graphhopper.jsprit.core.reporting.columndefinition.HumanReadableDurationFormatter;
 
 /**
  * Abstract base class for duration columns.
@@ -30,7 +30,7 @@ extends AbstractTimePrinterColumn<T> {
      */
     public AbstractDurationPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
-        withFormatter(new HumanReadableTimeFormatter());
+        withFormatter(new HumanReadableDurationFormatter());
     }
 
 }

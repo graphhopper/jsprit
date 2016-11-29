@@ -24,6 +24,7 @@ public abstract class AbstractPrinterColumn<C extends PrinterContext, T, A exten
     // column definition.
     private Consumer<ColumnDefinition.Builder> decorator;
 
+    private boolean isDefaultTitle = true;
     private String title;
 
     /**
@@ -41,7 +42,6 @@ public abstract class AbstractPrinterColumn<C extends PrinterContext, T, A exten
     public AbstractPrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super();
         this.decorator = decorator;
-        this.title = getDefaultTitle();
     }
 
     /**
@@ -61,7 +61,7 @@ public abstract class AbstractPrinterColumn<C extends PrinterContext, T, A exten
      * @return A title of the column.
      */
     public String getTitle() {
-        return title;
+        return isDefaultTitle ? getDefaultTitle() : title;
     }
 
     /**
@@ -72,6 +72,7 @@ public abstract class AbstractPrinterColumn<C extends PrinterContext, T, A exten
     @SuppressWarnings("unchecked")
     public A withTitle(String title) {
         this.title = title;
+        isDefaultTitle = false;
         return (A) this;
     }
 

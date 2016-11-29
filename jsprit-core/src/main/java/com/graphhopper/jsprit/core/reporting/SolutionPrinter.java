@@ -34,9 +34,26 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.ConfigurableTablePrinter.CsvConfig;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 import com.graphhopper.jsprit.core.reporting.columndefinition.SolutionPrintColumnLists;
-import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 import com.graphhopper.jsprit.core.reporting.columndefinition.SolutionPrintColumnLists.PredefinedList;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
+import com.graphhopper.jsprit.core.reporting.vehicle.AbstractVehicleDurationPrinterColumn.Mode;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleActiveDurationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleActivityCountPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleActivityTypeCountPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleAllActivityTypeCountPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleDriverNamePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleIdleDurationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleOperationDurationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleRouteDurationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleRouteNumberPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleRouteTimeWindowPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleShiftDurationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleShiftTimeWindowPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleStatisticsContext;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleTravelDurationPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleTruckNamePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleTypePrinterColumn;
 
 
 /**
@@ -165,7 +182,6 @@ public class SolutionPrinter {
         out.println(tablePrinter.print());
 
         if (!solution.getUnassignedJobs().isEmpty()) {
-
             DynamicTableDefinition unassignedTableDef = new DynamicTableDefinition.Builder().withHeading("Unassigned jobs")
                             .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "id").withMinWidth(10).build())
                             .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "type").build()).build();
@@ -177,6 +193,54 @@ public class SolutionPrinter {
             }
             out.println(unassignedTablePrinter.print());
         }
+
+        PrinterColumnList<VehicleStatisticsContext> vehicleColumns = new PrinterColumnList<VehicleStatisticsContext>();
+        vehicleColumns.addColumn(new VehicleRouteNumberPrinterColumn())
+        .addColumn(new VehicleTruckNamePrinterColumn())
+        .addColumn(new VehicleTypePrinterColumn())
+        .addColumn(new VehicleDriverNamePrinterColumn())
+        .addColumn(new VehicleActivityCountPrinterColumn())
+        .addColumn(new VehicleActivityTypeCountPrinterColumn().forActivity("pickup"))
+        .addColumn(new VehicleActivityTypeCountPrinterColumn().forActivity("exchange"))
+        .addColumn(new VehicleAllActivityTypeCountPrinterColumn())
+        .addColumn(new VehicleShiftTimeWindowPrinterColumn())
+        .addColumn(new VehicleShiftTimeWindowPrinterColumn().asHumanReadable())
+        .addColumn(new VehicleShiftDurationPrinterColumn())
+        .addColumn(new VehicleShiftDurationPrinterColumn().withDisplayMode(Mode.HUMAN_READABLE))
+        .addColumn(new VehicleShiftDurationPrinterColumn().withDisplayMode(Mode.PERCENT_ROUTE))
+        .addColumn(new VehicleShiftDurationPrinterColumn().withDisplayMode(Mode.PERCENT_SHIFT))
+        .addColumn(new VehicleRouteTimeWindowPrinterColumn())
+        .addColumn(new VehicleRouteTimeWindowPrinterColumn().asHumanReadable())
+        .addColumn(new VehicleRouteDurationPrinterColumn())
+        .addColumn(new VehicleRouteDurationPrinterColumn().withDisplayMode(Mode.HUMAN_READABLE))
+        .addColumn(new VehicleRouteDurationPrinterColumn().withDisplayMode(Mode.PERCENT_ROUTE))
+        .addColumn(new VehicleRouteDurationPrinterColumn().withDisplayMode(Mode.PERCENT_SHIFT))
+        .addColumn(new VehicleTravelDurationPrinterColumn())
+        .addColumn(new VehicleTravelDurationPrinterColumn().withDisplayMode(Mode.HUMAN_READABLE))
+        .addColumn(new VehicleTravelDurationPrinterColumn().withDisplayMode(Mode.PERCENT_ROUTE))
+        .addColumn(new VehicleTravelDurationPrinterColumn().withDisplayMode(Mode.PERCENT_SHIFT))
+        .addColumn(new VehicleOperationDurationPrinterColumn())
+        .addColumn(new VehicleOperationDurationPrinterColumn().withDisplayMode(Mode.HUMAN_READABLE))
+        .addColumn(new VehicleOperationDurationPrinterColumn().withDisplayMode(Mode.PERCENT_ROUTE))
+        .addColumn(new VehicleOperationDurationPrinterColumn().withDisplayMode(Mode.PERCENT_SHIFT))
+        .addColumn(new VehicleActiveDurationPrinterColumn())
+        .addColumn(new VehicleActiveDurationPrinterColumn().withDisplayMode(Mode.HUMAN_READABLE))
+        .addColumn(new VehicleActiveDurationPrinterColumn().withDisplayMode(Mode.PERCENT_ROUTE))
+        .addColumn(new VehicleActiveDurationPrinterColumn().withDisplayMode(Mode.PERCENT_SHIFT))
+        .addColumn(new VehicleIdleDurationPrinterColumn())
+        .addColumn(new VehicleIdleDurationPrinterColumn().withDisplayMode(Mode.HUMAN_READABLE))
+        .addColumn(new VehicleIdleDurationPrinterColumn().withDisplayMode(Mode.PERCENT_ROUTE))
+        .addColumn(new VehicleIdleDurationPrinterColumn().withDisplayMode(Mode.PERCENT_SHIFT));
+        ConfigurableTablePrinter<VehicleStatisticsContext> vehicleTablePrinter = new ConfigurableTablePrinter<>(vehicleColumns);
+
+        List<VehicleRoute> list = new ArrayList<>(solution.getRoutes());
+        Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
+        int rn = 1;
+        for (VehicleRoute route : list) {
+            vehicleTablePrinter.addRow(new VehicleStatisticsContext(rn++, route, problem));
+        }
+        System.out.println(vehicleTablePrinter.print());
+
     }
 
     protected static ConfigurableTablePrinter<RoutePrinterContext> buildTablePrinter(VehicleRoutingProblem problem,
