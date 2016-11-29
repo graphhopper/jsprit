@@ -35,7 +35,7 @@ extends AbstractVehicleTimeWindowPrinterColumn<VehicleShiftTimeWindowPrinterColu
     }
 
     @Override
-    protected Collection<TimeWindow> getValue(VehicleStatisticsContext context) {
+    protected Collection<TimeWindow> getValue(VehicleSummaryContext context) {
         return Collections.singleton(
                         new TimeWindow(context.getVehicle().getEarliestDeparture(), context.getVehicle().getLatestArrival()));
     }

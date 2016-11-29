@@ -19,7 +19,7 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
  *
  */
 public class VehicleAllActivityTypeCountPrinterColumn
-extends AbstractPrinterColumn<VehicleStatisticsContext, String, VehicleAllActivityTypeCountPrinterColumn> {
+extends AbstractPrinterColumn<VehicleSummaryContext, String, VehicleAllActivityTypeCountPrinterColumn> {
 
     /**
      * Constructor.
@@ -41,7 +41,7 @@ extends AbstractPrinterColumn<VehicleStatisticsContext, String, VehicleAllActivi
     }
 
     @Override
-    public String getData(VehicleStatisticsContext context) {
+    public String getData(VehicleSummaryContext context) {
         return context.getActivityCountByType().entrySet().stream()
                         .map(en -> "[" + en.getKey() + "=" + en.getValue() + "]")
                         .collect(Collectors.joining());

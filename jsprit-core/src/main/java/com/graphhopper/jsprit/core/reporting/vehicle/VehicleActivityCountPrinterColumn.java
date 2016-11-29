@@ -19,7 +19,7 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.IntColumnType;
  *
  */
 public class VehicleActivityCountPrinterColumn
-                extends AbstractPrinterColumn<VehicleStatisticsContext, Integer, VehicleActivityCountPrinterColumn> {
+                extends AbstractPrinterColumn<VehicleSummaryContext, Integer, VehicleActivityCountPrinterColumn> {
 
     /**
      * Constructor.
@@ -41,7 +41,7 @@ public class VehicleActivityCountPrinterColumn
     }
 
     @Override
-    public Integer getData(VehicleStatisticsContext context) {
+    public Integer getData(VehicleSummaryContext context) {
         return context.getActivityCount();
     }
 

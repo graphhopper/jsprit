@@ -38,7 +38,7 @@ public class VehicleShiftDurationPrinterColumn extends AbstractVehicleDurationPr
     }
 
     @Override
-    public Long getValue(VehicleStatisticsContext context) {
+    public Long getValue(VehicleSummaryContext context) {
         return context.getShiftDuration();
     }
 

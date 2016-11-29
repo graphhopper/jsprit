@@ -30,7 +30,7 @@ import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
  * @See {@linkplain HumanReadableTimeFormatter}
  */
 public abstract class AbstractVehicleTimeWindowPrinterColumn<T extends AbstractVehicleTimeWindowPrinterColumn<T>>
-extends AbstractPrinterColumn<VehicleStatisticsContext, String, AbstractVehicleTimeWindowPrinterColumn<T>>
+extends AbstractPrinterColumn<VehicleSummaryContext, String, AbstractVehicleTimeWindowPrinterColumn<T>>
 implements HumanReadableEnabled<T> {
 
     // The time formatter to use (only used when humanReadable flag is true)
@@ -96,7 +96,7 @@ implements HumanReadableEnabled<T> {
      *
      */
     @Override
-    public String getData(VehicleStatisticsContext context) {
+    public String getData(VehicleSummaryContext context) {
         Collection<TimeWindow> timeWindows = getValue(context);
         if (timeWindows == null || timeWindows.isEmpty()) {
             return null;
@@ -148,6 +148,6 @@ implements HumanReadableEnabled<T> {
      *            The context.
      * @return The collection of time windows.
      */
-    protected abstract Collection<TimeWindow> getValue(VehicleStatisticsContext context);
+    protected abstract Collection<TimeWindow> getValue(VehicleSummaryContext context);
 
 }

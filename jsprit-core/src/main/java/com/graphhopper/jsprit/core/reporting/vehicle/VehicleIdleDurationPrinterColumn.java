@@ -38,7 +38,7 @@ public class VehicleIdleDurationPrinterColumn extends AbstractVehicleDurationPri
     }
 
     @Override
-    public Long getValue(VehicleStatisticsContext context) {
+    public Long getValue(VehicleSummaryContext context) {
         return context.getIdleDuration();
     }
 

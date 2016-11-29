@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
  * @See {@linkplain HumanReadableTimeFormatter}
  */
 public abstract class AbstractVehicleDurationPrinterColumn<T extends AbstractVehicleDurationPrinterColumn<T>>
-extends AbstractPrinterColumn<VehicleStatisticsContext, String, AbstractVehicleDurationPrinterColumn<T>> {
+extends AbstractPrinterColumn<VehicleSummaryContext, String, AbstractVehicleDurationPrinterColumn<T>> {
 
     public enum Mode {
         NUMERIC(""), HUMAN_READABLE(" (H)"), PERCENT_ROUTE(" (R%)"), PERCENT_SHIFT(" (S%)");
@@ -152,7 +152,7 @@ extends AbstractPrinterColumn<VehicleStatisticsContext, String, AbstractVehicleD
      *
      */
     @Override
-    public String getData(VehicleStatisticsContext context) {
+    public String getData(VehicleSummaryContext context) {
         Long timeValue = getValue(context);
         if (timeValue == null) {
             return null;
@@ -183,6 +183,6 @@ extends AbstractPrinterColumn<VehicleStatisticsContext, String, AbstractVehicleD
      *            The context.
      * @return The numerical value or null.
      */
-    protected abstract Long getValue(VehicleStatisticsContext context);
+    protected abstract Long getValue(VehicleSummaryContext context);
 
 }

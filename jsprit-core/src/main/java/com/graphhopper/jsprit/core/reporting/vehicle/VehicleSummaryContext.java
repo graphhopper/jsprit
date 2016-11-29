@@ -12,7 +12,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.PrinterContext;
 
-public class VehicleStatisticsContext implements PrinterContext {
+public class VehicleSummaryContext implements PrinterContext {
     private Vehicle vehicle;
     private Driver driver;
     private int routeNr;
@@ -25,7 +25,7 @@ public class VehicleStatisticsContext implements PrinterContext {
     private long breakDuration;
     private long travelDistance;
 
-    public VehicleStatisticsContext(int routeNr, VehicleRoute route, VehicleRoutingProblem problem) {
+    public VehicleSummaryContext(int routeNr, VehicleRoute route, VehicleRoutingProblem problem) {
         this.routeNr = routeNr;
         vehicle = route.getVehicle();
         driver = route.getDriver();

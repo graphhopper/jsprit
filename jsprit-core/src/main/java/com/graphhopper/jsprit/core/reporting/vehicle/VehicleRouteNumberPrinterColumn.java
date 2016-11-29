@@ -15,7 +15,7 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.IntColumnType;
  *
  * @author balage
  */
-public class VehicleRouteNumberPrinterColumn extends AbstractPrinterColumn<VehicleStatisticsContext, Integer, VehicleRouteNumberPrinterColumn> {
+public class VehicleRouteNumberPrinterColumn extends AbstractPrinterColumn<VehicleSummaryContext, Integer, VehicleRouteNumberPrinterColumn> {
 
     /**
      * Constructor.
@@ -42,7 +42,7 @@ public class VehicleRouteNumberPrinterColumn extends AbstractPrinterColumn<Vehic
     }
 
     @Override
-    public Integer getData(VehicleStatisticsContext context) {
+    public Integer getData(VehicleSummaryContext context) {
         return context.getRouteNr();
     }
 

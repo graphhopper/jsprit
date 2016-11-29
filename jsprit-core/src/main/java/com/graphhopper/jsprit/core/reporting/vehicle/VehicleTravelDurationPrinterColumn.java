@@ -38,7 +38,7 @@ public class VehicleTravelDurationPrinterColumn extends AbstractVehicleDurationP
     }
 
     @Override
-    public Long getValue(VehicleStatisticsContext context) {
+    public Long getValue(VehicleSummaryContext context) {
         return context.getTravelDuration();
     }
 
