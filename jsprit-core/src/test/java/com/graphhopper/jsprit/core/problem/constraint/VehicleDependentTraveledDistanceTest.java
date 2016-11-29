@@ -282,9 +282,6 @@ vehicle2 (max distance): 180.0
         maxDistanceMap.put(vehicle,12d);
 
         StateManager stateManager = new StateManager(vrp);
-        stateManager.putActivityState(vrp.getActivities(shipment).get(0),
-            stateManager.createStateId("tempStateId"),
-            6d);
         MaxDistanceConstraint maxDistanceConstraint =
             new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
                 @Override
@@ -292,6 +289,11 @@ vehicle2 (max distance): 180.0
                     return vrp.getTransportCosts().getTransportTime(from,to,departureTime, null, vehicle);
                 }
             },maxDistanceMap);
+        Assert.assertTrue(maxDistanceConstraint.fulfilled(context,
+            new Start(vehicle.getStartLocation(), 0, Double.MAX_VALUE),
+            vrp.getActivities(shipment).get(0),
+            new End(vehicle.getEndLocation(), 0, Double.MAX_VALUE),
+            0).equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,
             vrp.getActivities(shipment).get(0),
             vrp.getActivities(shipment).get(1),
@@ -321,9 +323,6 @@ vehicle2 (max distance): 180.0
         maxDistanceMap.put(vehicle,10d);
 
         StateManager stateManager = new StateManager(vrp);
-        stateManager.putActivityState(vrp.getActivities(shipment).get(0),
-            stateManager.createStateId("tempStateId"),
-            4d);
         MaxDistanceConstraint maxDistanceConstraint =
             new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
                 @Override
@@ -332,9 +331,14 @@ vehicle2 (max distance): 180.0
                 }
             },maxDistanceMap);
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,
+            new Start(vehicle.getStartLocation(), 0, Double.MAX_VALUE),
+            vrp.getActivities(shipment).get(0),
+            new End(vehicle.getEndLocation(), 0, Double.MAX_VALUE),
+            0).equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assert.assertTrue(maxDistanceConstraint.fulfilled(context,
             vrp.getActivities(shipment).get(0),
             vrp.getActivities(shipment).get(1),
             new End(vehicle.getEndLocation(), 0, Double.MAX_VALUE),
-            3).equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+            1).equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 }
