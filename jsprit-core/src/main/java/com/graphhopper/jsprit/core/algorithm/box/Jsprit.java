@@ -161,6 +161,8 @@ public class Jsprit {
 
         private SolutionAcceptor solutionAcceptor;
 
+        private ScoringFunction regretScorer = null;
+
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
         }
@@ -266,6 +268,11 @@ public class Jsprit {
             return this;
         }
 
+        public Builder setRegretScorer(ScoringFunction scoringFunction) {
+            this.regretScorer = scoringFunction;
+            return this;
+        }
+
         public VehicleRoutingAlgorithm buildAlgorithm() {
             return new Jsprit(this).create(vrp);
         }
@@ -328,6 +335,8 @@ public class Jsprit {
 
     private SolutionAcceptor acceptor;
 
+    private ScoringFunction regretScorer;
+
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
         this.constraintManager = builder.constraintManager;
@@ -339,9 +348,15 @@ public class Jsprit {
         this.random = builder.random;
         this.activityInsertion = builder.activityInsertionCalculator;
         this.acceptor = builder.solutionAcceptor;
+        regretScorer = builder.regretScorer;
+    }
+
+    private void ini(VehicleRoutingProblem vrp) {
+        if (regretScorer == null) regretScorer = getRegretScorer(vrp);
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
+        ini(vrp);
         VehicleFleetManager fm;
         if (vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE)) {
             fm = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
@@ -450,7 +465,7 @@ public class Jsprit {
         );
 
         AbstractInsertionStrategy regret;
-        final DefaultScorer scorer;
+        final ScoringFunction scorer;
 
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
@@ -463,7 +478,7 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
@@ -476,7 +491,7 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regret = regretInsertion;
             }
@@ -489,7 +504,7 @@ public class Jsprit {
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
@@ -501,7 +516,7 @@ public class Jsprit {
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regret = regretInsertion;
             }
