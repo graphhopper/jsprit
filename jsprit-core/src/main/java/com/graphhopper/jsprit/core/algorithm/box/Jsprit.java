@@ -719,11 +719,11 @@ public class Jsprit {
         ModularSolutionCostCalculator modCalc = new ModularSolutionCostCalculator(vrp, maxCosts);
         modCalc.addComponent(new FixCostPerVehicle())
         .addComponent(new MissedBreak())
-                        .addComponent(new TransportCost(), 2d)
+        .addComponent(new TransportCost())
         .addComponent(new ActivityCost())
-        .addComponent(new UnassignedJobs(), 0.5d);
+        .addComponent(new UnassignedJobs());
 
-        // TODO: not to do here!
+        // TODO: temporal, not to do here!
         modCalc.beforeRun();
         modCalc.beforeSolution();
 
