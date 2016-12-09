@@ -17,11 +17,13 @@
  */
 package com.graphhopper.jsprit.core.problem.solution;
 
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 
 /**
@@ -41,19 +43,20 @@ public class VehicleRoutingProblemSolution {
         return new VehicleRoutingProblemSolution(solution2copy);
     }
 
-    private final Collection<VehicleRoute> routes;
+    private List<VehicleRoute> routes;
 
-    private Collection<Job> unassignedJobs = new ArrayList<Job>();
+    private Collection<Job> unassignedJobs = new ArrayList<>();
 
     private double cost;
 
     private VehicleRoutingProblemSolution(VehicleRoutingProblemSolution solution) {
-        routes = new ArrayList<VehicleRoute>();
+        List<VehicleRoute> tmpRoutes = new ArrayList<>();
         for (VehicleRoute r : solution.getRoutes()) {
             VehicleRoute route = VehicleRoute.copyOf(r);
-            routes.add(route);
+            tmpRoutes.add(route);
         }
-        this.cost = solution.getCost();
+        setRoutes(tmpRoutes);
+        cost = solution.getCost();
         unassignedJobs.addAll(solution.getUnassignedJobs());
     }
 
@@ -65,7 +68,7 @@ public class VehicleRoutingProblemSolution {
      */
     public VehicleRoutingProblemSolution(Collection<VehicleRoute> routes, double cost) {
         super();
-        this.routes = routes;
+        setRoutes(routes);
         this.cost = cost;
     }
 
@@ -78,9 +81,20 @@ public class VehicleRoutingProblemSolution {
      */
     public VehicleRoutingProblemSolution(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, double cost) {
         super();
-        this.routes = routes;
+        setRoutes(routes);
         this.unassignedJobs = unassignedJobs;
         this.cost = cost;
+    }
+
+
+    private void setRoutes(Collection<VehicleRoute> routes) {
+        this.routes = routes instanceof List ? (List<VehicleRoute>) routes : new ArrayList<>(routes);
+        Collections.sort(this.routes, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
+
+        int counter = 1;
+        for (VehicleRoute r : routes) {
+            r.setId(counter++);
+        }
     }
 
     /**
@@ -88,7 +102,7 @@ public class VehicleRoutingProblemSolution {
      *
      * @return collection of vehicle-routes
      */
-    public Collection<VehicleRoute> getRoutes() {
+    public List<VehicleRoute> getRoutes() {
         return routes;
     }
 

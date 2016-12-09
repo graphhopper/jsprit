@@ -43,7 +43,7 @@ public class RouteNumberPrinterColumn extends AbstractPrinterColumn<RoutePrinter
 
     @Override
     public Integer getData(RoutePrinterContext context) {
-        return context.getRouteNr();
+        return context.getRoute().getId();
     }
 
 }

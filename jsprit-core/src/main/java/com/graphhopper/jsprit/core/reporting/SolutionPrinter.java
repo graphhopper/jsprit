@@ -19,7 +19,6 @@ package com.graphhopper.jsprit.core.reporting;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -217,7 +216,7 @@ public class SolutionPrinter {
         DynamicTablePrinter problemTablePrinter = new DynamicTablePrinter(problemTableDef);
         problemTablePrinter.addRow().add("fleetsize").add(problem.getFleetSize());
         problemTablePrinter.addRow().add("maxNoVehicles")
-                        .add(problem.getFleetSize() == FleetSize.FINITE ? problem.getVehicles().size() : "unlimited");
+        .add(problem.getFleetSize() == FleetSize.FINITE ? problem.getVehicles().size() : "unlimited");
         problemTablePrinter.addSeparator();
         problemTablePrinter.addRow().add("noJobs").add(problem.getJobs().values().size());
         for (Entry<Class<? extends Job>, Long> jc : getNuOfJobs(problem).entrySet()) {
@@ -273,16 +272,14 @@ public class SolutionPrinter {
     protected static ConfigurableTablePrinter<RoutePrinterContext> buildRouteDetailsTable(VehicleRoutingProblem problem,
                     VehicleRoutingProblemSolution solution, PrinterColumnList<RoutePrinterContext> columns) {
         ConfigurableTablePrinter<RoutePrinterContext> tablePrinter = new ConfigurableTablePrinter<>(columns);
-        int routeNu = 1;
 
         List<VehicleRoute> list = new ArrayList<>(solution.getRoutes());
-        Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
         for (VehicleRoute route : list) {
-            if (routeNu != 1) {
+            if (route.getId() != 1) {
                 tablePrinter.addSeparator();
             }
 
-            RoutePrinterContext context = new RoutePrinterContext(routeNu, route, route.getStart(), problem);
+            RoutePrinterContext context = new RoutePrinterContext(route, route.getStart(), problem);
             tablePrinter.addRow(context);
 
             for (TourActivity act : route.getActivities()) {
@@ -292,8 +289,6 @@ public class SolutionPrinter {
 
             context.setActivity(route.getEnd());
             tablePrinter.addRow(context);
-
-            routeNu++;
         }
         return tablePrinter;
     }
@@ -329,11 +324,9 @@ public class SolutionPrinter {
                     VehicleRoutingProblemSolution solution, PrinterColumnList<VehicleSummaryContext> columns) {
         ConfigurableTablePrinter<VehicleSummaryContext> vehicleTablePrinter = new ConfigurableTablePrinter<>(columns);
 
-        List<VehicleRoute> list = new ArrayList<>(solution.getRoutes());
-        Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
-        int rn = 1;
+        List<VehicleRoute> list = solution.getRoutes();
         for (VehicleRoute route : list) {
-            vehicleTablePrinter.addRow(new VehicleSummaryContext(rn++, route, problem));
+            vehicleTablePrinter.addRow(new VehicleSummaryContext(route, problem));
         }
         return vehicleTablePrinter;
     }

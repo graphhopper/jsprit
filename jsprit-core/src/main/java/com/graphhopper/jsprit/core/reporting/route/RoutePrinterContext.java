@@ -20,8 +20,6 @@ import com.graphhopper.jsprit.core.reporting.job.JobPrinterContext;
  */
 public class RoutePrinterContext implements JobPrinterContext {
 
-    // The route id
-    private int routeNr;
     // The route itself
     private VehicleRoute route;
     // The current activity
@@ -41,19 +39,11 @@ public class RoutePrinterContext implements JobPrinterContext {
      * @param problem
      *            problem
      */
-    public RoutePrinterContext(int routeNr, VehicleRoute route, TourActivity activity, VehicleRoutingProblem problem) {
+    public RoutePrinterContext(VehicleRoute route, TourActivity activity, VehicleRoutingProblem problem) {
         super();
-        this.routeNr = routeNr;
         this.route = route;
         this.activity = activity;
         this.problem = problem;
-    }
-
-    /**
-     * @return The route id.
-     */
-    public int getRouteNr() {
-        return routeNr;
     }
 
     /**
