@@ -587,7 +587,11 @@ public class Jsprit {
             acceptor = schrimpfAcceptance;
         }
 
-        SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp, maxCosts);
+        SolutionCostCalculator objectiveFunction = getObjectiveFunction();
+        if (objectiveFunction instanceof ModularSolutionCostCalculator) {
+            ((ModularSolutionCostCalculator) objectiveFunction).beforeRun(vrp, maxCosts);
+        }
+
         SearchStrategy radial_regret = new SearchStrategy(Strategy.RADIAL_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         radial_regret.addModule(new RuinAndRecreateModule(Strategy.RADIAL_REGRET.toString(), regret, radial));
 
@@ -711,24 +715,23 @@ public class Jsprit {
         return Double.valueOf(string);
     }
 
-    private SolutionCostCalculator getObjectiveFunction(final VehicleRoutingProblem vrp, final double maxCosts) {
+    private SolutionCostCalculator getObjectiveFunction() {
         if (objectiveFunction != null) {
             return objectiveFunction;
         }
 
-        ModularSolutionCostCalculator modCalc = new ModularSolutionCostCalculator(vrp, maxCosts);
+        ModularSolutionCostCalculator modCalc = createDefaultSolutionCostCalculator();
+        return modCalc;
+    }
+
+    public static ModularSolutionCostCalculator createDefaultSolutionCostCalculator() {
+        ModularSolutionCostCalculator modCalc = new ModularSolutionCostCalculator();
         modCalc.addComponent(new FixCostPerVehicle())
         .addComponent(new MissedBreak())
         .addComponent(new TransportCost())
         .addComponent(new ActivityCost())
         .addComponent(new UnassignedJobs());
-
-        // TODO: temporal, not to do here!
-        modCalc.beforeRun();
-        modCalc.beforeSolution();
-
         return modCalc;
     }
-
 
 }
