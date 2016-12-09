@@ -25,4 +25,10 @@ public class RouteLevelComponentValue extends ComponentValue {
         }
     }
 
+    @Override
+    public String toString() {
+        return "RouteLevelComponentValue [key=" + getKey() + ", weight="
+                        + getWeight() + ", value=" + getValue() + "routeLevel=" + routeLevelValue + "]";
+    }
+
 }

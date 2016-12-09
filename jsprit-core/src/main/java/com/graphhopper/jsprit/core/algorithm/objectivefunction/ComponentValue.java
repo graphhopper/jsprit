@@ -40,4 +40,9 @@ public class ComponentValue {
         value += valueToAdd;
     }
 
+    @Override
+    public String toString() {
+        return "ComponentValue [key=" + key + ", weight=" + weight + ", value=" + value + "]";
+    }
+
 }
