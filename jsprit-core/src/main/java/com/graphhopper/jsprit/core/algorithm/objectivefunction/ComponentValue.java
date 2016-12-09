@@ -45,4 +45,8 @@ public class ComponentValue {
         return "ComponentValue [key=" + key + ", weight=" + weight + ", value=" + value + "]";
     }
 
+    public ComponentValue copy() {
+        return new ComponentValue(key, value).withWeight(weight);
+    }
+
 }

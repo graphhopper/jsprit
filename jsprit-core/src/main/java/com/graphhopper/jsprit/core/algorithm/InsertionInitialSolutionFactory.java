@@ -19,6 +19,14 @@
 
 package com.graphhopper.jsprit.core.algorithm;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.ModularSolutionCostCalculator;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -26,12 +34,6 @@ import com.graphhopper.jsprit.core.problem.solution.InitialSolutionFactory;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 
 public final class InsertionInitialSolutionFactory implements InitialSolutionFactory {
@@ -44,27 +46,31 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
 
     public InsertionInitialSolutionFactory(InsertionStrategy insertionStrategy, SolutionCostCalculator solutionCostCalculator) {
         super();
-        this.insertion = insertionStrategy;
-        this.solutionCostsCalculator = solutionCostCalculator;
+        insertion = insertionStrategy;
+        solutionCostsCalculator = solutionCostCalculator;
     }
 
     @Override
     public VehicleRoutingProblemSolution createSolution(final VehicleRoutingProblem vrp) {
         logger.info("create initial solution");
-        List<VehicleRoute> vehicleRoutes = new ArrayList<VehicleRoute>();
+        List<VehicleRoute> vehicleRoutes = new ArrayList<>();
         vehicleRoutes.addAll(vrp.getInitialVehicleRoutes());
         Collection<Job> badJobs = insertion.insertJobs(vehicleRoutes, getUnassignedJobs(vrp));
         VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(vehicleRoutes, badJobs, Double.MAX_VALUE);
         double costs = solutionCostsCalculator.getCosts(solution);
         solution.setCost(costs);
+        if (solutionCostsCalculator instanceof ModularSolutionCostCalculator) {
+            ModularSolutionCostCalculator modCalc = (ModularSolutionCostCalculator) solutionCostsCalculator;
+            solution.setDetailedCost(modCalc.calculate(solution));
+        }
         return solution;
     }
 
     private List<Job> getUnassignedJobs(VehicleRoutingProblem vrp) {
-        ArrayList<Job> jobs = new ArrayList<Job>(vrp.getJobs().values());
-//        for (Vehicle v : vrp.getVehicles()) {
-//            if (v.getBreak() != null) jobs.add(v.getBreak());
-//        }
+        ArrayList<Job> jobs = new ArrayList<>(vrp.getJobs().values());
+        //        for (Vehicle v : vrp.getVehicles()) {
+        //            if (v.getBreak() != null) jobs.add(v.getBreak());
+        //        }
         return jobs;
     }
 

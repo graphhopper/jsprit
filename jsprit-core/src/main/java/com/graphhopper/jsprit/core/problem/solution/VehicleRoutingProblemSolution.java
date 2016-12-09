@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.ComponentValue;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
@@ -45,6 +47,8 @@ public class VehicleRoutingProblemSolution {
 
     private List<VehicleRoute> routes;
 
+    private List<ComponentValue> detailedCost;
+
     private Collection<Job> unassignedJobs = new ArrayList<>();
 
     private double cost;
@@ -56,7 +60,11 @@ public class VehicleRoutingProblemSolution {
             tmpRoutes.add(route);
         }
         setRoutes(tmpRoutes);
-        cost = solution.getCost();
+        setCost(solution.getCost());
+        if (solution.getDetailedCost() != null) {
+            detailedCost = solution.getDetailedCost().stream().map(cv -> cv.copy()).collect(Collectors.toList());
+        }
+
         unassignedJobs.addAll(solution.getUnassignedJobs());
     }
 
@@ -69,7 +77,7 @@ public class VehicleRoutingProblemSolution {
     public VehicleRoutingProblemSolution(Collection<VehicleRoute> routes, double cost) {
         super();
         setRoutes(routes);
-        this.cost = cost;
+        setCost(cost);
     }
 
     /**
@@ -80,10 +88,8 @@ public class VehicleRoutingProblemSolution {
      * @param cost           total costs of solution
      */
     public VehicleRoutingProblemSolution(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, double cost) {
-        super();
-        setRoutes(routes);
+        this(routes, cost);
         this.unassignedJobs = unassignedJobs;
-        this.cost = cost;
     }
 
 
@@ -122,6 +128,15 @@ public class VehicleRoutingProblemSolution {
      */
     public void setCost(double cost) {
         this.cost = cost;
+        detailedCost = null;
+    }
+
+    public void setDetailedCost(List<ComponentValue> detailedCost) {
+        this.detailedCost = detailedCost;
+    }
+
+    public List<ComponentValue> getDetailedCost() {
+        return detailedCost;
     }
 
     /**

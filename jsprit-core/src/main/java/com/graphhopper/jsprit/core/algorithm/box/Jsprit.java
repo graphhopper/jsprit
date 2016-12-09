@@ -719,9 +719,9 @@ public class Jsprit {
         ModularSolutionCostCalculator modCalc = new ModularSolutionCostCalculator(vrp, maxCosts);
         modCalc.addComponent(new FixCostPerVehicle())
         .addComponent(new MissedBreak())
-        .addComponent(new TransportCost())
+                        .addComponent(new TransportCost(), 2d)
         .addComponent(new ActivityCost())
-        .addComponent(new UnassignedJobs());
+        .addComponent(new UnassignedJobs(), 0.5d);
 
         // TODO: not to do here!
         modCalc.beforeRun();

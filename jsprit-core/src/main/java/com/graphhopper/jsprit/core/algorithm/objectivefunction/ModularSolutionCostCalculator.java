@@ -1,6 +1,6 @@
 package com.graphhopper.jsprit.core.algorithm.objectivefunction;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 public class ModularSolutionCostCalculator implements SolutionCostCalculator {
 
     private VehicleRoutingProblem problem;
-    private Map<SolutionCostComponent, Double> components = new HashMap<>();
+    private Map<SolutionCostComponent, Double> components = new LinkedHashMap<>();
     private double maxCosts;
 
     public ModularSolutionCostCalculator(VehicleRoutingProblem problem, double maxCosts) {

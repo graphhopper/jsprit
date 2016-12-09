@@ -31,4 +31,12 @@ public class RouteLevelComponentValue extends ComponentValue {
                         + getWeight() + ", value=" + getValue() + "routeLevel=" + routeLevelValue + "]";
     }
 
+    @Override
+    public RouteLevelComponentValue copy() {
+        RouteLevelComponentValue copy = new RouteLevelComponentValue(getKey());
+        copy.withWeight(getWeight());
+        copy.routeLevelValue = new HashMap<>(routeLevelValue);
+        return copy;
+    }
+
 }
