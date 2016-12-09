@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -215,6 +216,8 @@ public class SolutionPrinter {
 
         DynamicTablePrinter problemTablePrinter = new DynamicTablePrinter(problemTableDef);
         problemTablePrinter.addRow().add("fleetsize").add(problem.getFleetSize());
+        problemTablePrinter.addRow().add("maxNoVehicles")
+                        .add(problem.getFleetSize() == FleetSize.FINITE ? problem.getVehicles().size() : "unlimited");
         problemTablePrinter.addSeparator();
         problemTablePrinter.addRow().add("noJobs").add(problem.getJobs().values().size());
         for (Entry<Class<? extends Job>, Long> jc : getNuOfJobs(problem).entrySet()) {

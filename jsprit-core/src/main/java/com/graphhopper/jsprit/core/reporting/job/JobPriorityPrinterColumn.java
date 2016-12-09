@@ -1,10 +1,9 @@
-package com.graphhopper.jsprit.core.reporting.route;
+package com.graphhopper.jsprit.core.reporting.job;
 
 import java.util.function.Consumer;
 
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnAlignment;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
@@ -21,7 +20,8 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
  *
  * @author balage
  */
-public class JobPriorityPrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, JobPriorityPrinterColumn> {
+public class JobPriorityPrinterColumn<T extends JobPrinterContext>
+                extends AbstractPrinterColumn<T, String, JobPriorityPrinterColumn<T>> {
 
     private static final String[] PRIORITY_NAMES = new String[] { "", "HIGH", "MEDIUM", "LOW" };
 
@@ -50,14 +50,9 @@ public class JobPriorityPrinterColumn extends AbstractPrinterColumn<RoutePrinter
     }
 
     @Override
-    public String getData(RoutePrinterContext context) {
-        TourActivity act = context.getActivity();
-        if (act instanceof JobActivity) {
-            Job job = ((JobActivity) context.getActivity()).getJob();
-            return PRIORITY_NAMES[job.getPriority()];
-        } else {
-            return null;
-        }
+    public String getData(T context) {
+        AbstractJob job = context.getJob();
+        return job == null ? null : PRIORITY_NAMES[job.getPriority()];
     }
 
 }

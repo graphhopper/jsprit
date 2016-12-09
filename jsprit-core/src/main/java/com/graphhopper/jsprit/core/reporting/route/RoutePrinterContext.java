@@ -1,9 +1,11 @@
 package com.graphhopper.jsprit.core.reporting.route;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.reporting.PrinterContext;
+import com.graphhopper.jsprit.core.reporting.job.JobPrinterContext;
 
 /**
  * The context of the detailed route printer columns.
@@ -16,7 +18,7 @@ import com.graphhopper.jsprit.core.reporting.PrinterContext;
  * @author balage
  *
  */
-public class RoutePrinterContext implements PrinterContext {
+public class RoutePrinterContext implements JobPrinterContext {
 
     // The route id
     private int routeNr;
@@ -81,6 +83,11 @@ public class RoutePrinterContext implements PrinterContext {
      */
     public VehicleRoutingProblem getProblem() {
         return problem;
+    }
+
+    @Override
+    public AbstractJob getJob() {
+        return (getActivity() instanceof JobActivity) ? ((JobActivity) getActivity()).getJob() : null;
     }
 
 }

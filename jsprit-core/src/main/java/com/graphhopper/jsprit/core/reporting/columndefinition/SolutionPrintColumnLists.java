@@ -6,15 +6,15 @@ import java.util.List;
 
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.PrinterColumnList;
+import com.graphhopper.jsprit.core.reporting.job.JobNamePrinterColumn;
+import com.graphhopper.jsprit.core.reporting.job.JobPriorityPrinterColumn;
+import com.graphhopper.jsprit.core.reporting.job.JobTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityCostPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityLoadChangePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ActivityTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.ArrivalTimePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.EndTimePrinterColumn;
-import com.graphhopper.jsprit.core.reporting.route.JobNamePrinterColumn;
-import com.graphhopper.jsprit.core.reporting.route.JobPriorityPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.route.JobTypePrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.LoacationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.OperationDurationPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.route.RouteCostPrinterColumn;
@@ -35,6 +35,7 @@ import com.graphhopper.jsprit.core.reporting.route.WaitingDurationPrinterColumn;
  * @author balage
  *
  */
+@SuppressWarnings("unchecked")
 public class SolutionPrintColumnLists {
 
     /**
@@ -66,7 +67,7 @@ public class SolutionPrintColumnLists {
         minimalSet.add(RouteNumberPrinterColumn.class);
         minimalSet.add(VehicleNamePrinterColumn.class);
         minimalSet.add(ActivityTypePrinterColumn.class);
-        minimalSet.add(JobNamePrinterColumn.class);
+        minimalSet.add((Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>>) JobNamePrinterColumn.class);
         minimalSet.add(ArrivalTimePrinterColumn.class);
         minimalSet.add(EndTimePrinterColumn.class);
         minimalSet.add(RouteCostPrinterColumn.class);
@@ -76,7 +77,7 @@ public class SolutionPrintColumnLists {
         defaultSet.add(RouteNumberPrinterColumn.class);
         defaultSet.add(VehicleNamePrinterColumn.class);
         defaultSet.add(ActivityTypePrinterColumn.class);
-        defaultSet.add(JobNamePrinterColumn.class);
+        defaultSet.add((Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>>) JobNamePrinterColumn.class);
         defaultSet.add(LoacationPrinterColumn.class);
         defaultSet.add(ActivityLoadChangePrinterColumn.class);
         defaultSet.add(OperationDurationPrinterColumn.class);
@@ -92,9 +93,9 @@ public class SolutionPrintColumnLists {
         verboseSet.add(VehicleNamePrinterColumn.class);
         verboseSet.add(ActivityTypePrinterColumn.class);
 
-        verboseSet.add(JobNamePrinterColumn.class);
-        verboseSet.add(JobTypePrinterColumn.class);
-        verboseSet.add(JobPriorityPrinterColumn.class);
+        verboseSet.add((Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>>) JobNamePrinterColumn.class);
+        verboseSet.add((Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>>) JobTypePrinterColumn.class);
+        verboseSet.add((Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>>) JobPriorityPrinterColumn.class);
 
         verboseSet.add(LoacationPrinterColumn.class);
         verboseSet.add(ActivityLoadChangePrinterColumn.class);

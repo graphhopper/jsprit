@@ -1,10 +1,8 @@
-package com.graphhopper.jsprit.core.reporting.route;
+package com.graphhopper.jsprit.core.reporting.job;
 
 import java.util.function.Consumer;
 
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
@@ -19,7 +17,7 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
  *
  * @author balage
  */
-public class JobTypePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, JobTypePrinterColumn> {
+public class JobTypePrinterColumn<T extends JobPrinterContext> extends AbstractPrinterColumn<T, String, JobTypePrinterColumn<T>> {
 
     /**
      * Constructor.
@@ -46,14 +44,9 @@ public class JobTypePrinterColumn extends AbstractPrinterColumn<RoutePrinterCont
     }
 
     @Override
-    public String getData(RoutePrinterContext context) {
-        TourActivity act = context.getActivity();
-        if (act instanceof JobActivity) {
-            Job job = ((JobActivity) context.getActivity()).getJob();
-            return job.getClass().getSimpleName();
-        } else {
-            return null;
-        }
+    public String getData(JobPrinterContext context) {
+        AbstractJob job = context.getJob();
+        return job == null ? null : job.getClass().getSimpleName();
     }
 
 }
