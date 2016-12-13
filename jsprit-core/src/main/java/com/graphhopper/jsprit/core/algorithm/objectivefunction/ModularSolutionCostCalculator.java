@@ -93,15 +93,37 @@ public class ModularSolutionCostCalculator implements SolutionCostCalculator {
      * @return The cost calculator itself.
      * @throws IllegalArgumentException
      *             If the component is already registered.
+     * @throws IllegalStateException
+     *             When called after the calculator is initialized.
      */
     public ModularSolutionCostCalculator addComponent(SolutionCostComponent component, double weight) {
-        if (components.containsKey(component.getId())) {
+        if (isInitialized()) {
+            throw new IllegalStateException("Already initialized.");
+        }
+        if (components.containsKey(component)) {
             throw new IllegalArgumentException("Cost component '" + component.getId() + "' is duplicated.");
         }
         components.put(component, weight);
         return this;
     }
 
+    /**
+     * @return The number of registered components.
+     */
+    public int getComponentCount() {
+        return components.size();
+    }
+
+    /**
+     * Returns the weight of a component.
+     *
+     * @param key
+     *            The key to look for.
+     * @return The weight of the component or empty if not registered.
+     */
+    public Optional<Double> getWeight(String key) {
+        return Optional.ofNullable(components.getOrDefault(findComponent(key).orElse(null), null));
+    }
 
     /**
      * Returns whether the component with the key is registered.
@@ -133,8 +155,13 @@ public class ModularSolutionCostCalculator implements SolutionCostCalculator {
      *            The key to look for.
      * @param newWeight
      *            The new weight.
+     * @throws IllegalStateException
+     *             When called after the calculator is initialized.
      */
     public void changeComponentWeight(String key, double newWeight) {
+        if (isInitialized()) {
+            throw new IllegalStateException("Already initialized.");
+        }
         findComponent(key).ifPresent(c -> components.put(c, newWeight));
     }
 
@@ -144,13 +171,18 @@ public class ModularSolutionCostCalculator implements SolutionCostCalculator {
      * This makes it possible to start from a predefined calculator (such as the
      * default one) and reconfiguring one of its components.
      * </p>
-     * 
+     *
      * @param key
      *            The key of the component to remove.
      * @return The removed component or empty if the component was not
      *         registered.
+     * @throws IllegalStateException
+     *             When called after the calculator is initialized.
      */
     public Optional<SolutionCostComponent> removeComponent(String key) {
+        if (isInitialized()) {
+            throw new IllegalStateException("Already initialized.");
+        }
         Optional<SolutionCostComponent> optC = findComponent(key);
         optC.ifPresent(c -> components.remove(c));
         return optC;
@@ -222,5 +254,6 @@ public class ModularSolutionCostCalculator implements SolutionCostCalculator {
     private void beforeSolution() {
         components.keySet().forEach(c -> c.beforeSolution(problem));
     }
+
 
 }
