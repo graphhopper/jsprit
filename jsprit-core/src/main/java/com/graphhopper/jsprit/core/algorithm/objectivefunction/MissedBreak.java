@@ -5,6 +5,19 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
+/**
+ * A cost calculator component for penaltizing activities in break time.
+ * <p>
+ * This cost calculator returns a value proportional value to the length of the
+ * break.
+ * </p>
+ * <p>
+ * This is a route level component.
+ * </p>
+ *
+ * @author balage
+ *
+ */
 public class MissedBreak extends RouteLevelSolutionCostComponent {
 
     public static final String COMPONENT_ID = "MissedBreak";

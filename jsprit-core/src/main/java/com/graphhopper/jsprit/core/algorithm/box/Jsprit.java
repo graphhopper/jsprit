@@ -724,6 +724,26 @@ public class Jsprit {
         return modCalc;
     }
 
+    /**
+     * Creates a default objective function calculator.
+     *
+     * <p>
+     * This function will contain the following components:
+     * <ul>
+     * <li>{@linkplain FixCostPerVehicle}</li>
+     * <li>{@linkplain MissedBreak}</li>
+     * <li>{@linkplain TransportCost}</li>
+     * <li>{@linkplain ActivityCost}</li>
+     * <li>{@linkplain UnassignedJobs}</li>
+     * </ul>
+     * </p>
+     * <p>
+     * All components will be initialized with their default parameters and will
+     * have the weight of 1.0.
+     * </p>
+     *
+     * @return The default objective function calculator
+     */
     public static ModularSolutionCostCalculator createDefaultSolutionCostCalculator() {
         ModularSolutionCostCalculator modCalc = new ModularSolutionCostCalculator();
         modCalc.addComponent(new FixCostPerVehicle())

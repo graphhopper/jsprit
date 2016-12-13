@@ -4,6 +4,12 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 
+/**
+ * A cost calculator component for penaltizing unassingned jobs.
+ *
+ * @author balage
+ *
+ */
 public class UnassignedJobs extends SolutionCostComponent {
 
     public static final String COMPONENT_ID = "Unassigned";

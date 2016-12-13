@@ -4,6 +4,19 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
+/**
+ * A cost calculator component for a all transport costs.
+ * <p>
+ * This cost calculator returns the sum of the transport cost of all the
+ * activities on the route.
+ * </p>
+ * <p>
+ * This is a route level component.
+ * </p>
+ *
+ * @author balage
+ *
+ */
 public class TransportCost extends RouteLevelSolutionCostComponent {
 
     public static final String COMPONENT_ID = "Transport";
