@@ -17,18 +17,20 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.ModularSolutionCostCalculator;
 import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 
 public class SearchStrategy {
@@ -68,7 +70,7 @@ public class SearchStrategy {
 
     private static Logger logger = LoggerFactory.getLogger(SearchStrategy.class);
 
-    private final Collection<SearchStrategyModule> searchStrategyModules = new ArrayList<SearchStrategyModule>();
+    private final Collection<SearchStrategyModule> searchStrategyModules = new ArrayList<>();
 
     private final SolutionSelector solutionSelector;
 
@@ -81,7 +83,9 @@ public class SearchStrategy {
     private String name;
 
     public SearchStrategy(String id, SolutionSelector solutionSelector, SolutionAcceptor solutionAcceptor, SolutionCostCalculator solutionCostCalculator) {
-        if (id == null) throw new IllegalStateException("strategy id cannot be null");
+        if (id == null) {
+            throw new IllegalStateException("strategy id cannot be null");
+        }
         this.solutionSelector = solutionSelector;
         this.solutionAcceptor = solutionAcceptor;
         this.solutionCostCalculator = solutionCostCalculator;
@@ -136,26 +140,35 @@ public class SearchStrategy {
     @SuppressWarnings("UnusedParameters")
     public DiscoveredSolution run(VehicleRoutingProblem vrp, Collection<VehicleRoutingProblemSolution> solutions) {
         VehicleRoutingProblemSolution solution = solutionSelector.selectSolution(solutions);
-        if (solution == null) throw new IllegalStateException(getErrMsg());
+        if (solution == null) {
+            throw new IllegalStateException(getErrMsg());
+        }
         VehicleRoutingProblemSolution lastSolution = VehicleRoutingProblemSolution.copyOf(solution);
         for (SearchStrategyModule module : searchStrategyModules) {
             lastSolution = module.runAndGetSolution(lastSolution);
         }
         double costs = solutionCostCalculator.getCosts(lastSolution);
         lastSolution.setCost(costs);
+        if (solutionCostCalculator instanceof ModularSolutionCostCalculator) {
+            ModularSolutionCostCalculator modCalc = (ModularSolutionCostCalculator) solutionCostCalculator;
+            lastSolution.setDetailedCost(modCalc.calculate(lastSolution));
+        }
+
         boolean solutionAccepted = solutionAcceptor.acceptSolution(solutions, lastSolution);
         return new DiscoveredSolution(lastSolution, solutionAccepted, getId());
     }
 
     private String getErrMsg() {
         return "solution is null. check solutionSelector to return an appropriate solution. " +
-            "\nfigure out whether you start with an initial solution. either you set it manually by algorithm.addInitialSolution(...)"
-            + " or let the algorithm create an initial solution for you. then add the <construction>...</construction> xml-snippet to your algorithm's config file.";
+                        "\nfigure out whether you start with an initial solution. either you set it manually by algorithm.addInitialSolution(...)"
+                        + " or let the algorithm create an initial solution for you. then add the <construction>...</construction> xml-snippet to your algorithm's config file.";
     }
 
 
     public void addModule(SearchStrategyModule module) {
-        if (module == null) throw new IllegalStateException("module to be added is null.");
+        if (module == null) {
+            throw new IllegalStateException("module to be added is null.");
+        }
         searchStrategyModules.add(module);
         logger.debug("module added [module={}][#modules={}]", module, searchStrategyModules.size());
     }

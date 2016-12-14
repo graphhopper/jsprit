@@ -32,6 +32,12 @@ import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.ActivityCost;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.FixCostPerVehicle;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.MissedBreak;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.ModularSolutionCostCalculator;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.TransportCost;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.UnassignedJobs;
 import com.graphhopper.jsprit.core.algorithm.recreate.AbstractInsertionStrategy;
 import com.graphhopper.jsprit.core.algorithm.recreate.ActivityInsertionCostsCalculator;
 import com.graphhopper.jsprit.core.algorithm.recreate.BestInsertion;
@@ -43,6 +49,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertion;
 import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionConcurrent;
 import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionConcurrentFast;
 import com.graphhopper.jsprit.core.algorithm.recreate.RegretInsertionFast;
+import com.graphhopper.jsprit.core.algorithm.recreate.ScoringFunction;
 import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoods;
 import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoodsFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinClusters;
@@ -55,12 +62,8 @@ import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
@@ -180,6 +183,8 @@ public class Jsprit {
 
         private SolutionAcceptor solutionAcceptor;
 
+        private ScoringFunction regretScorer = null;
+
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
         }
@@ -239,7 +244,7 @@ public class Jsprit {
             return this;
         }
 
-        public Builder setCustomAcceptor(SolutionAcceptor acceptor) {
+        public Builder setCustomAcceptor(SolutionAcceptor acceptor){
             solutionAcceptor = acceptor;
             return this;
         }
@@ -282,6 +287,11 @@ public class Jsprit {
 
         public Builder setActivityInsertionCalculator(ActivityInsertionCostsCalculator activityInsertionCalculator) {
             this.activityInsertionCalculator = activityInsertionCalculator;
+            return this;
+        }
+
+        public Builder setRegretScorer(ScoringFunction scoringFunction) {
+            regretScorer = scoringFunction;
             return this;
         }
 
@@ -349,6 +359,8 @@ public class Jsprit {
 
     private SolutionAcceptor acceptor;
 
+    private ScoringFunction regretScorer;
+
     private Jsprit(Builder builder) {
         stateManager = builder.stateManager;
         constraintManager = builder.constraintManager;
@@ -360,9 +372,17 @@ public class Jsprit {
         random = builder.random;
         activityInsertion = builder.activityInsertionCalculator;
         acceptor = builder.solutionAcceptor;
+        regretScorer = builder.regretScorer;
+    }
+
+    private void ini(VehicleRoutingProblem vrp) {
+        if (regretScorer == null) {
+            regretScorer = getRegretScorer(vrp);
+        }
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
+        ini(vrp);
         VehicleFleetManager fm;
         if (vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE)) {
             fm = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
@@ -396,7 +416,7 @@ public class Jsprit {
         jobNeighborhoods.initialise();
 
         final double maxCosts;
-        if (properties.containsKey(Parameter.MAX_TRANSPORT_COSTS.toString())) {
+        if(properties.containsKey(Parameter.MAX_TRANSPORT_COSTS.toString())){
             maxCosts = Double.parseDouble(getProperty(Parameter.MAX_TRANSPORT_COSTS.toString()));
         } else {
             maxCosts = jobNeighborhoods.getMaxDistance();
@@ -473,11 +493,11 @@ public class Jsprit {
                         );
 
         AbstractInsertionStrategy regret;
-        final DefaultScorer scorer;
+        final ScoringFunction scorer;
 
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
-            if (fastRegret) {
+            if(fastRegret){
                 RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                                 .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                                 .setConcurrentMode(es, noThreads)
@@ -486,11 +506,12 @@ public class Jsprit {
                                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                                 .setActivityInsertionCostCalculator(activityInsertion)
                                 .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
-            } else {
+            }
+            else {
                 RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                                 .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                                 .setConcurrentMode(es, noThreads)
@@ -498,12 +519,12 @@ public class Jsprit {
                                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                                 .setActivityInsertionCostCalculator(activityInsertion)
                                 .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regret = regretInsertion;
             }
         } else {
-            if (fastRegret) {
+            if(fastRegret) {
                 RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                                 .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                                 .setFastRegret(true)
@@ -511,18 +532,19 @@ public class Jsprit {
                                 .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                                 .setActivityInsertionCostCalculator(activityInsertion)
                                 .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
-            } else {
+            }
+            else{
                 RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
                                 .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                                 .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                                 .setActivityInsertionCostCalculator(activityInsertion)
                                 .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regret = regretInsertion;
             }
@@ -551,7 +573,7 @@ public class Jsprit {
         best.setRandom(random);
 
         IterationStartsListener schrimpfThreshold = null;
-        if (acceptor == null) {
+        if(acceptor == null) {
             final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
             schrimpfThreshold = new IterationStartsListener() {
                 @Override
@@ -565,7 +587,11 @@ public class Jsprit {
             acceptor = schrimpfAcceptance;
         }
 
-        SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp, maxCosts);
+        SolutionCostCalculator objectiveFunction = getObjectiveFunction();
+        if (objectiveFunction instanceof ModularSolutionCostCalculator) {
+            ((ModularSolutionCostCalculator) objectiveFunction).beforeRun(vrp, maxCosts);
+        }
+
         SearchStrategy radial_regret = new SearchStrategy(Strategy.RADIAL_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         radial_regret.addModule(new RuinAndRecreateModule(Strategy.RADIAL_REGRET.toString(), regret, radial));
 
@@ -613,14 +639,14 @@ public class Jsprit {
 
 
         VehicleRoutingAlgorithm vra = prettyBuilder.build();
-        if (schrimpfThreshold != null) {
+        if(schrimpfThreshold != null) {
             vra.addListener(schrimpfThreshold);
         }
         vra.addListener(noiseConfigurator);
         vra.addListener(noise);
         vra.addListener(clusters);
 
-        if (toBoolean(getProperty(Parameter.BREAK_SCHEDULING.toString()))) {
+        if(toBoolean(getProperty(Parameter.BREAK_SCHEDULING.toString()))) {
             vra.addListener(new BreakScheduling(vrp, stateManager, constraintManager));
         }
         handleExecutorShutdown(vra);
@@ -689,51 +715,43 @@ public class Jsprit {
         return Double.valueOf(string);
     }
 
-    private SolutionCostCalculator getObjectiveFunction(final VehicleRoutingProblem vrp, final double maxCosts) {
+    private SolutionCostCalculator getObjectiveFunction() {
         if (objectiveFunction != null) {
             return objectiveFunction;
         }
 
-        SolutionCostCalculator solutionCostCalculator = new SolutionCostCalculator() {
-            @Override
-            public double getCosts(VehicleRoutingProblemSolution solution) {
-                double costs = 0.;
-
-                for (VehicleRoute route : solution.getRoutes()) {
-                    costs += route.getVehicle().getType().getVehicleCostParams().fix;
-                    boolean hasBreak = false;
-                    TourActivity prevAct = route.getStart();
-                    for (TourActivity act : route.getActivities()) {
-                        if (act instanceof BreakActivity) {
-                            hasBreak = true;
-                        }
-                        costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
-                        costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
-                        prevAct = act;
-                    }
-                    costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
-                    if (route.getVehicle().getBreak() != null) {
-                        if (!hasBreak) {
-                            //break defined and required but not assigned penalty
-                            if (route.getEnd().getArrTime() > route.getVehicle().getBreak()
-                                            .getActivity().getSingleTimeWindow()
-                                            .getEnd()) {
-                                costs += 4 * (maxCosts * 2 + route.getVehicle().getBreak()
-                                                .getActivity().getOperationTime()
-                                                * route.getVehicle().getType()
-                                                                .getVehicleCostParams().perServiceTimeUnit);
-                            }
-                        }
-                    }
-                }
-                for (Job j : solution.getUnassignedJobs()) {
-                    costs += maxCosts * 2 * (4 - j.getPriority());
-                }
-                return costs;
-            }
-        };
-        return solutionCostCalculator;
+        ModularSolutionCostCalculator modCalc = createDefaultSolutionCostCalculator();
+        return modCalc;
     }
 
+    /**
+     * Creates a default objective function calculator.
+     *
+     * <p>
+     * This function will contain the following components:
+     * <ul>
+     * <li>{@linkplain FixCostPerVehicle}</li>
+     * <li>{@linkplain MissedBreak}</li>
+     * <li>{@linkplain TransportCost}</li>
+     * <li>{@linkplain ActivityCost}</li>
+     * <li>{@linkplain UnassignedJobs}</li>
+     * </ul>
+     * </p>
+     * <p>
+     * All components will be initialized with their default parameters and will
+     * have the weight of 1.0.
+     * </p>
+     *
+     * @return The default objective function calculator
+     */
+    public static ModularSolutionCostCalculator createDefaultSolutionCostCalculator() {
+        ModularSolutionCostCalculator modCalc = new ModularSolutionCostCalculator();
+        modCalc.addComponent(new FixCostPerVehicle())
+        .addComponent(new MissedBreak())
+        .addComponent(new TransportCost())
+        .addComponent(new ActivityCost())
+        .addComponent(new UnassignedJobs());
+        return modCalc;
+    }
 
 }

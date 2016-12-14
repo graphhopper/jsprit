@@ -2,9 +2,8 @@ package com.graphhopper.jsprit.core.reporting.route;
 
 import java.util.function.Consumer;
 
+import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
@@ -47,13 +46,8 @@ public class JobNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterCont
 
     @Override
     public String getData(RoutePrinterContext context) {
-        TourActivity act = context.getActivity();
-        if (act instanceof JobActivity) {
-            Job job = ((JobActivity) context.getActivity()).getJob();
-            return job.getId();
-        } else {
-            return null;
-        }
+        AbstractJob job = context.getJob();
+        return job == null ? null : job.getId();
     }
 
 }

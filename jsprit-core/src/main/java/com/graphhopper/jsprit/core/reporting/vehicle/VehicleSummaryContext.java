@@ -25,8 +25,8 @@ public class VehicleSummaryContext implements PrinterContext {
     private long breakDuration;
     private long travelDistance;
 
-    public VehicleSummaryContext(int routeNr, VehicleRoute route, VehicleRoutingProblem problem) {
-        this.routeNr = routeNr;
+    public VehicleSummaryContext(VehicleRoute route, VehicleRoutingProblem problem) {
+        routeNr = route.getId();
         vehicle = route.getVehicle();
         driver = route.getDriver();
         start = (long) route.getStart().getEndTime();

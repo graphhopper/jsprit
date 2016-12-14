@@ -19,20 +19,26 @@ package com.graphhopper.jsprit.core.reporting;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.ComponentValue;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.RouteLevelComponentValue;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.reporting.ConfigurableTablePrinter.CsvConfig;
+import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.Builder;
+import com.graphhopper.jsprit.core.reporting.DynamicTablePrinter.TableRow;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnAlignment;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.DoubleColumnType;
 import com.graphhopper.jsprit.core.reporting.columndefinition.SolutionPrintColumnLists;
 import com.graphhopper.jsprit.core.reporting.columndefinition.SolutionPrintColumnLists.PredefinedList;
 import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
@@ -188,6 +194,8 @@ public class SolutionPrinter {
 
     // New print functions (TODO old ones should be migrated into these)
 
+    // ----------------------------------------------------------
+
     /**
      * Prints costs and #vehicles to the given writer
      *
@@ -215,6 +223,8 @@ public class SolutionPrinter {
 
         DynamicTablePrinter problemTablePrinter = new DynamicTablePrinter(problemTableDef);
         problemTablePrinter.addRow().add("fleetsize").add(problem.getFleetSize());
+        problemTablePrinter.addRow().add("maxNoVehicles")
+        .add(problem.getFleetSize() == FleetSize.FINITE ? problem.getVehicles().size() : "unlimited");
         problemTablePrinter.addSeparator();
         problemTablePrinter.addRow().add("noJobs").add(problem.getJobs().values().size());
         for (Entry<Class<? extends Job>, Long> jc : getNuOfJobs(problem).entrySet()) {
@@ -237,6 +247,93 @@ public class SolutionPrinter {
         solutionTablePrinter.addRow().add("noVehicles").add(solution.getRoutes().size());
         solutionTablePrinter.addRow().add("unassignedJobs").add(solution.getUnassignedJobs().size());
         out.println(solutionTablePrinter.print());
+    }
+
+    // ----------------------------------------------------------
+
+    public static void printCostDetails(VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
+        printCostDetails(SYSTEM_OUT_AS_PRINT_WRITER, problem, solution);
+        SYSTEM_OUT_AS_PRINT_WRITER.flush();
+    }
+
+    public static void printCostDetails(PrintWriter out, VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution) {
+        if (solution.getDetailedCost() == null) {
+            out.println("No detailed cost info available.");
+            return;
+        }
+
+        DynamicTableDefinition compomentTableDef = new DynamicTableDefinition.Builder()
+                        .withHeading("Cost components")
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "component id")
+                                        .build())
+                        .addColumn(new ColumnDefinition.Builder(new DoubleColumnType(), "value")
+                                        .withAlignment(ColumnAlignment.RIGHT).build())
+                        .addColumn(new ColumnDefinition.Builder(new DoubleColumnType(), "weight")
+                                        .withAlignment(ColumnAlignment.RIGHT).build())
+                        .addColumn(new ColumnDefinition.Builder(new DoubleColumnType(), "weighted value")
+                                        .withAlignment(ColumnAlignment.RIGHT).build())
+                        .build();
+
+        DynamicTablePrinter componentTablePrinter = new DynamicTablePrinter(compomentTableDef);
+        for (ComponentValue cv : solution.getDetailedCost()) {
+            componentTablePrinter.addRow().add(cv.getKey()).add(cv.getValue()).add(cv.getWeight()).add(cv.getWeightedValue());
+        }
+        out.println(componentTablePrinter.print());
+
+        Builder routeLevelTableDefBuilder = new DynamicTableDefinition.Builder()
+                        .withHeading("Route level costs (weighted)")
+                        .addColumn(new ColumnDefinition.Builder(new StringColumnType(), "Route")
+                                        .build());
+        DynamicTableDefinition routeLevelTableDef = routeLevelTableDefBuilder.build();
+        for (ComponentValue cv : solution.getDetailedCost()) {
+            if (cv instanceof RouteLevelComponentValue) {
+                routeLevelTableDefBuilder.addColumn(new ColumnDefinition.Builder(new DoubleColumnType(), cv.getKey())
+                                .withAlignment(ColumnAlignment.RIGHT).build());
+            }
+        }
+        routeLevelTableDefBuilder.addColumn(new ColumnDefinition.Builder(new DoubleColumnType(), "Total").build());
+
+        DynamicTablePrinter routeLevelTablePrinter = new DynamicTablePrinter(routeLevelTableDef);
+        TableRow row;
+        // row = routeLevelTablePrinter.addRow().add("Weight");
+        // for (ComponentValue cv : solution.getDetailedCost()) {
+        // if (cv instanceof RouteLevelComponentValue) {
+        // row.add(cv.getWeight());
+        // }
+        // }
+        // routeLevelTablePrinter.addSeparator();
+
+        for (VehicleRoute r : solution.getRoutes()) {
+            row = routeLevelTablePrinter.addRow().add(r.getId());
+            double sum = 0d;
+            for (ComponentValue cv : solution.getDetailedCost()) {
+                if (cv instanceof RouteLevelComponentValue) {
+                    Double val = ((RouteLevelComponentValue) cv).getRouteValue(r.getId()).orElse(null);
+                    if (val != null) {
+                        val *= cv.getWeight();
+                    }
+                    sum += val;
+                    row.add(val);
+                }
+            }
+            row.add(sum);
+        }
+        routeLevelTablePrinter.addSeparator();
+        row = routeLevelTablePrinter.addRow().add("Total");
+        double sum = 0d;
+        for (ComponentValue cv : solution.getDetailedCost()) {
+            if (cv instanceof RouteLevelComponentValue) {
+                Double val = ((RouteLevelComponentValue) cv).getValue();
+                if (val != null) {
+                    val *= cv.getWeight();
+                }
+                sum += val;
+                row.add(val);
+            }
+        }
+        row.add(sum);
+
+        out.println(routeLevelTablePrinter.print());
     }
 
     // ----------------------------------------------------------
@@ -270,16 +367,14 @@ public class SolutionPrinter {
     protected static ConfigurableTablePrinter<RoutePrinterContext> buildRouteDetailsTable(VehicleRoutingProblem problem,
                     VehicleRoutingProblemSolution solution, PrinterColumnList<RoutePrinterContext> columns) {
         ConfigurableTablePrinter<RoutePrinterContext> tablePrinter = new ConfigurableTablePrinter<>(columns);
-        int routeNu = 1;
 
         List<VehicleRoute> list = new ArrayList<>(solution.getRoutes());
-        Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
         for (VehicleRoute route : list) {
-            if (routeNu != 1) {
+            if (route.getId() != 1) {
                 tablePrinter.addSeparator();
             }
 
-            RoutePrinterContext context = new RoutePrinterContext(routeNu, route, route.getStart(), problem);
+            RoutePrinterContext context = new RoutePrinterContext(route, route.getStart(), problem);
             tablePrinter.addRow(context);
 
             for (TourActivity act : route.getActivities()) {
@@ -289,8 +384,6 @@ public class SolutionPrinter {
 
             context.setActivity(route.getEnd());
             tablePrinter.addRow(context);
-
-            routeNu++;
         }
         return tablePrinter;
     }
@@ -326,11 +419,9 @@ public class SolutionPrinter {
                     VehicleRoutingProblemSolution solution, PrinterColumnList<VehicleSummaryContext> columns) {
         ConfigurableTablePrinter<VehicleSummaryContext> vehicleTablePrinter = new ConfigurableTablePrinter<>(columns);
 
-        List<VehicleRoute> list = new ArrayList<>(solution.getRoutes());
-        Collections.sort(list, new com.graphhopper.jsprit.core.util.VehicleIndexComparator());
-        int rn = 1;
+        List<VehicleRoute> list = solution.getRoutes();
         for (VehicleRoute route : list) {
-            vehicleTablePrinter.addRow(new VehicleSummaryContext(rn++, route, problem));
+            vehicleTablePrinter.addRow(new VehicleSummaryContext(route, problem));
         }
         return vehicleTablePrinter;
     }

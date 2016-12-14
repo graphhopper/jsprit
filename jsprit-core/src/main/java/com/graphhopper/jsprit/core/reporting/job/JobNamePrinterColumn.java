@@ -1,35 +1,36 @@
-package com.graphhopper.jsprit.core.reporting.route;
+package com.graphhopper.jsprit.core.reporting.job;
 
 import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
 import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 /**
- * Priority of the job.
+ * Name (id) of the job.
  *
  * <p>
- * This column provides the simple class name of the associated job of the
- * activity for job activities and null for other route activities.
+ * This column provides the {@linkplain Job#getId()} of the associated job of
+ * the activity for job activities and null for other route activities.
  * </p>
  *
  * @author balage
  */
-public class JobTypePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, JobTypePrinterColumn> {
+public class JobNamePrinterColumn<T extends JobPrinterContext> extends AbstractPrinterColumn<T, String, JobNamePrinterColumn<T>> {
 
     /**
      * Constructor.
      */
-    public JobTypePrinterColumn() {
+    public JobNamePrinterColumn() {
         super();
     }
 
     /**
      * Constructor with a post creation decorator provided.
      */
-    public JobTypePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
+    public JobNamePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 
@@ -40,13 +41,13 @@ public class JobTypePrinterColumn extends AbstractPrinterColumn<RoutePrinterCont
 
     @Override
     protected String getDefaultTitle() {
-        return "job type";
+        return "job name";
     }
 
     @Override
-    public String getData(RoutePrinterContext context) {
+    public String getData(T context) {
         AbstractJob job = context.getJob();
-        return job == null ? null : job.getClass().getSimpleName();
+        return job == null ? null : job.getId();
     }
 
 }

@@ -88,7 +88,7 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
         double distancePrevAct2NewAct = distanceCalculator.getDistance(prevAct.getLocation(), newAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
         double distanceNewAct2nextAct = distanceCalculator.getDistance(newAct.getLocation(), nextAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
         double distancePrevAct2NextAct = distanceCalculator.getDistance(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewVehicle());
-        if(routeIsEmpty) {
+        if(prevAct instanceof Start && nextAct instanceof End) {
             distancePrevAct2NextAct = 0;
         }
         if(nextAct instanceof End && !iFacts.getNewVehicle().isReturnToDepot()){
@@ -100,6 +100,7 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
             return ConstraintsStatus.NOT_FULFILLED;
         }
 
+
         double additionalDistanceOfPickup = 0;
         if (newAct instanceof DeliveryActivity && AbstractActivity.isShipment(newAct)) {
             int iIndexOfPickup = iFacts.getRelatedActivityContext().getInsertionIndex();
@@ -110,12 +111,23 @@ public class MaxDistanceConstraint implements HardActivityConstraint{
             } else {
                 actBeforePickup = new Start(iFacts.getNewVehicle().getStartLocation(),0,Double.MAX_VALUE);
             }
-            TourActivity actAfterPickup = iFacts.getRoute().getActivities().get(iIndexOfPickup);
-            //ToDo account here fore End and returnToDepot
+            TourActivity actAfterPickup;
+            if (iIndexOfPickup < iFacts.getRoute().getActivities().size()) {
+                actAfterPickup = iFacts.getRoute().getActivities().get(iIndexOfPickup);
+            } else {
+                actAfterPickup = nextAct;
+            }
             double distanceActBeforePickup2Pickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), pickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getNewVehicle());
             double distancePickup2ActAfterPickup = distanceCalculator.getDistance(pickup.getLocation(), actAfterPickup.getLocation(), iFacts.getRelatedActivityContext().getEndTime(), iFacts.getNewVehicle());
             double distanceBeforePickup2AfterPickup = distanceCalculator.getDistance(actBeforePickup.getLocation(), actAfterPickup.getLocation(), actBeforePickup.getEndTime(), iFacts.getNewVehicle());
-            additionalDistanceOfPickup = distanceActBeforePickup2Pickup  + distancePickup2ActAfterPickup - distanceBeforePickup2AfterPickup;
+            if (routeIsEmpty) {
+                distanceBeforePickup2AfterPickup = 0;
+            }
+            if (actAfterPickup instanceof End && !iFacts.getNewVehicle().isReturnToDepot()) {
+                distancePickup2ActAfterPickup = 0;
+                distanceBeforePickup2AfterPickup = 0;
+            }
+            additionalDistanceOfPickup = distanceActBeforePickup2Pickup + distancePickup2ActAfterPickup - distanceBeforePickup2AfterPickup;
         }
 
 
