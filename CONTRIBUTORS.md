@@ -5,6 +5,7 @@ The following people have contributed code, bug fixes and ideas.
  * [Giulio Collura](https://github.com/gcollura)
  * [Gwénaël Rault](https://github.com/braktar)
  * [Heinrich Filter](https://github.com/HeinrichFilter)
+ * [jie31best](https://github.com/jie31best)
  * Josh Pilkington
  * [Julia Loikova](https://github.com/Jullil)
  * [muzuro](https://github.com/muzuro)
