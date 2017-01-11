@@ -50,7 +50,7 @@ public final class DecreasingRelativeFixedCosts extends SolutionCompletenessRati
 
     @Override
     public String toString() {
-        return "[name=calculatesServiceInsertionConsideringFixCost][weightOfFixedCostSavings=" + weightDeltaFixCost + "]";
+        return "[name=DecreasingRelativeFixedCosts][weightOfFixedCostSavings=" + weightDeltaFixCost + "]";
     }
 
     private Capacity getCurrentMaxLoadInRoute(VehicleRoute route) {

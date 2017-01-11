@@ -44,7 +44,7 @@ public final class IncreasingAbsoluteFixedCosts extends SolutionCompletenessRati
 
     @Override
     public String toString() {
-        return "[name=calculatesServiceInsertionConsideringFixCost][weightOfFixedCostSavings=" + weightDeltaFixCost + "]";
+        return "[name=IncreasingAbsoluteFixedCosts][weightOfFixedCostSavings=" + weightDeltaFixCost + "]";
     }
 
     @Override
