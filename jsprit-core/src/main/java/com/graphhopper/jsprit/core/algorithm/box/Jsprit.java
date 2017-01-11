@@ -383,6 +383,14 @@ public class Jsprit {
             }
         }
 
+        double fixedCostParam = toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString()));
+        IncreasingAbsoluteFixedCosts increasingAbsoluteFixedCosts = null;
+        if (fixedCostParam > 0d) {
+            increasingAbsoluteFixedCosts = new IncreasingAbsoluteFixedCosts(vrp.getJobs().size());
+            increasingAbsoluteFixedCosts.setWeightOfFixCost(fixedCostParam);
+            constraintManager.addConstraint(increasingAbsoluteFixedCosts);
+        }
+
         double noiseLevel = toDouble(getProperty(Parameter.INSERTION_NOISE_LEVEL.toString()));
         double noiseProbability = toDouble(getProperty(Parameter.INSERTION_NOISE_PROB.toString()));
 
@@ -613,6 +621,7 @@ public class Jsprit {
         vra.addListener(noiseConfigurator);
         vra.addListener(noise);
         vra.addListener(clusters);
+        if (increasingAbsoluteFixedCosts != null) vra.addListener(increasingAbsoluteFixedCosts);
 
         if(toBoolean(getProperty(Parameter.BREAK_SCHEDULING.toString()))) {
             vra.addListener(new BreakScheduling(vrp, stateManager, constraintManager));
