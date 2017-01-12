@@ -22,7 +22,7 @@
 
     <groupId>com.graphhopper</groupId>
     <artifactId>jsprit</artifactId>
-    <version>1.6.3-SNAPSHOT</version>
+    <version>1.7</version>
 
     <packaging>pom</packaging>
 
