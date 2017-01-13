@@ -15,9 +15,11 @@ If you want to use the latest release of jsprit-core, add the following lines to
 <pre><code>&lt;dependency&gt;
    &lt;groupId&gt;com.graphhopper&lt;/groupId&gt;
    &lt;artifactId&gt;jsprit-core&lt;/artifactId&gt;
-   &lt;version&gt;1.7&lt;/version&gt;
+   &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
+
+Find the latest versions here: [maven search](https://search.maven.org/#search%7Cga%7C1%7Cjsprit).
 
 ####Build yourself
 If you want to build the master branch yourself, do this:
