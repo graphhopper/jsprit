@@ -19,7 +19,7 @@ If you want to use the latest release of jsprit-core, add the following lines to
 &lt;/dependency&gt;
 </code></pre>
 
-Find the latest versions here:[mvn repository](https://mvnrepository.com/artifact/com.graphhopper/jsprit-core).
+Find the latest versions here: [mvn repository](https://mvnrepository.com/artifact/com.graphhopper/jsprit-core).
 
 ####Build yourself
 If you want to build the master branch yourself, do this:
