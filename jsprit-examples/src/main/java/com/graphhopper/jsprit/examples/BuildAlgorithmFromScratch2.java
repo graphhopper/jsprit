@@ -20,16 +20,19 @@ package com.graphhopper.jsprit.examples;
 
 
 import com.graphhopper.jsprit.analysis.toolbox.AlgorithmEventsRecorder;
+import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.core.algorithm.PrettyAlgorithmBuilder;
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
-import com.graphhopper.jsprit.core.algorithm.acceptor.GreedyAcceptance;
+import com.graphhopper.jsprit.core.algorithm.acceptor.SchrimpfAcceptance;
+import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
 import com.graphhopper.jsprit.core.algorithm.recreate.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.RadialRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RandomRuinStrategyFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
+import com.graphhopper.jsprit.core.algorithm.ruin.RuinString;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
@@ -55,7 +58,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class BuildAlgorithmFromScratch {
+public class BuildAlgorithmFromScratch2 {
 
 
     public static class MyBestStrategy extends AbstractInsertionStrategy {
@@ -111,20 +114,28 @@ public class BuildAlgorithmFromScratch {
         Examples.createOutputFolder();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new CordeauReader(vrpBuilder).read("input/p08");
+        new CordeauReader(vrpBuilder).read("input/p11");
         final VehicleRoutingProblem vrp = vrpBuilder.build();
 
-        VehicleRoutingAlgorithm vra = createAlgorithm(vrp);
-        vra.setMaxIterations(2000);
+//        VehicleRoutingAlgorithm vra = createAlgorithm(vrp);
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET, "true")
+            .setProperty(Jsprit.Parameter.THREADS, "4")
+            .setProperty(Jsprit.Parameter.REGRET_DISTANCE_SCORER, "0.0001")
+            .setProperty(Jsprit.Strategy.STRING_BEST, "0.2")
+            .setProperty(Jsprit.Strategy.STRING_REGRET, "0.2")
+            .buildAlgorithm();
+
+        vra.setMaxIterations(15000);
         AlgorithmEventsRecorder eventsRecorder = new AlgorithmEventsRecorder(vrp, "output/events.dgs.gz");
-        eventsRecorder.setRecordingRange(90, 100);
-        vra.addListener(eventsRecorder);
+        eventsRecorder.setRecordingRange(40, 100);
+//        vra.addListener(eventsRecorder);
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
 
+        new GraphStreamViewer(vrp, solution).display();
 //        AlgorithmEventsViewer viewer = new AlgorithmEventsViewer();
-//        viewer.setRuinDelay(3);
+//        viewer.setRuinDelay(6);
 //        viewer.setRecreationDelay(1);
 //        viewer.display("output/events.dgs.gz");
 
@@ -147,10 +158,11 @@ public class BuildAlgorithmFromScratch {
         InsertionBuilder iBuilder = new InsertionBuilder(vrp, fleetManager, stateManager, constraintManager);
         iBuilder.setInsertionStrategy(InsertionBuilder.Strategy.REGRET);
         iBuilder.setFastRegret(true);
+
         RegretInsertionFast regret = (RegretInsertionFast) iBuilder.build();
         DefaultScorer scoringFunction = new DefaultScorer(vrp);
-        scoringFunction.setDepotDistanceParam(0.0);
-        scoringFunction.setTimeWindowParam(0.0);
+        scoringFunction.setDepotDistanceParam(0.00001);
+        scoringFunction.setTimeWindowParam(0);
         regret.setScoringFunction(scoringFunction);
 
 		/*
@@ -162,20 +174,35 @@ public class BuildAlgorithmFromScratch {
 		/*
          * objective function
 		 */
+
+        RuinStrategy stringRuin = new RuinString(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()));
+
         SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp);
 
-        SearchStrategy firstStrategy = new SearchStrategy("firstStrategy", new SelectBest(), new GreedyAcceptance(1), objectiveFunction);
-        firstStrategy.addModule(new RuinAndRecreateModule("randRuinRegretIns", regret, randomRuin));
+        final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, 0.15);
+        IterationStartsListener schrimpfThreshold = new IterationStartsListener() {
+            @Override
+            public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+                if (i == 1) {
+                    double initialThreshold = Solutions.bestOf(solutions).getCost() * 0.03;
+                    schrimpfAcceptance.setInitialThreshold(initialThreshold);
+                }
+            }
+        };
 
-        SearchStrategy secondStrategy = new SearchStrategy("secondStrategy", new SelectBest(), new GreedyAcceptance(1), objectiveFunction);
-        secondStrategy.addModule(new RuinAndRecreateModule("radRuinRegretIns", regret, radialRuin));
+        SearchStrategy firstStrategy = new SearchStrategy("firstStrategy", new SelectBest(), schrimpfAcceptance, objectiveFunction);
+        firstStrategy.addModule(new RuinAndRecreateModule("randRuinRegretIns", regret, stringRuin));
 
-        SearchStrategy thirdStrategy = new SearchStrategy("thirdStrategy", new SelectBest(), new GreedyAcceptance(1), objectiveFunction);
-        secondStrategy.addModule(new RuinAndRecreateModule("radRuinBestIns", regret, radialRuin));
+//        SearchStrategy secondStrategy = new SearchStrategy("secondStrategy", new SelectBest(), new GreedyAcceptance(1), objectiveFunction);
+//        secondStrategy.addModule(new RuinAndRecreateModule("radRuinRegretIns", regret, radialRuin));
+
+//        SearchStrategy thirdStrategy = new SearchStrategy("thirdStrategy", new SelectBest(), new GreedyAcceptance(1), objectiveFunction);
+//        secondStrategy.addModule(new RuinAndRecreateModule("radRuinBestIns", regret, radialRuin));
 
         PrettyAlgorithmBuilder prettyAlgorithmBuilder = PrettyAlgorithmBuilder.newInstance(vrp, fleetManager, stateManager, constraintManager);
         final VehicleRoutingAlgorithm vra = prettyAlgorithmBuilder
-            .withStrategy(firstStrategy, 0.5).withStrategy(secondStrategy, 0.5).withStrategy(thirdStrategy, 0.2)
+            .withStrategy(firstStrategy, 0.5)
+//            .withStrategy(secondStrategy, 0.5).withStrategy(thirdStrategy, 0.2)
             .addCoreStateAndConstraintStuff()
             .constructInitialSolutionWith(regret, objectiveFunction)
             .build();
@@ -183,20 +210,22 @@ public class BuildAlgorithmFromScratch {
         //if you want to switch on/off strategies or adapt their weight within the search, you can do the following
         //e.g. from iteration 50 on, switch off first strategy
         //switch on again at iteration 90 with slightly higher weight
-        IterationStartsListener strategyAdaptor = new IterationStartsListener() {
-            @Override
-            public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-                if (i == 50) {
-                    vra.getSearchStrategyManager().informStrategyWeightChanged("firstStrategy", 0.0);
-                    System.out.println("switched off firstStrategy");
-                }
-                if (i == 90) {
-                    vra.getSearchStrategyManager().informStrategyWeightChanged("firstStrategy", 0.7);
-                    System.out.println("switched on firstStrategy again with higher weight");
-                }
-            }
-        };
-        vra.addListener(strategyAdaptor);
+//        IterationStartsListener strategyAdaptor = new IterationStartsListener() {
+//            @Override
+//            public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+//                if (i == 50) {
+//                    vra.getSearchStrategyManager().informStrategyWeightChanged("firstStrategy", 0.0);
+//                    System.out.println("switched off firstStrategy");
+//                }
+//                if (i == 90) {
+//                    vra.getSearchStrategyManager().informStrategyWeightChanged("firstStrategy", 0.7);
+//                    System.out.println("switched on firstStrategy again with higher weight");
+//                }
+//            }
+//        };
+//        vra.addListener(strategyAdaptor);
+        vra.addListener(schrimpfThreshold);
+        vra.addListener(schrimpfAcceptance);
         return vra;
 
     }

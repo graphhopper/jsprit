@@ -82,7 +82,9 @@ public class Jsprit {
         WORST_BEST("worst_best"),
         WORST_REGRET("worst_regret"),
         CLUSTER_BEST("cluster_best"),
-        CLUSTER_REGRET("cluster_regret");
+        CLUSTER_REGRET("cluster_regret"),
+        STRING_BEST("string_best"),
+        STRING_REGRET("string_regret");
 
         String strategyName;
 
@@ -178,6 +180,10 @@ public class Jsprit {
             defaults.put(Strategy.RADIAL_REGRET.toString(), ".5");
             defaults.put(Strategy.RANDOM_BEST.toString(), ".5");
             defaults.put(Strategy.RANDOM_REGRET.toString(), ".5");
+
+            defaults.put(Strategy.STRING_BEST.toString(), ".5");
+            defaults.put(Strategy.STRING_REGRET.toString(), ".5");
+
             defaults.put(Strategy.WORST_BEST.toString(), "0.");
             defaults.put(Strategy.WORST_REGRET.toString(), "1.");
             defaults.put(Strategy.CLUSTER_BEST.toString(), "0.");
@@ -472,6 +478,9 @@ public class Jsprit {
                 random)
         );
 
+        final RuinString stringRuin = new RuinString(vrp, jobNeighborhoods);
+        stringRuin.setRandom(random);
+
         AbstractInsertionStrategy regret;
         final ScoringFunction scorer;
 
@@ -592,6 +601,11 @@ public class Jsprit {
         final SearchStrategy clusters_best = new SearchStrategy(Strategy.CLUSTER_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         clusters_best.addModule(new RuinAndRecreateModule(Strategy.CLUSTER_BEST.toString(), best, clusters));
 
+        SearchStrategy stringRegret = new SearchStrategy(Strategy.STRING_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
+        stringRegret.addModule(new RuinAndRecreateModule(Strategy.STRING_REGRET.toString(), regret, stringRuin));
+
+        SearchStrategy stringBest = new SearchStrategy(Strategy.STRING_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        stringBest.addModule(new RuinAndRecreateModule(Strategy.STRING_BEST.toString(), best, stringRuin));
 
         PrettyAlgorithmBuilder prettyBuilder = PrettyAlgorithmBuilder.newInstance(vrp, fm, stateManager, constraintManager);
         prettyBuilder.setRandom(random);
@@ -605,7 +619,10 @@ public class Jsprit {
             .withStrategy(worst_best, toDouble(getProperty(Strategy.WORST_BEST.toString())))
             .withStrategy(worst_regret, toDouble(getProperty(Strategy.WORST_REGRET.toString())))
             .withStrategy(clusters_regret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
-            .withStrategy(clusters_best, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())));
+            .withStrategy(clusters_best, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
+            .withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
+            .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())));
+
         if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.BEST_INSERTION.toString())) {
             prettyBuilder.constructInitialSolutionWith(best, objectiveFunction);
         } else {
