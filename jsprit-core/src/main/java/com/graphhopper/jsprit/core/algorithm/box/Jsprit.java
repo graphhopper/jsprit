@@ -720,7 +720,7 @@ public class Jsprit {
                     }
                 }
                 for(Job j : solution.getUnassignedJobs()){
-                    costs += maxCosts * 2 * (4 - j.getPriority());
+                    costs += maxCosts * 2 * (11 - j.getPriority());
                 }
                 return costs;
             }
