@@ -73,6 +73,15 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         } else failedConstraintNamesToCode.put(simpleNameOfFailedConstraint, code);
     }
 
+    /**
+     * 1 --> "cannot serve required skill
+     * 2 --> "cannot be visited within time window"
+     * 3 --> "does not fit into any vehicle due to capacity"
+     * 4 --> "cannot be assigned due to max distance constraint of vehicle"
+     *
+     * @param jobId
+     * @return
+     */
     public int getCode(String jobId) {
         Multiset<String> reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
