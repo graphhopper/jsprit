@@ -73,14 +73,14 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         } else failedConstraintNamesToCode.put(simpleNameOfFailedConstraint, code);
     }
 
-    public int getCode(Job job) {
-        Multiset<String> reasons = this.reasons.get(job.getId());
+    public int getCode(String jobId) {
+        Multiset<String> reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
         return toCode(mostLikelyReason);
     }
 
-    public String getReason(Job job) {
-        Multiset<String> reasons = this.reasons.get(job.getId());
+    public String getReason(String jobId) {
+        Multiset<String> reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
         int code = toCode(mostLikelyReason);
         if (code == -1) return mostLikelyReason;
