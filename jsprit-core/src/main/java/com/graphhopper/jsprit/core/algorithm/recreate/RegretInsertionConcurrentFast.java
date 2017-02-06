@@ -143,8 +143,8 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
         int updateRound = 0;
         Map<VehicleRoute,Integer> updates = new HashMap<VehicleRoute, Integer>();
         while (!jobs.isEmpty()) {
-            List<Job> unassignedJobList = new ArrayList<Job>(jobs);
-            List<Job> badJobList = new ArrayList<Job>();
+            List<Job> unassignedJobList = new ArrayList<>(jobs);
+            List<ScoredJob> badJobList = new ArrayList<>();
             if(!firstRun && lastModified == null) throw new IllegalStateException("ho. this must not be.");
             updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound,firstRun,lastModified,updates);
             if(firstRun) firstRun = false;
@@ -159,9 +159,11 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
                 lastModified = bestScoredJob.getRoute();
             }
             else lastModified = null;
-            for (Job bad : badJobList) {
-                jobs.remove(bad);
-                badJobs.add(bad);
+            for (ScoredJob bad : badJobList) {
+                Job unassigned = bad.getJob();
+                jobs.remove(unassigned);
+                badJobs.add(unassigned);
+                markUnassigned(unassigned, bad.getInsertionData().getFailedConstraintNames());
             }
         }
         return badJobs;
@@ -172,7 +174,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
         boolean updatedAllRoutes = false;
         for (final Job unassignedJob : unassignedJobList) {
             if(priorityQueues[unassignedJob.getIndex()] == null){
-                priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
+                priorityQueues[unassignedJob.getIndex()] = new TreeSet<>(InsertionDataUpdater.getComparator());
             }
             if(firstRun) {
                 updatedAllRoutes = true;

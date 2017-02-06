@@ -101,6 +101,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         Collections.shuffle(unassignedJobList, random);
         sometimesSortPriorities(unassignedJobList);
         List<Batch> batches = distributeRoutes(vehicleRoutes, nuOfBatches);
+        List<String> failedConstraintNames = new ArrayList<>();
         for (final Job unassignedJob : unassignedJobList) {
             Insertion bestInsertion = null;
             double bestInsertionCost = Double.MAX_VALUE;
@@ -118,7 +119,10 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                 for (int i = 0; i < batches.size(); i++) {
                     Future<Insertion> futureIData = completionService.take();
                     Insertion insertion = futureIData.get();
-                    if (insertion == null) continue;
+                    if (insertion.insertionData instanceof NoInsertionFound) {
+                        failedConstraintNames.addAll(insertion.getInsertionData().getFailedConstraintNames());
+                        continue;
+                    }
                     if (insertion.getInsertionData().getInsertionCost() < bestInsertionCost) {
                         bestInsertion = insertion;
                         bestInsertionCost = insertion.getInsertionData().getInsertionCost();
@@ -136,7 +140,10 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                 vehicleRoutes.add(newRoute);
                 batches.get(random.nextInt(batches.size())).routes.add(newRoute);
             }
-            if (bestInsertion == null) badJobs.add(unassignedJob);
+            if (bestInsertion == null) {
+                badJobs.add(unassignedJob);
+                markUnassigned(unassignedJob, failedConstraintNames);
+            }
             else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
         }
         return badJobs;
@@ -155,10 +162,12 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
 
     private Insertion getBestInsertion(Batch batch, Job unassignedJob) {
         Insertion bestInsertion = null;
+        InsertionData empty = new InsertionData.NoInsertionFound();
         double bestInsertionCost = Double.MAX_VALUE;
         for (VehicleRoute vehicleRoute : batch.routes) {
             InsertionData iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
             if (iData instanceof NoInsertionFound) {
+                empty.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
                 continue;
             }
             if (iData.getInsertionCost() < bestInsertionCost) {
@@ -166,6 +175,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                 bestInsertionCost = iData.getInsertionCost();
             }
         }
+        if (bestInsertion == null) return new Insertion(null, empty);
         return bestInsertion;
     }
 
