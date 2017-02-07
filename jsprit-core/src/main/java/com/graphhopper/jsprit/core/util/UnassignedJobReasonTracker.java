@@ -18,22 +18,21 @@
 
 package com.graphhopper.jsprit.core.util;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobUnassignedListener;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import org.apache.commons.math3.stat.Frequency;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by schroeder on 06/02/17.
  */
 public class UnassignedJobReasonTracker implements JobUnassignedListener {
 
-    Map<String, Multiset<String>> reasons = new HashMap<>();
+    Map<String, Frequency> reasons = new HashMap<>();
 
     Map<Integer, String> codesToReason = new HashMap<>();
 
@@ -56,11 +55,10 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
     @Override
     public void informJobUnassigned(Job unassigned, Collection<String> failedConstraintNames) {
         if (!this.reasons.containsKey(unassigned.getId())) {
-            Multiset<String> ms = HashMultiset.create();
-            this.reasons.put(unassigned.getId(), ms);
+            this.reasons.put(unassigned.getId(), new Frequency());
         }
         for (String r : failedConstraintNames) {
-            this.reasons.get(unassigned.getId()).add(r);
+            this.reasons.get(unassigned.getId()).addValue(r);
         }
     }
 
@@ -83,13 +81,13 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public int getCode(String jobId) {
-        Multiset<String> reasons = this.reasons.get(jobId);
+        Frequency reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
         return toCode(mostLikelyReason);
     }
 
     public String getReason(String jobId) {
-        Multiset<String> reasons = this.reasons.get(jobId);
+        Frequency reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
         int code = toCode(mostLikelyReason);
         if (code == -1) return mostLikelyReason;
@@ -102,15 +100,15 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         else return -1;
     }
 
-    private String getMostLikely(Multiset<String> reasons) {
-        Set<String> set = reasons.elementSet();
+    private String getMostLikely(Frequency reasons) {
+        Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = reasons.entrySetIterator();
         int maxCount = 0;
         String mostLikely = null;
-        for (String r : set) {
-            int count = reasons.count(r);
-            if (count > maxCount) {
-                mostLikely = r;
-                maxCount = count;
+        while (entryIterator.hasNext()) {
+            Map.Entry<Comparable<?>, Long> entry = entryIterator.next();
+            if (entry.getValue() > maxCount) {
+                Comparable<?> key = entry.getKey();
+                mostLikely = key.toString();
             }
         }
         return mostLikely;

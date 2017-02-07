@@ -34,11 +34,13 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+import org.apache.commons.math3.stat.Frequency;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -136,5 +138,19 @@ public class UnassignedJobReasonTrackerTest {
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         Assert.assertEquals(1, solution.getUnassignedJobs().size());
         Assert.assertEquals(4, reasonTracker.getCode(solution.getUnassignedJobs().iterator().next().getId()));
+    }
+
+    @Test
+    public void testFreq() {
+        Frequency frequency = new Frequency();
+        frequency.addValue("VehicleDependentTimeWindowHardActivityConstraint");
+        frequency.addValue("b");
+        frequency.addValue("VehicleDependentTimeWindowHardActivityConstraint");
+
+        Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = frequency.entrySetIterator();
+        while (entryIterator.hasNext()) {
+            Map.Entry<Comparable<?>, Long> e = entryIterator.next();
+            System.out.println(e.getKey().toString() + " " + e.getValue());
+        }
     }
 }
