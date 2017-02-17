@@ -37,6 +37,7 @@ import java.util.List;
  */
 public class ConstraintManager implements HardActivityConstraint, HardRouteConstraint, SoftActivityConstraint, SoftRouteConstraint {
 
+
     public static enum Priority {
         CRITICAL, HIGH, LOW
     }
@@ -45,7 +46,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
 
-    private HardRouteLevelConstraintManager routeLevelConstraintManager = new HardRouteLevelConstraintManager();
+    private HardRouteLevelConstraintManager hardRouteConstraintManager = new HardRouteLevelConstraintManager();
 
     private SoftActivityConstraintManager softActivityConstraintManager = new SoftActivityConstraintManager();
 
@@ -76,6 +77,25 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         resolveConstraints(constraints);
     }
 
+    public Collection<HardRouteConstraint> getHardRouteConstraints() {
+        return hardRouteConstraintManager.getConstraints();
+    }
+
+    public Collection<HardActivityConstraint> getCriticalHardActivityConstraints() {
+        return actLevelConstraintManager.getCriticalConstraints();
+    }
+
+    public Collection<HardActivityConstraint> getHighPrioHardActivityConstraints() {
+        return actLevelConstraintManager.getHighPrioConstraints();
+    }
+
+    public Collection<HardActivityConstraint> getLowPrioHardActivityConstraints() {
+        return actLevelConstraintManager.getLowPrioConstraints();
+    }
+//    public Collection<HardActivityConstraint> getHardActivityConstraints() {
+//        return actLevelConstraintManager.g;
+//    }
+
     public DependencyType[] getDependencyTypes() {
         return dependencyTypes;
     }
@@ -103,7 +123,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
                 constraintTypeKnown = true;
             }
             if (c instanceof HardRouteConstraint) {
-                routeLevelConstraintManager.addConstraint((HardRouteConstraint) c);
+                hardRouteConstraintManager.addConstraint((HardRouteConstraint) c);
                 constraintTypeKnown = true;
             }
             if (c instanceof SoftRouteConstraint) {
@@ -152,7 +172,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
     }
 
     public void addConstraint(HardRouteConstraint routeLevelConstraint) {
-        routeLevelConstraintManager.addConstraint(routeLevelConstraint);
+        hardRouteConstraintManager.addConstraint(routeLevelConstraint);
     }
 
     public void addConstraint(SoftActivityConstraint softActivityConstraint) {
@@ -165,7 +185,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     @Override
     public boolean fulfilled(JobInsertionContext insertionContext) {
-        return routeLevelConstraintManager.fulfilled(insertionContext);
+        return hardRouteConstraintManager.fulfilled(insertionContext);
     }
 
     @Override
@@ -176,7 +196,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
     public Collection<Constraint> getConstraints() {
         List<Constraint> constraints = new ArrayList<Constraint>();
         constraints.addAll(actLevelConstraintManager.getAllConstraints());
-        constraints.addAll(routeLevelConstraintManager.getConstraints());
+        constraints.addAll(hardRouteConstraintManager.getConstraints());
         constraints.addAll(softActivityConstraintManager.getConstraints());
         constraints.addAll(softRouteConstraintManager.getConstraints());
         return Collections.unmodifiableCollection(constraints);

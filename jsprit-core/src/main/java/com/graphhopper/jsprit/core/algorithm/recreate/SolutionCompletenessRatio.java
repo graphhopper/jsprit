@@ -15,50 +15,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.graphhopper.jsprit.core.algorithm.recreate;
 
+package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 import java.util.Collection;
 
+/**
+ * Created by schroeder on 11/01/17.
+ */
+class SolutionCompletenessRatio implements InsertionStartsListener, JobInsertedListener {
 
-final class ConfigureFixCostCalculator implements InsertionStartsListener, JobInsertedListener {
+    protected double solutionCompletenessRatio = 0.5;
 
-    private final VehicleRoutingProblem vrp;
-
-    private final JobInsertionConsideringFixCostsCalculator calcConsideringFix;
-
-    private final double minRatio = 0.5;
+    private final int nuOfJobs;
 
     private int nuOfJobsToRecreate;
 
-    public ConfigureFixCostCalculator(VehicleRoutingProblem vrp, JobInsertionConsideringFixCostsCalculator calcConsideringFix) {
-        super();
-        this.vrp = vrp;
-        this.calcConsideringFix = calcConsideringFix;
+    public SolutionCompletenessRatio(int nuOfJobs) {
+        this.nuOfJobs = nuOfJobs;
     }
 
-    @Override
-    public String toString() {
-        return "[name=configureFixCostCalculator]";
+    public void setSolutionCompletenessRatio(double ratio) {
+        solutionCompletenessRatio = ratio;
+    }
+
+    public double getSolutionCompletenessRatio() {
+        return solutionCompletenessRatio;
     }
 
     @Override
     public void informInsertionStarts(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         this.nuOfJobsToRecreate = unassignedJobs.size();
-        double completenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) vrp.getJobs().values().size()));
-        calcConsideringFix.setSolutionCompletenessRatio(Math.max(minRatio, completenessRatio));
+        solutionCompletenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) nuOfJobs));
     }
 
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
         nuOfJobsToRecreate--;
-        double completenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) vrp.getJobs().values().size()));
-        calcConsideringFix.setSolutionCompletenessRatio(Math.max(minRatio, completenessRatio));
+        solutionCompletenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) nuOfJobs));
     }
 }

@@ -66,10 +66,12 @@ public final class BestInsertion extends AbstractInsertionStrategy {
         sometimesSortPriorities(unassignedJobList);
         for (Job unassignedJob : unassignedJobList) {
             Insertion bestInsertion = null;
+            InsertionData empty = new InsertionData.NoInsertionFound();
             double bestInsertionCost = Double.MAX_VALUE;
             for (VehicleRoute vehicleRoute : vehicleRoutes) {
                 InsertionData iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
                 if (iData instanceof InsertionData.NoInsertionFound) {
+                    empty.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
                     continue;
                 }
                 if (iData.getInsertionCost() < bestInsertionCost + noiseMaker.makeNoise()) {
@@ -84,13 +86,18 @@ public final class BestInsertion extends AbstractInsertionStrategy {
                     bestInsertion = new Insertion(newRoute, newIData);
                     vehicleRoutes.add(newRoute);
                 }
+            } else {
+                empty.getFailedConstraintNames().addAll(newIData.getFailedConstraintNames());
             }
-            if (bestInsertion == null) badJobs.add(unassignedJob);
+            if (bestInsertion == null) {
+                badJobs.add(unassignedJob);
+                markUnassigned(unassignedJob, empty.getFailedConstraintNames());
+            }
             else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
-//            nextInsertion();
         }
         return badJobs;
     }
+
 
     private void sometimesSortPriorities(List<Job> unassignedJobList) {
         if (random.nextDouble() < 0.5) {

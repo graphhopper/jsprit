@@ -32,8 +32,8 @@ import java.util.*;
 class InsertionDataUpdater {
 
     static boolean update(boolean addAllAvailable, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, TreeSet<VersionedInsertionData> insertionDataSet, int updateRound, Job unassignedJob, Collection<VehicleRoute> routes) {
-        for (VehicleRoute route : routes) {
-            Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
+        for(VehicleRoute route : routes) {
+            Collection<Vehicle> relevantVehicles = new ArrayList<>();
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
                 relevantVehicles.add(route.getVehicle());
                 if (addAllAvailable && !initialVehicleIds.contains(route.getVehicle().getId())) {
@@ -67,7 +67,7 @@ class InsertionDataUpdater {
         };
     }
 
-    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<Job> badJobs) {
+    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<ScoredJob> badJobs) {
         ScoredJob bestScoredJob = null;
         for (Job j : unassignedJobList) {
             VehicleRoute bestRoute = null;
@@ -75,15 +75,19 @@ class InsertionDataUpdater {
             InsertionData secondBest = null;
             TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
-            while (iterator.hasNext()) {
+            List<String> failedConstraintNames = new ArrayList<>();
+            while(iterator.hasNext()){
                 VersionedInsertionData versionedIData = iterator.next();
                 if (bestRoute != null) {
                     if (versionedIData.getRoute() == bestRoute) {
                         continue;
                     }
                 }
-                if (versionedIData.getiData() instanceof InsertionData.NoInsertionFound) continue;
-                if (!(versionedIData.getRoute().getVehicle() instanceof VehicleImpl.NoVehicle)) {
+                if (versionedIData.getiData() instanceof InsertionData.NoInsertionFound) {
+                    failedConstraintNames.addAll(versionedIData.getiData().getFailedConstraintNames());
+                    continue;
+                }
+                if(!(versionedIData.getRoute().getVehicle() instanceof VehicleImpl.NoVehicle)) {
                     if (versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
                         if (!switchAllowed) continue;
                         if (initialVehicleIds.contains(versionedIData.getRoute().getVehicle().getId())) continue;
@@ -128,9 +132,9 @@ class InsertionDataUpdater {
                 } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
                     secondBest = iData;
                 }
-            }
+            } else failedConstraintNames.addAll(iData.getFailedConstraintNames());
             if (best == null) {
-                badJobs.add(j);
+                badJobs.add(new ScoredJob.BadJob(j, failedConstraintNames));
                 continue;
             }
             double score = score(j, best, secondBest, scoringFunction);

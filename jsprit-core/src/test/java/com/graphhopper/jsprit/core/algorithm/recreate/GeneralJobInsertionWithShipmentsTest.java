@@ -146,7 +146,7 @@ public class GeneralJobInsertionWithShipmentsTest {
         createInsertionCalculator(insertionContext -> false);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
-        assertEquals(InsertionData.createEmptyInsertionData(), iData);
+        assertTrue(iData instanceof InsertionData.NoInsertionFound);
 
     }
 

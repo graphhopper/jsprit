@@ -429,6 +429,14 @@ public class ShipmentTest {
     }
 
     @Test
+    public void whenSettingPriorities_itShouldBeSetCorrectly3() {
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
+            .setDeliveryLocation(Location.newInstance("loc"))
+            .setPriority(10).build();
+        Assert.assertEquals(10, s.getPriority());
+    }
+
+    @Test
     public void whenNotSettingPriorities_defaultShouldBe2() {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
                         .setDeliveryLocation(Location.newInstance("loc"))

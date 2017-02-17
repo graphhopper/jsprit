@@ -98,7 +98,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
         }
         Vehicle selectedVehicle = currentRoute.getVehicle();
         Driver selectedDriver = currentRoute.getDriver();
-        InsertionData bestIData = InsertionData.createEmptyInsertionData();
+        InsertionData bestIData = new InsertionData.NoInsertionFound();
         double bestKnownCost_ = bestKnownCost;
         Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
         if (!(selectedVehicle instanceof VehicleImpl.NoVehicle)) {
@@ -115,6 +115,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
             else depTime = v.getEarliestDeparture();
             InsertionData iData = insertionCalculator.getInsertionData(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);
             if (iData instanceof InsertionData.NoInsertionFound) {
+                bestIData.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
                 continue;
             }
             if (iData.getInsertionCost() < bestKnownCost_) {

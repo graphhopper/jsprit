@@ -264,6 +264,13 @@ public class ServiceTest {
     }
 
     @Test
+    public void whenSettingPriorities_itShouldBeSetCorrectly3() {
+        Service s = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+            .setPriority(10).build();
+        Assert.assertEquals(10, s.getPriority());
+    }
+
+    @Test
     public void whenNotSettingPriorities_defaultShouldBe2() {
         Service s = new Service.Builder("s").setLocation(Location.newInstance("loc"))
                         .build();

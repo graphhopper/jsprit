@@ -108,10 +108,10 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
             }
         }
 
-        List<Job> jobs = new ArrayList<Job>(unassignedJobs);
+        List<Job> jobs = new ArrayList<>(unassignedJobs);
         while (!jobs.isEmpty()) {
-            List<Job> unassignedJobList = new ArrayList<Job>(jobs);
-            List<Job> badJobList = new ArrayList<Job>();
+            List<Job> unassignedJobList = new ArrayList<>(jobs);
+            List<ScoredJob> badJobList = new ArrayList<>();
             ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
@@ -120,15 +120,17 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
             }
-            for (Job j : badJobList) {
-                jobs.remove(j);
-                badJobs.add(j);
+            for (ScoredJob bad : badJobList) {
+                Job unassigned = bad.getJob();
+                jobs.remove(unassigned);
+                badJobs.add(unassigned);
+                markUnassigned(unassigned, bad.getInsertionData().getFailedConstraintNames());
             }
         }
         return badJobs;
     }
 
-    private ScoredJob nextJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<Job> badJobList) {
+    private ScoredJob nextJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<ScoredJob> badJobList) {
         ScoredJob bestScoredJob = null;
 
         for (final Job unassignedJob : unassignedJobList) {
@@ -147,7 +149,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
                 Future<ScoredJob> fsj = completionService.take();
                 ScoredJob sJob = fsj.get();
                 if (sJob instanceof ScoredJob.BadJob) {
-                    badJobList.add(sJob.getJob());
+                    badJobList.add(sJob);
                     continue;
                 }
                 if (bestScoredJob == null) {
