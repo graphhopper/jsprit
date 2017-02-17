@@ -3,23 +3,42 @@ package com.graphhopper.jsprit.core.reporting.route;
 import java.util.function.Consumer;
 
 import com.graphhopper.jsprit.core.reporting.AbstractPrinterColumn;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition.Builder;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
-public class VehicleNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String> {
+/**
+ * The name of the vehicle associated by this route.
+ *
+ * <p>
+ * This colum returns the id of the vehicle of the route.
+ * </p>
+ *
+ * @author balage
+ */
+public class VehicleNamePrinterColumn extends AbstractPrinterColumn<RoutePrinterContext, String, VehicleNamePrinterColumn> {
 
+    /**
+     * Constructor.
+     */
     public VehicleNamePrinterColumn() {
         super();
     }
 
-    public VehicleNamePrinterColumn(Consumer<Builder> decorator) {
+    /**
+     * Constructor with a post creation decorator provided.
+     */
+    public VehicleNamePrinterColumn(Consumer<ColumnDefinition.Builder> decorator) {
         super(decorator);
     }
 
     @Override
     public ColumnDefinition.Builder getColumnBuilder() {
-        return new ColumnDefinition.Builder(new StringColumnType(), "vehicle");
+        return new ColumnDefinition.Builder(new StringColumnType());
+    }
+
+    @Override
+    protected String getDefaultTitle() {
+        return "vehicle";
     }
 
     @Override

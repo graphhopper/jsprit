@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.Alignment;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.ColumnDefinition;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.DoubleColumnType;
-import com.graphhopper.jsprit.core.reporting.DynamicTableDefinition.StringColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnAlignment;
+import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
+import com.graphhopper.jsprit.core.reporting.columndefinition.DoubleColumnType;
+import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
 
 /**
  * @author balage
@@ -124,7 +124,7 @@ public class DynamicTablePrinter {
             sb.append(corner).append(repeat(horizontal, totalWidth - 2)).append(corner)
             .append("\n");
             sb.append(vertical).append(paddingChars)
-            .append(Alignment.LEFT.align(tableDef.getHeading(),
+            .append(ColumnAlignment.LEFT.align(tableDef.getHeading(),
                             totalWidth - 2 * padding - 2))
             .append(paddingChars)
             .append(vertical)
@@ -135,7 +135,7 @@ public class DynamicTablePrinter {
         sb.append(vertical);
         for (int i = 0; i < tableDef.size(); i++) {
             ColumnDefinition cd = tableDef.getColumns().get(i);
-            sb.append(paddingChars).append(Alignment.LEFT.align(cd.getTitle(), colWidth[i]))
+            sb.append(paddingChars).append(ColumnAlignment.LEFT.align(cd.getTitle(), colWidth[i]))
             .append(paddingChars).append(vertical);
         }
         sb.append("\n");
@@ -182,11 +182,11 @@ public class DynamicTablePrinter {
                                         .build())
                         .addColumn(new ColumnDefinition.Builder(new StringColumnType(),
                                         "right-string")
-                                        .withAlignment(Alignment.CENTER).build())
+                                        .withAlignment(ColumnAlignment.CENTER).build())
                         .addColumn(new ColumnDefinition.Builder(new DoubleColumnType(),
                                         "double")
                                         .withMinWidth(10)
-                                        .withAlignment(Alignment.RIGHT).build())
+                                        .withAlignment(ColumnAlignment.RIGHT).build())
                         .build();
 
         DynamicTablePrinter p = new DynamicTablePrinter(td);

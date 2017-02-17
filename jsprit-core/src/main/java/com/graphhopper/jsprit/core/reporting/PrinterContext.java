@@ -1,4 +1,10 @@
 package com.graphhopper.jsprit.core.reporting;
 
-public class PrinterContext {
+/**
+ * Common marker interface of printer contexts
+ *
+ * @author balage
+ *
+ */
+public interface PrinterContext {
 }
