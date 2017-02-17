@@ -32,7 +32,7 @@ import java.util.*;
 class InsertionDataUpdater {
 
     static boolean update(boolean addAllAvailable, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, TreeSet<VersionedInsertionData> insertionDataSet, int updateRound, Job unassignedJob, Collection<VehicleRoute> routes) {
-        for(VehicleRoute route : routes) {
+        for (VehicleRoute route : routes) {
             Collection<Vehicle> relevantVehicles = new ArrayList<>();
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
                 relevantVehicles.add(route.getVehicle());
@@ -76,7 +76,7 @@ class InsertionDataUpdater {
             TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
             List<String> failedConstraintNames = new ArrayList<>();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 VersionedInsertionData versionedIData = iterator.next();
                 if (bestRoute != null) {
                     if (versionedIData.getRoute() == bestRoute) {
@@ -87,7 +87,7 @@ class InsertionDataUpdater {
                     failedConstraintNames.addAll(versionedIData.getiData().getFailedConstraintNames());
                     continue;
                 }
-                if(!(versionedIData.getRoute().getVehicle() instanceof VehicleImpl.NoVehicle)) {
+                if (!(versionedIData.getRoute().getVehicle() instanceof VehicleImpl.NoVehicle)) {
                     if (versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
                         if (!switchAllowed) continue;
                         if (initialVehicleIds.contains(versionedIData.getRoute().getVehicle().getId())) continue;

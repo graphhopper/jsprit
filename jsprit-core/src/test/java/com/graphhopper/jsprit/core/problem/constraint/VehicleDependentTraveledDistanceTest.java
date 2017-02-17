@@ -37,14 +37,14 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.ManhattanCosts;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
-
-import static org.mockito.Mockito.mock;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by schroeder on 18/05/16.
@@ -213,50 +213,50 @@ vehicle2 (max distance): 180.0
     }
 
     @Test
-    public void distanceOfShipmentInRoute(){
-        double traveledDistanceBeforePickup = stateManager.getActivityState(route.getActivities().get(2), vehicle,traveledDistanceId, Double.class);
+    public void distanceOfShipmentInRoute() {
+        double traveledDistanceBeforePickup = stateManager.getActivityState(route.getActivities().get(2), vehicle, traveledDistanceId, Double.class);
         double traveledDistanceBeforeDelivery = stateManager.getActivityState(route.getActivities().get(4), vehicle, traveledDistanceId, Double.class);
-        Assert.assertEquals(90d,traveledDistanceBeforeDelivery-traveledDistanceBeforePickup,0.01);
+        Assert.assertEquals(90d, traveledDistanceBeforeDelivery - traveledDistanceBeforePickup, 0.01);
     }
 
     @Test
-    public void distanceOfShipmentInRouteVehicle2(){
-        double traveledDistanceBeforePickup = stateManager.getActivityState(route.getActivities().get(2), vehicle2,traveledDistanceId, Double.class);
+    public void distanceOfShipmentInRouteVehicle2() {
+        double traveledDistanceBeforePickup = stateManager.getActivityState(route.getActivities().get(2), vehicle2, traveledDistanceId, Double.class);
         double traveledDistanceBeforeDelivery = stateManager.getActivityState(route.getActivities().get(4), vehicle2, traveledDistanceId, Double.class);
-        Assert.assertEquals(90d,traveledDistanceBeforeDelivery-traveledDistanceBeforePickup,0.01);
+        Assert.assertEquals(90d, traveledDistanceBeforeDelivery - traveledDistanceBeforePickup, 0.01);
     }
 
     @Test
-    public void distanceOfPickupInRoute(){
+    public void distanceOfPickupInRoute() {
         double traveledDistanceBeforePickup = stateManager.getActivityState(route.getActivities().get(3), vehicle, traveledDistanceId, Double.class);
-        double total = stateManager.getRouteState(route, vehicle,traveledDistanceId, Double.class);
-        Assert.assertEquals(100d,total-traveledDistanceBeforePickup,0.01);
-    }
-
-    @Test
-    public void distanceOfPickupInRouteVehicle2(){
-        double traveledDistanceBeforePickup = stateManager.getActivityState(route.getActivities().get(3), vehicle2, traveledDistanceId, Double.class);
-        double total = stateManager.getRouteState(route, vehicle2,traveledDistanceId, Double.class);
-        Assert.assertEquals(80d,total-traveledDistanceBeforePickup,0.01);
-    }
-
-    @Test
-    public void distanceToTravelShouldBeCorrect(){
         double total = stateManager.getRouteState(route, vehicle, traveledDistanceId, Double.class);
-        Assert.assertEquals(180d,total - stateManager.getActivityState(route.getActivities().get(0),vehicle,traveledDistanceId,Double.class),0.01);
+        Assert.assertEquals(100d, total - traveledDistanceBeforePickup, 0.01);
+    }
+
+    @Test
+    public void distanceOfPickupInRouteVehicle2() {
+        double traveledDistanceBeforePickup = stateManager.getActivityState(route.getActivities().get(3), vehicle2, traveledDistanceId, Double.class);
+        double total = stateManager.getRouteState(route, vehicle2, traveledDistanceId, Double.class);
+        Assert.assertEquals(80d, total - traveledDistanceBeforePickup, 0.01);
+    }
+
+    @Test
+    public void distanceToTravelShouldBeCorrect() {
+        double total = stateManager.getRouteState(route, vehicle, traveledDistanceId, Double.class);
+        Assert.assertEquals(180d, total - stateManager.getActivityState(route.getActivities().get(0), vehicle, traveledDistanceId, Double.class), 0.01);
         Assert.assertEquals(165d, total - stateManager.getActivityState(route.getActivities().get(1), vehicle, traveledDistanceId, Double.class), 0.01);
-        Assert.assertEquals(135d,total - stateManager.getActivityState(route.getActivities().get(2),vehicle,traveledDistanceId,Double.class),0.01);
+        Assert.assertEquals(135d, total - stateManager.getActivityState(route.getActivities().get(2), vehicle, traveledDistanceId, Double.class), 0.01);
         Assert.assertEquals(100d, total - stateManager.getActivityState(route.getActivities().get(3), vehicle, traveledDistanceId, Double.class), 0.01);
         Assert.assertEquals(45d, total - stateManager.getActivityState(route.getActivities().get(4), vehicle, traveledDistanceId, Double.class), 0.01);
 
     }
 
     @Test
-    public void distanceToTravelShouldBeCorrectVehicle2(){
+    public void distanceToTravelShouldBeCorrectVehicle2() {
         double total = stateManager.getRouteState(route, vehicle2, traveledDistanceId, Double.class);
-        Assert.assertEquals(160d,total - stateManager.getActivityState(route.getActivities().get(0),vehicle2,traveledDistanceId,Double.class),0.01);
+        Assert.assertEquals(160d, total - stateManager.getActivityState(route.getActivities().get(0), vehicle2, traveledDistanceId, Double.class), 0.01);
         Assert.assertEquals(145d, total - stateManager.getActivityState(route.getActivities().get(1), vehicle2, traveledDistanceId, Double.class), 0.01);
-        Assert.assertEquals(115d,total - stateManager.getActivityState(route.getActivities().get(2),vehicle2,traveledDistanceId,Double.class),0.01);
+        Assert.assertEquals(115d, total - stateManager.getActivityState(route.getActivities().get(2), vehicle2, traveledDistanceId, Double.class), 0.01);
         Assert.assertEquals(80d, total - stateManager.getActivityState(route.getActivities().get(3), vehicle2, traveledDistanceId, Double.class), 0.01);
         Assert.assertEquals(25d, total - stateManager.getActivityState(route.getActivities().get(4), vehicle2, traveledDistanceId, Double.class), 0.01);
 
@@ -280,16 +280,16 @@ vehicle2 (max distance): 180.0
         context.getAssociatedActivities().add(vrp.getActivities(shipment).get(0));
         context.getAssociatedActivities().add(vrp.getActivities(shipment).get(1));
         maxDistanceMap = new HashMap<>();
-        maxDistanceMap.put(vehicle,12d);
+        maxDistanceMap.put(vehicle, 12d);
 
         StateManager stateManager = new StateManager(vrp);
         MaxDistanceConstraint maxDistanceConstraint =
             new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
                 @Override
                 public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from,to,departureTime, null, vehicle);
+                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, null, vehicle);
                 }
-            },maxDistanceMap);
+            }, maxDistanceMap);
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,
             new Start(vehicle.getStartLocation(), 0, Double.MAX_VALUE),
             vrp.getActivities(shipment).get(0),
@@ -327,16 +327,16 @@ vehicle2 (max distance): 180.0
         context.getAssociatedActivities().add(vrp.getActivities(shipment).get(0));
         context.getAssociatedActivities().add(vrp.getActivities(shipment).get(1));
         maxDistanceMap = new HashMap<>();
-        maxDistanceMap.put(vehicle,10d);
+        maxDistanceMap.put(vehicle, 10d);
 
         StateManager stateManager = new StateManager(vrp);
         MaxDistanceConstraint maxDistanceConstraint =
             new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
                 @Override
                 public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from,to,departureTime, null, vehicle);
+                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, null, vehicle);
                 }
-            },maxDistanceMap);
+            }, maxDistanceMap);
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,
             new Start(vehicle.getStartLocation(), 0, Double.MAX_VALUE),
             vrp.getActivities(shipment).get(0),

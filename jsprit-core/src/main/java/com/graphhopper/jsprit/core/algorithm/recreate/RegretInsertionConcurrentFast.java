@@ -144,9 +144,9 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<>(jobs);
             List<ScoredJob> badJobList = new ArrayList<>();
-            if(!firstRun && lastModified == null) throw new IllegalStateException("ho. this must not be.");
-            updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound,firstRun,lastModified,updates);
-            if(firstRun) firstRun = false;
+            if (!firstRun && lastModified == null) throw new IllegalStateException("ho. this must not be.");
+            updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound, firstRun, lastModified, updates);
+            if (firstRun) firstRun = false;
             updateRound++;
             ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
@@ -156,8 +156,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
                 lastModified = bestScoredJob.getRoute();
-            }
-            else lastModified = null;
+            } else lastModified = null;
             for (ScoredJob bad : badJobList) {
                 Job unassigned = bad.getJob();
                 jobs.remove(unassigned);
@@ -172,7 +171,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
         List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
         boolean updatedAllRoutes = false;
         for (final Job unassignedJob : unassignedJobList) {
-            if(priorityQueues[unassignedJob.getIndex()] == null){
+            if (priorityQueues[unassignedJob.getIndex()] == null) {
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<>(InsertionDataUpdater.getComparator());
             }
             if (firstRun) {

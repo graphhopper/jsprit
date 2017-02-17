@@ -18,19 +18,15 @@
 
 package com.graphhopper.jsprit.core.problem.constraint;
 
-import java.util.Collection;
-import java.util.Map;
-
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.AbstractActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by schroeder on 11/10/16.

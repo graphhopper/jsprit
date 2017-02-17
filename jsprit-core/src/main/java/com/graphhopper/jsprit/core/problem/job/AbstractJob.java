@@ -18,8 +18,8 @@
 
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -180,7 +180,7 @@ public abstract class AbstractJob implements Job {
         }
 
         /**
-         * Set priority to service. Only 1 = high priority, 2 = medium and 3 =
+         * Set priority to service. Only 1 = high priority to 10 =
          * low are allowed.
          * <p>
          * Default is 2 = medium.
@@ -190,9 +190,9 @@ public abstract class AbstractJob implements Job {
          */
         @SuppressWarnings("unchecked")
         public B setPriority(int priority) {
-            if (priority < 1 || priority > 3) {
+            if (priority < 1 || priority > 10) {
                 throw new IllegalArgumentException(
-                    "incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+                    "incorrect priority. only 1 = high to 10 = low is allowed");
             }
             this.priority = priority;
             return (B) this;

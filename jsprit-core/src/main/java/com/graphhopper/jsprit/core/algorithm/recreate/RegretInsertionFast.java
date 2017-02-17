@@ -135,8 +135,9 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<>(jobs);
             List<ScoredJob> badJobList = new ArrayList<>();
-            if(!firstRun && lastModified == null) throw new IllegalStateException("last modified route is null. this should not be.");
-            if(firstRun){
+            if (!firstRun && lastModified == null)
+                throw new IllegalStateException("last modified route is null. this should not be.");
+            if (firstRun) {
                 updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound, firstRun, lastModified, updates);
                 firstRun = false;
             } else {
@@ -153,8 +154,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
                 lastModified = bestScoredJob.getRoute();
-            }
-            else lastModified = null;
+            } else lastModified = null;
             for (ScoredJob bad : badJobList) {
                 Job unassigned = bad.getJob();
                 jobs.remove(unassigned);
@@ -167,7 +167,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, int updateRound, boolean firstRun, VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
         for (Job unassignedJob : unassignedJobList) {
-            if(priorityQueues[unassignedJob.getIndex()] == null){
+            if (priorityQueues[unassignedJob.getIndex()] == null) {
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<>(InsertionDataUpdater.getComparator());
             }
             if (firstRun) {
