@@ -12,6 +12,13 @@ public class SphericalDistanceCalculator implements DistanceCalculator {
         return INSTANCE;
     }
 
+    /**
+     * Calculates the spherical distance in meter.
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     @Override
     public double calculateDistance(Coordinate from, Coordinate to) {
         double lon1 = from.getX();
@@ -30,7 +37,7 @@ public class SphericalDistanceCalculator implements DistanceCalculator {
             + deltaLonSin * deltaLonSin * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.asin(Math.sqrt(a));
         double distance = R * c;
-        return distance;
+        return distance * 1000;
     }
 
     @Override
