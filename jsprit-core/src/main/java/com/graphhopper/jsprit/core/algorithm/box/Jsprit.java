@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
-import com.graphhopper.jsprit.core.algorithm.objectivefunction.*;
+import com.graphhopper.jsprit.core.algorithm.objectivefunction.ModularSolutionCostCalculator;
 import com.graphhopper.jsprit.core.algorithm.recreate.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
@@ -34,8 +34,12 @@ import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
@@ -573,7 +577,7 @@ public class Jsprit {
             acceptor = schrimpfAcceptance;
         }
 
-        SolutionCostCalculator objectiveFunction = getObjectiveFunction();
+        SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp, maxCosts);
         if (objectiveFunction instanceof ModularSolutionCostCalculator) {
             ((ModularSolutionCostCalculator) objectiveFunction).beforeRun(vrp, maxCosts);
         }
@@ -702,43 +706,80 @@ public class Jsprit {
         return Double.valueOf(string);
     }
 
-    private SolutionCostCalculator getObjectiveFunction() {
-        if (objectiveFunction != null) {
-            return objectiveFunction;
-        }
+//    private SolutionCostCalculator getObjectiveFunction() {
+//        if (objectiveFunction != null) {
+//            return objectiveFunction;
+//        }
+//
+//        ModularSolutionCostCalculator modCalc = createDefaultSolutionCostCalculator();
+//        return modCalc;
+//    }
 
-        ModularSolutionCostCalculator modCalc = createDefaultSolutionCostCalculator();
-        return modCalc;
-    }
+//    /**
+//     * Creates a default objective function calculator.
+//     *
+//     * <p>
+//     * This function will contain the following components:
+//     * <ul>
+//     * <li>{@linkplain FixCostPerVehicle}</li>
+//     * <li>{@linkplain MissedBreak}</li>
+//     * <li>{@linkplain TransportCost}</li>
+//     * <li>{@linkplain ActivityCost}</li>
+//     * <li>{@linkplain UnassignedJobs}</li>
+//     * </ul>
+//     * </p>
+//     * <p>
+//     * All components will be initialized with their default parameters and will
+//     * have the weight of 1.0.
+//     * </p>
+//     *
+//     * @return The default objective function calculator
+//     */
+//    public static ModularSolutionCostCalculator createDefaultSolutionCostCalculator() {
+//        ModularSolutionCostCalculator modCalc = new ModularSolutionCostCalculator();
+//        modCalc.addComponent(new FixCostPerVehicle())
+//        .addComponent(new MissedBreak())
+//        .addComponent(new TransportCost())
+//        .addComponent(new ActivityCost())
+//        .addComponent(new UnassignedJobs());
+//        return modCalc;
+//    }
 
-    /**
-     * Creates a default objective function calculator.
-     *
-     * <p>
-     * This function will contain the following components:
-     * <ul>
-     * <li>{@linkplain FixCostPerVehicle}</li>
-     * <li>{@linkplain MissedBreak}</li>
-     * <li>{@linkplain TransportCost}</li>
-     * <li>{@linkplain ActivityCost}</li>
-     * <li>{@linkplain UnassignedJobs}</li>
-     * </ul>
-     * </p>
-     * <p>
-     * All components will be initialized with their default parameters and will
-     * have the weight of 1.0.
-     * </p>
-     *
-     * @return The default objective function calculator
-     */
-    public static ModularSolutionCostCalculator createDefaultSolutionCostCalculator() {
-        ModularSolutionCostCalculator modCalc = new ModularSolutionCostCalculator();
-        modCalc.addComponent(new FixCostPerVehicle())
-        .addComponent(new MissedBreak())
-        .addComponent(new TransportCost())
-        .addComponent(new ActivityCost())
-        .addComponent(new UnassignedJobs());
-        return modCalc;
+    private SolutionCostCalculator getObjectiveFunction(final VehicleRoutingProblem vrp, final double maxCosts) {
+        if (objectiveFunction != null) return objectiveFunction;
+
+        SolutionCostCalculator solutionCostCalculator = new SolutionCostCalculator() {
+            @Override
+            public double getCosts(VehicleRoutingProblemSolution solution) {
+                double costs = 0.;
+
+                for (VehicleRoute route : solution.getRoutes()) {
+                    costs += route.getVehicle().getType().getVehicleCostParams().fix;
+                    boolean hasBreak = false;
+                    TourActivity prevAct = route.getStart();
+                    for (TourActivity act : route.getActivities()) {
+                        if (act instanceof BreakActivity) hasBreak = true;
+                        costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+                        costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
+                        prevAct = act;
+                    }
+                    costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
+                    if (route.getVehicle().getBreak() != null) {
+                        if (!hasBreak) {
+                            //break defined and required but not assigned penalty
+                            if (route.getEnd().getArrTime() > route.getVehicle().getBreak().getActivity().getSingleTimeWindow().getEnd()) {
+                                costs += 4 * (maxCosts * 2 + route.getVehicle().getBreak().getActivity().getOperationTime() * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit);
+                            }
+                        }
+                    }
+                }
+                for (Job j : solution.getUnassignedJobs()) {
+                    costs += maxCosts * 2 * (11 - j.getPriority());
+                }
+                return costs;
+            }
+        };
+        return solutionCostCalculator;
     }
 
 }

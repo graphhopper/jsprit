@@ -17,7 +17,10 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
-import com.graphhopper.jsprit.core.problem.constraint.*;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -35,7 +38,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator {
+final class GeneralJobInsertionCalculator extends AbstractInsertionCalculator {
 
     static class ActAndIndex {
 
@@ -210,9 +213,9 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
 
     private static final Logger logger = LoggerFactory.getLogger(GeneralJobInsertionCalculator.class);
 
-    private HardRouteConstraint hardRouteLevelConstraint;
-
-    private HardActivityConstraint hardActivityLevelConstraint;
+//    private HardRouteConstraint hardRouteLevelConstraint;
+//
+//    private HardActivityConstraint hardActivityLevelConstraint;
 
     private SoftRouteConstraint softRouteConstraint;
 
@@ -226,11 +229,14 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
+    private ConstraintManager constraintManager;
+
     public GeneralJobInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
-        hardRouteLevelConstraint = constraintManager;
-        hardActivityLevelConstraint = constraintManager;
+//        hardRouteLevelConstraint = constraintManager;
+//        hardActivityLevelConstraint = constraintManager;
+        this.constraintManager = constraintManager;
         softActivityConstraint = constraintManager;
         softRouteConstraint = constraintManager;
         transportCosts = routingCosts;
@@ -256,9 +262,10 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         /*
         check hard route constraints
          */
-        if (!hardRouteLevelConstraint.fulfilled(insertionContext)) {
-            return InsertionData.createEmptyInsertionData();
-        }
+        InsertionData noInsertion = checkRouteContraints(insertionContext, constraintManager);
+        if (noInsertion != null) return noInsertion;
+
+        Collection<String> failedActivityConstraints = new ArrayList<>();
         /*
         check soft route constraints
          */
@@ -279,9 +286,11 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         Route route = new Route(current, actsToInsert);
 
         List<Integer> insertionIndices = new ArrayList<>();
-        List<InsertionData> bestData = calculateInsertionCosts(insertionContext, 0, route.getFirst(), route, actList, additionalICostsAtRouteLevel, newVehicleDepartureTime, insertionIndices);
+        List<InsertionData> bestData = calculateInsertionCosts(insertionContext, 0, route.getFirst(), route, actList, additionalICostsAtRouteLevel, newVehicleDepartureTime, insertionIndices, failedActivityConstraints);
         if (bestData.isEmpty()) {
-            return InsertionData.createEmptyInsertionData();
+            InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
+            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
+            return emptyInsertionData;
         } else {
             InsertionData best = InsertionData.createEmptyInsertionData();
             for (InsertionData iD : bestData) {
@@ -303,7 +312,7 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
         return indexed;
     }
 
-    private List<InsertionData> calculateInsertionCosts(JobInsertionContext insertionContext, int startIndex, IndexedTourActivity startAct, Route route, List<JobActivity> actList, double additionalCosts, double departureTime, List<Integer> insertionIndeces) {
+    private List<InsertionData> calculateInsertionCosts(JobInsertionContext insertionContext, int startIndex, IndexedTourActivity startAct, Route route, List<JobActivity> actList, double additionalCosts, double departureTime, List<Integer> insertionIndeces, Collection<String> failedActivityConstraints) {
         List<InsertionData> iData = new ArrayList<>();
         double departureTimeAtPrevAct = departureTime;
         IndexedTourActivity prevAct = startAct;
@@ -322,7 +331,8 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
                 activityContext.setInsertionIndex(index + 1);
 //                activityContext.setArrivalTime();
                 insertionContext.setActivityContext(activityContext);
-                HardActivityConstraint.ConstraintsStatus constraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct.act, copiedJobActivity, route.getSuccessor(prevAct).act, departureTimeAtPrevAct);
+
+                HardActivityConstraint.ConstraintsStatus constraintStatus = fulfilled(insertionContext, prevAct.act, copiedJobActivity, route.getSuccessor(prevAct).act, departureTimeAtPrevAct, failedActivityConstraints, constraintManager);
                 if (constraintStatus.equals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED)) {
                     continue;
                 } else if (constraintStatus.equals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK)) {
@@ -341,7 +351,7 @@ final class GeneralJobInsertionCalculator implements JobInsertionCostsCalculator
                 } else {
                     double departureTimeFromJobActivity = getDeparture(prevAct.act, copiedJobActivity, departureTimeAtPrevAct, insertionContext.getNewDriver(), insertionContext.getNewVehicle());
                     insertionIndeces.add(index + 1);
-                    List<InsertionData> insertions = calculateInsertionCosts(insertionContext, index + 1, toInsert, route, actList.subList(1, actList.size()), totalCosts, departureTimeFromJobActivity, insertionIndeces);
+                    List<InsertionData> insertions = calculateInsertionCosts(insertionContext, index + 1, toInsert, route, actList.subList(1, actList.size()), totalCosts, departureTimeFromJobActivity, insertionIndeces, failedActivityConstraints);
                     iData.addAll(insertions);
                 }
                 route.remove(toInsert);
