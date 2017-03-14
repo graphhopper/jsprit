@@ -35,6 +35,8 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
 
     Map<String, Integer> failedConstraintNamesToCode = new HashMap<>();
 
+    Set<String> constraintsToBeIgnored = new HashSet<>();
+
     public UnassignedJobReasonTracker() {
         codesToReason.put(1, "cannot serve required skill");
         codesToReason.put(2, "cannot be visited within time window");
@@ -49,12 +51,17 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         failedConstraintNamesToCode.put("MaxDistanceConstraint", 4);
     }
 
+    public void ignore(String simpleNameOfConstraint) {
+        constraintsToBeIgnored.add(simpleNameOfConstraint);
+    }
+
     @Override
     public void informJobUnassigned(Job unassigned, Collection<String> failedConstraintNames) {
         if (!this.reasons.containsKey(unassigned.getId())) {
             this.reasons.put(unassigned.getId(), new Frequency());
         }
         for (String r : failedConstraintNames) {
+            if (constraintsToBeIgnored.contains(r)) continue;
             this.reasons.get(unassigned.getId()).addValue(r);
         }
     }
