@@ -16,7 +16,7 @@ First, build a vehicle with its vehicle-type:
 
 <pre><code>/*
  * get a vehicle type-builder and build a type with the typeId "vehicleType" and a capacity of 2
- * you are free to add an arbitrary number of capacity dimensions with .addCacpacityDimension(dimensionIndex,dimensionValue)
+ * you are free to add an arbitrary number of capacity dimensions with .addCapacityDimension(dimensionIndex,dimensionValue)
  */
 final int WEIGHT_INDEX = 0;
 VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType").addCapacityDimension(WEIGHT_INDEX,2);
