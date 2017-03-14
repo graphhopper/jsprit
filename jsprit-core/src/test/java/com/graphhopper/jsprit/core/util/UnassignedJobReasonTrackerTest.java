@@ -74,7 +74,7 @@ public class UnassignedJobReasonTrackerTest {
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         Assert.assertEquals(1, solution.getUnassignedJobs().size());
-        Assert.assertEquals(3, reasonTracker.getCode(solution.getUnassignedJobs().iterator().next().getId()));
+        Assert.assertEquals(3, reasonTracker.getMostLikelyReasonCode(solution.getUnassignedJobs().iterator().next().getId()));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class UnassignedJobReasonTrackerTest {
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         Assert.assertEquals(1, solution.getUnassignedJobs().size());
-        Assert.assertEquals(1, reasonTracker.getCode(solution.getUnassignedJobs().iterator().next().getId()));
+        Assert.assertEquals(1, reasonTracker.getMostLikelyReasonCode(solution.getUnassignedJobs().iterator().next().getId()));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class UnassignedJobReasonTrackerTest {
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         Assert.assertEquals(1, solution.getUnassignedJobs().size());
-        Assert.assertEquals(2, reasonTracker.getCode(solution.getUnassignedJobs().iterator().next().getId()));
+        Assert.assertEquals(2, reasonTracker.getMostLikelyReasonCode(solution.getUnassignedJobs().iterator().next().getId()));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class UnassignedJobReasonTrackerTest {
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         Assert.assertEquals(1, solution.getUnassignedJobs().size());
-        Assert.assertEquals(4, reasonTracker.getCode(solution.getUnassignedJobs().iterator().next().getId()));
+        Assert.assertEquals(4, reasonTracker.getMostLikelyReasonCode(solution.getUnassignedJobs().iterator().next().getId()));
     }
 
     @Test

@@ -22,10 +22,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobUnassignedList
 import com.graphhopper.jsprit.core.problem.job.Job;
 import org.apache.commons.math3.stat.Frequency;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by schroeder on 06/02/17.
@@ -72,6 +69,35 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
     }
 
     /**
+     * For each job id, it returns frequency distribution of failed constraints (simple name of constraint) in an unmodifiable map.
+     *
+     * @return
+     */
+    public Map<String, Frequency> getReasons() {
+        return Collections.unmodifiableMap(reasons);
+    }
+
+    /**
+     * Returns an unmodifiable map of codes and reason pairs.
+     *
+     * @return
+     */
+    public Map<Integer, String> getCodesToReason() {
+        return Collections.unmodifiableMap(codesToReason);
+    }
+
+    /**
+     * Returns an unmodifiable map of constraint names (simple name of constraint) and reason code pairs.
+     *
+     * @return
+     */
+    public Map<String, Integer> getFailedConstraintNamesToCode() {
+        return Collections.unmodifiableMap(failedConstraintNamesToCode);
+    }
+
+    /**
+     * Returns the most likely reason code i.e. the reason (failed constraint) being observed most often.
+     *
      * 1 --> "cannot serve required skill
      * 2 --> "cannot be visited within time window"
      * 3 --> "does not fit into any vehicle due to capacity"
@@ -80,13 +106,19 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @param jobId
      * @return
      */
-    public int getCode(String jobId) {
+    public int getMostLikelyReasonCode(String jobId) {
         Frequency reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
         return toCode(mostLikelyReason);
     }
 
-    public String getReason(String jobId) {
+    /**
+     * Returns the most likely reason i.e. the reason (failed constraint) being observed most often.
+     *
+     * @param jobId
+     * @return
+     */
+    public String getMostLikelyReason(String jobId) {
         Frequency reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
         int code = toCode(mostLikelyReason);
