@@ -18,8 +18,10 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
-import com.graphhopper.jsprit.core.problem.constraint.*;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -36,6 +38,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -43,13 +47,13 @@ import java.util.Iterator;
  *
  * @author schroeder
  */
-final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
+final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceInsertionCalculator.class);
 
-    private HardRouteConstraint hardRouteLevelConstraint;
+//    private HardRouteConstraint hardRouteLevelConstraint;
 
-    private HardActivityConstraint hardActivityLevelConstraint;
+//    private HardActivityConstraint hardActivityLevelConstraint;
 
     private SoftRouteConstraint softRouteConstraint;
 
@@ -65,12 +69,13 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
+    private ConstraintManager constraintManager;
+
     public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
-        hardRouteLevelConstraint = constraintManager;
-        hardActivityLevelConstraint = constraintManager;
+        this.constraintManager = constraintManager;
         softActivityConstraint = constraintManager;
         softRouteConstraint = constraintManager;
         this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
@@ -103,9 +108,10 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         /*
         check hard constraints at route level
          */
-        if (!hardRouteLevelConstraint.fulfilled(insertionContext)) {
-            return InsertionData.createEmptyInsertionData();
-        }
+        InsertionData noInsertion = checkRouteContraints(insertionContext, constraintManager);
+        if (noInsertion != null) return noInsertion;
+
+        Collection<String> failedActivityConstraints = new ArrayList<>();
 
         /*
         check soft constraints at route level
@@ -142,7 +148,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
                 ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(actIndex);
                 insertionContext.setActivityContext(activityContext);
-                ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager);
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
                     double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
                     double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
@@ -163,7 +169,9 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
             actIndex++;
         }
         if(insertionIndex == InsertionData.NO_INDEX) {
-            return InsertionData.createEmptyInsertionData();
+            InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
+            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
+            return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
         deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
@@ -173,4 +181,6 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
         return insertionData;
     }
+
+
 }

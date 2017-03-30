@@ -212,15 +212,16 @@ public class Service extends AbstractJob {
         }
 
         /**
-         * Set priority to service. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+         * Set priority to service. Only 1 (very high) to 10 (very low) are allowed.
          * <p>
-         * Default is 2 = medium.
+         * Default is 2.
          *
          * @param priority
          * @return builder
          */
         public Builder<T> setPriority(int priority) {
-            if(priority < 1 || priority > 3) throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            if (priority < 1 || priority > 10)
+                throw new IllegalArgumentException("incorrect priority. only priority values from 1 to 10 are allowed where 1 = high and 10 is low");
             this.priority = priority;
             return this;
         }

@@ -269,7 +269,7 @@ public class Shipment extends AbstractJob {
         }
 
         /**
-         * Set priority to shipment. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+         * Set priority to shipment. Only 1 (high) to 10 (low) are allowed.
          * <p>
          * Default is 2 = medium.
          *
@@ -277,7 +277,8 @@ public class Shipment extends AbstractJob {
          * @return builder
          */
         public Builder setPriority(int priority) {
-            if(priority < 1 || priority > 3) throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            if (priority < 1 || priority > 10)
+                throw new IllegalArgumentException("incorrect priority. only 1 (very high) to 10 (very low) are allowed");
             this.priority = priority;
             return this;
         }

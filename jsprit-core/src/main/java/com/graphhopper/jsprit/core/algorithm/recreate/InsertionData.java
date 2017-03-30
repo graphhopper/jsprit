@@ -31,6 +31,7 @@ import java.util.List;
  */
 public class InsertionData {
 
+
     public static class NoInsertionFound extends InsertionData {
 
         public NoInsertionFound() {
@@ -75,11 +76,21 @@ public class InsertionData {
         return events;
     }
 
+    private List<String> reasons = new ArrayList<>();
+
     /**
      * @return the additionalTime
      */
     public double getAdditionalTime() {
         return additionalTime;
+    }
+
+    public void addFailedConstrainName(String name) {
+        reasons.add(name);
+    }
+
+    public List<String> getFailedConstraintNames() {
+        return reasons;
     }
 
     /**
