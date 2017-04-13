@@ -20,7 +20,6 @@ package com.graphhopper.jsprit.core.algorithm.state;
 
 public class InternalStates {
 
-
     public final static StateId MAXLOAD = new StateFactory.StateIdImpl("max_load", 0);
 
     public final static StateId LOAD = new StateFactory.StateIdImpl("load", 1);
@@ -52,4 +51,6 @@ public class InternalStates {
     public static final StateId EARLIEST_WITHOUT_WAITING = new StateFactory.StateIdImpl("earliest_without_waiting", 14);
 
     public static final StateId SWITCH_NOT_FEASIBLE = new StateFactory.StateIdImpl("switch_not_feasible", 15);
+
+    public static final StateId END_TIME = new StateFactory.StateIdImpl("end_time", 16);
 }

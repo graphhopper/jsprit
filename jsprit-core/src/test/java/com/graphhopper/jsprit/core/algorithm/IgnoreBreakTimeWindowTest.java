@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -57,10 +58,10 @@ public class IgnoreBreakTimeWindowTest {
             vehicleBuilder.setBreak(Break.Builder.newInstance("lunch").setTimeWindow(TimeWindow.newInstance(14, 14)).setServiceTime(1.).build());
             vehicle2 = vehicleBuilder.build();
         }
+
 		/*
          * build services at the required locations, each with a capacity-demand of 1.
 		 */
-
 
         Service service4 = Service.Builder.newInstance("2").setLocation(Location.newInstance(0, 0))
             .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(17,17)).build();
@@ -93,7 +94,6 @@ public class IgnoreBreakTimeWindowTest {
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
 
-
         Assert.assertTrue(breakShouldBeTime(solution));
     }
 
@@ -110,5 +110,64 @@ public class IgnoreBreakTimeWindowTest {
             }
         }
         return inTime;
+    }
+
+    @Test
+    public void breakCannotBeInserted() {
+        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type")
+            .build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1")
+            .setType(type)
+            .setReturnToDepot(false)
+            .setStartLocation(Location.newInstance(0, 0))
+            .setEarliestStart(0)
+            .setLatestArrival(14)
+            .setBreak(
+                Break.Builder.newInstance("break")
+                    .setServiceTime(1)
+                    .addTimeWindow(10, 10)
+                    .build()
+            )
+            .build();
+
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 0))
+            .setServiceTime(4)
+            .build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 0))
+            .setServiceTime(4)
+            .build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(0, 0))
+            .setServiceTime(4)
+            .build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+            .addJob(s1).addJob(s2).addJob(s3)
+            .addVehicle(v1)
+            .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+            .build();
+
+        Jsprit.Builder algoBuilder = Jsprit.Builder.newInstance(vrp);
+        VehicleRoutingAlgorithm algorithm = algoBuilder.buildAlgorithm();
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
+
+        Assert.assertTrue(breakShouldNotBe(solution));
+    }
+
+    private boolean breakShouldNotBe(VehicleRoutingProblemSolution solution) {
+        boolean breakNotBe = true;
+        for (VehicleRoute route : solution.getRoutes()) {
+            Break aBreak = route.getVehicle().getBreak();
+            if (aBreak != null) {
+                if (route.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()) {
+                    if (!route.getTourActivities().servesJob(aBreak))
+                        breakNotBe = false;
+                }
+                else {
+                    if (route.getTourActivities().servesJob(aBreak))
+                        breakNotBe = false;
+                }
+            }
+        }
+        return breakNotBe;
     }
 }
