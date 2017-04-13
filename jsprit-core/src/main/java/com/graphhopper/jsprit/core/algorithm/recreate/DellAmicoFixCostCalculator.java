@@ -31,14 +31,14 @@ public class DellAmicoFixCostCalculator implements SoftRouteConstraint, Insertio
 
     private int nuOfJobsToRecreate;
 
-    private final JobInsertionConsideringFixCostsCalculator calculator;
+    private final IncreasingAbsoluteFixedCosts calculator;
 
     private final int nuOfJobs;
 
     public DellAmicoFixCostCalculator(final int nuOfJobs, final RouteAndActivityStateGetter stateGetter) {
         super();
         this.nuOfJobs = nuOfJobs;
-        calculator = new JobInsertionConsideringFixCostsCalculator(null, stateGetter);
+        calculator = new IncreasingAbsoluteFixedCosts(nuOfJobs);
     }
 
     @Override

@@ -218,10 +218,10 @@ public class JobInsertionCostsCalculatorBuilder {
         addAlgorithmListeners(standardLocal.getAlgorithmListener());
         addInsertionListeners(standardLocal.getInsertionListener());
         if (considerFixedCost) {
-            CalculatorPlusListeners withFixed = createCalculatorConsideringFixedCosts(vrp, baseCalculator, states, weightOfFixedCost);
-            baseCalculator = withFixed.getCalculator();
-            addAlgorithmListeners(withFixed.getAlgorithmListener());
-            addInsertionListeners(withFixed.getInsertionListener());
+//            CalculatorPlusListeners withFixed = createCalculatorConsideringFixedCosts(vrp, baseCalculator, states, weightOfFixedCost);
+//            baseCalculator = withFixed.getCalculator();
+//            addAlgorithmListeners(withFixed.getAlgorithmListener());
+//            addInsertionListeners(withFixed.getInsertionListener());
         }
         if (timeScheduling) {
 //			baseCalculator = new CalculatesServiceInsertionWithTimeSchedulingInSlices(baseCalculator,timeSlice,neighbors);
@@ -307,14 +307,6 @@ public class JobInsertionCostsCalculatorBuilder {
             calculatorPlusListeners.insertionListener.add(configLocal);
         }
         return calculatorPlusListeners;
-    }
-
-    private CalculatorPlusListeners createCalculatorConsideringFixedCosts(VehicleRoutingProblem vrp, JobInsertionCostsCalculator baseCalculator, RouteAndActivityStateGetter activityStates2, double weightOfFixedCosts) {
-        final JobInsertionConsideringFixCostsCalculator withFixCost = new JobInsertionConsideringFixCostsCalculator(baseCalculator, activityStates2);
-        withFixCost.setWeightOfFixCost(weightOfFixedCosts);
-        CalculatorPlusListeners calcPlusListeners = new CalculatorPlusListeners(withFixCost);
-        calcPlusListeners.getInsertionListener().add(new ConfigureFixCostCalculator(vrp, withFixCost));
-        return calcPlusListeners;
     }
 
     private CalculatorPlusListeners createStandardRoute(final VehicleRoutingProblem vrp, RouteAndActivityStateGetter activityStates2, int forwardLooking, int solutionMemory) {

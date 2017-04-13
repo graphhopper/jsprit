@@ -18,8 +18,10 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
-import com.graphhopper.jsprit.core.problem.constraint.*;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -36,16 +38,19 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
+final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
     private static final Logger logger = LoggerFactory.getLogger(ShipmentInsertionCalculator.class);
 
-    private HardRouteConstraint hardRouteLevelConstraint;
+    private final ConstraintManager constraintManager;
 
-    private HardActivityConstraint hardActivityLevelConstraint;
+//    private HardRouteConstraint hardRouteLevelConstraint;
+//
+//    private HardActivityConstraint hardActivityLevelConstraint;
 
     private SoftRouteConstraint softRouteConstraint;
 
@@ -64,8 +69,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
     public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
-        this.hardRouteLevelConstraint = constraintManager;
-        this.hardActivityLevelConstraint = constraintManager;
+        this.constraintManager = constraintManager;
         this.softActivityConstraint = constraintManager;
         this.softRouteConstraint = constraintManager;
         this.transportCosts = routingCosts;
@@ -99,9 +103,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         /*
         check hard route constraints
          */
-        if (!hardRouteLevelConstraint.fulfilled(insertionContext)) {
-            return InsertionData.createEmptyInsertionData();
-        }
+        InsertionData noInsertion = checkRouteContraints(insertionContext, constraintManager);
+        if (noInsertion != null) return noInsertion;
         /*
         check soft route constraints
          */
@@ -132,6 +135,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         //pickupShipmentLoop
         List<TourActivity> activities = currentRoute.getTourActivities().getActivities();
 
+        List<String> failedActivityConstraints = new ArrayList<>();
         while (!tourEnd) {
             TourActivity nextAct;
             if (i < activities.size()) {
@@ -148,7 +152,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                 ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(i);
                 insertionContext.setActivityContext(activityContext);
-                ConstraintsStatus pickupShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
+                ConstraintsStatus pickupShipmentConstraintStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, failedActivityConstraints, constraintManager);
                 if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
                     continue;
@@ -194,7 +198,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                         ActivityContext activityContext_ = new ActivityContext();
                         activityContext_.setInsertionIndex(j);
                         insertionContext.setActivityContext(activityContext_);
-                        ConstraintsStatus deliverShipmentConstraintStatus = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
+                        ConstraintsStatus deliverShipmentConstraintStatus = fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager);
                         if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
                             double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                             double deliveryAIC = calculate(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
@@ -230,7 +234,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
             i++;
         }
         if (pickupInsertionIndex == InsertionData.NO_INDEX) {
-            return InsertionData.createEmptyInsertionData();
+            InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
+            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
+            return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
         pickupShipment.setTheoreticalEarliestOperationStartTime(bestPickupTimeWindow.getStart());
