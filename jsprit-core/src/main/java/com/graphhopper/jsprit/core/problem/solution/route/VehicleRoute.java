@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.problem.solution.route;
 
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.*;
@@ -186,6 +187,16 @@ public class VehicleRoute {
             return addService(service,service.getTimeWindow());
         }
 
+        private Builder addBreakInternally(Break currentBreak, TimeWindow timeWindow, Location breakLocation) {
+            List<AbstractActivity> acts = jobActivityFactory.createActivities(currentBreak);
+            BreakActivity act = (BreakActivity) acts.get(0);
+            act.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+            act.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
+            act.setLocation(breakLocation);
+            tourActivities.addActivity(act);
+            return this;
+        }
+
         public Builder addService(Service service, TimeWindow timeWindow) {
             if (service == null) throw new IllegalArgumentException("service must not be null");
             List<AbstractActivity> acts = jobActivityFactory.createActivities(service);
@@ -196,15 +207,24 @@ public class VehicleRoute {
             return this;
         }
 
+        @Deprecated
         public Builder addBreak(Break currentbreak) {
             if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
             return addBreak(currentbreak, currentbreak.getTimeWindow());
         }
 
+        @Deprecated
         public Builder addBreak(Break currentbreak, TimeWindow timeWindow) {
             if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
             return addService(currentbreak,timeWindow);
         }
+
+        public Builder addBreak(Break currentBreak, TimeWindow timeWindow, Location breakLocation) {
+            if (currentBreak == null) throw new IllegalArgumentException("break must not be null");
+            return addBreakInternally(currentBreak, timeWindow, breakLocation);
+        }
+
+
 
         /**
          * Adds a pickup to this route.
