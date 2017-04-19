@@ -49,9 +49,9 @@ public final class RuinString extends AbstractRuinStrategy {
 
     private int Kmax = 6;
 
-    private int Lmin = 10;
+    private int Lmin = 30;
 
-    private int Lmax = 50;
+    private int Lmax = 60;
 
     /**
      * Constructs RuinRadial.
