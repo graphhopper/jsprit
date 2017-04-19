@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.problem.solution.route;
 
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.*;
@@ -196,14 +197,31 @@ public class VehicleRoute {
             return this;
         }
 
+        @Deprecated
         public Builder addBreak(Break currentbreak) {
             if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
             return addBreak(currentbreak, currentbreak.getTimeWindow());
         }
 
+        @Deprecated
         public Builder addBreak(Break currentbreak, TimeWindow timeWindow) {
             if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
             return addService(currentbreak,timeWindow);
+        }
+
+        public Builder addBreak(Break currentbreak, TimeWindow timeWindow, Location location) {
+            if (currentbreak == null) throw new IllegalArgumentException("break must not be null");
+            return addBreakInternally(currentbreak, timeWindow, location);
+        }
+
+        private Builder addBreakInternally(Break currentBreak, TimeWindow timeWindow, Location breakLocation) {
+            List<AbstractActivity> acts = jobActivityFactory.createActivities(currentBreak);
+            BreakActivity act = (BreakActivity) acts.get(0);
+            act.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+            act.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
+            act.setLocation(breakLocation);
+            tourActivities.addActivity(act);
+            return this;
         }
 
         /**
