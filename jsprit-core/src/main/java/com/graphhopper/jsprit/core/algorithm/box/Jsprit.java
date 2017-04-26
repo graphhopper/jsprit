@@ -186,8 +186,8 @@ public class Jsprit {
             defaults.put(Strategy.RANDOM_BEST.toString(), ".5");
             defaults.put(Strategy.RANDOM_REGRET.toString(), ".5");
 
-            defaults.put(Strategy.STRING_BEST.toString(), ".5");
-            defaults.put(Strategy.STRING_REGRET.toString(), ".5");
+            defaults.put(Strategy.STRING_BEST.toString(), "0.0");
+            defaults.put(Strategy.STRING_REGRET.toString(), "0.0");
 
             defaults.put(Parameter.STRING_KMIN.toString(), "1");
             defaults.put(Parameter.STRING_KMAX.toString(), "6");
@@ -490,11 +490,14 @@ public class Jsprit {
                 random)
         );
 
-        int kmin = toInteger(properties.getProperty(Parameter.STRING_KMIN.toString()));
-        int kmax = toInteger(properties.getProperty(Parameter.STRING_KMAX.toString()));
-        int lmin = toInteger(properties.getProperty(Parameter.STRING_LMIN.toString()));
-        int lmax = toInteger(properties.getProperty(Parameter.STRING_LMAX.toString()));
-        final RuinString stringRuin = new RuinString(vrp, jobNeighborhoods, kmin, kmax, lmin, lmax);
+        int kMin = toInteger(properties.getProperty(Parameter.STRING_KMIN.toString()));
+        int kMax = toInteger(properties.getProperty(Parameter.STRING_KMAX.toString()));
+        int lMin = toInteger(properties.getProperty(Parameter.STRING_LMIN.toString()));
+        int lMax = toInteger(properties.getProperty(Parameter.STRING_LMAX.toString()));
+
+        final RuinString stringRuin = new RuinString(vrp, jobNeighborhoods);
+        stringRuin.setNoRoutes(kMin, kMax);
+        stringRuin.setStringLength(lMin, lMax);
         stringRuin.setRandom(random);
 
         AbstractInsertionStrategy regret;

@@ -17,7 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
-import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -31,9 +30,15 @@ import java.util.*;
 
 
 /**
- * RuinStrategy that ruins the neighborhood of a randomly selected job. The size and the structure of the neighborhood is defined by
- * the share of jobs to be removed and the distance between jobs (where distance not necessarily mean Euclidean distance but an arbitrary
- * measure).
+ * RuinString is adopted from
+ *
+ * Technical report 7.11.2016
+ * A Fresh Ruin & Recreate Implementation for the Capacitated Vehicle Routing Problem
+ * Jan Christiaens, Greet Vanden Berghe
+ * KU Leuven, Department of Computer Science, CODeS & iMinds-ITEC
+ * Gebr. De Smetstraat 1, 9000 Gent, Belgium, jan.christiaens@cs.kuleuven.be, greet.vandenberghe@cs.kuleuven.be
+ *
+ * https://lirias.kuleuven.be/bitstream/123456789/556398/1/asb_rr_2016.pdf
  *
  * @author stefan
  */
@@ -45,46 +50,14 @@ public final class RuinString extends AbstractRuinStrategy {
 
     private JobNeighborhoods jobNeighborhoods;
 
-    private int Kmin = 1;
+    private int kMin = 1;
 
-    private int Kmax = 6;
+    private int kMax = 6;
 
-    private int Lmin = 30;
+    private int lMin = 30;
 
-    private int Lmax = 60;
-
-    /**
-     * Constructs RuinRadial.
-     *
-     * @param vrp
-     * @param jobDistance i.e. a measure to define the distance between two jobs and whether they are located close or distant to eachother
-     * @param Kmin
-     * @param Kmax
-     * @param Lmin
-     * @param Lmax
-     */
-    public RuinString(VehicleRoutingProblem vrp, JobDistance jobDistance, int Kmin, int Kmax, int Lmin, int Lmax) {
-        super(vrp);
-        this.vrp = vrp;
-        JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, Kmax * Lmax);
-        jobNeighborhoodsImpl.initialise();
-        jobNeighborhoods = jobNeighborhoodsImpl;
-        this.Kmin = Kmin;
-        this.Kmax = Kmax;
-        this.Lmin = Lmin;
-        this.Lmax = Lmax;
-        logger.debug("initialise {}", this);
-    }
-
-    public RuinString(VehicleRoutingProblem vrp, JobDistance jobDistance) {
-        super(vrp);
-        this.vrp = vrp;
-        JobNeighborhoodsImplWithCapRestriction jobNeighborhoodsImpl = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, Kmax * Lmax);
-        jobNeighborhoodsImpl.initialise();
-        jobNeighborhoods = jobNeighborhoodsImpl;
-        logger.debug("initialise {}", this);
-    }
-
+    private int lMax = 60;
+    
     public RuinString(VehicleRoutingProblem vrp, JobNeighborhoods jobNeighborhoods) {
         super(vrp);
         this.vrp = vrp;
@@ -92,15 +65,14 @@ public final class RuinString extends AbstractRuinStrategy {
         logger.debug("initialise {}", this);
     }
 
-    public RuinString(VehicleRoutingProblem vrp, JobNeighborhoods jobNeighborhoods, int Kmin, int Kmax, int Lmin, int Lmax) {
-        super(vrp);
-        this.vrp = vrp;
-        this.jobNeighborhoods = jobNeighborhoods;
-        this.Kmin = Kmin;
-        this.Kmax = Kmax;
-        this.Lmin = Lmin;
-        this.Lmax = Lmax;
-        logger.debug("initialise {}", this);
+    public void setNoRoutes(int kMin, int kMax) {
+        this.kMin = kMin;
+        this.kMax = kMax;
+    }
+
+    public void setStringLength(int lMin, int lMax) {
+        this.lMin = lMin;
+        this.lMax = lMax;
     }
 
     @Override
@@ -117,12 +89,12 @@ public final class RuinString extends AbstractRuinStrategy {
         if (vehicleRoutes.isEmpty() || vrp.getJobs().isEmpty()) {
             return Collections.emptyList();
         }
-        int noStrings = Kmin + random.nextInt((Kmax - Kmin));
+        int noStrings = kMin + random.nextInt((kMax - kMin));
         noStrings = Math.min(noStrings, vehicleRoutes.size());
         Set<Job> unassignedJobs = new HashSet<>();
         Set<VehicleRoute> ruinedRoutes = new HashSet<>();
         Job prevJob = RandomUtils.nextJob(vrp.getJobs().values(), random);
-        Iterator<Job> neighborhoodIterator = jobNeighborhoods.getNearestNeighborsIterator(Kmax * Lmax, prevJob);
+        Iterator<Job> neighborhoodIterator = jobNeighborhoods.getNearestNeighborsIterator(kMax * lMax, prevJob);
         while (neighborhoodIterator.hasNext() && ruinedRoutes.size() <= noStrings) {
             if (!unassignedJobs.contains(prevJob)) {
                 VehicleRoute route = getRouteOf(prevJob, vehicleRoutes);
@@ -149,7 +121,7 @@ public final class RuinString extends AbstractRuinStrategy {
 
     private void ruinRouteWithSplitStringRuin(VehicleRoute seedRoute, Job prevJob, Set<Job> unassignedJobs) {
         int noActivities = seedRoute.getActivities().size();
-        int stringLength = Lmin + random.nextInt(Lmax - Lmin);
+        int stringLength = lMin + random.nextInt(lMax - lMin);
         stringLength = Math.min(stringLength, seedRoute.getActivities().size());
 
         int preservedSubstringLength = StringUtil.determineSubstringLength(stringLength, noActivities, random);
@@ -204,7 +176,7 @@ public final class RuinString extends AbstractRuinStrategy {
 
 
     private void ruinRouteWithStringRuin(VehicleRoute seedRoute, Job prevJob, Set<Job> unassignedJobs) {
-        int stringLength = Lmin + random.nextInt(Lmax - Lmin);
+        int stringLength = lMin + random.nextInt(lMax - lMin);
         stringLength = Math.min(stringLength, seedRoute.getActivities().size());
         List<AbstractActivity> acts = vrp.getActivities(prevJob);
         AbstractActivity randomSeedAct = RandomUtils.nextItem(acts, random);
