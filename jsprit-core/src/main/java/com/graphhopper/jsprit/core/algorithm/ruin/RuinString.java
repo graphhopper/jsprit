@@ -57,7 +57,7 @@ public final class RuinString extends AbstractRuinStrategy {
     private int lMin = 30;
 
     private int lMax = 60;
-    
+
     public RuinString(VehicleRoutingProblem vrp, JobNeighborhoods jobNeighborhoods) {
         super(vrp);
         this.vrp = vrp;
