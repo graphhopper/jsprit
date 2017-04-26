@@ -44,11 +44,11 @@ import java.util.*;
  */
 public final class RuinString extends AbstractRuinStrategy {
 
-    private Logger logger = LoggerFactory.getLogger(RuinString.class);
+    private static Logger logger = LoggerFactory.getLogger(RuinString.class);
 
-    private VehicleRoutingProblem vrp;
+    private final VehicleRoutingProblem vrp;
 
-    private JobNeighborhoods jobNeighborhoods;
+    private final JobNeighborhoods jobNeighborhoods;
 
     private int kMin = 1;
 
