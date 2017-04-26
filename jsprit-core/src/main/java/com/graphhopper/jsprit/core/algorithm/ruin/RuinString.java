@@ -92,6 +92,17 @@ public final class RuinString extends AbstractRuinStrategy {
         logger.debug("initialise {}", this);
     }
 
+    public RuinString(VehicleRoutingProblem vrp, JobNeighborhoods jobNeighborhoods, int Kmin, int Kmax, int Lmin, int Lmax) {
+        super(vrp);
+        this.vrp = vrp;
+        this.jobNeighborhoods = jobNeighborhoods;
+        this.Kmin = Kmin;
+        this.Kmax = Kmax;
+        this.Lmin = Lmin;
+        this.Lmax = Lmax;
+        logger.debug("initialise {}", this);
+    }
+
     @Override
     public String toString() {
         return "[name=splitRuin]";

@@ -121,7 +121,12 @@ public class Jsprit {
         FAST_REGRET("regret.fast"),
         MAX_TRANSPORT_COSTS("max_transport_costs"),
         CONSTRUCTION("construction"),
-        BREAK_SCHEDULING("break_scheduling");
+        BREAK_SCHEDULING("break_scheduling"),
+        STRING_KMIN("string_kmin"),
+        STRING_KMAX("string_kmax"),
+        STRING_LMIN("string_lmin"),
+        STRING_LMAX("string_lmax");
+
 
         String paraName;
 
@@ -184,10 +189,17 @@ public class Jsprit {
             defaults.put(Strategy.STRING_BEST.toString(), ".5");
             defaults.put(Strategy.STRING_REGRET.toString(), ".5");
 
+            defaults.put(Parameter.STRING_KMIN.toString(), "1");
+            defaults.put(Parameter.STRING_KMAX.toString(), "6");
+            defaults.put(Parameter.STRING_LMIN.toString(), "10");
+            defaults.put(Parameter.STRING_LMAX.toString(), "30");
+
             defaults.put(Strategy.WORST_BEST.toString(), "0.");
             defaults.put(Strategy.WORST_REGRET.toString(), "1.");
             defaults.put(Strategy.CLUSTER_BEST.toString(), "0.");
             defaults.put(Strategy.CLUSTER_REGRET.toString(), "1.");
+
+
             defaults.put(Parameter.FIXED_COST_PARAM.toString(), "0.");
             defaults.put(Parameter.VEHICLE_SWITCH.toString(), "true");
             defaults.put(Parameter.ITERATIONS.toString(), "2000");
@@ -478,7 +490,11 @@ public class Jsprit {
                 random)
         );
 
-        final RuinString stringRuin = new RuinString(vrp, jobNeighborhoods);
+        int kmin = toInteger(properties.getProperty(Parameter.STRING_KMIN.toString()));
+        int kmax = toInteger(properties.getProperty(Parameter.STRING_KMAX.toString()));
+        int lmin = toInteger(properties.getProperty(Parameter.STRING_LMIN.toString()));
+        int lmax = toInteger(properties.getProperty(Parameter.STRING_LMAX.toString()));
+        final RuinString stringRuin = new RuinString(vrp, jobNeighborhoods, kmin, kmax, lmin, lmax);
         stringRuin.setRandom(random);
 
         AbstractInsertionStrategy regret;
