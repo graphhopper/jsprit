@@ -31,13 +31,13 @@ import java.util.*;
 
 /**
  * RuinString is adopted from
- *
+ * <p>
  * Technical report 7.11.2016
  * A Fresh Ruin & Recreate Implementation for the Capacitated Vehicle Routing Problem
  * Jan Christiaens, Greet Vanden Berghe
  * KU Leuven, Department of Computer Science, CODeS & iMinds-ITEC
  * Gebr. De Smetstraat 1, 9000 Gent, Belgium, jan.christiaens@cs.kuleuven.be, greet.vandenberghe@cs.kuleuven.be
- *
+ * <p>
  * https://lirias.kuleuven.be/bitstream/123456789/556398/1/asb_rr_2016.pdf
  *
  * @author stefan

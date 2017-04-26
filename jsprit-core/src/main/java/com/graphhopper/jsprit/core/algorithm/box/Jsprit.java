@@ -122,10 +122,10 @@ public class Jsprit {
         MAX_TRANSPORT_COSTS("max_transport_costs"),
         CONSTRUCTION("construction"),
         BREAK_SCHEDULING("break_scheduling"),
-        STRING_KMIN("string_kmin"),
-        STRING_KMAX("string_kmax"),
-        STRING_LMIN("string_lmin"),
-        STRING_LMAX("string_lmax");
+        STRING_K_MIN("string_kmin"),
+        STRING_K_MAX("string_kmax"),
+        STRING_L_MIN("string_lmin"),
+        STRING_L_MAX("string_lmax");
 
 
         String paraName;
@@ -189,10 +189,10 @@ public class Jsprit {
             defaults.put(Strategy.STRING_BEST.toString(), "0.0");
             defaults.put(Strategy.STRING_REGRET.toString(), "0.0");
 
-            defaults.put(Parameter.STRING_KMIN.toString(), "1");
-            defaults.put(Parameter.STRING_KMAX.toString(), "6");
-            defaults.put(Parameter.STRING_LMIN.toString(), "10");
-            defaults.put(Parameter.STRING_LMAX.toString(), "30");
+            defaults.put(Parameter.STRING_K_MIN.toString(), "1");
+            defaults.put(Parameter.STRING_K_MAX.toString(), "6");
+            defaults.put(Parameter.STRING_L_MIN.toString(), "10");
+            defaults.put(Parameter.STRING_L_MAX.toString(), "30");
 
             defaults.put(Strategy.WORST_BEST.toString(), "0.");
             defaults.put(Strategy.WORST_REGRET.toString(), "1.");
@@ -490,10 +490,10 @@ public class Jsprit {
                 random)
         );
 
-        int kMin = toInteger(properties.getProperty(Parameter.STRING_KMIN.toString()));
-        int kMax = toInteger(properties.getProperty(Parameter.STRING_KMAX.toString()));
-        int lMin = toInteger(properties.getProperty(Parameter.STRING_LMIN.toString()));
-        int lMax = toInteger(properties.getProperty(Parameter.STRING_LMAX.toString()));
+        int kMin = toInteger(properties.getProperty(Parameter.STRING_K_MIN.toString()));
+        int kMax = toInteger(properties.getProperty(Parameter.STRING_K_MAX.toString()));
+        int lMin = toInteger(properties.getProperty(Parameter.STRING_L_MIN.toString()));
+        int lMax = toInteger(properties.getProperty(Parameter.STRING_L_MAX.toString()));
 
         final RuinString stringRuin = new RuinString(vrp, jobNeighborhoods);
         stringRuin.setNoRoutes(kMin, kMax);
