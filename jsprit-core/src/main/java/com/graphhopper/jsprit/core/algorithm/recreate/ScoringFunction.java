@@ -25,6 +25,6 @@ import com.graphhopper.jsprit.core.problem.job.Job;
  */
 public interface ScoringFunction {
 
-    public double score(InsertionData best, Job job);
+    double score(InsertionData best, Job job);
 
 }
