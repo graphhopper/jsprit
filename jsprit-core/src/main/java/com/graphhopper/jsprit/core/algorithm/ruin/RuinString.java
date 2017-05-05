@@ -89,7 +89,9 @@ public final class RuinString extends AbstractRuinStrategy {
         if (vehicleRoutes.isEmpty() || vrp.getJobs().isEmpty()) {
             return Collections.emptyList();
         }
-        int noStrings = kMin + random.nextInt((kMax - kMin));
+        int noStrings;
+        if (kMin == kMax) noStrings = kMax;
+        else noStrings = kMin + random.nextInt((kMax - kMin));
         noStrings = Math.min(noStrings, vehicleRoutes.size());
         Set<Job> unassignedJobs = new HashSet<>();
         Set<VehicleRoute> ruinedRoutes = new HashSet<>();
@@ -121,7 +123,9 @@ public final class RuinString extends AbstractRuinStrategy {
 
     private void ruinRouteWithSplitStringRuin(VehicleRoute seedRoute, Job prevJob, Set<Job> unassignedJobs) {
         int noActivities = seedRoute.getActivities().size();
-        int stringLength = lMin + random.nextInt(lMax - lMin);
+        int stringLength;
+        if (lMin == lMax) stringLength = lMin;
+        else stringLength = lMin + random.nextInt(lMax - lMin);
         stringLength = Math.min(stringLength, seedRoute.getActivities().size());
 
         int preservedSubstringLength = StringUtil.determineSubstringLength(stringLength, noActivities, random);
