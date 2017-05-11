@@ -112,6 +112,7 @@ public class Jsprit {
         WORST_MAX_SHARE("worst.max_share"),
         THRESHOLD_ALPHA("threshold.alpha"),
         THRESHOLD_INI("threshold.ini"),
+        THRESHOLD_INI_ABS("threshold.ini_abs"),
         INSERTION_NOISE_LEVEL("insertion.noise_level"),
         INSERTION_NOISE_PROB("insertion.noise_prob"),
         RUIN_WORST_NOISE_LEVEL("worst.noise_level"),
@@ -602,15 +603,19 @@ public class Jsprit {
         IterationStartsListener schrimpfThreshold = null;
         if(acceptor == null) {
             final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
-            schrimpfThreshold = new IterationStartsListener() {
-                @Override
-                public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-                    if (i == 1) {
-                        double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
-                        schrimpfAcceptance.setInitialThreshold(initialThreshold);
+            if (properties.containsKey(Parameter.THRESHOLD_INI_ABS.toString())) {
+                schrimpfAcceptance.setInitialThreshold(Double.valueOf(properties.getProperty(Parameter.THRESHOLD_INI_ABS.toString())));
+            } else {
+                schrimpfThreshold = new IterationStartsListener() {
+                    @Override
+                    public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+                        if (i == 1) {
+                            double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
+                            schrimpfAcceptance.setInitialThreshold(initialThreshold);
+                        }
                     }
-                }
-            };
+                };
+            }
             acceptor = schrimpfAcceptance;
         }
 
