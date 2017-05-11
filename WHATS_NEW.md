@@ -1,6 +1,11 @@
 WHATS NEW
 ==========
 ------------------------------
+<b>2017-05-11</b> new release **v1.7.1**
+- determine [reasons for unassigned jobs](https://github.com/graphhopper/jsprit/issues/180)
+- extend priority levels from 3 to 10 levels
+- a number of minor improvements
+
 <b>2017-01-12</b> new release **v1.7**
 - move packages to [graphhopper.com](https://graphhopper.com/) 
 - change license from GPLv3 to [Apache v2](https://github.com/graphhopper/jsprit/blob/master/LICENSE.md) to make it even more attractive for other developers and their commercial applications

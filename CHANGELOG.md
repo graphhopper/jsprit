@@ -1,6 +1,9 @@
 Change-log
 ==========
 
+**v1.7.1** @ 2017-05-11
+- see [Whats new](https://github.com/graphhopper/jsprit/blob/master/WHATS_NEW.md)
+
 **v1.7** @ 2017-01-12
 - see [Whats new](https://github.com/graphhopper/jsprit/blob/master/WHATS_NEW.md)
 
