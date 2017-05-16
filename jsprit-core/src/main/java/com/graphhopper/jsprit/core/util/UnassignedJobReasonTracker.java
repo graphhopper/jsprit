@@ -114,6 +114,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public int getMostLikelyReasonCode(String jobId) {
+        if (!this.reasons.containsKey(jobId)) return -1;
         Frequency reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
         return toCode(mostLikelyReason);
@@ -126,6 +127,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public String getMostLikelyReason(String jobId) {
+        if (!this.reasons.containsKey(jobId)) return "no reason found";
         Frequency reasons = this.reasons.get(jobId);
         String mostLikelyReason = getMostLikely(reasons);
         int code = toCode(mostLikelyReason);
@@ -140,6 +142,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
     }
 
     private String getMostLikely(Frequency reasons) {
+        if (reasons == null) return "no reason found";
         Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = reasons.entrySetIterator();
         int maxCount = 0;
         String mostLikely = null;
