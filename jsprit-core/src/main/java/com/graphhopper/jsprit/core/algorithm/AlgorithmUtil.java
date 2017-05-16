@@ -46,9 +46,11 @@ public class AlgorithmUtil {
         constraintManager.addTimeWindowConstraint();
         constraintManager.addLoadConstraint();
         constraintManager.addSkillsConstraint();
+        constraintManager.addRouteDurationConstraint();
         constraintManager.addConstraint(new SwitchNotFeasible(stateManager));
         stateManager.updateLoadStates();
         stateManager.updateTimeWindowStates();
+        stateManager.addRouteDurationState();
         UpdateVehicleDependentPracticalTimeWindows twUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts());
         twUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
 

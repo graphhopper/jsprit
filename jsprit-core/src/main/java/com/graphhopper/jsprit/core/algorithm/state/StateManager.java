@@ -22,6 +22,8 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListeners;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.constraint.VehicleRouteDurationConstraints;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager.Priority;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.ReverseRouteActivityVisitor;
@@ -61,6 +63,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     private boolean updateLoad = false;
 
     private boolean updateTWs = false;
+
+    private boolean updateRouteDuration = false;
 
     private final int initialNoStates = 21;
 
@@ -630,6 +634,18 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     public boolean timeWindowUpdateIsActivated() {
         return updateTWs;
+    }
+
+    public void addRouteDurationState() {
+        if (!updateRouteDuration) {
+            boolean useConstraint = false;
+            for(Vehicle vehc : vrp.getVehicles())
+                if(vehc.getMaximumRouteDuration() != null)
+                    useConstraint = true;
+            if(useConstraint)
+                addRouteVisitor(new UpdateRouteRealStartTime(this, vrp.getTransportCosts()));
+            updateRouteDuration = true;
+        }
     }
 
     /**
