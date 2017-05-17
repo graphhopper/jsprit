@@ -1,9 +1,13 @@
+# Walkthrough Constraints
+
 It is assumed that you know the basics of the [applied algorithm](Meta-Heuristic.md). In the recreation-step each
 removed job is re-inserted into the ruined solution again (one after another). To actually insert a job, the algorithm
 calculates its "best" insertion position. This implies also to check the feasibility of the insertion step
-which is in turn dependent on constraints (such as capacity constraints).
-jsprit knows hard and soft constraints. Whereas hard constraints must be met and cannot be broken, soft constraints
-are always fulfilled but uses penalties to express "good" and "bad" insertions.
+which is in turn dependent on constraints (such as capacity constraints).<br>
+
+## jsprit knows hard and soft constraints.
+- Hard constraints must be met and cannot be broken
+- soft constraints are always fulfilled but uses penalties to express "good" and "bad" insertions.
 
 jsprit comes with built-in or default constraints (such as capacity and time-window constraints) and allows you to add
 custom constraints. However, you can also disable the default constraints. To add custom constraints use
@@ -44,7 +48,7 @@ There are hard constraints at two different levels: at route and activity level.
 
 A route is basically a sequence of activities. Each route has a start- and an end-activity, and in between other activities of type <code>core.problem.solution.route.activity.TourActivity</code>.
 
-###<code>core.problem.constraint.HardRouteConstraint</code>
+### <code>core.problem.constraint.HardRouteConstraint</code>
 A HardRouteConstraint indicates whether a specified job can be inserted into an existing route (along with a specified vehicle). To define it you need to implement the HardRouteConstraint-interface:
 
 <pre><code>HardRouteConstraint constraint = new HardRouteConstraint(){
@@ -61,7 +65,7 @@ The JobInsertionContext tells you the context of the insertion step, i.e. the sp
 a specified route (<code>iContext.getRoute()</code>) as well as the vehicle
 that should be employed on that route (<code>iContext.getNewVehicle()</code>).
 
-####Example:
+#### Example:
 Assume a vehicle with id="1" is not allowed to serve a job with id="job1" (since it is for example too big to access the customer location). Such a constraint can be easily defined as follows:
 
 <pre><code>final Job jobWithAccessConstraint = routingProblem.getJobs().get("job1");
