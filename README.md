@@ -3,7 +3,7 @@ jsprit
 [![Build Status](https://travis-ci.org/graphhopper/jsprit.svg?branch=master)](https://travis-ci.org/graphhopper/jsprit)
 
 jsprit is a java based, open source toolkit for solving rich <a href="http://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">traveling salesman</a> (TSP) and <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP).
-It is lightweight, flexible and easy-to-use, and based on a single all-purpose <a href="https://github.com/jsprit/jsprit/wiki/Meta-Heuristic" target="_blank">meta-heuristic</a> currently solving
+It is lightweight, flexible and easy-to-use, and based on a single all-purpose <a href="https://github.com/jsroyal/jsprit/blob/master/docs/Meta-Heuristic.md" target="_blank">meta-heuristic</a> currently solving
 - Capacitated VRP
 - Multiple Depot VRP
 - VRP with Time Windows
