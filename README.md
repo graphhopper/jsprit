@@ -51,7 +51,7 @@ You can also use [stackoverflow](http://stackoverflow.com/questions/tagged/jspri
 For bugs, feature requests or similar use the [issue tracker](https://github.com/jsprit/jsprit/issues).
 
 #### Email:
-If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, contact us via https://graphhopper.com/#contact
+If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, [contact us](https://graphhopper.com/#contact)
 
 
 ## About
