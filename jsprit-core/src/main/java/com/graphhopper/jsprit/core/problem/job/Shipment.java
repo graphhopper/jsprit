@@ -17,14 +17,14 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
-
-import java.util.Collection;
 
 
 /**
@@ -89,6 +89,8 @@ public class Shipment extends AbstractJob {
 
         private int priority = 2;
 
+        public Object userData;
+
         /**
          * Returns new instance of this builder.
          *
@@ -109,9 +111,28 @@ public class Shipment extends AbstractJob {
         }
 
         /**
+         * Sets user specific domain data associated with the object.
+         *
+         * <p>
+         * The user data is a black box for the framework, it only stores it,
+         * but never interacts with it in any way.
+         * </p>
+         *
+         * @param userData
+         *            any object holding the domain specific user data
+         *            associated with the object.
+         * @return builder
+         */
+        public Builder setUserData(Object userData) {
+            this.userData = userData;
+            return this;
+        }
+
+        /**
          * Sets pickup location.
          *
-         * @param pickupLocation pickup location
+         * @param pickupLocation
+         *            pickup location
          * @return builder
          */
         public Builder setPickupLocation(Location pickupLocation) {
@@ -311,6 +332,7 @@ public class Shipment extends AbstractJob {
     private final int priority;
 
     Shipment(Builder builder) {
+        setUserData(builder.userData);
         this.id = builder.id;
         this.pickupServiceTime = builder.pickupServiceTime;
         this.pickupTimeWindow = builder.pickupTimeWindow;
@@ -438,6 +460,7 @@ public class Shipment extends AbstractJob {
      *
      * @return priority
      */
+    @Override
     public int getPriority() {
         return priority;
     }
