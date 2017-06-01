@@ -17,12 +17,13 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -130,6 +131,8 @@ public class VehicleImpl extends AbstractVehicle {
 
         private Break aBreak;
 
+        private Object userData;
+
         private Builder(String id) {
             super();
             this.id = id;
@@ -149,15 +152,38 @@ public class VehicleImpl extends AbstractVehicle {
         }
 
         /**
+         * Sets user specific domain data associated with the object.
+         *
+         * <p>
+         * The user data is a black box for the framework, it only stores it,
+         * but never interacts with it in any way.
+         * </p>
+         *
+         * @param userData
+         *            any object holding the domain specific user data
+         *            associated with the object.
+         * @return builder
+         */
+        public Builder setUserData(Object userData) {
+            this.userData = userData;
+            return this;
+        }
+
+        /**
          * Sets the flag whether the vehicle must return to depot or not.
          * <p>
-         * <p>If returnToDepot is true, the vehicle must return to specified end-location. If you
-         * omit specifying the end-location, vehicle returns to start-location (that must to be set). If
-         * you specify it, it returns to specified end-location.
          * <p>
-         * <p>If returnToDepot is false, the end-location of the vehicle is endogenous.
+         * If returnToDepot is true, the vehicle must return to specified
+         * end-location. If you omit specifying the end-location, vehicle
+         * returns to start-location (that must to be set). If you specify it,
+         * it returns to specified end-location.
+         * <p>
+         * <p>
+         * If returnToDepot is false, the end-location of the vehicle is
+         * endogenous.
          *
-         * @param returnToDepot true if vehicle need to return to depot, otherwise false
+         * @param returnToDepot
+         *            true if vehicle need to return to depot, otherwise false
          * @return this builder
          */
         public Builder setReturnToDepot(boolean returnToDepot) {
@@ -234,14 +260,13 @@ public class VehicleImpl extends AbstractVehicle {
             if (startLocation != null && endLocation != null) {
                 if (!startLocation.getId().equals(endLocation.getId()) && !returnToDepot)
                     throw new IllegalArgumentException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
-                        "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
+                            "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
             }
             if (startLocation != null && endLocation == null) {
                 endLocation = startLocation;
             }
-            if (startLocation == null && endLocation == null) {
+            if (startLocation == null && endLocation == null)
                 throw new IllegalArgumentException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
-            }
             skills = skillBuilder.build();
             return new VehicleImpl(this);
         }
@@ -297,6 +322,7 @@ public class VehicleImpl extends AbstractVehicle {
     private final Break aBreak;
 
     private VehicleImpl(Builder builder) {
+        setUserData(builder.userData);
         id = builder.id;
         type = builder.type;
         earliestDeparture = builder.earliestStart;
@@ -306,7 +332,7 @@ public class VehicleImpl extends AbstractVehicle {
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
-//        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
+        //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot));
     }
 
@@ -318,11 +344,11 @@ public class VehicleImpl extends AbstractVehicle {
     @Override
     public String toString() {
         return "[id=" + id + "]" +
-            "[type=" + type + "]" +
-            "[startLocation=" + startLocation + "]" +
-            "[endLocation=" + endLocation + "]" +
-            "[isReturnToDepot=" + isReturnToDepot() + "]" +
-            "[skills=" + skills + "]";
+                "[type=" + type + "]" +
+                "[startLocation=" + startLocation + "]" +
+                "[endLocation=" + endLocation + "]" +
+                "[isReturnToDepot=" + isReturnToDepot() + "]" +
+                "[skills=" + skills + "]";
     }
 
 
@@ -346,6 +372,7 @@ public class VehicleImpl extends AbstractVehicle {
         return id;
     }
 
+    @Override
     public boolean isReturnToDepot() {
         return returnToDepot;
     }

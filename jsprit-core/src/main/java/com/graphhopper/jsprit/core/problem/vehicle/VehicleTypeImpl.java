@@ -116,16 +116,39 @@ public class VehicleTypeImpl implements VehicleType {
 
         private boolean dimensionAdded = false;
 
+        private Object userData;
+
         private Builder(String id) {
             this.id = id;
         }
 
+
         /**
-         * Sets the maximum velocity this vehicle-type can go [in meter per seconds].
+         * Sets user specific domain data associated with the object.
+         *
+         * <p>
+         * The user data is a black box for the framework, it only stores it,
+         * but never interacts with it in any way.
+         * </p>
+         *
+         * @param userData
+         *            any object holding the domain specific user data
+         *            associated with the object.
+         * @return builder
+         */
+        public Builder setUserData(Object userData) {
+            this.userData = userData;
+            return this;
+        }
+
+        /**
+         * Sets the maximum velocity this vehicle-type can go [in meter per
+         * seconds].
          *
          * @param inMeterPerSeconds
          * @return this builder
-         * @throws IllegalArgumentException if velocity is smaller than zero
+         * @throws IllegalArgumentException
+         *             if velocity is smaller than zero
          */
         public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds) {
             if (inMeterPerSeconds < 0.0) throw new IllegalArgumentException("velocity cannot be smaller than zero");
@@ -240,8 +263,8 @@ public class VehicleTypeImpl implements VehicleType {
             if (dimVal < 0) throw new IllegalArgumentException("capacity value cannot be negative");
             if (capacityDimensions != null)
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                    "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
-                    "You used both methods.");
+                        "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+                        "You used both methods.");
             dimensionAdded = true;
             capacityBuilder.addDimension(dimIndex, dimVal);
             return this;
@@ -261,8 +284,8 @@ public class VehicleTypeImpl implements VehicleType {
         public Builder setCapacityDimensions(Capacity capacity) {
             if (dimensionAdded)
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                    "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
-                    "You used both methods.");
+                        "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+                        "You used both methods.");
             this.capacityDimensions = capacity;
             return this;
         }
@@ -278,7 +301,7 @@ public class VehicleTypeImpl implements VehicleType {
         final int prime = 31;
         int result = 1;
         result = prime * result
-            + ((typeId == null) ? 0 : typeId.hashCode());
+                + ((typeId == null) ? 0 : typeId.hashCode());
         return result;
     }
 
@@ -314,18 +337,29 @@ public class VehicleTypeImpl implements VehicleType {
 
     private final double maxVelocity;
 
+    private Object userData;
+
     /**
      * priv constructor constructing vehicle-type
      *
      * @param builder
      */
     private VehicleTypeImpl(VehicleTypeImpl.Builder builder) {
+        this.userData = builder.userData;
         typeId = builder.id;
         capacity = builder.capacity;
         maxVelocity = builder.maxVelo;
         vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance, builder.perWaitingTime, builder.perServiceTime);
         capacityDimensions = builder.capacityDimensions;
         profile = builder.profile;
+    }
+
+    /**
+     * @return User-specific domain data associated with the vehicle
+     */
+    @Override
+    public Object getUserData() {
+        return userData;
     }
 
     /* (non-Javadoc)
@@ -347,8 +381,8 @@ public class VehicleTypeImpl implements VehicleType {
     @Override
     public String toString() {
         return "[typeId=" + typeId + "]" +
-            "[capacity=" + capacityDimensions + "]" +
-            "[costs=" + vehicleCostParams + "]";
+                "[capacity=" + capacityDimensions + "]" +
+                "[costs=" + vehicleCostParams + "]";
     }
 
     @Override

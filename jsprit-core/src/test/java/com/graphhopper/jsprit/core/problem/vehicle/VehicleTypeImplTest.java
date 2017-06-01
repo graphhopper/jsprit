@@ -17,9 +17,15 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
 
 public class VehicleTypeImplTest {
 
@@ -32,18 +38,18 @@ public class VehicleTypeImplTest {
     @Test
     public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t")
-            .addCapacityDimension(0, 2)
-            .addCapacityDimension(1, 4)
-            .build();
+                .addCapacityDimension(0, 2)
+                .addCapacityDimension(1, 4)
+                .build();
         assertEquals(2, type.getCapacityDimensions().getNuOfDimensions());
     }
 
     @Test
     public void whenAddingTwoCapDimension_dimValuesMustBeCorrect() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t")
-            .addCapacityDimension(0, 2)
-            .addCapacityDimension(1, 4)
-            .build();
+                .addCapacityDimension(0, 2)
+                .addCapacityDimension(1, 4)
+                .build();
         assertEquals(2, type.getCapacityDimensions().get(0));
         assertEquals(4, type.getCapacityDimensions().get(1));
     }
@@ -152,4 +158,15 @@ public class VehicleTypeImplTest {
     }
 
 
+    @Test
+    public void whenSettingUserData_itIsAssociatedWithTheVehicleType() {
+        VehicleType one = VehicleTypeImpl.Builder.newInstance("type").setUserData(new HashMap<String, Object>())
+                .build();
+        VehicleType two = VehicleTypeImpl.Builder.newInstance("type").setUserData(42).build();
+        VehicleType three = VehicleTypeImpl.Builder.newInstance("type").build();
+
+        assertTrue(one.getUserData() instanceof Map);
+        assertEquals(42, two.getUserData());
+        assertNull(three.getUserData());
+    }
 }

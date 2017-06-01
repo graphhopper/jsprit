@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -25,8 +27,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
-
-import java.util.Collection;
 
 /**
  * Service implementation of a job.
@@ -86,15 +86,16 @@ public class Service extends AbstractJob {
 
         protected TimeWindowsImpl timeWindows;
 
-		private boolean twAdded = false;
+        private boolean twAdded = false;
 
         private int priority = 2;
+        protected Object userData;
 
-		Builder(String id){
-			this.id = id;
-			timeWindows = new TimeWindowsImpl();
-			timeWindows.add(timeWindow);
-		}
+        Builder(String id){
+            this.id = id;
+            timeWindows = new TimeWindowsImpl();
+            timeWindows.add(timeWindow);
+        }
 
         /**
          * Protected method to set the type-name of the service.
@@ -134,6 +135,24 @@ public class Service extends AbstractJob {
             if (serviceTime < 0)
                 throw new IllegalArgumentException("serviceTime must be greater than or equal to zero");
             this.serviceTime = serviceTime;
+            return this;
+        }
+
+        /**
+         * Sets user specific domain data associated with the object.
+         *
+         * <p>
+         * The user data is a black box for the framework, it only stores it,
+         * but never interacts with it in any way.
+         * </p>
+         *
+         * @param userData
+         *            any object holding the domain specific user data
+         *            associated with the object.
+         * @return builder
+         */
+        public Builder<T> setUserData(Object userData) {
+            this.userData = userData;
             return this;
         }
 
@@ -247,7 +266,8 @@ public class Service extends AbstractJob {
 
     private final int priority;
 
-    Service(Builder builder) {
+    Service(Builder<?> builder) {
+        setUserData(builder.userData);
         id = builder.id;
         serviceTime = builder.serviceTime;
         timeWindow = builder.timeWindow;
@@ -256,13 +276,13 @@ public class Service extends AbstractJob {
         skills = builder.skills;
         name = builder.name;
         location = builder.location;
-		timeWindowManager = builder.timeWindows;
+        timeWindowManager = builder.timeWindows;
         priority = builder.priority;
-	}
+    }
 
-	public Collection<TimeWindow> getTimeWindows(){
-		return timeWindowManager.getTimeWindows();
-	}
+    public Collection<TimeWindow> getTimeWindows(){
+        return timeWindowManager.getTimeWindows();
+    }
 
     @Override
     public String getId() {
@@ -367,6 +387,7 @@ public class Service extends AbstractJob {
      *
      * @return priority
      */
+    @Override
     public int getPriority() {
         return priority;
     }

@@ -26,13 +26,26 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 public abstract class AbstractJob implements Job {
 
     private int index;
+    private Object userData;
 
+    @Override
     public int getIndex() {
         return index;
     }
 
     protected void setIndex(int index) {
         this.index = index;
+    }
+
+    /**
+     * @return User-specific domain data associated by the job
+     */
+    public Object getUserData() {
+        return userData;
+    }
+
+    protected void setUserData(Object userData) {
+        this.userData = userData;
     }
 
 }

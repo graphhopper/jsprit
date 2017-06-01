@@ -66,8 +66,28 @@ public final class Location implements HasIndex, HasId {
 
         private String name = "";
 
+        private Object userData;
+
         public static Builder newInstance() {
             return new Builder();
+        }
+
+        /**
+         * Sets user specific domain data associated with the object.
+         *
+         * <p>
+         * The user data is a black box for the framework, it only stores it,
+         * but never interacts with it in any way.
+         * </p>
+         *
+         * @param userData
+         *            any object holding the domain specific user data
+         *            associated with the object.
+         * @return builder
+         */
+        public Builder setUserData(Object userData) {
+            this.userData = userData;
+            return this;
         }
 
         /**
@@ -140,11 +160,21 @@ public final class Location implements HasIndex, HasId {
 
     private final String name;
 
+    private Object userData;
+
     private Location(Builder builder) {
+        this.userData = builder.userData;
         this.index = builder.index;
         this.coordinate = builder.coordinate;
         this.id = builder.id;
         this.name = builder.name;
+    }
+
+    /**
+     * @return User-specific domain data associated by the job
+     */
+    public Object getUserData() {
+        return userData;
     }
 
     @Override
