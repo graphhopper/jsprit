@@ -24,13 +24,11 @@ import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListeners;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.ReverseRouteActivityVisitor;
-import com.graphhopper.jsprit.core.problem.solution.route.RouteActivityVisitor;
-import com.graphhopper.jsprit.core.problem.solution.route.RouteVisitor;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.*;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.vehicleDependentActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
@@ -47,6 +45,8 @@ import java.util.*;
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 
     private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
+
+    private vehicleDependentRouteVisitor vehicleDependentrouteActivityVisitor = new vehicleDependentRouteActivityVisitor();
 
     private ReverseRouteActivityVisitor revRouteActivityVisitor = new ReverseRouteActivityVisitor();
 
@@ -364,6 +364,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             try {
                 if (vehicleDependentRouteStateMap.containsKey(route)) {
                     state = type.cast(vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+                    if (state == null){
+                        vehicleDependentrouteActivityVisitor.visit(route,vehicle);
+                        state = type.cast(vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+                    }
                 }
             } catch (ClassCastException e) {
                 throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
@@ -498,6 +502,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     public void addStateUpdater(StateUpdater updater) {
         if (updater instanceof ActivityVisitor) addActivityVisitor((ActivityVisitor) updater);
+        if (updater instanceof vehicleDependentActivityVisitor) addvehicleDependentActivityVisitor((vehicleDependentActivityVisitor) updater);
         if (updater instanceof ReverseActivityVisitor) addActivityVisitor((ReverseActivityVisitor) updater);
         if (updater instanceof RouteVisitor) addRouteVisitor((RouteVisitor) updater);
         if (updater instanceof InsertionListener) addListener((InsertionListener) updater);
@@ -531,6 +536,17 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     /**
+     * Adds an vehicleDependentActivityVisitor.
+     * <p>This visitor visits all activities in a route subsequently in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
+     * and, second, if a job has been inserted and thus if a route has changed.
+     *
+     * @param vehicleDependentactivityVisitor the activity-visitor to be added
+     */
+    void addvehicleDependentActivityVisitor(vehicleDependentActivityVisitor vehicleDependentactivityVisitor){
+        ((vehicleDependentRouteActivityVisitor)vehicleDependentrouteActivityVisitor).addActivityVisitor(vehicleDependentactivityVisitor);
+    }
+
+    /**
      * Adds an reverseActivityVisitor.
      * <p>This reverseVisitor visits all activities in a route subsequently (starting from the end of the route) in two cases. First, if insertionStart (after ruinStrategies have removed activities from routes)
      * and, second, if a job has been inserted and thus if a route has changed.
@@ -561,6 +577,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             v.visit(inRoute);
         }
         routeActivityVisitor.visit(inRoute);
+        vehicleDependentrouteActivityVisitor.visit(inRoute,inRoute.getVehicle());
         revRouteActivityVisitor.visit(inRoute);
     }
 
@@ -572,6 +589,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
                 v.visit(route);
             }
             routeActivityVisitor.visit(route);
+            vehicleDependentrouteActivityVisitor.visit(route,route.getVehicle());
             revRouteActivityVisitor.visit(route);
         }
     }
