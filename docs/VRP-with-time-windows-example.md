@@ -108,4 +108,4 @@ Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions(
 VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 </code></pre>
 
-Please visit [Simple Example](Simple-Example.md) to get to know how you can analyse the solution.
+Please visit [Simple Example](https://github.com/graphhopper/jsprit/blob/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples/SimpleExample.java) to get to know how you can analyse the solution.
