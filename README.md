@@ -2,8 +2,8 @@ jsprit
 ======
 [![Build Status](https://travis-ci.org/graphhopper/jsprit.svg?branch=master)](https://travis-ci.org/graphhopper/jsprit)
 
-jsprit is a java based, open source toolkit for solving rich <a href="http://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">traveling salesman</a> (TSP) and <a href="http://neo.lcc.uma.es/vrp/vehicle-routing-problem/" target="_blank">vehicle routing problems</a> (VRP).
-It is lightweight, flexible and easy-to-use, and based on a single all-purpose <a href="https://github.com/jsprit/jsprit/wiki/Meta-Heuristic" target="_blank">meta-heuristic</a> currently solving
+jsprit is a java based, open source toolkit for solving rich [Traveling Salesman Problems(TSP)](http://en.wikipedia.org/wiki/Travelling_salesman_problem") and [Vehicle Routing Problems(VRP)](http://neo.lcc.uma.es/vrp/vehicle-routing-problem/).
+It is lightweight, flexible and easy-to-use, and based on a single all-purpose [meta-heuristic](../docs/Meta-Heuristic.md) currently solving
 - Capacitated VRP
 - Multiple Depot VRP
 - VRP with Time Windows
@@ -16,10 +16,10 @@ It is lightweight, flexible and easy-to-use, and based on a single all-purpose <
 - Various combination of these types
 
 Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as
-reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](https://github.com/jsprit/jsprit/wiki/features)
+reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](../docs/Features.textile)
 
-## Getting Started and Documentation
-Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more. For older versions (<v1.7) use [old-docs](https://github.com/graphhopper/jsprit/blob/%3C1.7/docs/Home.md). The best way to get to know jsprit is by looking at [code examples](https://github.com/graphhopper/jsprit/tree/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples).
+## Getting Started with Documentation
+Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more.The best way to get to know jsprit is by looking at [code examples](https://github.com/graphhopper/jsprit/tree/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples).
 
 ## Modules and Dependencies
 Please read [Notice.md](https://github.com/graphhopper/jsprit/blob/master/NOTICE.md) to get to know the direct dependencies of each module.
@@ -42,7 +42,7 @@ Developing this would be much more difficult without the help of [these companie
 ## Contact
 
 #### Mailing List:
-In the [mailing list](https://discuss.graphhopper.com/) ([old mailing list](https://groups.google.com/group/jsprit-mailing-list)) you can discuss jsprit related issues and you will probably get answers to your questions.
+In the [Graphhopper Forum ](https://discuss.graphhopper.com/) ([Also you can see the old mailing list](https://groups.google.com/group/jsprit-mailing-list)) you can discuss jsprit related issues and you will probably get answers to your questions.
 
 #### Stackoverflow:
 You can also use [stackoverflow](http://stackoverflow.com/questions/tagged/jsprit) to discuss your issues. Tag it with <em>jsprit</em> then it is easier to keep track of your topic.
@@ -51,7 +51,7 @@ You can also use [stackoverflow](http://stackoverflow.com/questions/tagged/jspri
 For bugs, feature requests or similar use the [issue tracker](https://github.com/jsprit/jsprit/issues).
 
 #### Email:
-If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, contact us via https://graphhopper.com/#contact
+If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, [contact us via mail](https://graphhopper.com/#contact)
 
 
 ## About
