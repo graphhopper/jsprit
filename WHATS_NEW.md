@@ -7,7 +7,7 @@ WHATS NEW
 For example, if one wants to enrich a service with an arbitrary number of custom properties, set a map like this:
 
 <pre><code>Service one = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-    .setUserData(new HashMap<String, Object>()).build();</code></pre>
+    .setUserData(new HashMap&lt;String, Object&gt;()).build();</code></pre>
 
 <b>2017-05-11</b> new release **v1.7.1**
 - determine [reasons for unassigned jobs](https://github.com/graphhopper/jsprit/issues/180)
