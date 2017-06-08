@@ -1,6 +1,14 @@
 WHATS NEW
 ==========
 ------------------------------
+<b>2017-06-08</b> new release **v1.7.2**
+- one can now set custom properties/user defined data (see pr: https://github.com/graphhopper/jsprit/pull/348)
+
+For example, if one wants to enrich a service with an arbitrary number of custom properties, set a map like this:
+
+<pre><code>Service one = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+    .setUserData(new HashMap<String, Object>()).build();</code></pre>
+
 <b>2017-05-11</b> new release **v1.7.1**
 - determine [reasons for unassigned jobs](https://github.com/graphhopper/jsprit/issues/180)
 - extend priority levels from 3 to 10 levels
