@@ -142,6 +142,8 @@ public class VehicleRoutingAlgorithm {
      * @param solution the solution to be added
      */
     public void addInitialSolution(VehicleRoutingProblemSolution solution) {
+        // We will make changes so let's make a copy
+        solution = VehicleRoutingProblemSolution.copyOf(solution);
         verify(solution);
         initialSolutions.add(solution);
     }
@@ -164,19 +166,7 @@ public class VehicleRoutingAlgorithm {
         }
 
         solution.getUnassignedJobs().addAll(allJobs);
-
-        // Doesn't work
-        // for (Vehicle v : problem.getVehicles()) {
-        // boolean found = false;
-        // for (VehicleRoute vr : solution.getRoutes())
-        // if (vr.getVehicle().getId().equals(v.getId())) {
-        // found = true;
-        // break;
-        // }
-        // if (!found) {
-        // solution.getRoutes().add(VehicleRoute.Builder.newInstance(v).build());
-        // }
-        // }
+        solution.setCost(getObjectiveFunction().getCosts(solution));
 
         //        if (nuJobs != problem.getJobs().values().size()) {
         //            logger.warn("number of jobs in initial solution ({}) is not equal nuJobs in vehicle routing problem ({})" +
