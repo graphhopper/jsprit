@@ -18,13 +18,17 @@
 
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-
-import java.util.*;
 
 /**
  * Abstract base class for all Job implementations.
@@ -128,9 +132,8 @@ public abstract class AbstractJob implements Job {
         protected int priority = 2;
 
         public JobBuilder(String id) {
-            if (id == null) {
+            if (id == null)
                 throw new IllegalArgumentException("id must not be null");
-            }
             this.id = id;
         }
 
@@ -144,9 +147,8 @@ public abstract class AbstractJob implements Job {
          */
         @SuppressWarnings("unchecked")
         public B addSizeDimension(int dimensionIndex, int dimensionValue) {
-            if (dimensionValue < 0) {
+            if (dimensionValue < 0)
                 throw new IllegalArgumentException("capacity value cannot be negative");
-            }
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
             return (B) this;
         }
@@ -180,20 +182,19 @@ public abstract class AbstractJob implements Job {
         }
 
         /**
-         * Set priority to service. Only 1 = high priority, 2 = medium and 3 =
-         * low are allowed.
+         * Set priority to service. Only 1 (very high) to 10 (very low) are
+         * allowed.
          * <p>
-         * Default is 2 = medium.
+         * Default is 2.
          *
          * @param priority
          * @return builder
          */
         @SuppressWarnings("unchecked")
         public B setPriority(int priority) {
-            if (priority < 1 || priority > 3) {
+            if (priority < 1 || priority > 10)
                 throw new IllegalArgumentException(
-                    "incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
-            }
+                                "incorrect priority. only priority values from 1 to 10 are allowed where 1 = high and 10 is low");
             this.priority = priority;
             return (B) this;
         }
@@ -364,23 +365,18 @@ public abstract class AbstractJob implements Job {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         AbstractJob other = (AbstractJob) obj;
         if (id == null) {
-            if (other.id != null) {
+            if (other.id != null)
                 return false;
-            }
-        } else if (!id.equals(other.id)) {
+        } else if (!id.equals(other.id))
             return false;
-        }
         return true;
     }
 
