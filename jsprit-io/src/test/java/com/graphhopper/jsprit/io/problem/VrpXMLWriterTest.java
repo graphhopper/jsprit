@@ -62,31 +62,17 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingFiniteVrp_itWritesAndReadsCorrectly() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
         builder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
 
         VehicleRoutingProblem vrp = builder.build();
         writeAndRereadXml(vrp);
-
     }
 
 
     @Test
     public void whenWritingServices_itWritesThemCorrectly() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
-
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
         Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
@@ -152,15 +138,7 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingShipments_readingThemAgainMustReturnTheWrittenLocationIdsOfS1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
         Shipment s1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 10)
             .setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build())
@@ -183,15 +161,7 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingShipments_readingThemAgainMustReturnTheWrittenPickupTimeWindowsOfS1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
         Shipment s1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 10)
             .setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build())
@@ -215,15 +185,7 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingShipments_readingThemAgainMustReturnTheWrittenDeliveryTimeWindowsOfS1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
         Shipment s1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 10)
             .setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build())
@@ -246,15 +208,7 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingShipments_readingThemAgainMustReturnTheWrittenDeliveryServiceTimeOfS1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
         Shipment s1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 10)
             .setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build())
@@ -277,15 +231,7 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingShipments_readingThemAgainMustReturnTheWrittenLocationIdOfS1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
         Shipment s1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 10)
             .setPickupLocation(TestUtils.loc(Coordinate.newInstance(1, 2))).setDeliveryLocation(TestUtils.loc("delLoc")).setPickupTimeWindow(TimeWindow.newInstance(1, 2))
@@ -454,15 +400,7 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingShipments_readingThemAgainMustReturnTheWrittenLocationCoordinateOfS1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
         Shipment s1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 10).setPickupLocation(TestUtils.loc(Coordinate.newInstance(1, 2)))
             .setDeliveryLocation(TestUtils.loc("delLoc", Coordinate.newInstance(5, 6)))
@@ -518,15 +456,7 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingVehicleV1_itsStartLocationMustBeWrittenCorrectly() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
         Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
@@ -538,6 +468,19 @@ public class VrpXMLWriterTest {
         assertEquals("loc", v.getStartLocation().getId());
         assertEquals("loc", v.getEndLocation().getId());
 
+    }
+
+    private VehicleRoutingProblem.Builder twoVehicleTypesAndImpls() {
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
+        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
+
+        builder.addVehicle(v1);
+        builder.addVehicle(v2);
+        return builder;
     }
 
     @Test
@@ -629,38 +572,6 @@ public class VrpXMLWriterTest {
 
     @Test
     public void whenWritingVehicleV2_readingItsLocationsAgainReturnsCorrectLocations() {
-        VehicleRoutingProblem.Builder builder = createTwoVehicleTypeAndInstancesBuilder();
-
-        Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
-
-        VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
-
-        Vehicle v = getVehicle("v2", readVrp.getVehicles());
-        assertEquals("startLoc", v.getStartLocation().getId());
-        assertEquals("endLoc", v.getEndLocation().getId());
-    }
-
-    @Test
-    public void whenWritingVehicleV2_readingItsLocationsCoordsAgainReturnsCorrectLocationsCoords() {
-        VehicleRoutingProblem.Builder builder = createTwoVehicleTypeAndInstancesBuilder();
-
-        Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
-
-        VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
-
-        Vehicle v = getVehicle("v2", readVrp.getVehicles());
-        assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
-        assertEquals(2.0, v.getStartLocation().getCoordinate().getY(), 0.01);
-
-        assertEquals(4.0, v.getEndLocation().getCoordinate().getX(), 0.01);
-        assertEquals(5.0, v.getEndLocation().getCoordinate().getY(), 0.01);
-    }
-
-    private VehicleRoutingProblem.Builder createTwoVehicleTypeAndInstancesBuilder() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
@@ -673,8 +584,22 @@ public class VrpXMLWriterTest {
 
         builder.addVehicle(v1);
         builder.addVehicle(v2);
-        return builder;
+
+        Service s1 = Service.Builder.newInstance("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+
+        VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
+
+        Vehicle v = getVehicle("v2", readVrp.getVehicles());
+        assertEquals("startLoc", v.getStartLocation().getId());
+        assertEquals("endLoc", v.getEndLocation().getId());
+        assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
+        assertEquals(2.0, v.getStartLocation().getCoordinate().getY(), 0.01);
+        assertEquals(4.0, v.getEndLocation().getCoordinate().getX(), 0.01);
+        assertEquals(5.0, v.getEndLocation().getCoordinate().getY(), 0.01);
     }
+
 
     @Test
     public void whenWritingVehicleWithSeveralCapacityDimensions_itShouldBeWrittenAndRereadCorrectly() {
