@@ -84,22 +84,19 @@ public class VrpXMLWriterTest {
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
         builder.addVehicle(v1);
         builder.addVehicle(v2);
-        VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
 
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+        VehicleRoutingProblem vrp = builder.build();
+        writeAndRereadXml(vrp);
+
     }
 
     @Test
     public void whenWritingServices_itWritesThemCorrectly() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
         VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-
         builder.addVehicle(v1);
         builder.addVehicle(v2);
 
@@ -108,11 +105,7 @@ public class VrpXMLWriterTest {
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         assertEquals(2, readVrp.getJobs().size());
 
         Service s1_read = (Service) vrp.getJobs().get("1");
@@ -128,11 +121,7 @@ public class VrpXMLWriterTest {
         Service s1 = Service.Builder.newInstance("1").setName("cleaning").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         Service s1_read = (Service) readVrp.getJobs().get("1");
         assertTrue(s1_read.getName().equals("cleaning"));
     }
@@ -146,11 +135,7 @@ public class VrpXMLWriterTest {
             .setDeliveryLocation(TestUtils.loc("del")).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         Shipment s1_read = (Shipment) readVrp.getJobs().get("1");
         assertTrue(s1_read.getName().equals("cleaning"));
         Assert.assertEquals(1, s1_read.getPickupLocation().getIndex());
@@ -167,11 +152,7 @@ public class VrpXMLWriterTest {
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         assertEquals(2, readVrp.getJobs().size());
 
         Service s1_read = (Service) vrp.getJobs().get("1");
@@ -205,11 +186,7 @@ public class VrpXMLWriterTest {
 
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         assertEquals(2, readVrp.getJobs().size());
 
         Assert.assertEquals("pickLoc", ((Shipment) readVrp.getJobs().get("1")).getPickupLocation().getId());
@@ -240,11 +217,7 @@ public class VrpXMLWriterTest {
 
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         assertEquals(2, readVrp.getJobs().size());
 
         Assert.assertEquals(1.0, ((Shipment) readVrp.getJobs().get("1")).getPickupTimeWindow().getStart(), 0.01);
@@ -276,11 +249,7 @@ public class VrpXMLWriterTest {
 
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         assertEquals(2, readVrp.getJobs().size());
 
         Assert.assertEquals(3.0, ((Shipment) readVrp.getJobs().get("1")).getDeliveryTimeWindow().getStart(), 0.01);
@@ -311,11 +280,7 @@ public class VrpXMLWriterTest {
 
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         assertEquals(2, readVrp.getJobs().size());
 
         assertEquals(100.0, ((Shipment) readVrp.getJobs().get("1")).getPickupServiceTime(), 0.01);
@@ -345,11 +310,7 @@ public class VrpXMLWriterTest {
 
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         assertEquals(2, readVrp.getJobs().size());
 
         Assert.assertEquals("[x=1.0][y=2.0]", ((Shipment) readVrp.getJobs().get("1")).getPickupLocation().getId());
@@ -364,11 +325,7 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v);
 
         VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         Vehicle veh1 = getVehicle("v1", readVrp);
 
         Assert.assertEquals(3, veh1.getSkills().values().size());
@@ -383,11 +340,7 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v);
 
         VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         Vehicle veh1 = getVehicle("v1", readVrp);
 
         assertTrue(veh1.getSkills().containsSkill("skill5"));
@@ -402,11 +355,7 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v);
 
         VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         Vehicle veh1 = getVehicle("v1", readVrp);
 
         assertTrue(veh1.getSkills().containsSkill("skill1"));
@@ -421,11 +370,7 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v);
 
         VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         Vehicle veh1 = getVehicle("v1", readVrp);
 
         assertTrue(veh1.getSkills().containsSkill("skill2"));
@@ -439,11 +384,7 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v);
 
         VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         Vehicle veh = getVehicle("v1", readVrp);
 
         Assert.assertEquals(0, veh.getSkills().values().size());
@@ -468,11 +409,7 @@ public class VrpXMLWriterTest {
             .setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Assert.assertEquals(3, readVrp.getJobs().get("1").getRequiredSkills().values().size());
     }
@@ -489,11 +426,7 @@ public class VrpXMLWriterTest {
             .setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         assertTrue(readVrp.getJobs().get("1").getRequiredSkills().containsSkill("skill1"));
     }
@@ -510,11 +443,7 @@ public class VrpXMLWriterTest {
             .setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         assertTrue(readVrp.getJobs().get("1").getRequiredSkills().containsSkill("skill2"));
     }
@@ -531,11 +460,7 @@ public class VrpXMLWriterTest {
             .setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         assertTrue(readVrp.getJobs().get("1").getRequiredSkills().containsSkill("skill3"));
     }
@@ -564,11 +489,7 @@ public class VrpXMLWriterTest {
 
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
         assertEquals(2, readVrp.getJobs().size());
 
         Assert.assertEquals(1.0, ((Shipment) readVrp.getJobs().get("1")).getPickupLocation().getCoordinate().getX(), 0.01);
@@ -597,11 +518,7 @@ public class VrpXMLWriterTest {
             .setDeliveryTimeWindow(TimeWindow.newInstance(7, 8)).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Assert.assertEquals(3, (readVrp.getJobs().get("1")).getSize().getNuOfDimensions());
         Assert.assertEquals(10, (readVrp.getJobs().get("1")).getSize().get(0));
@@ -628,11 +545,7 @@ public class VrpXMLWriterTest {
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Vehicle v = getVehicle("v1", readVrp.getVehicles());
         Assert.assertEquals("loc", v.getStartLocation().getId());
@@ -641,55 +554,22 @@ public class VrpXMLWriterTest {
     }
 
     @Test
-    public void whenWritingService_itShouldHaveTheCorrectNuSkills() {
+    public void whenWritingService_itShouldContain_bothSkills() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 
-        Service s = Service.Builder.newInstance("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
-            .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        //skill names are case-insensitive
+        Service s = Service.Builder.newInstance("1").addRequiredSkill("skill1").addRequiredSkill("SKILL2").addSizeDimension(0, 1)
+                .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
 
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
-        Assert.assertEquals(2, readVrp.getJobs().get("1").getRequiredSkills().values().size());
-    }
-
-    @Test
-    public void whenWritingService_itShouldContain_skill1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        Service s = Service.Builder.newInstance("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
-            .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-
-        VehicleRoutingProblem vrp = builder.addJob(s).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
-
+        assertEquals(2, readVrp.getJobs().get("1").getRequiredSkills().values().size());
         assertTrue(readVrp.getJobs().get("1").getRequiredSkills().containsSkill("skill1"));
-    }
-
-    @Test
-    public void whenWritingService_itShouldContain_skill2() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        Service s = Service.Builder.newInstance("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
-            .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-
-        VehicleRoutingProblem vrp = builder.addJob(s).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
-
         assertTrue(readVrp.getJobs().get("1").getRequiredSkills().containsSkill("skill2"));
     }
+
 
     @Test
     public void whenWritingVehicleV1_itDoesNotReturnToDepotMustBeWrittenCorrectly() {
@@ -708,11 +588,7 @@ public class VrpXMLWriterTest {
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Vehicle v = getVehicle("v1", readVrp.getVehicles());
         assertFalse(v.isReturnToDepot());
@@ -734,11 +610,7 @@ public class VrpXMLWriterTest {
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Vehicle v = getVehicle("v1", readVrp.getVehicles());
         assertEquals("vehType", v.getType().getTypeId());
@@ -760,11 +632,7 @@ public class VrpXMLWriterTest {
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Vehicle v = getVehicle("v2", readVrp.getVehicles());
         assertEquals("vehType2", v.getType().getTypeId());
@@ -780,11 +648,7 @@ public class VrpXMLWriterTest {
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Vehicle v = getVehicle("v2", readVrp.getVehicles());
         Assert.assertEquals("startLoc", v.getStartLocation().getId());
@@ -799,11 +663,7 @@ public class VrpXMLWriterTest {
         Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Vehicle v = getVehicle("v2", readVrp.getVehicles());
         Assert.assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
@@ -845,11 +705,7 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v2);
 
         VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Vehicle v = getVehicle("v", readVrp.getVehicles());
         Assert.assertEquals(3, v.getType().getCapacityDimensions().getNuOfDimensions());
@@ -874,11 +730,7 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v2);
 
         VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
-        VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         Vehicle v = getVehicle("v", readVrp.getVehicles());
         Assert.assertEquals(11, v.getType().getCapacityDimensions().getNuOfDimensions());
@@ -911,11 +763,7 @@ public class VrpXMLWriterTest {
         List<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
         solutions.add(solution);
 
-        new VrpXMLWriter(vrp, solutions).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<VehicleRoutingProblemSolution>();
-        new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
+        List<VehicleRoutingProblemSolution> solutionsToRead = writeAndRereadXmlWithSolutions(vrp, solutions);
 
         assertEquals(1, solutionsToRead.size());
         Assert.assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(), 0.01);
@@ -943,16 +791,29 @@ public class VrpXMLWriterTest {
         List<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
         solutions.add(solution);
 
-        new VrpXMLWriter(vrp, solutions).write(infileName);
-
-        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<VehicleRoutingProblemSolution>();
-        new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
+        List<VehicleRoutingProblemSolution> solutionsToRead = writeAndRereadXmlWithSolutions(vrp, solutions);
 
         assertEquals(1, solutionsToRead.size());
         Assert.assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(), 0.01);
         Assert.assertEquals(1, Solutions.bestOf(solutionsToRead).getUnassignedJobs().size());
         Assert.assertEquals("2", Solutions.bestOf(solutionsToRead).getUnassignedJobs().iterator().next().getId());
+    }
+
+    private VehicleRoutingProblem writeAndRereadXml(VehicleRoutingProblem vrp) {
+        new VrpXMLWriter(vrp, null).write(infileName);
+
+        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+        return vrpToReadBuilder.build();
+    }
+
+    private List<VehicleRoutingProblemSolution> writeAndRereadXmlWithSolutions(VehicleRoutingProblem vrp, List<VehicleRoutingProblemSolution> solutions) {
+        new VrpXMLWriter(vrp, solutions).write(infileName);
+
+        VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
+        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<VehicleRoutingProblemSolution>();
+        new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
+        return solutionsToRead;
     }
 
 }
