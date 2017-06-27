@@ -345,56 +345,8 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
 
         assertEquals(3, readVrp.getJobs().get("1").getRequiredSkills().values().size());
-    }
-
-    @Test
-    public void whenWritingShipments_shipmentShouldContain_skill1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        Shipment s = Shipment.Builder.newInstance("1").addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3")
-            .addSizeDimension(0, 10)
-            .setPickupLocation(TestUtils.loc(Coordinate.newInstance(1, 2)))
-            .setDeliveryLocation(TestUtils.loc("delLoc", Coordinate.newInstance(5, 6)))
-            .setPickupTimeWindow(TimeWindow.newInstance(1, 2))
-            .setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50).build();
-
-        VehicleRoutingProblem vrp = builder.addJob(s).build();
-        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
-
         assertTrue(readVrp.getJobs().get("1").getRequiredSkills().containsSkill("skill1"));
-    }
-
-    @Test
-    public void whenWritingShipments_shipmentShouldContain_skill2() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        Shipment s = Shipment.Builder.newInstance("1").addRequiredSkill("skill1").addRequiredSkill("Skill2").addRequiredSkill("skill3")
-            .addSizeDimension(0, 10)
-            .setPickupLocation(TestUtils.loc(Coordinate.newInstance(1, 2)))
-            .setDeliveryLocation(TestUtils.loc("delLoc", Coordinate.newInstance(5, 6)))
-            .setPickupTimeWindow(TimeWindow.newInstance(1, 2))
-            .setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50).build();
-
-        VehicleRoutingProblem vrp = builder.addJob(s).build();
-        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
-
         assertTrue(readVrp.getJobs().get("1").getRequiredSkills().containsSkill("skill2"));
-    }
-
-    @Test
-    public void whenWritingShipments_shipmentShouldContain_skill3() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-
-        Shipment s = Shipment.Builder.newInstance("1").addRequiredSkill("skill1").addRequiredSkill("Skill2").addRequiredSkill("skill3")
-            .addSizeDimension(0, 10)
-            .setPickupLocation(TestUtils.loc(Coordinate.newInstance(1, 2)))
-            .setDeliveryLocation(TestUtils.loc("delLoc", Coordinate.newInstance(5, 6)))
-            .setPickupTimeWindow(TimeWindow.newInstance(1, 2))
-            .setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50).build();
-
-        VehicleRoutingProblem vrp = builder.addJob(s).build();
-        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
-
         assertTrue(readVrp.getJobs().get("1").getRequiredSkills().containsSkill("skill3"));
     }
 
