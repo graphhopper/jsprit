@@ -61,21 +61,7 @@ public class VrpXMLWriterTest {
     }
 
     @Test
-    public void whenWritingFiniteVrp_itWritesCorrectly() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        builder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("vehType2").addCapacityDimension(0, 200).build();
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(TestUtils.loc("loc")).setType(type2).build();
-        builder.addVehicle(v1);
-        builder.addVehicle(v2);
-        VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-    }
-
-    @Test
-    public void t() {
+    public void whenWritingFiniteVrp_itWritesAndReadsCorrectly() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         builder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
@@ -89,6 +75,7 @@ public class VrpXMLWriterTest {
         writeAndRereadXml(vrp);
 
     }
+
 
     @Test
     public void whenWritingServices_itWritesThemCorrectly() {
