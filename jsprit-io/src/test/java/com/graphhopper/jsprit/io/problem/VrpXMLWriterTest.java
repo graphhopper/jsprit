@@ -34,6 +34,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -619,6 +623,19 @@ public class VrpXMLWriterTest {
         assertEquals(10., Solutions.bestOf(solutionsToRead).getCost(), 0.01);
         assertEquals(1, Solutions.bestOf(solutionsToRead).getUnassignedJobs().size());
         assertEquals("2", Solutions.bestOf(solutionsToRead).getUnassignedJobs().iterator().next().getId());
+    }
+
+    @Test
+    public void outputStreamAndFileContentsAreEqual() throws IOException {
+        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
+        VehicleRoutingProblem vrp = builder.build();
+
+        new VrpXMLWriter(vrp, null).write(infileName);
+        String outputStringFromFile = new String(Files.readAllBytes(Paths.get(infileName)));
+        String outputStringFromStream = new VrpXMLWriter(vrp, null).write().toString();
+
+        assertEquals(outputStringFromFile, outputStringFromStream);
+
     }
 
     private VehicleRoutingProblem writeAndRereadXml(VehicleRoutingProblem vrp) {
