@@ -250,7 +250,7 @@ public class VrpXMLWriterTest {
     }
 
     @Test
-    public void whenWritingVehicles_vehShouldHave2Skills() {
+    public void whenWritingVehicles_vehShouldHave3Skills() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v1").addSkill("SKILL5").addSkill("skill1").addSkill("Skill2")
@@ -262,50 +262,8 @@ public class VrpXMLWriterTest {
         Vehicle veh1 = getVehicle("v1", readVrp);
 
         assertEquals(3, veh1.getSkills().values().size());
-    }
-
-    @Test
-    public void whenWritingVehicles_vehShouldContain_skill5() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v1").addSkill("SKILL5").addSkill("skill1").addSkill("Skill2")
-            .setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        builder.addVehicle(v);
-
-        VehicleRoutingProblem vrp = builder.build();
-        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
-        Vehicle veh1 = getVehicle("v1", readVrp);
-
         assertTrue(veh1.getSkills().containsSkill("skill5"));
-    }
-
-    @Test
-    public void whenWritingVehicles_vehShouldContain_skill1() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v1").addSkill("SKILL5").addSkill("skill1").addSkill("Skill2")
-            .setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        builder.addVehicle(v);
-
-        VehicleRoutingProblem vrp = builder.build();
-        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
-        Vehicle veh1 = getVehicle("v1", readVrp);
-
         assertTrue(veh1.getSkills().containsSkill("skill1"));
-    }
-
-    @Test
-    public void whenWritingVehicles_vehShouldContain_skill2() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v1").addSkill("SKILL5").addSkill("skill1").addSkill("Skill2")
-            .setStartLocation(TestUtils.loc("loc")).setType(type1).build();
-        builder.addVehicle(v);
-
-        VehicleRoutingProblem vrp = builder.build();
-        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
-        Vehicle veh1 = getVehicle("v1", readVrp);
-
         assertTrue(veh1.getSkills().containsSkill("skill2"));
     }
 
