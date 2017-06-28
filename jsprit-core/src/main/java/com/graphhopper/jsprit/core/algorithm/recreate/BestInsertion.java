@@ -100,14 +100,14 @@ public final class BestInsertion extends AbstractInsertionStrategy {
 
 
     private void sometimesSortPriorities(List<Job> unassignedJobList) {
-        if(random.nextDouble() < 0.5){
+//        if(random.nextDouble() < 0.5){
             Collections.sort(unassignedJobList, new Comparator<Job>() {
                 @Override
                 public int compare(Job o1, Job o2) {
                     return o1.getPriority() - o2.getPriority();
                 }
             });
-        }
+        //}
     }
 
 }

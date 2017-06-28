@@ -150,14 +150,14 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
     }
 
     private void sometimesSortPriorities(List<Job> unassignedJobList) {
-        if(random.nextDouble() < 0.5){
+        //   if(random.nextDouble() < 0.5){
             Collections.sort(unassignedJobList, new Comparator<Job>() {
                 @Override
                 public int compare(Job o1, Job o2) {
                     return o1.getPriority() - o2.getPriority();
                 }
             });
-        }
+        // }
     }
 
     private Insertion getBestInsertion(Batch batch, Job unassignedJob) {
