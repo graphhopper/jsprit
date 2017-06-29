@@ -56,6 +56,7 @@
         <tag>HEAD</tag>
     </scm>
 
+
     <issueManagement>
         <system>github</system>
         <url>https://github.com/graphhopper/jsprit/issues</url>
@@ -81,6 +82,15 @@
     </properties>
 
     <build>
+
+        <extensions>
+            <extension>
+                <groupId>io.packagecloud.maven.wagon</groupId>
+                <artifactId>maven-packagecloud-wagon</artifactId>
+                <version>0.0.4</version>
+            </extension>
+        </extensions>
+
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <directory>target</directory>
@@ -180,9 +190,13 @@
     </dependencies>
 
     <distributionManagement>
+        <repository>
+            <id>packagecloud-graphhopper</id>
+            <url>packagecloud+https://packagecloud.io/graphhopper/jsprit</url>
+        </repository>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>packagecloud-graphhopper</id>
+            <url>packagecloud+https://packagecloud.io/graphhopper/jsprit</url>
         </snapshotRepository>
     </distributionManagement>
 
