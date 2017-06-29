@@ -29,6 +29,21 @@ import java.util.*;
  */
 public class UnassignedJobReasonTracker implements JobUnassignedListener {
 
+    public static String getMostLikely(Frequency reasons) {
+        if (reasons == null) return "no reason found";
+        Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = reasons.entrySetIterator();
+        int maxCount = 0;
+        String mostLikely = null;
+        while (entryIterator.hasNext()) {
+            Map.Entry<Comparable<?>, Long> entry = entryIterator.next();
+            if (entry.getValue() > maxCount) {
+                Comparable<?> key = entry.getKey();
+                mostLikely = key.toString();
+            }
+        }
+        return mostLikely;
+    }
+
     Map<String, Frequency> reasons = new HashMap<>();
 
     Map<Integer, String> codesToReason = new HashMap<>();
@@ -139,21 +154,6 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         if (failedConstraintNamesToCode.containsKey(mostLikelyReason))
             return failedConstraintNamesToCode.get(mostLikelyReason);
         else return -1;
-    }
-
-    private String getMostLikely(Frequency reasons) {
-        if (reasons == null) return "no reason found";
-        Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = reasons.entrySetIterator();
-        int maxCount = 0;
-        String mostLikely = null;
-        while (entryIterator.hasNext()) {
-            Map.Entry<Comparable<?>, Long> entry = entryIterator.next();
-            if (entry.getValue() > maxCount) {
-                Comparable<?> key = entry.getKey();
-                mostLikely = key.toString();
-            }
-        }
-        return mostLikely;
     }
 
 
