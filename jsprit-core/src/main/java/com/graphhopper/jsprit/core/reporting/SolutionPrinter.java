@@ -117,6 +117,7 @@ public class SolutionPrinter {
         print(out, problem, solution, Print.VERBOSE, verbosePrintColumns);
     }
 
+
     /**
      * Prints costs and #vehicles to the given writer
      *

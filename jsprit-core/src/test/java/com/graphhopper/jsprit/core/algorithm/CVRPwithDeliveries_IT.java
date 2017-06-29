@@ -26,6 +26,10 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
+import com.graphhopper.jsprit.core.reporting.SolutionPrinter2;
+import com.graphhopper.jsprit.core.reporting.columndefinition.SolutionPrintColumnLists;
+import com.graphhopper.jsprit.core.reporting.columndefinition.SolutionPrintColumnLists.PredefinedList;
 import com.graphhopper.jsprit.core.util.ChristofidesReader;
 import com.graphhopper.jsprit.core.util.JobType;
 import com.graphhopper.jsprit.core.util.Solutions;
@@ -39,8 +43,18 @@ public class CVRPwithDeliveries_IT {
         VehicleRoutingProblem vrp = vrpBuilder.build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
-        assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
+        VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
+        assertEquals(530.0, bestSolution.getCost(), 50.0);
+        assertEquals(5, bestSolution.getRoutes().size());
+        SolutionPrinter.print(vrp, bestSolution,
+                        SolutionPrintColumnLists.getHumanReadable(PredefinedList.VERBOSE));
+        SolutionPrinter.printCostDetails(vrp, bestSolution);
+        try {
+            SolutionPrinter2.print(vrp, bestSolution);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
+

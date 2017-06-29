@@ -153,7 +153,7 @@ public class SolutionPrintColumnLists {
      * @return The column list containing the predefined columns.
      */
     public static PrinterColumnList<RoutePrinterContext> getHumanReadable(PredefinedList listType,
-                    HumanReadableTimeFormatter timeFormatter) {
+            HumanReadableTimeFormatter timeFormatter) {
         return getList(listType, true, timeFormatter);
     }
 
@@ -169,7 +169,7 @@ public class SolutionPrintColumnLists {
      * @return The generated column list.
      */
     private static PrinterColumnList<RoutePrinterContext> getList(PredefinedList listType, boolean humanReadable,
-                    HumanReadableTimeFormatter timeFormatter) {
+            HumanReadableTimeFormatter timeFormatter) {
         PrinterColumnList<RoutePrinterContext> res = new PrinterColumnList<>();
 
         for (Class<? extends AbstractPrinterColumn<RoutePrinterContext, ?, ?>> c : COLUMNS.get(listType)) {
