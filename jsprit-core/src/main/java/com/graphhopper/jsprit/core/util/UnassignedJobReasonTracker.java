@@ -29,9 +29,9 @@ import java.util.*;
  */
 public class UnassignedJobReasonTracker implements JobUnassignedListener {
 
-    public static String getMostLikely(Frequency reasons) {
-        if (reasons == null) return "no reason found";
-        Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = reasons.entrySetIterator();
+    public static String getMostLikelyFailedConstraintName(Frequency failedConstraintNamesFrequency) {
+        if (failedConstraintNamesFrequency == null) return "no reason found";
+        Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = failedConstraintNamesFrequency.entrySetIterator();
         int maxCount = 0;
         String mostLikely = null;
         while (entryIterator.hasNext()) {
@@ -44,19 +44,19 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         return mostLikely;
     }
 
-    Map<String, Frequency> reasons = new HashMap<>();
+    Map<String, Frequency> failedConstraintNamesFrequencyMapping = new HashMap<>();
 
-    Map<Integer, String> codesToReason = new HashMap<>();
+    Map<Integer, String> codesToHumanReadableReason = new HashMap<>();
 
     Map<String, Integer> failedConstraintNamesToCode = new HashMap<>();
 
-    Set<String> constraintsToBeIgnored = new HashSet<>();
+    Set<String> failedConstraintNamesToBeIgnored = new HashSet<>();
 
     public UnassignedJobReasonTracker() {
-        codesToReason.put(1, "cannot serve required skill");
-        codesToReason.put(2, "cannot be visited within time window");
-        codesToReason.put(3, "does not fit into any vehicle due to capacity");
-        codesToReason.put(4, "cannot be assigned due to max distance constraint of vehicle");
+        codesToHumanReadableReason.put(1, "cannot serve required skill");
+        codesToHumanReadableReason.put(2, "cannot be visited within time window");
+        codesToHumanReadableReason.put(3, "does not fit into any vehicle due to capacity");
+        codesToHumanReadableReason.put(4, "cannot be assigned due to max distance constraint of vehicle");
 
         failedConstraintNamesToCode.put("HardSkillConstraint", 1);
         failedConstraintNamesToCode.put("VehicleDependentTimeWindowConstraints", 2);
@@ -67,24 +67,24 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
     }
 
     public void ignore(String simpleNameOfConstraint) {
-        constraintsToBeIgnored.add(simpleNameOfConstraint);
+        failedConstraintNamesToBeIgnored.add(simpleNameOfConstraint);
     }
 
     @Override
     public void informJobUnassigned(Job unassigned, Collection<String> failedConstraintNames) {
-        if (!this.reasons.containsKey(unassigned.getId())) {
-            this.reasons.put(unassigned.getId(), new Frequency());
+        if (!this.failedConstraintNamesFrequencyMapping.containsKey(unassigned.getId())) {
+            this.failedConstraintNamesFrequencyMapping.put(unassigned.getId(), new Frequency());
         }
         for (String r : failedConstraintNames) {
-            if (constraintsToBeIgnored.contains(r)) continue;
-            this.reasons.get(unassigned.getId()).addValue(r);
+            if (failedConstraintNamesToBeIgnored.contains(r)) continue;
+            this.failedConstraintNamesFrequencyMapping.get(unassigned.getId()).addValue(r);
         }
     }
 
     public void put(String simpleNameOfFailedConstraint, int code, String reason) {
         if (code <= 20)
             throw new IllegalArgumentException("first 20 codes are reserved internally. choose a code > 20");
-        codesToReason.put(code, reason);
+        codesToHumanReadableReason.put(code, reason);
         if (failedConstraintNamesToCode.containsKey(simpleNameOfFailedConstraint)) {
             throw new IllegalArgumentException(simpleNameOfFailedConstraint + " already assigned to code and reason");
         } else failedConstraintNamesToCode.put(simpleNameOfFailedConstraint, code);
@@ -95,8 +95,18 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      *
      * @return
      */
+    @Deprecated
     public Map<String, Frequency> getReasons() {
-        return Collections.unmodifiableMap(reasons);
+        return Collections.unmodifiableMap(failedConstraintNamesFrequencyMapping);
+    }
+
+    /**
+     * For each job id, it returns frequency distribution of failed constraints (simple name of constraint) in an unmodifiable map.
+     *
+     * @return
+     */
+    public Map<String, Frequency> getFailedConstraintNamesFrequencyMapping() {
+        return Collections.unmodifiableMap(failedConstraintNamesFrequencyMapping);
     }
 
     /**
@@ -105,7 +115,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public Map<Integer, String> getCodesToReason() {
-        return Collections.unmodifiableMap(codesToReason);
+        return Collections.unmodifiableMap(codesToHumanReadableReason);
     }
 
     /**
@@ -117,6 +127,17 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         return Collections.unmodifiableMap(failedConstraintNamesToCode);
     }
 
+    public int getCode(String failedConstraintName) {
+        return toCode(failedConstraintName);
+    }
+
+    public String getHumanReadableReason(int code) {
+        return getCodesToReason().get(code);
+    }
+
+    public String getHumanReadableReason(String failedConstraintName) {
+        return getCodesToReason().get(getCode(failedConstraintName));
+    }
     /**
      * Returns the most likely reason code i.e. the reason (failed constraint) being observed most often.
      *
@@ -129,9 +150,9 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public int getMostLikelyReasonCode(String jobId) {
-        if (!this.reasons.containsKey(jobId)) return -1;
-        Frequency reasons = this.reasons.get(jobId);
-        String mostLikelyReason = getMostLikely(reasons);
+        if (!this.failedConstraintNamesFrequencyMapping.containsKey(jobId)) return -1;
+        Frequency reasons = this.failedConstraintNamesFrequencyMapping.get(jobId);
+        String mostLikelyReason = getMostLikelyFailedConstraintName(reasons);
         return toCode(mostLikelyReason);
     }
 
@@ -142,12 +163,12 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public String getMostLikelyReason(String jobId) {
-        if (!this.reasons.containsKey(jobId)) return "no reason found";
-        Frequency reasons = this.reasons.get(jobId);
-        String mostLikelyReason = getMostLikely(reasons);
+        if (!this.failedConstraintNamesFrequencyMapping.containsKey(jobId)) return "no reason found";
+        Frequency reasons = this.failedConstraintNamesFrequencyMapping.get(jobId);
+        String mostLikelyReason = getMostLikelyFailedConstraintName(reasons);
         int code = toCode(mostLikelyReason);
         if (code == -1) return mostLikelyReason;
-        else return codesToReason.get(code);
+        else return codesToHumanReadableReason.get(code);
     }
 
     private int toCode(String mostLikelyReason) {
