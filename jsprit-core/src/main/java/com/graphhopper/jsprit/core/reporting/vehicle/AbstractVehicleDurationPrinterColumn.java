@@ -8,7 +8,6 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 import com.graphhopper.jsprit.core.reporting.columndefinition.HumanReadableDurationFormatter;
 import com.graphhopper.jsprit.core.reporting.columndefinition.HumanReadableTimeFormatter;
 import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
-import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
 
 /**
  * Abstract base class for time and (technically) duration columns.
@@ -111,9 +110,8 @@ extends AbstractPrinterColumn<VehicleSummaryContext, String, AbstractVehicleDura
      */
     @SuppressWarnings("unchecked")
     public T withPercentDecimalDigits(int digits) {
-        if (digits < 0) {
+        if (digits < 0)
             throw new IllegalArgumentException("Decimal digit count should be non-negative.");
-        }
         this.percentDecimals = digits;
         return (T) this;
     }
@@ -142,7 +140,6 @@ extends AbstractPrinterColumn<VehicleSummaryContext, String, AbstractVehicleDura
      *
      * <p>
      * The implementation delegates the value extracting to the abstract method
-     * {@linkplain #getValue(RoutePrinterContext)}.
      * <p>
      * <p>
      * If the value is null, returns null, otherwise it returns the string
@@ -154,9 +151,8 @@ extends AbstractPrinterColumn<VehicleSummaryContext, String, AbstractVehicleDura
     @Override
     public String getData(VehicleSummaryContext context) {
         Long timeValue = getValue(context);
-        if (timeValue == null) {
+        if (timeValue == null)
             return null;
-        }
         switch (mode) {
         case NUMERIC:
             return "" + timeValue;

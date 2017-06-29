@@ -10,7 +10,6 @@ import com.graphhopper.jsprit.core.reporting.columndefinition.ColumnDefinition;
 import com.graphhopper.jsprit.core.reporting.columndefinition.HumanReadableEnabled;
 import com.graphhopper.jsprit.core.reporting.columndefinition.HumanReadableTimeFormatter;
 import com.graphhopper.jsprit.core.reporting.columndefinition.StringColumnType;
-import com.graphhopper.jsprit.core.reporting.route.RoutePrinterContext;
 
 /**
  * Abstract base class for time window columns.
@@ -86,7 +85,6 @@ implements HumanReadableEnabled<T> {
      *
      * <p>
      * The implementation delegates the value extracting to the abstract method
-     * {@linkplain #getValue(RoutePrinterContext)}.
      * <p>
      * <p>
      * If the value is null or empty, returns null, otherwise it returns the
@@ -98,9 +96,8 @@ implements HumanReadableEnabled<T> {
     @Override
     public String getData(VehicleSummaryContext context) {
         Collection<TimeWindow> timeWindows = getValue(context);
-        if (timeWindows == null || timeWindows.isEmpty()) {
+        if (timeWindows == null || timeWindows.isEmpty())
             return null;
-        }
         return timeWindows.stream().map(tw -> formatTimeWindow(tw)).collect(Collectors.joining());
     }
 

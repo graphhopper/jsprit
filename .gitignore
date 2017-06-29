@@ -12,3 +12,4 @@
 # Eclipse
 .project
 .classpath
+jsprit-core/src/main/java/com/graphhopper/jsprit/core/reporting/SolutionPrinter_depr.java

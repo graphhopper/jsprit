@@ -29,6 +29,10 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter.Print;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter2;
+import com.graphhopper.jsprit.core.reporting.SolutionPrinter_depr;
+import com.graphhopper.jsprit.core.reporting.vehicle.AbstractVehicleDurationPrinterColumn.Mode;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleSummaryColumnLists;
+import com.graphhopper.jsprit.core.reporting.vehicle.VehicleSummaryColumnLists.PredefinedList;
 import com.graphhopper.jsprit.core.util.ChristofidesReader;
 import com.graphhopper.jsprit.core.util.JobType;
 import com.graphhopper.jsprit.core.util.Solutions;
@@ -48,6 +52,12 @@ public class CVRPwithDeliveries_IT {
         SolutionPrinter.print(vrp, bestSolution, Print.VERBOSE);
         System.out.println(
                 "\n\n================================================================================\n\n");
+        SolutionPrinter_depr.printVehicleSummary(vrp, bestSolution,
+                VehicleSummaryColumnLists.getMultiple(PredefinedList.VERBOSE, Mode.values()));
+
+        System.out.println(
+                "\n\n================================================================================\n\n");
+
         try {
             SolutionPrinter2.print(vrp, bestSolution);
         } catch (Exception e) {
