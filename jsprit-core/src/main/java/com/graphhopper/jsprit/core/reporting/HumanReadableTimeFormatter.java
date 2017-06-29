@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
+import hu.vissy.texttable.dataconverter.DataConverter;
+
 /**
  * Time value or duration formatter for human readable format.
  * <p>
@@ -21,7 +23,7 @@ import java.time.temporal.ChronoUnit;
  * @author balage
  *
  */
-public class HumanReadableTimeFormatter {
+public class HumanReadableTimeFormatter implements DataConverter<Long> {
 
     // Default origin
     public static final LocalDateTime DEFAULT_ORIGIN = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
@@ -91,10 +93,11 @@ public class HumanReadableTimeFormatter {
      *            The value to convert.
      * @return The converted value.
      */
-    public String format(Long timeValue) {
-        if (timeValue == null) {
-            return null;
-        } else {
+    @Override
+    public String convert(Long timeValue) {
+        if (timeValue == null)
+            return "";
+        else {
             LocalDateTime dt = origin.plus(timeValue, unit);
             return dateFormatter.format(dt);
         }

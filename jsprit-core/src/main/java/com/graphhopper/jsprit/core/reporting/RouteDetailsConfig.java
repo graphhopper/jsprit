@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -41,6 +42,11 @@ public class RouteDetailsConfig {
     }
 
     private static class PrevActivityHolder {
+        TourActivity prevAct;
+    }
+
+    private static class CostAggregator {
+        int cost;
         TourActivity prevAct;
     }
 
@@ -163,25 +169,22 @@ public class RouteDetailsConfig {
             @Override
             public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
                     RouteDetailsConfig routeDetailsConfig) {
+                Function<RouteDeatailsRecord, Integer> dataExtractorCallback = r -> {
+                    AbstractJob job = r.getJob();
+                    return job == null ? null : job.getPriority();
+                };
                 return routeDetailsConfig.displayMode.pickColumns(
                         new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, Integer>()
                         .withTitle("priority")
                         .withCellContentFormatter(CellContentFormatter.centeredCell())
-                        .withDataExtractor(r -> {
-                            AbstractJob job = r.getJob();
-                            return job == null ? null : job.getPriority();
-                        })
+                        .withDataExtractor(dataExtractorCallback)
                         .build(),
-                        new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, String>()
+                        new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, Integer>()
                         .withTitle("priority (HR)")
                         .withCellContentFormatter(CellContentFormatter.centeredCell())
-                        .withDataExtractor(r -> {
-                            AbstractJob job = r.getJob();
-                            return job == null ? null
-                                    : PRIORITY_NAMES[job.getPriority()] + "("
-                                    + job.getPriority() + ")";
-                        })
-                        .build()
+                        .withDataConverter(data -> data == null ? ""
+                                : PRIORITY_NAMES[data] + "(" + data + ")")
+                        .withDataExtractor(dataExtractorCallback).build()
                         );
             }
         },
@@ -246,27 +249,22 @@ public class RouteDetailsConfig {
             @Override
             public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
                     RouteDetailsConfig routeDetailsConfig) {
+                Function<RouteDeatailsRecord, Collection<TimeWindow>> dataExtractorCallback = r -> {
+                    TourActivity act = r.getActivity();
+                    if (act instanceof JobActivity)
+                        return ((JobActivity) act).getTimeWindows();
+                    else
+                        return null;
+                };
                 return routeDetailsConfig.displayMode.pickColumns(
                         new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, Collection<TimeWindow>>()
                         .withTitle("time windows").withDataConverter(
                                 tws -> routeDetailsConfig.formatTimeWindowsNumeric(tws))
-                        .withDataExtractor(r -> {
-                            TourActivity act = r.getActivity();
-                            if (act instanceof JobActivity)
-                                return ((JobActivity) act).getTimeWindows();
-                            else
-                                return null;
-                        }).build(),
+                        .withDataExtractor(dataExtractorCallback).build(),
                         new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, Collection<TimeWindow>>()
                         .withTitle("time windows (HR)").withDataConverter(
                                 tws -> routeDetailsConfig.formatTimeWindowsHuman(tws))
-                        .withDataExtractor(r -> {
-                            TourActivity act = r.getActivity();
-                            if (act instanceof JobActivity)
-                                return ((JobActivity) act).getTimeWindows();
-                            else
-                                return null;
-                        }).build()
+                        .withDataExtractor(dataExtractorCallback).build()
                         );
             }
 
@@ -276,10 +274,11 @@ public class RouteDetailsConfig {
             @Override
             public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
                     RouteDetailsConfig routeDetailsConfig) {
-                return createDurationColumns(routeDetailsConfig, "opTime", r -> {
-                    TourActivity act = r.getActivity();
-                    return (long) act.getOperationTime();
-                });
+                return createTimeColumns(routeDetailsConfig, "opTime",
+                        routeDetailsConfig.getDurationFormatter(), r -> {
+                            TourActivity act = r.getActivity();
+                            return (long) act.getOperationTime();
+                        });
             }
         },
 
@@ -306,14 +305,15 @@ public class RouteDetailsConfig {
             @Override
             public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
                     RouteDetailsConfig routeDetailsConfig) {
-                return createDurationColumns(routeDetailsConfig, "waitng", (r) -> {
-                    TourActivity act = r.getActivity();
-                    if (act instanceof Start || act instanceof End)
-                        return null;
-                    else
-                        return (long) (act.getEndTime() - act.getOperationTime()
-                                - act.getArrTime());
-                });
+                return createTimeColumns(routeDetailsConfig, "waitng",
+                        routeDetailsConfig.getDurationFormatter(), (r) -> {
+                            TourActivity act = r.getActivity();
+                            if (act instanceof Start || act instanceof End)
+                                return null;
+                            else
+                                return (long) (act.getEndTime() - act.getOperationTime()
+                                        - act.getArrTime());
+                        });
             }
         },
 
@@ -335,25 +335,161 @@ public class RouteDetailsConfig {
                                 }, PrevActivityHolder::new, (s) -> null));
             }
         },
+
+        ARRIVAL_TIME {
+            @Override
+            public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
+                    RouteDetailsConfig routeDetailsConfig) {
+                return createTimeColumns(routeDetailsConfig, "arrival",
+                        routeDetailsConfig.getTimeFormatter(), r -> {
+                            TourActivity act = r.getActivity();
+                            if (act instanceof Start)
+                                return null;
+                            else
+                                return (long) act.getArrTime();
+                        });
+            }
+        },
+        START_TIME {
+            @Override
+            public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
+                    RouteDetailsConfig routeDetailsConfig) {
+                return createTimeColumns(routeDetailsConfig, "start",
+                        routeDetailsConfig.getTimeFormatter(), r -> {
+                            TourActivity act = r.getActivity();
+                            if (act instanceof End)
+                                return null;
+                            else
+                                return (long) (act.getEndTime() - act.getOperationTime());
+                        });
+            }
+        },
+        END_TIME {
+            @Override
+            public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
+                    RouteDetailsConfig routeDetailsConfig) {
+                return createTimeColumns(routeDetailsConfig, "end",
+                        routeDetailsConfig.getTimeFormatter(), r -> {
+                            TourActivity act = r.getActivity();
+                            if (act instanceof End)
+                                return null;
+                            else
+                                return (long) act.getEndTime();
+                        });
+            }
+        },
+
+        SELECTED_TIME_WINDOW {
+            @Override
+            public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
+                    RouteDetailsConfig routeDetailsConfig) {
+                Function<RouteDeatailsRecord, TimeWindow> dataExtractorCallback = r -> {
+                    TourActivity act = r.getActivity();
+                    if (act instanceof JobActivity) {
+                        Optional<TimeWindow> optTw = ((JobActivity) act)
+                                .getTimeWindows().stream()
+                                .filter(tw -> tw.contains(
+                                        act.getEndTime() - act.getOperationTime()))
+                                .findAny();
+                        if (optTw.isPresent())
+                            return optTw.get();
+                        else
+                            return null;
+                    } else
+                        return null;
+                };
+                return routeDetailsConfig.displayMode.pickColumns(
+                        new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, TimeWindow>()
+                        .withTitle("selected tw")
+                        .withDataConverter(
+                                tw -> routeDetailsConfig.formatTimeWindowNumeric(tw))
+                        .withDataExtractor(dataExtractorCallback).build(),
+                        new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, TimeWindow>()
+                        .withTitle("selected tw (HR)")
+                        .withDataConverter(
+                                tw -> routeDetailsConfig.formatTimeWindowHuman(tw))
+                        .withDataExtractor(dataExtractorCallback).build());
+            }
+        },
+
+        TRANSPORT_COST {
+            @Override
+            public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
+                    RouteDetailsConfig routeDetailsConfig) {
+                return createStatefulCostColumns(routeDetailsConfig, "transCost",
+                        new StatefulDataExtractor<RouteDeatailsRecord, PrevActivityHolder, Integer>(
+                                (r, s) -> {
+                                    TourActivity act = r.getActivity();
+                                    if (act instanceof Start) {
+                                        s.prevAct = null;
+                                    }
+                                    double res = r.getTransportCost(s.prevAct);
+                                    s.prevAct = act;
+                                    return (int) res;
+                                }, PrevActivityHolder::new, (s) -> null));
+            }
+        },
+
+
+        ACTIVITY_COST {
+            @Override
+            public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
+                    RouteDetailsConfig routeDetailsConfig) {
+                return Collections.singletonList(
+                        new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord,Integer>()
+                        .withTitle("actCost")
+                        .withDataExtractor(r -> (int) r.getActivityCost()).build());
+            }
+        },
+
+        ROUTE_COST {
+            @Override
+            public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
+                    RouteDetailsConfig routeDetailsConfig) {
+                return Collections.singletonList(
+                        new ColumnDefinition.StatefulBuilder<RouteDeatailsRecord, CostAggregator, Integer>()
+                        .withTitle("routeCost")
+                        .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
+                        .withDataExtractor(new StatefulDataExtractor<RouteDeatailsRecord, CostAggregator, Integer>(
+                                (r, s) -> {
+                                    TourActivity act = r.getActivity();
+                                    if (act instanceof Start) {
+                                        s.prevAct = null;
+                                        s.cost = 0;
+                                    }
+
+                                    Double trCost = r.getTransportCost(s.prevAct);
+                                    s.prevAct = act;
+                                    if (trCost != null) {
+                                        s.cost += trCost;
+                                    }
+                                    s.cost += r.getActivityCost();
+                                    return s.cost;
+                                }, CostAggregator::new, (s) -> null)
+                                ).build());
+            }
+        },
         ;
+
 
         public abstract List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createColumns(
                 RouteDetailsConfig routeDetailsConfig);
 
-        private static List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createDurationColumns(
-                RouteDetailsConfig routeDetailsConfig, String title,
+        private static List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createTimeColumns(
+                RouteDetailsConfig routeDetailsConfig, String title, DataConverter<Long> converter,
                 Function<RouteDeatailsRecord, Long> getter) {
             return routeDetailsConfig.displayMode.pickColumns(
                     new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, Long>()
-                            .withTitle(title).withDataExtractor(getter)
-                            .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
-                            .build(),
+                    .withTitle(title).withDataExtractor(getter)
+                    .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
+                    .build(),
                     new ColumnDefinition.StatelessBuilder<RouteDeatailsRecord, Long>()
                     .withTitle(title + " (HR)")
-                            .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
-                    .withDataConverter(dur -> routeDetailsConfig.formatDurationHuman(dur))
+                    .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
+                    .withDataConverter(converter)
                     .withDataExtractor(getter).build());
         }
+
 
         private static List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createStatefulDurationColumns(
                 RouteDetailsConfig routeDetailsConfig, String title,
@@ -361,15 +497,25 @@ public class RouteDetailsConfig {
             return routeDetailsConfig.displayMode.pickColumns(
                     new ColumnDefinition.StatefulBuilder<RouteDeatailsRecord, PrevActivityHolder, Long>()
                     .withTitle(title)
-                            .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
+                    .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
                     .withDataExtractor(getter)
                     .build(),
                     new ColumnDefinition.StatefulBuilder<RouteDeatailsRecord, PrevActivityHolder, Long>()
                     .withTitle(title+" (HR)")
-                            .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
+                    .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
                     .withDataConverter(dur -> routeDetailsConfig.formatDurationHuman(dur))
                     .withDataExtractor(getter)
                     .build());
+        }
+
+        private static List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> createStatefulCostColumns(
+                RouteDetailsConfig routeDetailsConfig, String title,
+                StatefulDataExtractor<RouteDeatailsRecord, PrevActivityHolder, Integer> getter) {
+            return Collections.singletonList(
+                    new ColumnDefinition.StatefulBuilder<RouteDeatailsRecord, PrevActivityHolder, Integer>()
+                    .withTitle(title)
+                    .withCellContentFormatter(CellContentFormatter.rightAlignedCell())
+                    .withDataExtractor(getter).build());
         }
     }
 
@@ -492,30 +638,38 @@ public class RouteDetailsConfig {
 
     private String formatTimeWindowNumeric(TimeWindow tw) {
         String res = "";
-        res = "[" + (long) tw.getStart() + "-";
-        if (tw.getEnd() == Double.MAX_VALUE) {
-            res += "";
-        } else {
-            res += (long) tw.getEnd();
+        if (tw != null) {
+            res = "[" + (long) tw.getStart() + "-";
+            if (tw.getEnd() == Double.MAX_VALUE) {
+                res += "";
+            } else {
+                res += (long) tw.getEnd();
+            }
+            res += "]";
         }
-        res += "]";
         return res;
     }
 
     private String formatTimeWindowHuman(TimeWindow tw) {
         String res = "";
-        res = "[" + timeFormatter.format((long) tw.getStart()) + "-";
-        if (tw.getEnd() == Double.MAX_VALUE) {
-            res += "";
-        } else {
-            res += timeFormatter.format((long) tw.getEnd());
+        if (tw != null) {
+            res = "[" + timeFormatter.convert((long) tw.getStart()) + "-";
+            if (tw.getEnd() == Double.MAX_VALUE) {
+                res += "";
+            } else {
+                res += timeFormatter.convert((long) tw.getEnd());
+            }
+            res += "]";
         }
-        res += "]";
         return res;
     }
 
     protected String formatDurationHuman(Long data) {
         return durationFormatter.convert(data);
+    }
+
+    protected String formatTimeHuman(Long data) {
+        return timeFormatter.convert(data);
     }
 
 }
