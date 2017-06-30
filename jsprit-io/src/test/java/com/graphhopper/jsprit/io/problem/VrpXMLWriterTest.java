@@ -31,13 +31,11 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.io.util.TestUtils;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,34 +43,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class VrpXMLWriterTest {
-
-    private String infileName;
-
-    @Before
-    public void doBefore() {
-        infileName = "src/test/resources/infiniteWriterV2Test.xml";
-    }
-
-    @Test
-    public void whenWritingInfiniteVrp_itWritesCorrectly() {
-        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        builder.setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE);
-        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("vehType").addCapacityDimension(0, 20).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("myVehicle").setStartLocation(TestUtils.loc("loc")).setType(type).build();
-        builder.addVehicle(vehicle);
-        VehicleRoutingProblem vrp = builder.build();
-        new VrpXMLWriter(vrp, null).write(infileName);
-    }
-
-    @Test
-    public void whenWritingFiniteVrp_itWritesAndReadsCorrectly() {
-        VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
-        builder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
-
-        VehicleRoutingProblem vrp = builder.build();
-        writeAndRereadXml(vrp);
-    }
-
 
     @Test
     public void whenWritingServices_itWritesThemCorrectly() {
@@ -630,8 +600,10 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
         VehicleRoutingProblem vrp = builder.build();
 
-        new VrpXMLWriter(vrp, null).write(infileName);
-        String outputStringFromFile = new String(Files.readAllBytes(Paths.get(infileName)));
+        VrpXMLWriter vrpXMLWriter = new VrpXMLWriter(vrp, null);
+        ByteArrayOutputStream os = (ByteArrayOutputStream) vrpXMLWriter.write();
+
+        String outputStringFromFile = new String(os.toByteArray());
         String outputStringFromStream = new VrpXMLWriter(vrp, null).write().toString();
 
         assertEquals(outputStringFromFile, outputStringFromStream);
@@ -639,19 +611,21 @@ public class VrpXMLWriterTest {
     }
 
     private VehicleRoutingProblem writeAndRereadXml(VehicleRoutingProblem vrp) {
-        new VrpXMLWriter(vrp, null).write(infileName);
-
+        VrpXMLWriter vrpXMLWriter = new VrpXMLWriter(vrp, null);
+        ByteArrayOutputStream os = (ByteArrayOutputStream) vrpXMLWriter.write();
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
         VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        new VrpXMLReader(vrpToReadBuilder, null).read(infileName);
+        new VrpXMLReader(vrpToReadBuilder, null).read(is);
         return vrpToReadBuilder.build();
     }
 
     private List<VehicleRoutingProblemSolution> writeAndRereadXmlWithSolutions(VehicleRoutingProblem vrp, List<VehicleRoutingProblemSolution> solutions) {
-        new VrpXMLWriter(vrp, solutions).write(infileName);
-
+        VrpXMLWriter vrpXMLWriter = new VrpXMLWriter(vrp, solutions);
+        ByteArrayOutputStream os = (ByteArrayOutputStream) vrpXMLWriter.write();
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
         VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
         List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<VehicleRoutingProblemSolution>();
-        new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
+        new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(is);
         return solutionsToRead;
     }
 
