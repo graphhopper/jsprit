@@ -30,7 +30,7 @@ import hu.vissy.texttable.dataconverter.NumberDataConverter;
 import hu.vissy.texttable.dataextractor.StatefulDataExtractor;
 
 
-public class RouteDetailsConfig {
+public class RouteDetailsConfig extends ColumnConfigBase {
 
     private static final String[] PRIORITY_NAMES = new String[] { "", /* 1 */ "highest",
             /* 2 */ "very high", /* 3 */ "high", /* 4 */ "above medium", /* 5 */ "medium",
@@ -571,49 +571,19 @@ public class RouteDetailsConfig {
     }
 
     private DisplayMode displayMode;
-    private LocalDateTime humanReadableOrigin;
-    private ChronoUnit lowUnit;
-    private ChronoUnit highUnit;
     private List<Column> columns;
 
-    private HumanReadableTimeFormatter timeFormatter;
-    private HumanReadableDurationFormatter durationFormatter;
-
     private RouteDetailsConfig(Builder builder) {
-        this.humanReadableOrigin = builder.humanReadableOrigin;
         this.displayMode = builder.displayMode;
         this.columns = builder.columns;
-        this.lowUnit = builder.lowUnit;
-        this.highUnit = builder.highUnit;
-        timeFormatter = new HumanReadableTimeFormatter(humanReadableOrigin, lowUnit);
-        durationFormatter = new HumanReadableDurationFormatter(lowUnit, highUnit);
+        setTimeFormatter(
+                new HumanReadableTimeFormatter(builder.humanReadableOrigin, builder.lowUnit));
+        setDurationFormatter(new HumanReadableDurationFormatter(builder.lowUnit, builder.highUnit));
     }
-
-
 
 
     public DisplayMode getDisplayMode() {
         return displayMode;
-    }
-
-    public LocalDateTime getHumanReadableOrigin() {
-        return humanReadableOrigin;
-    }
-
-    public ChronoUnit getLowUnit() {
-        return lowUnit;
-    }
-
-    public ChronoUnit getHighUnit() {
-        return highUnit;
-    }
-
-    public HumanReadableTimeFormatter getTimeFormatter() {
-        return timeFormatter;
-    }
-
-    public HumanReadableDurationFormatter getDurationFormatter() {
-        return durationFormatter;
     }
 
     public List<ColumnDefinition<RouteDeatailsRecord, ?, ?>> getColumns() {
@@ -622,54 +592,5 @@ public class RouteDetailsConfig {
         return columns;
     }
 
-    protected String formatTimeWindowsNumeric(Collection<TimeWindow> timeWindows) {
-        if (timeWindows == null || timeWindows.isEmpty())
-            return "";
-        return timeWindows.stream().map(tw -> formatTimeWindowNumeric(tw))
-                .collect(Collectors.joining());
-    }
-
-    protected String formatTimeWindowsHuman(Collection<TimeWindow> timeWindows) {
-        if (timeWindows == null || timeWindows.isEmpty())
-            return "";
-        return timeWindows.stream().map(tw -> formatTimeWindowHuman(tw))
-                .collect(Collectors.joining());
-    }
-
-    private String formatTimeWindowNumeric(TimeWindow tw) {
-        String res = "";
-        if (tw != null) {
-            res = "[" + (long) tw.getStart() + "-";
-            if (tw.getEnd() == Double.MAX_VALUE) {
-                res += "";
-            } else {
-                res += (long) tw.getEnd();
-            }
-            res += "]";
-        }
-        return res;
-    }
-
-    private String formatTimeWindowHuman(TimeWindow tw) {
-        String res = "";
-        if (tw != null) {
-            res = "[" + timeFormatter.convert((long) tw.getStart()) + "-";
-            if (tw.getEnd() == Double.MAX_VALUE) {
-                res += "";
-            } else {
-                res += timeFormatter.convert((long) tw.getEnd());
-            }
-            res += "]";
-        }
-        return res;
-    }
-
-    protected String formatDurationHuman(Long data) {
-        return durationFormatter.convert(data);
-    }
-
-    protected String formatTimeHuman(Long data) {
-        return timeFormatter.convert(data);
-    }
 
 }

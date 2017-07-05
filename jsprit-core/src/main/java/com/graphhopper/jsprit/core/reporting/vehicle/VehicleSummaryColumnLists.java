@@ -67,16 +67,16 @@ public class VehicleSummaryColumnLists {
         COLUMNS.put(PredefinedList.DEFAULT, defaultSet);
 
         List<Class<? extends AbstractPrinterColumn<VehicleSummaryContext, ?, ?>>> verboseSet = new ArrayList<>();
-        verboseSet.add(VehicleRouteNumberPrinterColumn.class);
-        verboseSet.add(VehicleTruckNamePrinterColumn.class);
-        verboseSet.add(VehicleTypePrinterColumn.class);
-        verboseSet.add(VehicleDriverNamePrinterColumn.class);
-        verboseSet.add(VehicleActivityCountPrinterColumn.class);
-        verboseSet.add(VehicleAllActivityTypeCountPrinterColumn.class);
-        verboseSet.add(VehicleShiftTimeWindowPrinterColumn.class);
-        verboseSet.add(VehicleShiftDurationPrinterColumn.class);
-        verboseSet.add(VehicleRouteTimeWindowPrinterColumn.class);
-        verboseSet.add(VehicleRouteDurationPrinterColumn.class);
+        verboseSet.add(VehicleRouteNumberPrinterColumn.class);//
+        verboseSet.add(VehicleTruckNamePrinterColumn.class); //
+        verboseSet.add(VehicleTypePrinterColumn.class);//
+        verboseSet.add(VehicleDriverNamePrinterColumn.class); //
+        verboseSet.add(VehicleActivityCountPrinterColumn.class);//
+        verboseSet.add(VehicleAllActivityTypeCountPrinterColumn.class);//
+        verboseSet.add(VehicleShiftTimeWindowPrinterColumn.class);//
+        verboseSet.add(VehicleShiftDurationPrinterColumn.class);//
+        verboseSet.add(VehicleRouteTimeWindowPrinterColumn.class); //
+        verboseSet.add(VehicleRouteDurationPrinterColumn.class); //
         verboseSet.add(VehicleTravelDurationPrinterColumn.class);
         verboseSet.add(VehicleOperationDurationPrinterColumn.class);
         verboseSet.add(VehicleActiveDurationPrinterColumn.class);
@@ -113,8 +113,8 @@ public class VehicleSummaryColumnLists {
      * @return The generated column list.
      */
     public static PrinterColumnList<VehicleSummaryContext> getList(PredefinedList listType, List<Mode> durationModes,
-                    boolean humanReadableTimeWindows, HumanReadableTimeFormatter timeWindowTimeFormatter,
-                    HumanReadableDurationFormatter durationFormatter) {
+            boolean humanReadableTimeWindows, HumanReadableTimeFormatter timeWindowTimeFormatter,
+            HumanReadableDurationFormatter durationFormatter) {
         PrinterColumnList<VehicleSummaryContext> res = new PrinterColumnList<>();
 
         for (Class<? extends AbstractPrinterColumn<VehicleSummaryContext, ?, ?>> c : COLUMNS.get(listType)) {

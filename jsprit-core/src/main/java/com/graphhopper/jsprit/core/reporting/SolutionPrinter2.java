@@ -67,6 +67,7 @@ public class SolutionPrinter2 {
         printSolutionSummary(out, solution);
         printCostDetails(out, solution);
         printRouteDetails(out, problem, solution);
+        printVehicleSummary(out, problem, solution);
         out.flush();
     }
 
@@ -221,5 +222,28 @@ public class SolutionPrinter2 {
 
         out.println(tableDef.apply(data));
     }
+
+    private static void printVehicleSummary(PrintWriter out, VehicleRoutingProblem problem,
+            VehicleRoutingProblemSolution solution) {
+        Builder<VehicleSummaryRecord> builder = new TableFormatter.Builder<VehicleSummaryRecord>()
+                .withBorderFormatter(
+                        new BorderFormatter.Builder(DefaultFormatters.ASCII_LINEDRAW).build())
+                .withHeading("Vehicle summary");
+
+        new VehicleSummaryConfig.Builder()
+        .withColumns(VehicleSummaryConfig.Column.values())
+        .build()
+        .getColumns()
+        .forEach(c -> builder.withColumn(c));
+
+        TableFormatter<VehicleSummaryRecord> tableDef = builder.build();
+
+        List<VehicleSummaryRecord> data = solution.getRoutes().stream()
+            .map(r -> new VehicleSummaryRecord(r, problem))
+            .collect(Collectors.toList());
+
+        out.println(tableDef.apply(data));
+    }
+
 }
 
