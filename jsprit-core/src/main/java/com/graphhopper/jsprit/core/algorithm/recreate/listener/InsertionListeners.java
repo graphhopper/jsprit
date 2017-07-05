@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 public class InsertionListeners {
@@ -70,6 +71,14 @@ public class InsertionListeners {
         for (InsertionListener l : listeners) {
             if (l instanceof InsertionEndsListener) {
                 ((InsertionEndsListener) l).informInsertionEnds(vehicleRoutes);
+            }
+        }
+    }
+
+    public void informJobUnassignedListeners(Job unassigned, List<String> reasons) {
+        for (InsertionListener l : listeners) {
+            if (l instanceof JobUnassignedListener) {
+                ((JobUnassignedListener) l).informJobUnassigned(unassigned, reasons);
             }
         }
     }

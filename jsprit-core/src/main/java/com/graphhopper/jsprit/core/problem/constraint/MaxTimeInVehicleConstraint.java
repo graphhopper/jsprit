@@ -20,20 +20,31 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.algorithm.state.UpdateMaxTimeInVehicle;
+import com.graphhopper.jsprit.core.algorithm.state.UpdateVehicleDependentPracticalTimeWindows;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by schroeder on 15/09/16.
  */
 public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
+
+    private final VehicleRoutingProblem vrp;
 
     private final TransportTime transportTime;
 
@@ -43,15 +54,19 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
 
     private final StateManager stateManager;
 
-    public MaxTimeInVehicleConstraint(TransportTime transportTime, VehicleRoutingActivityCosts activityCosts, StateId latestStartId, StateManager stateManager) {
+    public MaxTimeInVehicleConstraint(TransportTime transportTime, VehicleRoutingActivityCosts activityCosts, StateId latestStartId, StateManager stateManager, VehicleRoutingProblem vrp) {
         this.transportTime = transportTime;
         this.latestStartId = latestStartId;
         this.stateManager = stateManager;
         this.activityCosts = activityCosts;
+        this.vrp = vrp;
     }
 
     @Override
-    public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+    public ConstraintsStatus fulfilled(final JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+        boolean newActIsPickup = newAct instanceof PickupActivity;
+        boolean newActIsDelivery = newAct instanceof DeliveryActivity;
+        boolean isShipment = iFacts.getJob() instanceof Shipment;
         /*
         1. check whether insertion of new shipment satisfies own max-in-vehicle-constraint
         2. check whether insertion of new shipment satisfies all other max-in-vehicle-constraints
@@ -75,7 +90,7 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
             if(timeInVehicle > maxTimeInVehicle) return ConstraintsStatus.NOT_FULFILLED;
 
         }
-        else if(newAct instanceof PickupActivity){
+        else if(newActIsPickup){
             if(iFacts.getAssociatedActivities().size() == 1){
                 double maxTimeInVehicle = ((TourActivity.JobActivity)newAct).getJob().getMaxTimeInVehicle();
                 //ToDo - estimate in vehicle time of pickups here - This seems to trickier than I thought
@@ -88,15 +103,46 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
 
         //************ 2. check whether insertion of new shipment satisfies all other max-in-vehicle-constraints
 
-        double latest;
-        if(iFacts.getRoute().isEmpty()) latest = Double.MAX_VALUE;
-        else if(nextAct instanceof End){
-            latest = stateManager.getRouteState(iFacts.getRoute(),iFacts.getNewVehicle(), latestStartId,Double.class);
-        }
-        else latest = stateManager.getActivityState(nextAct, iFacts.getNewVehicle(), latestStartId, Double.class);
+        if(newActIsPickup || iFacts.getAssociatedActivities().size() == 1) {
+            double latest;
+            if (iFacts.getRoute().isEmpty()) latest = Double.MAX_VALUE;
+            else if (nextAct instanceof End) {
+                latest = stateManager.getRouteState(iFacts.getRoute(), iFacts.getNewVehicle(), latestStartId, Double.class);
+            } else latest = stateManager.getActivityState(nextAct, iFacts.getNewVehicle(), latestStartId, Double.class);
 
-        if(nextActStart > latest){
-            return ConstraintsStatus.NOT_FULFILLED;
+            if (nextActStart > latest) {
+                return ConstraintsStatus.NOT_FULFILLED;
+            }
+
+        }
+        else if(newActIsDelivery && iFacts.getAssociatedActivities().size() == 2){
+            StateManager localStateManager = new StateManager(vrp);
+            StateId stateId = localStateManager.createStateId("local-slack");
+            UpdateMaxTimeInVehicle updateMaxTimeInVehicle = new UpdateMaxTimeInVehicle(localStateManager,stateId,transportTime,activityCosts);
+            updateMaxTimeInVehicle.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
+                @Override
+                public Collection<Vehicle> get(VehicleRoute route) {
+                    return Arrays.asList(iFacts.getNewVehicle());
+                }
+            });
+            updateMaxTimeInVehicle.begin(iFacts.getRoute());
+            List<TourActivity> tourActivities = new ArrayList<>(iFacts.getRoute().getActivities());
+            tourActivities.add(iFacts.getRelatedActivityContext().getInsertionIndex(),iFacts.getAssociatedActivities().get(0));
+            for(TourActivity act : tourActivities){
+                updateMaxTimeInVehicle.visit(act);
+            }
+            updateMaxTimeInVehicle.finish(tourActivities,iFacts.getJob());
+
+            double latest;
+            if (iFacts.getRoute().isEmpty()) latest = Double.MAX_VALUE;
+            else if (nextAct instanceof End) {
+                latest = localStateManager.getRouteState(iFacts.getRoute(), iFacts.getNewVehicle(), stateId, Double.class);
+            } else latest = localStateManager.getActivityState(nextAct, iFacts.getNewVehicle(), stateId, Double.class);
+
+            if (nextActStart > latest) {
+                return ConstraintsStatus.NOT_FULFILLED;
+            }
+
         }
         return ConstraintsStatus.FULFILLED;
     }

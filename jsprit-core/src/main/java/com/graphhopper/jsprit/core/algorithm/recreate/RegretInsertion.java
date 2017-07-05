@@ -105,10 +105,10 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             }
         }
 
-        List<Job> jobs = new ArrayList<Job>(unassignedJobs);
+        List<Job> jobs = new ArrayList<>(unassignedJobs);
         while (!jobs.isEmpty()) {
-            List<Job> unassignedJobList = new ArrayList<Job>(jobs);
-            List<Job> badJobList = new ArrayList<Job>();
+            List<Job> unassignedJobList = new ArrayList<>(jobs);
+            List<ScoredJob> badJobList = new ArrayList<>();
             ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
@@ -117,9 +117,11 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
             }
-            for (Job bad : badJobList) {
-                jobs.remove(bad);
-                badJobs.add(bad);
+            for (ScoredJob bad : badJobList) {
+                Job unassigned = bad.getJob();
+                jobs.remove(unassigned);
+                badJobs.add(unassigned);
+                markUnassigned(unassigned, bad.getInsertionData().getFailedConstraintNames());
             }
         }
         return badJobs;
@@ -132,12 +134,12 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return null;
     }
 
-    private ScoredJob nextJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobList, List<Job> badJobs) {
+    private ScoredJob nextJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobList, List<ScoredJob> badJobs) {
         ScoredJob bestScoredJob = null;
         for (Job unassignedJob : unassignedJobList) {
             ScoredJob scoredJob = getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
             if (scoredJob instanceof ScoredJob.BadJob) {
-                badJobs.add(unassignedJob);
+                badJobs.add(scoredJob);
                 continue;
             }
             if (bestScoredJob == null) bestScoredJob = scoredJob;
@@ -158,14 +160,17 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         InsertionData best = null;
         InsertionData secondBest = null;
         VehicleRoute bestRoute = null;
-
+        List<String> failedConstraintNames = new ArrayList<>();
         double benchmark = Double.MAX_VALUE;
         for (VehicleRoute route : routes) {
             if (secondBest != null) {
                 benchmark = secondBest.getInsertionCost();
             }
             InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
-            if (iData instanceof InsertionData.NoInsertionFound) continue;
+            if (iData instanceof InsertionData.NoInsertionFound) {
+                failedConstraintNames.addAll(iData.getFailedConstraintNames());
+                continue;
+            }
             if (best == null) {
                 best = iData;
                 bestRoute = route;
@@ -191,9 +196,10 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
                 secondBest = iData;
             }
-        }
+        } else failedConstraintNames.addAll(iData.getFailedConstraintNames());
         if (best == null) {
-            return new ScoredJob.BadJob(unassignedJob);
+            ScoredJob.BadJob badJob = new ScoredJob.BadJob(unassignedJob, failedConstraintNames);
+            return badJob;
         }
         double score = score(unassignedJob, best, secondBest, scoringFunction);
         ScoredJob scoredJob;

@@ -45,7 +45,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-
+@Deprecated
 final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsCalculator {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceInsertionOnRouteLevelCalculator.class);

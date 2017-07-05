@@ -41,9 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,8 +92,36 @@ public class VrpXMLWriter {
     public void write(String filename) {
         if (!filename.endsWith(".xml")) filename += ".xml";
         log.info("write vrp: " + filename);
+        XMLConf xmlConfig = createXMLConfiguration();
+
+        try {
+            xmlConfig.setFileName(filename);
+            Writer out = new FileWriter(filename);
+            XMLSerializer serializer = new XMLSerializer(out, createOutputFormat());
+            serializer.serialize(xmlConfig.getDocument());
+            out.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public OutputStream write() {
+        XMLConf xmlConfig = createXMLConfiguration();
+        OutputStream out = new ByteArrayOutputStream();
+
+        try {
+            XMLSerializer serializer = new XMLSerializer(out, createOutputFormat());
+            serializer.serialize(xmlConfig.getDocument());
+            out.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return out;
+    }
+
+    private XMLConf createXMLConfiguration() {
         XMLConf xmlConfig = new XMLConf();
-        xmlConfig.setFileName(filename);
         xmlConfig.setRootElementName("problem");
         xmlConfig.setAttributeSplittingDisabled(true);
         xmlConfig.setDelimiterParsingDisabled(true);
@@ -123,10 +149,6 @@ public class VrpXMLWriter {
         writeSolutions(xmlConfig);
 
 
-        OutputFormat format = new OutputFormat();
-        format.setIndenting(true);
-        format.setIndent(5);
-
         try {
             Document document = xmlConfig.createDoc();
 
@@ -138,17 +160,14 @@ public class VrpXMLWriter {
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
         }
+        return xmlConfig;
+    }
 
-        try {
-            Writer out = new FileWriter(filename);
-            XMLSerializer serializer = new XMLSerializer(out, format);
-            serializer.serialize(xmlConfig.getDocument());
-            out.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
+    private OutputFormat createOutputFormat() {
+        OutputFormat format = new OutputFormat();
+        format.setIndenting(true);
+        format.setIndent(5);
+        return format;
     }
 
     private void writeInitialRoutes(XMLConf xmlConfig) {
@@ -203,12 +222,12 @@ public class VrpXMLWriter {
                     xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ")[@type]", act.getName());
                     if (act instanceof TourActivity.JobActivity) {
                         Job job = ((TourActivity.JobActivity) act).getJob();
-                        if (job instanceof Service) {
+                        if (job instanceof Break) {
+                            xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
+                        } else if (job instanceof Service) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").serviceId", job.getId());
                         } else if (job instanceof Shipment) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").shipmentId", job.getId());
-                        } else if (job instanceof Break) {
-                        	xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
                         } else {
                             throw new IllegalStateException("cannot write solution correctly since job-type is not know. make sure you use either service or shipment, or another writer");
                         }

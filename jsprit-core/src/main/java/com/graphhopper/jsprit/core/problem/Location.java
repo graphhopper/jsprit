@@ -64,23 +64,74 @@ public final class Location implements HasIndex, HasId {
 
         private Coordinate coordinate;
 
+        private String name = "";
+
+        private Object userData;
+
         public static Builder newInstance() {
             return new Builder();
         }
 
+        /**
+         * Sets user specific domain data associated with the object.
+         *
+         * <p>
+         * The user data is a black box for the framework, it only stores it,
+         * but never interacts with it in any way.
+         * </p>
+         *
+         * @param userData
+         *            any object holding the domain specific user data
+         *            associated with the object.
+         * @return builder
+         */
+        public Builder setUserData(Object userData) {
+            this.userData = userData;
+            return this;
+        }
+
+        /**
+         * Sets location index
+         *
+         * @param index
+         * @return the builder
+         */
         public Builder setIndex(int index) {
             if (index < 0) throw new IllegalArgumentException("index must be >= 0");
             this.index = index;
             return this;
         }
 
+        /**
+         * Sets coordinate of location
+         *
+         * @param coordinate
+         * @return
+         */
         public Builder setCoordinate(Coordinate coordinate) {
             this.coordinate = coordinate;
             return this;
         }
 
+        /**
+         * Sets location id
+         *
+         * @param id
+         * @return
+         */
         public Builder setId(String id) {
             this.id = id;
+            return this;
+        }
+
+        /**
+         * Adds name, e.g. street name, to location
+         *
+         * @param name
+         * @return
+         */
+        public Builder setName(String name){
+            this.name = name;
             return this;
         }
 
@@ -107,10 +158,23 @@ public final class Location implements HasIndex, HasId {
 
     private final String id;
 
+    private final String name;
+
+    private Object userData;
+
     private Location(Builder builder) {
+        this.userData = builder.userData;
         this.index = builder.index;
         this.coordinate = builder.coordinate;
         this.id = builder.id;
+        this.name = builder.name;
+    }
+
+    /**
+     * @return User-specific domain data associated by the job
+     */
+    public Object getUserData() {
+        return userData;
     }
 
     @Override
@@ -126,6 +190,8 @@ public final class Location implements HasIndex, HasId {
     public Coordinate getCoordinate() {
         return coordinate;
     }
+
+    public String getName() { return name; }
 
     @Override
     public boolean equals(Object o) {

@@ -17,14 +17,14 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import java.util.Collection;
+
 import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
-
-import java.util.Collection;
 
 
 /**
@@ -89,6 +89,8 @@ public class Shipment extends AbstractJob {
 
         private int priority = 2;
 
+        public Object userData;
+
         public double maxTimeInVehicle = Double.MAX_VALUE;
 
         /**
@@ -111,9 +113,28 @@ public class Shipment extends AbstractJob {
         }
 
         /**
+         * Sets user specific domain data associated with the object.
+         *
+         * <p>
+         * The user data is a black box for the framework, it only stores it,
+         * but never interacts with it in any way.
+         * </p>
+         *
+         * @param userData
+         *            any object holding the domain specific user data
+         *            associated with the object.
+         * @return builder
+         */
+        public Builder setUserData(Object userData) {
+            this.userData = userData;
+            return this;
+        }
+
+        /**
          * Sets pickup location.
          *
-         * @param pickupLocation pickup location
+         * @param pickupLocation
+         *            pickup location
          * @return builder
          */
         public Builder setPickupLocation(Location pickupLocation) {
@@ -271,7 +292,7 @@ public class Shipment extends AbstractJob {
         }
 
         /**
-         * Set priority to shipment. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+         * Set priority to shipment. Only 1 (high) to 10 (low) are allowed.
          * <p>
          * Default is 2 = medium.
          *
@@ -279,7 +300,8 @@ public class Shipment extends AbstractJob {
          * @return builder
          */
         public Builder setPriority(int priority) {
-            if(priority < 1 || priority > 3) throw new IllegalArgumentException("incorrect priority. only 1 = high, 2 = medium and 3 = low is allowed");
+            if (priority < 1 || priority > 10)
+                throw new IllegalArgumentException("incorrect priority. only 1 (very high) to 10 (very low) are allowed");
             this.priority = priority;
             return this;
         }
@@ -326,6 +348,7 @@ public class Shipment extends AbstractJob {
     private final double maxTimeInVehicle;
 
     Shipment(Builder builder) {
+        setUserData(builder.userData);
         this.id = builder.id;
         this.pickupServiceTime = builder.pickupServiceTime;
         this.pickupTimeWindow = builder.pickupTimeWindow;
@@ -454,6 +477,7 @@ public class Shipment extends AbstractJob {
      *
      * @return priority
      */
+    @Override
     public int getPriority() {
         return priority;
     }

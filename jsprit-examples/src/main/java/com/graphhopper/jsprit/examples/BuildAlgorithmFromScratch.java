@@ -20,7 +20,6 @@ package com.graphhopper.jsprit.examples;
 
 
 import com.graphhopper.jsprit.analysis.toolbox.AlgorithmEventsRecorder;
-import com.graphhopper.jsprit.analysis.toolbox.AlgorithmEventsViewer;
 import com.graphhopper.jsprit.core.algorithm.PrettyAlgorithmBuilder;
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -116,17 +115,18 @@ public class BuildAlgorithmFromScratch {
         final VehicleRoutingProblem vrp = vrpBuilder.build();
 
         VehicleRoutingAlgorithm vra = createAlgorithm(vrp);
-        vra.setMaxIterations(100);
+        vra.setMaxIterations(2000);
         AlgorithmEventsRecorder eventsRecorder = new AlgorithmEventsRecorder(vrp, "output/events.dgs.gz");
         eventsRecorder.setRecordingRange(90, 100);
         vra.addListener(eventsRecorder);
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
-        AlgorithmEventsViewer viewer = new AlgorithmEventsViewer();
-        viewer.setRuinDelay(3);
-        viewer.setRecreationDelay(1);
-        viewer.display("output/events.dgs.gz");
+
+//        AlgorithmEventsViewer viewer = new AlgorithmEventsViewer();
+//        viewer.setRuinDelay(3);
+//        viewer.setRecreationDelay(1);
+//        viewer.display("output/events.dgs.gz");
 
     }
 
@@ -146,10 +146,11 @@ public class BuildAlgorithmFromScratch {
         //regret insertion
         InsertionBuilder iBuilder = new InsertionBuilder(vrp, fleetManager, stateManager, constraintManager);
         iBuilder.setInsertionStrategy(InsertionBuilder.Strategy.REGRET);
+        iBuilder.setFastRegret(true);
         RegretInsertionFast regret = (RegretInsertionFast) iBuilder.build();
         DefaultScorer scoringFunction = new DefaultScorer(vrp);
-        scoringFunction.setDepotDistanceParam(0.2);
-        scoringFunction.setTimeWindowParam(-.2);
+        scoringFunction.setDepotDistanceParam(0.0);
+        scoringFunction.setTimeWindowParam(0.0);
         regret.setScoringFunction(scoringFunction);
 
 		/*

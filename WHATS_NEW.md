@@ -1,15 +1,30 @@
 WHATS NEW
 ==========
 ------------------------------
-<b>??</b> new release **v1.7**
+<b>2017-06-08</b> new release **v1.7.2**
+- one can now set custom properties/user defined data (see pr: https://github.com/graphhopper/jsprit/pull/348)
+
+For example, if one wants to enrich a service with an arbitrary number of custom properties, set a map like this:
+
+<pre><code>Service one = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
+    .setUserData(new HashMap&lt;String, Object&gt;()).build();</code></pre>
+
+<b>2017-05-11</b> new release **v1.7.1**
+- determine [reasons for unassigned jobs](https://github.com/graphhopper/jsprit/issues/180)
+- extend priority levels from 3 to 10 levels
+- a number of minor improvements
+
+<b>2017-01-12</b> new release **v1.7**
 - move packages to [graphhopper.com](https://graphhopper.com/) 
 - change license from GPLv3 to [Apache v2](https://github.com/graphhopper/jsprit/blob/master/LICENSE.md) to make it even more attractive for other developers and their commercial applications
 - pushed binaries to maven central, i.e. made it better accessible and we get rid of our own repo
 - outsourced various io operations, e.g. reading writing problem/algorithm to a new module called [jsprit-io](https://github.com/graphhopper/jsprit/tree/master/jsprit-io). this way the core is even more lightweight and less dependent on other libraries
 - switched from log4j to the [logger facade slf4j](http://www.slf4j.org/) to allow developers to plugin the logger of their choice
 - made it [much more memory efficient](https://github.com/graphhopper/jsprit/issues/230) for large problems
+- fixed [memory leak](https://github.com/graphhopper/jsprit/pull/282)
 - add [priority feature](https://github.com/graphhopper/jsprit/issues/242)
 - [refine exceptions](https://github.com/graphhopper/jsprit/issues/251) to get a clear separation of IllegalArgument and [IllegalState](https://stackoverflow.com/questions/12698275/whats-the-intended-use-of-illegalstateexception)
+- many further improvements (see https://github.com/graphhopper/jsprit/issues?q=is%3Aissue+is%3Aclosed)
 
 <b>2016-02-02</b> new release **v1.6.2**
 

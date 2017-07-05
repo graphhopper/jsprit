@@ -25,7 +25,9 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -78,7 +80,6 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 
     private final int solutionMemory;
 
-
     public SchrimpfAcceptance(int solutionMemory, double alpha) {
         this.alpha = alpha;
         this.solutionMemory = solutionMemory;
@@ -87,6 +88,32 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
 
     @Override
     public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution) {
+        boolean solutionAccepted = false;
+        if (solutions.size() < solutionMemory) {
+            solutions.add(newSolution);
+            solutionAccepted = true;
+        } else {
+            VehicleRoutingProblemSolution worst = null;
+            double threshold = getThreshold(currentIteration);
+            for (VehicleRoutingProblemSolution solutionInMemory : solutions) {
+                if (worst == null) worst = solutionInMemory;
+                else if (solutionInMemory.getCost() > worst.getCost()) worst = solutionInMemory;
+            }
+            if (worst == null) {
+                solutions.add(newSolution);
+                solutionAccepted = true;
+            } else if (newSolution.getCost() < worst.getCost() + threshold) {
+                solutions.remove(worst);
+                solutions.add(newSolution);
+                solutionAccepted = true;
+            }
+        }
+        return solutionAccepted;
+    }
+
+    public boolean acceptSolution(VehicleRoutingProblemSolution solution, VehicleRoutingProblemSolution newSolution) {
+        List<VehicleRoutingProblemSolution> solutions = new ArrayList<>();
+        solutions.add(solution);
         boolean solutionAccepted = false;
         if (solutions.size() < solutionMemory) {
             solutions.add(newSolution);
@@ -135,6 +162,16 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
     public void setInitialThreshold(double initialThreshold) {
         this.initialThreshold = initialThreshold;
     }
+
+    public void setMaxIterations(int maxIteration) {
+        this.maxIterations = maxIteration;
+    }
+
+    public void incIteration() {
+        currentIteration++;
+    }
+
+    ;
 
     @Override
     public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {

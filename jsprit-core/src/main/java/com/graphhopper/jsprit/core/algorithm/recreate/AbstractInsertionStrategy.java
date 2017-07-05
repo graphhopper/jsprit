@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public abstract class AbstractInsertionStrategy implements InsertionStrategy {
@@ -90,6 +91,10 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
         Collection<Job> badJobs = insertUnassignedJobs(vehicleRoutes, unassignedJobs);
         insertionsListeners.informInsertionEndsListeners(vehicleRoutes);
         return badJobs;
+    }
+
+    public void markUnassigned(Job unassigned, List<String> reasons) {
+        insertionsListeners.informJobUnassignedListeners(unassigned, reasons);
     }
 
     public abstract Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);

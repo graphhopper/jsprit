@@ -27,7 +27,10 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.*;
 
 
@@ -99,8 +102,9 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
         List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
         Collections.shuffle(unassignedJobList, random);
-        sometimesSortPriorities(unassignedJobList);
+        Collections.sort(unassignedJobList, new AccordingToPriorities());
         List<Batch> batches = distributeRoutes(vehicleRoutes, nuOfBatches);
+        List<String> failedConstraintNames = new ArrayList<>();
         for (final Job unassignedJob : unassignedJobList) {
             Insertion bestInsertion = null;
             double bestInsertionCost = Double.MAX_VALUE;
@@ -118,7 +122,10 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                 for (int i = 0; i < batches.size(); i++) {
                     Future<Insertion> futureIData = completionService.take();
                     Insertion insertion = futureIData.get();
-                    if (insertion == null) continue;
+                    if (insertion.insertionData instanceof NoInsertionFound) {
+                        failedConstraintNames.addAll(insertion.getInsertionData().getFailedConstraintNames());
+                        continue;
+                    }
                     if (insertion.getInsertionData().getInsertionCost() < bestInsertionCost) {
                         bestInsertion = insertion;
                         bestInsertionCost = insertion.getInsertionData().getInsertionCost();
@@ -136,29 +143,24 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                 vehicleRoutes.add(newRoute);
                 batches.get(random.nextInt(batches.size())).routes.add(newRoute);
             }
-            if (bestInsertion == null) badJobs.add(unassignedJob);
+            if (bestInsertion == null) {
+                badJobs.add(unassignedJob);
+                markUnassigned(unassignedJob, failedConstraintNames);
+            }
             else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
         }
         return badJobs;
     }
 
-    private void sometimesSortPriorities(List<Job> unassignedJobList) {
-        if(random.nextDouble() < 0.5){
-            Collections.sort(unassignedJobList, new Comparator<Job>() {
-                @Override
-                public int compare(Job o1, Job o2) {
-                    return o1.getPriority() - o2.getPriority();
-                }
-            });
-        }
-    }
 
     private Insertion getBestInsertion(Batch batch, Job unassignedJob) {
         Insertion bestInsertion = null;
+        InsertionData empty = new InsertionData.NoInsertionFound();
         double bestInsertionCost = Double.MAX_VALUE;
         for (VehicleRoute vehicleRoute : batch.routes) {
             InsertionData iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
             if (iData instanceof NoInsertionFound) {
+                empty.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
                 continue;
             }
             if (iData.getInsertionCost() < bestInsertionCost) {
@@ -166,6 +168,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                 bestInsertionCost = iData.getInsertionCost();
             }
         }
+        if (bestInsertion == null) return new Insertion(null, empty);
         return bestInsertion;
     }
 

@@ -46,9 +46,7 @@ import com.graphhopper.jsprit.core.util.NoiseMaker;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import com.graphhopper.jsprit.core.util.Solutions;
 
-import java.util.Collection;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -82,7 +80,9 @@ public class Jsprit {
         WORST_BEST("worst_best"),
         WORST_REGRET("worst_regret"),
         CLUSTER_BEST("cluster_best"),
-        CLUSTER_REGRET("cluster_regret");
+        CLUSTER_REGRET("cluster_regret"),
+        STRING_BEST("string_best"),
+        STRING_REGRET("string_regret");
 
         String strategyName;
 
@@ -112,6 +112,7 @@ public class Jsprit {
         WORST_MAX_SHARE("worst.max_share"),
         THRESHOLD_ALPHA("threshold.alpha"),
         THRESHOLD_INI("threshold.ini"),
+        THRESHOLD_INI_ABS("threshold.ini_abs"),
         INSERTION_NOISE_LEVEL("insertion.noise_level"),
         INSERTION_NOISE_PROB("insertion.noise_prob"),
         RUIN_WORST_NOISE_LEVEL("worst.noise_level"),
@@ -119,7 +120,12 @@ public class Jsprit {
         FAST_REGRET("regret.fast"),
         MAX_TRANSPORT_COSTS("max_transport_costs"),
         CONSTRUCTION("construction"),
-        BREAK_SCHEDULING("break_scheduling");
+        BREAK_SCHEDULING("break_scheduling"),
+        STRING_K_MIN("string_kmin"),
+        STRING_K_MAX("string_kmax"),
+        STRING_L_MIN("string_lmin"),
+        STRING_L_MAX("string_lmax");
+
 
         String paraName;
 
@@ -161,6 +167,12 @@ public class Jsprit {
 
         private SolutionAcceptor solutionAcceptor;
 
+        private ScoringFunction regretScorer = null;
+
+        private Map<SearchStrategy, Double> customStrategies = new HashMap<>();
+
+        private VehicleFleetManager fleetManager = null;
+
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
         }
@@ -176,10 +188,21 @@ public class Jsprit {
             defaults.put(Strategy.RADIAL_REGRET.toString(), ".5");
             defaults.put(Strategy.RANDOM_BEST.toString(), ".5");
             defaults.put(Strategy.RANDOM_REGRET.toString(), ".5");
+
+            defaults.put(Strategy.STRING_BEST.toString(), "0.0");
+            defaults.put(Strategy.STRING_REGRET.toString(), "0.0");
+
+            defaults.put(Parameter.STRING_K_MIN.toString(), "1");
+            defaults.put(Parameter.STRING_K_MAX.toString(), "6");
+            defaults.put(Parameter.STRING_L_MIN.toString(), "10");
+            defaults.put(Parameter.STRING_L_MAX.toString(), "30");
+
             defaults.put(Strategy.WORST_BEST.toString(), "0.");
             defaults.put(Strategy.WORST_REGRET.toString(), "1.");
             defaults.put(Strategy.CLUSTER_BEST.toString(), "0.");
             defaults.put(Strategy.CLUSTER_REGRET.toString(), "1.");
+
+
             defaults.put(Parameter.FIXED_COST_PARAM.toString(), "0.");
             defaults.put(Parameter.VEHICLE_SWITCH.toString(), "true");
             defaults.put(Parameter.ITERATIONS.toString(), "2000");
@@ -213,6 +236,16 @@ public class Jsprit {
             return defaults;
         }
 
+
+        public Builder addSearchStrategy(SearchStrategy searchStrategy, double weight) {
+            customStrategies.put(searchStrategy, weight);
+            return this;
+        }
+
+        public Builder setVehicleFleetManager(VehicleFleetManager fleetManager) {
+            this.fleetManager = fleetManager;
+            return this;
+        }
 
         public Builder setExecutorService(ExecutorService es, int noThreads) {
             this.es = es;
@@ -263,6 +296,11 @@ public class Jsprit {
 
         public Builder setActivityInsertionCalculator(ActivityInsertionCostsCalculator activityInsertionCalculator) {
             this.activityInsertionCalculator = activityInsertionCalculator;
+            return this;
+        }
+
+        public Builder setRegretScorer(ScoringFunction scoringFunction) {
+            this.regretScorer = scoringFunction;
             return this;
         }
 
@@ -328,6 +366,12 @@ public class Jsprit {
 
     private SolutionAcceptor acceptor;
 
+    private ScoringFunction regretScorer;
+
+    private final Map<SearchStrategy, Double> customStrategies = new HashMap<>();
+
+    private VehicleFleetManager vehicleFleetManager;
+
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
         this.constraintManager = builder.constraintManager;
@@ -339,16 +383,25 @@ public class Jsprit {
         this.random = builder.random;
         this.activityInsertion = builder.activityInsertionCalculator;
         this.acceptor = builder.solutionAcceptor;
+        regretScorer = builder.regretScorer;
+        customStrategies.putAll(builder.customStrategies);
+        vehicleFleetManager = builder.fleetManager;
+    }
+
+    private void ini(VehicleRoutingProblem vrp) {
+        if (regretScorer == null) regretScorer = getRegretScorer(vrp);
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
-        VehicleFleetManager fm;
-        if (vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE)) {
-            fm = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
-        } else {
-            FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vrp.getVehicles());
-            finiteFleetManagerFactory.setRandom(random);
-            fm = finiteFleetManagerFactory.createFleetManager();
+        ini(vrp);
+        if (vehicleFleetManager == null) {
+            if (vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE)) {
+                vehicleFleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
+            } else {
+                FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vrp.getVehicles());
+                finiteFleetManagerFactory.setRandom(random);
+                vehicleFleetManager = finiteFleetManagerFactory.createFleetManager();
+            }
         }
 
         if (stateManager == null) {
@@ -366,6 +419,14 @@ public class Jsprit {
                 setupExecutorInternally = true;
                 es = Executors.newFixedThreadPool(noThreads);
             }
+        }
+
+        double fixedCostParam = toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString()));
+        IncreasingAbsoluteFixedCosts increasingAbsoluteFixedCosts = null;
+        if (fixedCostParam > 0d) {
+            increasingAbsoluteFixedCosts = new IncreasingAbsoluteFixedCosts(vrp.getJobs().size());
+            increasingAbsoluteFixedCosts.setWeightOfFixCost(fixedCostParam);
+            constraintManager.addConstraint(increasingAbsoluteFixedCosts);
         }
 
         double noiseLevel = toDouble(getProperty(Parameter.INSERTION_NOISE_LEVEL.toString()));
@@ -449,13 +510,23 @@ public class Jsprit {
                 random)
         );
 
+        int kMin = toInteger(properties.getProperty(Parameter.STRING_K_MIN.toString()));
+        int kMax = toInteger(properties.getProperty(Parameter.STRING_K_MAX.toString()));
+        int lMin = toInteger(properties.getProperty(Parameter.STRING_L_MIN.toString()));
+        int lMax = toInteger(properties.getProperty(Parameter.STRING_L_MAX.toString()));
+
+        final RuinString stringRuin = new RuinString(vrp, jobNeighborhoods);
+        stringRuin.setNoRoutes(kMin, kMax);
+        stringRuin.setStringLength(lMin, lMax);
+        stringRuin.setRandom(random);
+
         AbstractInsertionStrategy regret;
-        final DefaultScorer scorer;
+        final ScoringFunction scorer;
 
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
             if(fastRegret){
-                RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+                RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
                     .setFastRegret(true)
@@ -463,45 +534,45 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
             }
             else {
-                RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+                RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regret = regretInsertion;
             }
         } else {
             if(fastRegret) {
-                RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+                RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                     .setFastRegret(true)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
             }
             else{
-                RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+                RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = getRegretScorer(vrp);
+                scorer = regretScorer;
                 regretInsertion.setScoringFunction(scorer);
                 regret = regretInsertion;
             }
@@ -510,7 +581,7 @@ public class Jsprit {
 
         AbstractInsertionStrategy best;
         if (vrp.getJobs().size() < 250 || es == null) {
-            BestInsertion bestInsertion = (BestInsertion) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+            BestInsertion bestInsertion = (BestInsertion) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                 .setInsertionStrategy(InsertionBuilder.Strategy.BEST)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
@@ -518,7 +589,7 @@ public class Jsprit {
                 .build();
             best = bestInsertion;
         } else {
-            BestInsertionConcurrent bestInsertion = (BestInsertionConcurrent) new InsertionBuilder(vrp, fm, stateManager, constraintManager)
+            BestInsertionConcurrent bestInsertion = (BestInsertionConcurrent) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                 .setInsertionStrategy(InsertionBuilder.Strategy.BEST)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
@@ -532,15 +603,19 @@ public class Jsprit {
         IterationStartsListener schrimpfThreshold = null;
         if(acceptor == null) {
             final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
-            schrimpfThreshold = new IterationStartsListener() {
-                @Override
-                public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-                    if (i == 1) {
-                        double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
-                        schrimpfAcceptance.setInitialThreshold(initialThreshold);
+            if (properties.containsKey(Parameter.THRESHOLD_INI_ABS.toString())) {
+                schrimpfAcceptance.setInitialThreshold(Double.valueOf(properties.getProperty(Parameter.THRESHOLD_INI_ABS.toString())));
+            } else {
+                schrimpfThreshold = new IterationStartsListener() {
+                    @Override
+                    public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+                        if (i == 1) {
+                            double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
+                            schrimpfAcceptance.setInitialThreshold(initialThreshold);
+                        }
                     }
-                }
-            };
+                };
+            }
             acceptor = schrimpfAcceptance;
         }
 
@@ -569,8 +644,13 @@ public class Jsprit {
         final SearchStrategy clusters_best = new SearchStrategy(Strategy.CLUSTER_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         clusters_best.addModule(new RuinAndRecreateModule(Strategy.CLUSTER_BEST.toString(), best, clusters));
 
+        SearchStrategy stringRegret = new SearchStrategy(Strategy.STRING_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
+        stringRegret.addModule(new RuinAndRecreateModule(Strategy.STRING_REGRET.toString(), regret, stringRuin));
 
-        PrettyAlgorithmBuilder prettyBuilder = PrettyAlgorithmBuilder.newInstance(vrp, fm, stateManager, constraintManager);
+        SearchStrategy stringBest = new SearchStrategy(Strategy.STRING_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        stringBest.addModule(new RuinAndRecreateModule(Strategy.STRING_BEST.toString(), best, stringRuin));
+
+        PrettyAlgorithmBuilder prettyBuilder = PrettyAlgorithmBuilder.newInstance(vrp, vehicleFleetManager, stateManager, constraintManager);
         prettyBuilder.setRandom(random);
         if (addCoreConstraints) {
             prettyBuilder.addCoreStateAndConstraintStuff();
@@ -582,7 +662,14 @@ public class Jsprit {
             .withStrategy(worst_best, toDouble(getProperty(Strategy.WORST_BEST.toString())))
             .withStrategy(worst_regret, toDouble(getProperty(Strategy.WORST_REGRET.toString())))
             .withStrategy(clusters_regret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
-            .withStrategy(clusters_best, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())));
+            .withStrategy(clusters_best, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
+            .withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
+            .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())));
+
+        for (SearchStrategy customStrategy : customStrategies.keySet()) {
+            prettyBuilder.withStrategy(customStrategy, customStrategies.get(customStrategy));
+        }
+
         if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.BEST_INSERTION.toString())) {
             prettyBuilder.constructInitialSolutionWith(best, objectiveFunction);
         } else {
@@ -598,6 +685,7 @@ public class Jsprit {
         vra.addListener(noiseConfigurator);
         vra.addListener(noise);
         vra.addListener(clusters);
+        if (increasingAbsoluteFixedCosts != null) vra.addListener(increasingAbsoluteFixedCosts);
 
         if(toBoolean(getProperty(Parameter.BREAK_SCHEDULING.toString()))) {
             vra.addListener(new BreakScheduling(vrp, stateManager, constraintManager));
@@ -619,25 +707,36 @@ public class Jsprit {
 
     private void handleExecutorShutdown(VehicleRoutingAlgorithm vra) {
         if (setupExecutorInternally) {
+            final Thread hook = new Thread() {
+                public void run() {
+                    if (!es.isShutdown()) {
+                        System.err.println("shutdownHook shuts down executorService");
+                        es.shutdown();
+                    }
+                }
+            };
+            Runtime.getRuntime().addShutdownHook(hook);
             vra.addListener(new AlgorithmEndsListener() {
 
                 @Override
                 public void informAlgorithmEnds(VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
                     es.shutdown();
+                    Runtime.getRuntime().removeShutdownHook(hook);
                 }
 
             });
         }
-        if (es != null) {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                public void run() {
-                    if (!es.isShutdown()) {
-                        System.err.println("shutdowHook shuts down executorService");
-                        es.shutdown();
-                    }
-                }
-            });
-        }
+//        if (es != null) {
+//
+//            Runtime.getRuntime().addShutdownHook(hook);
+//            vra.addListener(new AlgorithmEndsListener() {
+//                @Override
+//                public void informAlgorithmEnds(VehicleRoutingProblem aProblem,
+//                                                Collection<VehicleRoutingProblemSolution> aSolutions) {
+//                    Runtime.getRuntime().removeShutdownHook(hook);
+//                }
+//            });
+//        }
     }
 
     String getProperty(String key) {
@@ -685,7 +784,7 @@ public class Jsprit {
                     }
                 }
                 for(Job j : solution.getUnassignedJobs()){
-                    costs += maxCosts * 2 * (4 - j.getPriority());
+                    costs += maxCosts * 2 * (11 - j.getPriority());
                 }
                 return costs;
             }

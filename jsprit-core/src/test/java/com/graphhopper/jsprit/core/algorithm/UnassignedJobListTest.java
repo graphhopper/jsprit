@@ -26,13 +26,16 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
+import com.graphhopper.jsprit.core.util.UnassignedJobReasonTracker;
 import org.junit.Test;
 
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class UnassignedJobListTest {
+
 
     @Test
     public void job2ShouldBeInBadJobList_dueToTimeWindow() {
@@ -46,11 +49,17 @@ public class UnassignedJobListTest {
         VehicleRoutingProblem vrp = builder.build();
         VehicleRoutingAlgorithm algorithm = new GreedySchrimpfFactory().createAlgorithm(vrp);
         algorithm.setMaxIterations(10);
+
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+        algorithm.addListener(reasonTracker);
+
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
+
         assertTrue(!solution.getUnassignedJobs().contains(job1));
         assertTrue(solution.getUnassignedJobs().contains(job2));
+        assertEquals(2, reasonTracker.getMostLikelyReasonCode("job2"));
     }
 
     @Test
@@ -63,13 +72,19 @@ public class UnassignedJobListTest {
         builder.addJob(job2);
 
         VehicleRoutingProblem vrp = builder.build();
+
         VehicleRoutingAlgorithm algorithm = new GreedySchrimpfFactory().createAlgorithm(vrp);
         algorithm.setMaxIterations(10);
+
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+        algorithm.addListener(reasonTracker);
+
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
         assertTrue(!solution.getUnassignedJobs().contains(job1));
         assertTrue(solution.getUnassignedJobs().contains(job2));
+        assertEquals(3, reasonTracker.getMostLikelyReasonCode("job2"));
     }
 
 }

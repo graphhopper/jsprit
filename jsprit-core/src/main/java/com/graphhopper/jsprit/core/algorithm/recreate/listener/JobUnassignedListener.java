@@ -15,12 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.graphhopper.jsprit.analysis.util;
 
-import com.graphhopper.jsprit.core.util.BenchmarkResult;
+package com.graphhopper.jsprit.core.algorithm.recreate.listener;
+
+import com.graphhopper.jsprit.core.problem.job.Job;
 
 import java.util.Collection;
 
-public interface BenchmarkWriter {
-    public void write(Collection<BenchmarkResult> results);
+/**
+ * Created by schroeder on 06/02/17.
+ */
+public interface JobUnassignedListener extends InsertionListener {
+
+    void informJobUnassigned(Job unassigned, Collection<String> failedConstraintNames);
+
 }

@@ -45,6 +45,8 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
 
         private double[][][] matrix;
 
+        private final int noLocations;
+
         /**
          * Creates a new builder returning the matrix-builder.
          * <p>If you want to consider symmetric matrices, set isSymmetric to true.
@@ -59,6 +61,7 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
         private Builder(int noLocations, boolean isSymmetric) {
             this.isSymmetric = isSymmetric;
             matrix = new double[noLocations][noLocations][2];
+            this.noLocations = noLocations;
         }
 
         /**
@@ -74,11 +77,11 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
             return this;
         }
 
-        private void add(int fromIndex, int toIndex, int indicatorIndex, double distance) {
+        private void add(int fromIndex, int toIndex, int indicatorIndex, double value) {
             if (isSymmetric) {
-                if (fromIndex < toIndex) matrix[fromIndex][toIndex][indicatorIndex] = distance;
-                else matrix[toIndex][fromIndex][indicatorIndex] = distance;
-            } else matrix[fromIndex][toIndex][indicatorIndex] = distance;
+                if (fromIndex < toIndex) matrix[fromIndex][toIndex][indicatorIndex] = value;
+                else matrix[toIndex][fromIndex][indicatorIndex] = value;
+            } else matrix[fromIndex][toIndex][indicatorIndex] = value;
         }
 
         /**
@@ -94,6 +97,11 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
             return this;
         }
 
+        public Builder addTransportTimeAndDistance(int fromIndex, int toIndex, double time, double distance){
+            addTransportTime(fromIndex, toIndex, time);
+            addTransportDistance(fromIndex,toIndex,distance);
+            return this;
+        }
         /**
          * Builds the matrix.
          *
@@ -110,9 +118,12 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
 
     private final double[][][] matrix;
 
+    private int noLocations;
+
     private FastVehicleRoutingTransportCostsMatrix(Builder builder) {
         this.isSymmetric = builder.isSymmetric;
         matrix = builder.matrix;
+        noLocations = builder.noLocations;
     }
 
     /**
@@ -168,5 +179,10 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
         VehicleTypeImpl.VehicleCostParams costParams = vehicle.getType().getVehicleCostParams();
         return costParams.perDistanceUnit * getDistance(from.getIndex(), to.getIndex()) + costParams.perTransportTimeUnit * getTransportTime(from, to, departureTime, driver, vehicle);
     }
+
+    public int getNoLocations() {
+        return noLocations;
+    }
+
 
 }

@@ -56,4 +56,13 @@ public interface VehicleType {
 
     public String getProfile();
 
+    /**
+     * @return User-specific domain data associated with the vehicle type
+     */
+    public Object getUserData();
+
+    // Switch to this as soon as we switct to Java 8:
+    // default Object getUserData() {
+    // return null;
+    // };
 }

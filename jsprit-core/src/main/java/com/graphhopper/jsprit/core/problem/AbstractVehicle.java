@@ -30,6 +30,7 @@ public abstract class AbstractVehicle implements Vehicle {
 
         private int index;
 
+        @Override
         public int getIndex() {
             return index;
         }
@@ -44,19 +45,35 @@ public abstract class AbstractVehicle implements Vehicle {
 
     private VehicleTypeKey vehicleIdentifier;
 
-    public int getIndex() {
-        return index;
-    }
+	private Object userData;
 
-    protected void setIndex(int index) {
-        this.index = index;
-    }
+	/**
+	 * @return User-specific domain data associated with the vehicle
+	 */
+	@Override
+    public Object getUserData() {
+		return userData;
+	}
 
-    public VehicleTypeKey getVehicleTypeIdentifier() {
-        return vehicleIdentifier;
-    }
+	protected void setUserData(Object userData) {
+		this.userData = userData;
+	}
 
-    protected void setVehicleIdentifier(VehicleTypeKey vehicleTypeIdentifier) {
-        this.vehicleIdentifier = vehicleTypeIdentifier;
-    }
+	@Override
+	public int getIndex() {
+		return index;
+	}
+
+	protected void setIndex(int index) {
+		this.index = index;
+	}
+
+	@Override
+	public VehicleTypeKey getVehicleTypeIdentifier() {
+		return vehicleIdentifier;
+	}
+
+	protected void setVehicleIdentifier(VehicleTypeKey vehicleTypeIdentifier) {
+		this.vehicleIdentifier = vehicleTypeIdentifier;
+	}
 }
