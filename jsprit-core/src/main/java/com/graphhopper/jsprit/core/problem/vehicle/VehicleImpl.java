@@ -17,13 +17,12 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -153,15 +152,14 @@ public class VehicleImpl extends AbstractVehicle {
 
         /**
          * Sets user specific domain data associated with the object.
-         *
+         * <p>
          * <p>
          * The user data is a black box for the framework, it only stores it,
          * but never interacts with it in any way.
          * </p>
          *
-         * @param userData
-         *            any object holding the domain specific user data
-         *            associated with the object.
+         * @param userData any object holding the domain specific user data
+         *                 associated with the object.
          * @return builder
          */
         public Builder setUserData(Object userData) {
@@ -260,7 +258,7 @@ public class VehicleImpl extends AbstractVehicle {
             if (startLocation != null && endLocation != null) {
                 if (!startLocation.getId().equals(endLocation.getId()) && !returnToDepot)
                     throw new IllegalArgumentException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
-                            "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
+                        "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
             }
             if (startLocation != null && endLocation == null) {
                 endLocation = startLocation;
@@ -344,11 +342,11 @@ public class VehicleImpl extends AbstractVehicle {
     @Override
     public String toString() {
         return "[id=" + id + "]" +
-                "[type=" + type + "]" +
-                "[startLocation=" + startLocation + "]" +
-                "[endLocation=" + endLocation + "]" +
-                "[isReturnToDepot=" + isReturnToDepot() + "]" +
-                "[skills=" + skills + "]";
+            "[type=" + type + "]" +
+            "[startLocation=" + startLocation + "]" +
+            "[endLocation=" + endLocation + "]" +
+            "[isReturnToDepot=" + isReturnToDepot() + "]" +
+            "[skills=" + skills + "]";
     }
 
 

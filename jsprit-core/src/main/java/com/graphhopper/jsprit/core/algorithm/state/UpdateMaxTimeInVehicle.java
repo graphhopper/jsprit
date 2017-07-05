@@ -190,6 +190,49 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
         }
     }
 
+    public void finish(List<TourActivity> activities, Job ignore) {
+        for (Vehicle v : vehicles) {
+            int vehicleIndex = v.getVehicleTypeIdentifier().getIndex();
+
+            //!!! open routes !!!
+            double routeEnd;
+            if (!v.isReturnToDepot()) routeEnd = prevActEndTimes[vehicleIndex];
+            else
+                routeEnd = prevActEndTimes[vehicleIndex] + transportTime.getTransportTime(prevActLocations[vehicleIndex], v.getEndLocation(), prevActEndTimes[vehicleIndex], route.getDriver(), v);
+
+            Map<String, Double> openDeliveries = new HashMap<>();
+            for (Job job : openPickupEndTimes.get(vehicleIndex).keySet()) {
+                if (job == ignore) continue;
+                double actEndTime = openPickupEndTimes.get(vehicleIndex).get(job);
+                double slackTime = job.getMaxTimeInVehicle() - (routeEnd - actEndTime);
+                openDeliveries.put(job.getId(), slackTime);
+            }
+
+            double minSlackTimeAtEnd = minSlackTime(openDeliveries);
+            stateManager.putRouteState(route, v, latestStartId, routeEnd + minSlackTimeAtEnd);
+            List<TourActivity> acts = new ArrayList<>(activities);
+            Collections.reverse(acts);
+            for (TourActivity act : acts) {
+                if (act instanceof ServiceActivity || act instanceof PickupActivity) {
+                    String jobId = ((TourActivity.JobActivity) act).getJob().getId();
+                    openDeliveries.remove(jobId);
+                    double minSlackTime = minSlackTime(openDeliveries);
+                    double latestStart = actStart(act, v) + minSlackTime;
+                    stateManager.putActivityState(act, v, latestStartId, latestStart);
+                } else {
+                    String jobId = ((TourActivity.JobActivity) act).getJob().getId();
+                    if (slackTimes.get(vehicleIndex).containsKey(act)) {
+                        double slackTime = slackTimes.get(vehicleIndex).get(act);
+                        openDeliveries.put(jobId, slackTime);
+                    }
+                    double minSlackTime = minSlackTime(openDeliveries);
+                    double latestStart = actStart(act, v) + minSlackTime;
+                    stateManager.putActivityState(act, v, latestStartId, latestStart);
+                }
+            }
+        }
+    }
+
     private double actStart(TourActivity act, Vehicle v) {
         return actStartTimes.get(v.getVehicleTypeIdentifier().getIndex()).get(act);
     }

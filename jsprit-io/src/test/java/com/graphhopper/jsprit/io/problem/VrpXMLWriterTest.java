@@ -373,7 +373,7 @@ public class VrpXMLWriterTest {
 
         //skill names are case-insensitive
         Service s = Service.Builder.newInstance("1").addRequiredSkill("skill1").addRequiredSkill("SKILL2").addSizeDimension(0, 1)
-                .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+            .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
 

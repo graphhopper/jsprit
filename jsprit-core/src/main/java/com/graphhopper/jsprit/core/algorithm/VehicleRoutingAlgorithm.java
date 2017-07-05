@@ -17,14 +17,6 @@
  */
 package com.graphhopper.jsprit.core.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyListener;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
@@ -38,6 +30,13 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.Solutions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -155,13 +154,13 @@ public class VehicleRoutingAlgorithm {
             allJobs.removeAll(route.getTourActivities().getJobs());
             if (route.getVehicle().getIndex() == 0)
                 throw new IllegalStateException("vehicle used in initial solution has no index. probably a vehicle is used that has not been added to the " +
-                                " the VehicleRoutingProblem. only use vehicles that have already been added to the problem.");
+                    " the VehicleRoutingProblem. only use vehicles that have already been added to the problem.");
             for (TourActivity act : route.getActivities()) {
                 if (act.getIndex() == 0)
                     throw new IllegalStateException("act in initial solution has no index. activities are created and associated to their job in VehicleRoutingProblem\n." +
-                                    " thus if you build vehicle-routes use the jobActivityFactory from vehicle routing problem like that \n" +
-                                    " VehicleRoute.Builder.newInstance(knownVehicle).setJobActivityFactory(vrp.getJobActivityFactory).addService(..)....build() \n" +
-                                    " then the activities that are created to build the route are identical to the ones used in VehicleRoutingProblem");
+                        " thus if you build vehicle-routes use the jobActivityFactory from vehicle routing problem like that \n" +
+                        " VehicleRoute.Builder.newInstance(knownVehicle).setJobActivityFactory(vrp.getJobActivityFactory).addService(..)....build() \n" +
+                        " then the activities that are created to build the route are identical to the ones used in VehicleRoutingProblem");
             }
         }
 

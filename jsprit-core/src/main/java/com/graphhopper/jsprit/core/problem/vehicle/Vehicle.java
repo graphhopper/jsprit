@@ -72,14 +72,15 @@ public interface Vehicle extends HasId, HasIndex {
     public abstract VehicleTypeKey getVehicleTypeIdentifier();
 
     public abstract Skills getSkills();
-	/**
-	 * @return User-specific domain data associated with the vehicle
-	 */
-	public Object getUserData();
+
+    /**
+     * @return User-specific domain data associated with the vehicle
+     */
+    public Object getUserData();
 
     public abstract Break getBreak();
-	// Switch to this as soon as we switct to Java 8:
-	// default Object getUserData() {
-	// return null;
-	// };
+    // Switch to this as soon as we switct to Java 8:
+    // default Object getUserData() {
+    // return null;
+    // };
 }

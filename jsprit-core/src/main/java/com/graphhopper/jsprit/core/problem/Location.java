@@ -74,15 +74,14 @@ public final class Location implements HasIndex, HasId {
 
         /**
          * Sets user specific domain data associated with the object.
-         *
+         * <p>
          * <p>
          * The user data is a black box for the framework, it only stores it,
          * but never interacts with it in any way.
          * </p>
          *
-         * @param userData
-         *            any object holding the domain specific user data
-         *            associated with the object.
+         * @param userData any object holding the domain specific user data
+         *                 associated with the object.
          * @return builder
          */
         public Builder setUserData(Object userData) {
@@ -130,7 +129,7 @@ public final class Location implements HasIndex, HasId {
          * @param name
          * @return
          */
-        public Builder setName(String name){
+        public Builder setName(String name) {
             this.name = name;
             return this;
         }
@@ -191,7 +190,9 @@ public final class Location implements HasIndex, HasId {
         return coordinate;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     @Override
     public boolean equals(Object o) {

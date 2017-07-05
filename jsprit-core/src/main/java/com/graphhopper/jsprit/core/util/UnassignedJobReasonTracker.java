@@ -138,9 +138,10 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
     public String getHumanReadableReason(String failedConstraintName) {
         return getCodesToReason().get(getCode(failedConstraintName));
     }
+
     /**
      * Returns the most likely reason code i.e. the reason (failed constraint) being observed most often.
-     *
+     * <p>
      * 1 --> "cannot serve required skill
      * 2 --> "cannot be visited within time window"
      * 3 --> "does not fit into any vehicle due to capacity"

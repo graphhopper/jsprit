@@ -45,35 +45,35 @@ public abstract class AbstractVehicle implements Vehicle {
 
     private VehicleTypeKey vehicleIdentifier;
 
-	private Object userData;
+    private Object userData;
 
-	/**
-	 * @return User-specific domain data associated with the vehicle
-	 */
-	@Override
+    /**
+     * @return User-specific domain data associated with the vehicle
+     */
+    @Override
     public Object getUserData() {
-		return userData;
-	}
+        return userData;
+    }
 
-	protected void setUserData(Object userData) {
-		this.userData = userData;
-	}
+    protected void setUserData(Object userData) {
+        this.userData = userData;
+    }
 
-	@Override
-	public int getIndex() {
-		return index;
-	}
+    @Override
+    public int getIndex() {
+        return index;
+    }
 
-	protected void setIndex(int index) {
-		this.index = index;
-	}
+    protected void setIndex(int index) {
+        this.index = index;
+    }
 
-	@Override
-	public VehicleTypeKey getVehicleTypeIdentifier() {
-		return vehicleIdentifier;
-	}
+    @Override
+    public VehicleTypeKey getVehicleTypeIdentifier() {
+        return vehicleIdentifier;
+    }
 
-	protected void setVehicleIdentifier(VehicleTypeKey vehicleTypeIdentifier) {
-		this.vehicleIdentifier = vehicleTypeIdentifier;
-	}
+    protected void setVehicleIdentifier(VehicleTypeKey vehicleTypeIdentifier) {
+        this.vehicleIdentifier = vehicleTypeIdentifier;
+    }
 }

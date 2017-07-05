@@ -115,8 +115,8 @@ public class TestLocalActivityInsertionCostsCalculator {
                 new StateManager(vrp));
         double cost = localActivityInsertionCostsCalculator.getCosts(
             jobInsertionContext,
-            new Start(v.getStartLocation(),0,Double.MAX_VALUE),
-            new End(v.getEndLocation(),0,Double.MAX_VALUE),
+            new Start(v.getStartLocation(), 0, Double.MAX_VALUE),
+            new End(v.getEndLocation(), 0, Double.MAX_VALUE),
             vrp.getActivities(s).get(0),
             0);
         assertEquals(20., cost, Math.ulp(20.));
@@ -146,15 +146,15 @@ public class TestLocalActivityInsertionCostsCalculator {
                 new StateManager(vrp));
         double cost = localActivityInsertionCostsCalculator.getCosts(
             jobInsertionContext,
-            new Start(v.getStartLocation(),0,Double.MAX_VALUE),
-            new End(v.getEndLocation(),0,Double.MAX_VALUE),
+            new Start(v.getStartLocation(), 0, Double.MAX_VALUE),
+            new End(v.getEndLocation(), 0, Double.MAX_VALUE),
             vrp.getActivities(s).get(0),
             0);
         assertEquals(20., cost, Math.ulp(20.));
         cost = localActivityInsertionCostsCalculator.getCosts(
             jobInsertionContext,
             vrp.getActivities(s).get(0),
-            new End(v.getEndLocation(),0,Double.MAX_VALUE),
+            new End(v.getEndLocation(), 0, Double.MAX_VALUE),
             vrp.getActivities(s).get(1),
             0);
         assertEquals(10, cost, Math.ulp(10.));

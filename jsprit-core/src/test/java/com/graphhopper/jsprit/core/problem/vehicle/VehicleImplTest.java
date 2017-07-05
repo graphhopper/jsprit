@@ -18,20 +18,15 @@
 package com.graphhopper.jsprit.core.problem.vehicle;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.job.Break;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-
-import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Break;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import static org.junit.Assert.*;
 
 
 public class VehicleImplTest {
@@ -49,8 +44,8 @@ public class VehicleImplTest {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
         Break aBreak = Break.Builder.newInstance("break").setTimeWindow(TimeWindow.newInstance(100, 200)).setServiceTime(30).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start"))
-                .setType(type1).setEndLocation(Location.newInstance("start"))
-                .setBreak(aBreak).build();
+            .setType(type1).setEndLocation(Location.newInstance("start"))
+            .setBreak(aBreak).build();
         assertNotNull(v.getBreak());
         assertEquals(100., v.getBreak().getTimeWindow().getStart(), 0.1);
         assertEquals(200., v.getBreak().getTimeWindow().getEnd(), 0.1);
@@ -62,7 +57,7 @@ public class VehicleImplTest {
     public void whenAddingSkills_theyShouldBeAddedCorrectly() {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
-                .addSkill("drill").addSkill("screwdriver").build();
+            .addSkill("drill").addSkill("screwdriver").build();
         assertTrue(v.getSkills().containsSkill("drill"));
         assertTrue(v.getSkills().containsSkill("drill"));
         assertTrue(v.getSkills().containsSkill("screwdriver"));
@@ -72,7 +67,7 @@ public class VehicleImplTest {
     public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
-                .addSkill("drill").addSkill("screwdriver").build();
+            .addSkill("drill").addSkill("screwdriver").build();
         assertTrue(v.getSkills().containsSkill("drill"));
         assertTrue(v.getSkills().containsSkill("dRill"));
         assertTrue(v.getSkills().containsSkill("ScrewDriver"));
@@ -241,7 +236,7 @@ public class VehicleImplTest {
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start"))
-                .addSkill("drill").build();
+            .addSkill("drill").build();
         assertFalse(v.getSkills().containsSkill("ScrewDriver"));
     }
 
@@ -249,11 +244,11 @@ public class VehicleImplTest {
     public void whenSettingUserData_itIsAssociatedWithTheVehicle() {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
         Vehicle one = VehicleImpl.Builder.newInstance("v").setType(type1)
-                .setStartLocation(Location.newInstance("start")).setUserData(new HashMap<String, Object>()).build();
+            .setStartLocation(Location.newInstance("start")).setUserData(new HashMap<String, Object>()).build();
         Vehicle two = VehicleImpl.Builder.newInstance("v").setType(type1)
-                .setStartLocation(Location.newInstance("start")).setUserData(42).build();
+            .setStartLocation(Location.newInstance("start")).setUserData(42).build();
         Vehicle three = VehicleImpl.Builder.newInstance("v").setType(type1)
-                .setStartLocation(Location.newInstance("start")).build();
+            .setStartLocation(Location.newInstance("start")).build();
 
         assertTrue(one.getUserData() instanceof Map);
         assertEquals(42, two.getUserData());

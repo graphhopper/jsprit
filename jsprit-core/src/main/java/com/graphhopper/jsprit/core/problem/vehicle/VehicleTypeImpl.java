@@ -263,8 +263,8 @@ public class VehicleTypeImpl implements VehicleType {
             if (dimVal < 0) throw new IllegalArgumentException("capacity value cannot be negative");
             if (capacityDimensions != null)
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                        "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
-                        "You used both methods.");
+                    "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+                    "You used both methods.");
             dimensionAdded = true;
             capacityBuilder.addDimension(dimIndex, dimVal);
             return this;
@@ -284,8 +284,8 @@ public class VehicleTypeImpl implements VehicleType {
         public Builder setCapacityDimensions(Capacity capacity) {
             if (dimensionAdded)
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
-                        "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
-                        "You used both methods.");
+                    "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
+                    "You used both methods.");
             this.capacityDimensions = capacity;
             return this;
         }
@@ -301,7 +301,7 @@ public class VehicleTypeImpl implements VehicleType {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                + ((typeId == null) ? 0 : typeId.hashCode());
+            + ((typeId == null) ? 0 : typeId.hashCode());
         return result;
     }
 
@@ -381,8 +381,8 @@ public class VehicleTypeImpl implements VehicleType {
     @Override
     public String toString() {
         return "[typeId=" + typeId + "]" +
-                "[capacity=" + capacityDimensions + "]" +
-                "[costs=" + vehicleCostParams + "]";
+            "[capacity=" + capacityDimensions + "]" +
+            "[costs=" + vehicleCostParams + "]";
     }
 
     @Override
