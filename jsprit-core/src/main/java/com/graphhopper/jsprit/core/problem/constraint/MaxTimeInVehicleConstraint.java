@@ -25,7 +25,6 @@ import com.graphhopper.jsprit.core.algorithm.state.UpdateVehicleDependentPractic
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
@@ -66,7 +65,7 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
     public ConstraintsStatus fulfilled(final JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         boolean newActIsPickup = newAct instanceof PickupActivity;
         boolean newActIsDelivery = newAct instanceof DeliveryActivity;
-        boolean isShipment = iFacts.getJob() instanceof Shipment;
+
         /*
         1. check whether insertion of new shipment satisfies own max-in-vehicle-constraint
         2. check whether insertion of new shipment satisfies all other max-in-vehicle-constraints
@@ -114,35 +113,38 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
 
-        }
-        else if(newActIsDelivery && iFacts.getAssociatedActivities().size() == 2){
-            StateManager localStateManager = new StateManager(vrp);
-            StateId stateId = localStateManager.createStateId("local-slack");
-            UpdateMaxTimeInVehicle updateMaxTimeInVehicle = new UpdateMaxTimeInVehicle(localStateManager,stateId,transportTime,activityCosts);
-            updateMaxTimeInVehicle.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
-                @Override
-                public Collection<Vehicle> get(VehicleRoute route) {
-                    return Arrays.asList(iFacts.getNewVehicle());
+        } else {
+            boolean isShipment = iFacts.getAssociatedActivities().size() == 2;
+            if (newActIsDelivery && isShipment) {
+                StateManager localStateManager = new StateManager(vrp);
+                StateId stateId = localStateManager.createStateId("local-slack");
+                UpdateMaxTimeInVehicle updateMaxTimeInVehicle = new UpdateMaxTimeInVehicle(localStateManager, stateId, transportTime, activityCosts);
+                updateMaxTimeInVehicle.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
+                    @Override
+                    public Collection<Vehicle> get(VehicleRoute route) {
+                        return Arrays.asList(iFacts.getNewVehicle());
+                    }
+                });
+                updateMaxTimeInVehicle.begin(iFacts.getRoute());
+                List<TourActivity> tourActivities = new ArrayList<>(iFacts.getRoute().getActivities());
+                tourActivities.add(iFacts.getRelatedActivityContext().getInsertionIndex(), iFacts.getAssociatedActivities().get(0));
+                for (TourActivity act : tourActivities) {
+                    updateMaxTimeInVehicle.visit(act);
                 }
-            });
-            updateMaxTimeInVehicle.begin(iFacts.getRoute());
-            List<TourActivity> tourActivities = new ArrayList<>(iFacts.getRoute().getActivities());
-            tourActivities.add(iFacts.getRelatedActivityContext().getInsertionIndex(),iFacts.getAssociatedActivities().get(0));
-            for(TourActivity act : tourActivities){
-                updateMaxTimeInVehicle.visit(act);
+                updateMaxTimeInVehicle.finish(tourActivities, iFacts.getJob());
+
+                double latest;
+                if (iFacts.getRoute().isEmpty()) latest = Double.MAX_VALUE;
+                else if (nextAct instanceof End) {
+                    latest = localStateManager.getRouteState(iFacts.getRoute(), iFacts.getNewVehicle(), stateId, Double.class);
+                } else
+                    latest = localStateManager.getActivityState(nextAct, iFacts.getNewVehicle(), stateId, Double.class);
+
+                if (nextActStart > latest) {
+                    return ConstraintsStatus.NOT_FULFILLED;
+                }
+
             }
-            updateMaxTimeInVehicle.finish(tourActivities,iFacts.getJob());
-
-            double latest;
-            if (iFacts.getRoute().isEmpty()) latest = Double.MAX_VALUE;
-            else if (nextAct instanceof End) {
-                latest = localStateManager.getRouteState(iFacts.getRoute(), iFacts.getNewVehicle(), stateId, Double.class);
-            } else latest = localStateManager.getActivityState(nextAct, iFacts.getNewVehicle(), stateId, Double.class);
-
-            if (nextActStart > latest) {
-                return ConstraintsStatus.NOT_FULFILLED;
-            }
-
         }
         return ConstraintsStatus.FULFILLED;
     }
