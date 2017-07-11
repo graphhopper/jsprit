@@ -22,10 +22,7 @@ import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTra
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.*;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -312,7 +309,22 @@ public class VehicleRoutingProblemTest {
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
         builder.addVehicle(vehicle1);
         builder.addVehicle(vehicle2);
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void whenBuildingProblemWithSameBreakId_itShouldThrowException(){
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
+        VehicleImpl vehicle1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("loc")).setType(type)
+            .setBreak(Break.Builder.newInstance("break").build())
+            .build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type)
+            .setBreak(Break.Builder.newInstance("break").build())
+            .build();
+        builder.addVehicle(vehicle1);
+        builder.addVehicle(vehicle2);
+        builder.setFleetSize(FleetSize.FINITE);
+        builder.build();
     }
 
     @Test

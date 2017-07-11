@@ -281,8 +281,11 @@ public class VehicleRoutingProblem {
 
         private boolean addBreaksToActivityMap() {
             boolean hasBreaks = false;
+            Set<String> uniqueBreakIds = new HashSet<>();
             for (Vehicle v : uniqueVehicles) {
                 if (v.getBreak() != null) {
+                    if (!uniqueBreakIds.add(v.getBreak().getId()))
+                        throw new IllegalArgumentException("problem already contains a vehicle break with id " + v.getBreak().getId() + ". choose unique ids for each vehicle break.");
                     hasBreaks = true;
                     List<AbstractActivity> breakActivities = jobActivityFactory.createActivities(v.getBreak());
                     if(breakActivities.isEmpty()) throw new IllegalArgumentException("at least one activity for break needs to be created by activityFactory");
