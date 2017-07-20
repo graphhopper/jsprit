@@ -104,7 +104,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         Collections.shuffle(unassignedJobList, random);
         Collections.sort(unassignedJobList, new AccordingToPriorities());
         List<Batch> batches = distributeRoutes(vehicleRoutes, nuOfBatches);
-        List<String> failedConstraintNames = new ArrayList<>();
+        List<InsertionData> failedInsertions = new ArrayList<>();
         for (final Job unassignedJob : unassignedJobList) {
             Insertion bestInsertion = null;
             double bestInsertionCost = Double.MAX_VALUE;
@@ -123,7 +123,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                     Future<Insertion> futureIData = completionService.take();
                     Insertion insertion = futureIData.get();
                     if (insertion.insertionData instanceof NoInsertionFound) {
-                        failedConstraintNames.addAll(insertion.getInsertionData().getFailedConstraintNames());
+                        failedInsertions.add(insertion.getInsertionData());
                         continue;
                     }
                     if (insertion.getInsertionData().getInsertionCost() < bestInsertionCost) {
@@ -145,7 +145,9 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
             }
             if (bestInsertion == null) {
                 badJobs.add(unassignedJob);
-                markUnassigned(unassignedJob, failedConstraintNames);
+                for (InsertionData insertionData: failedInsertions) {
+                    markUnassigned(unassignedJob, insertionData);
+                }
             }
             else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
         }

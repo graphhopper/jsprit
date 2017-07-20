@@ -75,10 +75,10 @@ public class InsertionListeners {
         }
     }
 
-    public void informJobUnassignedListeners(Job unassigned, List<String> reasons) {
+    public void informJobUnassignedListeners(Job unassigned, InsertionData insertionData) {
         for (InsertionListener l : listeners) {
             if (l instanceof JobUnassignedListener) {
-                ((JobUnassignedListener) l).informJobUnassigned(unassigned, reasons);
+                ((JobUnassignedListener) l).informJobUnassigned(unassigned, insertionData);
             }
         }
     }

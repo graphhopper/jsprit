@@ -160,7 +160,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
                 Job unassigned = bad.getJob();
                 jobs.remove(unassigned);
                 badJobs.add(unassigned);
-                markUnassigned(unassigned, bad.getInsertionData().getFailedConstraintNames());
+                markUnassigned(unassigned, bad.getInsertionData());
             }
         }
         return badJobs;

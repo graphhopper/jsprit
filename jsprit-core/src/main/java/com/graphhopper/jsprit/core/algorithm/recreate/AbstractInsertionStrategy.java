@@ -93,8 +93,8 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
         return badJobs;
     }
 
-    public void markUnassigned(Job unassigned, List<String> reasons) {
-        insertionsListeners.informJobUnassignedListeners(unassigned, reasons);
+    public void markUnassigned(Job unassigned, InsertionData insertionData) {
+        insertionsListeners.informJobUnassignedListeners(unassigned, insertionData);
     }
 
     public abstract Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);

@@ -18,8 +18,12 @@
 
 package com.graphhopper.jsprit.core.util;
 
+import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobUnassignedListener;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import org.apache.commons.math3.stat.Frequency;
 
 import java.util.*;
@@ -27,7 +31,7 @@ import java.util.*;
 /**
  * Created by schroeder on 06/02/17.
  */
-public class UnassignedJobReasonTracker implements JobUnassignedListener {
+public class UnassignedJobReasonTracker implements JobUnassignedListener, IterationStartsListener {
 
     public static String getMostLikelyFailedConstraintName(Frequency failedConstraintNamesFrequency) {
         if (failedConstraintNamesFrequency == null) return "no reason found";
@@ -44,7 +48,9 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         return mostLikely;
     }
 
-    Map<String, Frequency> failedConstraintNamesFrequencyMapping = new HashMap<>();
+    private int iterationNumber;
+
+    Map<Integer, Map<String, Frequency>> failedConstraintNamesFrequencyMapping = new HashMap<>();
 
     Map<Integer, String> codesToHumanReadableReason = new HashMap<>();
 
@@ -64,6 +70,8 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         failedConstraintNamesToCode.put("PickupAndDeliverShipmentLoadActivityLevelConstraint", 3);
         failedConstraintNamesToCode.put("ServiceLoadActivityLevelConstraint", 3);
         failedConstraintNamesToCode.put("MaxDistanceConstraint", 4);
+
+        failedConstraintNamesFrequencyMapping.put(iterationNumber, new HashMap<String, Frequency>());
     }
 
     public void ignore(String simpleNameOfConstraint) {
@@ -71,13 +79,14 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
     }
 
     @Override
-    public void informJobUnassigned(Job unassigned, Collection<String> failedConstraintNames) {
-        if (!this.failedConstraintNamesFrequencyMapping.containsKey(unassigned.getId())) {
-            this.failedConstraintNamesFrequencyMapping.put(unassigned.getId(), new Frequency());
+    public void informJobUnassigned(Job unassigned, InsertionData insertionData) {
+        Map<String, Frequency> frequencyMap = failedConstraintNamesFrequencyMapping.get(iterationNumber);
+        if (!frequencyMap.containsKey(unassigned.getId())) {
+            frequencyMap.put(unassigned.getId(), new Frequency());
         }
-        for (String r : failedConstraintNames) {
+        for (String r : insertionData.getFailedConstraintNames()) {
             if (failedConstraintNamesToBeIgnored.contains(r)) continue;
-            this.failedConstraintNamesFrequencyMapping.get(unassigned.getId()).addValue(r);
+            frequencyMap.get(unassigned.getId()).addValue(r);
         }
     }
 
@@ -97,7 +106,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      */
     @Deprecated
     public Map<String, Frequency> getReasons() {
-        return Collections.unmodifiableMap(failedConstraintNamesFrequencyMapping);
+        return Collections.unmodifiableMap(aggregateFailedConstraintNamesFrequencyMapping());
     }
 
     /**
@@ -106,7 +115,27 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public Map<String, Frequency> getFailedConstraintNamesFrequencyMapping() {
-        return Collections.unmodifiableMap(failedConstraintNamesFrequencyMapping);
+        return Collections.unmodifiableMap(aggregateFailedConstraintNamesFrequencyMapping());
+    }
+
+    /**
+     * Aggregates the failed constraints from all iterations.
+     *
+     * @return
+     */
+    protected Map<String, Frequency> aggregateFailedConstraintNamesFrequencyMapping() {
+        Map<String, Frequency> aggregatedMap = new HashMap<>();
+        for (Map<String, Frequency> map : failedConstraintNamesFrequencyMapping.values()) {
+            for (Map.Entry<String, Frequency> frequencyEntry : map.entrySet()) {
+                String jobId = frequencyEntry.getKey();
+                Frequency frequency = frequencyEntry.getValue();
+                if (!aggregatedMap.containsKey(jobId)) {
+                    aggregatedMap.put(jobId, new Frequency());
+                }
+                aggregatedMap.get(jobId).merge(frequency);
+            }
+        }
+        return aggregatedMap;
     }
 
     /**
@@ -151,8 +180,8 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public int getMostLikelyReasonCode(String jobId) {
-        if (!this.failedConstraintNamesFrequencyMapping.containsKey(jobId)) return -1;
-        Frequency reasons = this.failedConstraintNamesFrequencyMapping.get(jobId);
+        Map<String, Frequency> frequencyMap = aggregateFailedConstraintNamesFrequencyMapping();
+        Frequency reasons = frequencyMap.get(jobId);
         String mostLikelyReason = getMostLikelyFailedConstraintName(reasons);
         return toCode(mostLikelyReason);
     }
@@ -164,8 +193,9 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public String getMostLikelyReason(String jobId) {
-        if (!this.failedConstraintNamesFrequencyMapping.containsKey(jobId)) return "no reason found";
-        Frequency reasons = this.failedConstraintNamesFrequencyMapping.get(jobId);
+        Map<String, Frequency> frequencyMap = aggregateFailedConstraintNamesFrequencyMapping();
+        if (!frequencyMap.containsKey(jobId)) return "no reason found";
+        Frequency reasons = frequencyMap.get(jobId);
         String mostLikelyReason = getMostLikelyFailedConstraintName(reasons);
         int code = toCode(mostLikelyReason);
         if (code == -1) return mostLikelyReason;
@@ -178,5 +208,10 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         else return -1;
     }
 
+    @Override
+    public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+        iterationNumber = i;
+        failedConstraintNamesFrequencyMapping.put(iterationNumber, new HashMap<String, Frequency>());
+    }
 
 }
