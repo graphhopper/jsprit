@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -27,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.MaxDistanceConstraint;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -39,6 +41,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -141,7 +144,175 @@ public class UnassignedJobReasonTrackerTest {
     }
 
     @Test
-    public void testFreq() {
+    public void shouldAggregateFailedConstraintNamesFrequencyMapping() {
+        // given
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+        Job job = Service.Builder.newInstance("job").setLocation(Location.newInstance(0, 0)).build();
+
+        // iteration 0
+        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        insertion1.addFailedConstrainName("constraint1");
+        insertion1.addFailedConstrainName("constraint2");
+        reasonTracker.informIterationStarts(0, null, null);
+        reasonTracker.informJobUnassigned(job, insertion1);
+
+        // iteration 1
+        InsertionData insertion2 = new InsertionData(2, 2, 2, null,null);
+        insertion1.addFailedConstrainName("constraint2");
+        insertion1.addFailedConstrainName("constraint3");
+        reasonTracker.informIterationStarts(1, null, null);
+        reasonTracker.informJobUnassigned(job, insertion2);
+
+        //when
+        Map<String, Frequency> frequencyMap = reasonTracker.aggregateFailedConstraintNamesFrequencyMapping();
+
+        //then
+        Assert.assertEquals(1, frequencyMap.get("job").getCount("constraint1"));
+        Assert.assertEquals(2, frequencyMap.get("job").getCount("constraint2"));
+        Assert.assertEquals(1, frequencyMap.get("job").getCount("constraint3"));
+    }
+
+    @Test
+    public void shouldGetFailedInsertionsForJobWhenWhenFailedInsertionsAreAddedForJob() {
+        // given
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+        Job job = Service.Builder.newInstance("job").setLocation(Location.newInstance(0, 0)).build();
+
+        // iteration1
+        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        reasonTracker.informIterationStarts(0, null, null);
+        reasonTracker.informJobUnassigned(job, insertion1);
+
+        // iteration2
+        InsertionData insertion2 = new InsertionData(2, 2, 2, null,null);
+        reasonTracker.informIterationStarts(2, null, null);
+        reasonTracker.informJobUnassigned(job, insertion2);
+
+        //when
+        Collection<InsertionData> failedInsertionsJob = reasonTracker.getFailedInsertionsForJob("job");
+        Collection<InsertionData> failedInsertionsNonExistentJob = reasonTracker.getFailedInsertionsForJob("non_existent");
+
+        //then
+        Assert.assertEquals(2, failedInsertionsJob.size());
+        Assert.assertEquals(1, failedInsertionsJob.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
+        Assert.assertEquals(2, failedInsertionsJob.toArray(new InsertionData[]{})[1].getPickupInsertionIndex());
+        Assert.assertEquals(0, failedInsertionsNonExistentJob.size());
+    }
+
+    @Test
+    public void shouldGetFailedInsertionsForJobWhenDifferentInsertionsForDifferentJobsAreAdded() {
+        // given
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+        Job job1 = Service.Builder.newInstance("job1").setLocation(Location.newInstance(0, 0)).build();
+        Job job2 = Service.Builder.newInstance("job2").setLocation(Location.newInstance(0, 0)).build();
+
+        // iteration1
+        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        reasonTracker.informIterationStarts(0, null, null);
+        reasonTracker.informJobUnassigned(job1, insertion1);
+
+        // iteration2
+        InsertionData insertion2 = new InsertionData(2, 2, 2, null,null);
+        reasonTracker.informIterationStarts(2, null, null);
+        reasonTracker.informJobUnassigned(job2, insertion2);
+
+        //when
+        Collection<InsertionData> failedInsertionsJob1 = reasonTracker.getFailedInsertionsForJob("job1");
+        Collection<InsertionData> failedInsertionsJob2 = reasonTracker.getFailedInsertionsForJob("job2");
+
+        //then
+        Assert.assertEquals(1, failedInsertionsJob1.size());
+        Assert.assertEquals(1, failedInsertionsJob2.size());
+        Assert.assertEquals(1, failedInsertionsJob1.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
+        Assert.assertEquals(2, failedInsertionsJob2.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
+    }
+
+    @Test
+    public void shouldGetFailedInsertionsForJobWhenNoFailedInsertions() {
+        // given
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+
+        //when
+        Collection<InsertionData> failedInsertions = reasonTracker.getFailedInsertionsForJob("job1");
+
+        //then
+        Assert.assertEquals(0, failedInsertions.size());
+    }
+
+    @Test
+    public void shouldGetFailedInsertionsInIterationForJobWhenNoFailedInsertions() {
+        // given
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+
+        //when
+        Collection<InsertionData> failedInsertions = reasonTracker.getFailedInsertionsInIterationForJob(1, "job1");
+
+        //then
+        Assert.assertEquals(0, failedInsertions.size());
+    }
+
+    @Test
+    public void shouldGetFailedInsertionsInIterationForJobWhenFailedInsertionsAddedInDifferentIterations() {
+        // given
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+        Job job = Service.Builder.newInstance("job").setLocation(Location.newInstance(0, 0)).build();
+
+        // adding the failed insertion in iteration 1
+        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        reasonTracker.informIterationStarts(1, null, null);
+        reasonTracker.informJobUnassigned(job, insertion1);
+
+        //when
+        Collection<InsertionData> failedInsertionsIteration2 = reasonTracker.getFailedInsertionsInIterationForJob(2, "job");
+
+        //then
+        Assert.assertEquals(0, failedInsertionsIteration2.size());
+    }
+
+    @Test
+    public void shouldGetFailedInsertionsInIterationForJobWhenDifferentJobInsertionsAddedInDifferentIterations() {
+        // given
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+        Job job1 = Service.Builder.newInstance("job1").setLocation(Location.newInstance(0, 0)).build();
+        Job job2 = Service.Builder.newInstance("job2").setLocation(Location.newInstance(0, 0)).build();
+
+        // adding the failed insertion in iteration 1 for job1
+        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        reasonTracker.informIterationStarts(1, null, null);
+        reasonTracker.informJobUnassigned(job1, insertion1);
+
+        // adding the failed insertion in iteration 2 for job2
+        InsertionData insertion2 = new InsertionData(2, 2, 2, null,null);
+        reasonTracker.informIterationStarts(2, null, null);
+        reasonTracker.informJobUnassigned(job2, insertion2);
+
+        //when
+        Collection<InsertionData> failedInsertionsJob1Iteration1 =
+            reasonTracker.getFailedInsertionsInIterationForJob(1, "job1");
+        Collection<InsertionData> failedInsertionsJob1Iteration2 =
+            reasonTracker.getFailedInsertionsInIterationForJob(2, "job1");
+        Collection<InsertionData> failedInsertionsJob2Iteration1 =
+            reasonTracker.getFailedInsertionsInIterationForJob(1, "job2");
+        Collection<InsertionData> failedInsertionsJob2Iteration2 =
+            reasonTracker.getFailedInsertionsInIterationForJob(2, "job2");
+        Collection<InsertionData> failedInsertionsNonExistentJobIteration1 =
+            reasonTracker.getFailedInsertionsInIterationForJob(1, "non_existent");
+
+        //then
+        // job 1
+        Assert.assertEquals(1, failedInsertionsJob1Iteration1.size());
+        Assert.assertEquals(0, failedInsertionsJob1Iteration2.size());
+        Assert.assertEquals(1, failedInsertionsJob1Iteration1.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
+        // job 2
+        Assert.assertEquals(0, failedInsertionsJob2Iteration1.size());
+        Assert.assertEquals(1, failedInsertionsJob2Iteration2.size());
+        Assert.assertEquals(2, failedInsertionsJob2Iteration2.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
+        // non existent job
+        Assert.assertEquals(0, failedInsertionsNonExistentJobIteration1.size());
+    }
+
+    @Test
+    public void shouldFrequencyWork() {
         Frequency frequency = new Frequency();
         frequency.addValue("VehicleDependentTimeWindowHardActivityConstraint");
         frequency.addValue("b");
@@ -152,5 +323,8 @@ public class UnassignedJobReasonTrackerTest {
             Map.Entry<Comparable<?>, Long> e = entryIterator.next();
             System.out.println(e.getKey().toString() + " " + e.getValue());
         }
+
+        Assert.assertEquals(2, frequency.getCount("VehicleDependentTimeWindowHardActivityConstraint"));
+        Assert.assertEquals(1, frequency.getCount("b"));
     }
 }
