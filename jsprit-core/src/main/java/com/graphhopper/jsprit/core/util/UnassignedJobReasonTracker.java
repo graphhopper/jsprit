@@ -140,9 +140,9 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener, Iterat
 
     public Collection<FailedConstraintInfo> getFailedConstraintsForJob(String jobId) {
         Collection<FailedConstraintInfo> result = new ArrayList<>();
-        for (Map<String, List<FailedConstraintInfo>> failedConstraints: failedConstraints.values()) {
-            if (failedConstraints.containsKey(jobId)) {
-                result.addAll(failedConstraints.get(jobId));
+        for (Map<String, List<FailedConstraintInfo>> failedConstraintsMap: failedConstraints.values()) {
+            if (failedConstraintsMap.containsKey(jobId)) {
+                result.addAll(failedConstraintsMap.get(jobId));
             }
         }
         return result;
