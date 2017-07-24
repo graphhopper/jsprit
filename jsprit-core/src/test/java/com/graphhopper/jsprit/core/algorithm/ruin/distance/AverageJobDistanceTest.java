@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.DefaultCosts;
@@ -75,8 +75,8 @@ public class AverageJobDistanceTest {
 
     @Test
     public void whenServicesHaveSameLocation_distanceShouldBeZero() {
-        Service s1 = new Service.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
-        Service s2 = new Service.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
 
         double dist = new DefaultJobDistance(routingCosts).getDistance(s1, s2);
         assertEquals(0.0, dist, 0.01);

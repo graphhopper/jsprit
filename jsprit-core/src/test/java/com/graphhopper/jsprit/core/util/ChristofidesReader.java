@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 
@@ -97,7 +97,7 @@ public class ChristofidesReader {
                 int demand = Integer.parseInt(tokens[2].trim());
                 String customer = Integer.valueOf(counter - 1).toString();
                 if (jobType.equals(JobType.SERVICE)) {
-                    Service service = new Service.Builder(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
+                    ServiceJob service = new ServiceJob.Builder(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
                     vrpBuilder.addJob(service);
                 } else if (jobType.equals(JobType.DELIVERY)) {
                     Delivery service = new Delivery.Builder(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();

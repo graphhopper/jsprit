@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 
@@ -100,7 +100,7 @@ public class ChristophidesReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(builder).read(getPath("vrpnc13.txt"));
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(50.0, ((Service) vrp.getJobs().get("2")).getActivity().getOperationTime(), 0.1);
+        assertEquals(50.0, ((ServiceJob) vrp.getJobs().get("2")).getActivity().getOperationTime(), 0.1);
     }
 
 

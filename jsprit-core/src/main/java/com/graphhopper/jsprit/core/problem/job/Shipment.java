@@ -30,7 +30,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsIm
  * of something.
  * <p>
  * <p>
- * It distinguishes itself from {@link Service} as two locations are involved a
+ * It distinguishes itself from {@link ServiceJob} as two locations are involved a
  * pickup where usually something is loaded to the transport unit and a delivery
  * where something is unloaded.
  * <p>

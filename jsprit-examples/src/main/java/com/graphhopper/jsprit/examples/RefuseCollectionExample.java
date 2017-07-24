@@ -23,7 +23,7 @@ import com.graphhopper.jsprit.core.algorithm.termination.IterationWithoutImprove
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -113,7 +113,7 @@ public class RefuseCollectionExample {
             /*
              * build service
 			 */
-            Service service = new Service.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocation(Location.newInstance(lineTokens[0])).build();
+            ServiceJob service = new ServiceJob.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1])).setLocation(Location.newInstance(lineTokens[0])).build();
             /*
              * and add it to problem
 			 */

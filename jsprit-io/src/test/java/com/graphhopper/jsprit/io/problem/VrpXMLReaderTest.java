@@ -35,7 +35,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
@@ -61,7 +61,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s = (Service) vrp.getJobs().get("1");
+        ServiceJob s = (ServiceJob) vrp.getJobs().get("1");
         assertTrue(s.getName().equals("cleaning"));
     }
 
@@ -194,7 +194,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem vrp = builder.build();
         int servCounter = 0;
         for (Job j : vrp.getJobs().values()) {
-            if (j instanceof Service) {
+            if (j instanceof ServiceJob) {
                 servCounter++;
             }
         }
@@ -206,7 +206,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s = (Service) vrp.getJobs().get("1");
+        ServiceJob s = (ServiceJob) vrp.getJobs().get("1");
         assertTrue(s.getRequiredSkills().containsSkill("skill1"));
     }
 
@@ -215,7 +215,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s = (Service) vrp.getJobs().get("1");
+        ServiceJob s = (ServiceJob) vrp.getJobs().get("1");
         assertTrue(s.getRequiredSkills().containsSkill("skill2"));
     }
 
@@ -224,7 +224,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s = (Service) vrp.getJobs().get("1");
+        ServiceJob s = (ServiceJob) vrp.getJobs().get("1");
         assertEquals(2, s.getRequiredSkills().values().size());
     }
 
@@ -233,7 +233,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s = (Service) vrp.getJobs().get("2");
+        ServiceJob s = (ServiceJob) vrp.getJobs().get("2");
         assertEquals(0, s.getRequiredSkills().values().size());
     }
 
@@ -292,7 +292,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s1 = (Service) vrp.getJobs().get("1");
+        ServiceJob s1 = (ServiceJob) vrp.getJobs().get("1");
         assertEquals(1, s1.getActivity().getLoadChange().get(0));
     }
 
@@ -301,7 +301,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s1 = (Service) vrp.getJobs().get("1");
+        ServiceJob s1 = (ServiceJob) vrp.getJobs().get("1");
         assertEquals(10.0, s1.getActivity().getOperationTime(), 0.01);
     }
 
@@ -310,7 +310,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s1 = (Service) vrp.getJobs().get("1");
+        ServiceJob s1 = (ServiceJob) vrp.getJobs().get("1");
         TimeWindow tw = s1.getActivity().getSingleTimeWindow();
         assertEquals(0.0, tw.getStart(), 0.01);
         assertEquals(4000.0, tw.getEnd(), 0.01);
@@ -321,7 +321,7 @@ public class VrpXMLReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
-        Service s1 = (Service) vrp.getJobs().get("1");
+        ServiceJob s1 = (ServiceJob) vrp.getJobs().get("1");
         assertEquals("pickup", s1.getType());
     }
 

@@ -24,7 +24,7 @@ import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -85,7 +85,7 @@ public class MultipleTimeWindowExample2 {
 
         Random random = RandomNumberGeneration.newInstance();
         for (int i = 0; i < 40; i++) {
-            Service service = new Service.Builder("" + (i + 1))
+            ServiceJob service = new ServiceJob.Builder("" + (i + 1))
                 .addTimeWindow(random.nextInt(50), 200)
                 .addTimeWindow(220 + random.nextInt(50), 350)
                 .addTimeWindow(400 + random.nextInt(50), 550)
@@ -96,7 +96,7 @@ public class MultipleTimeWindowExample2 {
         }
 
         for (int i = 0; i < 12; i++) {
-            Service service = new Service.Builder("" + (i + 51))
+            ServiceJob service = new ServiceJob.Builder("" + (i + 51))
 //                .addTimeWindow(0, 80)
 ////                .addTimeWindow(120, 200)
 //                .addTimeWindow(250,500)
@@ -106,7 +106,7 @@ public class MultipleTimeWindowExample2 {
             vrpBuilder.addJob(service);
         }
 
-        Service service = new Service.Builder("100")
+        ServiceJob service = new ServiceJob.Builder("100")
             .addTimeWindow(50, 80)
             .setServiceTime(10)
             .setLocation(Location.newInstance(40, 1)).build();

@@ -21,7 +21,7 @@ package com.graphhopper.jsprit.instance.reader;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
@@ -110,7 +110,7 @@ public class BelhaizaReader {
                     }
 
                 } else {
-                    Service.Builder serviceBuilder = new Service.Builder(customerId);
+                    ServiceJob.Builder serviceBuilder = new ServiceJob.Builder(customerId);
                     serviceBuilder.addSizeDimension(0, demand).setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime);
                     int noTimeWindows = Integer.parseInt(tokens[7]);
                     for (int i = 0; i < noTimeWindows * 2; i = i + 2) {

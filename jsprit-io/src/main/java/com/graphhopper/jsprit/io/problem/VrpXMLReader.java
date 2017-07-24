@@ -45,7 +45,7 @@ import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -61,7 +61,7 @@ import com.graphhopper.jsprit.core.util.Resource;
 public class VrpXMLReader {
 
     public interface ServiceBuilderFactory {
-        Service.BuilderBase<?, ?> createBuilder(String serviceType, String id, Integer size);
+        ServiceJob.BuilderBase<?, ?> createBuilder(String serviceType, String id, Integer size);
     }
 
     static class DefaultServiceBuilderFactory implements ServiceBuilderFactory {
@@ -82,9 +82,9 @@ public class VrpXMLReader {
                 }
             } else {
                 if (size != null) {
-                    return new Service.Builder(id).addSizeDimension(0, size);
+                    return new ServiceJob.Builder(id).addSizeDimension(0, size);
                 } else {
-                    return new Service.Builder(id);
+                    return new ServiceJob.Builder(id);
                 }
 
             }

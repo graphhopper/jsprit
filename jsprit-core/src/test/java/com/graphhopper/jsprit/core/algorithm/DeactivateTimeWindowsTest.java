@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -44,8 +44,8 @@ public class DeactivateTimeWindowsTest {
 
     @Before
     public void doBefore() {
-        Service service = new Service.Builder("s").setLocation(Location.newInstance(20, 0))
-                        .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+        ServiceJob service = new ServiceJob.Builder("s").setLocation(Location.newInstance(20, 0))
+                .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addVehicle(vehicle).build();
 
@@ -69,7 +69,7 @@ public class DeactivateTimeWindowsTest {
         constraintManager.addTimeWindowConstraint();
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).addCoreStateAndConstraintStuff(true)
-                        .setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
+                .setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
         vra.setMaxIterations(10);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 

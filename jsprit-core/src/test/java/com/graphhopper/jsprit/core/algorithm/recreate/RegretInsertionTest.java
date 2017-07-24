@@ -40,7 +40,7 @@ import com.graphhopper.jsprit.core.problem.constraint.DependencyType;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -61,8 +61,8 @@ public class RegretInsertionTest {
 
     @Test
     public void noRoutesShouldBeCorrect() {
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(0, 10)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(0, 5)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(0, 10)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(0, 5)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
@@ -78,8 +78,8 @@ public class RegretInsertionTest {
 
     @Test
     public void noJobsInRouteShouldBeCorrect() {
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(0, 10)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(0, 5)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(0, 10)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(0, 5)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
@@ -95,8 +95,8 @@ public class RegretInsertionTest {
 
     @Test
     public void s1ShouldBeAddedFirst() {
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(0, 10)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(0, 5)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(0, 10)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(0, 5)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
@@ -114,8 +114,8 @@ public class RegretInsertionTest {
 
     @Test
     public void solutionWithFastRegretMustBeCorrect() {
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(0, 10)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(0, -10)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(0, 10)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(0, -10)).build();
 
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0, 5)).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0, -5)).build();
@@ -218,10 +218,10 @@ public class RegretInsertionTest {
 
     @Test
     public void solutionWithConstraintAndWithFastRegretMustBeCorrect() {
-        Service s1 = new Service.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 10)).build();
-        Service s2 = new Service.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, -10)).build();
-        Service s3 = new Service.Builder("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, -11)).build();
-        Service s4 = new Service.Builder("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 11)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 10)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, -10)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, -11)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 11)).build();
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).build();
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance(0, 10)).build();
@@ -265,10 +265,10 @@ public class RegretInsertionTest {
 
     @Test
     public void solutionWithConstraintAndWithFastRegretConcurrentMustBeCorrect() {
-        Service s1 = new Service.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 10)).build();
-        Service s2 = new Service.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, -10)).build();
-        Service s3 = new Service.Builder("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, -11)).build();
-        Service s4 = new Service.Builder("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 11)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 10)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, -10)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, -11)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 11)).build();
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 2).build();
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance(0, 10)).build();
@@ -377,7 +377,7 @@ public class RegretInsertionTest {
 
             @Override
             public InsertionData getInsertionData(VehicleRoute currentRoute, Job newJob, Vehicle newVehicle, double newVehicleDepartureTime, Driver newDriver, double bestKnownCosts) {
-                Service service = (Service) newJob;
+                ServiceJob service = (ServiceJob) newJob;
                 Vehicle vehicle = vrp.getVehicles().iterator().next();
                 InsertionData iData;
                 if (currentRoute.isEmpty()) {
@@ -412,7 +412,7 @@ public class RegretInsertionTest {
                 return iData;
             }
 
-            private double getMarginalCost(Service service, TourActivity prevAct, TourActivity act) {
+            private double getMarginalCost(ServiceJob service, TourActivity prevAct, TourActivity act) {
                 double prev_new = getCost(prevAct.getLocation(),
                                 service.getActivity().getLocation());
                 double new_act = getCost(service.getActivity().getLocation(), act.getLocation());

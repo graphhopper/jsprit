@@ -37,7 +37,7 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
@@ -98,9 +98,9 @@ public class UpdateVehicleDependentTimeWindowTest {
 
         fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
 
-        Service service = new Service.Builder("s1").setLocation(Location.newInstance("10,0")).build();
-        Service service2 = new Service.Builder("s2").setLocation(Location.newInstance("20,0")).build();
-        Service service3 = new Service.Builder("s3").setLocation(Location.newInstance("30,0")).build();
+        ServiceJob service = new ServiceJob.Builder("s1").setLocation(Location.newInstance("10,0")).build();
+        ServiceJob service2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance("20,0")).build();
+        ServiceJob service3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance("30,0")).build();
 
         vrpBuilder.addJob(service).addJob(service2).addJob(service3);
         vrp = vrpBuilder.build();
@@ -210,9 +210,9 @@ public class UpdateVehicleDependentTimeWindowTest {
     public void twUpdateShouldWorkWithMultipleTWs() {
         //
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
-        Service service = new Service.Builder("s1").setLocation(Location.newInstance("10,0"))
+        ServiceJob service = new ServiceJob.Builder("s1").setLocation(Location.newInstance("10,0"))
                         .addTimeWindow(30, 40).build();
-        Service service2 = new Service.Builder("s2")
+        ServiceJob service2 = new ServiceJob.Builder("s2")
                         .addTimeWindow(20, 30).addTimeWindow(40, 60).addTimeWindow(70, 80).setLocation(Location.newInstance("20,0")).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(service).addJob(service2).addVehicle(vehicle)
@@ -250,7 +250,7 @@ public class UpdateVehicleDependentTimeWindowTest {
                         .setLatestArrival(51)
                         .build();
 
-        Service service = new Service.Builder("s")
+        ServiceJob service = new ServiceJob.Builder("s")
                         .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(50, 0)).build()).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()

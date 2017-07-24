@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 
@@ -91,7 +91,7 @@ public class CordeauReaderTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new CordeauReader(vrpBuilder).read(getPath("p01"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        Service service = (Service) vrp.getJobs().get("1");
+        ServiceJob service = (ServiceJob) vrp.getJobs().get("1");
         assertEquals(37.0, service.getActivity().getLocation().getCoordinate().getX(), 0.1);
         assertEquals(52.0, service.getActivity().getLocation().getCoordinate().getY(), 0.1);
     }
@@ -101,7 +101,7 @@ public class CordeauReaderTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new CordeauReader(vrpBuilder).read(getPath("p01"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        Service service = (Service) vrp.getJobs().get("2");
+        ServiceJob service = (ServiceJob) vrp.getJobs().get("2");
         assertEquals(0.0, service.getActivity().getOperationTime(), 0.1);
     }
 
@@ -110,7 +110,7 @@ public class CordeauReaderTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new CordeauReader(vrpBuilder).read(getPath("p01"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        Service service = (Service) vrp.getJobs().get("3");
+        ServiceJob service = (ServiceJob) vrp.getJobs().get("3");
         assertEquals(16.0, service.getActivity().getLoadChange().get(0), 0.1);
     }
 
@@ -119,7 +119,7 @@ public class CordeauReaderTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new CordeauReader(vrpBuilder).read(getPath("p01"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        Service service = (Service) vrp.getJobs().get("47");
+        ServiceJob service = (ServiceJob) vrp.getJobs().get("47");
         assertEquals(25.0, service.getActivity().getLoadChange().get(0), 0.1);
     }
 

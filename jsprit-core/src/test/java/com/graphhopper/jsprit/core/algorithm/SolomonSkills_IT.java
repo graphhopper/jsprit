@@ -30,7 +30,7 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
@@ -69,9 +69,9 @@ public class SolomonSkills_IT {
             skillProblemBuilder.addVehicle(skill1Vehicle).addVehicle(skill2Vehicle);
         }
         for (Job job : vrp.getJobs().values()) {
-            Service service = (Service) job;
+            ServiceJob service = (ServiceJob) job;
             ServiceActivity activity = service.getActivity();
-            Service.Builder skillServiceBuilder = new Service.Builder(service.getId())
+            ServiceJob.Builder skillServiceBuilder = new ServiceJob.Builder(service.getId())
                             .setServiceTime(activity.getOperationTime())
                             .setLocation(TestUtils.loc(activity.getLocation().getId(),
                                             activity.getLocation().getCoordinate()))

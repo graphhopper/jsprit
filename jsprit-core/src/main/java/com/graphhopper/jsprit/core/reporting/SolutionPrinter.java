@@ -25,7 +25,7 @@ import java.util.List;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -211,7 +211,7 @@ public class SolutionPrinter {
             if (j instanceof Shipment) {
                 nShipments++;
             }
-            if (j instanceof Service) {
+            if (j instanceof ServiceJob) {
                 nServices++;
             }
             if (j instanceof Break) {

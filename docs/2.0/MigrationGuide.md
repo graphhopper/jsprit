@@ -19,3 +19,86 @@ In this step, we give you guided help how to completely get rid of the legacy cl
 The `Capacity` class is renamed to `SizeDimension`. For backward compatibility, the `SizeDimension` class extends the now deprecated `Capacity` class. This let you use the `Capacity` class as variable type anywhere  the value is read out. Also, the `Capacity.Builder` creates a `SizeDimension` class under the hood, so when a `Capacity` object is created it is really a `SizeDimension`.
 
 This makes this rename transparent as far as code correctness goes. However, the `Capacity` class may be removed in the future, so it is strongly recommended to rename all references to `Capacity` to `SizeDimension`.
+
+### Using CustomJob instead of legacy Job types
+
+The old job types (`Service`, `Pickup`, `Delivery`, `Shipment`) are obsolete. However, they can easily be replaced with the new `CustomJob`, by using its Builder methods. 
+
+#### Transforming single-activity jobs
+
+The `Service`, `Pickup`, `Delivery` jobs contain only one activity. They can be replaced by the corresponding addXXX() methods (XXX stands for the name of the old job) in `CustomJob.Builder`. 
+
+These methods comes with four different flavors: 
+
+```
+addService(Location location)
+addService(Location location, SizeDimension size)
+addService(Location location, SizeDimension size, double operationTime)
+addService(Location location, SizeDimension size, double operationTime, TimeWindow tw)
+```
+
+These methods let's you create jobs with a location, size, operation time and a single time window.
+
+**<u>Example 1:</u>**
+
+If you have a Service declaration:
+
+```java
+Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
+```
+
+In this example, only the location is set, so you can replace it to the following code snippet:
+
+```java
+ CustomJob s1 = new CustomJob.Builder("s1")
+            .addService(Location.newInstance(10, 0))
+            .build();
+```
+
+**<u>Example 2:</u>**
+
+When you have to set the time window, but neither the size or the operation time, there are common defaults for these values to use. This code
+
+```java
+Service service = new Service.Builder("s").setLocation(Location.newInstance(20, 0))
+                        .setTimeWindow(TimeWindow.newInstance(40, 50)).build();
+```
+
+may be converted to 
+
+```java
+    CustomJob service = new CustomJob.Builder("s")
+            .addService(Location.newInstance(20, 0), SizeDimension.EMPTY, 0,
+                TimeWindow.newInstance(40, 50))
+            .build();
+```
+**<u>Example 3:</u>**
+
+When you need even more than these convenient methods offer (more time windows, name the activities, skills), you have to do some additional work. First you have to create a `BuilderActivityInfo`:
+
+```
+BuilderActivityInfo activityInfo = new BuilderActivityInfo(ActivityType.SERVICE,
+                Location.newInstance(20, 0));
+```
+
+Then set the required values on it: 
+
+```java
+activityInfo.withName("activity name");
+activityInfo.withOperationTime(10);
+activityInfo.withSize(SizeDimension.Builder.newInstance()
+		.addDimension(0, 1)
+		.addDimension(1, 2)
+		.build());
+activityInfo.withTimeWindows(TimeWindow.newInstance(40, 50), TimeWindow.newInstance(70, 80));
+```
+
+Finally, you can configure the CustomJob.Builder and create the job:
+
+```java
+CustomJob.Builder customJobBuilder = new CustomJob.Builder("id");
+        customJobBuilder.addActivity(activityInfo)
+        .addAllRequiredSkills(Skills.Builder.newInstance().addSkill("skill").build())
+        .setPriority(5)
+        .build();
+```

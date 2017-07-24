@@ -21,7 +21,7 @@ package com.graphhopper.jsprit.instance.reader;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
@@ -92,7 +92,7 @@ public class ChristofidesReader {
                 Coordinate customerCoord = makeCoord(tokens[0].trim(), tokens[1].trim());
                 int demand = Integer.parseInt(tokens[2].trim());
                 String customer = Integer.valueOf(counter - 1).toString();
-                Service service = new Service.Builder(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
+                ServiceJob service = new ServiceJob.Builder(customer).addSizeDimension(0, demand).setServiceTime(serviceTime).setLocation(Location.newInstance(customerCoord.getX(), customerCoord.getY())).build();
                 vrpBuilder.addJob(service);
             }
             counter++;

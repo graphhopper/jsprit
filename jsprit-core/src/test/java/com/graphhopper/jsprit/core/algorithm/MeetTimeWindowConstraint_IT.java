@@ -36,7 +36,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.VehicleSwitchedLi
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -60,9 +60,9 @@ public class MeetTimeWindowConstraint_IT {
             .setEarliestStart(14400).setLatestArrival(46800).setType(type1).build();
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("19").setStartLocation(Location.newInstance(0, 0))
             .setEarliestStart(39600).setLatestArrival(64800).setType(type2).build();
-        Service service1 = new Service.Builder("2").setLocation(Location.newInstance(2000, 0))
+        ServiceJob service1 = new ServiceJob.Builder("2").setLocation(Location.newInstance(2000, 0))
             .setTimeWindow(TimeWindow.newInstance(54000, 54000)).build();
-        Service service2 = new Service.Builder("1").setLocation(Location.newInstance(1000, 1000))
+        ServiceJob service2 = new ServiceJob.Builder("1").setLocation(Location.newInstance(1000, 1000))
             .setTimeWindow(TimeWindow.newInstance(19800, 21600)).build();
         vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle1).addVehicle(vehicle2)
             .addJob(service1).addJob(service2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
@@ -321,19 +321,19 @@ public class MeetTimeWindowConstraint_IT {
         VehicleImpl v4 = VehicleImpl.Builder.newInstance("vehicle4").setStartLocation(Location.newInstance(0))
             .setEarliestStart(36000).setLatestArrival(54060).setType(type).build();
 
-        Service s1 = new Service.Builder("1").setLocation(Location.Builder.newInstance().setIndex(1).setId("js0").build())
+        ServiceJob s1 = new ServiceJob.Builder("1").setLocation(Location.Builder.newInstance().setIndex(1).setId("js0").build())
             .setServiceTime(600).setTimeWindow(TimeWindow.newInstance(0, 1800)).addSizeDimension(0, 1).build();
-        Service s2 = new Service.Builder("2").setLocation(Location.Builder.newInstance().setIndex(2).setId("js2").build())
+        ServiceJob s2 = new ServiceJob.Builder("2").setLocation(Location.Builder.newInstance().setIndex(2).setId("js2").build())
             .setServiceTime(600).setTimeWindow(TimeWindow.newInstance(5400, 7200)).addSizeDimension(0, 2).build();
-        Service s3 = new Service.Builder("3").setLocation(Location.Builder.newInstance().setIndex(3).setId("js5").build())
+        ServiceJob s3 = new ServiceJob.Builder("3").setLocation(Location.Builder.newInstance().setIndex(3).setId("js5").build())
             .setServiceTime(1800).setTimeWindow(TimeWindow.newInstance(17100, 18000)).addSizeDimension(0, 10).build();
-        Service s4 = new Service.Builder("4").setLocation(Location.Builder.newInstance().setIndex(4).setId("js4").build())
+        ServiceJob s4 = new ServiceJob.Builder("4").setLocation(Location.Builder.newInstance().setIndex(4).setId("js4").build())
             .setServiceTime(900).addSizeDimension(0, 2).build();
-        Service s5 = new Service.Builder("5").setLocation(Location.Builder.newInstance().setIndex(5).setId("js8").build())
+        ServiceJob s5 = new ServiceJob.Builder("5").setLocation(Location.Builder.newInstance().setIndex(5).setId("js8").build())
             .setServiceTime(600).addSizeDimension(0, 4).build();
-        Service s6 = new Service.Builder("6").setLocation(Location.Builder.newInstance().setIndex(6).setId("js10").build())
+        ServiceJob s6 = new ServiceJob.Builder("6").setLocation(Location.Builder.newInstance().setIndex(6).setId("js10").build())
             .setServiceTime(1500).setTimeWindow(TimeWindow.newInstance(29700, 32400)).addSizeDimension(0, 10).build();
-        Service s7 = new Service.Builder("7").setLocation(Location.Builder.newInstance().setIndex(7).setId("jsp3").build())
+        ServiceJob s7 = new ServiceJob.Builder("7").setLocation(Location.Builder.newInstance().setIndex(7).setId("jsp3").build())
             .setServiceTime(5594).build();
 
         Shipment shipment1 = Shipment.Builder.newInstance("shipment1")

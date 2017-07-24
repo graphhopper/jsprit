@@ -27,7 +27,7 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -39,9 +39,9 @@ public class UnassignedJobListTest {
     public void job2ShouldBeInBadJobList_dueToTimeWindow() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         builder.addVehicle(VehicleImpl.Builder.newInstance("v1").setEarliestStart(0).setLatestArrival(12).setStartLocation(Location.newInstance(1, 1)).build());
-        Service job1 = new Service.Builder("job1").setLocation(Location.newInstance(0, 0)).setTimeWindow(TimeWindow.newInstance(0, 12)).setServiceTime(1).build();
+        ServiceJob job1 = new ServiceJob.Builder("job1").setLocation(Location.newInstance(0, 0)).setTimeWindow(TimeWindow.newInstance(0, 12)).setServiceTime(1).build();
         builder.addJob(job1);
-        Service job2 = new Service.Builder("job2").setLocation(Location.newInstance(2, 2)).setTimeWindow(TimeWindow.newInstance(12, 24)).setServiceTime(1).build();
+        ServiceJob job2 = new ServiceJob.Builder("job2").setLocation(Location.newInstance(2, 2)).setTimeWindow(TimeWindow.newInstance(12, 24)).setServiceTime(1).build();
         builder.addJob(job2);
 
         VehicleRoutingProblem vrp = builder.build();
@@ -58,9 +58,9 @@ public class UnassignedJobListTest {
     public void job2ShouldBeInBadJobList_dueToSize() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         builder.addVehicle(VehicleImpl.Builder.newInstance("v1").setEarliestStart(0).setLatestArrival(12).setStartLocation(Location.newInstance(1, 1)).build());
-        Service job1 = new Service.Builder("job1").setLocation(Location.newInstance(0, 0)).setTimeWindow(TimeWindow.newInstance(0, 12)).setServiceTime(1).build();
+        ServiceJob job1 = new ServiceJob.Builder("job1").setLocation(Location.newInstance(0, 0)).setTimeWindow(TimeWindow.newInstance(0, 12)).setServiceTime(1).build();
         builder.addJob(job1);
-        Service job2 = new Service.Builder("job2").setLocation(Location.newInstance(2, 2)).addSizeDimension(0, 10).setTimeWindow(TimeWindow.newInstance(0, 12)).setServiceTime(1).build();
+        ServiceJob job2 = new ServiceJob.Builder("job2").setLocation(Location.newInstance(2, 2)).addSizeDimension(0, 10).setTimeWindow(TimeWindow.newInstance(0, 12)).setServiceTime(1).build();
         builder.addJob(job2);
 
         VehicleRoutingProblem vrp = builder.build();

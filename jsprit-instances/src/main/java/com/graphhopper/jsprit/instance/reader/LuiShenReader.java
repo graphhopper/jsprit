@@ -21,7 +21,7 @@ package com.graphhopper.jsprit.instance.reader;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -86,7 +86,7 @@ public class LuiShenReader {
                 if (counter == 10) {
                     createVehicles(vehicleFile, costScenario, customerId, coord, start, end);
                 } else {
-                    Service service = new Service.Builder("" + counter).addSizeDimension(0, demand)
+                    ServiceJob service = new ServiceJob.Builder("" + counter).addSizeDimension(0, demand)
                         .setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime)
                         .setTimeWindow(TimeWindow.newInstance(start, end)).build();
                     vrpBuilder.addJob(service);

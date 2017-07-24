@@ -32,7 +32,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -108,8 +108,8 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v2);
 
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -119,7 +119,7 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        Service s1_read = (Service) vrp.getJobs().get("1");
+        ServiceJob s1_read = (ServiceJob) vrp.getJobs().get("1");
         assertEquals("1", s1_read.getId());
         assertEquals("loc", s1_read.getActivity().getLocation().getId());
         assertEquals("pickup", s1_read.getType());
@@ -129,7 +129,7 @@ public class VrpXMLWriterTest {
     @Test
     public void shouldWriteNameOfService() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        Service s1 = new Service.Builder("1").setName("cleaning").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").setName("cleaning").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -164,11 +164,11 @@ public class VrpXMLWriterTest {
     public void whenWritingServicesWithSeveralCapacityDimensions_itWritesThemCorrectly() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 
-        Service s1 = new Service.Builder("1")
+        ServiceJob s1 = new ServiceJob.Builder("1")
                 .addSizeDimension(0, 20)
                 .addSizeDimension(1, 200)
                 .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -178,7 +178,7 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        Service s1_read = (Service) vrp.getJobs().get("1");
+        ServiceJob s1_read = (ServiceJob) vrp.getJobs().get("1");
 
         SizeDimension size = s1_read.getActivity().getLoadChange();
         assertEquals(2, size.getNuOfDimensions());
@@ -630,8 +630,8 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v1);
         builder.addVehicle(v2);
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -650,7 +650,7 @@ public class VrpXMLWriterTest {
     public void whenWritingService_itShouldHaveTheCorrectNuSkills() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 
-        Service s = new Service.Builder("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
+        ServiceJob s = new ServiceJob.Builder("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
                 .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
@@ -667,7 +667,7 @@ public class VrpXMLWriterTest {
     public void whenWritingService_itShouldContain_skill1() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 
-        Service s = new Service.Builder("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
+        ServiceJob s = new ServiceJob.Builder("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
                 .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
@@ -684,7 +684,7 @@ public class VrpXMLWriterTest {
     public void whenWritingService_itShouldContain_skill2() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 
-        Service s = new Service.Builder("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
+        ServiceJob s = new ServiceJob.Builder("1").addRequiredSkill("sKill1").addRequiredSkill("skill2").addSizeDimension(0, 1)
                 .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s).build();
@@ -710,8 +710,8 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v1);
         builder.addVehicle(v2);
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -736,8 +736,8 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v1);
         builder.addVehicle(v2);
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -762,8 +762,8 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v1);
         builder.addVehicle(v2);
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -792,8 +792,8 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v1);
         builder.addVehicle(v2);
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -822,8 +822,8 @@ public class VrpXMLWriterTest {
         builder.addVehicle(v1);
         builder.addVehicle(v2);
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
         new VrpXMLWriter(vrp, null).write(infileName);
@@ -914,8 +914,8 @@ public class VrpXMLWriterTest {
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
         builder.addVehicle(v1);
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
 
@@ -945,8 +945,8 @@ public class VrpXMLWriterTest {
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(TestUtils.loc("loc")).setType(type1).build();
         builder.addVehicle(v1);
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
 
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
 

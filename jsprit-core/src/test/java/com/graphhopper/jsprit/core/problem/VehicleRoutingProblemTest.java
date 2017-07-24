@@ -39,7 +39,7 @@ import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.SequentialJobActivityList;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -138,10 +138,10 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenServicesAreAdded_vrpShouldContainThem() {
-        Service s1 = mock(Service.class);
+        ServiceJob s1 = mock(ServiceJob.class);
         when(s1.getId()).thenReturn("s1");
         when(s1.getActivityList()).thenReturn(new SequentialJobActivityList(s1));
-        Service s2 = mock(Service.class);
+        ServiceJob s2 = mock(ServiceJob.class);
         when(s2.getId()).thenReturn("s2");
         when(s2.getActivityList()).thenReturn(new SequentialJobActivityList(s2));
 
@@ -234,14 +234,14 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenServicesAreAddedAllAtOnce_vrpShouldContainThem() {
-        Service s1 = mock(Service.class);
+        ServiceJob s1 = mock(ServiceJob.class);
         when(s1.getId()).thenReturn("s1");
         when(s1.getActivityList()).thenReturn(new SequentialJobActivityList(s1));
-        Service s2 = mock(Service.class);
+        ServiceJob s2 = mock(ServiceJob.class);
         when(s2.getId()).thenReturn("s2");
         when(s2.getActivityList()).thenReturn(new SequentialJobActivityList(s2));
 
-        Collection<Service> services = new ArrayList<Service>();
+        Collection<ServiceJob> services = new ArrayList<ServiceJob>();
         services.add(s1);
         services.add(s2);
 
@@ -425,7 +425,7 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenAddingJobAndInitialRouteWithThatJobAfterwards_thisJobShouldNotBeInFinalJobMap() {
-        Service service = new Service.Builder("myService").setLocation(Location.newInstance("loc")).build();
+        ServiceJob service = new ServiceJob.Builder("myService").setLocation(Location.newInstance("loc")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service);
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v")
@@ -440,7 +440,7 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenAddingTwoJobs_theyShouldHaveProperIndeces() {
-        Service service = new Service.Builder("myService").setLocation(Location.newInstance("loc")).build();
+        ServiceJob service = new ServiceJob.Builder("myService").setLocation(Location.newInstance("loc")).build();
         Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
                         .setDeliveryLocation(Location.newInstance("del")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -456,8 +456,8 @@ public class VehicleRoutingProblemTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenAddingTwoServicesWithTheSameId_itShouldThrowException() {
-        Service service1 = new Service.Builder("myService").setLocation(Location.newInstance("loc")).build();
-        Service service2 = new Service.Builder("myService").setLocation(Location.newInstance("loc")).build();
+        ServiceJob service1 = new ServiceJob.Builder("myService").setLocation(Location.newInstance("loc")).build();
+        ServiceJob service2 = new ServiceJob.Builder("myService").setLocation(Location.newInstance("loc")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service1);
         vrpBuilder.addJob(service2);

@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -86,7 +86,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
         for (Job j : route.getTourActivities().getJobs()) {
             if (j instanceof Delivery) {
                 loadAtDepot = loadAtDepot.add(j.getSize());
-            } else if (j instanceof Pickup || j instanceof Service) {
+            } else if (j instanceof Pickup || j instanceof ServiceJob) {
                 loadAtEnd = loadAtEnd.add(j.getSize());
             }
         }
@@ -110,7 +110,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
             }
             stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING,
                             loadAtDepot.add(job2insert.getSize()));
-        } else if (job2insert instanceof Pickup || job2insert instanceof Service) {
+        } else if (job2insert instanceof Pickup || job2insert instanceof ServiceJob) {
             SizeDimension loadAtEnd = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_END, SizeDimension.class);
             if (loadAtEnd == null) {
                 loadAtEnd = defaultValue;

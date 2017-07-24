@@ -20,7 +20,7 @@ public class GraphJobActivityListTest {
 
     @Before
     public void beforeClass() {
-        job = mock(Service.class);
+        job = mock(ServiceJob.class);
     }
 
 
@@ -79,7 +79,7 @@ public class GraphJobActivityListTest {
     @Test(expected = IllegalArgumentException.class)
     public void whenAddingAnActivityWithWrongJob_itMustThrowException() {
         GraphJobActivityList list = new GraphJobActivityList(job);
-        list.addActivity(createActivity(mock(Service.class), "A"));
+        list.addActivity(createActivity(mock(ServiceJob.class), "A"));
     }
 
     @Test

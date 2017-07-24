@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
@@ -69,7 +69,7 @@ public class CircleExample {
         Collection<Coordinate> circle = createCoordinates(0, 0, 20, step);
         int id = 1;
         for (Coordinate c : circle) {
-            Service s = new Service.Builder(Integer.toString(id)).setLocation(Location.Builder.newInstance().setCoordinate(c).build()).build();
+            ServiceJob s = new ServiceJob.Builder(Integer.toString(id)).setLocation(Location.Builder.newInstance().setCoordinate(c).build()).build();
             vrpBuilder.addJob(s);
             id++;
         }

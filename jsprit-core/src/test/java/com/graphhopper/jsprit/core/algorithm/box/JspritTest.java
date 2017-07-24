@@ -40,7 +40,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -54,7 +54,7 @@ public class JspritTest {
 
     @Test
     public void whenRunningJspritWithSingleCustomer_itShouldWork() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
@@ -85,8 +85,8 @@ public class JspritTest {
 
     @Test
     public void whenActivatingStrat_itShouldBeReflected() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addJob(s2).addJob(s).build();
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
@@ -115,9 +115,9 @@ public class JspritTest {
 
     @Test
     public void whenActivatingStrat_itShouldBeReflectedV2() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
@@ -145,10 +145,10 @@ public class JspritTest {
 
     @Test
     public void test_v4() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
-        Service s4 = new Service.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
@@ -177,10 +177,10 @@ public class JspritTest {
 
     @Test
     public void strategyDrawShouldBeReproducible() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
-        Service s4 = new Service.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
@@ -222,10 +222,10 @@ public class JspritTest {
 
     @Test
     public void strategyDrawShouldBeReproducibleV2() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
-        Service s4 = new Service.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
@@ -267,10 +267,10 @@ public class JspritTest {
 
     @Test
     public void ruinedJobsShouldBeReproducible() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
-        Service s4 = new Service.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
@@ -332,10 +332,10 @@ public class JspritTest {
 
     @Test
     public void ruinedJobsShouldBeReproducibleV2() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
-        Service s4 = new Service.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
@@ -391,10 +391,10 @@ public class JspritTest {
 
     @Test
     public void insertionShouldBeReproducible() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
-        Service s4 = new Service.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(1, 2)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance(1, 2)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();
@@ -431,10 +431,10 @@ public class JspritTest {
 
     @Test
     public void insertionShouldBeReproducibleV2() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1, 1)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(1, 3)).build();
-        Service s4 = new Service.Builder("s4").setLocation(Location.newInstance(1, 4)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1, 1)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(1, 3)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance(1, 4)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s).build();

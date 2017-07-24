@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 
 /**
  * Created by schroeder on 24/05/16.
@@ -36,13 +36,13 @@ public class TestComparator {
 
     @Test
     public void test() {
-        Service s = new Service.Builder("1").setLocation(Location.newInstance("loc"))
+        ServiceJob s = new ServiceJob.Builder("1").setLocation(Location.newInstance("loc"))
             .setPriority(1).build();
-        Service s2 = new Service.Builder("2").setLocation(Location.newInstance("loc"))
+        ServiceJob s2 = new ServiceJob.Builder("2").setLocation(Location.newInstance("loc"))
             .setPriority(2).build();
-        Service s3 = new Service.Builder("3").setLocation(Location.newInstance("loc"))
+        ServiceJob s3 = new ServiceJob.Builder("3").setLocation(Location.newInstance("loc"))
             .setPriority(3).build();
-        Service s4 = new Service.Builder("4").setLocation(Location.newInstance("loc"))
+        ServiceJob s4 = new ServiceJob.Builder("4").setLocation(Location.newInstance("loc"))
             .setPriority(1).build();
         List<Job> jobs = new ArrayList<Job>();
         jobs.add(s2);

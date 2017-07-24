@@ -40,7 +40,7 @@ import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -175,7 +175,7 @@ public class VrpXMLWriter {
                 xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ")[@type]", act.getName());
                 if (act instanceof JobActivity) {
                     Job job = ((JobActivity) act).getJob();
-                    if (job instanceof Service) {
+                    if (job instanceof ServiceJob) {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").serviceId", job.getId());
                     } else if (job instanceof Shipment) {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").shipmentId", job.getId());
@@ -220,7 +220,7 @@ public class VrpXMLWriter {
                         if (job instanceof Break) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").breakId",
                                     job.getId());
-                        } else if (job instanceof Service) {
+                        } else if (job instanceof ServiceJob) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").serviceId",
                                     job.getId());
                         } else if (job instanceof Shipment) {
@@ -253,10 +253,10 @@ public class VrpXMLWriter {
         String shipmentPathString = "services.service";
         int counter = 0;
         for (Job j : jobs) {
-            if (!(j instanceof Service)) {
+            if (!(j instanceof ServiceJob)) {
                 continue;
             }
-            Service service = (Service) j;
+            ServiceJob service = (ServiceJob) j;
             ServiceActivity activity = service.getActivity();
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ")[@id]", service.getId());
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ")[@type]", service.getType());

@@ -27,7 +27,7 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -38,8 +38,8 @@ public class ExternalInitialSolutionIsInValidTest {
     @Test
     public void itShouldSolveProblemWithIniSolutionExternallyCreated() {
 
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(0, 10)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(0, 10)).build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0, 0)).build();
 

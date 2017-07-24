@@ -22,7 +22,7 @@ import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl.Builder;
@@ -64,11 +64,11 @@ public class SimpleExampleOpenRoutes {
 		/*
          * build services at the required locations, each with a capacity-demand of 1.
 		 */
-        Service service1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
-        Service service2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
+        ServiceJob service1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
+        ServiceJob service2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
 
-        Service service3 = new Service.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
-        Service service4 = new Service.Builder("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
+        ServiceJob service3 = new ServiceJob.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
+        ServiceJob service4 = new ServiceJob.Builder("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
