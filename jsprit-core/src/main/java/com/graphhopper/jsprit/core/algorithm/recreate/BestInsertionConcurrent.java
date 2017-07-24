@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +105,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         Collections.shuffle(unassignedJobList, random);
         Collections.sort(unassignedJobList, new AccordingToPriorities());
         List<Batch> batches = distributeRoutes(vehicleRoutes, nuOfBatches);
-        List<InsertionData> failedInsertions = new ArrayList<>();
+        List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
         for (final Job unassignedJob : unassignedJobList) {
             Insertion bestInsertion = null;
             double bestInsertionCost = Double.MAX_VALUE;
@@ -123,7 +124,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                     Future<Insertion> futureIData = completionService.take();
                     Insertion insertion = futureIData.get();
                     if (insertion.insertionData instanceof NoInsertionFound) {
-                        failedInsertions.add(insertion.getInsertionData());
+                        failedConstraints.addAll(insertion.getInsertionData().getFailedConstraints());
                         continue;
                     }
                     if (insertion.getInsertionData().getInsertionCost() < bestInsertionCost) {
@@ -145,9 +146,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
             }
             if (bestInsertion == null) {
                 badJobs.add(unassignedJob);
-                for (InsertionData insertionData: failedInsertions) {
-                    markUnassigned(unassignedJob, insertionData);
-                }
+                markUnassigned(unassignedJob, failedConstraints);
             }
             else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
         }
@@ -162,7 +161,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         for (VehicleRoute vehicleRoute : batch.routes) {
             InsertionData iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
             if (iData instanceof NoInsertionFound) {
-                empty.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
+                empty.getFailedConstraints().addAll(iData.getFailedConstraints());
                 continue;
             }
             if (iData.getInsertionCost() < bestInsertionCost) {

@@ -22,6 +22,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,7 +122,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                 Job unassigned = bad.getJob();
                 jobs.remove(unassigned);
                 badJobs.add(unassigned);
-                markUnassigned(unassigned, bad.getInsertionData());
+                markUnassigned(unassigned, bad.getInsertionData().getFailedConstraints());
             }
         }
         return badJobs;
@@ -160,7 +161,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         InsertionData best = null;
         InsertionData secondBest = null;
         VehicleRoute bestRoute = null;
-        List<String> failedConstraintNames = new ArrayList<>();
+        List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
         double benchmark = Double.MAX_VALUE;
         for (VehicleRoute route : routes) {
             if (secondBest != null) {
@@ -168,7 +169,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             }
             InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
             if (iData instanceof InsertionData.NoInsertionFound) {
-                failedConstraintNames.addAll(iData.getFailedConstraintNames());
+                failedConstraints.addAll(iData.getFailedConstraints());
                 continue;
             }
             if (best == null) {
@@ -196,9 +197,9 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
                 secondBest = iData;
             }
-        } else failedConstraintNames.addAll(iData.getFailedConstraintNames());
+        } else failedConstraints.addAll(iData.getFailedConstraints());
         if (best == null) {
-            ScoredJob.BadJob badJob = new ScoredJob.BadJob(unassignedJob, failedConstraintNames);
+            ScoredJob.BadJob badJob = new ScoredJob.BadJob(unassignedJob, failedConstraints);
             return badJob;
         }
         double score = score(unassignedJob, best, secondBest, scoringFunction);

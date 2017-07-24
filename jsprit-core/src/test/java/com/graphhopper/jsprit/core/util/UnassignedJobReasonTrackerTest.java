@@ -20,7 +20,6 @@ package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -41,10 +40,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by schroeder on 06/02/17.
@@ -150,18 +146,18 @@ public class UnassignedJobReasonTrackerTest {
         Job job = Service.Builder.newInstance("job").setLocation(Location.newInstance(0, 0)).build();
 
         // iteration 0
-        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
-        insertion1.addFailedConstrainName("constraint1");
-        insertion1.addFailedConstrainName("constraint2");
+        List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
+        failedConstraints.add(new FailedConstraintInfo("constraint1", null));
+        failedConstraints.add(new FailedConstraintInfo("constraint2", null));
         reasonTracker.informIterationStarts(0, null, null);
-        reasonTracker.informJobUnassigned(job, insertion1);
+        reasonTracker.informJobUnassigned(job, failedConstraints);
 
         // iteration 1
-        InsertionData insertion2 = new InsertionData(2, 2, 2, null,null);
-        insertion1.addFailedConstrainName("constraint2");
-        insertion1.addFailedConstrainName("constraint3");
+        failedConstraints.clear();
+        failedConstraints.add(new FailedConstraintInfo("constraint2", null));
+        failedConstraints.add(new FailedConstraintInfo("constraint3", null));
         reasonTracker.informIterationStarts(1, null, null);
-        reasonTracker.informJobUnassigned(job, insertion2);
+        reasonTracker.informJobUnassigned(job, failedConstraints);
 
         //when
         Map<String, Frequency> frequencyMap = reasonTracker.aggregateFailedConstraintNamesFrequencyMapping();
@@ -173,142 +169,150 @@ public class UnassignedJobReasonTrackerTest {
     }
 
     @Test
-    public void shouldGetFailedInsertionsForJobWhenWhenFailedInsertionsAreAddedForJob() {
+    public void shouldGetFailedConstraintsForJobWhenWhenFailedConstraintsAreAddedForJob() {
         // given
         UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
         Job job = Service.Builder.newInstance("job").setLocation(Location.newInstance(0, 0)).build();
 
         // iteration1
-        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
+        failedConstraints.add(new FailedConstraintInfo("c1", null));
         reasonTracker.informIterationStarts(0, null, null);
-        reasonTracker.informJobUnassigned(job, insertion1);
+        reasonTracker.informJobUnassigned(job, failedConstraints);
 
         // iteration2
-        InsertionData insertion2 = new InsertionData(2, 2, 2, null,null);
+        failedConstraints.clear();
+        failedConstraints.add(new FailedConstraintInfo("c2", null));
         reasonTracker.informIterationStarts(2, null, null);
-        reasonTracker.informJobUnassigned(job, insertion2);
+        reasonTracker.informJobUnassigned(job, failedConstraints);
 
         //when
-        Collection<InsertionData> failedInsertionsJob = reasonTracker.getFailedInsertionsForJob("job");
-        Collection<InsertionData> failedInsertionsNonExistentJob = reasonTracker.getFailedInsertionsForJob("non_existent");
+        Collection<FailedConstraintInfo> failedConstraintsForJob = reasonTracker.getFailedConstraintsForJob("job");
+        Collection<FailedConstraintInfo> failedConstraintsNonExistentJob = reasonTracker.getFailedConstraintsForJob("non_existent");
 
         //then
-        Assert.assertEquals(2, failedInsertionsJob.size());
-        Assert.assertEquals(1, failedInsertionsJob.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
-        Assert.assertEquals(2, failedInsertionsJob.toArray(new InsertionData[]{})[1].getPickupInsertionIndex());
-        Assert.assertEquals(0, failedInsertionsNonExistentJob.size());
+        Assert.assertEquals(2, failedConstraintsForJob.size());
+        Assert.assertEquals("c1", failedConstraintsForJob.toArray(new FailedConstraintInfo[]{})[0].getFailedConstraint());
+        Assert.assertEquals("c2", failedConstraintsForJob.toArray(new FailedConstraintInfo[]{})[1].getFailedConstraint());
+        Assert.assertEquals(0, failedConstraintsNonExistentJob.size());
     }
 
     @Test
-    public void shouldGetFailedInsertionsForJobWhenDifferentInsertionsForDifferentJobsAreAdded() {
+    public void shouldGetFailedConstraintsForJobWhenDifferentConstraintsForDifferentJobsAreAdded() {
         // given
         UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
         Job job1 = Service.Builder.newInstance("job1").setLocation(Location.newInstance(0, 0)).build();
         Job job2 = Service.Builder.newInstance("job2").setLocation(Location.newInstance(0, 0)).build();
 
+        List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
+
         // iteration1
-        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        failedConstraints.add(new FailedConstraintInfo("c1", null));
         reasonTracker.informIterationStarts(0, null, null);
-        reasonTracker.informJobUnassigned(job1, insertion1);
+        reasonTracker.informJobUnassigned(job1, failedConstraints);
 
         // iteration2
-        InsertionData insertion2 = new InsertionData(2, 2, 2, null,null);
+        failedConstraints.clear();
+        failedConstraints.add(new FailedConstraintInfo("c2", null));
         reasonTracker.informIterationStarts(2, null, null);
-        reasonTracker.informJobUnassigned(job2, insertion2);
+        reasonTracker.informJobUnassigned(job2, failedConstraints);
 
         //when
-        Collection<InsertionData> failedInsertionsJob1 = reasonTracker.getFailedInsertionsForJob("job1");
-        Collection<InsertionData> failedInsertionsJob2 = reasonTracker.getFailedInsertionsForJob("job2");
+        Collection<FailedConstraintInfo> failedConstraintsJob1 = reasonTracker.getFailedConstraintsForJob("job1");
+        Collection<FailedConstraintInfo> failedConstraintsJob2 = reasonTracker.getFailedConstraintsForJob("job2");
 
         //then
-        Assert.assertEquals(1, failedInsertionsJob1.size());
-        Assert.assertEquals(1, failedInsertionsJob2.size());
-        Assert.assertEquals(1, failedInsertionsJob1.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
-        Assert.assertEquals(2, failedInsertionsJob2.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
+        Assert.assertEquals(1, failedConstraintsJob1.size());
+        Assert.assertEquals(1, failedConstraintsJob2.size());
+        Assert.assertEquals("c1", failedConstraintsJob1.toArray(new FailedConstraintInfo[]{})[0].getFailedConstraint());
+        Assert.assertEquals("c2", failedConstraintsJob2.toArray(new FailedConstraintInfo[]{})[0].getFailedConstraint());
     }
 
     @Test
-    public void shouldGetFailedInsertionsForJobWhenNoFailedInsertions() {
+    public void shouldGetFailedConstraintsForJobWhenNoFailedConstraints() {
         // given
         UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
 
         //when
-        Collection<InsertionData> failedInsertions = reasonTracker.getFailedInsertionsForJob("job1");
+        Collection<FailedConstraintInfo> failedConstraintsForJob = reasonTracker.getFailedConstraintsForJob("job1");
 
         //then
-        Assert.assertEquals(0, failedInsertions.size());
+        Assert.assertEquals(0, failedConstraintsForJob.size());
     }
 
     @Test
-    public void shouldGetFailedInsertionsInIterationForJobWhenNoFailedInsertions() {
+    public void shouldGetFailedConstraintsInIterationForJobWhenNoFailedConstraints() {
         // given
         UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
 
         //when
-        Collection<InsertionData> failedInsertions = reasonTracker.getFailedInsertionsInIterationForJob(1, "job1");
+        Collection<FailedConstraintInfo> failedConstraintsForJob = reasonTracker.getFailedConstraintsInIterationForJob(1, "job1");
 
         //then
-        Assert.assertEquals(0, failedInsertions.size());
+        Assert.assertEquals(0, failedConstraintsForJob.size());
     }
 
     @Test
-    public void shouldGetFailedInsertionsInIterationForJobWhenFailedInsertionsAddedInDifferentIterations() {
+    public void shouldGetFailedConstraintsInIterationForJobWhenFailedConstraintsAddedInDifferentIterations() {
         // given
         UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
         Job job = Service.Builder.newInstance("job").setLocation(Location.newInstance(0, 0)).build();
 
-        // adding the failed insertion in iteration 1
-        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
+        // adding the failed constraint in iteration 1
+        failedConstraints.add(new FailedConstraintInfo("c1", null));
         reasonTracker.informIterationStarts(1, null, null);
-        reasonTracker.informJobUnassigned(job, insertion1);
+        reasonTracker.informJobUnassigned(job, failedConstraints);
 
         //when
-        Collection<InsertionData> failedInsertionsIteration2 = reasonTracker.getFailedInsertionsInIterationForJob(2, "job");
+        Collection<FailedConstraintInfo> failedConstraintsIteration2 = reasonTracker.getFailedConstraintsInIterationForJob(2, "job");
 
         //then
-        Assert.assertEquals(0, failedInsertionsIteration2.size());
+        Assert.assertEquals(0, failedConstraintsIteration2.size());
     }
 
     @Test
-    public void shouldGetFailedInsertionsInIterationForJobWhenDifferentJobInsertionsAddedInDifferentIterations() {
+    public void shouldGetFailedConstraintsInIterationForJobWhenDifferentJobConstraintsAddedInDifferentIterations() {
         // given
         UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
         Job job1 = Service.Builder.newInstance("job1").setLocation(Location.newInstance(0, 0)).build();
         Job job2 = Service.Builder.newInstance("job2").setLocation(Location.newInstance(0, 0)).build();
 
-        // adding the failed insertion in iteration 1 for job1
-        InsertionData insertion1 = new InsertionData(1, 1, 1, null,null);
+        List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
+        // adding the failed constraint in iteration 1 for job1
+        failedConstraints.add(new FailedConstraintInfo("c1", null));
         reasonTracker.informIterationStarts(1, null, null);
-        reasonTracker.informJobUnassigned(job1, insertion1);
+        reasonTracker.informJobUnassigned(job1, failedConstraints);
 
-        // adding the failed insertion in iteration 2 for job2
-        InsertionData insertion2 = new InsertionData(2, 2, 2, null,null);
+        // adding the failed constraint in iteration 2 for job2
+        failedConstraints.clear();
+        failedConstraints.add(new FailedConstraintInfo("c2", null));
         reasonTracker.informIterationStarts(2, null, null);
-        reasonTracker.informJobUnassigned(job2, insertion2);
+        reasonTracker.informJobUnassigned(job2, failedConstraints);
 
         //when
-        Collection<InsertionData> failedInsertionsJob1Iteration1 =
-            reasonTracker.getFailedInsertionsInIterationForJob(1, "job1");
-        Collection<InsertionData> failedInsertionsJob1Iteration2 =
-            reasonTracker.getFailedInsertionsInIterationForJob(2, "job1");
-        Collection<InsertionData> failedInsertionsJob2Iteration1 =
-            reasonTracker.getFailedInsertionsInIterationForJob(1, "job2");
-        Collection<InsertionData> failedInsertionsJob2Iteration2 =
-            reasonTracker.getFailedInsertionsInIterationForJob(2, "job2");
-        Collection<InsertionData> failedInsertionsNonExistentJobIteration1 =
-            reasonTracker.getFailedInsertionsInIterationForJob(1, "non_existent");
+        Collection<FailedConstraintInfo> failedConstraintsJob1Iteration1 =
+            reasonTracker.getFailedConstraintsInIterationForJob(1, "job1");
+        Collection<FailedConstraintInfo> failedConstraintsJob1Iteration2 =
+            reasonTracker.getFailedConstraintsInIterationForJob(2, "job1");
+        Collection<FailedConstraintInfo> failedConstraintsJob2Iteration1 =
+            reasonTracker.getFailedConstraintsInIterationForJob(1, "job2");
+        Collection<FailedConstraintInfo> failedConstraintsJob2Iteration2 =
+            reasonTracker.getFailedConstraintsInIterationForJob(2, "job2");
+        Collection<FailedConstraintInfo> failedConstraintsNonExistentJobIteration1 =
+            reasonTracker.getFailedConstraintsInIterationForJob(1, "non_existent");
 
         //then
         // job 1
-        Assert.assertEquals(1, failedInsertionsJob1Iteration1.size());
-        Assert.assertEquals(0, failedInsertionsJob1Iteration2.size());
-        Assert.assertEquals(1, failedInsertionsJob1Iteration1.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
+        Assert.assertEquals(1, failedConstraintsJob1Iteration1.size());
+        Assert.assertEquals(0, failedConstraintsJob1Iteration2.size());
+        Assert.assertEquals("c1", failedConstraintsJob1Iteration1.toArray(new FailedConstraintInfo[]{})[0].getFailedConstraint());
         // job 2
-        Assert.assertEquals(0, failedInsertionsJob2Iteration1.size());
-        Assert.assertEquals(1, failedInsertionsJob2Iteration2.size());
-        Assert.assertEquals(2, failedInsertionsJob2Iteration2.toArray(new InsertionData[]{})[0].getPickupInsertionIndex());
+        Assert.assertEquals(0, failedConstraintsJob2Iteration1.size());
+        Assert.assertEquals(1, failedConstraintsJob2Iteration2.size());
+        Assert.assertEquals("c2", failedConstraintsJob2Iteration2.toArray(new FailedConstraintInfo[]{})[0].getFailedConstraint());
         // non existent job
-        Assert.assertEquals(0, failedInsertionsNonExistentJobIteration1.size());
+        Assert.assertEquals(0, failedConstraintsNonExistentJobIteration1.size());
     }
 
     @Test

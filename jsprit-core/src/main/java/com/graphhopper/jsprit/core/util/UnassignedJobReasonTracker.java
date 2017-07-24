@@ -19,7 +19,6 @@
 package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
-import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobUnassignedListener;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -50,8 +49,8 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener, Iterat
 
     private int iterationNumber;
 
-    // iterationNumber -> jobId -> list<insertion data>
-    Map<Integer, Map<String, List<InsertionData>>> failedInsertions = new HashMap<>();
+    // iterationNumber -> jobId -> list<failed constriants>
+    Map<Integer, Map<String, List<FailedConstraintInfo>>> failedConstraints = new HashMap<>();
 
     Map<Integer, String> codesToHumanReadableReason = new HashMap<>();
 
@@ -72,7 +71,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener, Iterat
         failedConstraintNamesToCode.put("ServiceLoadActivityLevelConstraint", 3);
         failedConstraintNamesToCode.put("MaxDistanceConstraint", 4);
 
-        failedInsertions.put(iterationNumber, new HashMap<String, List<InsertionData>>());
+        failedConstraints.put(iterationNumber, new HashMap<String, List<FailedConstraintInfo>>());
     }
 
     public void ignore(String simpleNameOfConstraint) {
@@ -80,12 +79,12 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener, Iterat
     }
 
     @Override
-    public void informJobUnassigned(Job unassigned, InsertionData insertionData) {
-        Map<String, List<InsertionData>> failedInsertionsInIteration = failedInsertions.get(iterationNumber);
-        if (!failedInsertionsInIteration.containsKey(unassigned.getId())) {
-            failedInsertionsInIteration.put(unassigned.getId(), new ArrayList<InsertionData>());
+    public void informJobUnassigned(Job unassigned, List<FailedConstraintInfo> failedConstraintInfo) {
+        Map<String, List<FailedConstraintInfo>> failedConstraintsInIteration = failedConstraints.get(iterationNumber);
+        if (!failedConstraintsInIteration.containsKey(unassigned.getId())) {
+            failedConstraintsInIteration.put(unassigned.getId(), new ArrayList<FailedConstraintInfo>());
         }
-        failedInsertionsInIteration.get(unassigned.getId()).add(insertionData);
+        failedConstraintsInIteration.get(unassigned.getId()).addAll(failedConstraintInfo);
     }
 
     public void put(String simpleNameOfFailedConstraint, int code, String reason) {
@@ -117,23 +116,21 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener, Iterat
     }
 
     /**
-     * Aggregates the failed constraints from all insertion data from iterations.
+     * Aggregates the failed constraints from all constraints data from iterations.
      *
      * @return
      */
     protected Map<String, Frequency> aggregateFailedConstraintNamesFrequencyMapping() {
         Map<String, Frequency> aggregatedMap = new HashMap<>();
-        for (Map<String, List<InsertionData>> jobInsertionsMap : failedInsertions.values()) {
-            for (Map.Entry<String, List<InsertionData>> jobInsertionEntry : jobInsertionsMap.entrySet()) {
-                String jobId = jobInsertionEntry.getKey();
+        for (Map<String, List<FailedConstraintInfo>> jobFailedConstraintsMap : failedConstraints.values()) {
+            for (Map.Entry<String, List<FailedConstraintInfo>> jobFailedConstraintEntry : jobFailedConstraintsMap.entrySet()) {
+                String jobId = jobFailedConstraintEntry.getKey();
                 if (!aggregatedMap.containsKey(jobId)) {
                     aggregatedMap.put(jobId, new Frequency());
                 }
-                for (InsertionData failedInsertion: jobInsertionEntry.getValue()) {
-                    for (String failedConstraint: failedInsertion.getFailedConstraintNames()) {
-                        if (!failedConstraintNamesToBeIgnored.contains(failedConstraint)) {
-                            aggregatedMap.get(jobId).addValue(failedConstraint);
-                        }
+                for (FailedConstraintInfo failedConstraintInfo: jobFailedConstraintEntry.getValue()) {
+                    if (!failedConstraintNamesToBeIgnored.contains(failedConstraintInfo.getFailedConstraint())) {
+                        aggregatedMap.get(jobId).addValue(failedConstraintInfo.getFailedConstraint());
                     }
                 }
             }
@@ -141,21 +138,21 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener, Iterat
         return aggregatedMap;
     }
 
-    public Collection<InsertionData> getFailedInsertionsForJob(String jobId) {
-        Collection<InsertionData> result = new ArrayList<>();
-        for (Map<String, List<InsertionData>> jobInsertionMap: failedInsertions.values()) {
-            if (jobInsertionMap.containsKey(jobId)) {
-                result.addAll(jobInsertionMap.get(jobId));
+    public Collection<FailedConstraintInfo> getFailedConstraintsForJob(String jobId) {
+        Collection<FailedConstraintInfo> result = new ArrayList<>();
+        for (Map<String, List<FailedConstraintInfo>> failedConstraints: failedConstraints.values()) {
+            if (failedConstraints.containsKey(jobId)) {
+                result.addAll(failedConstraints.get(jobId));
             }
         }
         return result;
     }
 
-    public Collection<InsertionData> getFailedInsertionsInIterationForJob(int iterationNumber, String jobId) {
-        if (failedInsertions.containsKey(iterationNumber) && failedInsertions.get(iterationNumber).containsKey(jobId)) {
-            return Collections.unmodifiableList(failedInsertions.get(iterationNumber).get(jobId));
+    public Collection<FailedConstraintInfo> getFailedConstraintsInIterationForJob(int iterationNumber, String jobId) {
+        if (failedConstraints.containsKey(iterationNumber) && failedConstraints.get(iterationNumber).containsKey(jobId)) {
+            return Collections.unmodifiableList(failedConstraints.get(iterationNumber).get(jobId));
         }
-        return Collections.unmodifiableList(new ArrayList<InsertionData>());
+        return Collections.unmodifiableList(new ArrayList<FailedConstraintInfo>());
     }
 
     /**
@@ -232,7 +229,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener, Iterat
     public void informIterationStarts(int i, VehicleRoutingProblem problem,
                                       Collection<VehicleRoutingProblemSolution> solutions) {
         iterationNumber = i;
-        failedInsertions.put(iterationNumber, new HashMap<String, List<InsertionData>>());
+        failedConstraints.put(iterationNumber, new HashMap<String, List<FailedConstraintInfo>>());
     }
 
 }

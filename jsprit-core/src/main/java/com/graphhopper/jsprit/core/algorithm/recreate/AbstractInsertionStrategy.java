@@ -26,6 +26,7 @@ import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,8 +94,8 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
         return badJobs;
     }
 
-    public void markUnassigned(Job unassigned, InsertionData insertionData) {
-        insertionsListeners.informJobUnassignedListeners(unassigned, insertionData);
+    public void markUnassigned(Job unassigned, List<FailedConstraintInfo> failedConstraint) {
+        insertionsListeners.informJobUnassignedListeners(unassigned, failedConstraint);
     }
 
     public abstract Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);

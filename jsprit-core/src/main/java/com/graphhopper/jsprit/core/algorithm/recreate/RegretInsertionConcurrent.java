@@ -125,7 +125,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
                 Job unassigned = bad.getJob();
                 jobs.remove(unassigned);
                 badJobs.add(unassigned);
-                markUnassigned(unassigned, bad.getInsertionData());
+                markUnassigned(unassigned, bad.getInsertionData().getFailedConstraints());
             }
         }
         return badJobs;

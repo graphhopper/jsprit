@@ -35,6 +35,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +136,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         //pickupShipmentLoop
         List<TourActivity> activities = currentRoute.getTourActivities().getActivities();
 
-        List<String> failedActivityConstraints = new ArrayList<>();
+        List<FailedConstraintInfo> failedActivityConstraints = new ArrayList<>();
         while (!tourEnd) {
             TourActivity nextAct;
             if (i < activities.size()) {
@@ -235,7 +236,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         }
         if (pickupInsertionIndex == InsertionData.NO_INDEX) {
             InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
-            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
+            emptyInsertionData.getFailedConstraints().addAll(failedActivityConstraints);
             return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);

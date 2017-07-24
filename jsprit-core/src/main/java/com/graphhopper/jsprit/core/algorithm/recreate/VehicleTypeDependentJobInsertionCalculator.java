@@ -115,7 +115,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
             else depTime = v.getEarliestDeparture();
             InsertionData iData = insertionCalculator.getInsertionData(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);
             if (iData instanceof InsertionData.NoInsertionFound) {
-                bestIData.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
+                bestIData.getFailedConstraints().addAll(iData.getFailedConstraints());
                 continue;
             }
             if (iData.getInsertionCost() < bestKnownCost_) {
