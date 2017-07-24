@@ -9,6 +9,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -65,9 +66,13 @@ public class UnassignedJobReasonTrackerExample {
             .setDeliveryTimeWindow(new TimeWindow(15, 16))
             .build();
 
+        Service service1 = Service.Builder.newInstance("service1").addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(5, 7)).build();
+        // service2 required more capacity that both vehicles are not able to provide
+        Service service2 = Service.Builder.newInstance("service2").addSizeDimension(WEIGHT_INDEX, 10).setLocation(Location.newInstance(5, 5)).build();
+
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(v1).addVehicle(v2);
-        vrpBuilder.addJob(shipment1).addJob(shipment2).addJob(shipment3).addJob(shipment4);
+        vrpBuilder.addJob(shipment1).addJob(shipment2).addJob(shipment3).addJob(shipment4).addJob(service1).addJob(service2);
 
         // prepare the algorithm
         VehicleRoutingProblem problem = vrpBuilder.build();
@@ -91,6 +96,7 @@ public class UnassignedJobReasonTrackerExample {
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
 
+        // print the info about each unassigned job
         for (Job unassignedJob: bestSolution.getUnassignedJobs()) {
             Collection<FailedConstraintInfo> failedConstraints = tracker.getFailedConstraintsForJob(unassignedJob.getId());
             for (FailedConstraintInfo failedConstraint : failedConstraints) {

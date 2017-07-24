@@ -94,8 +94,8 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
         return badJobs;
     }
 
-    public void markUnassigned(Job unassigned, List<FailedConstraintInfo> failedConstraint) {
-        insertionsListeners.informJobUnassignedListeners(unassigned, failedConstraint);
+    public void markUnassigned(Job unassigned, List<FailedConstraintInfo> failedConstraints) {
+        insertionsListeners.informJobUnassignedListeners(unassigned, failedConstraints);
     }
 
     public abstract Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs);

@@ -80,7 +80,7 @@ class InsertionDataUpdater {
             InsertionData secondBest = null;
             TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
-            List<FailedConstraintInfo> failedConstraintNames = new ArrayList<>();
+            List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
             while(iterator.hasNext()){
                 VersionedInsertionData versionedIData = iterator.next();
                 if(bestRoute != null){
@@ -89,7 +89,7 @@ class InsertionDataUpdater {
                     }
                 }
                 if (versionedIData.getiData() instanceof InsertionData.NoInsertionFound) {
-                    failedConstraintNames.addAll(versionedIData.getiData().getFailedConstraints());
+                    failedConstraints.addAll(versionedIData.getiData().getFailedConstraints());
                     continue;
                 }
                 if(!(versionedIData.getRoute().getVehicle() instanceof VehicleImpl.NoVehicle)) {
@@ -141,9 +141,9 @@ class InsertionDataUpdater {
                 } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
                     secondBest = iData;
                 }
-            } else failedConstraintNames.addAll(iData.getFailedConstraints());
+            } else failedConstraints.addAll(iData.getFailedConstraints());
             if (best == null) {
-                badJobs.add(new ScoredJob.BadJob(j, failedConstraintNames));
+                badJobs.add(new ScoredJob.BadJob(j, failedConstraints));
                 continue;
             }
             double score = score(j, best, secondBest, scoringFunction);

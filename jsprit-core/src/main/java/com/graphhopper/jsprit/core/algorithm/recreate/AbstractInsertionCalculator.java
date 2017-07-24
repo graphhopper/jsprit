@@ -39,10 +39,11 @@ abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculato
         for (HardRouteConstraint hardRouteConstraint : constraintManager.getHardRouteConstraints()) {
             if (!hardRouteConstraint.fulfilled(insertionContext)) {
                 InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
-                emptyInsertionData.addFailedConstrainInfo(new FailedConstraintInfo(
-                    hardRouteConstraint.getClass().getSimpleName(),
-                    insertionContext
-                ));
+                emptyInsertionData.addFailedConstrainInfo(FailedConstraintInfo.Builder.newInstance()
+                    .setFailedConstraint(hardRouteConstraint.getClass().getSimpleName())
+                    .loadInsertionContextData(insertionContext)
+                    .build()
+                );
                 return emptyInsertionData;
             }
         }
@@ -55,17 +56,17 @@ abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculato
         for (HardActivityConstraint c : constraintManager.getCriticalHardActivityConstraints()) {
             ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
             if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
-                failedActivityConstraints.add(new FailedConstraintInfo(
-                    c.getClass().getSimpleName(),
-                    iFacts
-                ));
+                failedActivityConstraints.add(FailedConstraintInfo.Builder.newInstance()
+                    .setFailedConstraint(c.getClass().getSimpleName())
+                    .loadInsertionContextData(iFacts).build()
+                );
                 return status;
             } else {
                 if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
-                    failed.add(new FailedConstraintInfo(
-                        c.getClass().getSimpleName(),
-                        iFacts
-                    ));
+                    failed.add(FailedConstraintInfo.Builder.newInstance()
+                        .setFailedConstraint(c.getClass().getSimpleName())
+                        .loadInsertionContextData(iFacts).build()
+                    );
                     notFulfilled = status;
                 }
             }
@@ -78,17 +79,17 @@ abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculato
         for (HardActivityConstraint c : constraintManager.getHighPrioHardActivityConstraints()) {
             ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
             if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
-                failedActivityConstraints.add(new FailedConstraintInfo(
-                    c.getClass().getSimpleName(),
-                    iFacts
-                ));
+                failedActivityConstraints.add(FailedConstraintInfo.Builder.newInstance()
+                    .setFailedConstraint(c.getClass().getSimpleName())
+                    .loadInsertionContextData(iFacts).build()
+                );
                 return status;
             } else {
                 if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
-                    failed.add(new FailedConstraintInfo(
-                        c.getClass().getSimpleName(),
-                        iFacts
-                    ));
+                    failed.add(FailedConstraintInfo.Builder.newInstance()
+                        .setFailedConstraint(c.getClass().getSimpleName())
+                        .loadInsertionContextData(iFacts).build()
+                    );
                     notFulfilled = status;
                 }
             }
@@ -101,10 +102,10 @@ abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculato
         for (HardActivityConstraint constraint : constraintManager.getLowPrioHardActivityConstraints()) {
             ConstraintsStatus status = constraint.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
             if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK) || status.equals(ConstraintsStatus.NOT_FULFILLED)) {
-                failedActivityConstraints.add(new FailedConstraintInfo(
-                    constraint.getClass().getSimpleName(),
-                    iFacts
-                ));
+                failedActivityConstraints.add(FailedConstraintInfo.Builder.newInstance()
+                    .setFailedConstraint(constraint.getClass().getSimpleName())
+                    .loadInsertionContextData(iFacts).build()
+                );
                 return status;
             }
         }

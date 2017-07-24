@@ -21,13 +21,13 @@ package com.graphhopper.jsprit.core.algorithm.recreate.listener;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by schroeder on 06/02/17.
  */
 public interface JobUnassignedListener extends InsertionListener {
 
-    void informJobUnassigned(Job unassigned, List<FailedConstraintInfo> failedConstraintsInfo);
+    void informJobUnassigned(Job unassigned, Collection<FailedConstraintInfo> failedConstraints);
 
 }

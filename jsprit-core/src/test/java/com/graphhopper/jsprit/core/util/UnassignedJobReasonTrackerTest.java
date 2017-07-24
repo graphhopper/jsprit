@@ -147,15 +147,15 @@ public class UnassignedJobReasonTrackerTest {
 
         // iteration 0
         List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
-        failedConstraints.add(new FailedConstraintInfo("constraint1", null));
-        failedConstraints.add(new FailedConstraintInfo("constraint2", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("constraint1").build());
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("constraint2").build());
         reasonTracker.informIterationStarts(0, null, null);
         reasonTracker.informJobUnassigned(job, failedConstraints);
 
         // iteration 1
         failedConstraints.clear();
-        failedConstraints.add(new FailedConstraintInfo("constraint2", null));
-        failedConstraints.add(new FailedConstraintInfo("constraint3", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("constraint2").build());
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("constraint3").build());
         reasonTracker.informIterationStarts(1, null, null);
         reasonTracker.informJobUnassigned(job, failedConstraints);
 
@@ -176,13 +176,13 @@ public class UnassignedJobReasonTrackerTest {
 
         // iteration1
         List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
-        failedConstraints.add(new FailedConstraintInfo("c1", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("c1").build());
         reasonTracker.informIterationStarts(0, null, null);
         reasonTracker.informJobUnassigned(job, failedConstraints);
 
         // iteration2
         failedConstraints.clear();
-        failedConstraints.add(new FailedConstraintInfo("c2", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("c2").build());
         reasonTracker.informIterationStarts(2, null, null);
         reasonTracker.informJobUnassigned(job, failedConstraints);
 
@@ -207,13 +207,13 @@ public class UnassignedJobReasonTrackerTest {
         List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
 
         // iteration1
-        failedConstraints.add(new FailedConstraintInfo("c1", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("c1").build());
         reasonTracker.informIterationStarts(0, null, null);
         reasonTracker.informJobUnassigned(job1, failedConstraints);
 
         // iteration2
         failedConstraints.clear();
-        failedConstraints.add(new FailedConstraintInfo("c2", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("c2").build());
         reasonTracker.informIterationStarts(2, null, null);
         reasonTracker.informJobUnassigned(job2, failedConstraints);
 
@@ -260,7 +260,7 @@ public class UnassignedJobReasonTrackerTest {
 
         List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
         // adding the failed constraint in iteration 1
-        failedConstraints.add(new FailedConstraintInfo("c1", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("c1").build());
         reasonTracker.informIterationStarts(1, null, null);
         reasonTracker.informJobUnassigned(job, failedConstraints);
 
@@ -280,13 +280,13 @@ public class UnassignedJobReasonTrackerTest {
 
         List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
         // adding the failed constraint in iteration 1 for job1
-        failedConstraints.add(new FailedConstraintInfo("c1", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("c1").build());
         reasonTracker.informIterationStarts(1, null, null);
         reasonTracker.informJobUnassigned(job1, failedConstraints);
 
         // adding the failed constraint in iteration 2 for job2
         failedConstraints.clear();
-        failedConstraints.add(new FailedConstraintInfo("c2", null));
+        failedConstraints.add(FailedConstraintInfo.Builder.newInstance().setFailedConstraint("c2").build());
         reasonTracker.informIterationStarts(2, null, null);
         reasonTracker.informJobUnassigned(job2, failedConstraints);
 

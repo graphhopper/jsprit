@@ -79,12 +79,12 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener, Iterat
     }
 
     @Override
-    public void informJobUnassigned(Job unassigned, List<FailedConstraintInfo> failedConstraintInfo) {
+    public void informJobUnassigned(Job unassigned, Collection<FailedConstraintInfo> failedConstraintsInfo) {
         Map<String, List<FailedConstraintInfo>> failedConstraintsInIteration = failedConstraints.get(iterationNumber);
         if (!failedConstraintsInIteration.containsKey(unassigned.getId())) {
             failedConstraintsInIteration.put(unassigned.getId(), new ArrayList<FailedConstraintInfo>());
         }
-        failedConstraintsInIteration.get(unassigned.getId()).addAll(failedConstraintInfo);
+        failedConstraintsInIteration.get(unassigned.getId()).addAll(failedConstraintsInfo);
     }
 
     public void put(String simpleNameOfFailedConstraint, int code, String reason) {
