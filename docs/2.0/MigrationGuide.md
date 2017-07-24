@@ -10,7 +10,24 @@ To help the third party developers to quickly and painlessly migrate to the new 
 
 > **Although by completing these migration steps, you are likely to get a running code, keep in mind that these legacy implementations are in the library only temporally and are going to be removed in some future version.**
 
-### Chapter 2: Prepare for the future
+### Using the new structure for own job implementations
+
+If you defined your own implementation of Job, you may run into a few incompatibilities. Before these problems are solved, you have to choose which path you take.
+
+If the reason of your own job implementation is to create jobs with more activities, the new `CustomJob` may render your class deprecated and you can now use the `CustomJob` instead. It brings benefits of being general, and you don't have to create the constraints to keep the activities together (on the same route and either all of them or none). 
+
+If your reason to extends any of the old job types was to add user data to it, it is now better to use the `userData` field of the `CustomJob`.
+
+If, after taking account all the above, you still can't avoid to use your implementation, you have to be aware the structural changes and make your implementation compatible with it. Because there is no defined way how your implementation extends the API, it is impossible to give a step by step guide. However, here are the most important changes your implementation must follow:
+
+- The activities now have fixed set of types (Service, Pickup, Exchange, Delivery) and you have to map your activities to these.
+- Some of the parameters which was on job level are moved to activity level, because they are associated to them: time windows, operation times, size requirements and changes, location.
+- The AbstractJob abstract class is extended with some new abstract methods which should be implemented in your class.
+- The builder mechanism is made inheritance friendly and it is recommended to migrate your one to it. (See the JavaDoc for details!)
+
+
+
+## Chapter 2: Prepare for the future
 
 In this step, we give you guided help how to completely get rid of the legacy classes and move
 
