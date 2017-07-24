@@ -46,7 +46,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
  */
 public abstract class AbstractJob implements Job {
 
-
     /**
      * Base builder for all direct descendants.
      * <p>
@@ -66,15 +65,17 @@ public abstract class AbstractJob implements Job {
      * your own abstract Builder class. The signature of your abstract builder
      * should be something like this (<i>self referencing generics</i>):
      * <p>
+     *
      * <pre>
      * public static abstract class BuilderBase&lt;T extends MyJob, B extends BuilderBase&lt;T, B>>
-     *                 extends JobBuilder&lt;T, B> {
+     *         extends JobBuilder&lt;T, B> {
      * }
      * </pre>
      * <p>
      * This implenetation should contain all new fields, the new setters
      * following the pattern:
      * <p>
+     *
      * <pre>
      * &#64;SuppressWarnings("unchecked")
      * public B setField(FieldType field) {
@@ -100,6 +101,7 @@ public abstract class AbstractJob implements Job {
      * the answer of this topic</a> for more information about the pitfalls of
      * the self-refering generics pattern):
      * <p>
+     *
      * <pre>
      * public static class Builder extends BuilderBase&lt;MyJob, Builder> {
      *     public Builder(String id) {
@@ -131,6 +133,8 @@ public abstract class AbstractJob implements Job {
 
         protected int priority = 2;
 
+        protected Object userData;
+
         public JobBuilder(String id) {
             if (id == null)
                 throw new IllegalArgumentException("id must not be null");
@@ -140,16 +144,25 @@ public abstract class AbstractJob implements Job {
         /**
          * Adds capacity dimension.
          *
-         * @param dimensionIndex the dimension index of the capacity value
-         * @param dimensionValue the capacity value
+         * @param dimensionIndex
+         *            the dimension index of the capacity value
+         * @param dimensionValue
+         *            the capacity value
          * @return the builder
-         * @throws IllegalArgumentException if dimensionValue < 0
+         * @throws IllegalArgumentException
+         *             if dimensionValue < 0
          */
         @SuppressWarnings("unchecked")
         public B addSizeDimension(int dimensionIndex, int dimensionValue) {
             if (dimensionValue < 0)
                 throw new IllegalArgumentException("capacity value cannot be negative");
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
+            return (B) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        protected B addUserData(Object userData) {
+            this.userData = userData;
             return (B) this;
         }
 
@@ -194,7 +207,7 @@ public abstract class AbstractJob implements Job {
         public B setPriority(int priority) {
             if (priority < 1 || priority > 10)
                 throw new IllegalArgumentException(
-                                "incorrect priority. only priority values from 1 to 10 are allowed where 1 = high and 10 is low");
+                        "incorrect priority. only priority values from 1 to 10 are allowed where 1 = high and 10 is low");
             this.priority = priority;
             return (B) this;
         }
@@ -244,6 +257,10 @@ public abstract class AbstractJob implements Job {
             return priority;
         }
 
+        public Object getUserData() {
+            return userData;
+        }
+
     }
 
     private int index;
@@ -266,21 +283,25 @@ public abstract class AbstractJob implements Job {
 
     private SizeDimension sizeAtEnd;
 
-
+    private Object userData;
 
     /**
      * Builder based constructor.
      *
-     * @param builder The builder instance.
+     * @param builder
+     *            The builder instance.
      * @see JobBuilder
      */
     protected AbstractJob(JobBuilder<?, ?> builder) {
-        super();
         activityList = new SequentialJobActivityList(this);
         id = builder.getId();
         skills = builder.getSkills();
         name = builder.getName();
         priority = builder.getPriority();
+        userData = builder.getUserData();
+    }
+
+    AbstractJob() {
     }
 
     @Override
@@ -292,6 +313,12 @@ public abstract class AbstractJob implements Job {
         this.index = index;
     }
 
+    /**
+     * @return User-specific domain data associated by the job
+     */
+    public Object getUserData() {
+        return userData;
+    }
 
     private void addLocation(Location location) {
         if (location != null) {
@@ -320,8 +347,10 @@ public abstract class AbstractJob implements Job {
         for (JobActivity act : activityList.getAll()) {
             size = size.add(act.getLoadChange());
         }
-        if (start) return size.getNegativeDimensions().abs();
-        else return size.getPositiveDimensions();
+        if (start)
+            return size.getNegativeDimensions().abs();
+        else
+            return size.getPositiveDimensions();
     }
 
     private void addTimeWindows(Collection<TimeWindow> timeWindows) {
@@ -390,9 +419,8 @@ public abstract class AbstractJob implements Job {
         return activityList;
     }
 
-
     @Override
-    public Set<TimeWindow> getTimeWindows() {
+    public Collection<TimeWindow> getTimeWindows() {
         return allTimeWindows;
     }
 
@@ -416,6 +444,4 @@ public abstract class AbstractJob implements Job {
         return priority;
     }
 
-
 }
-

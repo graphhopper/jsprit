@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.graphhopper.jsprit.core.problem.job.legacy;
+package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.Collection;
 
@@ -23,11 +23,8 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Skills;
-import com.graphhopper.jsprit.core.problem.job.CustomJob;
 import com.graphhopper.jsprit.core.problem.job.CustomJob.BuilderBase.ActivityType;
 import com.graphhopper.jsprit.core.problem.job.CustomJob.BuilderBase.BuilderActivityInfo;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
@@ -100,14 +97,14 @@ import com.graphhopper.jsprit.core.util.Coordinate;
  * @see {@linkplain CustomJob.BuilderBase.BuilderActivityInfo}
  */
 @Deprecated
-public class Service extends AbstractJob {
+public class LegacyService extends AbstractJob {
 
     /**
      * Builder that builds a service.
      *
      * @author schroeder
      */
-    public static class Builder<T extends Service> {
+    public static class Builder<T extends LegacyService> {
 
         /**
          * Returns a new instance of builder that builds a service.
@@ -148,6 +145,7 @@ public class Service extends AbstractJob {
         private boolean twAdded = false;
 
         private int priority = 2;
+
         protected Object userData;
 
         Builder(String id){
@@ -159,7 +157,7 @@ public class Service extends AbstractJob {
         /**
          * Protected method to set the type-name of the service.
          * <p>
-         * <p>Currently there are {@link Service}, {@link Pickup} and {@link Delivery}.
+         * <p>Currently there are {@link LegacyService}, {@link Pickup} and {@link Delivery}.
          *
          * @param name the name of service
          * @return the builder
@@ -254,7 +252,7 @@ public class Service extends AbstractJob {
         /**
          * Builds the service.
          *
-         * @return {@link Service}
+         * @return {@link LegacyService}
          * @throws IllegalArgumentException if neither locationId nor coordinate is set.
          */
         public T build() {
@@ -262,7 +260,7 @@ public class Service extends AbstractJob {
             this.setType("service");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
-            return (T) new Service(this);
+            return (T) new LegacyService(this);
         }
 
         public Builder<T> addRequiredSkill(String skill) {
@@ -309,10 +307,9 @@ public class Service extends AbstractJob {
     private CustomJob theRealJob;
     private ServiceActivity theRealActivity;
 
-    Service(Builder<?> builder) {
-        setUserData(builder.userData);
+    LegacyService(Builder<?> builder) {
         BuilderActivityInfo activityInfo = new BuilderActivityInfo(ActivityType.SERVICE,
-                        builder.location);
+                builder.location);
 
         activityInfo.withName(builder.name);
         activityInfo.withOperationTime(builder.serviceTime);
@@ -322,15 +319,17 @@ public class Service extends AbstractJob {
         activityInfo.withTimeWindows(builder.timeWindows.getTimeWindows());
 
         com.graphhopper.jsprit.core.problem.job.CustomJob.Builder customJobBuilder = new CustomJob.Builder(
-                        builder.id);
+                builder.id);
         customJobBuilder.addActivity(activityInfo).addAllRequiredSkills(builder.skills)
         .setName(builder.name)
+        .addUserData(builder.userData)
         .setPriority(builder.priority);
         theRealJob = customJobBuilder.build();
         theRealActivity = (ServiceActivity) theRealJob.getActivityList().getAll().get(0);
     }
 
-    public Collection<TimeWindow> getTimeWindows(){
+    @Override
+    public Collection<TimeWindow> getTimeWindows() {
         return theRealJob.getTimeWindows();
     }
 
@@ -384,8 +383,8 @@ public class Service extends AbstractJob {
     @Override
     public String toString() {
         return "[id=" + getId() + "][name=" + getName() + "][type=" + getType() + "][location="
-                        + getLocation() + "][capacity=" + getSize() + "][serviceTime="
-                        + getServiceDuration() + "][timeWindow=" + getTimeWindow() + "]";
+                + getLocation() + "][capacity=" + getSize() + "][serviceTime="
+                + getServiceDuration() + "][timeWindow=" + getTimeWindow() + "]";
     }
 
 
@@ -408,7 +407,7 @@ public class Service extends AbstractJob {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Service other = (Service) obj;
+        LegacyService other = (LegacyService) obj;
         if (getId() == null) {
             if (other.getId() != null)
                 return false;
@@ -418,7 +417,7 @@ public class Service extends AbstractJob {
     }
 
     @Override
-    public Capacity getSize() {
+    public SizeDimension getSize() {
         return theRealActivity.getLoadSize();
     }
 
@@ -442,6 +441,16 @@ public class Service extends AbstractJob {
     @Override
     public int getPriority() {
         return theRealJob.getPriority();
+    }
+
+    @Override
+    public Object getUserData() {
+        return theRealJob.getUserData();
+    }
+
+    @Override
+    protected void createActivities(JobBuilder<? extends AbstractJob, ?> jobBuilder) {
+        // This is unused being a legacy implementation
     }
 
 }
