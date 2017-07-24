@@ -10,6 +10,14 @@ To help the third party developers to quickly and painlessly migrate to the new 
 
 > **Although by completing these migration steps, you are likely to get a running code, keep in mind that these legacy implementations are in the library only temporally and are going to be removed in some future version.**
 
+### Relocation of files
+
+Some of the classes are relocated. Although most of the modern IDEs would simply relocate the import references, here is the list of relocated classes:
+
+| Class       | Old package                         | New package                             |
+| ----------- | ----------------------------------- | --------------------------------------- |
+| AbstractJob | com.graphhopper.jsprit.core.problem | com.graphhopper.jsprit.core.problem.job |
+
 ### Using the new structure for own job implementations
 
 If you defined your own implementation of Job, you may run into a few incompatibilities. Before these problems are solved, you have to choose which path you take.
