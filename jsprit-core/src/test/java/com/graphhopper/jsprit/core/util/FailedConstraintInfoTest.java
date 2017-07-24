@@ -34,10 +34,6 @@ public class FailedConstraintInfoTest {
     @Mock
     private ActivityContext activityContext;
     @Mock
-    private VehicleRoute route;
-    @Mock
-    private TourActivities tourActivities;
-    @Mock
     private JobInsertionContext jobInsertionContext;
 
     @Test
@@ -67,11 +63,8 @@ public class FailedConstraintInfoTest {
         when(job.getId()).thenReturn("job");
         when(vehicle.getId()).thenReturn("vehicle");
         when(activityContext.getInsertionIndex()).thenReturn(2);
-        when(route.getTourActivities()).thenReturn(tourActivities);
-        when(tourActivities.getActivities()).thenReturn(activities);
 
         when(jobInsertionContext.getJob()).thenReturn(job);
-        when(jobInsertionContext.getRoute()).thenReturn(route);
         when(jobInsertionContext.getActivityContext()).thenReturn(activityContext);
         when(jobInsertionContext.getNewVehicle()).thenReturn(vehicle);
 
@@ -82,8 +75,6 @@ public class FailedConstraintInfoTest {
         Assert.assertEquals("job", failedConstraintInfo.getJob());
         Assert.assertEquals(2, failedConstraintInfo.getInsertionIndex());
         Assert.assertEquals("vehicle", failedConstraintInfo.getVehicle());
-        Assert.assertEquals(1, failedConstraintInfo.getActivities().size());
-        Assert.assertEquals("testService-service", failedConstraintInfo.getActivities().get(0));
     }
 
 }

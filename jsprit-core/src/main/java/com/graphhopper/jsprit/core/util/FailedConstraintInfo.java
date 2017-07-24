@@ -6,6 +6,7 @@ import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,7 +19,6 @@ public class FailedConstraintInfo {
         private String failedConstraint;
         private String job;
         private String vehicle;
-        private List<String> activities = new ArrayList<>();
         private int insertionIndex;
 
         public static FailedConstraintInfo.Builder newInstance() {
@@ -48,13 +48,6 @@ public class FailedConstraintInfo {
                 if (insertionContext.getActivityContext() != null) {
                     this.insertionIndex = insertionContext.getActivityContext().getInsertionIndex();
                 }
-                if (insertionContext.getRoute() != null && insertionContext.getRoute().getActivities() != null) {
-                    for (TourActivity activity: insertionContext.getRoute().getTourActivities().getActivities()) {
-                        if (activity instanceof TourActivity.JobActivity) {
-                            activities.add(((TourActivity.JobActivity) activity).getJob().getId() + "-" + activity.getName());
-                        }
-                    }
-                }
             }
             return this;
         }
@@ -63,14 +56,12 @@ public class FailedConstraintInfo {
     private String failedConstraint;
     private String job;
     private String vehicle;
-    private List<String> activities = new ArrayList<>();
     private int insertionIndex = -1;
 
     private FailedConstraintInfo(Builder<?> builder) {
         this.failedConstraint = builder.failedConstraint;
         this.job = builder.job;
         this.vehicle = builder.vehicle;
-        this.activities = builder.activities;
         this.insertionIndex = builder.insertionIndex;
     }
 
@@ -86,26 +77,17 @@ public class FailedConstraintInfo {
         return insertionIndex;
     }
 
-    public List<String> getActivities() {
-        return activities;
-    }
-
     public String getJob() {
         return job;
     }
 
     public String toString() {
-        StringBuilder route = new StringBuilder();
-        route.append(vehicle).append(" [ ");
-        for (String activity: activities) {
-            route.append(activity).append(" ");
-        }
-        route.append("]");
-        return String.format("Constraint '%s' failed for job insertion of job '%s' on position '%d' on route '%s'",
+        return String.format("Constraint '%s' failed for job insertion of job '%s' on position '%d' in vehicle '%s'",
             failedConstraint,
             job,
             insertionIndex,
-            route
+            vehicle
         );
     }
+
 }
