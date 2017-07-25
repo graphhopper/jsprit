@@ -26,16 +26,16 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 
-public class PickupTest {
+public class PickupJobTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenNeitherLocationIdNorCoordIsSet_itThrowsException() {
-        new Pickup.Builder("p").build();
+        new PickupJob.Builder("p").build();
     }
 
     @Test
     public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
-        Pickup one = new Pickup.Builder("s").setLocation(Location.newInstance("foofoo"))
+        PickupJob one = new PickupJob.Builder("s").setLocation(Location.newInstance("foofoo"))
                         .addSizeDimension(0, 2)
                         .addSizeDimension(1, 4)
                         .build();
@@ -48,7 +48,7 @@ public class PickupTest {
 
     @Test
     public void sizeAtStartAndEndShouldBeCorrect() {
-        Pickup one = new Pickup.Builder("s").setLocation(Location.newInstance("foofoo"))
+        PickupJob one = new PickupJob.Builder("s").setLocation(Location.newInstance("foofoo"))
                         .addSizeDimension(0, 2)
                         .addSizeDimension(1, 4)
                         .build();
@@ -58,7 +58,7 @@ public class PickupTest {
 
     @Test
     public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero() {
-        Pickup one = new Pickup.Builder("s").setLocation(Location.newInstance("foofoo"))
+        PickupJob one = new PickupJob.Builder("s").setLocation(Location.newInstance("foofoo"))
                         .build();
         SizeDimension size = one.getActivity().getLoadChange();
         assertEquals(1, size.getNuOfDimensions());
@@ -67,7 +67,7 @@ public class PickupTest {
 
     @Test
     public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
-        Pickup one = new Pickup.Builder("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
+        PickupJob one = new PickupJob.Builder("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
                         .build();
         SizeDimension size = one.getActivity().getLoadChange();
         assertEquals(1, size.getNuOfDimensions());
@@ -76,7 +76,7 @@ public class PickupTest {
 
     @Test
     public void whenAddingSkills_theyShouldBeAddedCorrectly() {
-        Pickup s = new Pickup.Builder("s").setLocation(Location.newInstance("loc"))
+        PickupJob s = new PickupJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
@@ -85,7 +85,7 @@ public class PickupTest {
 
     @Test
     public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
-        Pickup s = new Pickup.Builder("s").setLocation(Location.newInstance("loc"))
+        PickupJob s = new PickupJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("drilL"));
@@ -93,7 +93,7 @@ public class PickupTest {
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
-        Pickup s = new Pickup.Builder("s").setLocation(Location.newInstance("loc"))
+        PickupJob s = new PickupJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
@@ -101,7 +101,7 @@ public class PickupTest {
 
     @Test
     public void nameShouldBeAssigned() {
-        Pickup s = new Pickup.Builder("s").setLocation(Location.newInstance("loc"))
+        PickupJob s = new PickupJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .setName("name").build();
         assertEquals("name", s.getName());
     }
@@ -109,14 +109,14 @@ public class PickupTest {
 
     @Test
     public void whenSettingPriorities_itShouldBeSetCorrectly() {
-        Pickup s = new Pickup.Builder("s").setLocation(Location.newInstance("loc"))
+        PickupJob s = new PickupJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .setPriority(3).build();
         assertEquals(3, s.getPriority());
     }
 
     @Test
     public void whenNotSettingPriorities_defaultShouldBe() {
-        Pickup s = new Pickup.Builder("s").setLocation(Location.newInstance("loc"))
+        PickupJob s = new PickupJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .build();
         assertEquals(2, s.getPriority());
     }

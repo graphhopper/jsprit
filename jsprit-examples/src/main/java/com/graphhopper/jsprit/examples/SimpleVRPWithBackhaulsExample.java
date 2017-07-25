@@ -26,8 +26,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl.Builder;
@@ -66,11 +66,11 @@ public class SimpleVRPWithBackhaulsExample {
 		/*
          * build pickups and deliveries at the required locations, each with a capacity-demand of 1.
 		 */
-        Pickup pickup1 = new Pickup.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
-        Delivery delivery1 = new Delivery.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
+        PickupJob pickup1 = new PickupJob.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
+        DeliveryJob delivery1 = new DeliveryJob.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
 
-        Pickup pickup2 = new Pickup.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
-        Delivery delivery2 = new Delivery.Builder("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
+        PickupJob pickup2 = new PickupJob.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
+        DeliveryJob delivery2 = new DeliveryJob.Builder("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

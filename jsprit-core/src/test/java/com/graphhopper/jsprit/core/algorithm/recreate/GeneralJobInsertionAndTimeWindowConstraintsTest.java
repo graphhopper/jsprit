@@ -36,8 +36,8 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -110,8 +110,8 @@ public class GeneralJobInsertionAndTimeWindowConstraintsTest {
 
     @Test
     public void whenInsertingServiceWithTW_itMustReturnTheCorrectInsertionIndex() {
-        Delivery delivery = new Delivery.Builder("del").addTimeWindow(30, 40).setLocation(Location.newInstance("10,10")).build();
-        Pickup pickup = new Pickup.Builder("pick").addTimeWindow(60, 80).setLocation(Location.newInstance("0,10")).build();
+        DeliveryJob delivery = new DeliveryJob.Builder("del").addTimeWindow(30, 40).setLocation(Location.newInstance("10,10")).build();
+        PickupJob pickup = new PickupJob.Builder("pick").addTimeWindow(60, 80).setLocation(Location.newInstance("0,10")).build();
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(1).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(40).setStartLocation(Location.newInstance("0,0")).setType(type).build();

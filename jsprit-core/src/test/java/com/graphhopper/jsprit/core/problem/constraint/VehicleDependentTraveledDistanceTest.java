@@ -24,9 +24,9 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -63,9 +63,9 @@ public class VehicleDependentTraveledDistanceTest {
 
     VehicleRoutingProblem vrp;
 
-    Delivery d1,d2,newDelivery;
+    DeliveryJob d1,d2,newDelivery;
 
-    Pickup pickup;
+    PickupJob pickup;
 
     Shipment s1;
 
@@ -81,13 +81,13 @@ public class VehicleDependentTraveledDistanceTest {
         maxDistanceMap.put(vehicle,200d);
         maxDistanceMap.put(vehicle2,200d);
 
-        d1 = Delivery.Builder.newInstance("d1").setLocation(Location.newInstance(10,10)).build();
-        d2 = Delivery.Builder.newInstance("d2").setLocation(Location.newInstance(20,15)).build();
-        pickup = Pickup.Builder.newInstance("pickup").setLocation(Location.newInstance(50,50)).build();
+        d1 = DeliveryJob.Builder.newInstance("d1").setLocation(Location.newInstance(10,10)).build();
+        d2 = DeliveryJob.Builder.newInstance("d2").setLocation(Location.newInstance(20,15)).build();
+        pickup = PickupJob.Builder.newInstance("pickup").setLocation(Location.newInstance(50,50)).build();
         s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(35,30))
             .setDeliveryLocation(Location.newInstance(20,25)).build();
 
-        newDelivery = Delivery.Builder.newInstance("new").setLocation(Location.newInstance(-10,10)).build();
+        newDelivery = DeliveryJob.Builder.newInstance("new").setLocation(Location.newInstance(-10,10)).build();
 
         vrp = VehicleRoutingProblem.Builder.newInstance()
             .setRoutingCost(new ManhattanCosts()).addVehicle(vehicle).addVehicle(vehicle2)
@@ -116,7 +116,7 @@ public class VehicleDependentTraveledDistanceTest {
     public void whenEndLocationIsSet_constraintShouldWork(){
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0))
             .setEndLocation(Location.newInstance(10,0)).build();
-        Pickup pickup = Pickup.Builder.newInstance("pickup").setLocation(Location.newInstance(10,0)).build();
+        PickupJob pickup = PickupJob.Builder.newInstance("pickup").setLocation(Location.newInstance(10,0)).build();
         vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(pickup).build();
         route = VehicleRoute.emptyRoute();
         maxDistanceMap = new HashMap<>();

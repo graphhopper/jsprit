@@ -17,57 +17,52 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 
 /**
  * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
  *
  * @author schroeder
  */
-public class Delivery extends AbstractSingleActivityJob<DeliveryActivity> {
+public class Delivery extends Service {
 
-    public static final class Builder
-    extends AbstractSingleActivityJob.BuilderBase<Delivery, Builder> {
+    public static class Builder extends Service.Builder<Delivery> {
 
-        public Builder(String id) {
-            super(id);
-            setType("delivery");
-        }
-
+        /**
+         * Returns a new instance of builder that builds a delivery.
+         *
+         * @param id the id of the delivery
+         * @return the builder
+         */
         public static Builder newInstance(String id) {
             return new Builder(id);
         }
 
+        Builder(String id) {
+            super(id);
+        }
+
+        /**
+         * Builds Delivery.
+         *
+         * @return delivery
+         * @throws IllegalArgumentException if neither locationId nor coord is set
+         */
         @Override
-        protected Delivery createInstance() {
+        @SuppressWarnings("deprecation")
+        public Delivery build() {
+            if (location == null) throw new IllegalArgumentException("location is missing");
+            this.setType("delivery");
+            super.capacity = super.capacityBuilder.build();
+            super.skills = super.skillBuilder.build();
             return new Delivery(this);
         }
+
     }
 
-    Delivery(BuilderBase<? extends Delivery, ?> builder) {
+    @SuppressWarnings("deprecation")
+    Delivery(Builder builder) {
         super(builder);
-    }
 
-
-    @Override
-    protected DeliveryActivity createActivity(
-                    BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-            return new DeliveryActivity(this, builder.type, builder.location,
-                            builder.serviceTime,
-                            builder.getCapacity().invert(), builder.timeWindows.getTimeWindows());
-    }
-
-    @Override
-    @Deprecated
-    public SizeDimension getSize() {
-        return super.getSize().abs();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Builder getBuilder(String id) {
-        return Builder.newInstance(id);
     }
 
 }

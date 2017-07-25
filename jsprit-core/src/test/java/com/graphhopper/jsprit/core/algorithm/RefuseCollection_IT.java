@@ -33,8 +33,8 @@ import com.graphhopper.jsprit.core.algorithm.box.SchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -255,7 +255,7 @@ public class RefuseCollection_IT {
             /*
              * build service
              */
-            Pickup service = new Pickup.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
+            PickupJob service = new PickupJob.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
                             .setLocation(Location.newInstance(lineTokens[0])).build();
             /*
              * and add it to problem
@@ -278,7 +278,7 @@ public class RefuseCollection_IT {
             /*
              * build service
              */
-            Delivery service = new Delivery.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
+            DeliveryJob service = new DeliveryJob.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
                             .setLocation(Location.newInstance(lineTokens[0])).build();
             /*
              * and add it to problem

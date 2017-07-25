@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -82,10 +82,10 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
         /*
          * build deliveries, (implicitly picked up in the depot) 1: (4,8) 2: (4,12) 3: (16,8) 4: (16,12)
          */
-        Delivery delivery1 = new Delivery.Builder("5").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(4, 8))).build();
-        Delivery delivery2 = new Delivery.Builder("6").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(4, 12))).build();
-        Delivery delivery3 = new Delivery.Builder("7").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(16, 8))).build();
-        Delivery delivery4 = new Delivery.Builder("8").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(16, 12))).build();
+        DeliveryJob delivery1 = new DeliveryJob.Builder("5").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(4, 8))).build();
+        DeliveryJob delivery2 = new DeliveryJob.Builder("6").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(4, 12))).build();
+        DeliveryJob delivery3 = new DeliveryJob.Builder("7").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(16, 8))).build();
+        DeliveryJob delivery4 = new DeliveryJob.Builder("8").addSizeDimension(0, 1).setLocation(loc(Coordinate.newInstance(16, 12))).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(vehicle);

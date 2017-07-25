@@ -36,8 +36,8 @@ import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTra
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.job.SequentialJobActivityList;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -158,10 +158,10 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenPickupsAreAdded_vrpShouldContainThem() {
-        Pickup s1 = mock(Pickup.class);
+        PickupJob s1 = mock(PickupJob.class);
         when(s1.getId()).thenReturn("s1");
         when(s1.getActivityList()).thenReturn(new SequentialJobActivityList(s1));
-        Pickup s2 = mock(Pickup.class);
+        PickupJob s2 = mock(PickupJob.class);
         when(s2.getId()).thenReturn("s2");
         when(s2.getActivityList()).thenReturn(new SequentialJobActivityList(s2));
 
@@ -177,10 +177,10 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenPickupsAreAddedAllAtOnce_vrpShouldContainThem() {
-        Pickup s1 = mock(Pickup.class);
+        PickupJob s1 = mock(PickupJob.class);
         when(s1.getId()).thenReturn("s1");
         when(s1.getActivityList()).thenReturn(new SequentialJobActivityList(s1));
-        Pickup s2 = mock(Pickup.class);
+        PickupJob s2 = mock(PickupJob.class);
         when(s2.getId()).thenReturn("s2");
         when(s2.getActivityList()).thenReturn(new SequentialJobActivityList(s2));
 
@@ -196,10 +196,10 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenDelivieriesAreAdded_vrpShouldContainThem() {
-        Delivery s1 = mock(Delivery.class);
+        DeliveryJob s1 = mock(DeliveryJob.class);
         when(s1.getId()).thenReturn("s1");
         when(s1.getActivityList()).thenReturn(new SequentialJobActivityList(s1));
-        Delivery s2 = mock(Delivery.class);
+        DeliveryJob s2 = mock(DeliveryJob.class);
         when(s2.getId()).thenReturn("s2");
         when(s2.getActivityList()).thenReturn(new SequentialJobActivityList(s2));
 
@@ -215,10 +215,10 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenDelivieriesAreAddedAllAtOnce_vrpShouldContainThem() {
-        Delivery s1 = mock(Delivery.class);
+        DeliveryJob s1 = mock(DeliveryJob.class);
         when(s1.getId()).thenReturn("s1");
         when(s1.getActivityList()).thenReturn(new SequentialJobActivityList(s1));
-        Delivery s2 = mock(Delivery.class);
+        DeliveryJob s2 = mock(DeliveryJob.class);
         when(s2.getId()).thenReturn("s2");
         when(s2.getActivityList()).thenReturn(new SequentialJobActivityList(s2));
 

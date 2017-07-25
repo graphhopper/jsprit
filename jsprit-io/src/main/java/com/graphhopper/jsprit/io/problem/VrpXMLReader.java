@@ -42,9 +42,9 @@ import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 import com.graphhopper.jsprit.core.problem.job.Break;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -70,15 +70,15 @@ public class VrpXMLReader {
         public AbstractSingleActivityJob.BuilderBase<?, ?> createBuilder(String serviceType, String id, Integer size) {
             if (serviceType.equals("pickup")) {
                 if (size != null) {
-                    return new Pickup.Builder(id).addSizeDimension(0, size);
+                    return new PickupJob.Builder(id).addSizeDimension(0, size);
                 } else {
-                    return new Pickup.Builder(id);
+                    return new PickupJob.Builder(id);
                 }
             } else if (serviceType.equals("delivery")) {
                 if (size != null) {
-                    return new Delivery.Builder(id).addSizeDimension(0, size);
+                    return new DeliveryJob.Builder(id).addSizeDimension(0, size);
                 } else {
-                    return new Delivery.Builder(id);
+                    return new DeliveryJob.Builder(id);
                 }
             } else {
                 if (size != null) {

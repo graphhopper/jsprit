@@ -29,8 +29,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl.NoDriver;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
@@ -309,56 +309,56 @@ public class TestVehicleRoute {
     @Test
     public void whenAddingPickup_itShouldBeTreatedAsPickup() {
 
-        Pickup pickup = new Pickup.Builder("pick").setLocation(Location.newInstance("pickLoc")).build();
+        PickupJob pickup = new PickupJob.Builder("pick").setLocation(Location.newInstance("pickLoc")).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("startLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addService(pickup).build();
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("pick.pickup", act.getName());
         assertTrue(act instanceof PickupActivity);
-        assertTrue(((JobActivity) act).getJob() instanceof Pickup);
+        assertTrue(((JobActivity) act).getJob() instanceof PickupJob);
 
     }
 
     @Test
     public void whenAddingPickup_itShouldBeAdded() {
 
-        Pickup pickup = new Pickup.Builder("pick").setLocation(Location.newInstance("pickLoc")).build();
+        PickupJob pickup = new PickupJob.Builder("pick").setLocation(Location.newInstance("pickLoc")).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("startLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addPickup(pickup).build();
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("pick.pickup", act.getName());
         assertTrue(act instanceof PickupActivity);
-        assertTrue(((JobActivity) act).getJob() instanceof Pickup);
+        assertTrue(((JobActivity) act).getJob() instanceof PickupJob);
 
     }
 
     @Test
     public void whenAddingDelivery_itShouldBeTreatedAsDelivery() {
 
-        Delivery delivery = new Delivery.Builder("delivery").setLocation(Location.newInstance("deliveryLoc")).build();
+        DeliveryJob delivery = new DeliveryJob.Builder("delivery").setLocation(Location.newInstance("deliveryLoc")).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("startLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addService(delivery).build();
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("delivery.delivery", act.getName());
         assertTrue(act instanceof DeliveryActivity);
-        assertTrue(((JobActivity) act).getJob() instanceof Delivery);
+        assertTrue(((JobActivity) act).getJob() instanceof DeliveryJob);
 
     }
 
     @Test
     public void whenAddingDelivery_itShouldBeAdded() {
 
-        Delivery delivery = new Delivery.Builder("delivery").setLocation(Location.newInstance("deliveryLoc")).build();
+        DeliveryJob delivery = new DeliveryJob.Builder("delivery").setLocation(Location.newInstance("deliveryLoc")).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("startLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).addDelivery(delivery).build();
 
         TourActivity act = route.getActivities().get(0);
         assertEquals("delivery.delivery", act.getName());
         assertTrue(act instanceof DeliveryActivity);
-        assertTrue(((JobActivity) act).getJob() instanceof Delivery);
+        assertTrue(((JobActivity) act).getJob() instanceof DeliveryJob);
 
     }
 }

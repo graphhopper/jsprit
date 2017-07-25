@@ -35,8 +35,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -126,12 +126,12 @@ public class SolutionAnalyserTest {
                         .setLatestArrival(150.)
                         .build();
 
-        Pickup s1 = new Pickup.Builder("s1")
+        PickupJob s1 = new PickupJob.Builder("s1")
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .setLocation(Location.newInstance(-10, 1))
                         .addSizeDimension(0, 10)
                         .build();
-        Delivery s2 = new Delivery.Builder("s2")
+        DeliveryJob s2 = new DeliveryJob.Builder("s2")
                         .setLocation(Location.newInstance(-10, 10))
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .addSizeDimension(0, 20)
@@ -143,12 +143,12 @@ public class SolutionAnalyserTest {
                         .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
                         .build();
 
-        Pickup s3 = new Pickup.Builder("s3")
+        PickupJob s3 = new PickupJob.Builder("s3")
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1)))
                         .addSizeDimension(0, 10)
                         .build();
-        Delivery s4 = new Delivery.Builder("s4").setLocation(Location.newInstance(10, 10))
+        DeliveryJob s4 = new DeliveryJob.Builder("s4").setLocation(Location.newInstance(10, 10))
                         .addSizeDimension(0, 20)
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .build();

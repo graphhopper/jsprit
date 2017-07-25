@@ -61,7 +61,7 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
         /**
          * Protected method to set the type-name of the service.
          * <p>
-         * <p>Currently there are {@link AbstractSingleActivityJob}, {@link Pickup} and {@link Delivery}.
+         * <p>Currently there are {@link AbstractSingleActivityJob}, {@link PickupJob} and {@link DeliveryJob}.
          *
          * @param name the name of service
          * @return the builder

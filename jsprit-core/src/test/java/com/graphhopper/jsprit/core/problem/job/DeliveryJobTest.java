@@ -26,16 +26,16 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 
-public class DeliveryTest {
+public class DeliveryJobTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenNeitherLocationIdNorCoordIsSet_itThrowsException() {
-        new Delivery.Builder("p").build();
+        new DeliveryJob.Builder("p").build();
     }
 
     @Test
     public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
-        Delivery one = new Delivery.Builder("s").setLocation(Location.newInstance("foofoo"))
+        DeliveryJob one = new DeliveryJob.Builder("s").setLocation(Location.newInstance("foofoo"))
                         .addSizeDimension(0, 2)
                         .addSizeDimension(1, 4)
                         .build();
@@ -48,7 +48,7 @@ public class DeliveryTest {
 
     @Test
     public void sizeAtStartAndEndShouldBeCorrect() {
-        Delivery one = new Delivery.Builder("s").setLocation(Location.newInstance("foofoo"))
+        DeliveryJob one = new DeliveryJob.Builder("s").setLocation(Location.newInstance("foofoo"))
                         .addSizeDimension(0, 2)
                         .addSizeDimension(1, 4)
                         .build();
@@ -60,7 +60,7 @@ public class DeliveryTest {
 
     @Test
     public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero() {
-        Delivery one = new Delivery.Builder("s").setLocation(Location.newInstance("foofoo"))
+        DeliveryJob one = new DeliveryJob.Builder("s").setLocation(Location.newInstance("foofoo"))
                         .build();
         SizeDimension size = one.getActivity().getLoadChange();
         assertEquals(1, size.getNuOfDimensions());
@@ -69,7 +69,7 @@ public class DeliveryTest {
 
     @Test
     public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
-        Delivery one = new Delivery.Builder("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
+        DeliveryJob one = new DeliveryJob.Builder("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
                         .build();
         SizeDimension size = one.getActivity().getLoadChange().abs();
         assertEquals(1, size.getNuOfDimensions());
@@ -78,7 +78,7 @@ public class DeliveryTest {
 
     @Test
     public void whenAddingSkills_theyShouldBeAddedCorrectly() {
-        Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
+        DeliveryJob s = new DeliveryJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
@@ -86,7 +86,7 @@ public class DeliveryTest {
 
     @Test
     public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
-        Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
+        DeliveryJob s = new DeliveryJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("drilL"));
@@ -94,7 +94,7 @@ public class DeliveryTest {
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
-        Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
+        DeliveryJob s = new DeliveryJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
@@ -102,21 +102,21 @@ public class DeliveryTest {
 
     @Test
     public void nameShouldBeAssigned() {
-        Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
+        DeliveryJob s = new DeliveryJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .setName("name").build();
         assertEquals("name", s.getName());
     }
 
     @Test
     public void whenSettingPriorities_itShouldBeSetCorrectly() {
-        Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
+        DeliveryJob s = new DeliveryJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .setPriority(3).build();
         assertEquals(3, s.getPriority());
     }
 
     @Test
     public void whenNotSettingPriorities_defaultShouldBe() {
-        Delivery s = new Delivery.Builder("s").setLocation(Location.newInstance("loc"))
+        DeliveryJob s = new DeliveryJob.Builder("s").setLocation(Location.newInstance("loc"))
                         .build();
         assertEquals(2, s.getPriority());
     }
