@@ -32,7 +32,7 @@ import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.job.PickupJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
@@ -86,7 +86,7 @@ public class VehicleRoute {
      */
     public static class Builder {
 
-        private Map<Shipment, TourActivity> openActivities = new HashMap<>();
+        private Map<ShipmentJob, TourActivity> openActivities = new HashMap<>();
 
         /**
          * Returns new instance of this builder.
@@ -162,7 +162,7 @@ public class VehicleRoute {
         // private TourShipmentActivityFactory shipmentActivityFactory = new
         // DefaultShipmentActivityFactory();
 
-        private Set<Shipment> openShipments = new HashSet<>();
+        private Set<ShipmentJob> openShipments = new HashSet<>();
 
         private JobActivityFactory jobActivityFactory = new SimpleJobActivityFactory();
 
@@ -332,7 +332,7 @@ public class VehicleRoute {
          *
          * <p>
          * <i><b>Note: Using this method is not recommended. Use the
-         * {@linkplain #addPickup(Shipment, TimeWindow)} instead.</b></i>
+         * {@linkplain #addPickup(ShipmentJob, TimeWindow)} instead.</b></i>
          * </p>
          *
          * @param shipment
@@ -342,12 +342,12 @@ public class VehicleRoute {
          *             if method has already been called with the specified
          *             shipment.
          */
-        public Builder addPickup(Shipment shipment) {
+        public Builder addPickup(ShipmentJob shipment) {
             return addPickup(shipment,
                             shipment.getPickupActivity().getSingleTimeWindow());
         }
 
-        public Builder addPickup(Shipment shipment, TimeWindow pickupTimeWindow) {
+        public Builder addPickup(ShipmentJob shipment, TimeWindow pickupTimeWindow) {
             if (openShipments.contains(shipment)) {
                 throw new IllegalArgumentException("shipment has already been added. cannot add it twice.");
             }
@@ -367,7 +367,7 @@ public class VehicleRoute {
          *
          * <p>
          * <i><b>Note: Using this method is not recommended. Use the
-         * {@linkplain #addDelivery(Shipment, TimeWindow)} instead.</b></i>
+         * {@linkplain #addDelivery(ShipmentJob, TimeWindow)} instead.</b></i>
          * </p>
          *
          * @param shipment
@@ -377,11 +377,11 @@ public class VehicleRoute {
          *             if specified shipment has not been picked up yet (i.e.
          *             method addPickup(shipment) has not been called yet).
          */
-        public Builder addDelivery(Shipment shipment) {
+        public Builder addDelivery(ShipmentJob shipment) {
             return addDelivery(shipment, shipment.getDeliveryActivity().getSingleTimeWindow());
         }
 
-        public Builder addDelivery(Shipment shipment, TimeWindow deliveryTimeWindow) {
+        public Builder addDelivery(ShipmentJob shipment, TimeWindow deliveryTimeWindow) {
             if (openShipments.contains(shipment)) {
                 TourActivity act = openActivities.get(shipment);
                 act.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());

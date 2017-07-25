@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -63,11 +63,11 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		 * 4: (15,13)->(14,11)
 		 */
 
-        Shipment shipment1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(6, 9))).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("2").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(6, 11))).build();
+        ShipmentJob shipment1 = ShipmentJob.Builder.newInstance("1").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(6, 9))).build();
+        ShipmentJob shipment2 = ShipmentJob.Builder.newInstance("2").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(6, 11))).build();
 
-        Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 9))).build();
-        Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 11))).build();
+        ShipmentJob shipment3 = ShipmentJob.Builder.newInstance("3").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 9))).build();
+        ShipmentJob shipment4 = ShipmentJob.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 11))).build();
 
 		/*
          * build deliveries, (implicitly picked up in the depot)

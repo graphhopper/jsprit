@@ -42,7 +42,7 @@ import com.graphhopper.jsprit.core.problem.constraint.ServiceLoadActivityLevelCo
 import com.graphhopper.jsprit.core.problem.constraint.ServiceLoadRouteLevelConstraint;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
@@ -165,13 +165,13 @@ public class InitialRoutesTest {
                         .setType(type)
                         .build();
 
-        Shipment shipment = Shipment.Builder.newInstance("s")
+        ShipmentJob shipment = ShipmentJob.Builder.newInstance("s")
                         .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
                         .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
                         .addSizeDimension(0, 100)
                         .build();
 
-        Shipment another_shipment = Shipment.Builder.newInstance("another_s")
+        ShipmentJob another_shipment = ShipmentJob.Builder.newInstance("another_s")
                         .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
                         .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
                         .addSizeDimension(0, 50)

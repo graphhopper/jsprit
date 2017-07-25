@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.PickupJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -67,7 +67,7 @@ public class VehicleDependentTraveledDistanceTest {
 
     PickupJob pickup;
 
-    Shipment s1;
+    ShipmentJob s1;
 
     Map<Vehicle,Double> maxDistanceMap;
 
@@ -84,7 +84,7 @@ public class VehicleDependentTraveledDistanceTest {
         d1 = DeliveryJob.Builder.newInstance("d1").setLocation(Location.newInstance(10,10)).build();
         d2 = DeliveryJob.Builder.newInstance("d2").setLocation(Location.newInstance(20,15)).build();
         pickup = PickupJob.Builder.newInstance("pickup").setLocation(Location.newInstance(50,50)).build();
-        s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(35,30))
+        s1 = ShipmentJob.Builder.newInstance("s1").setPickupLocation(Location.newInstance(35,30))
             .setDeliveryLocation(Location.newInstance(20,25)).build();
 
         newDelivery = DeliveryJob.Builder.newInstance("new").setLocation(Location.newInstance(-10,10)).build();
@@ -264,7 +264,7 @@ vehicle2 (max distance): 180.0
 
     @Test
     public void whenAddingDeliverShipment_constraintShouldWork() {
-        Shipment shipment = Shipment.Builder.newInstance("s")
+        ShipmentJob shipment = ShipmentJob.Builder.newInstance("s")
             .setPickupLocation(Location.newInstance(0, 3))
             .setDeliveryLocation(Location.newInstance(4, 0))
             .build();
@@ -310,7 +310,7 @@ vehicle2 (max distance): 180.0
 
     @Test
     public void whenAddingDeliverShipmentWithVehDiffStartEndLocs_constraintShouldWork() {
-        Shipment shipment = Shipment.Builder.newInstance("s")
+        ShipmentJob shipment = ShipmentJob.Builder.newInstance("s")
             .setPickupLocation(Location.newInstance(0, 1))
             .setDeliveryLocation(Location.newInstance(4, 1))
             .build();

@@ -38,7 +38,7 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
@@ -129,7 +129,7 @@ public class TestLocalActivityInsertionCostsCalculator {
             .setStartLocation(Location.newInstance(0, 0))
             .setEndLocation(Location.newInstance(20, 0))
             .build();
-        Shipment s = Shipment.Builder.newInstance("p")
+        ShipmentJob s = ShipmentJob.Builder.newInstance("p")
             .setPickupLocation(Location.newInstance(10, 0))
             .setDeliveryLocation(Location.newInstance(10, 7.5))
             .build();

@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -102,8 +103,11 @@ public class Service extends AbstractJob {
     /**
      * Builder that builds a service.
      *
+     * @deprecated Use {@linkplain CustomJob.Builder} instead
+     *
      * @author schroeder
      */
+    @Deprecated
     public static class Builder<T extends Service> {
 
         /**
@@ -451,5 +455,36 @@ public class Service extends AbstractJob {
     protected void createActivities(JobBuilder<? extends AbstractJob, ?> jobBuilder) {
         // This is unused being a legacy implementation
     }
+
+    @Override
+    public int getIndex() {
+        return theRealJob.getIndex();
+    }
+
+    @Override
+    public void setIndex(int index) {
+        theRealJob.setIndex(index);
+    }
+
+    @Override
+    public List<Location> getAllLocations() {
+        return theRealJob.getAllLocations();
+    }
+
+    @Override
+    public SizeDimension getSizeAtStart() {
+        return theRealJob.getSizeAtStart();
+    }
+
+    @Override
+    public SizeDimension getSizeAtEnd() {
+        return theRealJob.getSizeAtEnd();
+    }
+
+    @Override
+    public JobActivityList getActivityList() {
+        return theRealJob.getActivityList();
+    }
+
 
 }

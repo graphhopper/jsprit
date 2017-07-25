@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
@@ -208,7 +208,7 @@ public class SolutionPrinter {
         int nServices = 0;
         int nBreaks = 0;
         for (Job j : problem.getJobs().values()) {
-            if (j instanceof Shipment) {
+            if (j instanceof ShipmentJob) {
                 nShipments++;
             }
             if (j instanceof ServiceJob) {

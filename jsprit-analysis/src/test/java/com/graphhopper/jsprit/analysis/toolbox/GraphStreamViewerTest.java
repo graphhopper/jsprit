@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.CustomJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -94,7 +94,7 @@ public class GraphStreamViewerTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
                 .setType(type).build();
-        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.newInstance(-5, 4))
+        ShipmentJob shipment = ShipmentJob.Builder.newInstance("shipment").setPickupLocation(Location.newInstance(-5, 4))
                 .addSizeDimension(0, 2).setDeliveryLocation(Location.newInstance(20, 10)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(Jsprit.createAlgorithm(vrp).searchSolutions());

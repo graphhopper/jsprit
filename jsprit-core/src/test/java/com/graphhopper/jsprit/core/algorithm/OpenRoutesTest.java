@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.distance.SphericalDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -50,7 +50,7 @@ public class OpenRoutesTest {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(11.)
                         .setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 0)))
+        ShipmentJob shipment = ShipmentJob.Builder.newInstance("s").setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 0)))
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(10, 0))).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
@@ -104,7 +104,7 @@ public class OpenRoutesTest {
                         .setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance()
                                         .setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 
-        Shipment shipment = Shipment.Builder.newInstance("s")
+        ShipmentJob shipment = ShipmentJob.Builder.newInstance("s")
                         .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build())
                         .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).build())
                         .build();

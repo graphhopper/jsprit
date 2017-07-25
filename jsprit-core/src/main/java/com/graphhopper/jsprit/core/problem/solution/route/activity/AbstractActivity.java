@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 
 public abstract class AbstractActivity implements TourActivity {
 
@@ -135,7 +135,7 @@ public abstract class AbstractActivity implements TourActivity {
     @Deprecated
     public static boolean isShipment(TourActivity activity) {
         return (activity instanceof JobActivity)
-                        && (((JobActivity) activity).getJob() instanceof Shipment);
+                        && (((JobActivity) activity).getJob() instanceof ShipmentJob);
     }
 
 }

@@ -32,7 +32,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsIm
  *
  * @author balage
  */
-public final class ReturnedShipment extends Shipment {
+public final class ReturnedShipment extends ShipmentJob {
 
     public static final String BACKHAUL_ACTIVITY_NAME = "backhaul";
 
@@ -42,7 +42,7 @@ public final class ReturnedShipment extends Shipment {
      * @author schroeder
      */
 
-    public static final class Builder extends Shipment.BuilderBase<ReturnedShipment, Builder> {
+    public static final class Builder extends ShipmentJob.BuilderBase<ReturnedShipment, Builder> {
 
         private double backhaulServiceTime = 0.0;
 

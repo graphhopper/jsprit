@@ -38,7 +38,7 @@ import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -81,7 +81,7 @@ public class SolutionAnalyserTest {
                         .addSizeDimension(0, 3)
                         .addRequiredSkill("skill2").addRequiredSkill("skill1")
                         .build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1")
+        ShipmentJob shipment1 = ShipmentJob.Builder.newInstance("ship1")
                         .setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
                         .addSizeDimension(0, 10)
@@ -96,7 +96,7 @@ public class SolutionAnalyserTest {
 
         ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(TestUtils.loc(Coordinate.newInstance(10, 10))).addSizeDimension(0, 3).build();
 
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
+        ShipmentJob shipment2 = ShipmentJob.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
                         .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).addSizeDimension(0, 10).build();
 
@@ -136,7 +136,7 @@ public class SolutionAnalyserTest {
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .addSizeDimension(0, 20)
                         .build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
+        ShipmentJob shipment1 = ShipmentJob.Builder.newInstance("ship1").setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
                         .addSizeDimension(0, 15)
                         .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
@@ -152,7 +152,7 @@ public class SolutionAnalyserTest {
                         .addSizeDimension(0, 20)
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .build();
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
+        ShipmentJob shipment2 = ShipmentJob.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
                         .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5)))
                         .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))

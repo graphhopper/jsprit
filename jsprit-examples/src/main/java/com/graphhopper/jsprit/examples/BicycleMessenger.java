@@ -45,7 +45,7 @@ import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -373,7 +373,7 @@ public class BicycleMessenger {
     }
 
     static double getTimeOfDirectRoute(Job job, Vehicle v, VehicleRoutingTransportCosts routingCosts) {
-        Shipment envelope = (Shipment) job;
+        ShipmentJob envelope = (ShipmentJob) job;
         return routingCosts.getTransportTime(v.getStartLocation(), envelope.getPickupActivity().getLocation(), 0.0, DriverImpl.noDriver(), v) +
                 routingCosts.getTransportTime(envelope.getPickupActivity().getLocation(), envelope.getDeliveryActivity().getLocation(), 0.0,
                         DriverImpl.noDriver(), v);
@@ -390,7 +390,7 @@ public class BicycleMessenger {
             }
             String[] tokens = line.split("\\s+");
             //define your envelope which is basically a shipment from A to B
-            Shipment envelope = Shipment.Builder.newInstance(tokens[1]).addSizeDimension(0, 1)
+            ShipmentJob envelope = ShipmentJob.Builder.newInstance(tokens[1]).addSizeDimension(0, 1)
                     .setPickupLocation(Location.Builder.newInstance()
                             .setCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]))).build())
                     .setDeliveryLocation(Location.Builder.newInstance()

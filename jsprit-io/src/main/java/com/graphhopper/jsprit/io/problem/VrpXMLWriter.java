@@ -41,7 +41,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.ServiceJob;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
@@ -177,7 +177,7 @@ public class VrpXMLWriter {
                     Job job = ((JobActivity) act).getJob();
                     if (job instanceof ServiceJob) {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").serviceId", job.getId());
-                    } else if (job instanceof Shipment) {
+                    } else if (job instanceof ShipmentJob) {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").shipmentId", job.getId());
                     } else if (job instanceof Break) {
                         xmlConfig.setProperty(path + "(" + routeCounter + ").act(" + actCounter + ").breakId", job.getId());
@@ -223,7 +223,7 @@ public class VrpXMLWriter {
                         } else if (job instanceof ServiceJob) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").serviceId",
                                     job.getId());
-                        } else if (job instanceof Shipment) {
+                        } else if (job instanceof ShipmentJob) {
                             xmlConfig.setProperty(solutionPath + "(" + counter + ").routes.route(" + routeCounter + ").act(" + actCounter + ").shipmentId",
                                     job.getId());
                         } else {
@@ -303,10 +303,10 @@ public class VrpXMLWriter {
         String shipmentPathString = "shipments.shipment";
         int counter = 0;
         for (Job j : jobs) {
-            if (!(j instanceof Shipment)) {
+            if (!(j instanceof ShipmentJob)) {
                 continue;
             }
-            Shipment shipment = (Shipment) j;
+            ShipmentJob shipment = (ShipmentJob) j;
             PickupActivity pickupActivity = shipment.getPickupActivity();
             DeliveryActivity deliveryActivity = shipment.getDeliveryActivity();
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ")[@id]", shipment.getId());
