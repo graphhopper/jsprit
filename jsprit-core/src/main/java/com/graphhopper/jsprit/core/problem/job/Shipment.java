@@ -596,4 +596,15 @@ public class Shipment extends AbstractJob {
         return true;
     }
 
+    public CustomJob getTheRealJob() {
+        return theRealJob;
+    }
+
+    public PickupActivity getTheRealPickupActivity() {
+        return theRealPickupActivity;
+    }
+
+    public DeliveryActivity getTheRealDeliveryActivity() {
+        return theRealDeliveryActivity;
+    }
 }

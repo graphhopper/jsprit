@@ -486,5 +486,12 @@ public class Service extends AbstractJob {
         return theRealJob.getActivityList();
     }
 
+    public CustomJob getTheRealJob() {
+        return theRealJob;
+    }
+
+    public ServiceActivity getTheRealActivity() {
+        return theRealActivity;
+    }
 
 }
