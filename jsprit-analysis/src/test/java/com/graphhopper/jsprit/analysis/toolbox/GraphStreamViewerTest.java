@@ -94,7 +94,7 @@ public class GraphStreamViewerTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
                 .setType(type).build();
-        ShipmentJob shipment = ShipmentJob.Builder.newInstance("shipment").setPickupLocation(Location.newInstance(-5, 4))
+        ShipmentJob shipment = new ShipmentJob.Builder("shipment").setPickupLocation(Location.newInstance(-5, 4))
                 .addSizeDimension(0, 2).setDeliveryLocation(Location.newInstance(20, 10)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(Jsprit.createAlgorithm(vrp).searchSolutions());

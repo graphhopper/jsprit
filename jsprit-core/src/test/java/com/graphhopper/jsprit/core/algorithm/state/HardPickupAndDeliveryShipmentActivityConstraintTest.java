@@ -60,7 +60,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
     public void doBefore() {
         s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance("loc")).build();
         s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance("loc")).build();
-        shipment = ShipmentJob.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 1).build();
+        shipment = new ShipmentJob.Builder("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 1).build();
 
 
         //		when(vehicle.getCapacity()).thenReturn(2);

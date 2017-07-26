@@ -17,25 +17,50 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
- * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
+ * Pickup job implementation.
+ * <p>
+ * Pickup is intend to represent a kind of job where something is loaded.
+ * </p>
+ *
+ * <h3>Warning!</h3>
+ * <p>
+ * This class and are here for convenience. Most of the time using the
+ * {@linkplain CustomJob} is a better choice. Note that this class may most
+ * likely be deprecated and be removed in the future.
+ * </p>
  *
  * @author schroeder
+ * @author Balage
+ *
+ * @see {@linkplain CustomJob.BuilderBase#addPickup(Location)}
+ * @see {@linkplain CustomJob.BuilderBase#addPickup(Location, SizeDimension)}
+ * @see {@linkplain CustomJob.BuilderBase#addPickup(Location, SizeDimension, double)}
+ * @see {@linkplain CustomJob.BuilderBase#addPickup(Location, SizeDimension, double, TimeWindow)}
  */
 public class PickupJob extends AbstractSingleActivityJob<PickupActivity> {
 
+    /**
+     * Builder for {@linkplain PickupJob}.
+     *
+     * @author Balage
+     */
     public static final class Builder
     extends AbstractSingleActivityJob.BuilderBase<PickupJob, Builder> {
 
+        /**
+         * Constructor.
+         *
+         * @param id
+         *            The unique id.
+         */
         public Builder(String id) {
             super(id);
             setType("pickup");
-        }
-
-        public static Builder newInstance(String id) {
-            return new Builder(id);
         }
 
         @Override
@@ -44,21 +69,21 @@ public class PickupJob extends AbstractSingleActivityJob<PickupActivity> {
         }
     }
 
-    PickupJob(Builder builder) {
+    private PickupJob(Builder builder) {
         super(builder);
     }
 
     @Override
     protected PickupActivity createActivity(
-                    AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-            return new PickupActivity(this, builder.type, builder.location, builder.serviceTime,
-                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
+            AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
+        return new PickupActivity(this, builder.type, builder.location, builder.serviceTime,
+                builder.getCapacity(), builder.timeWindows.getTimeWindows());
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Builder getBuilder(String id) {
-        return Builder.newInstance(id);
+        return new Builder(id);
     }
 
 }

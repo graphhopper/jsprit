@@ -52,6 +52,9 @@ public interface Job extends HasId, HasIndex {
     @Deprecated
     public SizeDimension getSize();
 
+    /**
+     * @return Returns the required skill set.
+     */
     public Skills getRequiredSkills();
 
     /**

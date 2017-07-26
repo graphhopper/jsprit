@@ -19,24 +19,49 @@ package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+
 
 /**
- * Delivery extends Service and is intended to model a Service where smth is UNLOADED (i.e. delivered) from a transport unit.
+ * Delivery job implementation.
+ * <p>
+ * Delivery is intend to represent a kind of job where something is unloaded.
+ * </p>
+ *
+ * <h3>Warning!</h3>
+ * <p>
+ * This class and are here for convenience. Most of the time using the
+ * {@linkplain CustomJob} is a better choice. Note that this class may most
+ * likely be deprecated and be removed in the future.
+ * </p>
  *
  * @author schroeder
+ * @author Balage
+ *
+ * @see {@linkplain CustomJob.BuilderBase#addDelivery(Location)}
+ * @see {@linkplain CustomJob.BuilderBase#addDelivery(Location, SizeDimension)}
+ * @see {@linkplain CustomJob.BuilderBase#addDelivery(Location, SizeDimension, double)}
+ * @see {@linkplain CustomJob.BuilderBase#addDelivery(Location, SizeDimension, double, TimeWindow)}
  */
 public class DeliveryJob extends AbstractSingleActivityJob<DeliveryActivity> {
 
+    /**
+     * Builder for {@linkplain PickupJob}.
+     *
+     * @author Balage
+     */
     public static final class Builder
     extends AbstractSingleActivityJob.BuilderBase<DeliveryJob, Builder> {
 
+        /**
+         * Constructor.
+         *
+         * @param id
+         *            The unique id.
+         */
         public Builder(String id) {
             super(id);
             setType("delivery");
-        }
-
-        public static Builder newInstance(String id) {
-            return new Builder(id);
         }
 
         @Override
@@ -45,17 +70,17 @@ public class DeliveryJob extends AbstractSingleActivityJob<DeliveryActivity> {
         }
     }
 
-    DeliveryJob(BuilderBase<? extends DeliveryJob, ?> builder) {
+    private DeliveryJob(BuilderBase<? extends DeliveryJob, ?> builder) {
         super(builder);
     }
 
 
     @Override
     protected DeliveryActivity createActivity(
-                    BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-            return new DeliveryActivity(this, builder.type, builder.location,
-                            builder.serviceTime,
-                            builder.getCapacity().invert(), builder.timeWindows.getTimeWindows());
+            BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
+        return new DeliveryActivity(this, builder.type, builder.location,
+                builder.serviceTime,
+                builder.getCapacity().invert(), builder.timeWindows.getTimeWindows());
     }
 
     @Override
@@ -67,7 +92,7 @@ public class DeliveryJob extends AbstractSingleActivityJob<DeliveryActivity> {
     @SuppressWarnings("unchecked")
     @Override
     public Builder getBuilder(String id) {
-        return Builder.newInstance(id);
+        return new Builder(id);
     }
 
 }

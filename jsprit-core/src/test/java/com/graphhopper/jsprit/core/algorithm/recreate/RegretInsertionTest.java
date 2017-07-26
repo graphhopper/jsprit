@@ -304,12 +304,12 @@ public class RegretInsertionTest {
 
     @Test
     public void shipment1ShouldBeAddedFirst() {
-        ShipmentJob s1 = ShipmentJob.Builder.newInstance("s1")
+        ShipmentJob s1 = new ShipmentJob.Builder("s1")
                         .setPickupLocation(Location.Builder.newInstance().setId("pick1").setCoordinate(Coordinate.newInstance(-1, 10)).build())
                         .setDeliveryLocation(Location.Builder.newInstance().setId("del1").setCoordinate(Coordinate.newInstance(1, 10)).build())
                         .build();
 
-        ShipmentJob s2 = ShipmentJob.Builder.newInstance("s2")
+        ShipmentJob s2 = new ShipmentJob.Builder("s2")
                         .setPickupLocation(Location.Builder.newInstance().setId("pick2").setCoordinate(Coordinate.newInstance(-1, 20)).build())
                         .setDeliveryLocation(Location.Builder.newInstance().setId("del2").setCoordinate(Coordinate.newInstance(1, 20)).build())
                         .build();

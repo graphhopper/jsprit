@@ -390,7 +390,7 @@ public class BicycleMessenger {
             }
             String[] tokens = line.split("\\s+");
             //define your envelope which is basically a shipment from A to B
-            ShipmentJob envelope = ShipmentJob.Builder.newInstance(tokens[1]).addSizeDimension(0, 1)
+            ShipmentJob envelope = new ShipmentJob.Builder(tokens[1]).addSizeDimension(0, 1)
                     .setPickupLocation(Location.Builder.newInstance()
                             .setCoordinate(Coordinate.newInstance(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]))).build())
                     .setDeliveryLocation(Location.Builder.newInstance()

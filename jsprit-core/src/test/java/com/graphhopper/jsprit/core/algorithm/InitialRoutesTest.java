@@ -165,13 +165,13 @@ public class InitialRoutesTest {
                         .setType(type)
                         .build();
 
-        ShipmentJob shipment = ShipmentJob.Builder.newInstance("s")
+        ShipmentJob shipment = new ShipmentJob.Builder("s")
                         .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
                         .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
                         .addSizeDimension(0, 100)
                         .build();
 
-        ShipmentJob another_shipment = ShipmentJob.Builder.newInstance("another_s")
+        ShipmentJob another_shipment = new ShipmentJob.Builder("another_s")
                         .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
                         .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
                         .addSizeDimension(0, 50)

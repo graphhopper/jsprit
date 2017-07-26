@@ -36,12 +36,10 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
  * See {@linkplain JobBuilder} for detailed instruction how to implement your
  * Job.
  * </p>
- * <p>
- * Created by schroeder on 14.07.14.
- * </p>
  *
  * @author schroeder
  * @author balage
+ *
  * @see JobBuilder
  */
 public abstract class AbstractJob implements Job {
@@ -49,16 +47,16 @@ public abstract class AbstractJob implements Job {
     /**
      * Base builder for all direct descendants.
      * <p>
-     * The is an abstract implementation of the builder pattern providing the
-     * base functionality for inheritence. When you create a new AbstractJob
+     * This is an abstract implementation of the builder pattern providing the
+     * base functionality for inheritance. When you create a new AbstractJob
      * implementation and would like to provide builder for it follow the
-     * guidlines below:
+     * guidelines below:
      * </p>
      * <p>
      * First of all, you have to decide whether you would like to create a final
-     * class (no further inheritence from it) or not. If you decide to make your
+     * class (no further inheritance from it) or not. If you decide to make your
      * implementation <code>final</code> you can make your concrete builder in
-     * one step, but make the Job class final to emphasize this fact.
+     * one step, but make the class final to emphasize this fact.
      * </p>
      * <p>
      * If you wish to allow your Job implementation to be extended, first create
@@ -68,11 +66,11 @@ public abstract class AbstractJob implements Job {
      *
      * <pre>
      * public static abstract class BuilderBase&lt;T extends MyJob, B extends BuilderBase&lt;T, B>>
-     *         extends JobBuilder&lt;T, B> {
+     *         extends AbstractJob.JobBuilder&lt;T, B> {
      * }
      * </pre>
      * <p>
-     * This implenetation should contain all new fields, the new setters
+     * This implementation should contain all new fields, the new setters
      * following the pattern:
      * <p>
      *
@@ -90,8 +88,8 @@ public abstract class AbstractJob implements Job {
      * getters are provided for the fields as well.
      * </p>
      * <p>
-     * This BuilderBase class is for the new descendents to base their Builder
-     * on. If you don't need to refere to this class outside the descedents,
+     * This BuilderBase class is for the new descendants to base their Builder
+     * on. If you don't need to refer to this class outside the descendants,
      * make it protected.
      * </p>
      * <p>
@@ -99,7 +97,7 @@ public abstract class AbstractJob implements Job {
      * complex generic pattern and makes it safe (see <a href=
      * "http://stackoverflow.com/questions/7354740/is-there-a-way-to-refer-to-the-current-type-with-a-type-variable">
      * the answer of this topic</a> for more information about the pitfalls of
-     * the self-refering generics pattern):
+     * the self-referring generic pattern):
      * <p>
      *
      * <pre>
@@ -160,24 +158,63 @@ public abstract class AbstractJob implements Job {
             return (B) this;
         }
 
+
+        /**
+         * Clones a size dimension structures by adding all dimensions to the
+         * job.
+         *
+         * @param size
+         *            The size dimensions to clone.
+         * @return the builder
+         */
+        @SuppressWarnings("unchecked")
+        public B addAllSizeDimensions(SizeDimension size) {
+            for (int i = 0; i < size.getNuOfDimensions(); i++) {
+                capacityBuilder.addDimension(i, size.get(i));
+            }
+            return (B) this;
+        }
+
+        /**
+         * Adds a user data object to the job.
+         *
+         * <p>
+         * This object can be any valid Java object and is a black box for the
+         * API. With the user object, the job van be decorated and associated
+         * with any custom information. This information is available anywhere
+         * the job is available (most probably in constraints).
+         * </p>
+         *
+         * @param userData
+         *            The data to associate.
+         * @return the builder
+         */
         @SuppressWarnings("unchecked")
         protected B addUserData(Object userData) {
             this.userData = userData;
             return (B) this;
         }
 
+        /**
+         * Adds a required skill to the job.
+         *
+         * @param skill
+         *            The skill to add.
+         * @return the builder
+         */
         @SuppressWarnings("unchecked")
         public B addRequiredSkill(String skill) {
             skillBuilder.addSkill(skill);
             return (B) this;
         }
 
-        @SuppressWarnings("unchecked")
-        public B setName(String name) {
-            this.name = name;
-            return (B) this;
-        }
-
+        /**
+         * Clones all skills and adds them to the job.
+         *
+         * @param skills
+         *            The skill set to clone.
+         * @return the builder
+         */
         @SuppressWarnings("unchecked")
         public B addAllRequiredSkills(Skills skills) {
             for (String s : skills.values()) {
@@ -186,11 +223,16 @@ public abstract class AbstractJob implements Job {
             return (B) this;
         }
 
+        /**
+         * Sets the name of the job.
+         *
+         * @param name
+         *            The name of the job.
+         * @return the builder
+         */
         @SuppressWarnings("unchecked")
-        public B addAllSizeDimensions(SizeDimension size) {
-            for (int i = 0; i < size.getNuOfDimensions(); i++) {
-                capacityBuilder.addDimension(i, size.get(i));
-            }
+        public B setName(String name) {
+            this.name = name;
             return (B) this;
         }
 
@@ -215,15 +257,13 @@ public abstract class AbstractJob implements Job {
         /**
          * Builds the job.
          * <p>
-         * <p>
-         * You never has to override this method. Override the
+         * <b> You never has to override this method. Override the
          * {@linkplain #validate()} and {@linkplain #createInstance()} methods
-         * instead. (See for detailed implementation guidlines at
-         * {@linkplain JobBuilder}!)
+         * instead. (See for detailed implementation guidelines at
+         * {@linkplain JobBuilder}!) </b>
          * </p>
          *
          * @return {@link T} The new implementation of the corresponding Job.
-         * @author balage
          * @see JobBuilder
          */
         public final T build() {
@@ -233,30 +273,62 @@ public abstract class AbstractJob implements Job {
             return job;
         }
 
+        /**
+         * Validates the settings. The implementation should throw exception
+         * when the values are inconsistent.
+         */
         protected abstract void validate();
 
+        /**
+         * Creates a new job instance.
+         * <p>
+         * This method is rarely overridden in the abstract base
+         * implementations, but in the concrete Builder classes. (See for
+         * detailed implementation guidelines at {@linkplain JobBuilder}!)
+         * </p>
+         *
+         * @return The new job instance.
+         */
         protected abstract T createInstance();
 
+        /**
+         * @return The constructed size dimension object.
+         */
         public SizeDimension getCapacity() {
             return capacityBuilder.build();
         }
 
+        /**
+         * @return The required skill set.
+         */
         public Skills getSkills() {
             return skillBuilder.build();
         }
 
+        /**
+         * @return The unique id of the job.
+         */
         public String getId() {
             return id;
         }
 
+        /**
+         * @return The (optional) name of the task.
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * @return The priority value of the task.
+         */
         public int getPriority() {
             return priority;
         }
 
+        /**
+         * @return The asssociated user data object.
+         */
         public Object getUserData() {
             return userData;
         }
@@ -273,11 +345,11 @@ public abstract class AbstractJob implements Job {
 
     private int priority;
 
-    protected List<Location> allLocations;
+    private List<Location> allLocations;
 
     private JobActivityList activityList;
 
-    protected Set<TimeWindow> allTimeWindows;
+    private Set<TimeWindow> allTimeWindows;
 
     private SizeDimension sizeAtStart;
 
@@ -301,6 +373,10 @@ public abstract class AbstractJob implements Job {
         userData = builder.getUserData();
     }
 
+    /**
+     * This package local constructor is for legacy job implementations.
+     */
+    @Deprecated
     AbstractJob() {
     }
 
@@ -309,12 +385,21 @@ public abstract class AbstractJob implements Job {
         return index;
     }
 
-    public void setIndex(int index) {
+    /**
+     * Sets the index of the job within the problem.
+     * <p>
+     * <b>This method isn't part of the public API and should not be called!</b>
+     * </p>
+     *
+     * @param index
+     *            The index.
+     */
+    public void impl_setIndex(int index) {
         this.index = index;
     }
 
     /**
-     * @return User-specific domain data associated by the job
+     * @return User-specific domain data associated with the job
      */
     public Object getUserData() {
         return userData;
@@ -331,6 +416,17 @@ public abstract class AbstractJob implements Job {
         return allLocations;
     }
 
+    /**
+     * This method prepares the caches, such as collected location and time
+     * window collections, and calculates the size at start and at the end.
+     *
+     * <p>
+     * Most of the time, you won't need to call this function directly, because
+     * it is called when the activities are created. However, you may override
+     * this method if you have your own caches to initialize in your Job
+     * implementation, but don't forget to call the super method.
+     * </p>
+     */
     protected void prepareCaches() {
         allLocations = new ArrayList<>();
         allTimeWindows = new LinkedHashSet<>();
@@ -359,10 +455,16 @@ public abstract class AbstractJob implements Job {
         }
     }
 
+    /**
+     * @return The size dimension at the start.
+     */
     public SizeDimension getSizeAtStart() {
         return sizeAtStart;
     }
 
+    /**
+     * @return The size dimension at the end.
+     */
     public SizeDimension getSizeAtEnd() {
         return sizeAtEnd;
     }
@@ -373,10 +475,10 @@ public abstract class AbstractJob implements Job {
      * <p>
      * This functions contract specifies that the implementation has to call
      * {@linkplain #prepareCaches()} function at the end, after all activities
-     * are added.
+     * are added or call the {@linkplain #setActivities(JobActivityList)} method
+     * which calls the above method implicitlely.
      * </p>
      */
-    // protected abstract void createActivities();
     protected abstract void createActivities(JobBuilder<? extends AbstractJob, ?> jobBuilder);
 
     @Override
@@ -388,9 +490,9 @@ public abstract class AbstractJob implements Job {
     }
 
     /**
-     * Two shipments are equal if they have the same id.
+     * Two jobs are equal if they have the same id.
      *
-     * @return true if shipments are equal (have the same id)
+     * @return true if the jobs are equal (have the same id)
      */
     @Override
     public boolean equals(Object obj) {
@@ -409,6 +511,16 @@ public abstract class AbstractJob implements Job {
         return true;
     }
 
+    /**
+     * Sets the activity list.
+     *
+     * <p>
+     * This method calls the {@linkplain #prepareCaches()} function.
+     * </p>
+     *
+     * @param list
+     *            The activity list
+     */
     protected void setActivities(JobActivityList list) {
         activityList = list;
         prepareCaches();

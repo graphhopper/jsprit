@@ -123,8 +123,8 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenShipmentsAreAdded_vrpShouldContainThem() {
-        ShipmentJob s = ShipmentJob.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foofoo").build()).setDeliveryLocation(Location.newInstance("foo")).build();
-        ShipmentJob s2 = ShipmentJob.Builder.newInstance("s2").addSizeDimension(0, 100).setPickupLocation(Location.Builder.newInstance().setId("foofoo").build()).setDeliveryLocation(Location.newInstance("foo")).build();
+        ShipmentJob s = new ShipmentJob.Builder("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foofoo").build()).setDeliveryLocation(Location.newInstance("foo")).build();
+        ShipmentJob s2 = new ShipmentJob.Builder("s2").addSizeDimension(0, 100).setPickupLocation(Location.Builder.newInstance().setId("foofoo").build()).setDeliveryLocation(Location.newInstance("foo")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(s);
         vrpBuilder.addJob(s2);
@@ -441,7 +441,7 @@ public class VehicleRoutingProblemTest {
     @Test
     public void whenAddingTwoJobs_theyShouldHaveProperIndeces() {
         ServiceJob service = new ServiceJob.Builder("myService").setLocation(Location.newInstance("loc")).build();
-        ShipmentJob shipment = ShipmentJob.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
+        ShipmentJob shipment = new ShipmentJob.Builder("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
                         .setDeliveryLocation(Location.newInstance("del")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service);
@@ -466,9 +466,9 @@ public class VehicleRoutingProblemTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenAddingTwoShipmentsWithTheSameId_itShouldThrowException() {
-        ShipmentJob shipment1 = ShipmentJob.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
+        ShipmentJob shipment1 = new ShipmentJob.Builder("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
                         .setDeliveryLocation(Location.newInstance("del")).build();
-        ShipmentJob shipment2 = ShipmentJob.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
+        ShipmentJob shipment2 = new ShipmentJob.Builder("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build())
                         .setDeliveryLocation(Location.newInstance("del")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(shipment1);

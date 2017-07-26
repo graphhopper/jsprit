@@ -563,8 +563,8 @@ public class Shipment extends AbstractJob {
     }
 
     @Override
-    public void setIndex(int index) {
-        theRealJob.setIndex(index);
+    public void impl_setIndex(int index) {
+        theRealJob.impl_setIndex(index);
     }
 
 

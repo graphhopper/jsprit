@@ -114,7 +114,7 @@ public class RuinWorstTest {
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).build();
         ServiceJob s3 = new ServiceJob.Builder("s3")
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
-        ShipmentJob shipment = ShipmentJob.Builder.newInstance("ship1")
+        ShipmentJob shipment = new ShipmentJob.Builder("ship1")
             .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(2, 2)).build())
             .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(9, 9)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
@@ -147,7 +147,7 @@ public class RuinWorstTest {
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).build();
         ServiceJob s3 = new ServiceJob.Builder("s3")
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
-        ShipmentJob shipment = ShipmentJob.Builder.newInstance("ship1")
+        ShipmentJob shipment = new ShipmentJob.Builder("ship1")
             .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build())
             .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10.1)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
@@ -184,7 +184,7 @@ public class RuinWorstTest {
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).build();
         ServiceJob s3 = new ServiceJob.Builder("s3")
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
-        ShipmentJob shipment = ShipmentJob.Builder.newInstance("ship1")
+        ShipmentJob shipment = new ShipmentJob.Builder("ship1")
             .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build())
             .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10.1)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")

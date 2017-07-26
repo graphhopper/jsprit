@@ -17,29 +17,47 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
  * Service implementation of a job.
+ *
+ * <h3>Warning!</h3>
  * <p>
- * <p>
- * <p>Note that two services are equal if they have the same id.
+ * This class and are here for convenience. Most of the time using the
+ * {@linkplain CustomJob} is a better choice. Note that this class may most
+ * likely be deprecated and be removed in the future.
+ * </p>
  *
  * @author schroeder
+ * @author Balage
+ *
+ * @see {@linkplain CustomJob.BuilderBase#addService(Location)}
+ * @see {@linkplain CustomJob.BuilderBase#addService(Location, SizeDimension)}
+ * @see {@linkplain CustomJob.BuilderBase#addService(Location, SizeDimension, double)}
+ * @see {@linkplain CustomJob.BuilderBase#addService(Location, SizeDimension, double, TimeWindow)}
  */
 public class ServiceJob extends AbstractSingleActivityJob<ServiceActivity> {
 
-
+    /**
+     * Builder for {@linkplain ServiceJob}.
+     *
+     * @author Balage
+     */
     public static final class Builder
     extends AbstractSingleActivityJob.BuilderBase<ServiceJob, Builder> {
 
+        /**
+         * Constructor.
+         *
+         * @param id
+         *            The unique id.
+         */
         public Builder(String id) {
             super(id);
             setType("pickup");
-        }
-
-        public static Builder newInstance(String id) {
-            return new Builder(id);
         }
 
         @Override
@@ -48,25 +66,22 @@ public class ServiceJob extends AbstractSingleActivityJob<ServiceActivity> {
         }
     }
 
-    ServiceJob(Builder builder) {
+    private ServiceJob(Builder builder) {
         super(builder);
     }
 
     @Override
     protected ServiceActivity createActivity(
-                    AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
+            AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
         return new ServiceActivity(this, builder.type,
-                        builder.location, builder.serviceTime, builder.getCapacity(),
-                        builder.timeWindows.getTimeWindows());
-        // return new PickupActivityNEW(this, builder.type, builder.location,
-        // builder.serviceTime,
-        // builder.getCapacity(), builder.timeWindows.getTimeWindows());
+                builder.location, builder.serviceTime, builder.getCapacity(),
+                builder.timeWindows.getTimeWindows());
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Builder getBuilder(String id) {
-        return Builder.newInstance(id);
+        return new Builder(id);
     }
 
 }

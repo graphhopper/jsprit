@@ -86,29 +86,29 @@ public class EnRoutePickupAndDeliveryWithMultipleDepotsAndOpenRoutesExample {
 
 		 */
 
-        ShipmentJob shipment1 = ShipmentJob.Builder.newInstance("1").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(loc(Coordinate.newInstance(6, 9))).build();
-        ShipmentJob shipment2 = ShipmentJob.Builder.newInstance("2").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 13))).setDeliveryLocation(loc(Coordinate.newInstance(6, 11))).build();
+        ShipmentJob shipment1 = new ShipmentJob.Builder("1").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(loc(Coordinate.newInstance(6, 9))).build();
+        ShipmentJob shipment2 = new ShipmentJob.Builder("2").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 13))).setDeliveryLocation(loc(Coordinate.newInstance(6, 11))).build();
 
-        ShipmentJob shipment3 = ShipmentJob.Builder.newInstance("3").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(loc(Coordinate.newInstance(14, 9))).build();
-        ShipmentJob shipment4 = ShipmentJob.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
+        ShipmentJob shipment3 = new ShipmentJob.Builder("3").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(loc(Coordinate.newInstance(14, 9))).build();
+        ShipmentJob shipment4 = new ShipmentJob.Builder("4").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
 
-        ShipmentJob shipment5 = ShipmentJob.Builder.newInstance("5").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(25, 27))).setDeliveryLocation(loc(Coordinate.newInstance(26, 29))).build();
-        ShipmentJob shipment6 = ShipmentJob.Builder.newInstance("6").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(25, 33))).setDeliveryLocation(loc(Coordinate.newInstance(26, 31))).build();
+        ShipmentJob shipment5 = new ShipmentJob.Builder("5").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(25, 27))).setDeliveryLocation(loc(Coordinate.newInstance(26, 29))).build();
+        ShipmentJob shipment6 = new ShipmentJob.Builder("6").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(25, 33))).setDeliveryLocation(loc(Coordinate.newInstance(26, 31))).build();
 
-        ShipmentJob shipment7 = ShipmentJob.Builder.newInstance("7").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(35, 27))).setDeliveryLocation(loc(Coordinate.newInstance(34, 29))).build();
-        ShipmentJob shipment8 = ShipmentJob.Builder.newInstance("8").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(35, 33))).setDeliveryLocation(loc(Coordinate.newInstance(34, 31))).build();
+        ShipmentJob shipment7 = new ShipmentJob.Builder("7").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(35, 27))).setDeliveryLocation(loc(Coordinate.newInstance(34, 29))).build();
+        ShipmentJob shipment8 = new ShipmentJob.Builder("8").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(35, 33))).setDeliveryLocation(loc(Coordinate.newInstance(34, 31))).build();
 
-        ShipmentJob shipment9 = ShipmentJob.Builder.newInstance("9").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 27))).setDeliveryLocation(loc(Coordinate.newInstance(6, 29))).build();
-        ShipmentJob shipment10 = ShipmentJob.Builder.newInstance("10").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 33))).setDeliveryLocation(loc(Coordinate.newInstance(6, 31))).build();
+        ShipmentJob shipment9 = new ShipmentJob.Builder("9").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 27))).setDeliveryLocation(loc(Coordinate.newInstance(6, 29))).build();
+        ShipmentJob shipment10 = new ShipmentJob.Builder("10").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 33))).setDeliveryLocation(loc(Coordinate.newInstance(6, 31))).build();
 
-        ShipmentJob shipment11 = ShipmentJob.Builder.newInstance("11").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 27))).setDeliveryLocation(loc(Coordinate.newInstance(14, 29))).build();
-        ShipmentJob shipment12 = ShipmentJob.Builder.newInstance("12").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 33))).setDeliveryLocation(loc(Coordinate.newInstance(14, 31))).build();
+        ShipmentJob shipment11 = new ShipmentJob.Builder("11").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 27))).setDeliveryLocation(loc(Coordinate.newInstance(14, 29))).build();
+        ShipmentJob shipment12 = new ShipmentJob.Builder("12").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 33))).setDeliveryLocation(loc(Coordinate.newInstance(14, 31))).build();
 
-        ShipmentJob shipment13 = ShipmentJob.Builder.newInstance("13").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(25, 7))).setDeliveryLocation(loc(Coordinate.newInstance(26, 9))).build();
-        ShipmentJob shipment14 = ShipmentJob.Builder.newInstance("14").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(25, 13))).setDeliveryLocation(loc(Coordinate.newInstance(26, 11))).build();
+        ShipmentJob shipment13 = new ShipmentJob.Builder("13").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(25, 7))).setDeliveryLocation(loc(Coordinate.newInstance(26, 9))).build();
+        ShipmentJob shipment14 = new ShipmentJob.Builder("14").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(25, 13))).setDeliveryLocation(loc(Coordinate.newInstance(26, 11))).build();
 
-        ShipmentJob shipment15 = ShipmentJob.Builder.newInstance("15").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(35, 7))).setDeliveryLocation(loc(Coordinate.newInstance(34, 9))).build();
-        ShipmentJob shipment16 = ShipmentJob.Builder.newInstance("16").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(35, 13))).setDeliveryLocation(loc(Coordinate.newInstance(34, 11))).build();
+        ShipmentJob shipment15 = new ShipmentJob.Builder("15").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(35, 7))).setDeliveryLocation(loc(Coordinate.newInstance(34, 9))).build();
+        ShipmentJob shipment16 = new ShipmentJob.Builder("16").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(35, 13))).setDeliveryLocation(loc(Coordinate.newInstance(34, 11))).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

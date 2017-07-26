@@ -36,7 +36,7 @@ public class VehicleRouteBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenDeliveryIsAddedBeforePickup_throwsException() {
-        ShipmentJob s = ShipmentJob.Builder.newInstance("s")
+        ShipmentJob s = new ShipmentJob.Builder("s")
                         .setDeliveryLocation(Location.newInstance("loc1")).build();
         VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
         builder.addDelivery(s);
@@ -147,7 +147,7 @@ public class VehicleRouteBuilderTest {
     protected Builder createStandardShipment(String name) {
         Location loc = Location.Builder.newInstance().setId("delLoc").build();
         TimeWindow tw = TimeWindow.newInstance(0, 10);
-        return ShipmentJob.Builder.newInstance(name)
+        return new ShipmentJob.Builder(name)
                         .addSizeDimension(0, 10)
                         .setPickupTimeWindow(tw)
                         .setDeliveryTimeWindow(tw)

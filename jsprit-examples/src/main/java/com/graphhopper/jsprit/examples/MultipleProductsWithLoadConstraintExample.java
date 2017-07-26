@@ -166,19 +166,19 @@ public class MultipleProductsWithLoadConstraintExample {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(loc(Coordinate.newInstance(0, 0)))
             .setType(type).build();
 
-        ShipmentJob bananas = ShipmentJob.Builder.newInstance("bananas_1").addSizeDimension(BANANAS_DIMENSION_INDEX, 1)
+        ShipmentJob bananas = new ShipmentJob.Builder("bananas_1").addSizeDimension(BANANAS_DIMENSION_INDEX, 1)
             .setPickupLocation(loc(Coordinate.newInstance(1, 8))).setDeliveryLocation(loc(Coordinate.newInstance(10, 8))).build();
 
-        ShipmentJob bananas_2 = ShipmentJob.Builder.newInstance("bananas_2").addSizeDimension(BANANAS_DIMENSION_INDEX, 1)
+        ShipmentJob bananas_2 = new ShipmentJob.Builder("bananas_2").addSizeDimension(BANANAS_DIMENSION_INDEX, 1)
             .setPickupLocation(loc(Coordinate.newInstance(2, 8))).setDeliveryLocation(loc(Coordinate.newInstance(11, 8))).build();
 
-        ShipmentJob bananas_3 = ShipmentJob.Builder.newInstance("bananas_3").addSizeDimension(BANANAS_DIMENSION_INDEX, 1)
+        ShipmentJob bananas_3 = new ShipmentJob.Builder("bananas_3").addSizeDimension(BANANAS_DIMENSION_INDEX, 1)
             .setPickupLocation(loc(Coordinate.newInstance(3, 8))).setDeliveryLocation(loc(Coordinate.newInstance(12, 8))).build();
 
-        ShipmentJob apples = ShipmentJob.Builder.newInstance("apples_1").addSizeDimension(APPLES_DIMENSION_INDEX, 1)
+        ShipmentJob apples = new ShipmentJob.Builder("apples_1").addSizeDimension(APPLES_DIMENSION_INDEX, 1)
             .setPickupLocation(loc(Coordinate.newInstance(1, 6))).setDeliveryLocation(loc(Coordinate.newInstance(10, 12))).build();
 
-        ShipmentJob apples_2 = ShipmentJob.Builder.newInstance("apples_2").addSizeDimension(APPLES_DIMENSION_INDEX, 1)
+        ShipmentJob apples_2 = new ShipmentJob.Builder("apples_2").addSizeDimension(APPLES_DIMENSION_INDEX, 1)
             .setPickupLocation(loc(Coordinate.newInstance(1, 5))).setDeliveryLocation(loc(Coordinate.newInstance(10, 11))).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE)

@@ -128,7 +128,7 @@ public class LiLimReader {
             String from = rel.from;
             String to = rel.to;
             int demand = rel.demand;
-            ShipmentJob s = ShipmentJob.Builder.newInstance(counter.toString()).addSizeDimension(0, demand)
+            ShipmentJob s = new ShipmentJob.Builder(counter.toString()).addSizeDimension(0, demand)
                 .setPickupLocation(Location.Builder.newInstance().setCoordinate(customers.get(from).coord).build()).setPickupServiceTime(customers.get(from).serviceTime)
                 .setPickupTimeWindow(TimeWindow.newInstance(customers.get(from).start, customers.get(from).end))
                 .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(customers.get(to).coord).build()).setDeliveryServiceTime(customers.get(to).serviceTime)

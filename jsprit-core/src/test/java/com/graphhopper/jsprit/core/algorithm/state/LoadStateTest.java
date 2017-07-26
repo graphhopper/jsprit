@@ -74,8 +74,8 @@ public class LoadStateTest {
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder shipmentProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        ShipmentJob shipment1 = ShipmentJob.Builder.newInstance("s1").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
-        ShipmentJob shipment2 = ShipmentJob.Builder.newInstance("s2").addSizeDimension(0, 5).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
+        ShipmentJob shipment1 = new ShipmentJob.Builder("s1").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
+        ShipmentJob shipment2 = new ShipmentJob.Builder("s2").addSizeDimension(0, 5).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
         shipmentProblemBuilder.addJob(shipment1).addJob(shipment2).build();
         final VehicleRoutingProblem shipmentProblem = shipmentProblemBuilder.build();
 

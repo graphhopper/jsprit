@@ -404,9 +404,9 @@ public class VrpXMLReader {
 
             ShipmentJob.Builder builder;
             if (capacityString != null) {
-                builder = ShipmentJob.Builder.newInstance(id).addSizeDimension(0, Integer.parseInt(capacityString));
+                builder = new ShipmentJob.Builder(id).addSizeDimension(0, Integer.parseInt(capacityString));
             } else {
-                builder = ShipmentJob.Builder.newInstance(id);
+                builder = new ShipmentJob.Builder(id);
                 List<HierarchicalConfiguration> dimensionConfigs = shipmentConfig.configurationsAt("capacity-dimensions.dimension");
                 for (HierarchicalConfiguration dimension : dimensionConfigs) {
                     Integer index = dimension.getInt("[@index]");

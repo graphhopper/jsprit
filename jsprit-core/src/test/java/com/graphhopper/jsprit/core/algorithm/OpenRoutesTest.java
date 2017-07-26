@@ -50,7 +50,7 @@ public class OpenRoutesTest {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(11.)
                         .setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 
-        ShipmentJob shipment = ShipmentJob.Builder.newInstance("s").setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 0)))
+        ShipmentJob shipment = new ShipmentJob.Builder("s").setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 0)))
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(10, 0))).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
@@ -104,7 +104,7 @@ public class OpenRoutesTest {
                         .setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance()
                                         .setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
 
-        ShipmentJob shipment = ShipmentJob.Builder.newInstance("s")
+        ShipmentJob shipment = new ShipmentJob.Builder("s")
                         .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build())
                         .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).build())
                         .build();

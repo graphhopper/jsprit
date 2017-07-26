@@ -69,14 +69,14 @@ public class SimpleEnRoutePickupAndDeliveryWithDepotBoundedDeliveriesExample {
          * (5,13)->(6,11) 3: (15,7)->(14,9) 4: (15,13)->(14,11)
          */
 
-        ShipmentJob shipment1 = ShipmentJob.Builder.newInstance("1").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 7)))
+        ShipmentJob shipment1 = new ShipmentJob.Builder("1").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 7)))
             .setDeliveryLocation(loc(Coordinate.newInstance(6, 9))).build();
-        ShipmentJob shipment2 = ShipmentJob.Builder.newInstance("2").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 13)))
+        ShipmentJob shipment2 = new ShipmentJob.Builder("2").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(5, 13)))
             .setDeliveryLocation(loc(Coordinate.newInstance(6, 11))).build();
 
-        ShipmentJob shipment3 = ShipmentJob.Builder.newInstance("3").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 7)))
+        ShipmentJob shipment3 = new ShipmentJob.Builder("3").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 7)))
             .setDeliveryLocation(loc(Coordinate.newInstance(14, 9))).build();
-        ShipmentJob shipment4 = ShipmentJob.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13)))
+        ShipmentJob shipment4 = new ShipmentJob.Builder("4").addSizeDimension(0, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13)))
             .setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
 //
         /*

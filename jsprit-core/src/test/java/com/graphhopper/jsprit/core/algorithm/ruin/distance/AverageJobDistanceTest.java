@@ -57,15 +57,15 @@ public class AverageJobDistanceTest {
 
     @Test
     public void distanceOfTwoEqualShipmentsShouldBeSmallerThanAnyOtherDistance() {
-        ShipmentJob s1 = ShipmentJob.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
-        ShipmentJob s2 = ShipmentJob.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
+        ShipmentJob s1 = new ShipmentJob.Builder("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
+        ShipmentJob s2 = new ShipmentJob.Builder("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
 
         double dist = new DefaultJobDistance(routingCosts).getDistance(s1, s2);
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                ShipmentJob other1 = ShipmentJob.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance(i + "," + j)).build();
-                ShipmentJob other2 = ShipmentJob.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
+                ShipmentJob other1 = new ShipmentJob.Builder("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance(i + "," + j)).build();
+                ShipmentJob other2 = new ShipmentJob.Builder("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
                 double dist2 = new DefaultJobDistance(routingCosts).getDistance(other1, other2);
                 assertTrue(dist <= dist2 + dist2 * 0.001);
             }

@@ -336,13 +336,13 @@ public class MeetTimeWindowConstraint_IT {
         ServiceJob s7 = new ServiceJob.Builder("7").setLocation(Location.Builder.newInstance().setIndex(7).setId("jsp3").build())
             .setServiceTime(5594).build();
 
-        ShipmentJob shipment1 = ShipmentJob.Builder.newInstance("shipment1")
+        ShipmentJob shipment1 = new ShipmentJob.Builder("shipment1")
             .setPickupServiceTime(900)
             .setPickupLocation(Location.Builder.newInstance().setId("jsp1").setIndex(1).build())
             .setDeliveryLocation(Location.Builder.newInstance().setId("jsd1").setIndex(8).build())
             .setDeliveryServiceTime(900).build();
 
-        ShipmentJob shipment2 = ShipmentJob.Builder.newInstance("shipment2")
+        ShipmentJob shipment2 = new ShipmentJob.Builder("shipment2")
             .setPickupLocation(Location.Builder.newInstance().setId("jsp4").setIndex(9).build())
             .setPickupServiceTime(1200)
             .addPickupTimeWindow(21600, 23400)
@@ -351,7 +351,7 @@ public class MeetTimeWindowConstraint_IT {
             .addDeliveryTimeWindow(25200, 27000)
             .build();
 
-        ShipmentJob shipment3 = ShipmentJob.Builder.newInstance("shipment3")
+        ShipmentJob shipment3 = new ShipmentJob.Builder("shipment3")
             .setPickupLocation(Location.Builder.newInstance().setId("jsp7").setIndex(9).build())
             .setPickupServiceTime(1200)
             .addPickupTimeWindow(37800, 41400)
@@ -360,7 +360,7 @@ public class MeetTimeWindowConstraint_IT {
             .addDeliveryTimeWindow(43200, 45900)
             .build();
 
-        ShipmentJob shipment4 = ShipmentJob.Builder.newInstance("shipment4")
+        ShipmentJob shipment4 = new ShipmentJob.Builder("shipment4")
             .setPickupLocation(Location.Builder.newInstance().setId("jsp9").setIndex(10).build())
             .setPickupServiceTime(300)
             .addPickupTimeWindow(45000, 48600)
