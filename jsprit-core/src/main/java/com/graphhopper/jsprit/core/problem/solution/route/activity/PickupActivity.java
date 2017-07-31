@@ -23,13 +23,44 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 
+/**
+ * A {@linkplain JobActivity} representing a activity where something is picked
+ * up (loaded to the vehicle).
+ *
+ * @author Balage
+ */
 public class PickupActivity extends JobActivity {
 
+    /**
+     * Constructor.
+     *
+     * @param job
+     *            The job the activity is part of.
+     * @param type
+     *            The type of the activity.
+     * @param location
+     *            The location of the activity.
+     * @param operationTime
+     *            The duration of the activity.
+     * @param capacity
+     *            The cargo change of the activity.
+     * @param timeWindows
+     *            The time windows of the activity.
+     */
     public PickupActivity(AbstractJob job, String name, Location location, double operationTime,
-                    SizeDimension capacity, Collection<TimeWindow> timeWindows) {
+            SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity, timeWindows);
     }
 
+    /**
+     * Copy constructor.
+     * <p>
+     * This makes a <b>shallow</b> copy of the <code>sourceActivity</code>.
+     * </p>
+     *
+     * @param sourceActivity
+     *            The activity to copy.
+     */
     public PickupActivity(PickupActivity sourceActivity) {
         super(sourceActivity);
     }

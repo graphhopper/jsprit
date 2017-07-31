@@ -23,16 +23,50 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 
+/**
+ * A {@linkplain JobActivity} representing a activity where something is served.
+ * Theoretically no cargo change is involved, although, for historical reason,
+ * the constructor allows to pass a capacity. When a non-empty capacity is
+ * passed the service acts as an {@linkplain ExchangeActivity}.
+ *
+ * @author Balage
+ */
 public class ServiceActivity extends JobActivity {
 
+    /**
+     * Constructor.
+     *
+     * @param job
+     *            The job the activity is part of.
+     * @param type
+     *            The type of the activity.
+     * @param location
+     *            The location of the activity.
+     * @param operationTime
+     *            The duration of the activity.
+     * @param capacity
+     *            The cargo change of the activity. It should be null or
+     *            {@linkplain SizeDimension#EMPTY}, although it is not enforced.
+     * @param timeWindows
+     *            The time windows of the activity.
+     */
     public ServiceActivity(AbstractJob job, String type, Location location, double operationTime,
-                    SizeDimension capacity, Collection<TimeWindow> timeWindows) {
+            SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(job, type, location, operationTime, capacity, timeWindows);
     }
 
 
+    /**
+     * Copy constructor.
+     * <p>
+     * This makes a <b>shallow</b> copy of the <code>sourceActivity</code>.
+     * </p>
+     *
+     * @param sourceActivity
+     *            The activity to copy.
+     */
     public ServiceActivity(ServiceActivity sourceActivity) {
-        super(sourceActivity);
-    }
+         super(sourceActivity);
+     }
 
 }

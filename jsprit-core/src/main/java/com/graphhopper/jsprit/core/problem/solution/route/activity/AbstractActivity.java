@@ -6,8 +6,26 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 
+/**
+ * Abstract base class for all activities.
+ *
+ * <p>
+ * Activities are the atomic building blocks of a problem. Each activity has its
+ * type, location, duration (operation time), cargo change.
+ * </p>
+ * <p>
+ * There are internal activities, ones only the algorithm could create. These
+ * activities are marked by the {@linkplain InternalActivityMarker} marker
+ * interface. Activities may belong to a {@linkplain Job}, these activities are
+ * the descendants of the {@linkplain JobActivity} base class.
+ * </p>
+ *
+ * @author Balage
+ *
+ */
 public abstract class AbstractActivity implements TourActivity {
 
     private int index;
@@ -19,7 +37,16 @@ public abstract class AbstractActivity implements TourActivity {
     protected String type;
     protected Location location;
 
-
+    /**
+     * Constructor.
+     *
+     * @param type
+     *            The type of the activity.
+     * @param location
+     *            The location of the activity.
+     * @param loadChange
+     *            The cargo change of the activity.
+     */
     public AbstractActivity(String type, Location location, SizeDimension loadChange) {
         super();
         this.loadChange = loadChange;
@@ -28,6 +55,15 @@ public abstract class AbstractActivity implements TourActivity {
     }
 
 
+    /**
+     * Copy constructor.
+     * <p>
+     * This makes a <b>shallow</b> copy of the <code>sourceActivity</code>.
+     * </p>
+     *
+     * @param sourceActivity
+     *            The activity to copy.
+     */
     public AbstractActivity(AbstractActivity sourceActivity) {
         arrTime = sourceActivity.getArrTime();
         endTime = sourceActivity.getEndTime();
@@ -111,9 +147,9 @@ public abstract class AbstractActivity implements TourActivity {
     @Override
     public String toString() {
         return "[name=" + getName() + "][locationId=" + getLocation().getId()
-                        + "][size=" + getLoadChange().toString()
-                        + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-                        + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+                + "][size=" + getLoadChange().toString()
+                + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
+                + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
     }
 
 
@@ -125,17 +161,18 @@ public abstract class AbstractActivity implements TourActivity {
             Constructor<? extends AbstractActivity> constructor = getClass().getConstructor(getClass());
             return constructor.newInstance(this);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException e) {
+                | InvocationTargetException e) {
             System.out.println(this.getClass().getCanonicalName() + " : " + this);
             throw new IllegalStateException(e);
         }
     }
 
     // Temporal solution unto eliminated dependency on job type
+    // TODO: remove
     @Deprecated
     public static boolean isShipment(TourActivity activity) {
         return (activity instanceof JobActivity)
-                        && (((JobActivity) activity).getJob() instanceof ShipmentJob);
+                && (((JobActivity) activity).getJob() instanceof ShipmentJob);
     }
 
 }

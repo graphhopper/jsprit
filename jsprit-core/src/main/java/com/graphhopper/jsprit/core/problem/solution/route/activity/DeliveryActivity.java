@@ -24,15 +24,46 @@ import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.SizeDimension.SizeDimensionSign;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 
+/**
+ * A {@linkplain JobActivity} representing a activity where something is
+ * delivered (unloaded from the vehicle).
+ *
+ * @author Balage
+ */
 public class DeliveryActivity extends JobActivity {
 
-
+    /**
+     * Constructor.
+     *
+     * @param job
+     *            The job the activity is part of.
+     * @param type
+     *            The type of the activity.
+     * @param location
+     *            The location of the activity.
+     * @param operationTime
+     *            The duration of the activity.
+     * @param capacity
+     *            The cargo change of the activity. If the value is positive, it
+     *            is negated.
+     * @param timeWindows
+     *            The time windows of the activity.
+     */
     public DeliveryActivity(AbstractJob job, String name, Location location,
-                    double operationTime, SizeDimension capacity, Collection<TimeWindow> timeWindows) {
+            double operationTime, SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity.sign() == SizeDimensionSign.POSITIVE
-                        ? capacity.invert() : capacity, timeWindows);
+                ? capacity.invert() : capacity, timeWindows);
     }
 
+    /**
+     * Copy constructor.
+     * <p>
+     * This makes a <b>shallow</b> copy of the <code>sourceActivity</code>.
+     * </p>
+     *
+     * @param sourceActivity
+     *            The activity to copy.
+     */
     public DeliveryActivity(DeliveryActivity sourceActivity) {
         super(sourceActivity);
     }

@@ -25,24 +25,44 @@ import com.graphhopper.jsprit.core.problem.job.AbstractJob;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Break.Builder;
 
+/**
+ * An {@linkplain InternalJobActivity} marking the break time of the vehicle.
+ *
+ * @author Balage
+ *
+ */
 public class BreakActivity extends InternalJobActivity {
 
+    /**
+     * Creates a new Break activity instance.
+     *
+     * @param aBreak
+     *            The {@linkplain Break} job instance to associate the activity
+     *            with.
+     * @param builder
+     *            The Break job builder.
+     * @return The new break instance.
+     */
     public static BreakActivity newInstance(Break aBreak, Builder builder) {
         return new BreakActivity(aBreak, "break", builder.getLocation(), builder.getServiceTime(),
-                        builder.getCapacity(), builder.getTimeWindows().getTimeWindows());
+                builder.getCapacity(), builder.getTimeWindows().getTimeWindows());
     }
 
-    // protected BreakActivity(Break aBreak) {
-    // super(aBreak, "Break", aBreak.getLocation(), aBreak.getServiceDuration(),
-    // SizeDimension.createNullCapacity(aBreak.getSize()), aBreak.getTimeWindows());
-    // }
-
+    /**
+     * Copy constructor.
+     * <p>
+     * Makes a shallow copy.
+     * </p>
+     *
+     * @param breakActivity
+     *            The activity to copy.
+     */
     public BreakActivity(BreakActivity breakActivity) {
         super(breakActivity);
     }
 
     private BreakActivity(AbstractJob job, String name, Location location, double operationTime,
-                    SizeDimension capacity, Collection<TimeWindow> timeWindows) {
+            SizeDimension capacity, Collection<TimeWindow> timeWindows) {
         super(job, name, location, operationTime, capacity, timeWindows);
     }
 
@@ -67,31 +87,35 @@ public class BreakActivity extends InternalJobActivity {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         BreakActivity other = (BreakActivity) obj;
         if (getJob() == null) {
-            if (other.getJob() != null) {
+            if (other.getJob() != null)
                 return false;
-            }
-        } else if (!getJob().equals(other.getJob())) {
+        } else if (!getJob().equals(other.getJob()))
             return false;
-        }
         return true;
     }
 
 
+    /**
+     * Sets the location of the break.
+     *
+     * @param location
+     *            The location.
+     */
     public void setLocation(Location breakLocation) {
         location = breakLocation;
     }
 
+    /**
+     * @return The time window of the break.
+     */
     public TimeWindow getTimeWindow() {
         // Break has always a single time window
         return getSingleTimeWindow();
