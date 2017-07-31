@@ -35,6 +35,18 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
 /**
+ * This is a general purpose, highly configurable job.
+ *
+ * <p>
+ * This job offers enough flexibility for most of the problems. It could hold
+ * any number of sequential activities. With the <code>userData</code> field,
+ * any associated business data can be linked to the job.
+ * </p>
+ *
+ * <p>
+ * For details see its {@linkplain Builder}.
+ * </p>
+ *
  * Created by schroeder on 16/11/16.
  *
  * @author schroeder
@@ -42,8 +54,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsIm
  */
 public class CustomJob extends AbstractJob {
 
-
-    public static abstract class BuilderBase<T extends CustomJob, B extends CustomJob.BuilderBase<T, B>>
+    protected static abstract class BuilderBase<T extends CustomJob, B extends CustomJob.BuilderBase<T, B>>
     extends JobBuilder<T, B> {
 
         public enum ActivityType {
@@ -52,7 +63,7 @@ public class CustomJob extends AbstractJob {
                 @Override
                 public JobActivity create(CustomJob job, BuilderActivityInfo info) {
                     return new ServiceActivity(job, info.getName() == null ? name().toLowerCase() : info.getName(),
-                                    info.getLocation(), info.getOperationTime(), info.getSize(), prepareTimeWindows(info));
+                            info.getLocation(), info.getOperationTime(), info.getSize(), prepareTimeWindows(info));
                 }
             },
             PICKUP {
@@ -60,7 +71,7 @@ public class CustomJob extends AbstractJob {
                 @Override
                 public JobActivity create(CustomJob job, BuilderActivityInfo info) {
                     return new PickupActivity(job, info.getName() == null ? name().toLowerCase() : info.getName(),
-                                    info.getLocation(), info.getOperationTime(), info.getSize(), prepareTimeWindows(info));
+                            info.getLocation(), info.getOperationTime(), info.getSize(), prepareTimeWindows(info));
                 }
             },
             DELIVERY {
@@ -68,7 +79,7 @@ public class CustomJob extends AbstractJob {
                 @Override
                 public JobActivity create(CustomJob job, BuilderActivityInfo info) {
                     return new DeliveryActivity(job, info.getName() == null ? name().toLowerCase() : info.getName(),
-                                    info.getLocation(), info.getOperationTime(), info.getSize(), prepareTimeWindows(info));
+                            info.getLocation(), info.getOperationTime(), info.getSize(), prepareTimeWindows(info));
                 }
             },
             EXCHANGE {
@@ -76,7 +87,7 @@ public class CustomJob extends AbstractJob {
                 @Override
                 public JobActivity create(CustomJob job, BuilderActivityInfo info) {
                     return new ExchangeActivity(job, info.getName() == null ? name().toLowerCase() : info.getName(),
-                                    info.getLocation(), info.getOperationTime(), info.getSize(), prepareTimeWindows(info));
+                            info.getLocation(), info.getOperationTime(), info.getSize(), prepareTimeWindows(info));
                 }
             };
 
@@ -168,14 +179,15 @@ public class CustomJob extends AbstractJob {
             super(id);
         }
 
-        public BuilderBase<T, B> addActivity(BuilderActivityInfo act) {
+        @SuppressWarnings("unchecked")
+        public B addActivity(BuilderActivityInfo act) {
             acts.add(act);
-            return this;
+            return (B) this;
         }
 
 
         private void add(ActivityType type, Location location, double operationTime, SizeDimension size, String name,
-                        Collection<TimeWindow> tws) {
+                Collection<TimeWindow> tws) {
             BuilderActivityInfo builderActivityInfo = new BuilderActivityInfo(type, location);
             builderActivityInfo.withOperationTime(operationTime);
             if (name != null) {
@@ -193,102 +205,117 @@ public class CustomJob extends AbstractJob {
 
         // Service
 
-        public CustomJob.BuilderBase<T, B> addService(Location location) {
+        @SuppressWarnings("unchecked")
+        public B addService(Location location) {
             add(ActivityType.SERVICE, location, 0d, null, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addService(Location location, SizeDimension size) {
+        @SuppressWarnings("unchecked")
+        public B addService(Location location, SizeDimension size) {
             add(ActivityType.SERVICE, location, 0d, size, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addService(Location location, SizeDimension size, double operationTime) {
+        @SuppressWarnings("unchecked")
+        public B addService(Location location, SizeDimension size, double operationTime) {
             add(ActivityType.SERVICE, location, operationTime, size, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addService(Location location, SizeDimension size, double operationTime,
-                        TimeWindow tw) {
+        @SuppressWarnings("unchecked")
+        public B addService(Location location, SizeDimension size, double operationTime,
+                TimeWindow tw) {
             add(ActivityType.SERVICE, location, operationTime, size, null, Collections.singleton(tw));
-            return this;
+            return (B) this;
         }
 
 
         // Pickup
 
-        public CustomJob.BuilderBase<T, B> addPickup(Location location) {
+        @SuppressWarnings("unchecked")
+        public B addPickup(Location location) {
             add(ActivityType.PICKUP, location, 0d, null, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addPickup(Location location, SizeDimension size) {
+        @SuppressWarnings("unchecked")
+        public B addPickup(Location location, SizeDimension size) {
             add(ActivityType.PICKUP, location, 0d, size, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addPickup(Location location, SizeDimension size, double operationTime) {
+        @SuppressWarnings("unchecked")
+        public B addPickup(Location location, SizeDimension size, double operationTime) {
             add(ActivityType.PICKUP, location, operationTime, size, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addPickup(Location location, SizeDimension size, double operationTime,
-                        TimeWindow tw) {
+        @SuppressWarnings("unchecked")
+        public B addPickup(Location location, SizeDimension size, double operationTime,
+                TimeWindow tw) {
             add(ActivityType.PICKUP, location, operationTime, size, null, Collections.singleton(tw));
-            return this;
+            return (B) this;
         }
 
         // Delivery
 
-        public CustomJob.BuilderBase<T, B> addDelivery(Location location) {
+        @SuppressWarnings("unchecked")
+        public B addDelivery(Location location) {
             add(ActivityType.DELIVERY, location, 0d, null, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addDelivery(Location location, SizeDimension size) {
+        @SuppressWarnings("unchecked")
+        public B addDelivery(Location location, SizeDimension size) {
             add(ActivityType.DELIVERY, location, 0d, size, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addDelivery(Location location, SizeDimension size, double operationTime) {
+        @SuppressWarnings("unchecked")
+        public B addDelivery(Location location, SizeDimension size, double operationTime) {
             add(ActivityType.DELIVERY, location, operationTime, size, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addDelivery(Location location, SizeDimension size, double operationTime,
-                        TimeWindow tw) {
+        @SuppressWarnings("unchecked")
+        public B addDelivery(Location location, SizeDimension size, double operationTime,
+                TimeWindow tw) {
             add(ActivityType.DELIVERY, location, operationTime, size, null, Collections.singleton(tw));
-            return this;
+            return (B) this;
         }
 
         // Exchange
 
-        public CustomJob.BuilderBase<T, B> addExchange(Location location) {
+        @SuppressWarnings("unchecked")
+        public B addExchange(Location location) {
             add(ActivityType.EXCHANGE, location, 0d, null, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addExchange(Location location, SizeDimension size) {
+        @SuppressWarnings("unchecked")
+        public B addExchange(Location location, SizeDimension size) {
             add(ActivityType.EXCHANGE, location, 0d, size, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addExchange(Location location, SizeDimension size, double operationTime) {
+        @SuppressWarnings("unchecked")
+        public B addExchange(Location location, SizeDimension size, double operationTime) {
             add(ActivityType.EXCHANGE, location, operationTime, size, null, null);
-            return this;
+            return (B) this;
         }
 
-        public CustomJob.BuilderBase<T, B> addExchange(Location location, SizeDimension size, double operationTime,
-                        TimeWindow tw) {
+        @SuppressWarnings("unchecked")
+        public B addExchange(Location location, SizeDimension size, double operationTime,
+                TimeWindow tw) {
             add(ActivityType.EXCHANGE, location, operationTime, size, null, Collections.singleton(tw));
-            return this;
+            return (B) this;
         }
 
         @Override
         protected void validate() {
-            if (acts.isEmpty()) {
+            if (acts.isEmpty())
                 throw new IllegalStateException("There is no activities defined on this job.");
-            }
         }
 
         public List<BuilderActivityInfo> getActs() {
@@ -297,6 +324,24 @@ public class CustomJob extends AbstractJob {
 
     }
 
+    /**
+     * This is the builder of the {@linkplain CustomJob}.
+     *
+     * <p>
+     * A CustomJob is a job with any number of activities of any type. These
+     * activities will be executed by the same vehicle and on the same route.
+     * They will keep they order and either all of them or none of them will be
+     * included into the solution.
+     * </p>
+     * <p>
+     * The builder contains methods for simply configuring basic activities. If
+     * more control needed on the activity creation, an ActivityBuild
+     * </p>
+     *
+     *
+     * @author Balage
+     *
+     */
     public static final class Builder extends CustomJob.BuilderBase<CustomJob, CustomJob.Builder> {
 
         public static CustomJob.Builder newInstance(String id) {
