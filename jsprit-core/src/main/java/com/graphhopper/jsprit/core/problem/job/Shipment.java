@@ -76,13 +76,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsIm
  *             <ul>
  *             <li>{@linkplain CustomJob.Builder#addService(Location)}</li>
  *             <li>
- *             {@linkplain CustomJob.Builder#addService(Location, SizeDimension)}
- *             </li>
- *             <li>
- *             {@linkplain CustomJob.Builder#addService(Location, SizeDimension, double)}
- *             </li>
- *             <li>
- *             {@linkplain CustomJob.Builder#addService(Location, SizeDimension, double, TimeWindow)}
+ *             {@linkplain CustomJob.Builder#addService(Location, double, TimeWindow)}
  *             </li>
  *             </ul>
  *

@@ -111,7 +111,7 @@ public class LoadConstraintTest {
 
     @Test
     public void whenCustomJob_itShouldNotIgnoreCapacity() {
-        CustomJob cj = CustomJob.Builder.newInstance("job")
+        CustomJob cj = new CustomJob.Builder("job")
                 .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
                 .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
                 .addPickup(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
@@ -276,7 +276,7 @@ public class LoadConstraintTest {
     public void whenPDRouteRouteAndNewDeliveryFitsIn_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickupDeliveryRoute), Collections.emptyList());
         DeliveryJob s = new DeliveryJob.Builder("del").addSizeDimension(0, 15).setLocation(Location.newInstance(0))
-            .build();
+                .build();
         ServiceLoadRouteLevelConstraint loadConstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickupDeliveryRoute, s, serviceRoute.getVehicle(), null, 0.);
         assertTrue(loadConstraint.fulfilled(context));

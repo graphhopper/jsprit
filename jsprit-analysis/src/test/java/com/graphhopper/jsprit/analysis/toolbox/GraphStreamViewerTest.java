@@ -47,7 +47,7 @@ public class GraphStreamViewerTest {
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setType(type).setBreak(Break.Builder.newInstance("myBreak").addTimeWindow(5, 10).build())
                 .setStartLocation(Location.newInstance(0, 0))
                 .build();
-        CustomJob cj = CustomJob.Builder.newInstance("job")
+        CustomJob cj = new CustomJob.Builder("job")
                 .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
                 .addPickup(Location.newInstance(5, 0), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
                 .addDelivery(Location.newInstance(20, 0), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
@@ -63,7 +63,7 @@ public class GraphStreamViewerTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
                 .setType(type).build();
-        CustomJob cj = CustomJob.Builder.newInstance("job")
+        CustomJob cj = new CustomJob.Builder("job")
                 .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).build())
                 .addPickup(Location.newInstance(-5, 4), SizeDimension.Builder.newInstance().addDimension(0, 2).build())
                 .addDelivery(Location.newInstance(20, 10), SizeDimension.Builder.newInstance().addDimension(0, 3).build())
@@ -78,7 +78,7 @@ public class GraphStreamViewerTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 3).addCapacityDimension(1, 3).build();
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
                 .setType(type).build();
-        CustomJob cj = CustomJob.Builder.newInstance("job")
+        CustomJob cj = new CustomJob.Builder("job")
                 .addPickup(Location.newInstance(10, 0), SizeDimension.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).build())
                 .addExchange(Location.newInstance(-5, 4), SizeDimension.Builder.newInstance().addDimension(0, -1).addDimension(1, 1).build())
                 .addDelivery(Location.newInstance(20, 10), SizeDimension.Builder.newInstance().addDimension(0, 3).build())

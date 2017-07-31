@@ -54,14 +54,10 @@ import com.graphhopper.jsprit.core.util.Coordinate;
  *
  *             <ul>
  *             <li>{@linkplain CustomJob.Builder#addService(Location)}</li>
- *             <li>
- *             {@linkplain CustomJob.Builder#addService(Location, SizeDimension)}
+ *             <li>{@linkplain CustomJob.Builder#addService(Location, double)}
  *             </li>
  *             <li>
- *             {@linkplain CustomJob.Builder#addService(Location, SizeDimension, double)}
- *             </li>
- *             <li>
- *             {@linkplain CustomJob.Builder#addService(Location, SizeDimension, double, TimeWindow)}
+ *             {@linkplain CustomJob.Builder#addService(Location, double, TimeWindow)}
  *             </li>
  *             </ul>
  *

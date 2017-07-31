@@ -17,7 +17,6 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
@@ -35,9 +34,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
  * @author Balage
  *
  * @see {@linkplain CustomJob.BuilderBase#addService(Location)}
- * @see {@linkplain CustomJob.BuilderBase#addService(Location, SizeDimension)}
- * @see {@linkplain CustomJob.BuilderBase#addService(Location, SizeDimension, double)}
- * @see {@linkplain CustomJob.BuilderBase#addService(Location, SizeDimension, double, TimeWindow)}
+ * @see {@linkplain CustomJob.BuilderBase#addService(Location, double)}
+ * @see {@linkplain CustomJob.BuilderBase#addService(Location, double, TimeWindow)}
  */
 public class ServiceJob extends AbstractSingleActivityJob<ServiceActivity> {
 
