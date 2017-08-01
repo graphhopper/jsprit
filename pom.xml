@@ -78,7 +78,7 @@
         <logger.version>1.7.21</logger.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
         <maven.version>3.3.0</maven.version>
-        <ptt.version>[1,2)</ptt.version>
+        <ptt.version>[2,3)</ptt.version>
     </properties>
 
     <build>
@@ -178,11 +178,6 @@
             <scope>test</scope>
         </dependency>
         
-        <dependency>
- 			<groupId>hu.vissy.plain-text-table</groupId>
- 			<artifactId>ptt-core</artifactId>
- 			<version>${ptt.version}</version>
-		</dependency>
         
 
     </dependencies>

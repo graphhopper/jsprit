@@ -151,7 +151,7 @@ public class SolutionPrinter2 {
                             agg.sum += val;
                         }
                         return val;
-                    }, Aggregator::new, (agg) -> agg.sum))
+                        }, Aggregator::new, (k, agg) -> agg.sum))
                     .build());
         }
 
@@ -239,8 +239,8 @@ public class SolutionPrinter2 {
         TableFormatter<VehicleSummaryRecord> tableDef = builder.build();
 
         List<VehicleSummaryRecord> data = solution.getRoutes().stream()
-            .map(r -> new VehicleSummaryRecord(r, problem))
-            .collect(Collectors.toList());
+                .map(r -> new VehicleSummaryRecord(r, problem))
+                .collect(Collectors.toList());
 
         out.println(tableDef.apply(data));
     }

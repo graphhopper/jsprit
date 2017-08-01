@@ -239,7 +239,7 @@ public class RouteDetailsConfig extends ColumnConfigBase {
                                 s.size = s.size.add(act.getLoadChange());
                             }
                             return s.size;
-                        }, SizeDimensionAggregator::new, (s) -> null)).build());
+                        }, SizeDimensionAggregator::new, (k, s) -> null)).build());
             }
 
         },
@@ -297,7 +297,7 @@ public class RouteDetailsConfig extends ColumnConfigBase {
                                             .getTransportTime(s.prevAct));
                                     s.prevAct = act;
                                     return val;
-                                }, PrevActivityHolder::new, (s) -> null));
+                                }, PrevActivityHolder::new, (k, s) -> null));
             }
         },
 
@@ -332,7 +332,7 @@ public class RouteDetailsConfig extends ColumnConfigBase {
                                             + act.getOperationTime());
                                     s.prevAct = act;
                                     return val;
-                                }, PrevActivityHolder::new, (s) -> null));
+                                }, PrevActivityHolder::new, (k, s) -> null));
             }
         },
 
@@ -426,7 +426,7 @@ public class RouteDetailsConfig extends ColumnConfigBase {
                                     double res = r.getTransportCost(s.prevAct);
                                     s.prevAct = act;
                                     return (int) res;
-                                }, PrevActivityHolder::new, (s) -> null));
+                                }, PrevActivityHolder::new, (k, s) -> null));
             }
         },
 
@@ -465,7 +465,7 @@ public class RouteDetailsConfig extends ColumnConfigBase {
                                     }
                                     s.cost += r.getActivityCost();
                                     return s.cost;
-                                }, CostAggregator::new, (s) -> null)
+                                }, CostAggregator::new, (k, s) -> null)
                                 ).build());
             }
         },
