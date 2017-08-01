@@ -105,7 +105,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             int vehicleIndex = v.getVehicleTypeIdentifier().getIndex();
             Location prevActLocation = prevActLocations[vehicleIndex];
             double prevActEndTime = prevActEndTimes[v.getVehicleTypeIdentifier().getIndex()];
-            double activityArrival = prevActEndTimes[v.getVehicleTypeIdentifier().getIndex()] + transportTime.getTransportTime(prevActLocation,activity.getLocation(),prevActEndTime,route.getDriver(),v);
+            double activityArrival = prevActEndTimes[v.getVehicleTypeIdentifier().getIndex()] + transportTime.getTransportTime(prevActLocation,activity.getLocation(),prevActEndTime,activity.getSetupDuration(),route.getDriver(),v);
             double activityStart = Math.max(activityArrival,activity.getTheoreticalEarliestOperationStartTime());
             memorizeActStart(activity,v,activityStart);
             double activityEnd = activityStart + activityCosts.getActivityDuration(activity, activityArrival, route.getDriver(), v);
@@ -156,7 +156,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             //!!! open routes !!!
             double routeEnd;
             if(!v.isReturnToDepot()) routeEnd = prevActEndTimes[vehicleIndex];
-            else routeEnd = prevActEndTimes[vehicleIndex] + transportTime.getTransportTime(prevActLocations[vehicleIndex],v.getEndLocation(),prevActEndTimes[vehicleIndex],route.getDriver(),v);
+            else routeEnd = prevActEndTimes[vehicleIndex] + transportTime.getTransportTime(prevActLocations[vehicleIndex],v.getEndLocation(),prevActEndTimes[vehicleIndex],0.,route.getDriver(),v);
 
             Map<String, Double> openDeliveries = new HashMap<>();
             for (Job job : openPickupEndTimes.get(vehicleIndex).keySet()) {
@@ -198,7 +198,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             double routeEnd;
             if (!v.isReturnToDepot()) routeEnd = prevActEndTimes[vehicleIndex];
             else
-                routeEnd = prevActEndTimes[vehicleIndex] + transportTime.getTransportTime(prevActLocations[vehicleIndex], v.getEndLocation(), prevActEndTimes[vehicleIndex], route.getDriver(), v);
+                routeEnd = prevActEndTimes[vehicleIndex] + transportTime.getTransportTime(prevActLocations[vehicleIndex], v.getEndLocation(), prevActEndTimes[vehicleIndex], 0., route.getDriver(), v);
 
             Map<String, Double> openDeliveries = new HashMap<>();
             for (Job job : openPickupEndTimes.get(vehicleIndex).keySet()) {

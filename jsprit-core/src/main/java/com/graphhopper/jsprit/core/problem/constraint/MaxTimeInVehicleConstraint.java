@@ -71,10 +71,10 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
         2. check whether insertion of new shipment satisfies all other max-in-vehicle-constraints
          */
         //************ 1. check whether insertion of new shipment satisfies own max-in-vehicle-constraint
-        double newActArrival = prevActDepTime + transportTime.getTransportTime(prevAct.getLocation(),newAct.getLocation(),prevActDepTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double newActArrival = prevActDepTime + transportTime.getTransportTime(prevAct.getLocation(),newAct.getLocation(),prevActDepTime,newAct.getSetupDuration(),iFacts.getNewDriver(),iFacts.getNewVehicle());
         double newActStart = Math.max(newActArrival, newAct.getTheoreticalEarliestOperationStartTime());
         double newActDeparture = newActStart + activityCosts.getActivityDuration(newAct, newActArrival, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double nextActArrival = newActDeparture + transportTime.getTransportTime(newAct.getLocation(),nextAct.getLocation(),newActDeparture,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double nextActArrival = newActDeparture + transportTime.getTransportTime(newAct.getLocation(),nextAct.getLocation(),newActDeparture,nextAct.getSetupDuration(),iFacts.getNewDriver(),iFacts.getNewVehicle());
         double nextActStart = Math.max(nextActArrival,nextAct.getTheoreticalEarliestOperationStartTime());
         if(newAct instanceof DeliveryActivity){
             double pickupEnd;
