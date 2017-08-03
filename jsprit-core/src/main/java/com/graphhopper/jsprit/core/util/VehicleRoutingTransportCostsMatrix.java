@@ -40,6 +40,7 @@ import java.util.Map;
  * @author schroeder
  */
 public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRoutingTransportCosts {
+
     static class RelationKey {
 
         static RelationKey newKey(String from, String to) {
@@ -259,6 +260,11 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
         if (vehicle == null) return getDistance(from.getId(), to.getId());
         VehicleCostParams costParams = vehicle.getType().getVehicleCostParams();
         return costParams.perDistanceUnit * getDistance(from.getId(), to.getId()) + costParams.perTransportTimeUnit * getTime(from.getId(), to.getId());
+    }
+
+    @Override
+    public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+        return getDistance(from.getId(), to.getId());
     }
 
 }

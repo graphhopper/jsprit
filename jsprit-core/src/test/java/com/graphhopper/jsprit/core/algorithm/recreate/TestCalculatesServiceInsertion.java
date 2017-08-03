@@ -97,6 +97,11 @@ public class TestCalculatesServiceInsertion {
         costs = new AbstractForwardVehicleRoutingTransportCosts() {
 
             @Override
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
+            }
+
+            @Override
             public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
                 return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
             }
@@ -230,6 +235,11 @@ public class TestCalculatesServiceInsertion {
         coords.put("service", Coordinate.newInstance(0, 0));
 
         AbstractForwardVehicleRoutingTransportCosts routingCosts = new AbstractForwardVehicleRoutingTransportCosts() {
+
+            @Override
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return EuclideanDistanceCalculator.calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
+            }
 
             @Override
             public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {

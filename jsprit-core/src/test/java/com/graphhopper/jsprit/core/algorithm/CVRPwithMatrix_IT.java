@@ -21,7 +21,6 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -78,12 +77,7 @@ public class CVRPwithMatrix_IT {
         final VehicleRoutingProblem vrp = createVrpWithLocationIndecesAndMatrix(vrp_, false);
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        SolutionAnalyser sa = new SolutionAnalyser(vrp, Solutions.bestOf(solutions), new TransportDistance() {
-            @Override
-            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
-            }
-        });
+        SolutionAnalyser sa = new SolutionAnalyser(vrp, Solutions.bestOf(solutions), vrp.getTransportCosts());
     }
 
 

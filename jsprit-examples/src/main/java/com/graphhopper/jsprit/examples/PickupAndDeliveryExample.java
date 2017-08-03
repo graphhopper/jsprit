@@ -24,11 +24,8 @@ import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
-import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 import com.graphhopper.jsprit.util.Examples;
@@ -100,14 +97,7 @@ public class PickupAndDeliveryExample {
         plotter.plot("output/pd_solomon_r101_solution.png", "pd_r101");
 
         //some stats
-        SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
-
-            @Override
-            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
-            }
-
-        });
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
 
         System.out.println("tp_distance: " + analyser.getDistance());
         System.out.println("tp_time: " + analyser.getTransportTime());

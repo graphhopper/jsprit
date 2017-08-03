@@ -23,10 +23,8 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -136,12 +134,7 @@ public class MultipleTimeWindowExample2 {
 		 */
         new Plotter(problem,bestSolution).setLabel(Plotter.Label.ID).plot("output/plot", "mtw");
 
-        SolutionAnalyser a = new SolutionAnalyser(problem, bestSolution, new TransportDistance() {
-            @Override
-            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return problem.getTransportCosts().getTransportTime(from,to,0.,null,null);
-            }
-        });
+        SolutionAnalyser a = new SolutionAnalyser(problem, bestSolution, problem.getTransportCosts());
 
         System.out.println("distance: " + a.getDistance());
         System.out.println("ttime: " + a.getTransportTime());
