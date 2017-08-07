@@ -36,8 +36,8 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -102,8 +102,8 @@ public class GeneralJobInsertionWithServicesAndLoadConstraintsTest {
 
     @Test
     public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnTheCorrectInsertionIndex() {
-        Delivery delivery = new Delivery.Builder("del").addSizeDimension(0, 41).setLocation(Location.newInstance("10,10")).build();
-        Pickup pickup = new Pickup.Builder("pick").addSizeDimension(0, 15).setLocation(Location.newInstance("0,10")).build();
+        DeliveryJob delivery = new DeliveryJob.Builder("del").addSizeDimension(0, 41).setLocation(Location.newInstance("10,10")).build();
+        PickupJob pickup = new PickupJob.Builder("pick").addSizeDimension(0, 15).setLocation(Location.newInstance("0,10")).build();
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 50).setCostPerDistance(1).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();

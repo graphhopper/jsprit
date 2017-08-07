@@ -28,7 +28,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Break.Builder;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 
 
 public class BreakActivityTest {
@@ -96,8 +96,8 @@ public class BreakActivityTest {
     @Test
     public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual() {
         Location loc = Location.newInstance("loc");
-        Service s1 = new Service.Builder("s").setLocation(loc).build();
-        Service s2 = new Service.Builder("s").setLocation(loc).build();
+        ServiceJob s1 = new ServiceJob.Builder("s").setLocation(loc).build();
+        ServiceJob s2 = new ServiceJob.Builder("s").setLocation(loc).build();
         ServiceActivity d1 = new ServiceActivity(s1, "s1",
                         loc, 0d, SizeDimension.EMPTY,
                         TimeWindows.ANY_TIME.getTimeWindows());
@@ -111,8 +111,8 @@ public class BreakActivityTest {
     @Test
     public void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual() {
         Location loc = Location.newInstance("loc");
-        Service s1 = new Service.Builder("s").setLocation(loc).build();
-        Service s2 = new Service.Builder("s2").setLocation(loc).build();
+        ServiceJob s1 = new ServiceJob.Builder("s").setLocation(loc).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(loc).build();
         ServiceActivity d1 = new ServiceActivity(s1, "s1",
                         loc, 0d, SizeDimension.EMPTY,
                         TimeWindows.ANY_TIME.getTimeWindows());

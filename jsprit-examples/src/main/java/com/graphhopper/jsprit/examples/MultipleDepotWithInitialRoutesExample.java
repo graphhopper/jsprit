@@ -24,7 +24,7 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.Builder;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -90,10 +90,10 @@ public class MultipleDepotWithInitialRoutesExample {
 
     }
 
-    private static Service getService(String serviceId, Builder vrpBuilder) {
+    private static ServiceJob getService(String serviceId, Builder vrpBuilder) {
         for (Job j : vrpBuilder.getAddedJobs()) {
             if (j.getId().equals(serviceId)) {
-                return (Service) j;
+                return (ServiceJob) j;
             }
         }
         return null;

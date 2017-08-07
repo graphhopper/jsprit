@@ -33,7 +33,7 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -100,8 +100,8 @@ public class VariableDepartureAndWaitingTime_IT {
     @Test
     public void plainSetupShouldWork() {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(20, 0)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(20, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
                         .addJob(s1).addJob(s2).addVehicle(v)
                         .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
@@ -116,8 +116,8 @@ public class VariableDepartureAndWaitingTime_IT {
     @Test
     public void withTimeWindowsShouldWork() {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
-        Service s1 = new Service.Builder("s1").setTimeWindow(TimeWindow.newInstance(1010, 1100)).setLocation(Location.newInstance(10, 0)).build();
-        Service s2 = new Service.Builder("s2").setTimeWindow(TimeWindow.newInstance(1020, 1100)).setLocation(Location.newInstance(20, 0)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setTimeWindow(TimeWindow.newInstance(1010, 1100)).setLocation(Location.newInstance(10, 0)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setTimeWindow(TimeWindow.newInstance(1020, 1100)).setLocation(Location.newInstance(20, 0)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
                         .addJob(s1).addJob(s2).addVehicle(v)
                         .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)

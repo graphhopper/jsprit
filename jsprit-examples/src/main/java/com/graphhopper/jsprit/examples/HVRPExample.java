@@ -23,7 +23,7 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -71,26 +71,26 @@ public class HVRPExample {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
         //add customers
-        vrpBuilder.addJob(new Service.Builder("1").addSizeDimension(0, 18).setLocation(Location.newInstance(22, 22)).build());
-        vrpBuilder.addJob(new Service.Builder("2").addSizeDimension(0, 26).setLocation(Location.newInstance(36, 26)).build());
-        vrpBuilder.addJob(new Service.Builder("3").addSizeDimension(0, 11).setLocation(Location.newInstance(21, 45)).build());
-        vrpBuilder.addJob(new Service.Builder("4").addSizeDimension(0, 30).setLocation(Location.newInstance(45, 35)).build());
-        vrpBuilder.addJob(new Service.Builder("5").addSizeDimension(0, 21).setLocation(Location.newInstance(55, 20)).build());
-        vrpBuilder.addJob(new Service.Builder("6").addSizeDimension(0, 19).setLocation(Location.newInstance(33, 34)).build());
-        vrpBuilder.addJob(new Service.Builder("7").addSizeDimension(0, 15).setLocation(Location.newInstance(50, 50)).build());
-        vrpBuilder.addJob(new Service.Builder("8").addSizeDimension(0, 16).setLocation(Location.newInstance(55, 45)).build());
-        vrpBuilder.addJob(new Service.Builder("9").addSizeDimension(0, 29).setLocation(Location.newInstance(26, 59)).build());
-        vrpBuilder.addJob(new Service.Builder("10").addSizeDimension(0, 26).setLocation(Location.newInstance(40, 66)).build());
-        vrpBuilder.addJob(new Service.Builder("11").addSizeDimension(0, 37).setLocation(Location.newInstance(55, 56)).build());
-        vrpBuilder.addJob(new Service.Builder("12").addSizeDimension(0, 16).setLocation(Location.newInstance(35, 51)).build());
-        vrpBuilder.addJob(new Service.Builder("13").addSizeDimension(0, 12).setLocation(Location.newInstance(62, 35)).build());
-        vrpBuilder.addJob(new Service.Builder("14").addSizeDimension(0, 31).setLocation(Location.newInstance(62, 57)).build());
-        vrpBuilder.addJob(new Service.Builder("15").addSizeDimension(0, 8).setLocation(Location.newInstance(62, 24)).build());
-        vrpBuilder.addJob(new Service.Builder("16").addSizeDimension(0, 19).setLocation(Location.newInstance(21, 36)).build());
-        vrpBuilder.addJob(new Service.Builder("17").addSizeDimension(0, 20).setLocation(Location.newInstance(33, 44)).build());
-        vrpBuilder.addJob(new Service.Builder("18").addSizeDimension(0, 13).setLocation(Location.newInstance(9, 56)).build());
-        vrpBuilder.addJob(new Service.Builder("19").addSizeDimension(0, 15).setLocation(Location.newInstance(62, 48)).build());
-        vrpBuilder.addJob(new Service.Builder("20").addSizeDimension(0, 22).setLocation(Location.newInstance(66, 14)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("1").addSizeDimension(0, 18).setLocation(Location.newInstance(22, 22)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("2").addSizeDimension(0, 26).setLocation(Location.newInstance(36, 26)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("3").addSizeDimension(0, 11).setLocation(Location.newInstance(21, 45)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("4").addSizeDimension(0, 30).setLocation(Location.newInstance(45, 35)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("5").addSizeDimension(0, 21).setLocation(Location.newInstance(55, 20)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("6").addSizeDimension(0, 19).setLocation(Location.newInstance(33, 34)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("7").addSizeDimension(0, 15).setLocation(Location.newInstance(50, 50)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("8").addSizeDimension(0, 16).setLocation(Location.newInstance(55, 45)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("9").addSizeDimension(0, 29).setLocation(Location.newInstance(26, 59)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("10").addSizeDimension(0, 26).setLocation(Location.newInstance(40, 66)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("11").addSizeDimension(0, 37).setLocation(Location.newInstance(55, 56)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("12").addSizeDimension(0, 16).setLocation(Location.newInstance(35, 51)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("13").addSizeDimension(0, 12).setLocation(Location.newInstance(62, 35)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("14").addSizeDimension(0, 31).setLocation(Location.newInstance(62, 57)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("15").addSizeDimension(0, 8).setLocation(Location.newInstance(62, 24)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("16").addSizeDimension(0, 19).setLocation(Location.newInstance(21, 36)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("17").addSizeDimension(0, 20).setLocation(Location.newInstance(33, 44)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("18").addSizeDimension(0, 13).setLocation(Location.newInstance(9, 56)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("19").addSizeDimension(0, 15).setLocation(Location.newInstance(62, 48)).build());
+        vrpBuilder.addJob(new ServiceJob.Builder("20").addSizeDimension(0, 22).setLocation(Location.newInstance(66, 14)).build());
 
 
         //add vehicle - finite fleet

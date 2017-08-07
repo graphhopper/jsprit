@@ -24,7 +24,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -54,9 +54,9 @@ public class CostMatrixExample {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle")
             .setStartLocation(Location.newInstance("0")).setType(type).build();
 
-        Service s1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance("1")).build();
-        Service s2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance("2")).build();
-        Service s3 = new Service.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance("3")).build();
+        ServiceJob s1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance("1")).build();
+        ServiceJob s2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance("2")).build();
+        ServiceJob s3 = new ServiceJob.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance("3")).build();
 
 
 		/*

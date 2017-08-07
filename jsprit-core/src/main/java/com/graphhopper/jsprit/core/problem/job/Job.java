@@ -18,8 +18,8 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.graphhopper.jsprit.core.problem.HasId;
 import com.graphhopper.jsprit.core.problem.HasIndex;
@@ -52,6 +52,9 @@ public interface Job extends HasId, HasIndex {
     @Deprecated
     public SizeDimension getSize();
 
+    /**
+     * @return Returns the required skill set.
+     */
     public Skills getRequiredSkills();
 
     /**
@@ -86,6 +89,6 @@ public interface Job extends HasId, HasIndex {
     /**
      * @return All operation time windows
      */
-    public Set<TimeWindow> getTimeWindows();
+    public Collection<TimeWindow> getTimeWindows();
 
 }

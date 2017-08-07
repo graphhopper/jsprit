@@ -39,11 +39,11 @@ public class FirstCustomJobExample {
 
     @Test
     public void test() {
-        CustomJob cj = CustomJob.Builder.newInstance("job")
-                        .addPickup(Location.newInstance(10, 0), SizeDimension.EMPTY).build();
+        CustomJob cj = new CustomJob.Builder("job")
+                .addPickup(Location.newInstance(10, 0), SizeDimension.EMPTY).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-                        .addJob(cj).addVehicle(v).build();
+                .addJob(cj).addVehicle(v).build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);

@@ -32,11 +32,11 @@ import com.graphhopper.jsprit.core.problem.CopyJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -62,20 +62,20 @@ public class LoadStateTest {
         when(vehicle.getType()).thenReturn(type);
 
         VehicleRoutingProblem.Builder serviceProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Service s1 = new Service.Builder("s").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
-        Service s2 = new Service.Builder("s2").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
+        ServiceJob s1 = new ServiceJob.Builder("s").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
         serviceProblemBuilder.addJob(s1).addJob(s2);
         final VehicleRoutingProblem serviceProblem = serviceProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder pdProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Pickup pickup = new Pickup.Builder("pick").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
-        Delivery delivery = new Delivery.Builder("del").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
+        PickupJob pickup = new PickupJob.Builder("pick").addSizeDimension(0, 10).setLocation(Location.newInstance("loc")).build();
+        DeliveryJob delivery = new DeliveryJob.Builder("del").addSizeDimension(0, 5).setLocation(Location.newInstance("loc")).build();
         pdProblemBuilder.addJob(pickup).addJob(delivery);
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
 
         final VehicleRoutingProblem.Builder shipmentProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Shipment shipment1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 5).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
+        ShipmentJob shipment1 = new ShipmentJob.Builder("s1").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
+        ShipmentJob shipment2 = new ShipmentJob.Builder("s2").addSizeDimension(0, 5).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
         shipmentProblemBuilder.addJob(shipment1).addJob(shipment2).build();
         final VehicleRoutingProblem shipmentProblem = shipmentProblemBuilder.build();
 

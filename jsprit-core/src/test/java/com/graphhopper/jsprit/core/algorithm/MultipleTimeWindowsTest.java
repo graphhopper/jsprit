@@ -25,7 +25,7 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
@@ -37,9 +37,9 @@ public class MultipleTimeWindowsTest {
 
     @Test
     public void service2ShouldNotBeInserted() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
 
-        Service s2 = new Service.Builder("s2")
+        ServiceJob s2 = new ServiceJob.Builder("s2")
                         .addTimeWindow(50., 60.)
                         .setLocation(Location.newInstance(20, 0)).build();
 
@@ -56,10 +56,10 @@ public class MultipleTimeWindowsTest {
 
     @Test
     public void service2ShouldBeInsertedIntoNewVehicle() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(10, 0))
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(10, 0))
                         .addTimeWindow(5., 15.).build();
 
-        Service s2 = new Service.Builder("s2")
+        ServiceJob s2 = new ServiceJob.Builder("s2")
                         .addTimeWindow(50., 60.)
                         .setLocation(Location.newInstance(20, 0)).build();
 
@@ -80,9 +80,9 @@ public class MultipleTimeWindowsTest {
 
     @Test
     public void service2ShouldBeInserted() {
-        Service s = new Service.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
+        ServiceJob s = new ServiceJob.Builder("s1").setLocation(Location.newInstance(10, 0)).build();
 
-        Service s2 = new Service.Builder("s2")
+        ServiceJob s2 = new ServiceJob.Builder("s2")
                         .addTimeWindow(50., 60.).addTimeWindow(15., 25)
                         .setLocation(Location.newInstance(20, 0)).build();
 

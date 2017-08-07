@@ -17,48 +17,53 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 
 /**
  * Pickup extends Service and is intended to model a Service where smth is LOADED (i.e. picked up) to a transport unit.
  *
  * @author schroeder
  */
-public class Pickup extends AbstractSingleActivityJob<PickupActivity> {
+public class Pickup extends Service {
 
-    public static final class Builder
-    extends AbstractSingleActivityJob.BuilderBase<Pickup, Builder> {
+    public static class Builder extends Service.Builder<Pickup> {
 
-        public Builder(String id) {
-            super(id);
-            setType("pickup");
-        }
-
+        /**
+         * Returns a new instance of builder that builds a pickup.
+         *
+         * @param id the id of the pickup
+         * @return the builder
+         */
         public static Builder newInstance(String id) {
             return new Builder(id);
         }
 
+        Builder(String id) {
+            super(id);
+        }
+
+        /**
+         * Builds Pickup.
+         * <p>
+         * <p>Pickup type is "pickup"
+         *
+         * @return pickup
+         * @throws IllegalArgumentException if neither locationId nor coordinate has been set
+         */
         @Override
-        protected Pickup createInstance() {
+        @SuppressWarnings("deprecation")
+        public Pickup build() {
+            if (location == null) throw new IllegalArgumentException("location is missing");
+            this.setType("pickup");
+            super.capacity = super.capacityBuilder.build();
+            super.skills = super.skillBuilder.build();
             return new Pickup(this);
         }
+
     }
 
+    @SuppressWarnings("deprecation")
     Pickup(Builder builder) {
         super(builder);
-    }
-
-    @Override
-    protected PickupActivity createActivity(
-                    AbstractSingleActivityJob.BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
-            return new PickupActivity(this, builder.type, builder.location, builder.serviceTime,
-                            builder.getCapacity(), builder.timeWindows.getTimeWindows());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Builder getBuilder(String id) {
-        return Builder.newInstance(id);
     }
 
 }

@@ -26,7 +26,7 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -64,22 +64,22 @@ public class IgnoreBreakTimeWindowTest {
          */
 
 
-        Service service4 = new Service.Builder("2").setLocation(Location.newInstance(0, 0))
+        ServiceJob service4 = new ServiceJob.Builder("2").setLocation(Location.newInstance(0, 0))
                         .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(17, 17)).build();
 
-        Service service5 = new Service.Builder("3").setLocation(Location.newInstance(0, 0))
+        ServiceJob service5 = new ServiceJob.Builder("3").setLocation(Location.newInstance(0, 0))
                         .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(18, 18)).build();
 
-        Service service7 = new Service.Builder("4").setLocation(Location.newInstance(0, 0))
+        ServiceJob service7 = new ServiceJob.Builder("4").setLocation(Location.newInstance(0, 0))
                         .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(10, 10)).build();
 
-        Service service8 = new Service.Builder("5").setLocation(Location.newInstance(0, 0))
+        ServiceJob service8 = new ServiceJob.Builder("5").setLocation(Location.newInstance(0, 0))
                         .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(12, 12)).build();
 
-        Service service10 = new Service.Builder("6").setLocation(Location.newInstance(0, 0))
+        ServiceJob service10 = new ServiceJob.Builder("6").setLocation(Location.newInstance(0, 0))
                         .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(16, 16)).build();
 
-        Service service11 = new Service.Builder("7").setLocation(Location.newInstance(0, 0))
+        ServiceJob service11 = new ServiceJob.Builder("7").setLocation(Location.newInstance(0, 0))
                         .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(13, 13)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()

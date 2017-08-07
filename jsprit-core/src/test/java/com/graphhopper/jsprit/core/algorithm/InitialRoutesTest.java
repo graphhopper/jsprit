@@ -41,8 +41,8 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.ServiceLoadActivityLevelConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.ServiceLoadRouteLevelConstraint;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
@@ -64,8 +64,8 @@ public class InitialRoutesTest {
     public void before() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         VehicleImpl v = VehicleImpl.Builder.newInstance("veh1").setStartLocation(Location.newInstance(0, 0)).setLatestArrival(48600).build();
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(1000, 0)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(1000, 1000)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(1000, 0)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(1000, 1000)).build();
         builder.addVehicle(v).addJob(s1).addJob(s2);
         initialRoute = VehicleRoute.Builder.newInstance(v).addService(s1).build();
         builder.addInitialVehicleRoute(initialRoute);
@@ -165,13 +165,13 @@ public class InitialRoutesTest {
                         .setType(type)
                         .build();
 
-        Shipment shipment = Shipment.Builder.newInstance("s")
+        ShipmentJob shipment = new ShipmentJob.Builder("s")
                         .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
                         .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
                         .addSizeDimension(0, 100)
                         .build();
 
-        Shipment another_shipment = Shipment.Builder.newInstance("another_s")
+        ShipmentJob another_shipment = new ShipmentJob.Builder("another_s")
                         .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).setId("pick").build())
                         .setDeliveryLocation(Location.Builder.newInstance().setId("del").setCoordinate(Coordinate.newInstance(0, 10)).build())
                         .addSizeDimension(0, 50)
@@ -199,7 +199,7 @@ public class InitialRoutesTest {
 
     @Test
     public void whenAllJobsInInitialRoute_itShouldWork() {
-        Service s = new Service.Builder("s").setLocation(Location.newInstance(0, 10)).build();
+        ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance(0, 10)).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         VehicleRoute iniRoute = VehicleRoute.Builder.newInstance(v).addService(s).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addInitialVehicleRoute(iniRoute).build();
@@ -211,8 +211,8 @@ public class InitialRoutesTest {
 
     @Test
     public void buildWithoutTimeConstraints() {
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(0, 10)).addSizeDimension(0, 10).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(10, 20)).addSizeDimension(0, 12).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(0, 10)).addSizeDimension(0, 10).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(10, 20)).addSizeDimension(0, 12).build();
 
         VehicleTypeImpl vt = VehicleTypeImpl.Builder.newInstance("vt").addCapacityDimension(0, 15).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(vt).setStartLocation(Location.newInstance(0, 0)).build();

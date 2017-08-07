@@ -32,7 +32,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -198,7 +198,7 @@ public class TSPLIB95Reader {
                     continue;
                 }
             }
-            Service service = new Service.Builder(id)
+            ServiceJob service = new ServiceJob.Builder(id)
                     .setLocation(Location.Builder.newInstance().setId(id)
                             .setCoordinate(coords[index]).setIndex(index).build())
                     .addSizeDimension(0, demands[index]).build();
@@ -210,7 +210,7 @@ public class TSPLIB95Reader {
                 locations.add(v.getStartLocation());
             }
             for (Job j : vrpBuilder.getAddedJobs()) {
-                locations.add(((Service) j).getActivity().getLocation());
+                locations.add(((ServiceJob) j).getActivity().getLocation());
             }
             vrpBuilder.setRoutingCost(getGEOMatrix(locations));
         } else if (edgeType.equals("EXPLICIT")) {

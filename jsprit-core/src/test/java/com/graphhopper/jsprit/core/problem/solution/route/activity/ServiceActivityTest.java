@@ -22,13 +22,13 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 
 public class ServiceActivityTest extends JobActivityTest {
 
     @Before
     public void doBefore() {
-        service = new Service.Builder("service").setLocation(Location.newInstance("loc")).
+        service = new ServiceJob.Builder("service").setLocation(Location.newInstance("loc")).
                         setTimeWindow(TimeWindow.newInstance(1., 2.)).
                         setServiceTime(20d).
                         addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();

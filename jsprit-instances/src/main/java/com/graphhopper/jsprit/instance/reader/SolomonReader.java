@@ -21,7 +21,7 @@ package com.graphhopper.jsprit.instance.reader;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -110,7 +110,7 @@ public class SolomonReader {
                     vrpBuilder.addVehicle(vehicle);
 
                 } else {
-                    Service service = new Service.Builder(customerId).addSizeDimension(0, demand)
+                    ServiceJob service = new ServiceJob.Builder(customerId).addSizeDimension(0, demand)
                         .setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime)
                         .setTimeWindow(TimeWindow.newInstance(start, end)).build();
                     vrpBuilder.addJob(service);

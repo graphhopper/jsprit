@@ -25,8 +25,8 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.DefaultCosts;
 import com.graphhopper.jsprit.core.util.Locations;
@@ -57,15 +57,15 @@ public class AverageJobDistanceTest {
 
     @Test
     public void distanceOfTwoEqualShipmentsShouldBeSmallerThanAnyOtherDistance() {
-        Shipment s1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
-        Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
+        ShipmentJob s1 = new ShipmentJob.Builder("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
+        ShipmentJob s2 = new ShipmentJob.Builder("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
 
         double dist = new DefaultJobDistance(routingCosts).getDistance(s1, s2);
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance(i + "," + j)).build();
-                Shipment other2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
+                ShipmentJob other1 = new ShipmentJob.Builder("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance(i + "," + j)).build();
+                ShipmentJob other2 = new ShipmentJob.Builder("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
                 double dist2 = new DefaultJobDistance(routingCosts).getDistance(other1, other2);
                 assertTrue(dist <= dist2 + dist2 * 0.001);
             }
@@ -75,8 +75,8 @@ public class AverageJobDistanceTest {
 
     @Test
     public void whenServicesHaveSameLocation_distanceShouldBeZero() {
-        Service s1 = new Service.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
-        Service s2 = new Service.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
 
         double dist = new DefaultJobDistance(routingCosts).getDistance(s1, s2);
         assertEquals(0.0, dist, 0.01);

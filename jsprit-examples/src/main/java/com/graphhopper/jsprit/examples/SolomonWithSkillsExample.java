@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -63,17 +63,17 @@ public class SolomonWithSkillsExample {
             skillProblemBuilder.addVehicle(skill1Vehicle).addVehicle(skill2Vehicle);
         }
         for (Job job : vrp.getJobs().values()) {
-            Service service = (Service) job;
-            Service.Builder skillServiceBuilder;
+            ServiceJob service = (ServiceJob) job;
+            ServiceJob.Builder skillServiceBuilder;
             if (service.getActivity().getLocation().getCoordinate().getY() < 50.) {
-                skillServiceBuilder = new Service.Builder(service.getId() + "_skill2").setServiceTime(service.getActivity().getOperationTime())
+                skillServiceBuilder = new ServiceJob.Builder(service.getId() + "_skill2").setServiceTime(service.getActivity().getOperationTime())
                         .setLocation(Location.Builder.newInstance().setId(service.getActivity().getLocation().getId())
                                 .setCoordinate(service.getActivity().getLocation().getCoordinate()).build())
                         .addTimeWindows(service.getActivity().getTimeWindows())
                         .addSizeDimension(0, service.getActivity().getLoadChange().get(0));
                 skillServiceBuilder.addRequiredSkill("skill2");
             } else {
-                skillServiceBuilder = new Service.Builder(service.getId() + "_skill1").setServiceTime(service.getActivity().getOperationTime())
+                skillServiceBuilder = new ServiceJob.Builder(service.getId() + "_skill1").setServiceTime(service.getActivity().getOperationTime())
                         .setLocation(
                                 Location.Builder.newInstance().setId(service.getActivity().getLocation().getId())
                                         .setCoordinate(service.getActivity().getLocation().getCoordinate()).build())

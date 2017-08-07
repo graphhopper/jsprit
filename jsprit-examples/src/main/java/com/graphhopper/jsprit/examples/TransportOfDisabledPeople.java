@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl.Builder;
@@ -99,54 +99,54 @@ public class TransportOfDisabledPeople {
          * build shipments at the required locations, each with a capacity-demand of 1.
          *
          */
-        Shipment shipment1 = Shipment.Builder.newInstance("wheelchair_1").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment1 = new ShipmentJob.Builder("wheelchair_1").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(loc(Coordinate.newInstance(6, 9))).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("2").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(5, 13)))
+        ShipmentJob shipment2 = new ShipmentJob.Builder("2").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(5, 13)))
                 .setDeliveryLocation(loc(Coordinate.newInstance(6, 11))).build();
 
-        Shipment shipment3 = Shipment.Builder.newInstance("wheelchair_2").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment3 = new ShipmentJob.Builder("wheelchair_2").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(loc(Coordinate.newInstance(14, 9))).build();
-        Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13)))
+        ShipmentJob shipment4 = new ShipmentJob.Builder("4").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(15, 13)))
                 .setDeliveryLocation(loc(Coordinate.newInstance(14, 11))).build();
 
-        Shipment shipment5 = Shipment.Builder.newInstance("wheelchair_3").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment5 = new ShipmentJob.Builder("wheelchair_3").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(25, 27))).setDeliveryLocation(loc(Coordinate.newInstance(26, 29))).build();
-        Shipment shipment6 = Shipment.Builder.newInstance("6").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(25, 33)))
+        ShipmentJob shipment6 = new ShipmentJob.Builder("6").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(25, 33)))
                 .setDeliveryLocation(loc(Coordinate.newInstance(26, 31))).build();
 
-        Shipment shipment7 = Shipment.Builder.newInstance("7").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(35, 27)))
+        ShipmentJob shipment7 = new ShipmentJob.Builder("7").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(35, 27)))
                 .setDeliveryLocation(loc(Coordinate.newInstance(34, 29))).build();
-        Shipment shipment8 = Shipment.Builder.newInstance("wheelchair_4").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment8 = new ShipmentJob.Builder("wheelchair_4").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(35, 33))).setDeliveryLocation(loc(Coordinate.newInstance(34, 31))).build();
 
-        Shipment shipment9 = Shipment.Builder.newInstance("9").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(5, 27)))
+        ShipmentJob shipment9 = new ShipmentJob.Builder("9").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(5, 27)))
                 .setDeliveryLocation(loc(Coordinate.newInstance(6, 29))).build();
-        Shipment shipment10 = Shipment.Builder.newInstance("wheelchair_5").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment10 = new ShipmentJob.Builder("wheelchair_5").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(5, 33))).setDeliveryLocation(loc(Coordinate.newInstance(6, 31))).build();
 
-        Shipment shipment11 = Shipment.Builder.newInstance("11").addSizeDimension(PASSENGERSEATS_INDEX, 1)
+        ShipmentJob shipment11 = new ShipmentJob.Builder("11").addSizeDimension(PASSENGERSEATS_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(15, 27))).setDeliveryLocation(loc(Coordinate.newInstance(14, 29))).build();
-        Shipment shipment12 = Shipment.Builder.newInstance("wheelchair_6").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment12 = new ShipmentJob.Builder("wheelchair_6").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(15, 33))).setDeliveryLocation(loc(Coordinate.newInstance(14, 31))).build();
 
-        Shipment shipment13 = Shipment.Builder.newInstance("13").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(25, 7)))
+        ShipmentJob shipment13 = new ShipmentJob.Builder("13").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(25, 7)))
                 .setDeliveryLocation(loc(Coordinate.newInstance(26, 9))).build();
-        Shipment shipment14 = Shipment.Builder.newInstance("wheelchair_7").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment14 = new ShipmentJob.Builder("wheelchair_7").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(25, 13))).setDeliveryLocation(loc(Coordinate.newInstance(26, 11))).build();
 
-        Shipment shipment15 = Shipment.Builder.newInstance("15").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(35, 7)))
+        ShipmentJob shipment15 = new ShipmentJob.Builder("15").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(35, 7)))
                 .setDeliveryLocation(loc(Coordinate.newInstance(34, 9))).build();
-        Shipment shipment16 = Shipment.Builder.newInstance("wheelchair_8").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment16 = new ShipmentJob.Builder("wheelchair_8").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(35, 13))).setDeliveryLocation(loc(Coordinate.newInstance(34, 11))).build();
 
-        Shipment shipment17 = Shipment.Builder.newInstance("17").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(5, 14)))
+        ShipmentJob shipment17 = new ShipmentJob.Builder("17").addSizeDimension(PASSENGERSEATS_INDEX, 1).setPickupLocation(loc(Coordinate.newInstance(5, 14)))
                 .setDeliveryLocation(loc(Coordinate.newInstance(6, 16))).build();
-        Shipment shipment18 = Shipment.Builder.newInstance("wheelchair_9").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment18 = new ShipmentJob.Builder("wheelchair_9").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(5, 20))).setDeliveryLocation(loc(Coordinate.newInstance(6, 18))).build();
 
-        Shipment shipment19 = Shipment.Builder.newInstance("19").addSizeDimension(PASSENGERSEATS_INDEX, 1)
+        ShipmentJob shipment19 = new ShipmentJob.Builder("19").addSizeDimension(PASSENGERSEATS_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(15, 14))).setDeliveryLocation(loc(Coordinate.newInstance(14, 16))).build();
-        Shipment shipment20 = Shipment.Builder.newInstance("wheelchair_10").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
+        ShipmentJob shipment20 = new ShipmentJob.Builder("wheelchair_10").addSizeDimension(WHEELCHAIRSPACE_INDEX, 1)
                 .setPickupLocation(loc(Coordinate.newInstance(15, 20))).setDeliveryLocation(loc(Coordinate.newInstance(14, 18))).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -165,7 +165,7 @@ public class TransportOfDisabledPeople {
          * wheelchair-bus can only pickup passenger where x<15
          */
         HardRouteConstraint wheelchair_bus_passenger_pickup_constraint = insertionContext -> {
-            Shipment shipment2insert = ((Shipment) insertionContext.getJob());
+            ShipmentJob shipment2insert = ((ShipmentJob) insertionContext.getJob());
             if (insertionContext.getNewVehicle().getId().equals("wheelchair_bus")) {
                 if (shipment2insert.getSize().get(PASSENGERSEATS_INDEX) > 0) {
                     if (shipment2insert.getPickupActivity().getLocation().getCoordinate().getX() > 15.

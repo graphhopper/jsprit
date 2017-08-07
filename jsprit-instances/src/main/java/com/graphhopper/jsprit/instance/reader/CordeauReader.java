@@ -21,7 +21,7 @@ package com.graphhopper.jsprit.instance.reader;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl.Builder;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -103,7 +103,7 @@ public class CordeauReader {
                 Coordinate customerCoord = makeCoord(tokens[1].trim(), tokens[2].trim());
                 double serviceTime = Double.parseDouble(tokens[3].trim());
                 int demand = Integer.parseInt(tokens[4].trim());
-                Service service = new Service.Builder(id).addSizeDimension(0, demand).setServiceTime(serviceTime)
+                ServiceJob service = new ServiceJob.Builder(id).addSizeDimension(0, demand).setServiceTime(serviceTime)
                     .setLocation(Location.Builder.newInstance().setId(id).setCoordinate(customerCoord).build()).build();
                 vrpBuilder.addJob(service);
             } else if (counter <= (nOfCustomers + nOfDepots + nOfDepots)) {

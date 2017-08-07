@@ -24,7 +24,7 @@ import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl.Builder;
@@ -77,17 +77,17 @@ public class ServicePickupsWithMultipleDepotsExample {
 		 * 4: (15,13)->(14,11)
 		 */
 
-        Service shipment1 = new Service.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
-        Service shipment2 = new Service.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
+        ServiceJob shipment1 = new ServiceJob.Builder("1").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 7)).build();
+        ServiceJob shipment2 = new ServiceJob.Builder("2").addSizeDimension(0, 1).setLocation(Location.newInstance(5, 13)).build();
 
-        Service shipment3 = new Service.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
-        Service shipment4 = new Service.Builder("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
+        ServiceJob shipment3 = new ServiceJob.Builder("3").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 7)).build();
+        ServiceJob shipment4 = new ServiceJob.Builder("4").addSizeDimension(0, 1).setLocation(Location.newInstance(15, 13)).build();
 
-        Service shipment5 = new Service.Builder("5").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 57)).build();
-        Service shipment6 = new Service.Builder("6").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 63)).build();
+        ServiceJob shipment5 = new ServiceJob.Builder("5").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 57)).build();
+        ServiceJob shipment6 = new ServiceJob.Builder("6").addSizeDimension(0, 1).setLocation(Location.newInstance(55, 63)).build();
 
-        Service shipment7 = new Service.Builder("7").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 57)).build();
-        Service shipment8 = new Service.Builder("8").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 63)).build();
+        ServiceJob shipment7 = new ServiceJob.Builder("7").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 57)).build();
+        ServiceJob shipment8 = new ServiceJob.Builder("8").addSizeDimension(0, 1).setLocation(Location.newInstance(65, 63)).build();
 
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

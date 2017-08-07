@@ -35,10 +35,10 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -71,17 +71,17 @@ public class SolutionAnalyserTest {
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setType(type)
                         .setStartLocation(Location.newInstance(5, 0)).build();
 
-        Service s1 = new Service.Builder("s1")
+        ServiceJob s1 = new ServiceJob.Builder("s1")
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .setLocation(Location.newInstance(-10, 1)).addSizeDimension(0, 2)
                         .addRequiredSkill("skill1")
                         .build();
-        Service s2 = new Service.Builder("s2")
+        ServiceJob s2 = new ServiceJob.Builder("s2")
                         .setLocation(Location.newInstance(-10, 10))
                         .addSizeDimension(0, 3)
                         .addRequiredSkill("skill2").addRequiredSkill("skill1")
                         .build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1")
+        ShipmentJob shipment1 = new ShipmentJob.Builder("ship1")
                         .setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
                         .addSizeDimension(0, 10)
@@ -90,13 +90,13 @@ public class SolutionAnalyserTest {
                         .addRequiredSkill("skill3")
                         .build();
 
-        Service s3 = new Service.Builder("s3")
+        ServiceJob s3 = new ServiceJob.Builder("s3")
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1))).addSizeDimension(0, 2).build();
 
-        Service s4 = new Service.Builder("s4").setLocation(TestUtils.loc(Coordinate.newInstance(10, 10))).addSizeDimension(0, 3).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(TestUtils.loc(Coordinate.newInstance(10, 10))).addSizeDimension(0, 3).build();
 
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
+        ShipmentJob shipment2 = new ShipmentJob.Builder("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
                         .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).addSizeDimension(0, 10).build();
 
@@ -126,33 +126,33 @@ public class SolutionAnalyserTest {
                         .setLatestArrival(150.)
                         .build();
 
-        Pickup s1 = new Pickup.Builder("s1")
+        PickupJob s1 = new PickupJob.Builder("s1")
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .setLocation(Location.newInstance(-10, 1))
                         .addSizeDimension(0, 10)
                         .build();
-        Delivery s2 = new Delivery.Builder("s2")
+        DeliveryJob s2 = new DeliveryJob.Builder("s2")
                         .setLocation(Location.newInstance(-10, 10))
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .addSizeDimension(0, 20)
                         .build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
+        ShipmentJob shipment1 = new ShipmentJob.Builder("ship1").setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
                         .addSizeDimension(0, 15)
                         .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
                         .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
                         .build();
 
-        Pickup s3 = new Pickup.Builder("s3")
+        PickupJob s3 = new PickupJob.Builder("s3")
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .setLocation(TestUtils.loc(Coordinate.newInstance(10, 1)))
                         .addSizeDimension(0, 10)
                         .build();
-        Delivery s4 = new Delivery.Builder("s4").setLocation(Location.newInstance(10, 10))
+        DeliveryJob s4 = new DeliveryJob.Builder("s4").setLocation(Location.newInstance(10, 10))
                         .addSizeDimension(0, 20)
                         .setTimeWindow(TimeWindow.newInstance(10, 20))
                         .build();
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
+        ShipmentJob shipment2 = new ShipmentJob.Builder("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
                         .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
                         .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5)))
                         .setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))

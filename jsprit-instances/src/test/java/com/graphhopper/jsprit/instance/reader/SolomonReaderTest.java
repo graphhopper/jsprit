@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 
@@ -89,7 +89,7 @@ public class SolomonReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(90, ((Service) vrp.getJobs().get("2")).getActivity().getOperationTime(), 0.1);
+        assertEquals(90, ((ServiceJob) vrp.getJobs().get("2")).getActivity().getOperationTime(), 0.1);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class SolomonReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(262.0, ((Service) vrp.getJobs().get("62")).getActivity().getSingleTimeWindow().getStart(), 0.1);
+        assertEquals(262.0, ((ServiceJob) vrp.getJobs().get("62")).getActivity().getSingleTimeWindow().getStart(), 0.1);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SolomonReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(144.0, ((Service) vrp.getJobs().get("87")).getActivity().getSingleTimeWindow().getEnd(), 0.1);
+        assertEquals(144.0, ((ServiceJob) vrp.getJobs().get("87")).getActivity().getSingleTimeWindow().getEnd(), 0.1);
     }
 
 

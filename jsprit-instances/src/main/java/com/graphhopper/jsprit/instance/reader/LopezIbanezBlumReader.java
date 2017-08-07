@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
@@ -80,7 +80,7 @@ public class LopezIbanezBlumReader {
                             .setEarliestStart(Double.parseDouble(twTokens[0])).setLatestArrival(Double.parseDouble(twTokens[1])).build();
                     builder.addVehicle(travelingSalesman);
                 } else {
-                    Service s = new Service.Builder("" + nodeIndex).setLocation(Location.newInstance(nodeIndex))
+                    ServiceJob s = new ServiceJob.Builder("" + nodeIndex).setLocation(Location.newInstance(nodeIndex))
                             .setTimeWindow(TimeWindow.newInstance(Double.parseDouble(twTokens[0]), Double.parseDouble(twTokens[1]))).build();
                     builder.addJob(s);
                 }
@@ -99,12 +99,12 @@ public class LopezIbanezBlumReader {
         System.out.println("0->20: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(20), 0, null, null));
         System.out.println("4->18: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(4), Location.newInstance(18), 0, null, null));
         System.out.println("20->8: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(20), Location.newInstance(8), 0, null, null));
-        System.out.println("18: " + ((Service) vrp.getJobs().get("" + 18)).getActivity().getSingleTimeWindow().getStart() + " "
-                + ((Service) vrp.getJobs().get("" + 18)).getActivity().getSingleTimeWindow().getEnd());
-        System.out.println("20: " + ((Service) vrp.getJobs().get("" + 20)).getActivity().getSingleTimeWindow().getStart() + " "
-                + ((Service) vrp.getJobs().get("" + 20)).getActivity().getSingleTimeWindow().getEnd());
-        System.out.println("1: " + ((Service) vrp.getJobs().get("" + 1)).getActivity().getSingleTimeWindow().getStart() + " "
-                + ((Service) vrp.getJobs().get("" + 1)).getActivity().getSingleTimeWindow().getEnd());
+        System.out.println("18: " + ((ServiceJob) vrp.getJobs().get("" + 18)).getActivity().getSingleTimeWindow().getStart() + " "
+                + ((ServiceJob) vrp.getJobs().get("" + 18)).getActivity().getSingleTimeWindow().getEnd());
+        System.out.println("20: " + ((ServiceJob) vrp.getJobs().get("" + 20)).getActivity().getSingleTimeWindow().getStart() + " "
+                + ((ServiceJob) vrp.getJobs().get("" + 20)).getActivity().getSingleTimeWindow().getEnd());
+        System.out.println("1: " + ((ServiceJob) vrp.getJobs().get("" + 1)).getActivity().getSingleTimeWindow().getStart() + " "
+                + ((ServiceJob) vrp.getJobs().get("" + 1)).getActivity().getSingleTimeWindow().getEnd());
     }
 
     private void close(BufferedReader reader) {

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.Builder;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -127,7 +127,7 @@ public class LiLimReader {
             String from = rel.from;
             String to = rel.to;
             int demand = rel.demand;
-            Shipment s = Shipment.Builder.newInstance(counter.toString()).addSizeDimension(0, demand)
+            ShipmentJob s = new ShipmentJob.Builder(counter.toString()).addSizeDimension(0, demand)
                 .setPickupLocation(Location.Builder.newInstance().setCoordinate(customers.get(from).coord).build()).setPickupServiceTime(customers.get(from).serviceTime)
                 .setPickupTimeWindow(TimeWindow.newInstance(customers.get(from).start, customers.get(from).end))
                 .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(customers.get(to).coord).build()).setDeliveryServiceTime(customers.get(to).serviceTime)

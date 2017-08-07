@@ -22,7 +22,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.Builder;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
@@ -86,7 +86,7 @@ public class VrphGoldenReader {
                 if (customerCount == 0) {
                     depotCoord = Coordinate.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]));
                 } else {
-                    Service.Builder serviceBuilder = new Service.Builder(tokens[0]).addSizeDimension(0, Integer.parseInt(tokens[3]));
+                    ServiceJob.Builder serviceBuilder = new ServiceJob.Builder(tokens[0]).addSizeDimension(0, Integer.parseInt(tokens[3]));
                     serviceBuilder.setLocation(Location.newInstance(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])));
                     vrpBuilder.addJob(serviceBuilder.build());
                 }

@@ -32,7 +32,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 
 
 public class JobNeighborhoodsWithCapRestrictionImplTest {
@@ -41,25 +41,25 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
 
     JobDistance jobDistance;
 
-    Service target;
-    Service s2;
-    Service s3;
-    Service s4;
-    Service s5;
-    Service s6;
-    Service s7;
+    ServiceJob target;
+    ServiceJob s2;
+    ServiceJob s3;
+    ServiceJob s4;
+    ServiceJob s5;
+    ServiceJob s6;
+    ServiceJob s7;
 
     @Before
     public void doBefore() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
-        target = new Service.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 5)).build();
-        s2 = new Service.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 4)).build();
-        s3 = new Service.Builder("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 3)).build();
-        s4 = new Service.Builder("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 2)).build();
+        target = new ServiceJob.Builder("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 5)).build();
+        s2 = new ServiceJob.Builder("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 4)).build();
+        s3 = new ServiceJob.Builder("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 3)).build();
+        s4 = new ServiceJob.Builder("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 2)).build();
 
-        s5 = new Service.Builder("s5").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 6)).build();
-        s6 = new Service.Builder("s6").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 7)).build();
-        s7 = new Service.Builder("s7").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 8)).build();
+        s5 = new ServiceJob.Builder("s5").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 6)).build();
+        s6 = new ServiceJob.Builder("s6").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 7)).build();
+        s7 = new ServiceJob.Builder("s7").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 8)).build();
 
         vrp = builder.addJob(target).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6).addJob(s7).build();
 
@@ -71,9 +71,9 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 2);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(2, target);
-        List<Service> services = new ArrayList<Service>();
+        List<ServiceJob> services = new ArrayList<ServiceJob>();
         while (iter.hasNext()) {
-            services.add((Service) iter.next());
+            services.add((ServiceJob) iter.next());
         }
         assertEquals(2, services.size());
     }
@@ -83,9 +83,9 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 2);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(2, target);
-        List<Service> services = new ArrayList<Service>();
+        List<ServiceJob> services = new ArrayList<ServiceJob>();
         while (iter.hasNext()) {
-            services.add((Service) iter.next());
+            services.add((ServiceJob) iter.next());
         }
         assertTrue(services.contains(s2));
     }
@@ -95,9 +95,9 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 2);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(2, target);
-        List<Service> services = new ArrayList<Service>();
+        List<ServiceJob> services = new ArrayList<ServiceJob>();
         while (iter.hasNext()) {
-            services.add((Service) iter.next());
+            services.add((ServiceJob) iter.next());
         }
         assertTrue(services.contains(s5));
     }
@@ -107,9 +107,9 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 4);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(4, target);
-        List<Service> services = new ArrayList<Service>();
+        List<ServiceJob> services = new ArrayList<ServiceJob>();
         while (iter.hasNext()) {
-            services.add((Service) iter.next());
+            services.add((ServiceJob) iter.next());
         }
         assertEquals(4, services.size());
     }
@@ -119,9 +119,9 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 2);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(100, target);
-        List<Service> services = new ArrayList<Service>();
+        List<ServiceJob> services = new ArrayList<ServiceJob>();
         while (iter.hasNext()) {
-            services.add((Service) iter.next());
+            services.add((ServiceJob) iter.next());
         }
         assertEquals(2, services.size());
     }

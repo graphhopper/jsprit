@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.instance.reader.VrphGoldenReader.VrphType;
@@ -295,7 +295,7 @@ public class GoldenReaderTest {
 
     private Coordinate getCoord(String string, VehicleRoutingProblem vrp) {
         Job j = getJob(string, vrp);
-        return ((Service) j).getActivity().getLocation().getCoordinate();
+        return ((ServiceJob) j).getActivity().getLocation().getCoordinate();
     }
 
     @Test

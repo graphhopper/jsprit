@@ -22,7 +22,7 @@ import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.distance.ManhattanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl.Builder;
@@ -60,28 +60,28 @@ public class MultipleTimeWindowExample {
         /*
          * build services at the required locations, each with a capacity-demand of 1.
          */
-        Service service1 = new Service.Builder("1")
+        ServiceJob service1 = new ServiceJob.Builder("1")
             .addTimeWindow(50, 100)
             .addTimeWindow(20, 35)
             .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(10, 0)).build();
 
-        Service service2 = new Service.Builder("2")
+        ServiceJob service2 = new ServiceJob.Builder("2")
             .addSizeDimension(WEIGHT_INDEX, 1)
 //            .setServiceTime(10)
             .setLocation(Location.newInstance(20, 0)).setServiceTime(10).build();
 
-        Service service3 = new Service.Builder("3")
+        ServiceJob service3 = new ServiceJob.Builder("3")
             .addTimeWindow(5, 10)
             .addTimeWindow(35, 50)
             .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(30, 0)).build();
 
-        Service service4 = new Service.Builder("4")
+        ServiceJob service4 = new ServiceJob.Builder("4")
 //            .addTimeWindow(5,10)
             .addTimeWindow(20, 40)
             .addTimeWindow(45, 80)
             .addSizeDimension(WEIGHT_INDEX, 1).setLocation(Location.newInstance(40, 0)).build();
 
-        Service service5 = new Service.Builder("5")
+        ServiceJob service5 = new ServiceJob.Builder("5")
             .addTimeWindow(5, 10)
             .addTimeWindow(20, 40)
             .addTimeWindow(60, 100)

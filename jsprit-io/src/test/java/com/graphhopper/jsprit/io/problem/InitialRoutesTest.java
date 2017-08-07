@@ -21,8 +21,8 @@ package com.graphhopper.jsprit.io.problem;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import org.junit.Test;
 
@@ -70,7 +70,7 @@ public class InitialRoutesTest {
     private int getNuShipments(VehicleRoutingProblem vrp) {
         int nuShipments = 0;
         for (Job job : vrp.getJobs().values()) {
-            if (job instanceof Shipment) {
+            if (job instanceof ShipmentJob) {
                 nuShipments++;
             }
         }
@@ -80,7 +80,7 @@ public class InitialRoutesTest {
     private int getNuServices(VehicleRoutingProblem vrp) {
         int nuServices = 0;
         for (Job job : vrp.getJobs().values()) {
-            if (job instanceof Service) {
+            if (job instanceof ServiceJob) {
                 nuServices++;
             }
         }

@@ -31,7 +31,7 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
@@ -45,7 +45,7 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
     Vehicle veh1;
     Vehicle veh2;
     VehicleFleetManager fleetManager;
-    Service service;
+    ServiceJob service;
     VehicleRoute vehicleRoute;
 
     @Before
@@ -57,7 +57,7 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
         when(veh1.getStartLocation()).thenReturn(Location.newInstance("loc1"));
         when(veh2.getStartLocation()).thenReturn(Location.newInstance("loc2"));
         fleetManager = mock(VehicleFleetManager.class);
-        service = mock(Service.class);
+        service = mock(ServiceJob.class);
         vehicleRoute = mock(VehicleRoute.class);
 
         when(fleetManager.getAvailableVehicles()).thenReturn(Arrays.asList(veh1, veh2));

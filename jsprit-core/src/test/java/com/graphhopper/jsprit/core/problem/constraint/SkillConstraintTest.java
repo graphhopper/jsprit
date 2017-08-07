@@ -29,7 +29,7 @@ import org.junit.Test;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -55,11 +55,11 @@ public class SkillConstraintTest {
         vehicle = VehicleImpl.Builder.newInstance("v").addSkill("skill1").addSkill("skill2").addSkill("skill3").addSkill("skill4").setStartLocation(Location.newInstance("start")).setType(type).build();
         vehicle2 = VehicleImpl.Builder.newInstance("v2").addSkill("skill4").addSkill("skill5").setStartLocation(Location.newInstance("start")).setType(type).build();
 
-        Service service = new Service.Builder("s").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
-        Service service2 = new Service.Builder("s2").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();
+        ServiceJob service = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
+        ServiceJob service2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();
 
-        Service service3 = new Service.Builder("s3").setLocation(Location.newInstance("loc")).addRequiredSkill("skill4").addRequiredSkill("skill5").build();
-        Service service4 = new Service.Builder("s4").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
+        ServiceJob service3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance("loc")).addRequiredSkill("skill4").addRequiredSkill("skill5").build();
+        ServiceJob service4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
 
         vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addVehicle(vehicle2).addJob(service)
             .addJob(service2).addJob(service3).addJob(service4).build();

@@ -17,8 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.constraint;
 
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 
@@ -67,11 +67,11 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
     }
 
     protected boolean isShipment(TourActivity newAct) {
-        return newAct instanceof JobActivity && ((JobActivity) newAct).getJob() instanceof Shipment;
+        return newAct instanceof JobActivity && ((JobActivity) newAct).getJob() instanceof ShipmentJob;
     }
 
     protected boolean isService(TourActivity newAct) {
-        return newAct instanceof JobActivity && ((JobActivity) newAct).getJob() instanceof Service;
+        return newAct instanceof JobActivity && ((JobActivity) newAct).getJob() instanceof ServiceJob;
     }
 
     // protected ConstraintsStatus old(TourActivity prevAct, TourActivity

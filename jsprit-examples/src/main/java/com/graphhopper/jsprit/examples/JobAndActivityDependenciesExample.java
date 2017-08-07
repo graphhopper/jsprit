@@ -30,7 +30,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -216,36 +216,36 @@ public class JobAndActivityDependenciesExample {
             .addSkill("driver3")
             .setStartLocation(Location.newInstance(-3, 5)).setReturnToDepot(true).build();
 
-        Service s1 = new Service.Builder("s1")
+        ServiceJob s1 = new ServiceJob.Builder("s1")
             .addRequiredSkill("driver1")
             .setName("install new device")
             .setLocation(Location.newInstance(2, 2)).build();
-        Service s2 = new Service.Builder("s2")
+        ServiceJob s2 = new ServiceJob.Builder("s2")
             .addRequiredSkill("driver3")
             .setName("deliver key")
             .setLocation(Location.newInstance(2, 4)).build();
 
-        Service s3 = new Service.Builder("s3")
+        ServiceJob s3 = new ServiceJob.Builder("s3")
             .addRequiredSkill("driver1")
             .setName("repair heater")
             .setLocation(Location.newInstance(-2, 2)).build();
 
-        Service s4 = new Service.Builder("s4")
+        ServiceJob s4 = new ServiceJob.Builder("s4")
             .addRequiredSkill("driver3")
             .setName("get key")
             .setLocation(Location.newInstance(-2.3, 4)).build();
 
-        Service s5 = new Service.Builder("s5")
+        ServiceJob s5 = new ServiceJob.Builder("s5")
             .addRequiredSkill("driver1")
             .setName("cleaning")
             .setLocation(Location.newInstance(1, 5)).build();
 
-        Service s6 = new Service.Builder("s6")
+        ServiceJob s6 = new ServiceJob.Builder("s6")
             .addRequiredSkill("driver3")
             .setName("use key")
             .setLocation(Location.newInstance(-2, 3)).build();
 
-        Service s7 = new Service.Builder("s7")
+        ServiceJob s7 = new ServiceJob.Builder("s7")
             .addRequiredSkill("driver3")
             .setName("maintenance")
             .setLocation(Location.newInstance(-1.7, 3.5)).build();

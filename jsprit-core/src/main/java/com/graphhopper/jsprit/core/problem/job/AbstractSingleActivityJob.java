@@ -29,21 +29,38 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsIm
 /**
  * Service implementation of a job.
  * <p>
+ * Note that two services are equal if they have the same id.
+ * </p>
+ * <h3>Warning!</h3>
  * <p>
- * <p>Note that two services are equal if they have the same id.
+ * This class and all its subclasses ({@linkplain ServiceJob},
+ * {@linkplain PickupJob}, {@linkplain DeliveryJob} and
+ * {@linkplain ShipmentJob}) are here for convenience. Most of the time using
+ * them is unnecessary and using the {@linkplain CustomJob} is a better choice.
+ * </p>
+ * <p>
+ * For most of the use cases, the {@linkplain CustomJob} offers sufficient
+ * functionality, so before you decide to implement your own Job implementation
+ * think over if you really need one. If after the above considerations, you
+ * still choose to make your own implementation, it is strongly recommended to
+ * base your implementation on {@linkplain AbstractJob} instead of this class.
+ * It offers little and this class and all its subclasses may most likely be
+ * deprecated and be removed in the future.
+ * </p>
  *
  * @author schroeder
+ * @author Balage
  */
 public abstract class AbstractSingleActivityJob<A extends JobActivity> extends AbstractJob {
 
     /**
-     * Builder that builds a service.
+     * Builder base that builds a job with a single activity.
      *
      * @author schroeder
+     * @author Balage
      */
     public static abstract class BuilderBase<T extends AbstractSingleActivityJob<?>, B extends BuilderBase<T, B>>
     extends JobBuilder<T, B> {
-
         protected String type = "service";
 
         protected double serviceTime;
@@ -52,6 +69,12 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
 
         protected TimeWindowsImpl timeWindows;
 
+        /**
+         * The constructor of the builder.
+         *
+         * @param id
+         *            The unique id of the job.
+         */
         public BuilderBase(String id) {
             super(id);
             this.id = id;
@@ -61,9 +84,12 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
         /**
          * Protected method to set the type-name of the service.
          * <p>
-         * <p>Currently there are {@link AbstractSingleActivityJob}, {@link Pickup} and {@link Delivery}.
+         * <p>
+         * Currently there are {@link ServiceJob}, {@link PickupJob} and
+         * {@link DeliveryJob}.
          *
-         * @param name the name of service
+         * @param name
+         *            the name of service
          * @return the builder
          */
         @SuppressWarnings("unchecked")
@@ -96,9 +122,8 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
          */
         @SuppressWarnings("unchecked")
         public B setServiceTime(double serviceTime) {
-            if (serviceTime < 0) {
+            if (serviceTime < 0)
                 throw new IllegalArgumentException("serviceTime must be greater than or equal to zero");
-            }
             this.serviceTime = serviceTime;
             return (B) this;
         }
@@ -114,42 +139,88 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
         @Override
         @SuppressWarnings("unchecked")
         public B addSizeDimension(int dimensionIndex, int dimensionValue) {
-            if (dimensionValue < 0) {
+            if (dimensionValue < 0)
                 throw new IllegalArgumentException("capacity value cannot be negative");
-            }
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
             return (B) this;
         }
 
+        /**
+         * Sets a single time window.
+         * <p>
+         * This method clears any previously set time windows. Use
+         * {@linkplain #addTimeWindow(TimeWindow)} to add an additional one,
+         * instead of replacing the already set ones.
+         * </p>
+         *
+         * @param tw
+         *            The time window to set.
+         * @return the builder
+         * @throws IllegalArgumentException
+         *             If the time window is null.
+         */
         @SuppressWarnings("unchecked")
         public B setTimeWindow(TimeWindow tw) {
-            if (tw == null) {
+            if (tw == null)
                 throw new IllegalArgumentException("time-window arg must not be null");
-            }
             timeWindows = new TimeWindowsImpl();
             timeWindows.add(tw);
             return (B) this;
         }
 
+        /**
+         * adds a single time window
+         * <p>
+         * This method adds the time window to the previously set time windows.
+         * </p>
+         *
+         * @param timeWindow
+         *            The time window to set.
+         * @return the builder
+         * @throws IllegalArgumentException
+         *             If the time window is null.
+         */
         @SuppressWarnings("unchecked")
         public B addTimeWindow(TimeWindow timeWindow) {
-            if (timeWindow == null) {
+            if (timeWindow == null)
                 throw new IllegalArgumentException("time-window arg must not be null");
-            }
             timeWindows.add(timeWindow);
             return (B) this;
         }
 
+        /**
+         * Clones the time windows from an existing time window set.
+         *
+         * @param timeWindows
+         *            The time window set.
+         * @return the build
+         */
         public B addTimeWindows(TimeWindows timeWindows) {
             return addTimeWindows(timeWindows.getTimeWindows());
         }
 
+        /**
+         * Adds a collection of time windows.
+         *
+         * @param timeWindows
+         *            The time windows to add.
+         * @return the build
+         */
         @SuppressWarnings("unchecked")
         public B addTimeWindows(Collection<TimeWindow> timeWindows) {
             timeWindows.forEach(t -> addTimeWindow(t));
             return (B) this;
         }
 
+        /**
+         * Constructs and adds a time window.
+         *
+         * @param earliest
+         *            The earliest start.
+         * @param latest
+         *            The latest start.
+         * @return the builder
+         */
         public B addTimeWindow(double earliest, double latest) {
             return addTimeWindow(TimeWindow.newInstance(earliest, latest));
         }
@@ -179,26 +250,37 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
 
         @Override
         protected void validate() {
-            if (location == null) {
+            if (location == null)
                 throw new IllegalArgumentException("location is missing");
-            }
             if (timeWindows.isEmpty()) {
                 timeWindows.add(TimeWindow.ETERNITY);
             }
         }
 
+        /**
+         * @return The type code.
+         */
         public String getType() {
             return type;
         }
 
+        /**
+         * @return The operation time.
+         */
         public double getServiceTime() {
             return serviceTime;
         }
 
+        /**
+         * @return The location of the job.
+         */
         public Location getLocation() {
             return location;
         }
 
+        /**
+         * @return The time window set.
+         */
         public TimeWindowsImpl getTimeWindows() {
             return timeWindows;
         }
@@ -211,10 +293,27 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
         type = builder.type;
     }
 
-    protected abstract A createActivity(
-                    BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder);
+    /**
+     * Creates the single activity.
+     *
+     * @param builder
+     *            the builder object
+     * @return The created activity.
+     */
+    protected abstract A createActivity(BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder);
 
 
+    /**
+     * Creates the activity.
+     * <p>
+     * It creates an activity list, adds the single activity produces by
+     * {@linkplain #createActivity(BuilderBase)} and sets the activity list on
+     * the job.
+     * </p>
+     *
+     * @param builder
+     *            the builder object.
+     */
     @Override
     protected final void createActivities(JobBuilder<?, ?> builder) {
         @SuppressWarnings("unchecked")
@@ -224,48 +323,13 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
         setActivities(list);
     }
 
+    /**
+     * @return The single activity assigned to the job.
+     */
     @SuppressWarnings("unchecked")
     public A getActivity() {
         return (A) getActivityList().getAll().get(0);
     }
-
-    // /**
-    // * Returns location.
-    // *
-    // * @return location
-    // */
-    // @Deprecated
-    // public Location getLocation() {
-    // return getActivity().getLocation();
-    // }
-    //
-    //
-    // /**
-    // * Returns the service-time/duration a service takes at service-location.
-    // *
-    // * @return service duration
-    // */
-    // @Deprecated
-    // public double getServiceDuration() {
-    // return getActivity().getOperationTime();
-    // }
-    //
-    // /**
-    // * Returns the time-window a service(-operation) is allowed to start.
-    // * It is recommended to use getTimeWindows() instead. If you still use
-    // this, it returns the first time window of getTimeWindows() collection.
-    // *
-    // * @return time window
-    // */
-    // @Deprecated
-    // public TimeWindow getTimeWindow() {
-    // return getTimeWindows().iterator().next();
-    // }
-    //
-    // @Deprecated
-    // public Collection<TimeWindow> getServiceTimeWindows() {
-    // return getActivity().getTimeWindows();
-    // }
 
     /**
      * @return the name
@@ -282,7 +346,7 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
     @Override
     public String toString() {
         return "[id=" + getId() + "][name=" + getName() + "][type=" + type + "][activity="
-                        + getActivity() + "]";
+                + getActivity() + "]";
     }
 
 
@@ -293,6 +357,6 @@ public abstract class AbstractSingleActivityJob<A extends JobActivity> extends A
     }
 
     public abstract <X extends BuilderBase<AbstractSingleActivityJob<? extends A>, ? extends BuilderBase<AbstractSingleActivityJob<? extends A>, ?>>> X getBuilder(
-                    String id);
+            String id);
 
 }

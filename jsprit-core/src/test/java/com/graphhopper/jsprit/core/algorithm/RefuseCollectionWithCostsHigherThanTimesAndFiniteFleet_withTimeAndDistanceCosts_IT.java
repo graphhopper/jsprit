@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.algorithm.box.GreedySchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.termination.IterationWithoutImprovementTermination;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -106,7 +106,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_withTimeAndD
             /*
              * build service
 			 */
-            Service service = new Service.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
+            ServiceJob service = new ServiceJob.Builder(lineTokens[0]).addSizeDimension(0, Integer.parseInt(lineTokens[1]))
                 .setLocation(Location.newInstance(lineTokens[0])).build();
             /*
              * and add it to problem

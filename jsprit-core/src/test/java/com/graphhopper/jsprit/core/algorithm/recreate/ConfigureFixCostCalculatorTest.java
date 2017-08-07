@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 /**
@@ -45,7 +45,7 @@ public class ConfigureFixCostCalculatorTest {
     public void before() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         for (int i = 0; i < 100; i++) {
-            Service service = new Service.Builder("" + i).setLocation(Location.newInstance(0)).build();
+            ServiceJob service = new ServiceJob.Builder("" + i).setLocation(Location.newInstance(0)).build();
             vrpBuilder.addJob(service);
         }
         vrp = vrpBuilder.build();

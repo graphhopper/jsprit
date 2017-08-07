@@ -34,7 +34,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
@@ -60,7 +60,7 @@ public class StateManagerTest {
 
     private VehicleRoute getRoute(Vehicle vehicle) {
         return VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new ActFac())
-            .addService(new Service.Builder("s")
+            .addService(new ServiceJob.Builder("s")
                 .setLocation(Location.newInstance("loc")).build())
             .build();
     }

@@ -42,11 +42,11 @@ import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.AbstractSingleActivityJob;
 import com.graphhopper.jsprit.core.problem.job.Break;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -61,7 +61,7 @@ import com.graphhopper.jsprit.core.util.Resource;
 public class VrpXMLReader {
 
     public interface ServiceBuilderFactory {
-        Service.BuilderBase<?, ?> createBuilder(String serviceType, String id, Integer size);
+        ServiceJob.BuilderBase<?, ?> createBuilder(String serviceType, String id, Integer size);
     }
 
     static class DefaultServiceBuilderFactory implements ServiceBuilderFactory {
@@ -70,21 +70,21 @@ public class VrpXMLReader {
         public AbstractSingleActivityJob.BuilderBase<?, ?> createBuilder(String serviceType, String id, Integer size) {
             if (serviceType.equals("pickup")) {
                 if (size != null) {
-                    return new Pickup.Builder(id).addSizeDimension(0, size);
+                    return new PickupJob.Builder(id).addSizeDimension(0, size);
                 } else {
-                    return new Pickup.Builder(id);
+                    return new PickupJob.Builder(id);
                 }
             } else if (serviceType.equals("delivery")) {
                 if (size != null) {
-                    return new Delivery.Builder(id).addSizeDimension(0, size);
+                    return new DeliveryJob.Builder(id).addSizeDimension(0, size);
                 } else {
-                    return new Delivery.Builder(id);
+                    return new DeliveryJob.Builder(id);
                 }
             } else {
                 if (size != null) {
-                    return new Service.Builder(id).addSizeDimension(0, size);
+                    return new ServiceJob.Builder(id).addSizeDimension(0, size);
                 } else {
-                    return new Service.Builder(id);
+                    return new ServiceJob.Builder(id);
                 }
 
             }
@@ -99,7 +99,7 @@ public class VrpXMLReader {
 
     private Map<String, AbstractSingleActivityJob<?>> serviceMap;
 
-    private Map<String, Shipment> shipmentMap;
+    private Map<String, ShipmentJob> shipmentMap;
 
     private Set<String> freezedJobIds = new HashSet<String>();
 
@@ -197,7 +197,7 @@ public class VrpXMLReader {
                 vrpBuilder.addJob(service);
             }
         }
-        for (Shipment shipment : shipmentMap.values()) {
+        for (ShipmentJob shipment : shipmentMap.values()) {
             if (!freezedJobIds.contains(shipment.getId())) {
                 vrpBuilder.addJob(shipment);
             }
@@ -248,7 +248,7 @@ public class VrpXMLReader {
                         if (shipmentId == null) {
                             throw new IllegalArgumentException("either serviceId or shipmentId is missing");
                         }
-                        Shipment shipment = getShipment(shipmentId);
+                        ShipmentJob shipment = getShipment(shipmentId);
                         if (shipment == null) {
                             throw new IllegalArgumentException("shipment to shipmentId " + shipmentId
                                     + " is missing (reference in one of your initial routes). make sure you define the shipment you refer to here in <shipments> </shipments>.");
@@ -323,7 +323,7 @@ public class VrpXMLReader {
                             if (shipmentId == null) {
                                 throw new IllegalArgumentException("either serviceId or shipmentId is missing");
                             }
-                            Shipment shipment = getShipment(shipmentId);
+                            ShipmentJob shipment = getShipment(shipmentId);
                             if (shipment == null) {
                                 throw new IllegalArgumentException("shipment with id " + shipmentId + " does not exist.");
                             }
@@ -357,7 +357,7 @@ public class VrpXMLReader {
         }
     }
 
-    private Shipment getShipment(String shipmentId) {
+    private ShipmentJob getShipment(String shipmentId) {
         return shipmentMap.get(shipmentId);
     }
 
@@ -402,11 +402,11 @@ public class VrpXMLReader {
                         "either use capacity or capacity-dimension, not both. prefer the use of 'capacity-dimensions' over 'capacity'.");
             }
 
-            Shipment.Builder builder;
+            ShipmentJob.Builder builder;
             if (capacityString != null) {
-                builder = Shipment.Builder.newInstance(id).addSizeDimension(0, Integer.parseInt(capacityString));
+                builder = new ShipmentJob.Builder(id).addSizeDimension(0, Integer.parseInt(capacityString));
             } else {
-                builder = Shipment.Builder.newInstance(id);
+                builder = new ShipmentJob.Builder(id);
                 List<HierarchicalConfiguration> dimensionConfigs = shipmentConfig.configurationsAt("capacity-dimensions.dimension");
                 for (HierarchicalConfiguration dimension : dimensionConfigs) {
                     Integer index = dimension.getInt("[@index]");
@@ -514,7 +514,7 @@ public class VrpXMLReader {
             }
 
             //build shipment
-            Shipment shipment = builder.build();
+            ShipmentJob shipment = builder.build();
 //			vrpBuilder.addJob(shipment);
             shipmentMap.put(shipment.getId(), shipment);
         }

@@ -25,8 +25,8 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.ShipmentJob;
 import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -63,11 +63,11 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		 * 4: (15,13)->(14,11)
 		 */
 
-        Shipment shipment1 = Shipment.Builder.newInstance("1").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(6, 9))).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("2").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(6, 11))).build();
+        ShipmentJob shipment1 = new ShipmentJob.Builder("1").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 7))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(6, 9))).build();
+        ShipmentJob shipment2 = new ShipmentJob.Builder("2").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(6, 11))).build();
 
-        Shipment shipment3 = Shipment.Builder.newInstance("3").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 9))).build();
-        Shipment shipment4 = Shipment.Builder.newInstance("4").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 11))).build();
+        ShipmentJob shipment3 = new ShipmentJob.Builder("3").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 7))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 9))).build();
+        ShipmentJob shipment4 = new ShipmentJob.Builder("4").addSizeDimension(0, 1).setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 13))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(14, 11))).build();
 
 		/*
          * build deliveries, (implicitly picked up in the depot)
@@ -76,10 +76,10 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		 * 3: (16,8)
 		 * 4: (16,12)
 		 */
-        Delivery delivery1 = (Delivery) new Delivery.Builder("5").addSizeDimension(0, 1).setLocation(TestUtils.loc(Coordinate.newInstance(4, 8))).build();
-        Delivery delivery2 = (Delivery) new Delivery.Builder("6").addSizeDimension(0, 1).setLocation(TestUtils.loc(Coordinate.newInstance(4, 12))).build();
-        Delivery delivery3 = (Delivery) new Delivery.Builder("7").addSizeDimension(0, 1).setLocation(TestUtils.loc(Coordinate.newInstance(16, 8))).build();
-        Delivery delivery4 = (Delivery) new Delivery.Builder("8").addSizeDimension(0, 1).setLocation(TestUtils.loc(Coordinate.newInstance(16, 12))).build();
+        DeliveryJob delivery1 = (DeliveryJob) new DeliveryJob.Builder("5").addSizeDimension(0, 1).setLocation(TestUtils.loc(Coordinate.newInstance(4, 8))).build();
+        DeliveryJob delivery2 = (DeliveryJob) new DeliveryJob.Builder("6").addSizeDimension(0, 1).setLocation(TestUtils.loc(Coordinate.newInstance(4, 12))).build();
+        DeliveryJob delivery3 = (DeliveryJob) new DeliveryJob.Builder("7").addSizeDimension(0, 1).setLocation(TestUtils.loc(Coordinate.newInstance(16, 8))).build();
+        DeliveryJob delivery4 = (DeliveryJob) new DeliveryJob.Builder("8").addSizeDimension(0, 1).setLocation(TestUtils.loc(Coordinate.newInstance(16, 12))).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(vehicle);
@@ -127,10 +127,10 @@ public class TestMixedServiceAndShipmentsProblemOnRouteLevel {
 		 * 3: (16,8)
 		 * 4: (16,12)
 		 */
-        Delivery delivery1 = (Delivery) new Delivery.Builder("5").addSizeDimension(0, 1).setLocation(Location.newInstance(4, 8)).build();
-        Delivery delivery2 = (Delivery) new Delivery.Builder("6").addSizeDimension(0, 1).setLocation(Location.newInstance(4, 12)).build();
-        Delivery delivery3 = (Delivery) new Delivery.Builder("7").addSizeDimension(0, 1).setLocation(Location.newInstance(16, 8)).build();
-        Delivery delivery4 = (Delivery) new Delivery.Builder("8").addSizeDimension(0, 1).setLocation(Location.newInstance(16, 12)).build();
+        DeliveryJob delivery1 = (DeliveryJob) new DeliveryJob.Builder("5").addSizeDimension(0, 1).setLocation(Location.newInstance(4, 8)).build();
+        DeliveryJob delivery2 = (DeliveryJob) new DeliveryJob.Builder("6").addSizeDimension(0, 1).setLocation(Location.newInstance(4, 12)).build();
+        DeliveryJob delivery3 = (DeliveryJob) new DeliveryJob.Builder("7").addSizeDimension(0, 1).setLocation(Location.newInstance(16, 8)).build();
+        DeliveryJob delivery4 = (DeliveryJob) new DeliveryJob.Builder("8").addSizeDimension(0, 1).setLocation(Location.newInstance(16, 12)).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(vehicle)

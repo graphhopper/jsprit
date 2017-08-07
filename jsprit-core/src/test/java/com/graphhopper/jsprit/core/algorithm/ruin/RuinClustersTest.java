@@ -30,7 +30,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.distance.DefaultJobDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.ServiceJob;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
@@ -42,14 +42,14 @@ public class RuinClustersTest {
 
     @Test
     public void itShouldRuinTwoObviousClusters() {
-        Service s0 = new Service.Builder("s0").setLocation(Location.newInstance(9, 0)).build();
-        Service s1 = new Service.Builder("s1").setLocation(Location.newInstance(9, 1)).build();
-        Service s2 = new Service.Builder("s2").setLocation(Location.newInstance(9, 10)).build();
-        Service s3 = new Service.Builder("s3").setLocation(Location.newInstance(9, 9)).build();
-        Service s4 = new Service.Builder("s4").setLocation(Location.newInstance(9, 16)).build();
-        Service s5 = new Service.Builder("s5").setLocation(Location.newInstance(9, 17)).build();
-        Service s6 = new Service.Builder("s6").setLocation(Location.newInstance(9, 15.5)).build();
-        Service s7 = new Service.Builder("s7").setLocation(Location.newInstance(9, 30)).build();
+        ServiceJob s0 = new ServiceJob.Builder("s0").setLocation(Location.newInstance(9, 0)).build();
+        ServiceJob s1 = new ServiceJob.Builder("s1").setLocation(Location.newInstance(9, 1)).build();
+        ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(Location.newInstance(9, 10)).build();
+        ServiceJob s3 = new ServiceJob.Builder("s3").setLocation(Location.newInstance(9, 9)).build();
+        ServiceJob s4 = new ServiceJob.Builder("s4").setLocation(Location.newInstance(9, 16)).build();
+        ServiceJob s5 = new ServiceJob.Builder("s5").setLocation(Location.newInstance(9, 17)).build();
+        ServiceJob s6 = new ServiceJob.Builder("s6").setLocation(Location.newInstance(9, 15.5)).build();
+        ServiceJob s7 = new ServiceJob.Builder("s7").setLocation(Location.newInstance(9, 30)).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
 

@@ -1,10 +1,10 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.SizeDimension;
 
 /**
- * Common ancesstor for non-job-based, internal activities
+ * Common ancestor for non-job-based, internal activities
  *
  * @author balage
  */

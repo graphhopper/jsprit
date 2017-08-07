@@ -31,8 +31,8 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
+import com.graphhopper.jsprit.core.problem.job.PickupJob;
 import com.graphhopper.jsprit.core.problem.solution.route.ReverseRouteActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -66,9 +66,9 @@ public class UpdatePracticalTimeWindowTest {
         reverseActivityVisitor = new ReverseRouteActivityVisitor();
         reverseActivityVisitor.addActivityVisitor(new UpdatePracticalTimeWindows(stateManager, routingCosts, activityCosts));
 
-        Pickup pickup = new Pickup.Builder("pick").setLocation(Location.newInstance("0,20")).setTimeWindow(TimeWindow.newInstance(0, 30)).build();
-        Delivery delivery = new Delivery.Builder("del").setLocation(Location.newInstance("20,20")).setTimeWindow(TimeWindow.newInstance(10, 40)).build();
-        Pickup pickup2 = new Pickup.Builder("pick2").setLocation(Location.newInstance("20,0")).setTimeWindow(TimeWindow.newInstance(20, 50)).build();
+        PickupJob pickup = new PickupJob.Builder("pick").setLocation(Location.newInstance("0,20")).setTimeWindow(TimeWindow.newInstance(0, 30)).build();
+        DeliveryJob delivery = new DeliveryJob.Builder("del").setLocation(Location.newInstance("20,20")).setTimeWindow(TimeWindow.newInstance(10, 40)).build();
+        PickupJob pickup2 = new PickupJob.Builder("pick2").setLocation(Location.newInstance("20,0")).setTimeWindow(TimeWindow.newInstance(20, 50)).build();
 
         VehicleType vt = mock(VehicleType.class);
         when(vt.getAvgVelocity()).thenReturn(1d);

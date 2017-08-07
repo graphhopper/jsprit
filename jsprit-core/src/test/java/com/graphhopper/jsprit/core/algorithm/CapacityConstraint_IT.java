@@ -27,7 +27,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -69,13 +69,13 @@ public class CapacityConstraint_IT {
         VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance(0, 0)).setType(type4).setReturnToDepot(true).build();
         VehicleImpl v5 = VehicleImpl.Builder.newInstance("v5").setStartLocation(Location.newInstance(0, 0)).setType(type5).setReturnToDepot(true).build();
 
-        Delivery d1 = new Delivery.Builder("d1").setLocation(Location.newInstance(0, 10))
+        DeliveryJob d1 = new DeliveryJob.Builder("d1").setLocation(Location.newInstance(0, 10))
             .addSizeDimension(2, 1).build();
-        Delivery d2 = new Delivery.Builder("d2").setLocation(Location.newInstance(0, 12))
+        DeliveryJob d2 = new DeliveryJob.Builder("d2").setLocation(Location.newInstance(0, 12))
             .addSizeDimension(2, 1).addSizeDimension(3, 1).build();
-        Delivery d3 = new Delivery.Builder("d3").setLocation(Location.newInstance(0, 15))
+        DeliveryJob d3 = new DeliveryJob.Builder("d3").setLocation(Location.newInstance(0, 15))
             .addSizeDimension(0, 1).addSizeDimension(4, 1).build();
-        Delivery d4 = new Delivery.Builder("d4").setLocation(Location.newInstance(0, 20))
+        DeliveryJob d4 = new DeliveryJob.Builder("d4").setLocation(Location.newInstance(0, 20))
             .addSizeDimension(0, 1).addSizeDimension(5, 1).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();

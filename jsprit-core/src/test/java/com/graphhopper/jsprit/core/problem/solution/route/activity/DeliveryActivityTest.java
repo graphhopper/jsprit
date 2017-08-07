@@ -23,13 +23,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.DeliveryJob;
 
 public class DeliveryActivityTest extends JobActivityTest {
 
     @Before
     public void doBefore() {
-        service = new Delivery.Builder("service").setLocation(Location.newInstance("loc"))
+        service = new DeliveryJob.Builder("service").setLocation(Location.newInstance("loc"))
                         .setTimeWindow(TimeWindow.newInstance(1., 2.)).
                         setServiceTime(20d).
                         addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
