@@ -364,8 +364,11 @@ public class Service extends AbstractJob {
      * @return time window
      *
      */
+    @Deprecated
     public TimeWindow getTimeWindow() {
-        return theRealActivity.getSingleTimeWindow();
+        if (getTheRealActivity().getTimeWindows().size() > 1)
+            throw new IllegalArgumentException("More than one time window in. " + this);
+        return getTheRealActivity().getTimeWindows().iterator().next();
     }
 
     /**

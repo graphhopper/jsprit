@@ -40,13 +40,13 @@ public class BreakActivityTest {
     @Before
     public void doBefore() {
         Builder breakBuilder = new Break.Builder("service")
-                        .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3);
+                .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3);
         service = breakBuilder.build();
         serviceActivity = BreakActivity.newInstance(service, breakBuilder);
         serviceActivity.setTheoreticalEarliestOperationStartTime(
-                        service.getActivity().getTimeWindow().getStart());
+                service.getActivity().getBreakTimeWindow().getStart());
         serviceActivity.setTheoreticalLatestOperationStartTime(
-                        service.getActivity().getTimeWindow().getEnd());
+                service.getActivity().getBreakTimeWindow().getEnd());
     }
 
     @Test
@@ -99,11 +99,11 @@ public class BreakActivityTest {
         ServiceJob s1 = new ServiceJob.Builder("s").setLocation(loc).build();
         ServiceJob s2 = new ServiceJob.Builder("s").setLocation(loc).build();
         ServiceActivity d1 = new ServiceActivity(s1, "s1",
-                        loc, 0d, SizeDimension.EMPTY,
-                        TimeWindows.ANY_TIME.getTimeWindows());
+                loc, 0d, SizeDimension.EMPTY,
+                TimeWindows.ANY_TIME.getTimeWindows());
         ServiceActivity d2 = new ServiceActivity(s2, "s2",
-                        loc, 0d, SizeDimension.EMPTY,
-                        TimeWindows.ANY_TIME.getTimeWindows());
+                loc, 0d, SizeDimension.EMPTY,
+                TimeWindows.ANY_TIME.getTimeWindows());
 
         assertTrue(d1.equals(d2));
     }
@@ -114,11 +114,11 @@ public class BreakActivityTest {
         ServiceJob s1 = new ServiceJob.Builder("s").setLocation(loc).build();
         ServiceJob s2 = new ServiceJob.Builder("s2").setLocation(loc).build();
         ServiceActivity d1 = new ServiceActivity(s1, "s1",
-                        loc, 0d, SizeDimension.EMPTY,
-                        TimeWindows.ANY_TIME.getTimeWindows());
+                loc, 0d, SizeDimension.EMPTY,
+                TimeWindows.ANY_TIME.getTimeWindows());
         ServiceActivity d2 = new ServiceActivity(s2, "s2",
-                        loc, 0d, SizeDimension.EMPTY,
-                        TimeWindows.ANY_TIME.getTimeWindows());
+                loc, 0d, SizeDimension.EMPTY,
+                TimeWindows.ANY_TIME.getTimeWindows());
 
         assertFalse(d1.equals(d2));
     }

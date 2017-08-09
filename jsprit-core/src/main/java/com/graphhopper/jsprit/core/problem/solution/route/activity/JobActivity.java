@@ -98,18 +98,6 @@ public abstract class JobActivity extends AbstractActivity {
         return timeWindows;
     }
 
-    /**
-     * @return A single time window.
-     * @throws IllegalArgumentException
-     *             When more than one time window exists.
-     */
-    // TODO: Is it legacy code, should be removed later
-    @Deprecated
-    public TimeWindow getSingleTimeWindow() {
-        if (timeWindows.size() > 1)
-            throw new IllegalArgumentException("More than one time window in. " + this);
-        return timeWindows.iterator().next();
-    }
 
     @Override
     public int hashCode() {

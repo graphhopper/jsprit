@@ -65,30 +65,30 @@ public class IgnoreBreakTimeWindowTest {
 
 
         ServiceJob service4 = new ServiceJob.Builder("2").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(17, 17)).build();
+                .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(17, 17)).build();
 
         ServiceJob service5 = new ServiceJob.Builder("3").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(18, 18)).build();
+                .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(18, 18)).build();
 
         ServiceJob service7 = new ServiceJob.Builder("4").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(10, 10)).build();
+                .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(10, 10)).build();
 
         ServiceJob service8 = new ServiceJob.Builder("5").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(12, 12)).build();
+                .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(12, 12)).build();
 
         ServiceJob service10 = new ServiceJob.Builder("6").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(16, 16)).build();
+                .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(16, 16)).build();
 
         ServiceJob service11 = new ServiceJob.Builder("7").setLocation(Location.newInstance(0, 0))
-                        .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(13, 13)).build();
+                .setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(13, 13)).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
-                        .addVehicle(vehicle2)
-                        .addJob(service4)
-                        .addJob(service5).addJob(service7)
-                        .addJob(service8).addJob(service10).addJob(service11)
-                        .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-                        .build();
+                .addVehicle(vehicle2)
+                .addJob(service4)
+                .addJob(service5).addJob(service7)
+                .addJob(service8).addJob(service10).addJob(service11)
+                .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+                .build();
 
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(50);
@@ -103,7 +103,7 @@ public class IgnoreBreakTimeWindowTest {
         boolean inTime = true;
         for (TourActivity act : solution.getRoutes().iterator().next().getActivities()) {
             if (act instanceof BreakActivity) {
-                TimeWindow timeWindow = ((BreakActivity) act).getSingleTimeWindow();
+                TimeWindow timeWindow = ((BreakActivity) act).getBreakTimeWindow();
                 if (act.getEndTime() < timeWindow.getStart()) {
                     inTime = false;
                 }

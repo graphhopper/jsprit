@@ -146,15 +146,14 @@ public class VrpXMLReaderTest {
 
     private Vehicle getVehicle(String string, Collection<Vehicle> vehicles) {
         for (Vehicle v : vehicles) {
-            if (string.equals(v.getId())) {
+            if (string.equals(v.getId()))
                 return v;
-            }
         }
         return null;
     }
 
     private boolean idsInCollection(List<String> asList, Collection<Vehicle> vehicles) {
-        List<String> ids = new ArrayList<String>(asList);
+        List<String> ids = new ArrayList<>(asList);
         for (Vehicle v : vehicles) {
             if (ids.contains(v.getId())) {
                 ids.remove(v.getId());
@@ -311,7 +310,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         ServiceJob s1 = (ServiceJob) vrp.getJobs().get("1");
-        TimeWindow tw = s1.getActivity().getSingleTimeWindow();
+        TimeWindow tw = s1.getActivity().getTimeWindows().iterator().next();
         assertEquals(0.0, tw.getStart(), 0.01);
         assertEquals(4000.0, tw.getEnd(), 0.01);
     }
@@ -474,7 +473,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         ShipmentJob s = (ShipmentJob) vrp.getJobs().get("3");
-        TimeWindow tw = s.getPickupActivity().getSingleTimeWindow();
+        TimeWindow tw = s.getPickupActivity().getTimeWindows().iterator().next();
         assertEquals(1000.0, tw.getStart(), 0.01);
         assertEquals(4000.0, tw.getEnd(), 0.01);
     }
@@ -485,7 +484,7 @@ public class VrpXMLReaderTest {
         new VrpXMLReader(builder, null).read(inputStream);
         VehicleRoutingProblem vrp = builder.build();
         ShipmentJob s = (ShipmentJob) vrp.getJobs().get("3");
-        TimeWindow tw = s.getDeliveryActivity().getSingleTimeWindow();
+        TimeWindow tw = s.getDeliveryActivity().getTimeWindows().iterator().next();
         assertEquals(6000.0, tw.getStart(), 0.01);
         assertEquals(10000.0, tw.getEnd(), 0.01);
     }
@@ -624,7 +623,7 @@ public class VrpXMLReaderTest {
     @Test
     public void testRead_ifReaderIsCalled_itReadsSuccessfullyV2() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<>();
         new VrpXMLReader(vrpBuilder, solutions).read(getClass().getResourceAsStream("finiteVrpWithShipmentsAndSolution.xml"));
         VehicleRoutingProblem vrp = vrpBuilder.build();
         assertEquals(4, vrp.getJobs().size());
@@ -642,7 +641,7 @@ public class VrpXMLReaderTest {
     @Test
     public void testRead_ifReaderIsCalled_itReadsSuccessfully() {
         new VrpXMLReader(VehicleRoutingProblem.Builder.newInstance(), new ArrayList<VehicleRoutingProblemSolution>())
-                .read(getClass().getResourceAsStream("lui-shen-solution.xml"));
+        .read(getClass().getResourceAsStream("lui-shen-solution.xml"));
         assertTrue(true);
     }
 
@@ -650,7 +649,7 @@ public class VrpXMLReaderTest {
     @Test
     public void unassignedJobShouldBeRead() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-        ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        ArrayList<VehicleRoutingProblemSolution> solutions = new ArrayList<>();
         new VrpXMLReader(vrpBuilder, solutions).read(getClass().getResourceAsStream("finiteVrpWithShipmentsAndSolution.xml"));
 
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);

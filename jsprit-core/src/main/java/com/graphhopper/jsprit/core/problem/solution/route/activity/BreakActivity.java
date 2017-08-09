@@ -116,9 +116,9 @@ public class BreakActivity extends InternalJobActivity {
     /**
      * @return The time window of the break.
      */
-    public TimeWindow getTimeWindow() {
+    public TimeWindow getBreakTimeWindow() {
         // Break has always a single time window
-        return getSingleTimeWindow();
+        return getTimeWindows().iterator().next();
     }
 
 }

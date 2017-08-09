@@ -41,9 +41,8 @@ public class SolomonReaderTest {
 
     private String getPath() {
         URL resource = getClass().getClassLoader().getResource("C101_solomon.txt");
-        if (resource == null) {
+        if (resource == null)
             throw new IllegalStateException("file C101_solomon.txt does not exist");
-        }
         return resource.getPath();
     }
 
@@ -97,7 +96,9 @@ public class SolomonReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(262.0, ((ServiceJob) vrp.getJobs().get("62")).getActivity().getSingleTimeWindow().getStart(), 0.1);
+        assertEquals(262.0,
+                ((ServiceJob) vrp.getJobs().get("62")).getActivity().getTimeWindows().iterator().next().getStart(),
+                0.1);
     }
 
     @Test
@@ -105,7 +106,8 @@ public class SolomonReaderTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new SolomonReader(builder).read(getPath());
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(144.0, ((ServiceJob) vrp.getJobs().get("87")).getActivity().getSingleTimeWindow().getEnd(), 0.1);
+        assertEquals(144.0,
+                ((ServiceJob) vrp.getJobs().get("87")).getActivity().getTimeWindows().iterator().next().getEnd(), 0.1);
     }
 
 
