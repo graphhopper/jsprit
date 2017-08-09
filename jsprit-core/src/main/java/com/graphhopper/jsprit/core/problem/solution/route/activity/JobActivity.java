@@ -6,6 +6,7 @@ import java.util.HashSet;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
+import com.graphhopper.jsprit.core.problem.job.AbstractListBackedJobActivityList.FriendlyHandshake;
 import com.graphhopper.jsprit.core.problem.job.Job;
 
 /**
@@ -148,12 +149,18 @@ public abstract class JobActivity extends AbstractActivity {
     /**
      * Sets the order number of the activity within the job.
      * <p>
-     * <b>Warning! This function is not part of the API.</b>
+     * <b>Warning! This function is not part of the API. Calling it would throw
+     * {@linkplain IllegalStateException}. </b>
      * </p>
      *
+     * @param friendLock
+     *            Internal friend handshake object.
      * @param orderNumber
+     *            The order number.
      */
-    public void impl_setOrderNumber(int orderNumber) {
+    public void impl_setOrderNumber(FriendlyHandshake hadshake, int orderNumber) {
+        if (hadshake == null)
+            throw new IllegalStateException();
         this.orderNumber = orderNumber;
     }
 
