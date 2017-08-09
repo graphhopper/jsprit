@@ -31,7 +31,7 @@ public class Break extends AbstractSingleActivityJob<BreakActivity> implements I
     public static final class Builder extends ServiceJob.BuilderBase<Break, Builder> {
 
         private static final Location VARIABLE_LOCATION = Location
-                        .newInstance("@@@VARIABLE_LOCATION");
+                .newInstance("@@@VARIABLE_LOCATION");
 
         public Builder(String id) {
             super(id);
@@ -71,7 +71,7 @@ public class Break extends AbstractSingleActivityJob<BreakActivity> implements I
 
     @Override
     protected BreakActivity createActivity(
-                    BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
+            BuilderBase<? extends AbstractSingleActivityJob<?>, ?> builder) {
         return BreakActivity.newInstance(this, (Builder) builder);
     }
 

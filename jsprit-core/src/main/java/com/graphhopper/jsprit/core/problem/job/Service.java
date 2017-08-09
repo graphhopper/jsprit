@@ -358,13 +358,17 @@ public class Service extends AbstractJob {
 
     /**
      * Returns the time-window a service(-operation) is allowed to start.
-     * It is recommended to use getTimeWindows() instead. If you still use this, it returns the first time window of getTimeWindows() collection.
+     *
+     * @deprecated It is recommended to use getTimeWindows() instead. If you
+     *             still use this, it returns the first time window of
+     *             getTimeWindows() collection.
      *
      * @return time window
      *
      */
+    @Deprecated
     public TimeWindow getTimeWindow() {
-        return theRealActivity.getSingleTimeWindow();
+        return theRealActivity.getTimeWindows().iterator().next();
     }
 
     /**

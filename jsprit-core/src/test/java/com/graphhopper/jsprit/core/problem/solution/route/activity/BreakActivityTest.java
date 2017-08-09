@@ -44,9 +44,9 @@ public class BreakActivityTest {
         service = breakBuilder.build();
         serviceActivity = BreakActivity.newInstance(service, breakBuilder);
         serviceActivity.setTheoreticalEarliestOperationStartTime(
-                        service.getActivity().getTimeWindow().getStart());
+                        service.getActivity().getBreakTimeWindow().getStart());
         serviceActivity.setTheoreticalLatestOperationStartTime(
-                        service.getActivity().getTimeWindow().getEnd());
+                        service.getActivity().getBreakTimeWindow().getEnd());
     }
 
     @Test
