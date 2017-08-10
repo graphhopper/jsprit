@@ -89,7 +89,7 @@
                                                         <xs:complexType>
                                                             <xs:simpleContent>
                                                                 <xs:extension base="xs:integer">
-                                                                    <xs:attribute name="index" type="xs:integer"
+                                                                    <xs:attribute name="index" type="xs:string"
                                                                                   use="required"/>
                                                                 </xs:extension>
                                                             </xs:simpleContent>
@@ -142,7 +142,7 @@
                                                         <xs:complexType>
                                                             <xs:simpleContent>
                                                                 <xs:extension base="xs:integer">
-                                                                    <xs:attribute name="index" type="xs:integer"
+                                                                    <xs:attribute name="index" type="xs:string"
                                                                                   use="required"/>
                                                                 </xs:extension>
                                                             </xs:simpleContent>
@@ -230,7 +230,7 @@
                                                         <xs:complexType>
                                                             <xs:simpleContent>
                                                                 <xs:extension base="xs:integer">
-                                                                    <xs:attribute name="index" type="xs:integer"
+                                                                    <xs:attribute name="index" type="xs:string"
                                                                                   use="required"/>
                                                                 </xs:extension>
                                                             </xs:simpleContent>

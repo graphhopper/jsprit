@@ -230,6 +230,10 @@ public class Shipment extends AbstractJob {
          * @throws IllegalArgumentException if dimVal < 0
          */
         public Builder addSizeDimension(int dimensionIndex, int dimensionValue) {
+            return addSizeDimension(String.valueOf(dimensionIndex), dimensionValue);
+        }
+
+        public Builder addSizeDimension(String dimensionIndex, int dimensionValue) {
             if (dimensionValue < 0) throw new IllegalArgumentException("capacity value cannot be negative");
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
             return this;

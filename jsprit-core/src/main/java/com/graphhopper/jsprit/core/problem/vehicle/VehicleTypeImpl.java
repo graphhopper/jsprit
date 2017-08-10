@@ -260,7 +260,10 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException    if capacity dimension is already set
          */
         public Builder addCapacityDimension(int dimIndex, int dimVal) {
-            if (dimVal < 0) throw new IllegalArgumentException("capacity value cannot be negative");
+            return addCapacityDimension(String.valueOf(dimIndex), dimVal);
+        }
+
+        public Builder addCapacityDimension(String dimIndex, int dimVal) {
             if (capacityDimensions != null)
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
                     "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +

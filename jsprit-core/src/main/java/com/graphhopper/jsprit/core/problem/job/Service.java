@@ -167,6 +167,10 @@ public class Service extends AbstractJob {
          * @throws IllegalArgumentException if dimensionValue < 0
          */
         public Builder<T> addSizeDimension(int dimensionIndex, int dimensionValue) {
+            return addSizeDimension(String.valueOf(dimensionIndex), dimensionValue);
+        }
+
+        public Builder<T> addSizeDimension(String dimensionIndex, int dimensionValue) {
             if (dimensionValue < 0) throw new IllegalArgumentException("capacity value cannot be negative");
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
             return this;

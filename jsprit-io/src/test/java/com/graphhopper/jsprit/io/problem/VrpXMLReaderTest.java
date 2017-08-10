@@ -569,6 +569,20 @@ public class VrpXMLReaderTest {
     }
 
     @Test
+    public void whenReadingFileWithNamedCapacityDimensions_v5AndItsTypeHasTheCorrectCapacityDimensionValues() {
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        new VrpXMLReader(builder, null).read(getClass().getResourceAsStream("namedCapacityDimensionForReaderTest.xml"));
+        VehicleRoutingProblem vrp = builder.build();
+        Vehicle v = getVehicle("v5", vrp.getVehicles());
+        assertEquals(100, v.getType().getCapacityDimensions().get("ZERO"));
+        assertEquals(1000, v.getType().getCapacityDimensions().get("ONE"));
+        assertEquals(10000, v.getType().getCapacityDimensions().get("TWO"));
+        assertEquals(0, v.getType().getCapacityDimensions().get("THREE"));
+        assertEquals(0, v.getType().getCapacityDimensions().get("FIVE"));
+        assertEquals(100000, v.getType().getCapacityDimensions().get("TEN"));
+    }
+
+    @Test
     public void whenReadingInitialRouteWithShipment4_thisShipmentShouldNotAppearInJobMap() { //since it is not part of the problem anymore
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new VrpXMLReader(builder).read(getClass().getResourceAsStream("finiteVrpWithInitialSolutionForReaderTest.xml"));
