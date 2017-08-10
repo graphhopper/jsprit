@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
@@ -399,6 +400,11 @@ public class VehicleRoute {
 
         }
 
+        public Builder setJobActivityFactory(JobActivityFactory copyJobActivityFactory) {
+            // TODO Does nothing and it is a problem
+            return this;
+        }
+
         /**
          * Builds the route.
          *
@@ -466,6 +472,7 @@ public class VehicleRoute {
             if (!duplicatedActivities.isEmpty() || !activityCounter.isEmpty())
                 throw new IllegalArgumentException("Invalid route. See details above.");
         }
+
     }
 
     private TourActivities tourActivities;
