@@ -17,7 +17,10 @@
  */
 package com.graphhopper.jsprit.core.problem;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Capacity with an arbitrary number of capacity-dimension.
@@ -41,7 +44,7 @@ public class Capacity {
     public static Capacity addup(Capacity cap1, Capacity cap2) {
         if (cap1 == null || cap2 == null) throw new NullPointerException("arguments must not be null");
         Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
+        for(String i : getAllKeys(cap1, cap2)) {
             capacityBuilder.addDimension(i, cap1.get(i) + cap2.get(i));
         }
         return capacityBuilder.build();
@@ -59,7 +62,7 @@ public class Capacity {
     public static Capacity subtract(Capacity cap, Capacity cap2subtract) {
         if (cap == null || cap2subtract == null) throw new NullPointerException("arguments must not be null");
         Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < Math.max(cap.getNuOfDimensions(), cap2subtract.getNuOfDimensions()); i++) {
+        for(String i : getAllKeys(cap, cap2subtract)) {
             int dimValue = cap.get(i) - cap2subtract.get(i);
             capacityBuilder.addDimension(i, dimValue);
         }
@@ -76,7 +79,7 @@ public class Capacity {
     public static Capacity invert(Capacity cap2invert) {
         if (cap2invert == null) throw new NullPointerException("arguments must not be null");
         Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < cap2invert.getNuOfDimensions(); i++) {
+        for (String i : cap2invert.dimensions.keySet()) {
             int dimValue = cap2invert.get(i) * -1;
             capacityBuilder.addDimension(i, dimValue);
         }
@@ -90,27 +93,33 @@ public class Capacity {
      * <p>If both nominator.get(i) and denominator.get(i) equal to 0, dimension i is ignored.
      * <p>If both capacities are have only dimensions with dimensionVal=0, it returns 0.0
      *
-     * @param numerator   the numerator
-     * @param denominator the denominator
+     * @param numeratorCap   the numerator
+     * @param denominatorCap the denominator
      * @return quotient
      * @throws IllegalStateException if numerator.get(i) != 0 and denominator.get(i) == 0
      */
-    public static double divide(Capacity numerator, Capacity denominator) {
+    public static double divide(Capacity numeratorCap, Capacity denominatorCap) {
         int nuOfDimensions = 0;
         double sumQuotients = 0.0;
-        for (int index = 0; index < Math.max(numerator.getNuOfDimensions(), denominator.getNuOfDimensions()); index++) {
-            if (numerator.get(index) != 0 && denominator.get(index) == 0) {
+
+        for (String k : getAllKeys(numeratorCap, denominatorCap)) {
+            Integer numerator = numeratorCap.get(k);
+            Integer denominator = denominatorCap.get(k);
+
+            if (numerator != 0 && denominator == 0)
                 throw new IllegalArgumentException("numerator > 0 and denominator = 0. cannot divide by 0");
-            } else if (numerator.get(index) == 0 && denominator.get(index) == 0) {
+
+            if (numerator == 0 && denominator == 0)
                 continue;
-            } else {
-                nuOfDimensions++;
-                sumQuotients += (double) numerator.get(index) / (double) denominator.get(index);
-            }
+
+            nuOfDimensions++;
+            sumQuotients += (double) numerator / (double) denominator;
         }
+
         if (nuOfDimensions > 0) return sumQuotients / (double) nuOfDimensions;
         return 0.0;
     }
+
 
     /**
      * Makes a deep copy of Capacity.
@@ -133,7 +142,7 @@ public class Capacity {
         /**
          * default is 1 dimension with size of zero
          */
-        private int[] dimensions = new int[1];
+        private Map<String, Integer> dimensions = new HashMap();
 
         /**
          * Returns a new instance of Capacity with one dimension and a value/size of 0
@@ -157,24 +166,15 @@ public class Capacity {
          * @param dimValue dimensionValue
          * @return this builder
          */
-        public Builder addDimension(int index, int dimValue) {
-            if (index < dimensions.length) {
-                dimensions[index] = dimValue;
-            } else {
-                int requiredSize = index + 1;
-                int[] newDimensions = new int[requiredSize];
-                copy(dimensions, newDimensions);
-                newDimensions[index] = dimValue;
-                this.dimensions = newDimensions;
-            }
+        public Builder addDimension(String index, int dimValue) {
+            dimensions.put(index, dimValue);
             return this;
         }
 
-        private void copy(int[] from, int[] to) {
-            for (int i = 0; i < dimensions.length; i++) {
-                to[i] = from[i];
-            }
+        public Builder addDimension(int index, int dimValue) {
+            return addDimension(String.valueOf(index), dimValue);
         }
+
 
         /**
          * Builds an immutable Capacity and returns it.
@@ -188,7 +188,7 @@ public class Capacity {
 
     }
 
-    private int[] dimensions;
+    private Map<String, Integer> dimensions = new HashMap();
 
     /**
      * copy constructor
@@ -196,10 +196,7 @@ public class Capacity {
      * @param capacity capacity to be copied
      */
     Capacity(Capacity capacity) {
-        this.dimensions = new int[capacity.getNuOfDimensions()];
-        for (int i = 0; i < capacity.getNuOfDimensions(); i++) {
-            this.dimensions[i] = capacity.get(i);
-        }
+        this.dimensions = new HashMap<>(capacity.dimensions);
     }
 
     Capacity(Builder builder) {
@@ -212,7 +209,12 @@ public class Capacity {
      * @return noDimensions
      */
     public int getNuOfDimensions() {
-        return dimensions.length;
+        //The previous array based implementation always had at least a size of 1
+        //This is to keep it consistent with that implementation
+        //But should probably be considered a bug and fixed
+        if (dimensions.isEmpty()) return 1;
+
+        return dimensions.size();
     }
 
 
@@ -224,9 +226,13 @@ public class Capacity {
      * @param index dimension index of the capacity value to be retrieved
      * @return the according dimension value
      */
+    public int get(String index) {
+        Integer v = dimensions.get(index);
+        return v != null ? v.intValue() : 0;
+    }
+
     public int get(int index) {
-        if (index < dimensions.length) return dimensions[index];
-        return 0;
+        return get(String.valueOf(index));
     }
 
     /**
@@ -238,7 +244,7 @@ public class Capacity {
      */
     public boolean isLessOrEqual(Capacity toCompare) {
         if (toCompare == null) throw new NullPointerException();
-        for (int i = 0; i < this.getNuOfDimensions(); i++) {
+        for (String i : this.dimensions.keySet()) {
             if (this.get(i) > toCompare.get(i)) return false;
         }
         return true;
@@ -253,7 +259,7 @@ public class Capacity {
      */
     public boolean isGreaterOrEqual(Capacity toCompare) {
         if (toCompare == null) throw new NullPointerException();
-        for (int i = 0; i < Math.max(this.getNuOfDimensions(), toCompare.getNuOfDimensions()); i++) {
+        for (String i : getAllKeys(this, toCompare)) {
             if (this.get(i) < toCompare.get(i)) return false;
         }
         return true;
@@ -262,8 +268,8 @@ public class Capacity {
     @Override
     public String toString() {
         String string = "[noDimensions=" + getNuOfDimensions() + "]";
-        for (int i = 0; i < getNuOfDimensions(); i++) {
-            string += "[[dimIndex=" + i + "][dimValue=" + dimensions[i] + "]]";
+        for (String i : this.dimensions.keySet()) {
+            string += "[[dimIndex=" + i + "][dimValue=" + dimensions.get(i) + "]]";
         }
         return string;
     }
@@ -278,7 +284,7 @@ public class Capacity {
     public static Capacity max(Capacity cap1, Capacity cap2) {
         if (cap1 == null || cap2 == null) throw new IllegalArgumentException("arg must not be null");
         Capacity.Builder toReturnBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
+        for (String i : getAllKeys(cap1, cap2)) {
             toReturnBuilder.addDimension(i, Math.max(cap1.get(i), cap2.get(i)));
         }
         return toReturnBuilder.build();
@@ -287,7 +293,7 @@ public class Capacity {
     public static Capacity min(Capacity cap1, Capacity cap2) {
         if (cap1 == null || cap2 == null) throw new IllegalArgumentException("arg must not be null");
         Capacity.Builder toReturnBuilder = Capacity.Builder.newInstance();
-        for (int i = 0; i < Math.max(cap1.getNuOfDimensions(), cap2.getNuOfDimensions()); i++) {
+        for (String i : getAllKeys(cap1, cap2)) {
             toReturnBuilder.addDimension(i, Math.min(cap1.get(i), cap2.get(i)));
         }
         return toReturnBuilder.build();
@@ -296,17 +302,22 @@ public class Capacity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Capacity)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Capacity capacity = (Capacity) o;
 
-        if (!Arrays.equals(dimensions, capacity.dimensions)) return false;
-
-        return true;
+        return dimensions.equals(capacity.dimensions);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(dimensions);
+        return dimensions.hashCode();
+    }
+
+    private static Set<String> getAllKeys(Capacity capacity1, Capacity capacity2) {
+        Set<String> allKeys = new HashSet();
+        allKeys.addAll(capacity1.dimensions.keySet());
+        allKeys.addAll(capacity2.dimensions.keySet());
+        return allKeys;
     }
 }

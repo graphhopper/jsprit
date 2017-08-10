@@ -45,16 +45,6 @@ public class CapacityTest {
     }
 
     @Test
-    public void whenSettingRandomNuOfCapDimension_nuOfDimensionMustBeCorrect() {
-        Random rand = new Random();
-        int nuOfCapDimensions = 1 + rand.nextInt(100);
-        Capacity.Builder capBuilder = Capacity.Builder.newInstance();
-        capBuilder.addDimension(nuOfCapDimensions - 1, 4);
-        Capacity cap = capBuilder.build();
-        assertEquals(nuOfCapDimensions, cap.getNuOfDimensions());
-    }
-
-    @Test
     public void whenGettingIndexWhichIsHigherThanNuOfCapDimensions_itShouldReturn0() {
         Capacity.Builder capBuilder = Capacity.Builder.newInstance();
         capBuilder.addDimension(0, 4);
@@ -198,6 +188,14 @@ public class CapacityTest {
     }
 
     @Test
+    public void defaultEmptyCapIsLessThanDefined_itShouldReturnCorrectBoolean() {
+        Capacity defaultEmptyCap = Capacity.Builder.newInstance().build();
+        Capacity capWithValue = Capacity.Builder.newInstance().addDimension(0, 1).build();
+        assertFalse(capWithValue.isLessOrEqual(defaultEmptyCap));
+        assertTrue(defaultEmptyCap.isLessOrEqual(capWithValue));
+    }
+
+    @Test
     public void whenOneCapIsLessThanAnother_itShouldReturnCorrectBoolean_v2() {
         Capacity cap1 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 4).build();
         Capacity cap2 = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 3).addDimension(2, 4).build();
@@ -260,6 +258,20 @@ public class CapacityTest {
         assertEquals(1, wheelChair_plus_passenger.get(wheelChairSpace));
         assertEquals(1, wheelChair_plus_passenger.get(passengerSeats));
         assertEquals(110, wheelChair_plus_passenger.get(weight));
+        assertFalse(wheelChair_plus_passenger.isLessOrEqual(cap1));
+    }
+
+    @Test
+    public void whenAddingTwoCapacitiesWithStringIndexes_itShouldReturnCorrectCap_v2() {
+        Capacity cap1 = Capacity.Builder.newInstance().addDimension("wheelChairSpace", 2).addDimension("passengerSeats", 10).addDimension("weight", 100).build();
+        Capacity wheelChair = Capacity.Builder.newInstance().addDimension("wheelChairSpace", 1).addDimension("weight", 80).build();
+        Capacity passenger = Capacity.Builder.newInstance().addDimension("passengerSeats", 1).addDimension("weight", 30).build();
+
+        Capacity wheelChair_plus_passenger = Capacity.addup(wheelChair, passenger);
+
+        assertEquals(1, wheelChair_plus_passenger.get("wheelChairSpace"));
+        assertEquals(1, wheelChair_plus_passenger.get("passengerSeats"));
+        assertEquals(110, wheelChair_plus_passenger.get("weight"));
         assertFalse(wheelChair_plus_passenger.isLessOrEqual(cap1));
     }
 
