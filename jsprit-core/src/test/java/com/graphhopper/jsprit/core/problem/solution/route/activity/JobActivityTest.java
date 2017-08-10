@@ -33,9 +33,9 @@ public abstract class JobActivityTest {
         this.service = service;
         activity = service.getActivity();
         activity.setTheoreticalEarliestOperationStartTime(
-                        activity.getSingleTimeWindow().getStart());
+                activity.getTimeWindows().iterator().next().getStart());
         activity.setTheoreticalLatestOperationStartTime(
-                        activity.getSingleTimeWindow().getEnd());
+                activity.getTimeWindows().iterator().next().getEnd());
     }
 
     @Test

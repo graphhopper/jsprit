@@ -17,6 +17,20 @@
  */
 package com.graphhopper.jsprit.core.problem;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.distance.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -33,10 +47,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeKey;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.DefaultCosts;
 import com.graphhopper.jsprit.core.util.Locations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 
 /**
@@ -74,35 +84,27 @@ public class VehicleRoutingProblem {
 
         private VehicleRoutingActivityCosts activityCosts = new WaitingTimeCosts();
 
-        private Map<String, Job> jobs = new LinkedHashMap<String, Job>();
+        private Map<String, Job> jobs = new LinkedHashMap<>();
 
-        private Map<String, Job> tentativeJobs = new LinkedHashMap<String, Job>();
+        private Map<String, Job> tentativeJobs = new LinkedHashMap<>();
 
-        private Set<String> jobsInInitialRoutes = new HashSet<String>();
+        private Set<String> jobsInInitialRoutes = new HashSet<>();
 
-        private Map<String, Coordinate> tentative_coordinates = new HashMap<String, Coordinate>();
+        private Map<String, Coordinate> tentative_coordinates = new HashMap<>();
 
         private FleetSize fleetSize = FleetSize.INFINITE;
 
-        private Collection<VehicleType> vehicleTypes = new ArrayList<VehicleType>();
+        private Collection<VehicleType> vehicleTypes = new ArrayList<>();
 
-        private Collection<VehicleRoute> initialRoutes = new ArrayList<VehicleRoute>();
+        private Collection<VehicleRoute> initialRoutes = new ArrayList<>();
 
-        private Set<Vehicle> uniqueVehicles = new LinkedHashSet<Vehicle>();
+        private Set<Vehicle> uniqueVehicles = new LinkedHashSet<>();
 
-        private Set<String> addedVehicleIds = new LinkedHashSet<String>();
+        private Set<String> addedVehicleIds = new LinkedHashSet<>();
 
         private boolean hasBreaks = false;
 
-        private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
-
-            @Override
-            public List<JobActivity> createActivities(Job job) {
-                // Now its safe, but be carful if another implementation of Job is made
-                return ((AbstractJob) job).getActivityList().getAll();
-            }
-
-        };
+        private JobActivityFactory jobActivityFactory = job -> ((AbstractJob) job).getActivityList().getAll();
 
         private int jobIndexCounter = 1;
 
@@ -112,7 +114,7 @@ public class VehicleRoutingProblem {
 
         private int vehicleTypeIdIndexCounter = 1;
 
-        private Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<VehicleTypeKey, Integer>();
+        private Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<>();
 
         // Deprecated ?
         //        private Map<Job, List<JobActivity>> activityMap = new HashMap<>();
@@ -135,7 +137,7 @@ public class VehicleRoutingProblem {
             vehicleTypeIdIndexCounter++;
         }
 
-        private Set<Location> allLocations = new HashSet<Location>();
+        private Set<Location> allLocations = new HashSet<>();
 
         /**
          * Returns the unmodifiable map of collected locations (mapped by their location-id).
@@ -155,14 +157,7 @@ public class VehicleRoutingProblem {
          * @return locations
          */
         public Locations getLocations() {
-            return new Locations() {
-
-                @Override
-                public Coordinate getCoord(String id) {
-                    return tentative_coordinates.get(id);
-                }
-
-            };
+            return id -> tentative_coordinates.get(id);
         }
 
         /**
@@ -206,26 +201,52 @@ public class VehicleRoutingProblem {
          * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
          */
         public Builder addJob(Job job) {
-            if (!(job instanceof AbstractJob)) {
+            if (!(job instanceof AbstractJob))
                 throw new IllegalArgumentException("job must be of type AbstractJob");
-            }
             return addJob((AbstractJob) job);
         }
 
         /**
+         * Handshake class for C++ like friend visibility behavior emulation.
+         *
+         * <p>
+         * This is not a class for the end-users. (To be frank, this class can't
+         * be instantiate outside the parent task.
+         * </p>
+         *
+         * <p>
+         * Based on
+         * {@link https://stackoverflow.com/questions/182278/is-there-a-way-to-simulate-the-c-friend-concept-in-java}
+         * </p>
+         *
+         * @author Balage
+         */
+        // C++ like friend behavior simulation
+        public final static class FriendlyHandshake {
+            private FriendlyHandshake() {
+            }
+        }
+
+        private static final FriendlyHandshake FRIENDLY_HANDSHAKE = new FriendlyHandshake();
+
+        /**
          * Adds a job which is either a service or a shipment.
          * <p>
-         * <p>Note that job.getId() must be unique, i.e. no job (either it is a shipment or a service) is allowed to have an already allocated id.
+         * <p>
+         * Note that job.getId() must be unique, i.e. no job (either it is a
+         * shipment or a service) is allowed to have an already allocated id.
          *
-         * @param job job to be added
+         * @param job
+         *            job to be added
          * @return this builder
-         * @throws IllegalStateException if job is neither a shipment nor a service, or jobId has already been added.
+         * @throws IllegalStateException
+         *             if job is neither a shipment nor a service, or jobId has
+         *             already been added.
          */
         public Builder addJob(AbstractJob job) {
-            if (tentativeJobs.containsKey(job.getId())) {
+            if (tentativeJobs.containsKey(job.getId()))
                 throw new IllegalArgumentException("vehicle routing problem already contains a service or shipment with id " + job.getId() + ". make sure you use unique ids for all services and shipments");
-            }
-            job.impl_setIndex(jobIndexCounter);
+            job.impl_setIndex(FRIENDLY_HANDSHAKE, jobIndexCounter);
             incJobIndexCounter();
             tentativeJobs.put(job.getId(), job);
             addLocationToTentativeLocations(job);
@@ -260,9 +281,8 @@ public class VehicleRoutingProblem {
                 if (v.getBreak() != null) {
                     hasBreaks = true;
                     List<JobActivity> breakActivities = jobActivityFactory.createActivities(v.getBreak());
-                    if (breakActivities.isEmpty()) {
+                    if (breakActivities.isEmpty())
                         throw new IllegalArgumentException("at least one activity for break needs to be created by activityFactory");
-                    }
                     for (AbstractActivity act : breakActivities) {
                         act.setIndex(activityIndexCounter);
                         incActivityIndexCounter();
@@ -330,9 +350,8 @@ public class VehicleRoutingProblem {
          * @return this builder
          */
         public Builder addVehicle(Vehicle vehicle) {
-            if (!(vehicle instanceof AbstractVehicle)) {
+            if (!(vehicle instanceof AbstractVehicle))
                 throw new IllegalArgumentException("vehicle must be an AbstractVehicle");
-            }
             return addVehicle((AbstractVehicle) vehicle);
         }
 
@@ -343,9 +362,9 @@ public class VehicleRoutingProblem {
          * @return this builder
          */
         public Builder addVehicle(AbstractVehicle vehicle) {
-            if (addedVehicleIds.contains(vehicle.getId())) {
+            if (addedVehicleIds.contains(vehicle.getId()))
                 throw new IllegalArgumentException("problem already contains a vehicle with id " + vehicle.getId() + ". choose unique ids for each vehicle.");
-            } else {
+            else {
                 addedVehicleIds.add(vehicle.getId());
             }
             if (!uniqueVehicles.contains(vehicle)) {
@@ -404,7 +423,7 @@ public class VehicleRoutingProblem {
         public VehicleRoutingProblem build() {
             if (transportCosts == null) {
                 transportCosts = new DefaultCosts(EuclideanDistanceCalculator.getInstance())
-                    .withCoordinateConverter(getLocations());
+                        .withCoordinateConverter(getLocations());
             }
             for (Job job : tentativeJobs.values()) {
                 if (!jobsInInitialRoutes.contains(job.getId())) {
@@ -412,9 +431,8 @@ public class VehicleRoutingProblem {
                 }
             }
             boolean hasBreaks = addBreaksToActivityMap();
-            if (hasBreaks && fleetSize.equals(FleetSize.INFINITE)) {
+            if (hasBreaks && fleetSize.equals(FleetSize.INFINITE))
                 throw new UnsupportedOperationException("breaks are not yet supported when dealing with infinite fleet. either set it to finite or omit breaks.");
-            }
             return new VehicleRoutingProblem(this);
         }
 
@@ -538,14 +556,7 @@ public class VehicleRoutingProblem {
 
     private int nuActivities;
 
-    private final JobActivityFactory jobActivityFactory = new JobActivityFactory() {
-
-        @Override
-        public List<JobActivity> createActivities(Job job) {
-            return copyAndGetActivities(job);
-        }
-
-    };
+    private final JobActivityFactory jobActivityFactory = job -> copyAndGetActivities(job);
 
     private VehicleRoutingProblem(Builder builder) {
         jobs = builder.jobs;
@@ -567,7 +578,7 @@ public class VehicleRoutingProblem {
     @Override
     public String toString() {
         return "[fleetSize=" + fleetSize + "][#jobs=" + jobs.size() + "][#vehicles=" + vehicles.size() + "][#vehicleTypes=" + vehicleTypes.size() + "][" +
-            "transportCost=" + transportCosts + "][activityCosts=" + activityCosts + "]";
+                "transportCost=" + transportCosts + "][activityCosts=" + activityCosts + "]";
     }
 
     /**
@@ -600,7 +611,7 @@ public class VehicleRoutingProblem {
      * @return copied collection of initial vehicle routes
      */
     public Collection<VehicleRoute> getInitialVehicleRoutes() {
-        Collection<VehicleRoute> copiedInitialRoutes = new ArrayList<VehicleRoute>();
+        Collection<VehicleRoute> copiedInitialRoutes = new ArrayList<>();
         for (VehicleRoute route : initialVehicleRoutes) {
             copiedInitialRoutes.add(VehicleRoute.copyOf(route));
         }

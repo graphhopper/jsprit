@@ -27,6 +27,7 @@ import java.util.Set;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.Builder.FriendlyHandshake;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.JobActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
@@ -385,16 +386,20 @@ public abstract class AbstractJob implements Job {
         return index;
     }
 
+
     /**
      * Sets the index of the job within the problem.
      * <p>
-     * <b>This method isn't part of the public API and should not be called!</b>
+     * <b>This method isn't part of the public API and should not be called! If
+     * it is still called, it will throw {@link IllegalStateException}.</b>
      * </p>
      *
      * @param index
      *            The index.
      */
-    public void impl_setIndex(int index) {
+    public void impl_setIndex(FriendlyHandshake handshake, int index) {
+        if (handshake == null)
+            throw new IllegalStateException();
         this.index = index;
     }
 

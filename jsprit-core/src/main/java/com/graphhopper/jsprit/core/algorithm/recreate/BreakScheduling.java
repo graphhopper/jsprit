@@ -50,7 +50,7 @@ public class BreakScheduling implements InsertionStartsListener, JobInsertedList
 
     private final EventListeners eventListeners;
 
-    private Set<VehicleRoute> modifiedRoutes = new HashSet<VehicleRoute>();
+    private Set<VehicleRoute> modifiedRoutes = new HashSet<>();
 
     public BreakScheduling(VehicleRoutingProblem vrp, StateManager stateManager, ConstraintManager constraintManager) {
         this.stateManager = stateManager;
@@ -96,7 +96,7 @@ public class BreakScheduling implements InsertionStartsListener, JobInsertedList
                 logger.trace("ruin: {}", aBreak.getId());
             }
         }
-        List<Break> breaks = new ArrayList<Break>();
+        List<Break> breaks = new ArrayList<>();
         for (Job j : unassignedJobs) {
             if (j instanceof Break) {
                 breaks.add((Break) j);

@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.Builder.FriendlyHandshake;
 import com.graphhopper.jsprit.core.problem.job.CustomJob.BuilderBase.ActivityType;
 import com.graphhopper.jsprit.core.problem.job.CustomJob.BuilderBase.BuilderActivityInfo;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
@@ -358,17 +359,16 @@ public class Service extends AbstractJob {
 
     /**
      * Returns the time-window a service(-operation) is allowed to start.
-     *
-     * @deprecated It is recommended to use getTimeWindows() instead. If you
-     *             still use this, it returns the first time window of
-     *             getTimeWindows() collection.
+     * It is recommended to use getTimeWindows() instead. If you still use this, it returns the first time window of getTimeWindows() collection.
      *
      * @return time window
      *
      */
     @Deprecated
     public TimeWindow getTimeWindow() {
-        return theRealActivity.getTimeWindows().iterator().next();
+        if (getTheRealActivity().getTimeWindows().size() > 1)
+            throw new IllegalArgumentException("More than one time window in. " + this);
+        return getTheRealActivity().getTimeWindows().iterator().next();
     }
 
     /**
@@ -462,8 +462,8 @@ public class Service extends AbstractJob {
     }
 
     @Override
-    public void impl_setIndex(int index) {
-        theRealJob.impl_setIndex(index);
+    public void impl_setIndex(FriendlyHandshake handshake, int index) {
+        theRealJob.impl_setIndex(handshake, index);
     }
 
     @Override

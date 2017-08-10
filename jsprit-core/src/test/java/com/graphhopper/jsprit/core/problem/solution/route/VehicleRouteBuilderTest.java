@@ -37,7 +37,7 @@ public class VehicleRouteBuilderTest {
     @Test(expected = IllegalArgumentException.class)
     public void whenDeliveryIsAddedBeforePickup_throwsException() {
         ShipmentJob s = new ShipmentJob.Builder("s")
-                        .setDeliveryLocation(Location.newInstance("loc1")).build();
+                .setDeliveryLocation(Location.newInstance("loc1")).build();
         VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
         builder.addDelivery(s);
     }
@@ -92,7 +92,7 @@ public class VehicleRouteBuilderTest {
         ShipmentJob s2 = createStandardShipment("s2").build();
 
         Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("vehLoc")).setEndLocation(Location.newInstance("vehLoc"))
-                        .build();
+                .build();
 
         VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
         builder.addPickup(s);
@@ -118,7 +118,7 @@ public class VehicleRouteBuilderTest {
         builder.addDelivery(s2);
         VehicleRoute route = builder.build();
         assertEquals(route.getEnd().getLocation().getId(),
-                        s2.getDeliveryActivity().getLocation().getId());
+                s2.getDeliveryActivity().getLocation().getId());
     }
 
     private Location loc(String delLoc) {
@@ -148,11 +148,11 @@ public class VehicleRouteBuilderTest {
         Location loc = Location.Builder.newInstance().setId("delLoc").build();
         TimeWindow tw = TimeWindow.newInstance(0, 10);
         return new ShipmentJob.Builder(name)
-                        .addSizeDimension(0, 10)
-                        .setPickupTimeWindow(tw)
-                        .setDeliveryTimeWindow(tw)
-                        .setPickupLocation(loc)
-                        .setDeliveryLocation(loc);
+                .addSizeDimension(0, 10)
+                .setPickupTimeWindow(tw)
+                .setDeliveryTimeWindow(tw)
+                .setPickupLocation(loc)
+                .setDeliveryLocation(loc);
     }
 
 
