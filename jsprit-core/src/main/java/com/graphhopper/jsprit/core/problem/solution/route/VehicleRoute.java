@@ -27,8 +27,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.graphhopper.jsprit.core.problem.JobActivityFactory;
-import com.graphhopper.jsprit.core.problem.SimpleJobActivityFactory;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.AbstractJob;
@@ -88,10 +86,9 @@ public class VehicleRoute {
      * Builder that builds the vehicle route.
      *
      * @author stefan
+     * @author Balage
      */
     public static class Builder {
-
-        private Map<ShipmentJob, TourActivity> openActivities = new HashMap<>();
 
         /**
          * Returns new instance of this builder.
@@ -159,21 +156,6 @@ public class VehicleRoute {
 
         private TourActivities tourActivities = new TourActivities();
 
-        // private TourActivityFactory serviceActivityFactory = new
-        // DefaultTourActivityFactory();
-        //
-        // private TourShipmentActivityFactory shipmentActivityFactory = new
-        // DefaultShipmentActivityFactory();
-
-        // private Set<ShipmentJob> openShipments = new HashSet<>();
-
-        private JobActivityFactory jobActivityFactory = new SimpleJobActivityFactory();
-
-        public Builder setJobActivityFactory(JobActivityFactory jobActivityFactory) {
-            this.jobActivityFactory = jobActivityFactory;
-            return this;
-        }
-
         private Builder(Vehicle vehicle, Driver driver) {
             super();
             this.vehicle = vehicle;
@@ -192,10 +174,40 @@ public class VehicleRoute {
         }
 
 
+        /**
+         * Adds the first activity of a job with its first time window.
+         *
+         * @param job
+         *            The job to get the activity from.
+         * @return The builder.
+         */
         public Builder addActivity(AbstractJob job) {
             return addActivity(job, 0);
         }
 
+        /**
+         * Adds all activities of a job with their first time window.
+         *
+         * @param job
+         *            The job to get the activities from.
+         * @return The builder.
+         */
+        public Builder addAllActivities(AbstractJob job) {
+            job.getActivityList().getAll().forEach(a -> addActivity(a));
+            return this;
+        }
+
+        /**
+         * Adds the selected activity of a job with its first time window.
+         *
+         * @param job
+         *            The job to get the activity from.
+         * @param activityIndex
+         *            The (0-based) index of the activity to add.
+         * @return The builder.
+         * @throws IndexOutOfBoundsException
+         *             When the index is invalid.
+         */
         public Builder addActivity(AbstractJob job, int activityIndex) {
             if (job == null)
                 throw new IllegalArgumentException("job must not be null");
@@ -203,6 +215,29 @@ public class VehicleRoute {
             return addActivity(activity);
         }
 
+        /**
+         * Adds the first activity with the selected type of a job with its
+         * first time window.
+         *
+         * <p>
+         * Note: If your job has more than one activity of the same type, you
+         * have to add them manually:
+         * </p>
+         *
+         * <pre>
+         * job.getActivityList().getAll().stream()
+         *     .filter(a -> a instanceof ExchangeActivity))
+         *     .forEach(a -> addActivity(a));
+         * </pre>
+         *
+         * @param job
+         *            The job to get the activity from.
+         * @param activityClass
+         *            The class of the activity.
+         * @return The builder.
+         * @throws IllegalArgumentException
+         *             When there is no activity with the given type in the job.
+         */
         public Builder addActivity(AbstractJob job, Class<? extends JobActivity> activityClass) {
             if (job == null)
                 throw new IllegalArgumentException("job must not be null");
@@ -215,10 +250,33 @@ public class VehicleRoute {
                 throw new IllegalArgumentException("Job has no " + activityClass.getSimpleName() + " activity");
         }
 
+        /**
+         * Adds the first activity of a job with the given time window.
+         *
+         * @param job
+         *            The job to get the activity from.
+         * @param timeWindow
+         *            The time window to use.
+         * @return The builder.
+         */
         public Builder addActivity(AbstractJob job, TimeWindow timeWindow) {
             return addActivity(job, 0, timeWindow);
         }
 
+        /**
+         * Adds the first activity with the selected type of a job with the
+         * selected time window.
+         *
+         * @param job
+         *            The job to get the activity from.
+         * @param activityClass
+         *            The class of the activity.
+         * @param timeWindow
+         *            The time window to use.
+         * @return The builder.
+         * @throws IllegalArgumentException
+         *             When there is no activity with the given type in the job.
+         */
         public Builder addActivity(AbstractJob job, Class<? extends JobActivity> activityClass, TimeWindow timeWindow) {
             if (job == null)
                 throw new IllegalArgumentException("job must not be null");
@@ -231,6 +289,19 @@ public class VehicleRoute {
                 throw new IllegalArgumentException("Job has no " + activityClass.getSimpleName() + " activity");
         }
 
+        /**
+         * Adds the selected activity of a job with the specified time window.
+         *
+         * @param job
+         *            The job to get the activity from.
+         * @param activityIndex
+         *            The (0-based) index of the activity to add.
+         * @param timeWindow
+         *            The time window to use.
+         * @return The builder.
+         * @throws IndexOutOfBoundsException
+         *             When the index is invalid.
+         */
         public Builder addActivity(AbstractJob job, int activityIndex, TimeWindow timeWindow) {
             if (job == null)
                 throw new IllegalArgumentException("job must not be null");
@@ -238,10 +309,26 @@ public class VehicleRoute {
             return addActivity(act, timeWindow);
         }
 
+        /**
+         * Adds the activity to the route with its first time window.
+         *
+         * @param activity
+         *            The activity to add.
+         * @return The builder.
+         */
         public Builder addActivity(JobActivity activity) {
             return addActivity(activity, activity.getTimeWindows().iterator().next());
         }
 
+        /**
+         * Adds the activity to the route with the selected time window.
+         *
+         * @param activity
+         *            The activity to add.
+         * @param timeWindow
+         *            The time window to use.
+         * @return The builder.
+         */
         public Builder addActivity(TourActivity activity, TimeWindow timeWindow) {
             if (activity == null)
                 throw new IllegalArgumentException("activity must not be null");
@@ -271,18 +358,6 @@ public class VehicleRoute {
             return addActivity(currentbreak, timeWindow);
         }
 
-        /**
-         * Adds a pickup to this route.
-         *
-         * <p>
-         * <i><b>Note: Using this method is not recommended. Use the
-         * {@linkplain #addPickup(PickupJob, TimeWindow)} instead.</b></i>
-         * </p>
-         *
-         * @param pickup
-         *            pickup to be added
-         * @return the builder
-         */
         @Deprecated
         public Builder addPickup(PickupJob pickup) {
             return addActivity(pickup);
@@ -293,19 +368,6 @@ public class VehicleRoute {
             return addActivity(pickup, timeWindow);
         }
 
-        /**
-         * Adds a delivery to this route.
-         *
-         * <p>
-         * <i><b>Note: Using this method is not recommended. Use the
-         * {@linkplain #addDelivery(DeliveryJob, TimeWindow)} instead.</b></i>
-         * </p>
-         *
-         *
-         * @param delivery
-         *            delivery to be added
-         * @return the builder
-         */
         @Deprecated
         public Builder addDelivery(DeliveryJob delivery) {
             return addActivity(delivery);
@@ -316,21 +378,6 @@ public class VehicleRoute {
             return addActivity(delivery, timeWindow);
         }
 
-        /**
-         * Adds a the pickup of the specified shipment.
-         *
-         * <p>
-         * <i><b>Note: Using this method is not recommended. Use the
-         * {@linkplain #addPickup(ShipmentJob, TimeWindow)} instead.</b></i>
-         * </p>
-         *
-         * @param shipment
-         *            to be picked up and added to this route
-         * @return the builder
-         * @throws IllegalArgumentException
-         *             if method has already been called with the specified
-         *             shipment.
-         */
         @Deprecated
         public Builder addPickup(ShipmentJob shipment) {
             return addActivity(shipment, PickupActivity.class);
@@ -338,53 +385,16 @@ public class VehicleRoute {
 
         @Deprecated
         public Builder addPickup(ShipmentJob shipment, TimeWindow pickupTimeWindow) {
-            // if (openShipments.contains(shipment))
-            // throw new IllegalArgumentException(
-            // "shipment has already been added. cannot add it twice.");
-            // List<JobActivity> acts =
-            // jobActivityFactory.createActivities(shipment);
-            // TourActivity act = acts.get(0);
-            // act.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
-            // act.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
-            // tourActivities.addActivity(act);
-            // openShipments.add(shipment);
-            // openActivities.put(shipment, acts.get(1));
             return addActivity(shipment, PickupActivity.class, pickupTimeWindow);
         }
 
-        /**
-         * Adds a the delivery of the specified shipment. The shipment could
-         * have only one time window.
-         *
-         * <p>
-         * <i><b>Note: Using this method is not recommended. Use the
-         * {@linkplain #addDelivery(ShipmentJob, TimeWindow)} instead.</b></i>
-         * </p>
-         *
-         * @param shipment
-         *            to be delivered and add to this vehicleRoute
-         * @return builder
-         * @throws IllegalArgumentException
-         *             if specified shipment has not been picked up yet (i.e.
-         *             method addPickup(shipment) has not been called yet).
-         */
+        @Deprecated
         public Builder addDelivery(ShipmentJob shipment) {
             return addActivity(shipment, DeliveryActivity.class);
         }
 
-        public Builder addDelivery(ShipmentJob shipment, TimeWindow
-                deliveryTimeWindow) {
-            // if (openShipments.contains(shipment)) {
-            // TourActivity act = openActivities.get(shipment);
-            // act.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
-            // act.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
-            // tourActivities.addActivity(act);
-            // openShipments.remove(shipment);
-            // } else
-            // throw new IllegalArgumentException(
-            // "cannot deliver shipment. shipment " + shipment + " needs to be
-            // picked up first.");
-            // return this;
+        @Deprecated
+        public Builder addDelivery(ShipmentJob shipment, TimeWindow deliveryTimeWindow) {
             return addActivity(shipment, PickupActivity.class, deliveryTimeWindow);
 
         }
