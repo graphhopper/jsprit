@@ -111,6 +111,28 @@ public class VrpXMLWriterTest {
     }
 
     @Test
+    public void whenWritingServicesWithSeveralNamedCapacityDimensions_itWritesThemCorrectly() {
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+
+        Service s1 = Service.Builder.newInstance("1")
+            .addSizeDimension("ZERO", 20)
+            .addSizeDimension("ONE", 200)
+            .setLocation(TestUtils.loc("loc")).setServiceTime(2.0).build();
+        Service s2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(TestUtils.loc("loc2")).setServiceTime(4.0).build();
+
+        VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
+        assertEquals(2, readVrp.getJobs().size());
+
+        Service s1_read = (Service) vrp.getJobs().get("1");
+
+        assertEquals(2, s1_read.getSize().getNuOfDimensions());
+        assertEquals(20, s1_read.getSize().get("ZERO"));
+        assertEquals(200, s1_read.getSize().get("ONE"));
+
+    }
+
+    @Test
     public void whenWritingShipments_readingThemAgainMustReturnTheWrittenLocationIdsOfS1() {
         VehicleRoutingProblem.Builder builder = twoVehicleTypesAndImpls();
 
@@ -309,6 +331,36 @@ public class VrpXMLWriterTest {
     }
 
     @Test
+    public void whenWritingShipmentWithSeveralNamedCapacityDimension_itShouldWriteAndReadItCorrectly() {
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+
+        Shipment s1 = Shipment.Builder.newInstance("1")
+            .setPickupLocation(TestUtils.loc(Coordinate.newInstance(1, 2)))
+            .setDeliveryLocation(TestUtils.loc("delLoc", Coordinate.newInstance(5, 6)))
+            .setPickupTimeWindow(TimeWindow.newInstance(1, 2))
+            .setDeliveryTimeWindow(TimeWindow.newInstance(3, 4)).setPickupServiceTime(100).setDeliveryServiceTime(50)
+            .addSizeDimension("ZERO", 10)
+            .addSizeDimension("TWO", 100)
+            .build();
+
+        Shipment s2 = Shipment.Builder.newInstance("2").addSizeDimension("ZERO", 20)
+            .setPickupLocation(Location.Builder.newInstance().setId("pickLocation").build())
+            .setDeliveryLocation(TestUtils.loc("delLocation")).setPickupTimeWindow(TimeWindow.newInstance(5, 6))
+            .setDeliveryTimeWindow(TimeWindow.newInstance(7, 8)).build();
+
+        VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
+
+        assertEquals(2, (readVrp.getJobs().get("1")).getSize().getNuOfDimensions());
+        assertEquals(10, (readVrp.getJobs().get("1")).getSize().get("ZERO"));
+        assertEquals(0, (readVrp.getJobs().get("1")).getSize().get("ONE"));
+        assertEquals(100, (readVrp.getJobs().get("1")).getSize().get("TWO"));
+
+        assertEquals(1, (readVrp.getJobs().get("2")).getSize().getNuOfDimensions());
+        assertEquals(20, (readVrp.getJobs().get("2")).getSize().get("ZERO"));
+    }
+
+    @Test
     public void whenWritingShipmentWithSeveralCapacityDimension_itShouldWriteAndReadItCorrectly() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 
@@ -484,7 +536,6 @@ public class VrpXMLWriterTest {
         assertEquals(5.0, v.getEndLocation().getCoordinate().getY(), 0.01);
     }
 
-
     @Test
     public void whenWritingVehicleWithSeveralCapacityDimensions_itShouldBeWrittenAndRereadCorrectly() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -508,6 +559,31 @@ public class VrpXMLWriterTest {
         assertEquals(100, v.getType().getCapacityDimensions().get(0));
         assertEquals(1000, v.getType().getCapacityDimensions().get(1));
         assertEquals(10000, v.getType().getCapacityDimensions().get(2));
+    }
+
+    @Test
+    public void whenWritingVehicleWithSeveralNamedCapacityDimensions_itShouldBeWrittenAndRereadCorrectly() {
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+
+        VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type")
+            .addCapacityDimension("ZERO", 100)
+            .addCapacityDimension("ONE", 1000)
+            .addCapacityDimension("TWO", 10000)
+            .build();
+
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v")
+            .setStartLocation(TestUtils.loc("startLoc", Coordinate.newInstance(1, 2)))
+            .setEndLocation(TestUtils.loc("endLoc", Coordinate.newInstance(4, 5))).setType(type2).build();
+        builder.addVehicle(v2);
+
+        VehicleRoutingProblem vrp = builder.build();
+        VehicleRoutingProblem readVrp = writeAndRereadXml(vrp);
+
+        Vehicle v = getVehicle("v", readVrp.getVehicles());
+        assertEquals(3, v.getType().getCapacityDimensions().getNuOfDimensions());
+        assertEquals(100, v.getType().getCapacityDimensions().get("ZERO"));
+        assertEquals(1000, v.getType().getCapacityDimensions().get("ONE"));
+        assertEquals(10000, v.getType().getCapacityDimensions().get("TWO"));
     }
 
     @Test

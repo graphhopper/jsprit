@@ -217,6 +217,10 @@ public class Capacity {
         return dimensions.size();
     }
 
+    public Set<String> getDimensionNames() {
+        return this.dimensions.keySet();
+    }
+
 
     /**
      * Returns value of capacity-dimension with specified index.
